@@ -1,0 +1,31 @@
+﻿
+Выполняется групповая операция установки.
+
+Начинается этап установки процедуры установки.
+См. файл журнала выполнения операция для сборки d:\Programming and Development\C#, .NET\@ Windows Services\+ Deployment\QuoteService.exe.
+Данный файл находится в d:\Programming and Development\C#, .NET\@ Windows Services\+ Deployment\QuoteService.InstallLog.
+
+На этапе установки возникло исключение.
+System.Security.SecurityException: Источник не найден, но не удалось выполнить поиск по нескольким или всем журналам событий.  Недоступные журналы: Security.
+
+Начинается этап отката процедуры установки.
+См. файл журнала выполнения операция для сборки d:\Programming and Development\C#, .NET\@ Windows Services\+ Deployment\QuoteService.exe.
+Данный файл находится в d:\Programming and Development\C#, .NET\@ Windows Services\+ Deployment\QuoteService.InstallLog.
+
+Этап отката выполнен успешно.
+
+Групповая операция установки выполнена.
+
+Выполняется групповая операция установки.
+
+Начинается этап установки процедуры установки.
+См. файл журнала выполнения операция для сборки d:\Programming and Development\C#, .NET\@ Windows Services\+ Deployment\QuoteService.exe.
+Данный файл находится в d:\Programming and Development\C#, .NET\@ Windows Services\+ Deployment\QuoteService.InstallLog.
+
+Этап установки успешно выполнен, начинается этап фиксации.
+См. файл журнала выполнения операция для сборки d:\Programming and Development\C#, .NET\@ Windows Services\+ Deployment\QuoteService.exe.
+Данный файл находится в d:\Programming and Development\C#, .NET\@ Windows Services\+ Deployment\QuoteService.InstallLog.
+
+Этап фиксации выполнен успешно.
+
+Групповая операция установки выполнена.

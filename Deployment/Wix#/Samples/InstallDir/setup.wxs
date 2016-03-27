@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="Windows-1252"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <Product Id="9bd21a6d-4957-460c-b598-d4917cacdea5" Name="CustomActionTest" Language="1033" Codepage="Windows-1252" Version="1.0.0.0" Manufacturer="OSH" UpgradeCode="9bd21a6d-4957-460c-b598-d4916cacdea4">
+    <Package InstallerVersion="200" Compressed="yes" SummaryCodepage="Windows-1252" Manufacturer="OSH" Languages="1033" />
+    <Media Id="1" Cabinet="CustomActionTest.cab" EmbedCab="yes" />
+
+    <Directory Id="TARGETDIR" Name="SourceDir" >
+      <Directory Id="INSTALLDIR" Name="%ProgramFiles%">
+
+        <Component Id="Component.readme.txt" Guid="9bd21a6d-4957-460c-b598-d49110cd90fc">
+          <File Id="readme.txt" Source="readme.txt" />
+        </Component>
+
+        <Directory Id="INSTALLDIR.CustomActionTest" Name="CustomActionTest">
+
+          <Component Id="CustomActionTest.EmptyDirectory" Guid="9bd21a6d-4957-460c-b598-d491f72fcb4e">
+            <CreateFolder />
+          </Component>
+
+        </Directory>
+      </Directory>
+    </Directory>
+
+    <Property Id="IDIR" Value="empty"  />
+    <Property Id="Test" Value="empty"  />
+    <Property Id="WIXUI_INSTALLDIR" Value="INSTALLDIR"  />
+
+    <CustomAction Id="Action1SetProp_IDIR" Property="IDIR" Value="[INSTALLDIR]"  />
+    <CustomAction Id="Action2_MyAction" BinaryKey="Action2_MyAction_File" DllEntry="MyAction" Impersonate="yes" Execute="immediate" Return="check"  />
+
+    <Binary Id="Action2_MyAction_File" SourceFile="%this%.CA.dll"  />
+
+    <UIRef Id="WixUI_InstallDir"  />
+
+    <Feature Id="Complete" Title="Complete" Absent="allow" Level="1" >
+      <ComponentRef Id="Component.readme.txt" />
+      <ComponentRef Id="CustomActionTest.EmptyDirectory" />
+    </Feature>
+
+    <InstallExecuteSequence >
+      <Custom Action="Action1SetProp_IDIR" After="InstallInitialize"> (NOT Installed) </Custom>
+      <Custom Action="Action2_MyAction" After="Action1SetProp_IDIR"> (NOT Installed) </Custom>
+    </InstallExecuteSequence>
+
+  </Product>
+</Wix>
+

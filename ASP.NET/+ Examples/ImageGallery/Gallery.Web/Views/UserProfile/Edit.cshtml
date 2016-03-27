@@ -1,0 +1,71 @@
+﻿@using Gallery.Web.Properties
+@model Gallery.Web.Models.UserProfileModel
+
+@{   
+   Layout = "~/Views/Shared/_Layout.cshtml";
+   ViewBag.Title = Resources.EditProfile;
+}
+
+<h2>@ViewBag.Title</h2>
+
+@using (Html.BeginForm())
+{
+   @Html.AntiForgeryToken()
+   @Html.ValidationSummary(true)
+
+   <fieldset>
+      <legend>@ViewBag.Title</legend>
+
+      <div class="editor-label">
+         @Html.LabelFor(model => model.FirstName)
+      </div>
+      <div class="editor-field">
+         @Html.EditorFor(model => model.FirstName)
+         @Html.ValidationMessageFor(model => model.FirstName)
+      </div>
+
+      <div class="editor-label">
+         @Html.LabelFor(model => model.PatronymicName)
+      </div>
+      <div class="editor-field">
+         @Html.EditorFor(model => model.PatronymicName)
+         @Html.ValidationMessageFor(model => model.PatronymicName)
+      </div>
+
+      <div class="editor-label">
+         @Html.LabelFor(model => model.LastName)
+      </div>
+      <div class="editor-field">
+         @Html.EditorFor(model => model.LastName)
+         @Html.ValidationMessageFor(model => model.LastName)
+      </div>
+
+      <div class="editor-label">
+         @Html.LabelFor(model => model.PageSize)
+      </div>
+      <div class="editor-field">
+         @Html.EditorFor(model => model.PageSize)
+         @Html.ValidationMessageFor(model => model.PageSize)
+      </div>
+
+      <div class="editor-label">
+         @Html.LabelFor(model => model.MaxPictureMeasurement)
+      </div>
+      <div class="editor-field">
+         @Html.EditorFor(model => model.MaxPictureMeasurement)
+         @Html.ValidationMessageFor(model => model.MaxPictureMeasurement)
+      </div>
+
+      <p>
+         <input type="submit" value="@Resources.Save" />
+      </p>
+   </fieldset>
+}
+
+<div>
+   @Html.ActionLink(Resources.BackToProfileData, "Index")
+</div>
+
+@section Scripts {
+   @Scripts.Render("~/bundles/jqueryval")
+}

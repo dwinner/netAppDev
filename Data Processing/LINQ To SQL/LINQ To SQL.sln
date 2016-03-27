@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Northwind.DataContext", "Northwind.DataContext\Northwind.DataContext.csproj", "{04A7646F-C3FC-4137-BFF7-E80E7C6706E1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LinqToSqlSamples", "LinqToSqlSamples\LinqToSqlSamples.csproj", "{F4B0CFE4-105A-4798-8928-717207F6FDDB}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{04A7646F-C3FC-4137-BFF7-E80E7C6706E1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{04A7646F-C3FC-4137-BFF7-E80E7C6706E1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{04A7646F-C3FC-4137-BFF7-E80E7C6706E1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{04A7646F-C3FC-4137-BFF7-E80E7C6706E1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F4B0CFE4-105A-4798-8928-717207F6FDDB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F4B0CFE4-105A-4798-8928-717207F6FDDB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F4B0CFE4-105A-4798-8928-717207F6FDDB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F4B0CFE4-105A-4798-8928-717207F6FDDB}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:wsap="http://schemas.xmlsoap.org/ws/2004/08/addressing/policy" xmlns:wsa10="http://www.w3.org/2005/08/addressing" xmlns:tns="http://tempuri.org/" xmlns:msc="http://schemas.microsoft.com/ws/2005/12/wsdl/contract" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:wsx="http://schemas.xmlsoap.org/ws/2004/09/mex" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata" xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:xsd="http://www.w3.org/2001/XMLSchema" name="AutoLotService" targetNamespace="http://tempuri.org/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <xsd:schema targetNamespace="http://tempuri.org/Imports">
+      <xsd:import schemaLocation="http://localhost:8733/Design_Time_Addresses/AutolotWcfServiceLibrary/AutoLotService/?xsd=xsd0" namespace="http://tempuri.org/" />
+      <xsd:import schemaLocation="http://localhost:8733/Design_Time_Addresses/AutolotWcfServiceLibrary/AutoLotService/?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+      <xsd:import schemaLocation="http://localhost:8733/Design_Time_Addresses/AutolotWcfServiceLibrary/AutoLotService/?xsd=xsd2" namespace="http://schemas.datacontract.org/2004/07/AutolotWcfServiceLibrary" />
+    </xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="IAutoLotService_InsertCar_InputMessage">
+    <wsdl:part name="parameters" element="tns:InsertCar" />
+  </wsdl:message>
+  <wsdl:message name="IAutoLotService_InsertCar_OutputMessage">
+    <wsdl:part name="parameters" element="tns:InsertCarResponse" />
+  </wsdl:message>
+  <wsdl:message name="IAutoLotService_InsertCarWithDetails_InputMessage">
+    <wsdl:part name="parameters" element="tns:InsertCarWithDetails" />
+  </wsdl:message>
+  <wsdl:message name="IAutoLotService_InsertCarWithDetails_OutputMessage">
+    <wsdl:part name="parameters" element="tns:InsertCarWithDetailsResponse" />
+  </wsdl:message>
+  <wsdl:message name="IAutoLotService_GetInventory_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetInventory" />
+  </wsdl:message>
+  <wsdl:message name="IAutoLotService_GetInventory_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetInventoryResponse" />
+  </wsdl:message>
+  <wsdl:portType name="IAutoLotService">
+    <wsdl:operation name="InsertCar">
+      <wsdl:input wsaw:Action="http://tempuri.org/IAutoLotService/InsertCar" message="tns:IAutoLotService_InsertCar_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IAutoLotService/InsertCarResponse" message="tns:IAutoLotService_InsertCar_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="InsertCarWithDetails">
+      <wsdl:input wsaw:Action="http://tempuri.org/IAutoLotService/InsertCarWithDetails" message="tns:IAutoLotService_InsertCarWithDetails_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IAutoLotService/InsertCarWithDetailsResponse" message="tns:IAutoLotService_InsertCarWithDetails_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetInventory">
+      <wsdl:input wsaw:Action="http://tempuri.org/IAutoLotService/GetInventory" message="tns:IAutoLotService_GetInventory_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IAutoLotService/GetInventoryResponse" message="tns:IAutoLotService_GetInventory_OutputMessage" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="BasicHttpBinding_IAutoLotService" type="tns:IAutoLotService">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="InsertCar">
+      <soap:operation soapAction="http://tempuri.org/IAutoLotService/InsertCar" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="InsertCarWithDetails">
+      <soap:operation soapAction="http://tempuri.org/IAutoLotService/InsertCarWithDetails" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetInventory">
+      <soap:operation soapAction="http://tempuri.org/IAutoLotService/GetInventory" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="AutoLotService">
+    <wsdl:port name="BasicHttpBinding_IAutoLotService" binding="tns:BasicHttpBinding_IAutoLotService">
+      <soap:address location="http://localhost:8733/Design_Time_Addresses/AutolotWcfServiceLibrary/AutoLotService/" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

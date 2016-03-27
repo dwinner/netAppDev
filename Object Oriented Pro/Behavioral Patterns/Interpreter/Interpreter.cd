@@ -1,0 +1,108 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1" MembersFormat="FullSignature">
+  <Class Name="Interpreter.AndExpression">
+    <Position X="0.5" Y="7.25" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>AndExpression.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Interpreter.ComparisonExpression">
+    <Position X="6" Y="4.5" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAEAAAAAAAAAAAAgAAAAAAAAAAAAACAAAAAAAAAAAA=</HashCode>
+      <FileName>ComparisonExpression.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Interpreter.CompoundExpression">
+    <Position X="0.5" Y="4.25" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AAIAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>CompoundExpression.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Interpreter.ConstantExpression" BaseTypeListCollapsed="true">
+    <Position X="0.5" Y="2" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>ABAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ConstantExpression.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Interpreter.ContactImpl" BaseTypeListCollapsed="true">
+    <Position X="11" Y="3.25" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAEAAAAAAAEAEAAAAAAAAAAAAAAAAAAAAAAAAIAg=</HashCode>
+      <FileName>ContactImpl.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="Interpreter.ContactList">
+    <Position X="14" Y="0.5" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>BAIAAAAAAAAAACIEAAAABAAAAAACAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ContactList.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Interpreter.ContainsExpression">
+    <Position X="8.75" Y="7.25" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ContainsExpression.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Interpreter.ContextImpl" BaseTypeListCollapsed="true">
+    <Position X="6" Y="2.25" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAABAAAAgAAAAAAAAAAAAAAAAAABAAAA=</HashCode>
+      <FileName>ContextImpl.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Interpreter.EqualsExpression">
+    <Position X="3.75" Y="7.25" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>EqualsExpression.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Interpreter.OrExpression">
+    <Position X="6.25" Y="7.25" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>OrExpression.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Interpreter.VariableExpression" BaseTypeListCollapsed="true">
+    <Position X="3" Y="2" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAgAAAAAAgAAAAAAAAAAAAAAAAAAAQAAAAAA=</HashCode>
+      <FileName>VariableExpression.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Interface Name="Interpreter.IContact">
+    <Position X="11" Y="0.5" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAEAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAIAg=</HashCode>
+      <FileName>IContact.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Interpreter.IContext">
+    <Position X="6" Y="0.5" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAABAAAAgAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>IContext.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Interpreter.IExpression">
+    <Position X="0.5" Y="0.5" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>IExpression.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

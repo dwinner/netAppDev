@@ -1,0 +1,34 @@
+﻿@using Gallery.Web.Properties
+@model Gallery.Web.Models.UserProfileWrapper
+
+@{
+   ViewBag.Title = Resources.ProfileTitle;
+   Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>@ViewBag.Title</h2>
+
+<table>
+   <tr>
+      <td>@Resources.FirstName</td>
+      <td>@Html.DisplayFor(model => model.FirstName)</td>
+   </tr>
+   <tr>
+      <td>@Resources.PatronymicName</td>
+      <td>@Html.DisplayFor(model => model.PatronymicName)</td>
+   </tr>
+   <tr>
+      <td>@Resources.LastName</td>
+      <td>@Html.DisplayFor(model => model.LastName)</td>
+   </tr>
+   <tr>
+      <td>@Resources.PageSize</td>
+      <td>@Html.DisplayFor(model => model.PageSize)</td>
+   </tr>
+   <tr>
+      <td>@Resources.MaxPictureDim</td>
+      <td>@Html.DisplayFor(wrapper => wrapper.MaxPictureMeasurement)</td>
+   </tr>
+</table>
+<hr />
+@Html.ActionLink(Resources.EditProfileData, "Edit", "UserProfile")

@@ -1,0 +1,105 @@
+﻿@using System.Web.Profile
+@using Gallery.Web.Models
+@using Gallery.Web.Properties
+@using JpegMetadata.Library
+@model Gallery.DataLevel.Orm.PictureGallery
+
+@{
+   ViewBag.EditText = Resources.EditPicture;
+   var wrappedProfile = new UserProfileWrapper(ProfileBase.Create(User.Identity.Name));
+   Tuple<int, int> oldDimensions = Tuple.Create(Model.Width, Model.Height);
+   int fitWidth = wrappedProfile.MaxPictureMeasurement;
+   Tuple<int, int> resampleDimensions = ImageProcessorUtils.ResampleDimensions(oldDimensions, fitWidth);
+}
+
+<li>
+   <div class="ImageDiv">
+
+      <img class="AvatarImage magnify" width="@resampleDimensions.Item1" height="@resampleDimensions.Item2"
+           src="@Url.Action("GetImage", "Picture", new { pictureId = Model.PictureId })"
+           alt="@Model.PictureDescription"
+           title="@Model.PictureFileName" />
+
+      <div id="picDescription" title="@ViewBag.EditText">
+         @Html.ActionLink(string.IsNullOrWhiteSpace(Model.PictureDescription)
+            ? Resources.EditPicture
+            : Model.PictureDescription, "Edit", new { pictureId = Model.PictureId })
+      </div>
+
+      <div class="extraInfoList">
+         <div>@Resources.InitialsStrings: @wrappedProfile.FirstName @wrappedProfile.PatronymicName @wrappedProfile.LastName</div>
+         <div>            
+            @Resources.DateString: 
+               @if (Model.PictureDetail.ShootingDate == null)
+               {
+                  @Resources.NotSpecified
+               }
+               else
+               {
+                  @Model.PictureDetail.ShootingDate
+               }
+         </div>
+         <div>
+            @Resources.CameraModelString: @(string.IsNullOrWhiteSpace(@Model.PictureDetail.CameraModel) ? Resources.NotSpecified : Model.PictureDetail.CameraModel)
+         </div>
+         <div>
+            @Resources.CameraManufacturerString: @(string.IsNullOrWhiteSpace(@Model.PictureDetail.CameraManufacturer) ? Resources.NotSpecified : Model.PictureDetail.CameraManufacturer)
+         </div>
+         <div>
+            @Resources.FocalString:
+               @if (@Model.PictureDetail.FocalLength == null)
+               {
+                  @Resources.NotSpecified
+               }
+               else
+               {
+                  @Model.PictureDetail.FocalLength
+               }
+            &nbsp;@Resources.MillimetersString
+         </div>
+         <div>
+            @Resources.ExposureTimeString:
+               @if (@Model.PictureDetail.ExposureTime == null)
+               {
+                  @Resources.NotSpecified
+               }
+               else
+               {
+                  @Model.PictureDetail.ExposureTime
+               }
+            &nbsp;@Resources.SecondsString
+         </div>
+         <div>
+            @Resources.ShutterSpeedValueString:
+               @if (@Model.PictureDetail.ShutterSpeedValue == null)
+               {
+                  @Resources.NotSpecified
+               }
+               else
+               {
+                  @Model.PictureDetail.ShutterSpeedValue
+               }
+         </div>
+         <div>
+            @Resources.FNumberString
+            @if (@Model.PictureDetail.FNumber == null)
+            {
+               @Resources.NotSpecified
+            }
+            else
+            {
+               @Model.PictureDetail.FNumber
+            }
+         </div>
+      </div>
+
+      <div id="formLogic">
+         @using (Html.BeginForm("Delete", "Picture"))
+         {
+            @Html.Hidden("PictureId", Model.PictureId)
+            <input type="submit" value="@Resources.DeleteActionString" />
+         }
+      </div>
+
+   </div>
+</li>

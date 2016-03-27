@@ -1,0 +1,2 @@
+sc /help
+pause

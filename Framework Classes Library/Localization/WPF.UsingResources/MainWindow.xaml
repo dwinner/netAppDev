@@ -1,0 +1,10 @@
+﻿<Window x:Class="WPF.UsingResources.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:properties="clr-namespace:WPF.UsingResources.Properties"
+        Title="WPF Sample" Height="240" Width="500">
+    <Grid>
+        <Button Name="LocButton" Margin="30,20,30,20" Click="LocButton_OnClick"
+                Content="{x:Static properties:Resources.LocButtonText}"/>
+    </Grid>
+</Window>

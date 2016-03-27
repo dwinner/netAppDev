@@ -1,0 +1,27 @@
+﻿@using Gallery.Web.Properties
+@model Gallery.Web.Models.LocalPasswordModel
+
+@{
+   ViewBag.Title = Resources.ManageAccount;
+}
+
+<hgroup class="title">
+   <h1>@ViewBag.Title.</h1>
+</hgroup>
+
+<p class="message-success">@ViewBag.StatusMessage</p>
+
+<p>@Resources.YouLoggedInAs <strong>@User.Identity.Name</strong>.</p>
+
+@(ViewBag.HasLocalPassword ? Html.Partial("_ChangePasswordPartial") : Html.Partial("_SetPasswordPartial"))
+
+<section id="externalLogins">
+   @Html.Action("RemoveExternalLogins")
+
+   <h3>@Resources.AddExternalAccount</h3>
+   @Html.Action("ExternalLoginsList", new { ViewBag.ReturnUrl })
+</section>
+
+@section Scripts {
+   @Scripts.Render("~/bundles/jqueryval")
+}

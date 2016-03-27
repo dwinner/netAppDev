@@ -1,0 +1,50 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1" MembersFormat="FullSignature">
+  <Class Name="Composite.Implementation.ContactImpl" BaseTypeListCollapsed="true">
+    <Position X="0.5" Y="2.5" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAEAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAIAg=</HashCode>
+      <FileName>Implementation\ContactImpl.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Composite.Implementation.Deliverable" BaseTypeListCollapsed="true">
+    <Position X="8" Y="4.75" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAACAAAAgAAAAAAAAAAQAAAAAAAAgAAAAAAAAAAA=</HashCode>
+      <FileName>Implementation\Deliverable.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Composite.Implementation.Project&lt;T&gt;" BaseTypeListCollapsed="true">
+    <Position X="4" Y="2.5" Width="3" />
+    <TypeIdentifier>
+      <HashCode>AAKAABAAAAAgAAAAAAAABAQAAAAAAAAgAAAAAAAAAAA=</HashCode>
+      <FileName>Implementation\Project.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Composite.Implementation.WorkTask&lt;T&gt;" BaseTypeListCollapsed="true">
+    <Position X="8" Y="0.5" Width="3" />
+    <TypeIdentifier>
+      <HashCode>AAKAABCAAAABAAAAAAAABAQAAAAAAAAgAEAAAAAAAAA=</HashCode>
+      <FileName>Implementation\WorkTask.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Interface Name="Composite.Implementation.IContact">
+    <Position X="0.5" Y="0.5" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAEAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAIAg=</HashCode>
+      <FileName>Implementation\IContact.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Composite.Implementation.IProjectItem">
+    <Position X="4" Y="0.5" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAA=</HashCode>
+      <FileName>Implementation\IProjectItem.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

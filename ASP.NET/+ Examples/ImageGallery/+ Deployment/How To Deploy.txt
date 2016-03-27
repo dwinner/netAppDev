@@ -1,0 +1,32 @@
+Ручное развертывание.
+
+1. Разверните основную базу данных для изображений:
+   1) Создайте на Вашем SQL Server'е новую базу данных ImageGallery;
+   2) Выполните запросы в файле ImageGallery.DDL.sql;
+
+2. Разверните стандартную базу данных профилей для ASP.NET.
+   Для этого можно воспользоваться aspnet_regsql.exe или восстановить
+   из backup'а БД UserProfiles.bak. Обратите внимание, что эта база
+   используется только для профилей, а не для поддержки аутентификации,
+   авторизации и членста на основе ролей. Сделано это для того, чтобы
+   показать, что профили пользователя и система аутентификации в принципе
+   могут сосуществовать независимо друг от друга.
+   
+3. Разверните базу данных для аутентификации. Она работает в локальном режиме.
+   Для этого скопируйте Accounts.mdf и Accounts_log.ldf в каталог ImageGallery/Gallery.Web/App_Data/
+   
+4. Подправьте строки подключения в файле /ImageGallery/Gallery.Web/Web.config в соответствии со своей
+   конфигурацией:
+   
+   <connectionStrings>
+      <add name="DefaultConnection"
+            connectionString="Data Source=(LocalDb)\v11.0;Initial Catalog=Accounts;Integrated Security=SSPI;AttachDBFilename=|DataDirectory|\Accounts.mdf" providerName="System.Data.SqlClient" />
+      <add name="ProfileConnection"
+            connectionString="Data Source=ИМЯ_ЭКЗЕМПЛЯРА_SQL_SERVER_А;Initial Catalog=ИМЯ_БАЗЫ_ДАННЫХ_ПРОФИЛЕЙ;User ID=ИМЯ_УЧЕТНОЙ_ЗАПИСИ_SQL_SERVER_А;Password=ПАРОЛЬ_ДЛЯ_УЧЕТНОЙ_ЗАПИСИ" providerName="System.Data.SqlClient" />
+      <add name="ImageGalleryEntities"
+            connectionString="metadata=res://*/Orm.ImageGalleryModel.csdl|res://*/Orm.ImageGalleryModel.ssdl|res://*/Orm.ImageGalleryModel.msl;provider=System.Data.SqlClient;provider connection string=&quot;data source=ИМЯ_ЭКЗЕМПЛЯРА_SQL_SERVER_А;initial catalog=ImageGallery;user id=ИМЯ_УЧЕТНОЙ_ЗАПИСИ_SQL_SERVER_А;password=ПАРОЛЬ_ДЛЯ_УЧЕТНОЙ_ЗАПИСИ;MultipleActiveResultSets=True;App=EntityFramework&quot;" providerName="System.Data.EntityClient" />
+   </connectionStrings>
+   
+5. Дополнительно, можно раскомментировать строчки 741-770 в файле ImageGallery/Gallery.Web/Content/Site.css. В таком случае
+   размер изображений будет автоматически масштабироваться, в зависимости от размеров экрана устройства просмотра и перестанет
+   учитывать атрибуты html-тэга img width и height;

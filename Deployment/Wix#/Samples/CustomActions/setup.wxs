@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="Windows-1252"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <Product Id="8a7734cc-f1d3-4641-9d10-df6d994de05b" Name="CustomActionTest" Language="1033" Codepage="Windows-1252" Version="1.0.0.0" UpgradeCode="8a7734cc-f1d3-4641-9d10-df6d894de05a" Manufacturer="OSH">
+    <Package InstallerVersion="200" Compressed="yes" SummaryCodepage="Windows-1252" Languages="1033" />
+    <Media Id="1" Cabinet="CustomActionTest.cab" EmbedCab="yes" />
+
+    <Directory Id="TARGETDIR" Name="SourceDir" >
+      <Directory Id="ProgramFilesFolder" Name="ProgramFilesFolder">
+        <Directory Id="ProgramFilesFolder.My_Company" Name="My Company">
+          <Directory Id="INSTALLDIR" Name="My Product">
+
+            <Component Id="Component.Registrator.exe" Guid="8a7734cc-f1d3-4641-9d10-df6dab824ab4">
+              <File Id="Registrator.exe" Source="Files\Registrator.exe" />
+            </Component>
+
+          </Directory>
+        </Directory>
+      </Directory>
+    </Directory>
+
+    <CustomAction Id="Action1_Registrator.exe" ExeCommand="/u" Return="check" FileKey="Registrator.exe"  />
+    <CustomAction Id="Action2_Registrator.exe" ExeCommand="" Return="check" FileKey="Registrator.exe"  />
+    <CustomAction Id="Action3_notepad.exe" ExeCommand="&quot;[WindowsFolder]\notepad.exe&quot; C:\boot.ini" Return="asyncNoWait" Directory="INSTALLDIR"  />
+    <CustomAction Id="Action4_VBScript" Script="vbscript" Return="ignore" ><![CDATA[MsgBox "Executing VBScript code..."]]></CustomAction>
+    <CustomAction Id="Action5_VBScriptFile" BinaryKey="Action5_VBScriptFile_File" VBScriptCall="Execute" Return="ignore"  />
+
+    <Binary Id="Action5_VBScriptFile_File" SourceFile="Files\Sample.vbs"  />
+
+    <Feature Id="Complete" Title="Complete" Absent="allow" Level="1" >
+      <ComponentRef Id="Component.Registrator.exe" />
+    </Feature>
+
+    <InstallExecuteSequence >
+      <Custom Action="Action1_Registrator.exe" Before="InstallFinalize"> (Installed) </Custom>
+      <Custom Action="Action2_Registrator.exe" After="InstallFinalize"> (NOT Installed) </Custom>
+      <Custom Action="Action3_notepad.exe" After="Action2_Registrator.exe"> (NOT Installed) </Custom>
+      <Custom Action="Action4_VBScript" After="Action3_notepad.exe"> (NOT Installed) </Custom>
+      <Custom Action="Action5_VBScriptFile" After="Action4_VBScript"> (NOT Installed) </Custom>
+    </InstallExecuteSequence>
+
+  </Product>
+</Wix>
+

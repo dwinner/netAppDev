@@ -1,0 +1,1 @@
+csc /target:library /addmodule:A.netmodule /out:B.dll

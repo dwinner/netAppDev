@@ -1,0 +1,7 @@
+﻿CREATE TABLE [dbo].[Canvases]
+(
+	[CanvasTableId] BIGINT IDENTITY(1,1) NOT NULL PRIMARY KEY,
+	[CanvasId] [UNIQUEIDENTIFIER] NOT NULL,
+	[CanvasName] [NVARCHAR](100) NOT NULL,
+	[CanvasDescription] [NVARCHAR](100) NOT NULL
+)

@@ -1,0 +1,1 @@
+csc /target:module A.cs

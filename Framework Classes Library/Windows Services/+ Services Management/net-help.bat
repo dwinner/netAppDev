@@ -1,0 +1,2 @@
+net /help
+pause

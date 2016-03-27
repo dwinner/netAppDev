@@ -1,0 +1,5 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<sitemanifest>
+  <appHostConfig path="WebSampleApp" />
+  <contentPath path="D:\Programming and Development\.NET\Deployment\WebSampleApp\WebSampleApp\obj\Release\Package\PackageTmp" />
+</sitemanifest>

@@ -1,0 +1,56 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1" MembersFormat="FullSignature">
+  <Class Name="Bridge.BaseList">
+    <Position X="2.5" Y="0.5" Width="3.75" />
+    <TypeIdentifier>
+      <HashCode>AEIAAAAAAAAAAABACAAABAQAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>BaseList.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Bridge.NumberedList">
+    <Position X="0.5" Y="4.75" Width="3" />
+    <InheritanceLine Type="Bridge.BaseList" ManuallyRouted="true">
+      <Path>
+        <Point X="4.375" Y="3.401" />
+        <Point X="4.375" Y="3.677" />
+        <Point X="2" Y="3.677" />
+        <Point X="2" Y="4.75" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>BaseList.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Bridge.OrnamentedList">
+    <Position X="4.75" Y="4.75" Width="4" />
+    <InheritanceLine Type="Bridge.BaseList" ManuallyRouted="true">
+      <Path>
+        <Point X="4.375" Y="3.401" />
+        <Point X="4.375" Y="3.719" />
+        <Point X="6.75" Y="3.719" />
+        <Point X="6.75" Y="4.75" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAABAAAAAAAAAAAgAAAAAAAAAAAAAAgA=</HashCode>
+      <FileName>BaseList.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Bridge.OrderedListImpl" BaseTypeListCollapsed="true">
+    <Position X="10.5" Y="3.75" Width="3" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAECAAAAACAgBAAAAAEAAAAAAAAAAA=</HashCode>
+      <FileName>IBaseListImpl.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Interface Name="Bridge.IBaseListImpl">
+    <Position X="10.5" Y="0.5" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAECAAAAACAgAAAAAAEAAAAAAAAAAA=</HashCode>
+      <FileName>IBaseListImpl.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

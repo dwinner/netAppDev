@@ -1,0 +1,2 @@
+D:\Programming and Development\.NET\Assemblies\Introduction\SharedCarLibClient\Fakes\CarLibrary.fakes : warning : Невозможно создать заглушку для CarLibrary.EngineState: тип является типом значения.
+D:\Programming and Development\.NET\Assemblies\Introduction\SharedCarLibClient\Fakes\CarLibrary.fakes : warning : Невозможно создать оболочку совместимости для CarLibrary.EngineState: тип является перечислением.

@@ -1,0 +1,3 @@
+"C:\Program Files (x86)\WiX Toolset v3.9\bin\candle.exe" -sw1026 -sw1091  -ext "C:\Program Files (x86)\WiX Toolset v3.9\bin\WixIIsExtension.dll" -ext "C:\Program Files (x86)\WiX Toolset v3.9\bin\WixUIExtension.dll" "ManagedSetup.wxs"
+"C:\Program Files (x86)\WiX Toolset v3.9\bin\light.exe" -sw1076 -sw1079 "ManagedSetup.wixobj"  -ext "C:\Program Files (x86)\WiX Toolset v3.9\bin\WixIIsExtension.dll" -ext "C:\Program Files (x86)\WiX Toolset v3.9\bin\WixUIExtension.dll" -cultures:en-US
+pause

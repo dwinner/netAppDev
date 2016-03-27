@@ -1,0 +1,86 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1" MembersFormat="FullSignature">
+  <Class Name="MVVMDemo.AllWidgetsViewModel">
+    <Position X="3.25" Y="5.75" Width="5" />
+    <InheritanceLine Type="MVVMDemo.BaseViewModel" ManuallyRouted="true" FixedToPoint="true">
+      <Path>
+        <Point X="4.75" Y="3.151" />
+        <Point X="4.75" Y="5.583" />
+        <Point X="4.75" Y="5.583" />
+        <Point X="4.75" Y="5.75" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier>
+      <HashCode>AAAgAAAAAAACAAAAAAAACAAAAAAAAQAAAAAAAAAAAAA=</HashCode>
+      <FileName>AllWidgetsViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MVVMDemo.BaseViewModel">
+    <Position X="3" Y="0.5" Width="3.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAEAAAAAAAAAAAIAAAAAQAgAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>BaseViewModel.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="MVVMDemo.DelegateCommand" BaseTypeListCollapsed="true">
+    <Position X="10.25" Y="0.5" Width="6" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAEACAAQAAECAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DelegateCommand.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="MVVMDemo.MainWindowViewModel">
+    <Position X="8.5" Y="5.75" Width="4.25" />
+    <InheritanceLine Type="MVVMDemo.BaseViewModel" ManuallyRouted="true">
+      <Path>
+        <Point X="4.75" Y="3.151" />
+        <Point X="4.75" Y="4.641" />
+        <Point X="10.625" Y="4.641" />
+        <Point X="10.625" Y="5.75" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier>
+      <HashCode>AAAICAAAAEABIAAIAABAAAAAAIAgAQAAAAIAAACAAAA=</HashCode>
+      <FileName>MainWindowViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MVVMDemo.Widget">
+    <Position X="11.25" Y="3.5" Width="3.25" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAABAAAAQAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Widget.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MVVMDemo.WidgetRepository">
+    <Position X="6.75" Y="0.5" Width="3" />
+    <TypeIdentifier>
+      <HashCode>BAAAAAAAAAACIAAACAAAAAAIAAAAAQAAAAAAAAAAQAA=</HashCode>
+      <FileName>WidgetRepository.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MVVMDemo.WidgetViewModel">
+    <Position X="0.5" Y="5.75" Width="2.5" />
+    <InheritanceLine Type="MVVMDemo.BaseViewModel" ManuallyRouted="true">
+      <Path>
+        <Point X="4.75" Y="3.151" />
+        <Point X="4.75" Y="4.64" />
+        <Point X="1.75" Y="4.64" />
+        <Point X="1.75" Y="5.75" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAADAAAAQAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>WidgetViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Enum Name="MVVMDemo.WidgetType">
+    <Position X="14.75" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAACAAAAA=</HashCode>
+      <FileName>WidgetType.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

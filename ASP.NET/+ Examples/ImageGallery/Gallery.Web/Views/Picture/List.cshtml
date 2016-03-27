@@ -1,0 +1,42 @@
+﻿@using System.Web.Profile
+@using Gallery.Web.HtmlHelperExtensions
+@using Gallery.Web.Models
+@using Gallery.Web.Properties
+@model PictureListViewModel
+
+@{
+   ViewBag.Title = Resources.ImageList_Title;
+   ViewBag.AddPictureText = Resources.AddPictuteText;
+   var wrappedProfile = new UserProfileWrapper(ProfileBase.Create(User.Identity.Name));
+   Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="DynamicColumns">
+   <ul>
+      @foreach (var picture in Model.Pictures)
+      {
+         Html.RenderPartial("_PictureSummary", picture);
+      }
+      <li>
+         <div class="ImageDiv">
+            <a href="@Url.Action("Create")" class="plus" title="@ViewBag.AddPictureText">
+               <img width="@wrappedProfile.MaxPictureMeasurement" height="@wrappedProfile.MaxPictureMeasurement"
+                    class="AvatarImage"
+                    src="~/Images/plus.png"
+                    alt="@ViewBag.AddPictureText" title="@ViewBag.AddPictureText" />
+            </a>
+         </div>
+      </li>
+   </ul>
+</div>
+
+@section paging {
+   <div class="pager">
+      @Html.PageLinks(Model.PageNavigator, pageNum => Url.Action("List", new { page = pageNum }))
+   </div>
+}
+
+@section scripts {
+   <script src="~/Scripts/respond.min.js"></script>
+   <script src="~/Scripts/jquery.magnifier.js"></script>
+}

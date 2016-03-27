@@ -1,0 +1,7 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<parameters>
+  <setParameter name="IIS Web Application Name" value="Sample" />
+  <setParameter name="IIS Web Application Pool Name" value="ASP.NET v4.0" />
+  <setParameter name="IisVirtualDirectoryPhysicalPath" value="D:\Programming and Development\.NET\Deployment\WebSampleApp\WebSampleApp_deploy" />
+  <setParameter name="DefaultConnection-Web.config Connection String" value="Data Source=(local);Initial Catalog=aspnetdb;Integrated Security=True" />
+</parameters>

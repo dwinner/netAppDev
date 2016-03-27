@@ -1,0 +1,73 @@
+﻿<Window x:Class="ServiceCtrlFrontEnd.ServiceControlWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:local="clr-namespace:ServiceCtrlFrontEnd"
+        Title="Service Control" Height="300" Width="300">
+   <Window.Resources>
+      <DataTemplate x:Key="LisTemplate">
+         <Label Content="{Binding DisplayName}"/>
+      </DataTemplate>
+   </Window.Resources>
+   <Grid>
+      <Grid.Resources>
+         <Style TargetType="TextBlock">
+            <Setter Property="Margin" Value="4"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+         </Style>
+         <Style TargetType="Button">
+            <Setter Property="Margin" Value="3"/>
+         </Style>
+      </Grid.Resources>
+      <Grid.ColumnDefinitions>
+         <ColumnDefinition Width="*"/>
+         <ColumnDefinition Width="*"/>
+      </Grid.ColumnDefinitions>
+      <Grid Margin="6,11,14,7" MinHeight="50" MinWidth="50"
+            Name="InnerGrid"
+            Grid.Column="1">
+         <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+         </Grid.RowDefinitions>
+         <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+         </Grid.ColumnDefinitions>
+         <TextBlock Grid.Row="0" Grid.ColumnSpan="2" Text="{Binding /DisplayName, Mode=OneTime}"/>
+         <TextBlock Grid.Row="1" Grid.ColumnSpan="2" Grid.Column="0" Text="{Binding /ServiceStatusName, Mode=OneTime}"/>
+         <TextBlock Grid.Row="2" Grid.ColumnSpan="2" Grid.Column="0" Text="{Binding /ServiceTypeName, Mode=OneTime}"/>
+         <TextBlock Grid.Row="3" Grid.ColumnSpan="2" Grid.Column="0" Text="{Binding /ServiceName, Mode=OneTime}"/>
+         <Button Grid.Row="4" Grid.Column="0" Content="Start" Name="StartButton"
+                 IsEnabled="{Binding /EnableStart, Mode=OneTime}"
+                 Tag="{x:Static local:ButtonState.Start}"
+                 Click="OnServiceCommand" />
+         <Button Grid.Row="4" Grid.Column="1" Content="Stop" Name="StopButton"
+                 IsEnabled="{Binding /EnableStop, Mode=OneTime}"
+                 Tag="{x:Static local:ButtonState.Stop}"
+                 Click="OnServiceCommand" />
+         <Button Grid.Row="5" Grid.Column="0" Content="Pause" Name="PauseButton"
+                 IsEnabled="{Binding /EnablePause, Mode=OneTime}"
+                 Tag="{x:Static local:ButtonState.Pause}"
+                 Click="OnServiceCommand" />
+         <Button Grid.Row="5" Grid.Column="1" Content="Continue" Name="ContinueButton"
+                 IsEnabled="{Binding /EnableContinue, Mode=OneTime}"
+                 Tag="{x:Static local:ButtonState.Continue}"
+                 Click="OnServiceCommand" />
+         <Button Grid.Row="6" Grid.Column="0" Content="Refresh" Name="RefreshButton"
+                 Click="RefreshButton_OnClick" />
+         <Button Grid.Row="6" Grid.Column="1" Content="Exit" Name="ExitButton"
+                 Click="ExitButton_OnClick" />
+      </Grid>
+      <ListBox Grid.Row="0" Grid.Column="0"
+               Name="ServicesListBox"
+               VerticalAlignment="Top" HorizontalAlignment="Left"
+               ItemsSource="{Binding}"
+               ItemTemplate="{StaticResource LisTemplate}"
+               IsSynchronizedWithCurrentItem="True"/>
+   </Grid>
+</Window>

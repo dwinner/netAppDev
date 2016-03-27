@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="Windows-1252"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <Product Id="b3880cac-a118-4bd0-bb8e-88773acde8f8" Name="ManagedSetup" Language="1033" Codepage="Windows-1252" Version="1.0.0.0" UpgradeCode="b3880cac-a118-4bd0-bb8e-88772acde8f7" Manufacturer="OSH">
+    <Package InstallerVersion="200" Compressed="yes" SummaryCodepage="Windows-1252" Languages="1033" Id="b3880cac-a118-4bd0-bb8e-88773acde8f8" />
+    <Media Id="1" Cabinet="ManagedSetup.cab" EmbedCab="yes" />
+
+    <Directory Id="TARGETDIR" Name="SourceDir" >
+      <Directory Id="ProgramFilesFolder" Name="ProgramFilesFolder">
+        <Directory Id="ProgramFilesFolder.My_Company" Name="My Company">
+          <Directory Id="INSTALLDIR" Name="My Product">
+
+            <Component Id="Component.readme.txt" Guid="b3880cac-a118-4bd0-bb8e-8877ceee9a4f">
+              <File Id="readme.txt" Source="readme.txt" />
+            </Component>
+
+          </Directory>
+        </Directory>
+      </Directory>
+    </Directory>
+
+    <CustomAction Id="Action1_embeddedUI" BinaryKey="Action1_embeddedUI_File" DllEntry="embeddedUI" Impersonate="yes" Execute="immediate" Return="check"  />
+    <CustomAction Id="WixSharp_InitRuntime_Action" BinaryKey="Action2_WixSharp_InitRuntime_Action_File" DllEntry="WixSharp_InitRuntime_Action" Impersonate="yes" Execute="immediate" Return="check"  />
+
+    <Binary Id="Action1_embeddedUI_File" SourceFile="EmbeddedUI_WPF.CA.dll"  />
+    <Binary Id="Action2_WixSharp_InitRuntime_Action_File" SourceFile="WixSharp.CA.dll"  />
+
+    <Feature Id="Complete" Title="Complete" Absent="allow" Level="1" >
+      <ComponentRef Id="Component.readme.txt" />
+    </Feature>
+
+    <InstallExecuteSequence >
+      <Custom Action="WixSharp_InitRuntime_Action" Before="AppSearch"> (1) </Custom>
+    </InstallExecuteSequence>
+
+    <UI >
+      <EmbeddedUI Id="EmbeddedUI_WPF.dll" SourceFile="EmbeddedUI_WPF.CA.dll" />
+    </UI>
+
+  </Product>
+</Wix>
+

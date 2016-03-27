@@ -1,0 +1,53 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1" MembersFormat="FullSignature">
+  <Class Name="Facade.DealerRepresentative">
+    <Position X="0.75" Y="1" Width="4.25" />
+    <TypeIdentifier>
+      <HashCode>ABAgAEECAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAI=</HashCode>
+      <FileName>DealerRepresentative.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Facade.PizzaCooking">
+    <Position X="11.25" Y="2.25" Width="3" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>PizzaCooking.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Facade.PizzaDelivery">
+    <Position X="7" Y="4" Width="3" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>PizzaDelivery.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Facade.PizzaFinance">
+    <Position X="11.25" Y="4" Width="3" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAA=</HashCode>
+      <FileName>PizzaFinance.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Facade.PizzaInsurance">
+    <Position X="11.25" Y="0.5" Width="3" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>PizzaInsurance.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Facade.PizzaOrder">
+    <Position X="7" Y="2.25" Width="3" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>PizzaOrder.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Facade.PizzaRegistration">
+    <Position X="7" Y="0.5" Width="3" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>PizzaRegistration.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

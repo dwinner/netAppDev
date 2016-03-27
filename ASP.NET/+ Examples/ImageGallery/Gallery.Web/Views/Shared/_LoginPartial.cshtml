@@ -1,0 +1,20 @@
+﻿@using Gallery.Web.Properties
+
+@if (Request.IsAuthenticated)
+{
+   <text>
+   @Resources.Hello, @Html.ActionLink(User.Identity.Name, "Manage", "Account", null, new { @class = "username", title = Resources.ManageAccount })!
+        @using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm" }))
+        {
+           @Html.AntiForgeryToken()
+           <a href="javascript:document.getElementById('logoutForm').submit()">@Resources.LogoutText</a>
+        }
+   </text>
+}
+else
+{
+   <ul>
+      <li>@Html.ActionLink(Resources.RegisterTitle, "Register", "Account", null, new { id = "registerLink" })</li>
+      <li>@Html.ActionLink(Resources.LoginActionText, "Login", "Account", null, new { id = "loginLink" })</li>
+   </ul>
+}

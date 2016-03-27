@@ -1,0 +1,58 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1" MembersFormat="FullSignature">
+  <Class Name="State.ApartmentRentedState" BaseTypeListCollapsed="true">
+    <Position X="4" Y="3.5" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AAAEAAAAAAAAAAAAAAAAAABAAAQAAAEAAAAAAAAAQAA=</HashCode>
+      <FileName>ApartmentRentedState.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="State.AutomatImpl" BaseTypeListCollapsed="true">
+    <Position X="7.5" Y="0.5" Width="3.75" />
+    <TypeIdentifier>
+      <HashCode>AAAEAEAAgAEAAAAAAAAACQRAAAAAAAAAAAAABAAAAAA=</HashCode>
+      <FileName>AutomatImpl.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="State.FullyRentedState" BaseTypeListCollapsed="true">
+    <Position X="4" Y="0.5" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AAAEAAAAAAAAAAAAAAAAAABAAAQAAAEAAAAAAAAAQAA=</HashCode>
+      <FileName>FullyRentedState.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="State.GotApplicationState" BaseTypeListCollapsed="true">
+    <Position X="0.5" Y="0.5" Width="3" />
+    <TypeIdentifier>
+      <HashCode>AAAEAAAAAAAAAAAAAAAAAABAAAQAAAEAAAAAAAAAQAE=</HashCode>
+      <FileName>GotApplicationState.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="State.WaitingState" BaseTypeListCollapsed="true">
+    <Position X="0.5" Y="3.5" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AAAEAAAAAAAAAAAAAAAAAABAAAQAAAEAAAAAAAAAQAA=</HashCode>
+      <FileName>WaitingState.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.231" />
+  </Class>
+  <Interface Name="State.IAutomat">
+    <Position X="12" Y="2.75" Width="3" />
+    <TypeIdentifier>
+      <HashCode>AAAEAEAAgAEAAAAAAAAAAQRAAAAAAAAAAAAABAAAAAA=</HashCode>
+      <FileName>IAutomat.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="State.IAutomatState">
+    <Position X="12" Y="0.5" Width="3" />
+    <TypeIdentifier>
+      <HashCode>AAAEAAAAAAAAAAAAAAAAAABAAAQAAAEAAAAAAAAAAAA=</HashCode>
+      <FileName>IAutomatState.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

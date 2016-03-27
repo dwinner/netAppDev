@@ -1,0 +1,185 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<activityRootModel xmlns:dm0="http://schemas.microsoft.com/VisualStudio/2008/DslTools/Core" xmlns:dm1="http://schemas.microsoft.com/dsltools/Kernel" xmlns:dm2="http://schemas.microsoft.com/dsltools/Component" xmlns:dm3="http://schemas.microsoft.com/dsltools/UseCase" xmlns:dm4="http://schemas.microsoft.com/dsltools/Activity" xmlns:dm5="http://schemas.microsoft.com/dsltools/Interaction" xmlns:dm6="http://schemas.microsoft.com/dsltools/UmlModelLibrary" xmlns:dm7="http://schemas.microsoft.com/dsltools/UmlDiagrams" xmlns:dm8="http://schemas.microsoft.com/dsltools/ModelStore" xmlns:dm9="http://schemas.microsoft.com/dsltools/SimpleShapesModel" dslVersion="1.0.0.0" Id="3356064f-f58b-4ec3-9bf2-59ff6fcfb512" name="BandSpyActivity" linkedPackageId="8882e5ed-e401-4771-81ac-3dee6af87065" xmlns="http://schemas.microsoft.com/VisualStudio/TeamArchitect/ActivityDesigner">
+  <ownedCommentsInternal>
+    <comment Id="03af0db7-5ce5-4d00-834c-28e385d0d18d">
+      <elementDefinition Id="eaa8888b-31a1-45a5-acee-8dbf6a6014c5" />
+      <body>Система резервирования места проведения концертов
+</body>
+    </comment>
+    <comment Id="e8bec2a8-3c14-48bc-a2a8-0580fe3ed5f7">
+      <elementDefinition Id="2ec73327-6900-4de1-b548-ff35b7ca43e3" />
+      <body>Система BandSpy</body>
+    </comment>
+    <comment Id="848cd45f-8ca4-4304-87a7-76890e8c4196">
+      <elementDefinition Id="2f8534b5-0644-41b2-8534-130d00b272fd" />
+      <body>Система формирования и печати билетов</body>
+    </comment>
+  </ownedCommentsInternal>
+  <profileInstances>
+    <packageHasProfileInstances Id="d54a228f-b3d9-4ed8-a7cd-5f4450e7a049">
+      <profileInstance Id="c71a467b-d78d-489c-8f1e-b32d196c0e48" name="StandardProfileL2">
+        <elementDefinition Id="e34d544e-0fea-4ed6-ac5e-1b74119ac791" />
+      </profileInstance>
+      <elementDefinition Id="0caec977-1f8c-4ba3-a7db-8cc9ad9cc73b" />
+    </packageHasProfileInstances>
+    <packageHasProfileInstances Id="cb6f3f73-debb-4cb1-b327-64d8e2a192c6">
+      <profileInstance Id="80c4f34e-1505-4e09-83bd-fd0d1e265a2c" name="StandardProfileL3">
+        <elementDefinition Id="532ea607-fb19-44b8-8502-3351b05452be" />
+      </profileInstance>
+      <elementDefinition Id="29349502-908c-4fda-9054-c48619c59ed0" />
+    </packageHasProfileInstances>
+  </profileInstances>
+  <packagedElements>
+    <activityRootModelHasActivity>
+      <activity Id="aea59310-d659-4408-a525-20bf8016d7ec" name="BandSpyActivity" isAbstract="false" isLeaf="false" isActiveClass="false" isReentrant="false" isReadOnly="false" isSingleExecution="false">
+        <elementDefinition Id="2cb9905c-7fcb-42a1-b9de-5aadb9d772ac" />
+        <nodes>
+          <initialNode Id="1451218e-fb08-4246-9f4a-52d6061b81a0" name="BandSpySystem" isLeaf="false">
+            <description>Система BandSpy</description>
+            <elementDefinition Id="489a4a92-3c56-4b99-852b-07303d650079" />
+            <flowNodeTargets>
+              <controlFlow Id="10ed85f1-5a89-4798-906b-0416c9cdf41d" isLeaf="false">
+                <opaqueActionMoniker Id="0094e10d-1697-49ee-b87d-28259c7f542e" LastKnownName="Add Concert Information" />
+                <elementDefinition Id="24bfc2c1-1697-4661-9d88-b1ea4d85b8d4" />
+              </controlFlow>
+            </flowNodeTargets>
+          </initialNode>
+          <opaqueAction Id="0094e10d-1697-49ee-b87d-28259c7f542e" name="Add Concert Information" isLeaf="false">
+            <description>Добавить информацию о концерте</description>
+            <elementDefinition Id="74497571-e6ff-4797-b755-20c8ad7b19b5" />
+            <flowNodeTargets>
+              <controlFlow Id="39f89410-7dd4-44e6-a92d-6c8ef52e7088" isLeaf="false">
+                <opaqueActionMoniker Id="2dbaed32-b0c4-445c-bcf7-2fbf0d142211" LastKnownName="Sending Request" />
+                <elementDefinition Id="b08c9ae9-0b20-4db6-a79b-33928153055e" />
+              </controlFlow>
+            </flowNodeTargets>
+          </opaqueAction>
+          <opaqueAction Id="2dbaed32-b0c4-445c-bcf7-2fbf0d142211" name="Sending Request" isLeaf="false">
+            <description>Отправка запроса системе резервирования места проведения
+концертов</description>
+            <elementDefinition Id="ddabbcbc-c524-4eef-8714-430977ca759a" />
+            <flowNodeTargets>
+              <controlFlow Id="22ad3e4d-9b12-4faf-81c7-ef956bd52dd6" isLeaf="false">
+                <opaqueActionMoniker Id="b86116e8-82b6-44b2-866a-940b74b4c6ac" LastKnownName="Message Processing" />
+                <elementDefinition Id="57d37c10-ae6c-45f4-a9b6-6439205c2bf8" />
+              </controlFlow>
+            </flowNodeTargets>
+          </opaqueAction>
+          <opaqueAction Id="b86116e8-82b6-44b2-866a-940b74b4c6ac" name="Message Processing" isLeaf="false">
+            <description>Обработка сообщения</description>
+            <elementDefinition Id="05da4754-11c8-43c9-808d-712ed2fdff64" />
+            <flowNodeTargets>
+              <controlFlow Id="3c15e0ab-695f-4b2f-8d30-a9f6498d4e96" isLeaf="false">
+                <opaqueActionMoniker Id="a495e842-cbb8-49bb-8de8-62561e9be12b" LastKnownName="Verifying" />
+                <elementDefinition Id="42bac96a-0fcb-4636-8fb7-793b4b50fac2" />
+              </controlFlow>
+            </flowNodeTargets>
+          </opaqueAction>
+          <opaqueAction Id="a495e842-cbb8-49bb-8de8-62561e9be12b" name="Verifying" isLeaf="false">
+            <description>Проверка возможности</description>
+            <elementDefinition Id="d573ffe2-d518-4e0a-b945-6e0bcdf1ea7a" />
+            <flowNodeTargets>
+              <controlFlow Id="20b85b62-a6b4-4c14-9e0d-4a8005137154" isLeaf="false">
+                <decisionNodeMoniker Id="3b267bdb-13ff-45ee-bc2c-c1ca816fc2d4" LastKnownName="PlaceAvailable" />
+                <elementDefinition Id="a87af796-689e-4a4a-bb34-504319855464" />
+              </controlFlow>
+            </flowNodeTargets>
+          </opaqueAction>
+          <decisionNode Id="3b267bdb-13ff-45ee-bc2c-c1ca816fc2d4" name="PlaceAvailable" isLeaf="false">
+            <description>Место доступно</description>
+            <elementDefinition Id="d538409b-65d3-45bc-85c9-f34fdcc96553" />
+            <flowNodeTargets>
+              <controlFlow Id="a12cd2ca-3cc5-4b75-ade4-dbe4b1337d04" guard="Место не доступно" isLeaf="false">
+                <opaqueActionMoniker Id="eb402cc2-b7e1-4627-97ff-7d3dc63dd494" LastKnownName="Notify Administrator" />
+                <description>Место не доступно</description>
+                <elementDefinition Id="5c3ff5b1-3c9f-4131-b65f-2e40ec098762" />
+              </controlFlow>
+              <controlFlow Id="6db4192d-d868-4993-951e-43749291a388" guard="Место доступно" isLeaf="false">
+                <forkNodeMoniker Id="3649741e-2f92-4548-b957-41e4f50bf8df" LastKnownName="Fork1" />
+                <elementDefinition Id="f47a3bdf-e805-477c-a60e-81ec0223434f" />
+              </controlFlow>
+            </flowNodeTargets>
+          </decisionNode>
+          <opaqueAction Id="eb402cc2-b7e1-4627-97ff-7d3dc63dd494" name="Notify Administrator" isLeaf="false">
+            <description>Извещение администратора</description>
+            <elementDefinition Id="6874bad7-ac09-43c9-93ba-07845ef88679" />
+            <flowNodeTargets>
+              <controlFlow Id="afafd4a7-5ee9-44c9-a865-9997a0e98863" isLeaf="false">
+                <opaqueActionMoniker Id="0094e10d-1697-49ee-b87d-28259c7f542e" LastKnownName="Add Concert Information" />
+                <elementDefinition Id="4107de4e-1116-40a8-967f-47fe2c79240c" />
+              </controlFlow>
+            </flowNodeTargets>
+          </opaqueAction>
+          <forkNode Id="3649741e-2f92-4548-b957-41e4f50bf8df" name="Fork1" isLeaf="false">
+            <elementDefinition Id="1541a0c0-ac8f-433a-b912-d94cd5ebe145" />
+            <flowNodeTargets>
+              <controlFlow Id="03d246a5-99dd-4511-9dad-3d5491c19b94" isLeaf="false">
+                <opaqueActionMoniker Id="acbfa8b5-f0c0-4651-a505-51b429587df1" LastKnownName="Sending Confirmation" />
+                <elementDefinition Id="2e068d48-9a38-49eb-a807-c69b5b6d8936" />
+              </controlFlow>
+              <controlFlow Id="a4ff7864-473c-4fe4-8a91-66a0bf345dd1" isLeaf="false">
+                <opaqueActionMoniker Id="b5f31030-8d7a-4f88-a053-6b0e5f54c22f" LastKnownName="Tickets Formation" />
+                <elementDefinition Id="cfe110cc-b245-4dc1-96eb-9f46b5644648" />
+              </controlFlow>
+            </flowNodeTargets>
+          </forkNode>
+          <opaqueAction Id="acbfa8b5-f0c0-4651-a505-51b429587df1" name="Sending Confirmation" isLeaf="false">
+            <description>Отправка подтверждения</description>
+            <elementDefinition Id="1247bb8a-41fc-41a0-817c-56e4e49c5b8d" />
+            <flowNodeTargets>
+              <controlFlow Id="c03c7df4-8b99-4ca2-a327-4ef94b8ec063" isLeaf="false">
+                <joinNodeMoniker Id="7691db00-cc89-43aa-9bd5-9c876b2edf2e" LastKnownName="Join1" />
+                <elementDefinition Id="83ace4d9-bf02-4aa8-9443-0f5be7508884" />
+              </controlFlow>
+            </flowNodeTargets>
+          </opaqueAction>
+          <opaqueAction Id="b5f31030-8d7a-4f88-a053-6b0e5f54c22f" name="Tickets Formation" isLeaf="false">
+            <description>Формирование билетов</description>
+            <elementDefinition Id="f3519dc9-e940-461a-8262-8f25da52c745" />
+            <flowNodeTargets>
+              <controlFlow Id="e48e1a2e-b67b-4e9f-b0ad-42bc7a4fe442" isLeaf="false">
+                <opaqueActionMoniker Id="c1c47209-3e43-4105-a153-cc54afc2fca9" LastKnownName="Sending Ticket Information" />
+                <elementDefinition Id="34492e3d-87b4-4c64-914e-a67992655dc5" />
+              </controlFlow>
+            </flowNodeTargets>
+          </opaqueAction>
+          <opaqueAction Id="c1c47209-3e43-4105-a153-cc54afc2fca9" name="Sending Ticket Information" isLeaf="false">
+            <description>Отправка информации о билетах</description>
+            <elementDefinition Id="27dc64df-318a-4756-aa5c-6d5398e94f0f" />
+            <flowNodeTargets>
+              <controlFlow Id="a07667a4-9cde-4a60-a0ed-70ee44a66f82" isLeaf="false">
+                <joinNodeMoniker Id="7691db00-cc89-43aa-9bd5-9c876b2edf2e" LastKnownName="Join1" />
+                <elementDefinition Id="72538133-65b7-47b1-9889-d2ac79db7489" />
+              </controlFlow>
+            </flowNodeTargets>
+          </opaqueAction>
+          <joinNode Id="7691db00-cc89-43aa-9bd5-9c876b2edf2e" name="Join1" isLeaf="false">
+            <elementDefinition Id="81d8f256-26cf-430e-9e90-ef9a3157fc49" />
+            <flowNodeTargets>
+              <controlFlow Id="3fa59b4e-7bc0-4753-919f-bd59b1cbf7f2" isLeaf="false">
+                <opaqueActionMoniker Id="bd04a02c-49b6-46a6-8759-4ebfedcec55a" LastKnownName="Updating Concert Information" />
+                <elementDefinition Id="fb8bd155-d3c2-42ad-81e2-22f1c5786058" />
+              </controlFlow>
+            </flowNodeTargets>
+          </joinNode>
+          <opaqueAction Id="bd04a02c-49b6-46a6-8759-4ebfedcec55a" name="Updating Concert Information" isLeaf="false">
+            <description>Обновление информации о концерте</description>
+            <elementDefinition Id="9e4ecb1f-b031-40df-9f2c-7ae9e21f434f" />
+            <flowNodeTargets>
+              <controlFlow Id="cd16a514-ac77-45ad-a0ad-ae9a5d400ede" isLeaf="false">
+                <activityFinalNodeMoniker Id="25f283df-0683-48b3-a2ea-12acd2234211" LastKnownName="ActivityFinal1" />
+                <elementDefinition Id="5c457431-e62e-4ebc-9242-bef81b321efe" />
+              </controlFlow>
+            </flowNodeTargets>
+          </opaqueAction>
+          <activityFinalNode Id="25f283df-0683-48b3-a2ea-12acd2234211" name="ActivityFinal1" isLeaf="false">
+            <elementDefinition Id="7de1982a-7616-4136-b869-d6711eb9d274" />
+          </activityFinalNode>
+        </nodes>
+      </activity>
+    </activityRootModelHasActivity>
+  </packagedElements>
+  <package Id="8882e5ed-e401-4771-81ac-3dee6af87065" name="Activity.Sample">
+    <elementDefinition Id="aba3f925-0958-4b23-9187-2bfae91dd0b7" />
+  </package>
+</activityRootModel>
