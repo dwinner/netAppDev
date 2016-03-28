@@ -3,30 +3,25 @@ using System.Windows.Media;
 
 namespace Animation
 {
-   /// <summary>
-   /// Interaction logic for CachingTest2.xaml
-   /// </summary>
-   public partial class CachingTest2 : Window
+   public partial class CachingTest2
    {
       public CachingTest2()
       {
          InitializeComponent();
       }
 
-
-      private void chkCache_Click(object sender, RoutedEventArgs e)
+      private void OnCacheOnOff(object sender, RoutedEventArgs e)
       {
-         if (chkCache.IsChecked == true)
+         if (CacheCheckbox.IsChecked == true)
          {
-            BitmapCache bitmapCache = new BitmapCache();
-            bitmapCache.RenderAtScale = 5;
-            cmd.CacheMode = bitmapCache;
-            img.CacheMode = new BitmapCache();
+            var bitmapCache = new BitmapCache { RenderAtScale = 5 };
+            CmdButton.CacheMode = bitmapCache;
+            SourceImg.CacheMode = new BitmapCache();
          }
          else
          {
-            cmd.CacheMode = null;
-            img.CacheMode = null;
+            CmdButton.CacheMode = null;
+            SourceImg.CacheMode = null;
          }
       }
    }

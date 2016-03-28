@@ -4,9 +4,6 @@ using System.Windows.Media.Animation;
 
 namespace Animation
 {
-   /// <summary>
-   /// Interaction logic for CustomEasingFunction.xaml
-   /// </summary>
    public partial class CustomEasingFunction : Window
    {
       public CustomEasingFunction()
@@ -15,22 +12,13 @@ namespace Animation
       }
    }
 
-   public class RandomJitterEase : EasingFunctionBase
+   public sealed class RandomJitterEase : EasingFunctionBase
    {
-      // Store a random number generator.
-      private Random rand = new Random();
-
-      protected override double EaseInCore(double normalizedTime)
-      {
-         //To see the values add code like this:
-         //System.Diagnostics.Debug.WriteLine(...);
-
-         // Make sure there's no jitter in the final value.
-         if (normalizedTime == 1) return 1;
-
-         // Offset the value by a random amount.
-         return Math.Abs(normalizedTime - (double)rand.Next(0, 10) / (2010 - Jitter));
-      }
+      public static readonly DependencyProperty JitterProperty =
+         DependencyProperty.Register("Jitter", typeof(int), typeof(RandomJitterEase),
+            new UIPropertyMetadata(1000), new ValidateValueCallback(ValidateJitter));
+      
+      private readonly Random _rand = new Random();
 
       public int Jitter
       {
@@ -38,17 +26,19 @@ namespace Animation
          set { SetValue(JitterProperty, value); }
       }
 
-      public static readonly DependencyProperty JitterProperty =
-          DependencyProperty.Register("Jitter", typeof(int), typeof(RandomJitterEase),
-          new UIPropertyMetadata(1000), new ValidateValueCallback(ValidateJitter));
+      protected override double EaseInCore(double normalizedTime)
+      {
+         return Math.Abs(normalizedTime - 1) < double.Epsilon
+            ? 1
+            : Math.Abs(normalizedTime - (double)_rand.Next(0, 10) / (2010 - Jitter));
+      }
 
       private static bool ValidateJitter(object value)
       {
-         int jitterValue = (int)value;
-         return ((jitterValue <= 2000) && (jitterValue >= 0));
+         var jitterValue = (int)value;
+         return (jitterValue <= 2000) && (jitterValue >= 0);
       }
-
-      // This required override simply provides a live instance of your easing function.
+      
       protected override Freezable CreateInstanceCore()
       {
          return new RandomJitterEase();

@@ -9,7 +9,7 @@
             <Button>AnimationInStyle</Button>
             <Button>AnimationPlayer</Button>
             <Button>ImageWipe</Button>
-            <Button>Easing</Button><!--NOTE: stopped here-->
+            <Button>Easing</Button>
             <Button>CustomEasingFunction</Button>
             <Button>FrameRates</Button>
             <Button>CachingTest</Button>

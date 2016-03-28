@@ -4,51 +4,34 @@ using System.Windows.Media;
 
 namespace Animation
 {
-   /// <summary>
-   /// Interaction logic for CachingTest.xaml
-   /// </summary>
-   public partial class CachingTest : Window
+   public partial class CachingTest
    {
       public CachingTest()
       {
          InitializeComponent();
 
-         PathGeometry pathGeometry = new PathGeometry();
-         PathFigure pathFigure = new PathFigure();
+         var pathGeometry = new PathGeometry();
+         var pathFigure = new PathFigure { StartPoint = new Point(0, 0) };
+         var pathSegmentCollection = new PathSegmentCollection();
 
-         pathFigure.StartPoint = new Point(0, 0);
-
-         PathSegmentCollection pathSegmentCollection = new PathSegmentCollection();
-
-         int maxHeight = (int)this.Height;
-         int maxWidth = (int)this.Width;
-         Random rand = new Random();
-         for (int i = 0; i < 500; i++)
+         var maxHeight = (int)Height;
+         var maxWidth = (int)Width;
+         var rand = new Random();
+         for (var i = 0; i < 500; i++)
          {
-            LineSegment newSegment = new LineSegment();
-            newSegment.Point = new Point(rand.Next(0, maxWidth), rand.Next(0, maxHeight));
+            var newSegment = new LineSegment { Point = new Point(rand.Next(0, maxWidth), rand.Next(0, maxHeight)) };
             pathSegmentCollection.Add(newSegment);
          }
 
          pathFigure.Segments = pathSegmentCollection;
          pathGeometry.Figures.Add(pathFigure);
 
-         pathBackground.Data = pathGeometry;
-
-
+         BackgroundPath.Data = pathGeometry;
       }
 
-      private void chkCache_Click(object sender, RoutedEventArgs e)
+      private void OnCacheOnOff(object sender, RoutedEventArgs e)
       {
-         if (chkCache.IsChecked == true)
-         {
-            BitmapCache bitmapCache = new BitmapCache();
-            pathBackground.CacheMode = new BitmapCache();
-         }
-         else
-         {
-            pathBackground.CacheMode = null;
-         }
+         BackgroundPath.CacheMode = CacheCheckbox.IsChecked == true ? new BitmapCache() : null;
       }
    }
 }

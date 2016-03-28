@@ -1,11 +1,6 @@
-﻿using System.Windows;
-
-namespace Animation
+﻿namespace Animation
 {
-   /// <summary>
-   /// Interaction logic for Easing.xaml
-   /// </summary>
-   public partial class Easing : Window
+   public partial class Easing
    {
       public Easing()
       {

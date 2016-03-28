@@ -5,32 +5,30 @@
 
 
     <Grid Background="White">
-        <Button x:Name="cmdGrow" Width="300" Height="60" Content="This button grows">
+        <Button x:Name="GrowButton" Width="300" Height="60" Content="This button grows">
             <Button.Triggers>
                 <EventTrigger RoutedEvent="Button.MouseEnter">
                     <EventTrigger.Actions>
                         <BeginStoryboard>
                             <Storyboard>
-                                <DoubleAnimation 
-   Storyboard.TargetName="cmdGrow" Storyboard.TargetProperty="Width"
-   To="400" Duration="0:0:1.5">
+                                <DoubleAnimation
+                                    Storyboard.TargetName="GrowButton" Storyboard.TargetProperty="Width"
+                                    To="400" Duration="0:0:1.5">
                                     <DoubleAnimation.EasingFunction>
-                                        <ElasticEase EasingMode="EaseOut" Oscillations="10"></ElasticEase>
+                                        <ElasticEase EasingMode="EaseOut" Oscillations="10" />
                                     </DoubleAnimation.EasingFunction>
                                 </DoubleAnimation>
                             </Storyboard>
                         </BeginStoryboard>
                     </EventTrigger.Actions>
                 </EventTrigger>
-
                 <EventTrigger RoutedEvent="Button.MouseLeave">
                     <EventTrigger.Actions>
                         <BeginStoryboard>
                             <Storyboard>
-                                <DoubleAnimation 
-   Storyboard.TargetName="cmdGrow" Storyboard.TargetProperty="Width"
-   Duration="0:0:3">
-                                </DoubleAnimation>
+                                <DoubleAnimation
+                                    Storyboard.TargetName="GrowButton" Storyboard.TargetProperty="Width"
+                                    Duration="0:0:3" />
                             </Storyboard>
                         </BeginStoryboard>
                     </EventTrigger.Actions>
