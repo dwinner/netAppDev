@@ -1,0 +1,35 @@
+﻿{
+  "version": "1.0.0-*",
+  "description": "CreateBooksDatabase Console Application",
+  "authors": [ "Christian" ],
+  "tags": [ "" ],
+  "projectUrl": "",
+  "licenseUrl": "",
+
+  "compilationOptions": {
+    "emitEntryPoint": true
+  },
+
+
+  "dependencies": {
+    "EntityFramework.Core": "7.0.0-rc1-final",
+    "EntityFramework.MicrosoftSqlServer": "7.0.0-rc1-final"
+  },
+
+  "frameworks": {
+    "net46": {
+      "frameworkAssemblies": {
+        "System.Runtime": "4.0.20.0"
+      }
+    },
+    "dnxcore50": {
+      "dependencies": {
+        "Microsoft.CSharp": "4.0.1-beta-23516",
+        "System.Collections": "4.0.11-beta-23516",
+        "System.Console": "4.0.0-beta-23516",
+        "System.Linq": "4.0.1-beta-23516",
+        "System.Threading": "4.0.11-beta-23516"
+      }
+    }
+  }
+}

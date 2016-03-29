@@ -1,0 +1,23 @@
+{
+  "version": "1.0.0-*",
+  "description": "",
+  "authors": [ "Christian" ],
+  "tags": [ "" ],
+  "projectUrl": "",
+  "licenseUrl": "",
+  "compilationOptions": {
+    "emitEntryPoint": true
+  },
+
+  "commands": {
+    "AsyncDelegate": "AsyncDelegate"
+  },
+
+  "dependencies": {
+
+  },
+
+  "frameworks": {
+    "net46": { }
+  }
+} 

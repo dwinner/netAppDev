@@ -1,0 +1,49 @@
+﻿{
+  "commands": {
+    "web": "Microsoft.AspNet.Server.Kestrel"
+  },
+  "compilationOptions": {
+    "emitEntryPoint": true
+  },
+  "dependencies": {
+    "Microsoft.AspNet.Hosting": "1.0.0-rc1-final",
+    "Microsoft.AspNet.Http.Abstractions": "1.0.0-rc1-final",
+    "Microsoft.AspNet.Http.Extensions": "1.0.0-rc1-final",
+    "Microsoft.AspNet.Http.Features": "1.0.0-rc1-final",
+    "Microsoft.AspNet.IISPlatformHandler": "1.0.0-rc1-final",
+    "Microsoft.AspNet.Server.Kestrel": "1.0.0-rc1-final",
+    "Microsoft.AspNet.Session": "1.0.0-rc1-final",
+    "Microsoft.AspNet.StaticFiles": "1.0.0-rc1-final",
+    "Microsoft.Extensions.Caching.Memory": "1.0.0-rc1-final",
+    "Microsoft.Extensions.Configuration": "1.0.0-rc1-final",
+    "Microsoft.Extensions.Configuration.Abstractions": "1.0.0-rc1-final",
+    "Microsoft.Extensions.Configuration.UserSecrets": "1.0.0-rc1-final",
+    "Microsoft.Extensions.Logging.Console": "1.0.0-rc1-final",
+    "Microsoft.Extensions.Logging.Debug": "1.0.0-rc1-final",
+    "Microsoft.Extensions.PlatformAbstractions": "1.0.0-rc1-final",
+    "Microsoft.Extensions.WebEncoders.Core": "1.0.0-rc1-final",
+    "System.Threading.Tasks": "4.0.11-beta-23516",
+    "Newtonsoft.Json": "8.0.2"
+  },
+  "exclude": [
+    "wwwroot",
+    "node_modules"
+  ],
+  "frameworks": {
+    "dnx46": {
+      "dependencies": {
+      }
+    },
+    "dnxcore50": {
+      "dependencies": {
+      }
+    }
+  },
+
+  "publishExclude": [
+    "**.user",
+    "**.vspscc"
+  ],
+  "userSecretsId": "aspnet5-WebSampleApp-20151215011720",
+  "version": "1.0.0-*"
+}
