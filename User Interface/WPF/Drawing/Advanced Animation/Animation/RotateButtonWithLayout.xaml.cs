@@ -3,22 +3,16 @@ using System.Windows.Controls;
 
 namespace Animation
 {
-   /// <summary>
-   /// Interaction logic for RotateButtonWithLayout.xaml
-   /// </summary>
-
-   public partial class RotateButtonWithLayout : System.Windows.Window
+   public partial class RotateButtonWithLayout
    {
-
       public RotateButtonWithLayout()
       {
          InitializeComponent();
       }
 
-      private void cmd_Clicked(object sender, RoutedEventArgs e)
+      private void OnClick(object sender, RoutedEventArgs e)
       {
-         lbl.Text = "You clicked: " + ((Button)e.OriginalSource).Content;
+         LblTextBlock.Text = string.Format("You clicked: {0}", ((Button) e.OriginalSource).Content);
       }
-
    }
 }
