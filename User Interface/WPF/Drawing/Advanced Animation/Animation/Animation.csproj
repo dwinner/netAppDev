@@ -103,6 +103,7 @@
     <Compile Include="BlurringButtons.xaml.cs">
       <DependentUpon>BlurringButtons.xaml</DependentUpon>
     </Compile>
+    <Compile Include="EllipseInfo.cs" />
     <Compile Include="FrameBasedAnimation.xaml.cs">
       <SubType>Code</SubType>
       <DependentUpon>FrameBasedAnimation.xaml</DependentUpon>

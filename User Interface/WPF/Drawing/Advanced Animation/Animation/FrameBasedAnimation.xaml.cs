@@ -3,35 +3,39 @@ using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
-using System.Windows.Shapes;
 
 namespace Animation
 {
-   /// <summary>
-   /// Interaction logic for FrameBasedAnimation.xaml
-   /// </summary>
-
-   public partial class FrameBasedAnimation : System.Windows.Window
+   public partial class FrameBasedAnimation : Window
    {
+      private const double AccelerationY = 0.1;
+      private const int MaxEllipses = 100;
+      private const int MaxStartingSpeed = 50;
+      private const int MinEllipses = 20;
+      private const int MinStartingSpeed = 1;
+      private const double SpeedRatio = 0.1;
+
+      private readonly List<EllipseInfo> _ellipses = new List<EllipseInfo>();
+
+      private bool _rendering;
 
       public FrameBasedAnimation()
       {
          InitializeComponent();
       }
 
-      private bool rendering = false;
-      private void cmdStart_Clicked(object sender, RoutedEventArgs e)
+      private void OnStart(object sender, RoutedEventArgs e)
       {
-         if (!rendering)
-         {
-            ellipses.Clear();
-            canvas.Children.Clear();
+         if (_rendering)
+            return;
 
-            CompositionTarget.Rendering += RenderFrame;
-            rendering = true;
-         }
+         _ellipses.Clear();
+         RawCanvas.Children.Clear();
+         CompositionTarget.Rendering += RenderFrame;
+         _rendering = true;
       }
-      private void cmdStop_Clicked(object sender, RoutedEventArgs e)
+
+      private void OnStop(object sender, RoutedEventArgs e)
       {
          StopRendering();
       }
@@ -39,63 +43,49 @@ namespace Animation
       private void StopRendering()
       {
          CompositionTarget.Rendering -= RenderFrame;
-         rendering = false;
+         _rendering = false;
       }
-
-      private List<EllipseInfo> ellipses = new List<EllipseInfo>();
-
-      private double accelerationY = 0.1;
-      private int minStartingSpeed = 1;
-      private int maxStartingSpeed = 50;
-      private double speedRatio = 0.1;
-      private int minEllipses = 20;
-      private int maxEllipses = 100;
-      private int ellipseRadius = 10;
 
       private void RenderFrame(object sender, EventArgs e)
       {
-         if (ellipses.Count == 0)
+         if (_ellipses.Count == 0)
          {
-            // Animation just started. Create the ellipses.
-            int halfCanvasWidth = (int)canvas.ActualWidth / 2;
+            // Animation just started. Create the _ellipses.
+            var halfCanvasWidth = (int) RawCanvas.ActualWidth/2;
 
-            Random rand = new Random();
-            int ellipseCount = rand.Next(minEllipses, maxEllipses + 1);
-            for (int i = 0; i < ellipseCount; i++)
+            var rand = new Random();
+            var ellipseCount = rand.Next(MinEllipses, MaxEllipses + 1);
+            for (var i = 0; i < ellipseCount; i++)
             {
-               Ellipse ellipse = new Ellipse();
-               ellipse.Fill = Brushes.LimeGreen;
-               ellipse.Width = ellipseRadius;
-               ellipse.Height = ellipseRadius;
+               var ellipse = EllipseInfo.CreateEllipse();
                Canvas.SetLeft(ellipse, halfCanvasWidth + rand.Next(-halfCanvasWidth, halfCanvasWidth));
                Canvas.SetTop(ellipse, 0);
-               canvas.Children.Add(ellipse);
-
-               EllipseInfo info = new EllipseInfo(ellipse, speedRatio * rand.Next(minStartingSpeed, maxStartingSpeed));
-               ellipses.Add(info);
+               RawCanvas.Children.Add(ellipse);
+               var info = new EllipseInfo(ellipse, SpeedRatio*rand.Next(MinStartingSpeed, MaxStartingSpeed));
+               _ellipses.Add(info);
             }
          }
          else
          {
-            for (int i = ellipses.Count - 1; i >= 0; i--)
+            for (var i = _ellipses.Count - 1; i >= 0; i--)
             {
-               EllipseInfo info = ellipses[i];
-               double top = Canvas.GetTop(info.Ellipse);
-               Canvas.SetTop(info.Ellipse, top + 1 * info.VelocityY);
+               var info = _ellipses[i];
+               var top = Canvas.GetTop(info.Ellipse);
+               Canvas.SetTop(info.Ellipse, top + 1*info.VelocityY);
 
-               if (top >= (canvas.ActualHeight - ellipseRadius * 2 - 10))
+               if (top >= RawCanvas.ActualHeight - EllipseInfo.EllipseRadius*2 - 10)
                {
                   // This circle has reached the bottom.
                   // Stop animating it.
-                  ellipses.Remove(info);
+                  _ellipses.Remove(info);
                }
                else
                {
                   // Increase the velocity.
-                  info.VelocityY += accelerationY;
+                  info.VelocityY += AccelerationY;
                }
 
-               if (ellipses.Count == 0)
+               if (_ellipses.Count == 0)
                {
                   // End the animation.
                   // There's no reason to keep calling this method
@@ -104,27 +94,6 @@ namespace Animation
                }
             }
          }
-      }
-   }
-
-   public class EllipseInfo
-   {
-      public Ellipse Ellipse
-      {
-         get;
-         set;
-      }
-
-      public double VelocityY
-      {
-         get;
-         set;
-      }
-
-      public EllipseInfo(Ellipse ellipse, double velocityY)
-      {
-         VelocityY = velocityY;
-         Ellipse = ellipse;
       }
    }
 }

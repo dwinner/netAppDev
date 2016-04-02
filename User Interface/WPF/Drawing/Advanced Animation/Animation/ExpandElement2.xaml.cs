@@ -3,22 +3,16 @@ using System.Windows;
 
 namespace Animation
 {
-   /// <summary>
-   /// Interaction logic for ExpandElement2.xaml
-   /// </summary>
-
-   public partial class ExpandElement2 : System.Windows.Window
+   public partial class ExpandElement2
    {
-
       public ExpandElement2()
       {
          InitializeComponent();
       }
 
-      private void storyboardCompleted(object sender, EventArgs e)
+      private void StoryboardCompleted(object sender, EventArgs e)
       {
-         rectangle.Visibility = Visibility.Collapsed;
+         Rectangle.Visibility = Visibility.Collapsed;
       }
-
    }
 }

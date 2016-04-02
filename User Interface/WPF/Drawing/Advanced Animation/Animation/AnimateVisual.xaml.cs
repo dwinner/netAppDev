@@ -1,17 +1,10 @@
-
 namespace Animation
 {
-   /// <summary>
-   /// Interaction logic for AnimateVisual.xaml
-   /// </summary>
-
-   public partial class AnimateVisual : System.Windows.Window
+   public partial class AnimateVisual
    {
-
       public AnimateVisual()
       {
          InitializeComponent();
       }
-
    }
 }

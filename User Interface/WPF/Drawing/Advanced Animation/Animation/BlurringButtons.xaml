@@ -3,15 +3,14 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="BlurringButtons" Height="300" Width="300">
     <Window.Resources>
-
         <Style TargetType="{x:Type Button}">
-            <Setter Property="HorizontalAlignment" Value="Center"></Setter>
-            <Setter Property="RenderTransformOrigin" Value="0.5,0.5"></Setter>
-            <Setter Property="Padding" Value="20,15"></Setter>
-            <Setter Property="Margin" Value="2"></Setter>
+            <Setter Property="HorizontalAlignment" Value="Center" />
+            <Setter Property="RenderTransformOrigin" Value="0.5,0.5" />
+            <Setter Property="Padding" Value="20,15" />
+            <Setter Property="Margin" Value="2" />
             <Setter Property="Effect">
                 <Setter.Value>
-                    <BlurEffect Radius="10"></BlurEffect>
+                    <BlurEffect Radius="10" />
                 </Setter.Value>
             </Setter>
             <Style.Triggers>
@@ -20,7 +19,7 @@
                         <BeginStoryboard>
                             <Storyboard>
                                 <DoubleAnimation Storyboard.TargetProperty="Effect.Radius"
-         To="0" Duration="0:0:0.4"></DoubleAnimation>
+                                                 To="0" Duration="0:0:0.4" />
                             </Storyboard>
                         </BeginStoryboard>
                     </EventTrigger.Actions>
@@ -31,21 +30,19 @@
                         <BeginStoryboard>
                             <Storyboard>
                                 <DoubleAnimation Storyboard.TargetProperty="Effect.Radius" To="10"
-        Duration="0:0:0.2"></DoubleAnimation>
+                                                 Duration="0:0:0.2" />
                             </Storyboard>
                         </BeginStoryboard>
                     </EventTrigger.Actions>
                 </EventTrigger>
-
             </Style.Triggers>
         </Style>
-
     </Window.Resources>
     <StackPanel Margin="5">
-        <Button>One</Button>
-        <Button>Two</Button>
-        <Button>Three</Button>
-        <Button>Four</Button>
-        <TextBlock Name="lbl" Margin="5"></TextBlock>
+        <Button Content="One"/>
+        <Button Content="Two"/>
+        <Button Content="Three"/>
+        <Button Content="Four"/>
+        <TextBlock Margin="5" />
     </StackPanel>
 </Window>
