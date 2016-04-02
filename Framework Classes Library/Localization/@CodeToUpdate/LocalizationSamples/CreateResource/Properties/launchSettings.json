@@ -1,8 +1,0 @@
-{
-  "profiles": {
-    "CreateResource": {
-      "commandName": "CreateResource",
-      "sdkVersion": "dnx-coreclr-win-x86.1.0.0-rc2-16343"
-    }
-  }
-}
