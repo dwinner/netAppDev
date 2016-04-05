@@ -1,18 +1,12 @@
-﻿using System.Windows.Controls;
-
-namespace BombDropper
+﻿namespace BombDropper
 {
-   public partial class Bomb : UserControl
+   public partial class Bomb
    {
       public Bomb()
       {
          InitializeComponent();
       }
 
-      public bool IsFalling
-      {
-         get;
-         set;
-      }
+      public bool IsFalling { get; set; }
    }
 }
