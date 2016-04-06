@@ -1,23 +1,17 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Documents;
 using System.Windows.Markup;
 using System.Xml;
 
-
 namespace ControlTemplateBrowser
-{
-   /// <summary>
-   /// Interaction logic for Window1.xaml
-   /// </summary>
-
-   public partial class Window1 : System.Windows.Window
+{  
+   public partial class Window1
    {
-
       public Window1()
       {
          InitializeComponent();
@@ -25,19 +19,14 @@ namespace ControlTemplateBrowser
 
       private void Window_Loaded(object sender, EventArgs e)
       {
-         Type controlType = typeof(Control);
-         List<Type> derivedTypes = new List<Type>();
+         var controlType = typeof (Control);
 
          // Search all the types in the assembly where the Control class is defined.
-         Assembly assembly = Assembly.GetAssembly(typeof(Control));
-         foreach (Type type in assembly.GetTypes())
-         {
-            // Only add a type of the list if it's a Control, a concrete class, and public.
-            if (type.IsSubclassOf(controlType) && !type.IsAbstract && type.IsPublic)
-            {
-               derivedTypes.Add(type);
-            }
-         }
+         var assembly = Assembly.GetAssembly(typeof (Control));
+         var derivedTypes =
+            assembly.GetTypes()
+               .Where(type => type.IsSubclassOf(controlType) && !type.IsAbstract && type.IsPublic)
+               .ToList();
 
          // Sort the types by type name.
          derivedTypes.Sort(new TypeComparer());
@@ -51,17 +40,17 @@ namespace ControlTemplateBrowser
          try
          {
             // Get the selected type.
-            Type type = (Type)lstTypes.SelectedItem;
+            var type = (Type) lstTypes.SelectedItem;
 
             // Instantiate the type.
-            ConstructorInfo info = type.GetConstructor(System.Type.EmptyTypes);
-            Control control = (Control)info.Invoke(null);
+            var info = type.GetConstructor(Type.EmptyTypes);
+            var control = (Control) info.Invoke(null);
 
-            Window win = control as Window;
+            var win = control as Window;
             if (win != null)
             {
                // Create the window (but keep it minimized).
-               win.WindowState = System.Windows.WindowState.Minimized;
+               win.WindowState = WindowState.Minimized;
                win.ShowInTaskbar = false;
                win.Show();
             }
@@ -73,13 +62,13 @@ namespace ControlTemplateBrowser
             }
 
             // Get the template.
-            ControlTemplate template = control.Template;
+            var template = control.Template;
 
             // Get the XAML for the template.
-            XmlWriterSettings settings = new XmlWriterSettings();
+            var settings = new XmlWriterSettings();
             settings.Indent = true;
-            StringBuilder sb = new StringBuilder();
-            XmlWriter writer = XmlWriter.Create(sb, settings);
+            var sb = new StringBuilder();
+            var writer = XmlWriter.Create(sb, settings);
             XamlWriter.Save(template, writer);
 
             // Display the template.
@@ -106,7 +95,7 @@ namespace ControlTemplateBrowser
    {
       public int Compare(Type x, Type y)
       {
-         return x.Name.CompareTo(y.Name);
+         return string.Compare(x.Name, y.Name, StringComparison.Ordinal);
       }
    }
 }
