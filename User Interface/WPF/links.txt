@@ -1,0 +1,7 @@
+Multitouch gestures: http://tinyurl.com/yawwhw2
+Multitouch drivers: http://multitouchvista.codeplex.com
+WPF Multitouch: http://multitouch.codeplex.com
+Prism Mvvm: http://compositewpf.codeplex.com
+Blend Behaviors: http://tinyurl.com/9kwdnsc
+Arithmetic operations in Xaml: http://tinyurl.com/y9lglyu
+WPF Shader Effects Library: http://codeplex.com/wpffx
