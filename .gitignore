@@ -96,8 +96,7 @@ publish/
 *.Publish.xml
 
 # NuGet Packages Directory
-## TODO: If you have NuGet Package Restore enabled, uncomment the next line
-#packages/
+packages/
 
 # Windows Azure Build Output
 csx
@@ -155,49 +154,10 @@ $RECYCLE.BIN/
 # Mac desktop service store files
 .DS_Store
 /ASP.NET/Client Dev/Pro-jQuery/.nuget
-/ASP.NET/Client Dev/Pro-jQuery/packages
-/Framework Classes Library/Concurrency/TPL. Dataflow/packages/Microsoft.Tpl.Dataflow.4.5.24
-/Framework Classes Library/Concurrency/TPL. Dataflow/packages/Microsoft.Tpl.Dataflow.4.5.11
-/+ Apps/Desktop/Analytic Trackers/packages
-/Core C#/Aop/packages
-/ASP.NET/Web Forms/DataBinding, Data Controls/packages
 *.DotSettings
-/ASP.NET/BundlingFeatures/packages
 /ASP.NET/BundlingFeatures/.vs/config
-/ASP.NET/WebAPI/Intro/packages
-/ASP.NET/ClientSide.Validation/packages
-/ASP.NET/WebAPI/Via.WebForms/packages
-/ASP.NET/Mobile Dev/packages
 /ASP.NET/Mobile Dev/.vs/config/applicationhost.config
 /ASP.NET/SignalR/Intro SignalR/.nuget
-/ASP.NET/SignalR/Intro SignalR/packages
-/ASP.NET/Client Dev/AngularJs/packages
-/ASP.NET/SignalR/Pro SignalR/packages
-/+ Apps/BackEnded/Adu.Bloodhound.BugFixer/packages
 /ASP.NET/SignalR/Pro SignalR/.vs/config/applicationhost.config
-/Art Of Testing/ComplexNumberNUnit/packages/NUnit.3.0.1
-/ASP.NET/SignalR/SupportedClients/packages
-/ASP.NET/SignalR/SignalR.Extensibility/packages
 /ASP.NET/SignalR/+ Examples/StockTicker/.vs/config
-/ASP.NET/SignalR/+ Examples/StockTicker/packages
-/Framework Classes Library/Compiler Services/Roslyn.Features/packages
-/Framework Classes Library/Compiler Services/Interception/packages/Mono.Cecil.0.9.6.1
-/Aspect Oriented Pro/PostSharp.Features/packages
-/Aspect Oriented Pro/Aop.InPractice/packages/PostSharp.4.2.17
-/Aspect Oriented Pro/Aop.InPractice/packages
 /Aspect Oriented Pro/Aop.InPractice/.vs/config
-/IoC Features/packages
-/ASP.NET/SignalR/+ Examples/GroupBrush/packages
-Algorithms/packages/NUnit.3.0.1/CHANGES.txt
-Algorithms/packages/NUnit.3.0.1/lib/dotnet/nunit.framework.xml
-Algorithms/packages/NUnit.3.0.1/lib/net20/nunit.framework.xml
-Algorithms/packages/NUnit.3.0.1/lib/net40/nunit.framework.xml
-Algorithms/packages/NUnit.3.0.1/lib/net45/nunit.framework.xml
-Algorithms/packages/NUnit.3.0.1/lib/portable-net45+win8+wp8+wpa81+Xamarin.Mac+MonoAndroid10+MonoTouch10+Xamarin.iOS10/nunit.framework.xml
-Algorithms/packages/NUnit.3.0.1/LICENSE.txt
-Algorithms/packages/NUnit.3.0.1/NOTICES.txt
-Algorithms/packages/NUnit.3.0.1/NUnit.3.0.1.nupkg
-Algorithms/packages/repositories.config
-/Aspect Oriented Pro/Aop.DevelopingAspects/packages/PostSharp.4.1.32
-/Aspect Oriented Pro/Aop.DevelopingAspects/packages/PostSharp.4.2.18
-/Core C#/LINQ/LINQ. Thinking In/MoreLinq/packages/morelinq.1.4.0
