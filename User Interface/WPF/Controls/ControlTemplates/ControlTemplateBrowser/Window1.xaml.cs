@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -9,7 +8,7 @@ using System.Windows.Markup;
 using System.Xml;
 
 namespace ControlTemplateBrowser
-{  
+{
    public partial class Window1
    {
       public Window1()
@@ -19,17 +18,17 @@ namespace ControlTemplateBrowser
 
       private void OnWindowLoaded(object sender, EventArgs e)
       {
-         var controlType = typeof (Control);
+         var controlType = typeof(Control);
 
          // Search all the types in the assembly where the Control class is defined.
-         var assembly = Assembly.GetAssembly(typeof (Control));
+         var assembly = Assembly.GetAssembly(typeof(Control));
          var derivedTypes =
             assembly.GetTypes()
                .Where(type => type.IsSubclassOf(controlType) && !type.IsAbstract && type.IsPublic)
                .ToList();
 
          derivedTypes.Sort(
-            (firstType, secondType) => string.Compare(firstType.Name, secondType.Name, StringComparison.Ordinal));         
+            (firstType, secondType) => string.Compare(firstType.Name, secondType.Name, StringComparison.Ordinal));
 
          // Show the list of types.
          TypesListbox.ItemsSource = derivedTypes;
@@ -40,12 +39,14 @@ namespace ControlTemplateBrowser
          try
          {
             // Get the selected type.
-            var type = (Type) TypesListbox.SelectedItem;
+            var selectedTypeItem = (Type)TypesListbox.SelectedItem;
 
             // Instantiate the type.
-            var info = type.GetConstructor(Type.EmptyTypes);
-            var control = (Control) info.Invoke(null);
+            var defaultCtorInfo = selectedTypeItem.GetConstructor(Type.EmptyTypes);
+            if (defaultCtorInfo == null)
+               return;
 
+            var control = (Control)defaultCtorInfo.Invoke(null);
             var win = control as Window;
             if (win != null)
             {
@@ -65,14 +66,13 @@ namespace ControlTemplateBrowser
             var template = control.Template;
 
             // Get the XAML for the template.
-            var settings = new XmlWriterSettings();
-            settings.Indent = true;
-            var sb = new StringBuilder();
-            var writer = XmlWriter.Create(sb, settings);
+            var settings = new XmlWriterSettings { Indent = true };
+            var xamlStrBuilder = new StringBuilder();
+            var writer = XmlWriter.Create(xamlStrBuilder, settings);
             XamlWriter.Save(template, writer);
 
             // Display the template.
-            TemplateTextbox.Text = sb.ToString();
+            TemplateTextbox.Text = xamlStrBuilder.ToString();
 
             // Remove the control from the MainGrid.
             if (win != null)
@@ -86,16 +86,8 @@ namespace ControlTemplateBrowser
          }
          catch (Exception err)
          {
-            TemplateTextbox.Text = "<< Error generating template: " + err.Message + ">>";
+            TemplateTextbox.Text = string.Format("<< Error generating template: {0}>>", err.Message);
          }
-      }
-   }
-
-   public class TypeComparer : IComparer<Type>
-   {
-      public int Compare(Type x, Type y)
-      {
-         return string.Compare(x.Name, y.Name, StringComparison.Ordinal);
       }
    }
 }

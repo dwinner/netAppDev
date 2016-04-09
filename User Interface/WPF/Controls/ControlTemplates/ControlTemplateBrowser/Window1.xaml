@@ -10,6 +10,5 @@
         <ListBox DisplayMemberPath="Name" Name="TypesListbox" SelectionChanged="OnTypeSelectionChanged" />
         <TextBox Grid.Column="1" Name="TemplateTextbox" TextWrapping="Wrap" VerticalScrollBarVisibility="Visible"
                  FontFamily="Consolas" />
-
     </Grid>
 </Window>

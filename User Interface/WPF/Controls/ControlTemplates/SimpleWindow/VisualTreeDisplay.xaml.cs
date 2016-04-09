@@ -4,13 +4,8 @@ using System.Windows.Media;
 
 namespace SimpleWindow
 {
-   /// <summary>
-   /// Interaction logic for VisualTreeDisplay.xaml
-   /// </summary>
-
-   public partial class VisualTreeDisplay : System.Windows.Window
+   public partial class VisualTreeDisplay
    {
-
       public VisualTreeDisplay()
       {
          InitializeComponent();
@@ -19,24 +14,26 @@ namespace SimpleWindow
       public void ShowVisualTree(DependencyObject element)
       {
          // Clear the tree.
-         treeElements.Items.Clear();
+         ElementsTreeview.Items.Clear();
 
          // Start processing elements, begin at the root.
          ProcessElement(element, null);
       }
 
-      private void ProcessElement(DependencyObject element, TreeViewItem previousItem)
+      private void ProcessElement(DependencyObject element, ItemsControl previousItem)
       {
          // Create a TreeViewItem for the current element.
-         TreeViewItem item = new TreeViewItem();
-         item.Header = element.GetType().Name;
-         item.IsExpanded = true;
+         var item = new TreeViewItem
+         {
+            Header = element.GetType().Name,
+            IsExpanded = true
+         };
 
          // Check whether this item should be added to the root of the tree
          //(if it's the first item), or nested under another item.
          if (previousItem == null)
          {
-            treeElements.Items.Add(item);
+            ElementsTreeview.Items.Add(item);
          }
          else
          {
@@ -44,7 +41,7 @@ namespace SimpleWindow
          }
 
          // Check if this element contains other elements.
-         for (int i = 0; i < VisualTreeHelper.GetChildrenCount(element); i++)
+         for (var i = 0; i < VisualTreeHelper.GetChildrenCount(element); i++)
          {
             // Process each contained element recursively.
             ProcessElement(VisualTreeHelper.GetChild(element, i), item);
