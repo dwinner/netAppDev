@@ -17,7 +17,7 @@ namespace ControlTemplateBrowser
          InitializeComponent();
       }
 
-      private void Window_Loaded(object sender, EventArgs e)
+      private void OnWindowLoaded(object sender, EventArgs e)
       {
          var controlType = typeof (Control);
 
@@ -28,19 +28,19 @@ namespace ControlTemplateBrowser
                .Where(type => type.IsSubclassOf(controlType) && !type.IsAbstract && type.IsPublic)
                .ToList();
 
-         // Sort the types by type name.
-         derivedTypes.Sort(new TypeComparer());
+         derivedTypes.Sort(
+            (firstType, secondType) => string.Compare(firstType.Name, secondType.Name, StringComparison.Ordinal));         
 
          // Show the list of types.
-         lstTypes.ItemsSource = derivedTypes;
+         TypesListbox.ItemsSource = derivedTypes;
       }
 
-      private void lstTypes_SelectionChanged(object sender, SelectionChangedEventArgs e)
+      private void OnTypeSelectionChanged(object sender, SelectionChangedEventArgs e)
       {
          try
          {
             // Get the selected type.
-            var type = (Type) lstTypes.SelectedItem;
+            var type = (Type) TypesListbox.SelectedItem;
 
             // Instantiate the type.
             var info = type.GetConstructor(Type.EmptyTypes);
@@ -56,9 +56,9 @@ namespace ControlTemplateBrowser
             }
             else
             {
-               // Add it to the grid (but keep it hidden).
+               // Add it to the MainGrid (but keep it hidden).
                control.Visibility = Visibility.Collapsed;
-               grid.Children.Add(control);
+               MainGrid.Children.Add(control);
             }
 
             // Get the template.
@@ -72,21 +72,21 @@ namespace ControlTemplateBrowser
             XamlWriter.Save(template, writer);
 
             // Display the template.
-            txtTemplate.Text = sb.ToString();
+            TemplateTextbox.Text = sb.ToString();
 
-            // Remove the control from the grid.
+            // Remove the control from the MainGrid.
             if (win != null)
             {
                win.Close();
             }
             else
             {
-               grid.Children.Remove(control);
+               MainGrid.Children.Remove(control);
             }
          }
          catch (Exception err)
          {
-            txtTemplate.Text = "<< Error generating template: " + err.Message + ">>";
+            TemplateTextbox.Text = "<< Error generating template: " + err.Message + ">>";
          }
       }
    }
