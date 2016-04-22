@@ -1,38 +1,30 @@
-using System;
-using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 
-
 namespace CustomControlsClient
 {
-   /// <summary>
-   /// Interaction logic for Window1.xaml
-   /// </summary>
-
-   public partial class Menu : Window
+   public partial class Menu
    {
-
       public Menu()
       {
          InitializeComponent();
       }
 
-      private void ButtonClick(object sender, RoutedEventArgs e)
+      void ButtonClick(object sender, RoutedEventArgs e)
       {
          // Get the current button.
-         Button cmd = (Button)e.OriginalSource;
+         var cmd = (Button) e.OriginalSource;
 
          // Create an instance of the window named
          // by the current button.
-         Type type = this.GetType();
-         Assembly assembly = type.Assembly;
+         var type = GetType();
+         var assembly = type.Assembly;
 
-         Window win = (Window)assembly.CreateInstance(
-             type.Namespace + "." + cmd.Content);
+         var windowInstance = (Window) assembly.CreateInstance(string.Format("{0}.{1}", type.Namespace, cmd.Content));
 
          // Show the window.
-         win.ShowDialog();
+         if (windowInstance != null)
+            windowInstance.ShowDialog();
       }
    }
 }

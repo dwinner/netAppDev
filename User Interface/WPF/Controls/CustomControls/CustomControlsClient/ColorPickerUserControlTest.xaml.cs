@@ -3,31 +3,27 @@ using System.Windows.Media;
 
 namespace CustomControlsClient
 {
-   /// <summary>
-   /// Interaction logic for ColorPickerUserControlTest.xaml
-   /// </summary>
-
-   public partial class ColorPickerUserControlTest : System.Windows.Window
+   public partial class ColorPickerUserControlTest
    {
-
       public ColorPickerUserControlTest()
       {
          InitializeComponent();
       }
 
-      private void cmdGet_Click(object sender, RoutedEventArgs e)
+      void OnGetClick(object sender, RoutedEventArgs e)
       {
          MessageBox.Show(colorPicker.Color.ToString());
       }
-      private void cmdSet_Click(object sender, RoutedEventArgs e)
+
+      void OnSetClick(object sender, RoutedEventArgs e)
       {
          colorPicker.Color = Colors.Beige;
       }
 
-      private void colorPicker_ColorChanged(object sender, RoutedPropertyChangedEventArgs<Color> e)
+      void OnColorChanged(object sender, RoutedPropertyChangedEventArgs<Color> e)
       {
-         if (lblColor != null) lblColor.Text = "The new color is " + e.NewValue.ToString();
+         if (lblColor != null)
+            lblColor.Text = string.Format("The new color is {0}", e.NewValue);
       }
-
    }
 }
