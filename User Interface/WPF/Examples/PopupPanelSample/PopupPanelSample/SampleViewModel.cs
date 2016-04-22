@@ -5,9 +5,9 @@ namespace PopupPanelSample
 {
    public sealed class SampleViewModel : INotifyPropertyChanged
    {
-      public SampleViewModel( )
+      public SampleViewModel()
       {
-         PopupContentOptions = new List< object >
+         PopupContentOptions = new List<object>
          {
             new Address(),
             new Phone(),
@@ -19,7 +19,7 @@ namespace PopupPanelSample
 
       object popupContent;
       bool isPopupVisible;
-      List< object > popupContentOptions;
+      List<object> popupContentOptions;
 
       #endregion
 
@@ -30,23 +30,23 @@ namespace PopupPanelSample
          get { return popupContent; }
          set
          {
-            if ( value != popupContent )
+            if (value != popupContent)
             {
                popupContent = value;
-               OnPropertyChanged( "PopupContent" );
+               OnPropertyChanged("PopupContent");
             }
          }
       }
 
-      public List< object > PopupContentOptions
+      public List<object> PopupContentOptions
       {
          get { return popupContentOptions; }
          set
          {
-            if ( value != popupContentOptions )
+            if (value != popupContentOptions)
             {
                popupContentOptions = value;
-               OnPropertyChanged( "PopupContentOptions" );
+               OnPropertyChanged("PopupContentOptions");
             }
          }
       }
@@ -56,10 +56,10 @@ namespace PopupPanelSample
          get { return isPopupVisible; }
          set
          {
-            if ( value != isPopupVisible )
+            if (value != isPopupVisible)
             {
                isPopupVisible = value;
-               OnPropertyChanged( "IsPopupVisible" );
+               OnPropertyChanged("IsPopupVisible");
             }
          }
       }
@@ -70,13 +70,13 @@ namespace PopupPanelSample
 
       public event PropertyChangedEventHandler PropertyChanged;
 
-      void OnPropertyChanged( string propertyName )
+      void OnPropertyChanged(string propertyName)
       {
          var handler = PropertyChanged;
-         if ( handler != null )
+         if (handler != null)
          {
-            var e = new PropertyChangedEventArgs( propertyName );
-            handler( this, e );
+            var e = new PropertyChangedEventArgs(propertyName);
+            handler(this, e);
          }
       }
 

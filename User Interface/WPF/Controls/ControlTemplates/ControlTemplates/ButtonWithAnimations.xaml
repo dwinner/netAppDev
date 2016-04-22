@@ -5,13 +5,13 @@
     <Window.Resources>
         <ControlTemplate x:Key="ButtonTemplate" TargetType="{x:Type Button}">
             <Border BorderBrush="Orange" BorderThickness="3" CornerRadius="2"
-       Background="Red" TextBlock.Foreground="White" Name="Border">
+                    Background="Red" TextBlock.Foreground="White" Name="Border">
                 <Grid>
                     <Rectangle Name="FocusCue" Visibility="Hidden" Stroke="Black"
-           StrokeThickness="1" StrokeDashArray="1 2"
-           SnapsToDevicePixels="True" ></Rectangle>
+                               StrokeThickness="1" StrokeDashArray="1 2"
+                               SnapsToDevicePixels="True" />
                     <ContentPresenter RecognizesAccessKey="True"
-         Margin="{TemplateBinding Padding}"></ContentPresenter>
+                                      Margin="{TemplateBinding Padding}" />
                 </Grid>
             </Border>
             <ControlTemplate.Triggers>
@@ -19,14 +19,15 @@
                     <BeginStoryboard>
                         <Storyboard>
                             <ColorAnimation Storyboard.TargetName="Border" Storyboard.TargetProperty="Background.Color"
-                                            To="Blue" Duration="0:0:1" AutoReverse="True" RepeatBehavior="Forever"></ColorAnimation>
+                                            To="Blue" Duration="0:0:1" AutoReverse="True" RepeatBehavior="Forever" />
                         </Storyboard>
                     </BeginStoryboard>
                 </EventTrigger>
                 <EventTrigger RoutedEvent="MouseLeave">
                     <BeginStoryboard>
                         <Storyboard>
-                            <ColorAnimation Storyboard.TargetName="Border" Storyboard.TargetProperty="Background.Color" Duration="0:0:0.5"></ColorAnimation>
+                            <ColorAnimation Storyboard.TargetName="Border" Storyboard.TargetProperty="Background.Color"
+                                            Duration="0:0:0.5" />
                         </Storyboard>
                     </BeginStoryboard>
                 </EventTrigger>
@@ -37,19 +38,14 @@
                 <Trigger Property="IsKeyboardFocused" Value="True">
                     <Setter TargetName="FocusCue" Property="Visibility" Value="Visible" />
                 </Trigger>
-
-
             </ControlTemplate.Triggers>
         </ControlTemplate>
-
     </Window.Resources>
+    
     <StackPanel Margin="10">
-        <Button  Margin="10" Padding="5" Template="{StaticResource ButtonTemplate}" Name="cmdOne"
-              >
-            A Simple Button with a Custom Template
-        </Button>
-        <Button Margin="10" Padding="5" Template="{StaticResource ButtonTemplate}" Name="cmdTwo"
-              >Another Button with a Custom Template</Button>
-
+        <Button Margin="10" Padding="5" Template="{StaticResource ButtonTemplate}"
+                Content="A Simple Button with a Custom Template" />
+        <Button Margin="10" Padding="5" Template="{StaticResource ButtonTemplate}"
+                Content="Another Button with a Custom Template" />
     </StackPanel>
 </Window>

@@ -1,17 +1,10 @@
-
 namespace ControlTemplates
 {
-   /// <summary>
-   /// Interaction logic for ButtonTemplate.xaml
-   /// </summary>
-
-   public partial class ButtonTemplate : System.Windows.Window
+   public partial class ButtonTemplate
    {
-
       public ButtonTemplate()
       {
          InitializeComponent();
       }
-
    }
 }

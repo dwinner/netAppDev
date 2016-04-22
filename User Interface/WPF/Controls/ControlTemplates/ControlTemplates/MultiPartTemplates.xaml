@@ -1,22 +1,20 @@
 ﻿<Window x:Class="ControlTemplates.MultiPartTemplates"
-    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    Title="MultiPartTemplate" Height="239" Width="248"
-    >
-  <Window.Resources>
-    
-  </Window.Resources>
-    
-      <ListBox Margin="5" ScrollViewer.CanContentScroll="False">
-            <ListBox.Resources>
-                <ResourceDictionary>
-                    <ResourceDictionary.MergedDictionaries>
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="MultiPartTemplate" Height="239" Width="248">
+    <Window.Resources>
+    </Window.Resources>
 
-                        <ResourceDictionary Source="Resources\ListBox.xaml"></ResourceDictionary>
-                    </ResourceDictionary.MergedDictionaries>
-                </ResourceDictionary>
-            </ListBox.Resources>
-                <ListBoxItem>One</ListBoxItem>
+    <ListBox Margin="5" ScrollViewer.CanContentScroll="False">        
+        <ListBox.Resources>
+            <ResourceDictionary>
+                <ResourceDictionary.MergedDictionaries>
+                    <ResourceDictionary Source="Resources\ListBox.xaml" />
+                </ResourceDictionary.MergedDictionaries>
+            </ResourceDictionary>
+        </ListBox.Resources>
+        
+        <ListBoxItem>One</ListBoxItem>
         <ListBoxItem>Two</ListBoxItem>
         <ListBoxItem>Three</ListBoxItem>
         <ListBoxItem>Four</ListBoxItem>
@@ -28,7 +26,5 @@
         <ListBoxItem>Ten</ListBoxItem>
         <ListBoxItem>Eleven</ListBoxItem>
         <ListBoxItem>Twelve</ListBoxItem>
-      </ListBox>
-    
-
+    </ListBox>
 </Window>

@@ -1,10 +1,8 @@
 ﻿using System;
 using System.ComponentModel;
-using System.Globalization;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
@@ -24,17 +22,19 @@ namespace PopupPanelSample
    {
       #region Constructors
 
-      public PopupPanel( )
+      public PopupPanel()
       {
          InitializeComponent();
-         DataContextChanged += Popup_DataContextChanged;
+         DataContextChanged += OnPopupDataContextChanged;
 
          // Register a PropertyChanged event on IsPopupVisible
-         var dpd = DependencyPropertyDescriptor.FromProperty( IsPopupVisibleProperty, typeof ( PopupPanel ) );
-         if ( dpd != null ) dpd.AddValueChanged( this, delegate { IsPopupVisible_Changed(); } );
+         var propertyDescriptor = DependencyPropertyDescriptor.FromProperty(IsPopupVisibleProperty, typeof (PopupPanel));
+         if (propertyDescriptor != null)
+            propertyDescriptor.AddValueChanged(this, delegate { OnIsPopupVisibleChanged(); });
 
-         dpd = DependencyPropertyDescriptor.FromProperty( ContentProperty, typeof ( PopupPanel ) );
-         if ( dpd != null ) dpd.AddValueChanged( this, delegate { Content_Changed(); } );
+         propertyDescriptor = DependencyPropertyDescriptor.FromProperty(ContentProperty, typeof (PopupPanel));
+         if (propertyDescriptor != null)
+            propertyDescriptor.AddValueChanged(this, delegate { Content_Changed(); });
       }
 
       #endregion // Constructors
@@ -51,43 +51,42 @@ namespace PopupPanelSample
       #region Property Change Events
 
       // When DataContext changes
-      void Popup_DataContextChanged( object sender, DependencyPropertyChangedEventArgs e )
+      void OnPopupDataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
       {
          DisableAnimationWhileLoading();
       }
 
       // When Content Property changes
-      void Content_Changed( )
+      void Content_Changed()
       {
          DisableAnimationWhileLoading();
       }
 
       // Sets an IsLoading flag so storyboard doesn't run while loading
-      void DisableAnimationWhileLoading( )
+      void DisableAnimationWhileLoading()
       {
          isLoading = true;
-         Dispatcher.BeginInvoke( DispatcherPriority.Render,
-            new Action( delegate { isLoading = false; } ) );
+         Dispatcher.BeginInvoke(DispatcherPriority.Render, new Action(delegate { isLoading = false; }));
       }
 
       // Run storyboard when IsPopupVisible property changes to true
-      void IsPopupVisible_Changed( )
+      void OnIsPopupVisibleChanged()
       {
-         var isShown = GetIsPopupVisible( this );
+         var isShown = GetIsPopupVisible(this);
 
-         if ( isShown && !isLoading )
+         if (isShown && !isLoading)
          {
-            var panel = FindChild< FrameworkElement >( this, "PopupPanelContent" );
-            if ( panel != null )
+            var panel = VisualHelpers.FindChild<FrameworkElement>(this, "PopupPanelContent");
+            if (panel != null)
             {
                // Run Storyboard
-               var animation = ( Storyboard ) panel.FindResource( "ShowEditPanelStoryboard" );
+               var animation = (Storyboard) panel.FindResource("ShowEditPanelStoryboard");
                animation.Begin();
             }
          }
 
          // When hiding popup, clear the LastFocusControl
-         if ( !isShown )
+         if (!isShown)
          {
             lastFocusControl = null;
          }
@@ -98,100 +97,99 @@ namespace PopupPanelSample
       #region Popup Events
 
       // When visibility is changed, set the default focus
-      void OnVisibleChanged( object sender, DependencyPropertyChangedEventArgs e )
+      void OnVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
       {
-         if ( ( bool ) e.NewValue )
-         {
-            var popupControl = FindChild< ContentControl >( this, "PopupContentControl" );
-            Dispatcher.BeginInvoke( DispatcherPriority.Render,
-               new Action( delegate
-               {
-                  // Verify object really is visible because sometimes it's not once we switch to Render
-                  if ( !GetIsPopupVisible( this ) )
-                  {
-                     return;
-                  }
+         if (!(bool) e.NewValue)
+            return;
 
-                  if ( lastFocusControl != null && lastFocusControl.Focusable )
+         var popupControl = VisualHelpers.FindChild<ContentControl>(this, "PopupContentControl");
+         Dispatcher.BeginInvoke(DispatcherPriority.Render,
+            new Action(delegate
+            {
+               // Verify object really is visible because sometimes it's not once we switch to Render
+               if (!GetIsPopupVisible(this))
+               {
+                  return;
+               }
+
+               if (lastFocusControl != null && lastFocusControl.Focusable)
+               {
+                  lastFocusControl.Focus();
+               }
+               else
+               {
+                  lastFocusControl = VisualHelpers.FindChild<UIElement>(popupControl, "PART_DefaultFocusControl");
+
+                  // If we can find the part named PART_DefaultFocusControl, set focus to it 
+                  if (lastFocusControl != null && lastFocusControl.Focusable)
                   {
                      lastFocusControl.Focus();
                   }
                   else
                   {
-                     lastFocusControl = FindChild< UIElement >( popupControl, "PART_DefaultFocusControl" );
+                     lastFocusControl = VisualHelpers.FindFirstFocusableChild(popupControl);
 
-                     // If we can find the part named PART_DefaultFocusControl, set focus to it 
-                     if ( lastFocusControl != null && lastFocusControl.Focusable )
+                     // If no DefaultFocusControl found, try and set focus to the first focusable element found in popup 
+                     if (lastFocusControl != null)
                      {
                         lastFocusControl.Focus();
                      }
                      else
                      {
-                        lastFocusControl = FindFirstFocusableChild( popupControl );
-
-                        // If no DefaultFocusControl found, try and set focus to the first focusable element found in popup 
-                        if ( lastFocusControl != null )
-                        {
-                           lastFocusControl.Focus();
-                        }
-                        else
-                        {
-                           // Just give the Popup UserControl focus so it can handle keyboard input
-                           popupControl.Focus();
-                        }
+                        // Just give the Popup UserControl focus so it can handle keyboard input
+                        popupControl.Focus();
                      }
                   }
                }
-                  )
-               );
-         }
+            }
+               )
+            );
       }
 
       // When popup loses focus but isn't hidden, store the last element that had focus so we can put it back later
-      void OnLostFocus( object sender, RoutedEventArgs e )
+      void OnLostFocus(object sender, RoutedEventArgs e)
       {
-         var focusScope = FocusManager.GetFocusScope( this );
-         lastFocusControl = FocusManager.GetFocusedElement( focusScope ) as UIElement;
+         var focusScope = FocusManager.GetFocusScope(this);
+         lastFocusControl = FocusManager.GetFocusedElement(focusScope) as UIElement;
       }
 
       // Keyboard Events
-      void OnPreviewKeyDown( object sender, KeyEventArgs e )
+      void OnPreviewKeyDown(object sender, KeyEventArgs e)
       {
-         if ( e.Key == Key.Escape )
+         var popup = VisualHelpers.FindAncester<PopupPanel>((DependencyObject) sender);
+         var cmd = GetPopupEscapeKeyCommand(popup);
+
+         switch (e.Key)
          {
-            var popup = FindAncester< PopupPanel >( ( DependencyObject ) sender );
-            var cmd = GetPopupEscapeKeyCommand( popup );
-            if ( cmd != null && cmd.CanExecute( null ) )
-            {
-               cmd.Execute( null );
-               e.Handled = true;
-            }
-            else
-            {
-               // By default the Escape Key closes the popup when pressed
-               var expression = GetBindingExpression( IsPopupVisibleProperty );
-               if ( expression != null )
+            case Key.Escape:
+               if (cmd != null && cmd.CanExecute(null))
                {
-                  var dataType = expression.DataItem.GetType();
-                  dataType.GetProperties().Single( x => x.Name == expression.ParentBinding.Path.Path )
-                     .SetValue( expression.DataItem, false, null );
-               }
-            }
-         }
-         else if ( e.Key == Key.Enter )
-         {
-            // Don't want to run Enter command if focus is in a TextBox with AcceptsReturn = True
-            if ( !( e.KeyboardDevice.FocusedElement is TextBox &&
-                    ( ( TextBox ) e.KeyboardDevice.FocusedElement ).AcceptsReturn ) )
-            {
-               var popup = FindAncester< PopupPanel >( ( DependencyObject ) sender );
-               var cmd = GetPopupEnterKeyCommand( popup );
-               if ( cmd != null && cmd.CanExecute( null ) )
-               {
-                  cmd.Execute( null );
+                  cmd.Execute(null);
                   e.Handled = true;
                }
-            }
+               else
+               {
+                  // By default the Escape Key closes the popup when pressed
+                  var expression = GetBindingExpression(IsPopupVisibleProperty);
+                  if (expression != null)
+                  {
+                     var dataType = expression.DataItem.GetType();
+                     dataType.GetProperties().Single(x => x.Name == expression.ParentBinding.Path.Path)
+                        .SetValue(expression.DataItem, false, null);
+                  }
+               }
+               break;
+
+            case Key.Enter:
+               // Don't want to run Enter command if focus is in a TextBox with AcceptsReturn = True
+               if (
+                  !(e.KeyboardDevice.FocusedElement is TextBox && ((TextBox) e.KeyboardDevice.FocusedElement).AcceptsReturn) &&
+                  cmd != null && cmd.CanExecute(null))
+               {
+                  cmd.Execute(null);
+                  e.Handled = true;
+               }
+               break;
          }
       }
 
@@ -206,30 +204,30 @@ namespace PopupPanelSample
       #region PopupParent
 
       public static readonly DependencyProperty PopupParentProperty =
-         DependencyProperty.Register( "PopupParent", typeof ( FrameworkElement ),
-            typeof ( PopupPanel ), new PropertyMetadata( null, null, CoercePopupParent ) );
+         DependencyProperty.Register("PopupParent", typeof (FrameworkElement),
+            typeof (PopupPanel), new PropertyMetadata(null, null, CoercePopupParent));
 
-      static object CoercePopupParent( DependencyObject obj, object value )
+      static object CoercePopupParent(DependencyObject obj, object value)
       {
          // If PopupParent is null, return the Window object
-         return value ?? FindAncester< Window >( obj );
+         return value ?? VisualHelpers.FindAncester<Window>(obj);
       }
 
       public FrameworkElement PopupParent
       {
-         get { return ( FrameworkElement ) GetValue( PopupParentProperty ); }
-         set { SetValue( PopupParentProperty, value ); }
+         get { return (FrameworkElement) GetValue(PopupParentProperty); }
+         set { SetValue(PopupParentProperty, value); }
       }
 
       // Providing Get/Set methods makes them show up in the XAML designer
-      public static FrameworkElement GetPopupParent( DependencyObject obj )
+      public static FrameworkElement GetPopupParent(DependencyObject obj)
       {
-         return ( FrameworkElement ) obj.GetValue( PopupParentProperty );
+         return (FrameworkElement) obj.GetValue(PopupParentProperty);
       }
 
-      public static void SetPopupParent( DependencyObject obj, FrameworkElement value )
+      public static void SetPopupParent(DependencyObject obj, FrameworkElement value)
       {
-         obj.SetValue( PopupParentProperty, value );
+         obj.SetValue(PopupParentProperty, value);
       }
 
       #endregion
@@ -239,17 +237,17 @@ namespace PopupPanelSample
       #region IsPopupVisibleProperty
 
       public static readonly DependencyProperty IsPopupVisibleProperty =
-         DependencyProperty.Register( "IsPopupVisible", typeof ( bool ),
-            typeof ( PopupPanel ), new PropertyMetadata( false, null ) );
+         DependencyProperty.Register("IsPopupVisible", typeof (bool),
+            typeof (PopupPanel), new PropertyMetadata(false, null));
 
-      public static bool GetIsPopupVisible( DependencyObject obj )
+      public static bool GetIsPopupVisible(DependencyObject obj)
       {
-         return ( bool ) obj.GetValue( IsPopupVisibleProperty );
+         return (bool) obj.GetValue(IsPopupVisibleProperty);
       }
 
-      public static void SetIsPopupVisible( DependencyObject obj, bool value )
+      public static void SetIsPopupVisible(DependencyObject obj, bool value)
       {
-         obj.SetValue( IsPopupVisibleProperty, value );
+         obj.SetValue(IsPopupVisibleProperty, value);
       }
 
       #endregion // IsPopupVisibleProperty
@@ -259,17 +257,17 @@ namespace PopupPanelSample
       #region BackgroundOpacityProperty
 
       public static readonly DependencyProperty BackgroundOpacityProperty =
-         DependencyProperty.Register( "BackgroundOpacity", typeof ( double ),
-            typeof ( PopupPanel ), new PropertyMetadata( .5, null ) );
+         DependencyProperty.Register("BackgroundOpacity", typeof (double),
+            typeof (PopupPanel), new PropertyMetadata(.5, null));
 
-      public static double GetBackgroundOpacity( DependencyObject obj )
+      public static double GetBackgroundOpacity(DependencyObject obj)
       {
-         return ( double ) obj.GetValue( BackgroundOpacityProperty );
+         return (double) obj.GetValue(BackgroundOpacityProperty);
       }
 
-      public static void SetBackgroundOpacity( DependencyObject obj, double value )
+      public static void SetBackgroundOpacity(DependencyObject obj, double value)
       {
-         obj.SetValue( BackgroundOpacityProperty, value );
+         obj.SetValue(BackgroundOpacityProperty, value);
       }
 
       #endregion ShowBackgroundProperty
@@ -279,17 +277,17 @@ namespace PopupPanelSample
       #region PopupEnterKeyCommandProperty
 
       public static readonly DependencyProperty PopupEnterKeyCommandProperty =
-         DependencyProperty.RegisterAttached( "PopupEnterKeyCommand", typeof ( ICommand ),
-            typeof ( PopupPanel ), new PropertyMetadata( null, null ) );
+         DependencyProperty.RegisterAttached("PopupEnterKeyCommand", typeof (ICommand),
+            typeof (PopupPanel), new PropertyMetadata(null, null));
 
-      public static ICommand GetPopupEnterKeyCommand( DependencyObject obj )
+      public static ICommand GetPopupEnterKeyCommand(DependencyObject obj)
       {
-         return ( ICommand ) obj.GetValue( PopupEnterKeyCommandProperty );
+         return (ICommand) obj.GetValue(PopupEnterKeyCommandProperty);
       }
 
-      public static void SetPopupEnterKeyCommand( DependencyObject obj, ICommand value )
+      public static void SetPopupEnterKeyCommand(DependencyObject obj, ICommand value)
       {
-         obj.SetValue( PopupEnterKeyCommandProperty, value );
+         obj.SetValue(PopupEnterKeyCommandProperty, value);
       }
 
       #endregion PopupEnterKeyCommandProperty
@@ -299,144 +297,21 @@ namespace PopupPanelSample
       #region PopupEscapeKeyCommandProperty
 
       public static readonly DependencyProperty PopupEscapeKeyCommandProperty =
-         DependencyProperty.RegisterAttached( "PopupEscapeKeyCommand", typeof ( ICommand ),
-            typeof ( PopupPanel ), new PropertyMetadata( null, null ) );
+         DependencyProperty.RegisterAttached("PopupEscapeKeyCommand", typeof (ICommand),
+            typeof (PopupPanel), new PropertyMetadata(null, null));
 
-      public static ICommand GetPopupEscapeKeyCommand( DependencyObject obj )
+      static ICommand GetPopupEscapeKeyCommand(DependencyObject obj)
       {
-         return ( ICommand ) obj.GetValue( PopupEscapeKeyCommandProperty );
+         return (ICommand) obj.GetValue(PopupEscapeKeyCommandProperty);
       }
 
-      public static void SetPopupEscapeKeyCommand( DependencyObject obj, ICommand value )
+      public static void SetPopupEscapeKeyCommand(DependencyObject obj, ICommand value)
       {
-         obj.SetValue( PopupEscapeKeyCommandProperty, value );
+         obj.SetValue(PopupEscapeKeyCommandProperty, value);
       }
 
       #endregion PopupEscapeKeyCommandProperty
 
-      #endregion Dependency Properties
-
-      #region Visual Tree Helpers
-
-      public static UIElement FindFirstFocusableChild( DependencyObject parent )
-      {
-         // Confirm parent is valid. 
-         if ( parent == null ) return null;
-
-         UIElement foundChild = null;
-
-         var childrenCount = VisualTreeHelper.GetChildrenCount( parent );
-         for ( var i = 0; i < childrenCount; i++ )
-         {
-            var child = VisualTreeHelper.GetChild( parent, i ) as UIElement;
-
-            // This is returning me things like ContentControls, so for now filtering to buttons/textboxes only
-            if ( child != null && child.Focusable && child.IsVisible )
-            {
-               foundChild = child;
-               break;
-            }
-            // recursively drill down the tree
-            foundChild = FindFirstFocusableChild( child );
-
-            // If the child is found, break so we do not overwrite the found child. 
-            if ( foundChild != null ) break;
-         }
-         return foundChild;
-      }
-
-      public static T FindAncester< T >( DependencyObject current )
-         where T : DependencyObject
-      {
-         // Need this call to avoid returning current object if it is the same type as parent we are looking for
-         current = VisualTreeHelper.GetParent( current );
-
-         while ( current != null )
-         {
-            if ( current is T )
-            {
-               return ( T ) current;
-            }
-            current = VisualTreeHelper.GetParent( current );
-         }
-         ;
-         return null;
-      }
-
-      /// <summary>
-      ///    Looks for a child control within a parent by name
-      /// </summary>
-      public static T FindChild< T >( DependencyObject parent, string childName )
-         where T : DependencyObject
-      {
-         // Confirm parent and childName are valid. 
-         if ( parent == null ) return null;
-
-         T foundChild = null;
-
-         var childrenCount = VisualTreeHelper.GetChildrenCount( parent );
-         for ( var i = 0; i < childrenCount; i++ )
-         {
-            var child = VisualTreeHelper.GetChild( parent, i );
-            // If the child is not of the request child type child
-            var childType = child as T;
-            if ( childType == null )
-            {
-               // recursively drill down the tree
-               foundChild = FindChild< T >( child, childName );
-
-               // If the child is found, break so we do not overwrite the found child. 
-               if ( foundChild != null ) break;
-            }
-            else if ( !string.IsNullOrEmpty( childName ) )
-            {
-               var frameworkElement = child as FrameworkElement;
-               // If the child's name is set for search
-               if ( frameworkElement != null && frameworkElement.Name == childName )
-               {
-                  // if the child's name is of the request name
-                  foundChild = ( T ) child;
-                  break;
-               }
-               // recursively drill down the tree
-               foundChild = FindChild< T >( child, childName );
-
-               // If the child is found, break so we do not overwrite the found child. 
-               if ( foundChild != null ) break;
-            }
-            else
-            {
-               // child element found.
-               foundChild = ( T ) child;
-               break;
-            }
-         }
-
-         return foundChild;
-      }
-
-      #endregion
-   }
-
-   // Converter for Popup positioning
-   public class ValueDividedByParameterConverter : IValueConverter
-   {
-      public object Convert( object value, Type targetType, object parameter, CultureInfo culture )
-      {
-         double n, d;
-         if ( double.TryParse( value.ToString(), out n )
-              && double.TryParse( parameter.ToString(), out d )
-              && d != 0 )
-         {
-            return n/d;
-         }
-
-         return 0;
-      }
-
-      public object ConvertBack( object value, Type targetType, object parameter, CultureInfo culture )
-      {
-         throw new NotImplementedException();
-      }
-   }
+      #endregion Dependency Properties      
+   }   
 }

@@ -3,22 +3,16 @@ using System.Windows.Controls;
 
 namespace ControlTemplates
 {
-   /// <summary>
-   /// Interaction logic for SimpleCustomButton.xaml
-   /// </summary>
-
-   public partial class SimpleCustomButton : System.Windows.Window
+   public partial class SimpleCustomButton
    {
-
       public SimpleCustomButton()
       {
          InitializeComponent();
       }
 
-      private void Clicked(object sender, RoutedEventArgs e)
+      void Clicked(object sender, RoutedEventArgs e)
       {
-         MessageBox.Show("You clicked " + ((Button)sender).Name);
+         MessageBox.Show(string.Format("You clicked {0}", ((Button) sender).Name));
       }
-
    }
 }

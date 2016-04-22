@@ -4,37 +4,32 @@ using System.Windows.Controls;
 
 namespace ControlTemplates
 {
-   /// <summary>
-   /// Interaction logic for SimpleCustomButton.xaml
-   /// </summary>
-
-   public partial class GradientButtonTest : System.Windows.Window
+   public partial class GradientButtonTest
    {
-
       public GradientButtonTest()
       {
          InitializeComponent();
       }
 
-      private void Clicked(object sender, RoutedEventArgs e)
+      void Clicked(object sender, RoutedEventArgs e)
       {
-         MessageBox.Show("You clicked " + ((Button)sender).Name);
+         MessageBox.Show(string.Format("You clicked {0}", ((Button) sender).Name));
       }
 
-      private void chkGreen_Checked(object sender, RoutedEventArgs e)
+      void OnThemeChanged(object sender, RoutedEventArgs e)
       {
-         ResourceDictionary resourceDictionary = new ResourceDictionary();
-         resourceDictionary.Source = new Uri(
-           "Resources/GradientButtonVariant.xaml", UriKind.Relative);
-         this.Resources.MergedDictionaries[0] = resourceDictionary;
+         Resources.MergedDictionaries[0] = new ResourceDictionary
+         {
+            Source = new Uri("Resources/GradientButtonVariant.xaml", UriKind.Relative)
+         };
       }
 
-      private void chkGreen_Unchecked(object sender, RoutedEventArgs e)
+      void OnThemeUnchanged(object sender, RoutedEventArgs e)
       {
-         ResourceDictionary resourceDictionary = new ResourceDictionary();
-         resourceDictionary.Source = new Uri(
-           "Resources/GradientButton.xaml", UriKind.Relative);
-         this.Resources.MergedDictionaries[0] = resourceDictionary;
+         Resources.MergedDictionaries[0] = new ResourceDictionary
+         {
+            Source = new Uri("Resources/GradientButton.xaml", UriKind.Relative)
+         };
       }
    }
 }

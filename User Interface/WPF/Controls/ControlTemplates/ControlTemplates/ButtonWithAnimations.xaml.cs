@@ -1,11 +1,6 @@
-﻿using System.Windows;
-
-namespace ControlTemplates
+﻿namespace ControlTemplates
 {
-   /// <summary>
-   /// Interaction logic for ButtonWithAnimations.xaml
-   /// </summary>
-   public partial class ButtonWithAnimations : Window
+   public partial class ButtonWithAnimations
    {
       public ButtonWithAnimations()
       {

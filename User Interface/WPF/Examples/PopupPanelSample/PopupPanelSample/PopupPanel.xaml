@@ -23,7 +23,7 @@
             <Grid x:Name="PopupPanelContent" Style="{StaticResource popupPanelContentStyle}">
                 <Grid.Resources>
                     <!-- Storyboard to show Content -->
-                    <Storyboard x:Key="showEditPanelStoryboard" SpeedRatio="5">
+                    <Storyboard x:Key="ShowEditPanelStoryboard" SpeedRatio="5">
                         <DoubleAnimation
                             Storyboard.TargetName="PopupPanelContent"
                             Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleX)"
