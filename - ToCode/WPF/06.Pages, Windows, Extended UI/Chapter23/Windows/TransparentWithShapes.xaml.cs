@@ -1,25 +1,25 @@
-using System;
 using System.Windows;
 using System.Windows.Input;
 
-namespace Windows {
+namespace Windows
+{
 
-    public partial class TransparentWithShapes : Window
-    {
+   public partial class TransparentWithShapes : Window
+   {
 
-        public TransparentWithShapes()
-        {
-            InitializeComponent();
-        }
+      public TransparentWithShapes()
+      {
+         InitializeComponent();
+      }
 
-        private void window_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-        {
-            this.DragMove();
-        }
+      private void window_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+      {
+         this.DragMove();
+      }
 
-        private void cmdClose_Click(object sender, RoutedEventArgs e)
-        {
-            this.Close();
-        }
-    }
+      private void cmdClose_Click(object sender, RoutedEventArgs e)
+      {
+         this.Close();
+      }
+   }
 }
