@@ -8,134 +8,106 @@
             <Grid>
                 <VisualStateManager.VisualStateGroups>
                     <VisualStateGroup x:Name="ViewStates">                    
-
                         <VisualState x:Name="Normal">
                             <Storyboard>
-                                <DoubleAnimation Storyboard.TargetName="FrontContentTransform"
-                       Storyboard.TargetProperty="ScaleY" To="1" ></DoubleAnimation>
-
-                                <DoubleAnimation Storyboard.TargetName="FrontContentEffect" 
-                       Storyboard.TargetProperty="Radius" To="0" ></DoubleAnimation>
-
-                                <DoubleAnimation Storyboard.TargetName="BackContentTransform"
-                       Storyboard.TargetProperty="ScaleY" To="0" ></DoubleAnimation>
-
-                                <DoubleAnimation Storyboard.TargetName="BackContentEffect" 
-                       Storyboard.TargetProperty="Radius" To="30" ></DoubleAnimation>
+                                <DoubleAnimation Storyboard.TargetName="FrontContentTransform" Storyboard.TargetProperty="ScaleY" To="1" />
+                                <DoubleAnimation Storyboard.TargetName="FrontContentEffect" Storyboard.TargetProperty="Radius" To="0" />
+                                <DoubleAnimation Storyboard.TargetName="BackContentTransform" Storyboard.TargetProperty="ScaleY" To="0" />
+                                <DoubleAnimation Storyboard.TargetName="BackContentEffect" Storyboard.TargetProperty="Radius" To="30" />
                             </Storyboard>
                         </VisualState>
 
                         <VisualState x:Name="Flipped">
                             <Storyboard>
-                                <DoubleAnimation Storyboard.TargetName="FrontContentTransform"
-                       Storyboard.TargetProperty="ScaleY" To="0" ></DoubleAnimation>
-
-                                <DoubleAnimation Storyboard.TargetName="FrontContentEffect" 
-                       Storyboard.TargetProperty="Radius" To="30" ></DoubleAnimation>
-
-                                <DoubleAnimation Storyboard.TargetName="BackContentTransform"
-                       Storyboard.TargetProperty="ScaleY" To="1" ></DoubleAnimation>
-
-                                <DoubleAnimation Storyboard.TargetName="BackContentEffect" 
-                       Storyboard.TargetProperty="Radius" To="0" ></DoubleAnimation>
+                                <DoubleAnimation Storyboard.TargetName="FrontContentTransform" Storyboard.TargetProperty="ScaleY" To="0" />
+                                <DoubleAnimation Storyboard.TargetName="FrontContentEffect" Storyboard.TargetProperty="Radius" To="30" />
+                                <DoubleAnimation Storyboard.TargetName="BackContentTransform" Storyboard.TargetProperty="ScaleY" To="1" />
+                                <DoubleAnimation Storyboard.TargetName="BackContentEffect" Storyboard.TargetProperty="Radius" To="0" />
                             </Storyboard>
                         </VisualState>
                     </VisualStateGroup>
                 </VisualStateManager.VisualStateGroups>
 
-
-
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"></RowDefinition>
-                    <RowDefinition Height="Auto"></RowDefinition>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
 
                 <!-- This is the front content. -->
                 <Border BorderBrush="{TemplateBinding BorderBrush}"
-               BorderThickness="{TemplateBinding BorderThickness}"
-               CornerRadius="{TemplateBinding CornerRadius}"
-                            Background="{TemplateBinding Background}" 
-               >
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        CornerRadius="{TemplateBinding CornerRadius}"
+                        Background="{TemplateBinding Background}"
+                        Grid.Row="0">
                     <Border.RenderTransform>
-                        <ScaleTransform x:Name="FrontContentTransform"></ScaleTransform>
+                        <ScaleTransform x:Name="FrontContentTransform"/>
                     </Border.RenderTransform>
                     <Border.Effect>
-                        <BlurEffect x:Name="FrontContentEffect" Radius="0"></BlurEffect>
+                        <BlurEffect x:Name="FrontContentEffect" Radius="0"/>
                     </Border.Effect>
-
                     <Grid>
                         <Grid.RowDefinitions>
-                            <RowDefinition></RowDefinition>
-                            <RowDefinition Height="Auto"></RowDefinition>
+                            <RowDefinition/>
+                            <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
-                        <ContentPresenter
-                     Content="{TemplateBinding FrontContent}">
-                        </ContentPresenter>
-
-                        <Rectangle Grid.Row="1" Stretch="Fill" Fill="LightSteelBlue"></Rectangle>
-                        <ToggleButton Grid.Row="1" x:Name="FlipButton" Margin="5" Padding="15,0" 
-                             Content="˄" FontWeight="Bold" FontSize="12" HorizontalAlignment="Right">
-                        </ToggleButton>
+                        <ContentPresenter Content="{TemplateBinding FrontContent}"/>
+                        <Rectangle Grid.Row="1" Stretch="Fill" Fill="LightSteelBlue"/>
+                        <ToggleButton Grid.Row="1" x:Name="FlipButton" Margin="5" Padding="15,0"
+                                      Content="˄" FontWeight="Bold" FontSize="12" HorizontalAlignment="Right"/>
                     </Grid>
-
                 </Border>
 
                 <!-- This is the back content. -->
                 <Border BorderBrush="{TemplateBinding BorderBrush}"
-           BorderThickness="{TemplateBinding BorderThickness}"
-           CornerRadius="{TemplateBinding CornerRadius}"
-           Background="{TemplateBinding Background}" RenderTransformOrigin="0,1">
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        CornerRadius="{TemplateBinding CornerRadius}"
+                        Background="{TemplateBinding Background}"
+                        RenderTransformOrigin="0,1"
+                        Grid.Row="0">
                     <Border.RenderTransform>
-                        <ScaleTransform x:Name="BackContentTransform" ScaleY="0"></ScaleTransform>
+                        <ScaleTransform x:Name="BackContentTransform" ScaleY="0"/>
                     </Border.RenderTransform>
                     <Border.Effect>
-                        <BlurEffect x:Name="BackContentEffect" Radius="30"></BlurEffect>
+                        <BlurEffect x:Name="BackContentEffect" Radius="30"/>
                     </Border.Effect>
-
                     <Grid>
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"></RowDefinition>
-                            <RowDefinition></RowDefinition>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition/>
                         </Grid.RowDefinitions>
-
-                        <Rectangle Stretch="Fill" Fill="LightSteelBlue"></Rectangle>
-                        <ToggleButton x:Name="FlipButtonAlternate" Margin="5" Padding="15,0" 
-                             Content="˅" FontWeight="Bold" FontSize="12" HorizontalAlignment="Right">
-                        </ToggleButton>
-
-                        <ContentPresenter Grid.Row="1"
-                     Content="{TemplateBinding BackContent}">
-                        </ContentPresenter>
-
+                        <Rectangle Grid.Row="0"  Stretch="Fill" Fill="LightSteelBlue"/>
+                        <ToggleButton Grid.Row="0" x:Name="FlipButtonAlternate" Margin="5" Padding="15,0"
+                                      Content="˅" FontWeight="Bold" FontSize="12" HorizontalAlignment="Right"/>
+                        <ContentPresenter Grid.Row="1" Content="{TemplateBinding BackContent}"/>
                     </Grid>
-
                 </Border>
-
             </Grid>
-
         </ControlTemplate>
     </Window.Resources>
 
-    <Grid x:Name="LayoutRoot" Background="White">
+    <Grid Background="White">
         <lib:FlipPanel x:Name="panel" BorderBrush="DarkOrange" BorderThickness="3" CornerRadius="4" Margin="10" 
            Template="{StaticResource AlternateTemplate}">
             <lib:FlipPanel.FrontContent>
                 <StackPanel Margin="6">
-                    <TextBlock TextWrapping="Wrap" Margin="3" FontSize="16" Foreground="DarkOrange">This is the front side of the FlipPanel.</TextBlock>
-                    <Button Margin="3" Padding="3" Content="Button One"></Button>
-                    <Button Margin="3" Padding="3" Content="Button Two"></Button>
-                    <Button Margin="3" Padding="3" Content="Button Three"></Button>
-                    <Button Margin="3" Padding="3" Content="Button Four"></Button>
+                    <TextBlock TextWrapping="Wrap" Margin="3" FontSize="16" Foreground="DarkOrange"
+                               Text="This is the front side of the FlipPanel." />
+                    <Button Margin="3" Padding="3" Content="Button One"/>
+                    <Button Margin="3" Padding="3" Content="Button Two"/>
+                    <Button Margin="3" Padding="3" Content="Button Three"/>
+                    <Button Margin="3" Padding="3" Content="Button Four"/>
                 </StackPanel>
             </lib:FlipPanel.FrontContent>
             <lib:FlipPanel.BackContent>
                 <Grid Margin="6">
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"></RowDefinition>
-                        <RowDefinition></RowDefinition>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition/>
                     </Grid.RowDefinitions>
-                    <TextBlock TextWrapping="Wrap" Margin="3" FontSize="16" Foreground="DarkMagenta">This is the back side of the FlipPanel.</TextBlock>
-                    <Button Grid.Row="2" Margin="3" Padding="10" Content="Flip Back to Front" HorizontalAlignment="Center" VerticalAlignment="Center" Click="cmdFlip_Click"></Button>
+                    <TextBlock Grid.Row="0" TextWrapping="Wrap" Margin="3" FontSize="16" Foreground="DarkMagenta"
+                               Text="This is the back side of the FlipPanel." />
+                    <Button Grid.Row="1" Margin="3" Padding="10" Content="Flip Back to Front"
+                            HorizontalAlignment="Center" VerticalAlignment="Center" Click="OnFlip"/>
                 </Grid>
             </lib:FlipPanel.BackContent>
         </lib:FlipPanel>

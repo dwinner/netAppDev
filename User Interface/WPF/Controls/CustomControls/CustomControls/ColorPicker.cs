@@ -13,6 +13,7 @@ namespace CustomControls
    /// </summary>
 
    #region ƒокументирование именованных частей
+   
    [TemplatePart(Name = "PART_RedSlider", Type = typeof (RangeBase))]
    [TemplatePart(Name = "PART_BlueSlider", Type = typeof (RangeBase))]
    [TemplatePart(Name = "PART_GreenSlider", Type = typeof (RangeBase))]

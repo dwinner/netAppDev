@@ -2,27 +2,36 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="FlipPanelTest" Height="300" Width="300"
-        xmlns:lib="clr-namespace:CustomControls;assembly=CustomControls" >
-    <Grid x:Name="LayoutRoot" Background="White">
+        xmlns:lib="clr-namespace:CustomControls;assembly=CustomControls">
+    <Grid Background="White">
         <lib:FlipPanel x:Name="panel" BorderBrush="DarkOrange" BorderThickness="3" IsFlipped="True"
-         CornerRadius="4" Margin="10">
+                       CornerRadius="4" Margin="10">
             <lib:FlipPanel.FrontContent>
                 <StackPanel Margin="6">
-                    <TextBlock TextWrapping="Wrap" Margin="3" FontSize="16" Foreground="DarkOrange">This is the front side of the FlipPanel.</TextBlock>
-                    <Button Margin="3" Padding="3" Content="Button One"></Button>
-                    <Button Margin="3" Padding="3" Content="Button Two"></Button>
-                    <Button Margin="3" Padding="3" Content="Button Three"></Button>
-                    <Button Margin="3" Padding="3" Content="Button Four"></Button>
+                    <StackPanel.Resources>
+                        <Style x:Key="buttonStyle" TargetType="Button">
+                            <Setter Property="Margin" Value="3" />
+                            <Setter Property="Padding" Value="3" />
+                        </Style>
+                    </StackPanel.Resources>
+                    <TextBlock TextWrapping="Wrap" Margin="3" FontSize="16" Foreground="DarkOrange"
+                               Text="This is the front side of the FlipPanel." />
+                    <Button Content="Button One" Style="{StaticResource buttonStyle}" />
+                    <Button Content="Button Two" Style="{StaticResource buttonStyle}" />
+                    <Button Content="Button Three" Style="{StaticResource buttonStyle}" />
+                    <Button Content="Button Four" Style="{StaticResource buttonStyle}" />
                 </StackPanel>
             </lib:FlipPanel.FrontContent>
             <lib:FlipPanel.BackContent>
                 <Grid Margin="6">
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"></RowDefinition>
-                        <RowDefinition></RowDefinition>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition />
                     </Grid.RowDefinitions>
-                    <TextBlock TextWrapping="Wrap" Margin="3" FontSize="16" Foreground="DarkMagenta">This is the back side of the FlipPanel.</TextBlock>
-                    <Button Grid.Row="2" Margin="3" Padding="10" Content="Flip Back to Front" HorizontalAlignment="Center" VerticalAlignment="Center" Click="cmdFlip_Click"></Button>
+                    <TextBlock Grid.Row="0" TextWrapping="Wrap" Margin="3" FontSize="16" Foreground="DarkMagenta"
+                               Text="This is the back side of the FlipPanel." />
+                    <Button Grid.Row="1" Margin="3" Padding="10" Content="Flip Back to Front"
+                            HorizontalAlignment="Center" VerticalAlignment="Center" Click="OnFlip" />
                 </Grid>
             </lib:FlipPanel.BackContent>
         </lib:FlipPanel>

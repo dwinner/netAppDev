@@ -1,18 +1,10 @@
-
 namespace CustomControlsClient
 {
-   /// <summary>
-   /// Interaction logic for MaskedTextBoxTest.xaml
-   /// </summary>
-
-   public partial class MaskedTextBoxTest : System.Windows.Window
+   public partial class MaskedTextBoxTest
    {
-
       public MaskedTextBoxTest()
       {
          InitializeComponent();
       }
-
-
    }
 }
