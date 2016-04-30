@@ -25,7 +25,7 @@ namespace StoreDatabase
             getProductsByIdCmd.Parameters.AddWithValue("@ProductID", productId);
             connection.Open();
             var reader = getProductsByIdCmd.ExecuteReader(CommandBehavior.SingleRow);
-            if (reader.Read())
+            if (reader.HasRows)
             {
                // Create a Product object that wraps the 
                // current record.

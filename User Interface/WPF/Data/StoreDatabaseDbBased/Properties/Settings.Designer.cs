@@ -26,7 +26,7 @@ namespace StoreDatabase.Properties {
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("Data Source=(localdb)\\ProjectsV12;Initial Catalog=StoreDb;Integrated Security=Tru" +
-            "e;Pooling=False;Connect Timeout=30")]
+            "e")]
         public string Store {
             get {
                 return ((string)(this["Store"]));
