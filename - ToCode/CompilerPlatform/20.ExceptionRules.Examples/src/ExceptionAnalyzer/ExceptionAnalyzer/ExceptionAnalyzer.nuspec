@@ -1,0 +1,32 @@
+﻿<?xml version="1.0"?>
+<package>
+  <metadata>
+    <id>ExceptionAnalyzer</id>
+    <version>$version$</version>
+    <title>Roslyn-based Exception Analyzer</title>
+    <authors>Sergey Teplyakov</authors>
+    <owners>Sergey Teplyakov</owners>
+    <licenseUrl>https://github.com/SergeyTeplyakov/ExceptionAnalyzer/blob/master/License</licenseUrl>
+    <projectUrl>https://github.com/SergeyTeplyakov/ExceptionAnalyzer/</projectUrl>
+    <iconUrl>http://ICON_URL_HERE_OR_DELETE_THIS_LINE</iconUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Simple analyzer that warns about the most common code smells related to excpetion handling.</description>
+    <releaseNotes>
+Supported features
+- Warning for `throw new Exception("");` from the catch block
+- Warning for `throw ex;` with a fix to `throw;`.
+- Warning and fix for empty generic catch block and `catch(Exception){}`.
+- Warning for swallowed exceptions in the `catch(Exception ex)` blocks
+- Warning for using `ex.Message` if this is the only exception observation. With a fix!
+</releaseNotes>
+    <copyright>Sergey Teplyakov</copyright>
+    <tags>Roslyn, Exception Handling, Best Practices</tags>
+    <frameworkAssemblies>
+      <frameworkAssembly assemblyName="System" targetFramework="4.5" />
+    </frameworkAssemblies>
+  </metadata>
+  <files>
+    <file src="*.dll" target="tools\analyzers\" exclude="**\Microsoft.CodeAnalysis.*;**\System.Collections.Immutable.*;**\System.Reflection.Metadata.*" />
+    <file src="tools\*.ps1" target="tools\" />
+  </files>
+</package>
