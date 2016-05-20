@@ -8,11 +8,10 @@ namespace StoreDatabase
       // For DataGridComboBoxColumn example.
 
       // This for testing date editing. The value isn't actually stored in the database.
-      private DateTime _dateAdded = DateTime.Today;
-      private string _description;
-      private string _modelName;
-      private string _modelNumber;
-      private decimal _unitCost;
+      string description;
+      string modelName;
+      string modelNumber;
+      decimal unitCost;
 
       public Product(string modelNumber, string modelName, decimal unitCost, string description)
       {
@@ -39,41 +38,41 @@ namespace StoreDatabase
 
       public string ModelNumber
       {
-         get { return _modelNumber; }
+         get { return modelNumber; }
          set
          {
-            _modelNumber = value;
-            OnPropertyChanged(new PropertyChangedEventArgs("ModelNumber"));
+            modelNumber = value;
+            OnPropertyChanged(new PropertyChangedEventArgs(nameof(ModelNumber)));
          }
       }
 
       public string ModelName
       {
-         get { return _modelName; }
+         get { return modelName; }
          set
          {
-            _modelName = value;
-            OnPropertyChanged(new PropertyChangedEventArgs("ModelName"));
+            modelName = value;
+            OnPropertyChanged(new PropertyChangedEventArgs(nameof(ModelName)));
          }
       }
 
       public decimal UnitCost
       {
-         get { return _unitCost; }
+         get { return unitCost; }
          set
          {
-            _unitCost = value;
-            OnPropertyChanged(new PropertyChangedEventArgs("UnitCost"));
+            unitCost = value;
+            OnPropertyChanged(new PropertyChangedEventArgs(nameof(UnitCost)));
          }
       }
 
       public string Description
       {
-         get { return _description; }
+         get { return description; }
          set
          {
-            _description = value;
-            OnPropertyChanged(new PropertyChangedEventArgs("Description"));
+            description = value;
+            OnPropertyChanged(new PropertyChangedEventArgs(nameof(Description)));
          }
       }
 
@@ -83,23 +82,18 @@ namespace StoreDatabase
 
       public string ProductImagePath { get; set; }
 
-      public DateTime DateAdded
-      {
-         get { return _dateAdded; }
-         set { _dateAdded = value; }
-      }
+      public DateTime DateAdded { get; set; } = DateTime.Today;
 
       public event PropertyChangedEventHandler PropertyChanged;
 
       public override string ToString()
       {
-         return string.Format("{0} ({1})", ModelName, ModelNumber);
+         return $"{ModelName} ({ModelNumber})";
       }
 
-      public void OnPropertyChanged(PropertyChangedEventArgs e)
+      void OnPropertyChanged(PropertyChangedEventArgs e)
       {
-         if (PropertyChanged != null)
-            PropertyChanged(this, e);
+         PropertyChanged?.Invoke(this, e);
       }
    }
 }

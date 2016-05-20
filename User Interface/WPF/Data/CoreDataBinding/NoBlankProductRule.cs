@@ -1,7 +1,7 @@
-﻿using StoreDatabase;
-using System.Globalization;
+﻿using System.Globalization;
 using System.Windows.Controls;
 using System.Windows.Data;
+using StoreDatabase;
 
 namespace DataBinding
 {
@@ -9,24 +9,23 @@ namespace DataBinding
    {
       public override ValidationResult Validate(object value, CultureInfo cultureInfo)
       {
-         BindingGroup bindingGroup = (BindingGroup)value;
+         var bindingGroup = (BindingGroup) value;
 
          // This product has the original values.
-         Product product = (Product)bindingGroup.Items[0];
-
-         // Check the new values.
-         string newModelName = (string)bindingGroup.GetValue(product, "ModelName");
-         string newModelNumber = (string)bindingGroup.GetValue(product, "ModelNumber");
-
-         if ((newModelName == "") && (newModelNumber == ""))
-         {
-            return new ValidationResult(false,
-                "A product requires a ModelName or ModelNumber.");
-         }
-         else
-         {
+         if (bindingGroup == null)
             return new ValidationResult(true, null);
+
+         var product = (Product) bindingGroup.Items[0];
+         
+         // Check the new values.
+         var newModelName = (string) bindingGroup.GetValue(product, nameof(Product.ModelName));
+         var newModelNumber = (string) bindingGroup.GetValue(product, nameof(Product.ModelNumber));
+         if ((newModelName == string.Empty) && (newModelNumber == string.Empty))
+         {
+            return new ValidationResult(false, "A product requires a ModelName or ModelNumber.");
          }
+
+         return new ValidationResult(true, null);
       }
    }
 }

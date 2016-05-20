@@ -1,28 +1,22 @@
-using System;
 using System.Windows;
 
 namespace DataBinding
-{
-   /// <summary>
-   /// Interaction logic for BindProductObject.xaml
-   /// </summary>
-
-   public partial class BindProductObject : System.Windows.Window
+{   
+   public partial class BindProductObject
    {
-
       public BindProductObject()
       {
          InitializeComponent();
       }
 
-      private void cmdGetProduct_Click(object sender, RoutedEventArgs e)
+      void OnGetProduct(object sender, RoutedEventArgs e)
       {
-         int ID;
-         if (Int32.TryParse(txtID.Text, out ID))
+         int id;
+         if (int.TryParse(txtId.Text, out id))
          {
             try
             {
-               gridProductDetails.DataContext = App.StoreDb.GetProduct(ID);
+               gridProductDetails.DataContext = App.StoreDb.GetProduct(id);
             }
             catch
             {

@@ -1,41 +1,38 @@
-﻿using StoreDatabase;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using StoreDatabase;
 
 namespace DataBinding
 {
-   /// <summary>
-   /// Interaction logic for BindingGroupValidation.xaml
-   /// </summary>
-   public partial class BindingGroupValidation : Window
+   public partial class BindingGroupValidation
    {
+      ICollection<Product> products;
+
       public BindingGroupValidation()
       {
          InitializeComponent();
       }
 
-      private ICollection<Product> products;
-
-      private void cmdGetProducts_Click(object sender, RoutedEventArgs e)
+      void OnGetProducts(object sender, RoutedEventArgs e)
       {
          products = App.StoreDb.GetProducts();
          lstProducts.ItemsSource = products;
       }
 
-      private void cmdUpdateProduct_Click(object sender, RoutedEventArgs e)
+      void OnUpdateProduct(object sender, RoutedEventArgs e)
       {
          // Make sure update has taken place.
-         FocusManager.SetFocusedElement(this, (Button)sender);
+         FocusManager.SetFocusedElement(this, (Button) sender);
       }
 
-      private void txt_LostFocus(object sender, RoutedEventArgs e)
+      void OnLostFocus(object sender, RoutedEventArgs e)
       {
          productBindingGroup.CommitEdit();
       }
 
-      private void lstProducts_SelectionChanged(object sender, SelectionChangedEventArgs e)
+      void OnSelectionChanged(object sender, SelectionChangedEventArgs e)
       {
          productBindingGroup.CommitEdit();
       }

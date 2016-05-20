@@ -3,32 +3,24 @@ using System.Windows;
 
 namespace DataBinding
 {
-   /// <summary>
-   /// Interaction logic for BindToDataSet.xaml
-   /// </summary>
-
-   public partial class BindToDataSet : System.Windows.Window
+   public partial class BindToDataSet
    {
+      DataTable products;
 
       public BindToDataSet()
       {
          InitializeComponent();
       }
 
-
-      private DataTable products;
-
-      private void cmdGetProducts_Click(object sender, RoutedEventArgs e)
+      void OnGetProducts(object sender, RoutedEventArgs e)
       {
          products = App.StoreDbDataSet.GetProducts();
          lstProducts.ItemsSource = products.DefaultView;
       }
 
-      private void cmdDeleteProduct_Click(object sender, RoutedEventArgs e)
+      void OnDeleteProduct(object sender, RoutedEventArgs e)
       {
-         ((DataRowView)lstProducts.SelectedItem).Row.Delete();
+         ((DataRowView) lstProducts.SelectedItem).Row.Delete();
       }
-
-
    }
 }

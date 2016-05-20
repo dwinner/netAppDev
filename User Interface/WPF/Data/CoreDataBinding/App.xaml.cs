@@ -2,22 +2,20 @@ using StoreDatabase;
 
 namespace DataBinding
 {
-   /// <summary>
-   /// Interaction logic for App.xaml
-   /// </summary>
-
-   public partial class App : System.Windows.Application
+   public partial class App
    {
-      private static StoreDb storeDb = new StoreDb();
+      static readonly StoreDb StoreDbInstance = new StoreDb();
+
+      static readonly StoreDbDataSet StoreDbDataSetImpl = new StoreDbDataSet();
+
       public static StoreDb StoreDb
       {
-         get { return storeDb; }
+         get { return StoreDbInstance; }
       }
 
-      private static StoreDbDataSet storeDbDataSet = new StoreDbDataSet();
       public static StoreDbDataSet StoreDbDataSet
       {
-         get { return storeDbDataSet; }
+         get { return StoreDbDataSetImpl; }
       }
    }
 }

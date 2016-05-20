@@ -24,17 +24,24 @@ namespace StoreDatabase
          {
             getProductsByIdCmd.Parameters.AddWithValue("@ProductID", productId);
             connection.Open();
-            var reader = getProductsByIdCmd.ExecuteReader(CommandBehavior.SingleRow);
-            if (reader.HasRows)
-            {
-               // Create a Product object that wraps the 
-               // current record.
-               var product = new Product((string)reader["ModelNumber"],
-                  (string)reader["ModelName"], (decimal)reader["UnitCost"],
-                  (string)reader["Description"], (int)reader["CategoryID"],
-                  (string)reader["CategoryName"], (string)reader["ProductImage"]);
+            using (var reader = getProductsByIdCmd.ExecuteReader(CommandBehavior.SingleRow))
+            {               
+               if (reader.HasRows)
+               {
+                  // Create a Product object that wraps the 
+                  // current record.               
+                  var modelNumber = (string)reader["ModelNumber"];
+                  var modelName = (string)reader["ModelName"];
+                  var unitCost = (decimal)reader["UnitCost"];
+                  var description = (string)reader["Description"];
+                  var categoryId = (int)reader["CategoryID"];
+                  var categoryName = (string)reader["CategoryName"];
+                  var productImagePath = (string)reader["ProductImage"];
+                  var product =
+                     new Product(modelNumber, modelName, unitCost, description, categoryId, categoryName, productImagePath);
 
-               return product;
+                  return product;
+               }
             }
 
             return null;

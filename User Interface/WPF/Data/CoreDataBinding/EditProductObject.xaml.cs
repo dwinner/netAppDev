@@ -1,32 +1,28 @@
-using StoreDatabase;
-using System;
+using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using StoreDatabase;
 
 namespace DataBinding
-{
-   /// <summary>
-   /// Interaction logic for EditProductObject.xaml
-   /// </summary>
-
-   public partial class EditProductObject : System.Windows.Window
+{   
+   public partial class EditProductObject
    {
-      private Product product;
+      Product product;
 
       public EditProductObject()
       {
          InitializeComponent();
       }
 
-      private void cmdGetProduct_Click(object sender, RoutedEventArgs e)
+      void OnGetProduct(object sender, RoutedEventArgs e)
       {
-         int ID;
-         if (Int32.TryParse(txtID.Text, out ID))
+         int id;
+         if (int.TryParse(txtId.Text, out id))
          {
             try
             {
-               product = App.StoreDb.GetProduct(ID);
+               product = App.StoreDb.GetProduct(id);
                gridProductDetails.DataContext = product;
             }
             catch
@@ -40,20 +36,16 @@ namespace DataBinding
          }
       }
 
-      private void cmdUpdateProduct_Click(object sender, RoutedEventArgs e)
+      void OnUpdateProduct(object sender, RoutedEventArgs e)
       {
          // Make sure update has taken place.
-         FocusManager.SetFocusedElement(this, (Button)sender);
-
-         MessageBox.Show(product.UnitCost.ToString());
+         FocusManager.SetFocusedElement(this, (Button) sender);
+         MessageBox.Show(product.UnitCost.ToString(CultureInfo.InvariantCulture));
       }
 
-
-      private void cmdIncreasePrice_Click(object sender, RoutedEventArgs e)
+      void OnIncreasePrice(object sender, RoutedEventArgs e)
       {
          product.UnitCost *= 1.1M;
       }
-
-
    }
 }
