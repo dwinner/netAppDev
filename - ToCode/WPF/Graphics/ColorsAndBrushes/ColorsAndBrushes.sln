@@ -1,6 +1,6 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 10.00
-# Visual Studio 2008
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ColorsAndBrushes", "ColorsAndBrushes\ColorsAndBrushes.csproj", "{123633FF-2D6D-4A82-B412-3B14F8039639}"
 EndProject
 Global

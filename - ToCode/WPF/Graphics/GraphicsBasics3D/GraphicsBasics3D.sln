@@ -1,6 +1,6 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 10.00
-# Visual Studio 2008
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GraphicsBasics3D", "GraphicsBasics3D\GraphicsBasics3D.csproj", "{915B5CC7-EF33-4094-9E4E-1BDED61D15D7}"
 EndProject
 Global
