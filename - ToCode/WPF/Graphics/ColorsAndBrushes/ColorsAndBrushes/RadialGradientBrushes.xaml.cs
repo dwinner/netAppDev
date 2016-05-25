@@ -1,28 +1,17 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace ColorsAndBrushes
 {
-    /// <summary>
-    /// Interaction logic for RadialGradientBrushExample.xaml
-    /// </summary>
+   /// <summary>
+   /// Interaction logic for RadialGradientBrushExample.xaml
+   /// </summary>
 
-    public partial class RadialGradientBrushes : System.Windows.Window
-    {
+   public partial class RadialGradientBrushes : System.Windows.Window
+   {
 
-        public RadialGradientBrushes()
-        {
-            InitializeComponent();
-        }
+      public RadialGradientBrushes()
+      {
+         InitializeComponent();
+      }
 
-    }
+   }
 }
