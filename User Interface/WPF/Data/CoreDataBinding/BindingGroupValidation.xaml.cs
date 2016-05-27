@@ -18,7 +18,7 @@ namespace DataBinding
       void OnGetProducts(object sender, RoutedEventArgs e)
       {
          products = App.StoreDb.GetProducts();
-         lstProducts.ItemsSource = products;
+         productsListBox.ItemsSource = products;
       }
 
       void OnUpdateProduct(object sender, RoutedEventArgs e)

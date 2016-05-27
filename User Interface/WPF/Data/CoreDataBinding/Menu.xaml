@@ -11,7 +11,7 @@
             <Button>BindToLinqFilteredCollection</Button>
             <Button>VirtualizationTest</Button>
             <Button>ValidationTest</Button>
-            <Button>BindingGroupValidation</Button><!-- NOTE: Stopped here -->
+            <Button>BindingGroupValidation</Button>
             <Button>BindToObjectDataProvider</Button>
             <Button>BindToXmlDataProvider</Button>
         </StackPanel>
