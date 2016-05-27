@@ -1,61 +1,47 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
+using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using StoreDatabase;
 
 namespace DataBinding
 {
-    /// <summary>
-    /// Interaction logic for EditProductObject.xaml
-    /// </summary>
+   public partial class ValueConverter
+   {
+      Product product;
 
-    public partial class ValueConverter : System.Windows.Window
-    {
-        private Product product;
+      public ValueConverter()
+      {
+         InitializeComponent();
+      }
 
-        public ValueConverter()
-        {
-            InitializeComponent();
-        }
-
-        private void cmdGetProduct_Click(object sender, RoutedEventArgs e)
-        {
-            int ID;
-            if (Int32.TryParse(txtID.Text, out ID))
+      void OnGetProduct(object sender, RoutedEventArgs e)
+      {
+         int id;
+         if (int.TryParse(txtId.Text, out id))
+         {
+            try
             {
-                try
-                {
-                    product = App.StoreDb.GetProduct(ID);
-                    gridProductDetails.DataContext = product;
-                }
-                catch (Exception err)
-                {
-                    MessageBox.Show("Error contacting database.");
-                }                
+               product = App.StoreDb.GetProduct(id);
+               gridProductDetails.DataContext = product;
             }
-            else
+            catch (Exception)
             {
-                MessageBox.Show("Invalid ID.");
+               MessageBox.Show("Error contacting database.");
             }
-        }
+         }
+         else
+         {
+            MessageBox.Show("Invalid ID.");
+         }
+      }
 
-        private void cmdUpdateProduct_Click(object sender, RoutedEventArgs e)
-        {
-            // Make sure update has taken place.
-            FocusManager.SetFocusedElement(this, (Button)sender);
-
-            MessageBox.Show(product.UnitCost.ToString());
-        }
-
-
-     
-    }
+      void OnUpdateProduct(object sender, RoutedEventArgs e)
+      {
+         // Make sure update has taken place.
+         FocusManager.SetFocusedElement(this, (Button) sender);
+         MessageBox.Show(product.UnitCost.ToString(CultureInfo.InvariantCulture));
+      }
+   }
 }
