@@ -27,6 +27,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SyntaxAnalysis", "SyntaxAna
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CompilationSample", "CompilationSample\CompilationSample.csproj", "{39EA18F5-1887-4E47-8BE8-F6647B454A38}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BindingSymbolsSample", "BindingSymbolsSample\BindingSymbolsSample.csproj", "{E2315BBF-49C8-479C-8422-57C0DE3DE0CF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -123,6 +125,12 @@ Global
 		{39EA18F5-1887-4E47-8BE8-F6647B454A38}.Release|Any CPU.ActiveCfg = Release|x86
 		{39EA18F5-1887-4E47-8BE8-F6647B454A38}.Release|x86.ActiveCfg = Release|x86
 		{39EA18F5-1887-4E47-8BE8-F6647B454A38}.Release|x86.Build.0 = Release|x86
+		{E2315BBF-49C8-479C-8422-57C0DE3DE0CF}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{E2315BBF-49C8-479C-8422-57C0DE3DE0CF}.Debug|x86.ActiveCfg = Debug|x86
+		{E2315BBF-49C8-479C-8422-57C0DE3DE0CF}.Debug|x86.Build.0 = Debug|x86
+		{E2315BBF-49C8-479C-8422-57C0DE3DE0CF}.Release|Any CPU.ActiveCfg = Release|x86
+		{E2315BBF-49C8-479C-8422-57C0DE3DE0CF}.Release|x86.ActiveCfg = Release|x86
+		{E2315BBF-49C8-479C-8422-57C0DE3DE0CF}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
