@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.24720.0
+VisualStudioVersion = 14.0.25123.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleRoslynAnalysis", "Demo\SimpleRoslynAnalysis.csproj", "{4F7105FF-B27E-46BA-96AD-82781AAC3B20}"
 EndProject
@@ -20,6 +20,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DocumentEditingSample", "DocumentEditingSample\DocumentEditingSample.csproj", "{46D001F9-7BC8-4BEC-99E2-E12FFFF288E9}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SymbolVisitorSample", "SymbolVisitorSample\SymbolVisitorSample.csproj", "{9F6979BF-09F6-470D-8242-A8C6C38F48F3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CreatingTheSyntax", "CreatingTheSyntax\CreatingTheSyntax.csproj", "{F3545316-F01F-4D65-86BE-9842FE0504D9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -99,6 +101,12 @@ Global
 		{9F6979BF-09F6-470D-8242-A8C6C38F48F3}.Release|Any CPU.Build.0 = Release|Any CPU
 		{9F6979BF-09F6-470D-8242-A8C6C38F48F3}.Release|x86.ActiveCfg = Release|Any CPU
 		{9F6979BF-09F6-470D-8242-A8C6C38F48F3}.Release|x86.Build.0 = Release|Any CPU
+		{F3545316-F01F-4D65-86BE-9842FE0504D9}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{F3545316-F01F-4D65-86BE-9842FE0504D9}.Debug|x86.ActiveCfg = Debug|x86
+		{F3545316-F01F-4D65-86BE-9842FE0504D9}.Debug|x86.Build.0 = Debug|x86
+		{F3545316-F01F-4D65-86BE-9842FE0504D9}.Release|Any CPU.ActiveCfg = Release|x86
+		{F3545316-F01F-4D65-86BE-9842FE0504D9}.Release|x86.ActiveCfg = Release|x86
+		{F3545316-F01F-4D65-86BE-9842FE0504D9}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
