@@ -2,3 +2,4 @@ https://github.com/ProfessionalCSharp/ProfessionalCSharp6.git
 https://github.com/Microsoft/VSSDK-Extensibility-Samples.git
 https://github.com/SergeyTeplyakov/ExceptionAnalyzer.git
 https://github.com/code-cracker/code-cracker.git
+https://github.com/SonarSource-VisualStudio/sonaranalyzer-csharp.git
