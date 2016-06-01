@@ -29,6 +29,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CompilationSample", "Compil
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BindingSymbolsSample", "BindingSymbolsSample\BindingSymbolsSample.csproj", "{E2315BBF-49C8-479C-8422-57C0DE3DE0CF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GetConstantValueSample", "GetConstantValueSample\GetConstantValueSample.csproj", "{6C426FDA-C8F6-4D3D-9B89-0265FA0F9B15}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WorkingWithSymbols", "WorkingWithSymbols\WorkingWithSymbols.csproj", "{A720B111-BABC-4554-905F-F0CC4E5514F1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -131,6 +135,18 @@ Global
 		{E2315BBF-49C8-479C-8422-57C0DE3DE0CF}.Release|Any CPU.ActiveCfg = Release|x86
 		{E2315BBF-49C8-479C-8422-57C0DE3DE0CF}.Release|x86.ActiveCfg = Release|x86
 		{E2315BBF-49C8-479C-8422-57C0DE3DE0CF}.Release|x86.Build.0 = Release|x86
+		{6C426FDA-C8F6-4D3D-9B89-0265FA0F9B15}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{6C426FDA-C8F6-4D3D-9B89-0265FA0F9B15}.Debug|x86.ActiveCfg = Debug|x86
+		{6C426FDA-C8F6-4D3D-9B89-0265FA0F9B15}.Debug|x86.Build.0 = Debug|x86
+		{6C426FDA-C8F6-4D3D-9B89-0265FA0F9B15}.Release|Any CPU.ActiveCfg = Release|x86
+		{6C426FDA-C8F6-4D3D-9B89-0265FA0F9B15}.Release|x86.ActiveCfg = Release|x86
+		{6C426FDA-C8F6-4D3D-9B89-0265FA0F9B15}.Release|x86.Build.0 = Release|x86
+		{A720B111-BABC-4554-905F-F0CC4E5514F1}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{A720B111-BABC-4554-905F-F0CC4E5514F1}.Debug|x86.ActiveCfg = Debug|x86
+		{A720B111-BABC-4554-905F-F0CC4E5514F1}.Debug|x86.Build.0 = Debug|x86
+		{A720B111-BABC-4554-905F-F0CC4E5514F1}.Release|Any CPU.ActiveCfg = Release|x86
+		{A720B111-BABC-4554-905F-F0CC4E5514F1}.Release|x86.ActiveCfg = Release|x86
+		{A720B111-BABC-4554-905F-F0CC4E5514F1}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
