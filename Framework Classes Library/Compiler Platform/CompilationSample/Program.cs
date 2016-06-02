@@ -13,7 +13,7 @@ namespace CompilationSample
       const string Code = "class Foo { void Bar(int x) {} }";
 
       static void Main()
-      {
+      {         
          var tree = CSharpSyntaxTree.ParseText(Code);
          var compilationOptions = new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary);
          var references = new MetadataReference[]
