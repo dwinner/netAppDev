@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:tns="http://tempuri.org/" elementFormDefault="qualified" targetNamespace="http://tempuri.org/" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:import schemaLocation="http://localhost:9874/HolidayRequestProcess?xsd=xsd2" namespace="http://schemas.datacontract.org/2004/07/HolidayRequestDataContracts" />
+  <xs:element name="RequestHoliday">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q1="http://schemas.datacontract.org/2004/07/HolidayRequestDataContracts" minOccurs="0" name="inputparam_holidayRequest" nillable="true" type="q1:HolidayRequestDataContract_Input" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="RequestHolidayResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q2="http://schemas.datacontract.org/2004/07/HolidayRequestDataContracts" minOccurs="0" name="outputparam_holidayRequest" nillable="true" type="q2:HolidayRequestDataContract_Output" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="ApproveRequest">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q3="http://schemas.datacontract.org/2004/07/HolidayRequestDataContracts" minOccurs="0" name="inputparam_holidayApproval" nillable="true" type="q3:HolidayApprovalDataContract_Input" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="ApproveRequestResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q4="http://schemas.datacontract.org/2004/07/HolidayRequestDataContracts" minOccurs="0" name="outputparam_holidayApproval" nillable="true" type="q4:HolidayApprovalDataContract_Output" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>
