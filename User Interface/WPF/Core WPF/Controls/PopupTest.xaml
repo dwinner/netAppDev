@@ -1,6 +1,7 @@
 ﻿<Window x:Class="Controls.PopupTest"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:controls="clr-namespace:Controls"
         Title="PopupTest" Height="300" Width="300">
     <Grid Margin="10">
         <TextBlock TextWrapping="Wrap">
@@ -13,7 +14,14 @@
             of interest.
         </TextBlock>
         <Popup Name="PopLink" StaysOpen="False" Placement="Mouse" MaxWidth="200"
-               PopupAnimation="Slide" AllowsTransparency="True">
+               PopupAnimation="Slide" AllowsTransparency="True"
+               controls:PopupAllowKeyboardInput.IsEnabled="True">
+            <Popup.CommandBindings>
+                <CommandBinding Command="Close" Executed="CloseCommandHandler"/>
+            </Popup.CommandBindings>
+            <Popup.InputBindings>
+                <KeyBinding Key="Escape" Command="Close"/>
+            </Popup.InputBindings>
             <Border BorderBrush="Beige" BorderThickness="2" Background="White">
                 <TextBlock Margin="10" TextWrapping="Wrap">
                     For more information, see
