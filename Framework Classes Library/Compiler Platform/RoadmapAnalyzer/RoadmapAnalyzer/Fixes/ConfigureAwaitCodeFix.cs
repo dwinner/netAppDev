@@ -6,9 +6,10 @@ using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CodeActions;
 using Microsoft.CodeAnalysis.CodeFixes;
-using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using RoadmapAnalyzer.Rules;
+using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
+using static Microsoft.CodeAnalysis.CSharp.SyntaxKind;
 
 namespace RoadmapAnalyzer.Fixes
 {
@@ -18,10 +19,7 @@ namespace RoadmapAnalyzer.Fixes
       public sealed override ImmutableArray<string> FixableDiagnosticIds
          => ImmutableArray.Create(ConfigureAwaitAnalyzer.Id);
 
-      public sealed override FixAllProvider GetFixAllProvider()
-      {
-         return WellKnownFixAllProviders.BatchFixer;
-      }
+      public sealed override FixAllProvider GetFixAllProvider() => WellKnownFixAllProviders.BatchFixer;
 
       public sealed override async Task RegisterCodeFixesAsync(CodeFixContext context)
       {
@@ -29,10 +27,7 @@ namespace RoadmapAnalyzer.Fixes
          var diagnostic = context.Diagnostics.First();
          var diagnosticSpan = diagnostic.Location.SourceSpan;
 
-         // Найдем выражение await, определенное диагностикой
-         //var awaitExpr =
-         //   root.FindToken(diagnosticSpan.Start).Parent.AncestorsAndSelf().OfType<PrefixUnaryExpressionSyntax>().First();
-
+         // Найдем выражение await, определенное диагностикой         
          var syntaxToken = root.FindToken(diagnosticSpan.Start);
          var awaitExpr = syntaxToken.Parent.AncestorsAndSelf().OfType<AwaitExpressionSyntax>().FirstOrDefault();         
          
@@ -49,22 +44,14 @@ namespace RoadmapAnalyzer.Fixes
       private async Task<Document> InsertConfigureAwaitAsync(Document document, AwaitExpressionSyntax oldAwaitExpr,
          bool arg, CancellationToken token)
       {
-         var configureAwait = SyntaxFactory.IdentifierName(nameof(Task.ConfigureAwait));
+         var configureAwait = IdentifierName(nameof(Task.ConfigureAwait));
          var oldOperand = oldAwaitExpr.Expression;
-         var newOperand = SyntaxFactory.InvocationExpression(
-            SyntaxFactory.MemberAccessExpression(
-               SyntaxKind.SimpleMemberAccessExpression,
-               oldOperand,
-               configureAwait),
-            SyntaxFactory.ArgumentList(
-               SyntaxFactory.Token(SyntaxKind.OpenParenToken),
-               SyntaxFactory.SeparatedList(new[]
-               {
-                  SyntaxFactory.Argument(
-                     SyntaxFactory.LiteralExpression(arg
-                        ? SyntaxKind.TrueLiteralExpression
-                        : SyntaxKind.FalseLiteralExpression))
-               }), SyntaxFactory.Token(SyntaxKind.CloseParenToken)));
+         var newOperand =
+            InvocationExpression(MemberAccessExpression(SimpleMemberAccessExpression, oldOperand, configureAwait),
+               ArgumentList(Token(OpenParenToken),
+                  SeparatedList(new[]
+                  {Argument(LiteralExpression(arg ? TrueLiteralExpression : FalseLiteralExpression))}),
+                  Token(CloseParenToken)));
 
          var newAwaitExpr = oldAwaitExpr.WithExpression(newOperand)/*.WithOperand(newOperand)*/;
          var oldRoot = await document.GetSyntaxRootAsync(token).ConfigureAwait(false);

@@ -10,7 +10,7 @@ namespace RoadmapAnalyzer.Rules
    [DiagnosticAnalyzer(LanguageNames.CSharp)]
    public class SingleStatementBodyAnalyzer : DiagnosticAnalyzer
    {
-      private const string DiagnosticId = "S102";
+      internal const string Id = "S102";
       private const string Category = "Naming";
       private static readonly LocalizableString Title = "Single statement bodies should be surrounded by culry braces.";
 
@@ -27,7 +27,7 @@ namespace RoadmapAnalyzer.Rules
       };
 
       private static readonly DiagnosticDescriptor Rule =
-         new DiagnosticDescriptor(DiagnosticId, Title, MessageFormat, Category, DiagnosticSeverity.Warning, true);
+         new DiagnosticDescriptor(Id, Title, MessageFormat, Category, DiagnosticSeverity.Warning, true);
 
       public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => ImmutableArray.Create(Rule);
 

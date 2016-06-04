@@ -7,7 +7,7 @@ namespace RoadmapAnalyzer.Rules
    [DiagnosticAnalyzer(LanguageNames.CSharp)]
    public class FieldNameAnalyzer : DiagnosticAnalyzer
    {
-      public const string Id = "S101";
+      internal const string Id = "S101";
 
       private static readonly DiagnosticDescriptor Descriptor = new DiagnosticDescriptor(Id,
          "Field names shouldn't start with an underscore.",
