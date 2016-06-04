@@ -35,6 +35,8 @@
     <Compile Include="Fixes\ConfigureAwaitCodeFix.cs" />
     <Compile Include="Fixes\FieldNameCodeFix.cs" />
     <Compile Include="Fixes\SingleStatementBodyCodeFix.cs" />
+    <Compile Include="Refactoring\CodeGeneration.cs" />
+    <Compile Include="Refactoring\PropertyCodeRefactoringProvider.cs" />
     <Compile Include="Rules\ConfigureAwaitAnalyzer.cs" />
     <Compile Include="Rules\FieldNameAnalyzer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
