@@ -3,14 +3,14 @@ using System.Threading.Tasks;
 
 namespace ConfigureAwaitTest
 {
-   internal class Program
+    internal class Program
    {
       private int _first;
       private int _second;
       private int _third;
 
       static void Main(string[] args)
-      {
+      {            
       }
    }
 

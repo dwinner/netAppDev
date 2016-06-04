@@ -2,7 +2,7 @@
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
 
-namespace RoadmapAnalyzer
+namespace RoadmapAnalyzer.Rules
 {
    [DiagnosticAnalyzer(LanguageNames.CSharp)]
    public class FieldNameAnalyzer : DiagnosticAnalyzer

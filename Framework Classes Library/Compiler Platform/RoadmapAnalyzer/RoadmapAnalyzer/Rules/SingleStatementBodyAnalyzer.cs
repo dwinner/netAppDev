@@ -5,7 +5,7 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
 
-namespace RoadmapAnalyzer
+namespace RoadmapAnalyzer.Rules
 {
    [DiagnosticAnalyzer(LanguageNames.CSharp)]
    public class SingleStatementBodyAnalyzer : DiagnosticAnalyzer

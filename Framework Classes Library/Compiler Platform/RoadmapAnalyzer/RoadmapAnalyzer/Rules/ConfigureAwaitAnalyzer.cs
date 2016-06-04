@@ -5,12 +5,12 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
 
-namespace RoadmapAnalyzer
+namespace RoadmapAnalyzer.Rules
 {
    [DiagnosticAnalyzer(LanguageNames.CSharp)]
    public sealed class ConfigureAwaitAnalyzer : DiagnosticAnalyzer
    {
-      public const string Id = "A101";
+      internal const string Id = "A101";
 
       private static readonly DiagnosticDescriptor Desc =
          new DiagnosticDescriptor(Id,
