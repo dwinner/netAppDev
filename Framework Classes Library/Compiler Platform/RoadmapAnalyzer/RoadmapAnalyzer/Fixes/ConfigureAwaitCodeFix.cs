@@ -30,9 +30,12 @@ namespace RoadmapAnalyzer.Fixes
          var diagnosticSpan = diagnostic.Location.SourceSpan;
 
          // Найдем выражение await, определенное диагностикой
-         var awaitExpr =
-            root.FindToken(diagnosticSpan.Start).Parent.AncestorsAndSelf().OfType<PrefixUnaryExpressionSyntax>().First();
+         //var awaitExpr =
+         //   root.FindToken(diagnosticSpan.Start).Parent.AncestorsAndSelf().OfType<PrefixUnaryExpressionSyntax>().First();
 
+         var syntaxToken = root.FindToken(diagnosticSpan.Start);
+         var awaitExpr = syntaxToken.Parent.AncestorsAndSelf().OfType<AwaitExpressionSyntax>().FirstOrDefault();         
+         
          // Зарегистрируем все Code Action, который вызовет определенный Fix кода
          var firstAction = CodeAction.Create("Insert ConfigureAwait(false)",
             token => InsertConfigureAwaitAsync(context.Document, awaitExpr, false, token));
@@ -43,11 +46,11 @@ namespace RoadmapAnalyzer.Fixes
          context.RegisterCodeFix(secondAction, diagnostic);
       }
 
-      private async Task<Document> InsertConfigureAwaitAsync(Document document, PrefixUnaryExpressionSyntax oldAwaitExpr,
+      private async Task<Document> InsertConfigureAwaitAsync(Document document, AwaitExpressionSyntax oldAwaitExpr,
          bool arg, CancellationToken token)
       {
          var configureAwait = SyntaxFactory.IdentifierName(nameof(Task.ConfigureAwait));
-         var oldOperand = oldAwaitExpr.Operand;
+         var oldOperand = oldAwaitExpr.Expression;
          var newOperand = SyntaxFactory.InvocationExpression(
             SyntaxFactory.MemberAccessExpression(
                SyntaxKind.SimpleMemberAccessExpression,
@@ -63,7 +66,7 @@ namespace RoadmapAnalyzer.Fixes
                         : SyntaxKind.FalseLiteralExpression))
                }), SyntaxFactory.Token(SyntaxKind.CloseParenToken)));
 
-         var newAwaitExpr = oldAwaitExpr.WithOperand(newOperand);
+         var newAwaitExpr = oldAwaitExpr.WithExpression(newOperand)/*.WithOperand(newOperand)*/;
          var oldRoot = await document.GetSyntaxRootAsync(token).ConfigureAwait(false);
          var newRoot = oldRoot.ReplaceNode(oldAwaitExpr, newAwaitExpr);
 
