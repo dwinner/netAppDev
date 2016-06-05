@@ -69,6 +69,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RenamingSample", "RenamingS
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimplificationSample", "SimplificationSample\SimplificationSample.csproj", "{737ED8C3-6AB3-40EF-BF12-34FEC7D9B4C5}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoPropertyRewriterSample", "AutoPropertyRewriterSample\AutoPropertyRewriterSample.csproj", "{342B0144-EAC5-483E-9BAB-86A6840076FB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -247,6 +249,12 @@ Global
 		{737ED8C3-6AB3-40EF-BF12-34FEC7D9B4C5}.Release|Any CPU.ActiveCfg = Release|x86
 		{737ED8C3-6AB3-40EF-BF12-34FEC7D9B4C5}.Release|x86.ActiveCfg = Release|x86
 		{737ED8C3-6AB3-40EF-BF12-34FEC7D9B4C5}.Release|x86.Build.0 = Release|x86
+		{342B0144-EAC5-483E-9BAB-86A6840076FB}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{342B0144-EAC5-483E-9BAB-86A6840076FB}.Debug|x86.ActiveCfg = Debug|x86
+		{342B0144-EAC5-483E-9BAB-86A6840076FB}.Debug|x86.Build.0 = Debug|x86
+		{342B0144-EAC5-483E-9BAB-86A6840076FB}.Release|Any CPU.ActiveCfg = Release|x86
+		{342B0144-EAC5-483E-9BAB-86A6840076FB}.Release|x86.ActiveCfg = Release|x86
+		{342B0144-EAC5-483E-9BAB-86A6840076FB}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -277,5 +285,6 @@ Global
 		{3F6BA326-D91E-47CB-B477-3DD6660CDF13} = {A53A631B-73C5-41F8-B842-EC0C74F9EEFC}
 		{2E46679F-4D23-43D6-9F98-5F7B934D1201} = {A53A631B-73C5-41F8-B842-EC0C74F9EEFC}
 		{737ED8C3-6AB3-40EF-BF12-34FEC7D9B4C5} = {A53A631B-73C5-41F8-B842-EC0C74F9EEFC}
+		{342B0144-EAC5-483E-9BAB-86A6840076FB} = {466C35DF-12D7-494D-8ECF-1F23FC792580}
 	EndGlobalSection
 EndGlobal
