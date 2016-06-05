@@ -17,60 +17,6 @@ namespace Workspaces
     class Program
     {        
         //
-        // DEMO 6
-        //
-
-        static void Rename(Workspace ws, Solution sln)
-        {
-            //
-            // Get Tests\Bar.cs before making changes.
-            //
-
-            var oldProj = sln.Projects.Single(p => p.Name == "Tests");
-            var oldDoc = oldProj.Documents.Single(d => d.Name == "Bar.cs");
-
-            Console.WriteLine("Before:");
-            Console.WriteLine();
-
-            var oldTxt = oldDoc.GetTextAsync().Result;
-            Console.WriteLine(oldTxt);
-
-            Console.WriteLine();
-            Console.WriteLine();
-
-
-            //
-            // Get the symbol for the Bar.Foo method.
-            //
-
-            var comp = oldProj.GetCompilationAsync().Result;
-
-            var barType = comp.GetTypeByMetadataName("Workspaces.Bar");
-            var fooMethod = barType.GetMembers().Single(m => m.Name == "Foo");
-
-
-            //
-            // Perform the rename.
-            //
-
-            var newSln = Renamer.RenameSymbolAsync(sln, fooMethod, "Foo2", ws.Options).Result;
-
-
-            //
-            // Get Tests\Bar.cs after making changes.
-            //
-
-            var newProj = newSln.Projects.Single(p => p.Name == "Tests");
-            var newDoc = newProj.Documents.Single(d => d.Name == "Bar.cs");
-
-            Console.WriteLine("After:");
-            Console.WriteLine();
-
-            var newTxt = newDoc.GetTextAsync().Result;
-            Console.WriteLine(newTxt);
-        }
-
-        //
         // DEMO 7
         //
 
