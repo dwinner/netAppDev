@@ -71,6 +71,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GuiSyntaxTree", "GuiSyntaxT
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UsingCollectorSample", "UsingCollectorSample\UsingCollectorSample.csproj", "{08791399-83CE-4CD2-A539-2B9B1EDD32EC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TransformMethodsSample", "TransformMethodsSample\TransformMethodsSample.csproj", "{950375E2-7245-4489-9FE6-9D2641CE635F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -269,6 +271,12 @@ Global
 		{08791399-83CE-4CD2-A539-2B9B1EDD32EC}.Release|Any CPU.ActiveCfg = Release|x86
 		{08791399-83CE-4CD2-A539-2B9B1EDD32EC}.Release|x86.ActiveCfg = Release|x86
 		{08791399-83CE-4CD2-A539-2B9B1EDD32EC}.Release|x86.Build.0 = Release|x86
+		{950375E2-7245-4489-9FE6-9D2641CE635F}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{950375E2-7245-4489-9FE6-9D2641CE635F}.Debug|x86.ActiveCfg = Debug|x86
+		{950375E2-7245-4489-9FE6-9D2641CE635F}.Debug|x86.Build.0 = Debug|x86
+		{950375E2-7245-4489-9FE6-9D2641CE635F}.Release|Any CPU.ActiveCfg = Release|x86
+		{950375E2-7245-4489-9FE6-9D2641CE635F}.Release|x86.ActiveCfg = Release|x86
+		{950375E2-7245-4489-9FE6-9D2641CE635F}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -301,5 +309,6 @@ Global
 		{737ED8C3-6AB3-40EF-BF12-34FEC7D9B4C5} = {A53A631B-73C5-41F8-B842-EC0C74F9EEFC}
 		{342B0144-EAC5-483E-9BAB-86A6840076FB} = {466C35DF-12D7-494D-8ECF-1F23FC792580}
 		{08791399-83CE-4CD2-A539-2B9B1EDD32EC} = {B0CC976A-818E-48F6-A2E7-32A37C54944C}
+		{950375E2-7245-4489-9FE6-9D2641CE635F} = {466C35DF-12D7-494D-8ECF-1F23FC792580}
 	EndGlobalSection
 EndGlobal
