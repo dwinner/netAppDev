@@ -23,6 +23,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TransparentRegistryValue", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoRetrySample", "AutoRetrySample\AutoRetrySample.csproj", "{A295DBBB-DC87-435F-B1A9-A8F1E4F146CA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CustomCachingSample", "CustomCachingSample\CustomCachingSample.csproj", "{C1E12C4D-1FEC-4C93-A896-AD83117F0136}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Aop.Lib", "Aop.Lib\Aop.Lib.csproj", "{6354F61D-7879-4384-93BB-1B326F05CE88}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -69,6 +73,14 @@ Global
 		{A295DBBB-DC87-435F-B1A9-A8F1E4F146CA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A295DBBB-DC87-435F-B1A9-A8F1E4F146CA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A295DBBB-DC87-435F-B1A9-A8F1E4F146CA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C1E12C4D-1FEC-4C93-A896-AD83117F0136}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C1E12C4D-1FEC-4C93-A896-AD83117F0136}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C1E12C4D-1FEC-4C93-A896-AD83117F0136}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C1E12C4D-1FEC-4C93-A896-AD83117F0136}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6354F61D-7879-4384-93BB-1B326F05CE88}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6354F61D-7879-4384-93BB-1B326F05CE88}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6354F61D-7879-4384-93BB-1B326F05CE88}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6354F61D-7879-4384-93BB-1B326F05CE88}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
