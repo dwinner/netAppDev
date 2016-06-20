@@ -27,6 +27,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CustomCachingSample", "Cust
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Aop.Lib", "Aop.Lib\Aop.Lib.csproj", "{6354F61D-7879-4384-93BB-1B326F05CE88}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CustomLoggingSample", "CustomLoggingSample\CustomLoggingSample.csproj", "{7C286702-C9E8-47DA-A31D-4D39A480DAF1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -81,6 +83,10 @@ Global
 		{6354F61D-7879-4384-93BB-1B326F05CE88}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6354F61D-7879-4384-93BB-1B326F05CE88}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6354F61D-7879-4384-93BB-1B326F05CE88}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7C286702-C9E8-47DA-A31D-4D39A480DAF1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7C286702-C9E8-47DA-A31D-4D39A480DAF1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7C286702-C9E8-47DA-A31D-4D39A480DAF1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7C286702-C9E8-47DA-A31D-4D39A480DAF1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

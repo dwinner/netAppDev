@@ -11,18 +11,18 @@
       {
          // Добавляем тип и имя метода
          Type declaringType = args.Method.DeclaringType;
-         Formatter.AppendTypeName(stringBuilder, declaringType);
+         SignatureFormatter.AppendTypeName(stringBuilder, declaringType);
          stringBuilder.Append('.').Append(args.Method.Name);
 
          // Добавляем обобщенные параметры
          if (args.Method.IsGenericMethod)
          {
             var genericArguments = args.Method.GetGenericArguments();
-            Formatter.AppendGenericArguments(stringBuilder, genericArguments);
+            SignatureFormatter.AppendGenericArguments(stringBuilder, genericArguments);
          }
 
          // Добавляем аргументы
-         Formatter.AppendArguments(stringBuilder, args.Arguments);
+         SignatureFormatter.AppendArguments(stringBuilder, args.Arguments);
       }
    }
 }
