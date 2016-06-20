@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.24720.0
+VisualStudioVersion = 14.0.25123.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TracingMethodExecution", "TracingMethodExecution\TracingMethodExecution.csproj", "{368B434A-5A0D-4341-8703-6C3E89C1B00C}"
 EndProject
@@ -20,6 +20,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TransparentInterfaceImpl", "TransparentInterfaceImpl\TransparentInterfaceImpl.csproj", "{1744796F-C5E7-4478-9975-208A3F25B1DB}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TransparentRegistryValue", "TransparentRegistryValue\TransparentRegistryValue.csproj", "{FD7D158C-DA88-4B04-974C-A87FB1B306B3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoRetrySample", "AutoRetrySample\AutoRetrySample.csproj", "{A295DBBB-DC87-435F-B1A9-A8F1E4F146CA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -63,6 +65,10 @@ Global
 		{FD7D158C-DA88-4B04-974C-A87FB1B306B3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FD7D158C-DA88-4B04-974C-A87FB1B306B3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FD7D158C-DA88-4B04-974C-A87FB1B306B3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A295DBBB-DC87-435F-B1A9-A8F1E4F146CA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A295DBBB-DC87-435F-B1A9-A8F1E4F146CA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A295DBBB-DC87-435F-B1A9-A8F1E4F146CA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A295DBBB-DC87-435F-B1A9-A8F1E4F146CA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
