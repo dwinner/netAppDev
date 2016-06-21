@@ -18,10 +18,10 @@
       {
          var stringBuilder = new StringBuilder();
          stringBuilder.Append("Setting ");
-         SignatureFormatter.AppendTypeName(stringBuilder, args.Location.DeclaringType);
+         stringBuilder.AppendTypeName(args.Location.DeclaringType);
          if (args.Index.Count != 0)
          {
-            SignatureFormatter.AppendArguments(stringBuilder, args.Index);
+            stringBuilder.AppendArguments(args.Index);
          }
 
          stringBuilder.Append(" = ").Append(args.Value);
