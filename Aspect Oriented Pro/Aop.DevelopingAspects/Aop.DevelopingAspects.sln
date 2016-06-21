@@ -31,6 +31,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CustomLoggingSample", "Cust
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExceptionHandlingSample", "ExceptionHandlingSample\ExceptionHandlingSample.csproj", "{312DCF49-CB25-4D0F-A54A-3A2C7E0132CE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProfilingSample", "ProfilingSample\ProfilingSample.csproj", "{D3F40FE5-997F-439A-B1CF-2EF495AEBA85}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -93,6 +95,10 @@ Global
 		{312DCF49-CB25-4D0F-A54A-3A2C7E0132CE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{312DCF49-CB25-4D0F-A54A-3A2C7E0132CE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{312DCF49-CB25-4D0F-A54A-3A2C7E0132CE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D3F40FE5-997F-439A-B1CF-2EF495AEBA85}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D3F40FE5-997F-439A-B1CF-2EF495AEBA85}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D3F40FE5-997F-439A-B1CF-2EF495AEBA85}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D3F40FE5-997F-439A-B1CF-2EF495AEBA85}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
