@@ -32,7 +32,7 @@
                 { name: "Snowdrop", product: "snowdrop", stock: "15", price: 0.99 }]
             };
             for (var i = 0; i < data.flowers.length; i++) {
-                if (data.flowers[i].stock == 0) {
+                if (data.flowers[i].stock === 0) {
                     data.flowers[i].stock = null;
                 }
             }
