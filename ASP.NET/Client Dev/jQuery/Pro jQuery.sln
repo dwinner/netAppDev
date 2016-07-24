@@ -61,13 +61,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Datepicker.Widget", "Using 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AjaxFeatures", "+ Examples\AjaxFeatures\AjaxFeatures.csproj", "{253BE4C4-C7D3-4A51-BEEB-364439E6F230}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{F6AB1504-8AEA-4C91-B1DA-CAC7011501C1}"
-	ProjectSection(SolutionItems) = preProject
-		.nuget\NuGet.Config = .nuget\NuGet.Config
-		.nuget\NuGet.exe = .nuget\NuGet.exe
-		.nuget\NuGet.targets = .nuget\NuGet.targets
-	EndProjectSection
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dialog.Widget", "Using jQuery UI\Dialog.Widget\Dialog.Widget.csproj", "{A05DC3FF-46E5-47A3-BC19-B07CE7BC9443}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spinner.Widget", "Using jQuery UI\Spinner.Widget\Spinner.Widget.csproj", "{11E81C90-1B2D-45E0-8F40-B3969A4E73D8}"
