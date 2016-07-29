@@ -6,6 +6,8 @@ namespace Users.Infrastructure
    {
       public const string AdminRoleName = "Adminstrators";
 
+      #region commented
+
       //protected override void Seed(AppIdentityDbContext context)
       //{
       //   PerformInitialSetup(context);
@@ -38,5 +40,8 @@ namespace Users.Infrastructure
       //      userManager.AddToRole(user.Id, AdminRoleName);
       //   }
       //}
+
+      #endregion
+
    }
 }
