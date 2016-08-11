@@ -1,6 +1,4 @@
-﻿@*@model IEnumerable<Reservation>*@
-
-@{
+﻿@{
     ViewBag.Title = "Reservations";
     Layout = "~/Views/Shared/_Layout.cshtml";    
 }
@@ -34,7 +32,7 @@
         }
 
         function removeItem(item) {
-            sendAjaxRequest("DELETE", function () { //getAllItems();
+            sendAjaxRequest("DELETE", function () {
                 for (var i = 0; i < model.reservations().length; i++) {
                     if (model.reservations()[i].ReservationId === item.ReservationId) {
                         model.reservations.remove(model.reservations()[i]);
@@ -92,8 +90,7 @@
                 </tbody>
             </table>
             <button class="btn btn-primary" data-bind="click: handleCreateClick">Create</button>
-        </div>
-        @*@Html.Partial("Summary", Model)*@
+        </div>        
     </div>
     <!-- Форма для вставки новых записей -->
     <div id="editor" class="section panel panel-primary" data-bind="ifnot: model.displaySummary">
@@ -110,7 +107,6 @@
                 <input class="form-control" data-bind="value: model.editor.location" />
             </div>
             <button type="submit" class="btn btn-primary" data-bind="click: handleEditorClick">Save</button>
-        </div>
-        @*@Html.Partial("Editor", new Reservation())*@
+        </div>        
     </div>
 }

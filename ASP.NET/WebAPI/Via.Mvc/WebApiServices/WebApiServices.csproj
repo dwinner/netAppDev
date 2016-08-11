@@ -137,8 +137,6 @@
     <Content Include="Scripts\jquery-2.1.4.min.map" />
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
-    <Content Include="Views\Home\Summary.cshtml" />
-    <Content Include="Views\Home\Editor.cshtml" />
     <Content Include="Scripts\jquery-2.1.4.min.js.map">
       <DependentUpon>jquery-2.1.4.min.js</DependentUpon>
     </Content>
