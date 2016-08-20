@@ -1,11 +1,15 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
+# Visual Studio 2013
+VisualStudioVersion = 12.0.40629.0
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Killing", "ProcessKilling\Killing.csproj", "{97F07553-F499-4273-826D-86A893020E42}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProcessManipulator", "ProcessManipulator\ProcessManipulator.csproj", "{05662104-5601-4388-ADD6-66BF80EDC34A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProcWndShowDetector", "ProcWndShowDetector\ProcWndShowDetector.csproj", "{206F8D3E-A783-4977-B257-918962947EB0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WmiProcessManagement", "WmiProcessManagement\WmiProcessManagement.csproj", "{D1A9ABF3-BBD3-4CCA-A41B-C8C5215CF236}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -47,6 +51,16 @@ Global
 		{206F8D3E-A783-4977-B257-918962947EB0}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{206F8D3E-A783-4977-B257-918962947EB0}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{206F8D3E-A783-4977-B257-918962947EB0}.Release|x86.ActiveCfg = Release|Any CPU
+		{D1A9ABF3-BBD3-4CCA-A41B-C8C5215CF236}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D1A9ABF3-BBD3-4CCA-A41B-C8C5215CF236}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D1A9ABF3-BBD3-4CCA-A41B-C8C5215CF236}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{D1A9ABF3-BBD3-4CCA-A41B-C8C5215CF236}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{D1A9ABF3-BBD3-4CCA-A41B-C8C5215CF236}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{D1A9ABF3-BBD3-4CCA-A41B-C8C5215CF236}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D1A9ABF3-BBD3-4CCA-A41B-C8C5215CF236}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D1A9ABF3-BBD3-4CCA-A41B-C8C5215CF236}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{D1A9ABF3-BBD3-4CCA-A41B-C8C5215CF236}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{D1A9ABF3-BBD3-4CCA-A41B-C8C5215CF236}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
