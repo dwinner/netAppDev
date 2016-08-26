@@ -6,7 +6,7 @@
 
 using System;
 using System.ComponentModel.Design;
-using System.Globalization;
+using EnvDTE;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 
@@ -15,17 +15,12 @@ namespace AccessingSolutionObjects
    /// <summary>
    ///    Command handler
    /// </summary>
-   internal sealed class EnumerateObjectsCommand
+   internal sealed class AccessingVsWindows
    {
       /// <summary>
       ///    Command ID.
       /// </summary>
-      public const int CommandId = 0x0100;
-
-      /// <summary>
-      ///    Command menu group (command set GUID).
-      /// </summary>
-      public static readonly Guid CommandSet = new Guid("329c05e3-bde7-4219-83c9-7de79ad9fc8b");
+      public const int CommandId = 0x0100;      
 
       /// <summary>
       ///    VS Package that provides this command, not null.
@@ -33,11 +28,11 @@ namespace AccessingSolutionObjects
       private readonly Package _package;
 
       /// <summary>
-      ///    Initializes a new instance of the <see cref="EnumerateObjectsCommand" /> class.
+      ///    Initializes a new instance of the <see cref="AccessingVsWindows" /> class.
       ///    Adds our command handlers for menu (commands must exist in the command table file)
       /// </summary>
       /// <param name="package">Owner _package, not null.</param>
-      private EnumerateObjectsCommand(Package package)
+      private AccessingVsWindows(Package package)
       {
          if (package == null)
          {
@@ -45,12 +40,11 @@ namespace AccessingSolutionObjects
          }
 
          _package = package;
-
          var commandService = ServiceProvider.GetService(typeof (IMenuCommandService)) as OleMenuCommandService;
          if (commandService != null)
          {
-            var menuCommandId = new CommandID(CommandSet, CommandId);
-            var menuItem = new MenuCommand(MenuItemCallback, menuCommandId);
+            var menuCommandId = new CommandID(GuidList.TopMenuGroupGuid, CommandId);
+            var menuItem = new MenuCommand(OnAccessVsWindows, menuCommandId);
             commandService.AddCommand(menuItem);
          }
       }
@@ -58,7 +52,7 @@ namespace AccessingSolutionObjects
       /// <summary>
       ///    Gets the instance of the command.
       /// </summary>
-      public static EnumerateObjectsCommand Instance { get; private set; }
+      public static AccessingVsWindows Instance { get; private set; }
 
       /// <summary>
       ///    Gets the service provider from the owner _package.
@@ -71,7 +65,7 @@ namespace AccessingSolutionObjects
       /// <param name="package">Owner _package, not null.</param>
       public static void Initialize(Package package)
       {
-         Instance = new EnumerateObjectsCommand(package);
+         Instance = new AccessingVsWindows(package);
       }
 
       /// <summary>
@@ -81,19 +75,35 @@ namespace AccessingSolutionObjects
       /// </summary>
       /// <param name="sender">Event sender.</param>
       /// <param name="e">Event args.</param>
-      private void MenuItemCallback(object sender, EventArgs e)
+      private void OnAccessVsWindows(object sender, EventArgs e)
       {
-         var message = string.Format(CultureInfo.CurrentCulture, "Inside {0}.MenuItemCallback()", GetType().FullName);
-         var title = "EnumerateObjectsCommand";
+         var devenvImpl = (DTE) ServiceProvider.GetService(typeof (DTE));
+         if (devenvImpl != null)
+         {
+            var windows = devenvImpl.Windows;
+            var count = windows.Count;
+            string results = $"{count} windows open... {Environment.NewLine}";
 
-         // Show a message box to prove we were here
-         VsShellUtilities.ShowMessageBox(
-            ServiceProvider,
-            message,
-            title,
-            OLEMSGICON.OLEMSGICON_INFO,
-            OLEMSGBUTTON.OLEMSGBUTTON_OK,
-            OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
+            // Iterate the collection of windows
+            for (var i = 1; i <= count; i++)
+            {
+               var window = windows.Item(i);
+               var title = window.Caption;
+
+               // If the window is hosting a document, a valid Document object will be returned through Window.Document
+               results += window.Document != null
+                  ? $"Window '{title}' is a document window{Environment.NewLine}"
+                  : $"Window '{title}' is a tool window{Environment.NewLine}";
+            }
+
+            VsShellUtilities.ShowMessageBox(
+               ServiceProvider,
+               results,
+               "Window dump",
+               OLEMSGICON.OLEMSGICON_INFO,
+               OLEMSGBUTTON.OLEMSGBUTTON_OK,
+               OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
+         }
       }
    }
 }

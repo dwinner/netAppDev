@@ -51,8 +51,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="AccessingLoadedSolution.cs" />
     <Compile Include="AccessingSlnObjectsPackage.cs" />
-    <Compile Include="EnumerateObjectsCommand.cs" />
+    <Compile Include="AccessingVsWindows.cs" />
     <Compile Include="GuidList.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -167,7 +168,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Resources\EnumerateObjectsCommand.png" />
+    <Content Include="Resources\AccessingLoadedSolution.png" />
+    <Content Include="Resources\AccessingVsWindows.png" />
     <VSCTCompile Include="AccessingSlnObjectsPackage.vsct">
       <ResourceName>Menus.ctmenu</ResourceName>
     </VSCTCompile>

@@ -4,11 +4,9 @@
 // </copyright>
 //------------------------------------------------------------------------------
 
-using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using EnvDTE;
-using Microsoft.Internal.VisualStudio.Shell;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
@@ -27,6 +25,7 @@ namespace AccessingSolutionObjects
    {
       private IVsSolution2 _solution;
       private uint _solutionEventsCookie;
+      private DTE _devenvImpl;      
 
       public int OnShellPropertyChange(int propid, object var) => VSConstants.S_OK;
 
@@ -43,7 +42,6 @@ namespace AccessingSolutionObjects
             (uint) VSConstants.VSITEMID.Root, (int) __VSHPROPID.VSHPROPID_Name, out projectObject);
          // FIXME: Call out output window and write the name of the project
          var projectName = projectObject as string;
-
          return VSConstants.S_OK;
       }
 
@@ -94,29 +92,14 @@ namespace AccessingSolutionObjects
       protected override void Initialize()
       {
          base.Initialize();
-         EnumerateObjectsCommand.Initialize(this);         
+         AccessingVsWindows.Initialize(this);
+         AccessingLoadedSolution.Initialize(this);
+                  
          _solution = ServiceProvider.GlobalProvider.GetService(typeof(SVsSolution)) as IVsSolution2;
          if (_solution != null)
          {
             _solution.AdviseSolutionEvents(this, out _solutionEventsCookie);
-         }
-
-         var devenvImpl = (DTE) GetService(typeof (DTE));
-         var loadedSolution = devenvImpl.Solution;
-         if (loadedSolution != null)
-         {
-            var solutionName = loadedSolution.FullName;
-            //var solutionFileName = loadedSolution.FileName;
-
-            var projects = loadedSolution.Projects.Cast<Project>();
-            var duckProjectList = new List<dynamic>();
-            foreach (var project in projects)
-            {
-               var projectFullName = project.FullName;
-               var projectFileName = project.FileName;
-               duckProjectList.Add(new { projectFullName, projectFileName });
-            }
-         }
+         }         
       }
 
       protected override void Dispose(bool disposing)
