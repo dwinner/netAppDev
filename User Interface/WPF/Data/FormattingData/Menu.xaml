@@ -5,7 +5,7 @@
     <Grid>
         <StackPanel Margin="5" Button.Click="ButtonClick">
             <Button>ValueConverter</Button>
-            <Button>MoreValueConverters</Button><!-- stopped here -->
+            <Button>MoreValueConverters</Button><!-- NOTE: stopped here -->
             <Button>ListStyles</Button>
 
             <Button>RadioButtonList</Button>

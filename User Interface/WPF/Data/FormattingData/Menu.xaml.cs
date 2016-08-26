@@ -2,7 +2,7 @@ using System.Windows;
 using System.Windows.Controls;
 
 namespace DataBinding
-{   
+{
    public partial class Menu
    {
       public Menu()
@@ -10,7 +10,7 @@ namespace DataBinding
          InitializeComponent();
       }
 
-      void ButtonClick(object sender, RoutedEventArgs e)
+      private void ButtonClick(object sender, RoutedEventArgs e)
       {
          // Get the current button.
          var cmd = (Button) e.OriginalSource;
