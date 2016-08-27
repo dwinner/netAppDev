@@ -51,9 +51,11 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="AccessingLoadedSolution.cs" />
+    <Compile Include="Commands\AccessingLoadedSolution.cs" />
     <Compile Include="AccessingSlnObjectsPackage.cs" />
-    <Compile Include="AccessingVsWindows.cs" />
+    <Compile Include="Commands\AccessingTextDocument.cs" />
+    <Compile Include="Commands\AccessingVsTaskList.cs" />
+    <Compile Include="Commands\AccessingVsWindows.cs" />
     <Compile Include="GuidList.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

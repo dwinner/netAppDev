@@ -27,6 +27,22 @@
                     <ButtonText>Accessing Loaded Solution</ButtonText>
                 </Strings>
             </Button>
+            <Button guid="guidAccessingSlnObjectsPackageCmdSet" id="AccessingTextDocumentId" priority="0x0100"
+                    type="Button">
+                <Parent guid="guidAccessingSlnObjectsPackageCmdSet" id="TopMenuGroup" />
+                <Icon guid="guidImages" id="bmpPic1" />
+                <Strings>
+                    <ButtonText>Accessing Documents</ButtonText>
+                </Strings>
+            </Button>
+            <Button guid="guidAccessingSlnObjectsPackageCmdSet" id="AccessingVsTaskListId" priority="0x0100"
+                    type="Button">
+                <Parent guid="guidAccessingSlnObjectsPackageCmdSet" id="TopMenuGroup" />
+                <Icon guid="guidImages" id="bmpPic1" />
+                <Strings>
+                    <ButtonText>Accessing TaskList</ButtonText>
+                </Strings>
+            </Button>
         </Buttons>
         <Bitmaps>
             <Bitmap guid="guidImages" href="Resources\AccessingVsWindows.png"
@@ -48,6 +64,8 @@
             <IDSymbol name="TopMenuGroup" value="0x1020" />
             <IDSymbol name="AccessingVsWindowsId" value="0x0100" />
             <IDSymbol name="AccessingLoadedSolutionId" value="0x0200" />
+            <IDSymbol name="AccessingTextDocumentId" value="0x0300" />
+            <IDSymbol name="AccessingVsTaskListId" value="0x0400" />
             <IDSymbol name="TopLevelMenu" value="0x1021" />
         </GuidSymbol>
         <GuidSymbol name="guidImages" value="{60aa8043-daac-49f6-88fa-09a8ac5d607e}">

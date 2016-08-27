@@ -1,26 +1,28 @@
 ﻿//------------------------------------------------------------------------------
-// <copyright file="EnumerateObjectsCommand.cs" company="Company">
+// <copyright file="AccessingLoadedSolution.cs" company="Company">
 //     Copyright (c) Company.  All rights reserved.
 // </copyright>
 //------------------------------------------------------------------------------
 
 using System;
 using System.ComponentModel.Design;
+using System.Linq;
+using System.Text;
 using EnvDTE;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 
-namespace AccessingSolutionObjects
+namespace AccessingSolutionObjects.Commands
 {
    /// <summary>
    ///    Command handler
    /// </summary>
-   internal sealed class AccessingVsWindows
+   internal sealed class AccessingLoadedSolution
    {
       /// <summary>
       ///    Command ID.
       /// </summary>
-      public const int CommandId = 0x0100;      
+      public const int CommandId = 0x0200;
 
       /// <summary>
       ///    VS Package that provides this command, not null.
@@ -28,11 +30,11 @@ namespace AccessingSolutionObjects
       private readonly Package _package;
 
       /// <summary>
-      ///    Initializes a new instance of the <see cref="AccessingVsWindows" /> class.
+      ///    Initializes a new instance of the <see cref="AccessingLoadedSolution" /> class.
       ///    Adds our command handlers for menu (commands must exist in the command table file)
       /// </summary>
       /// <param name="package">Owner _package, not null.</param>
-      private AccessingVsWindows(Package package)
+      private AccessingLoadedSolution(Package package)
       {
          if (package == null)
          {
@@ -40,11 +42,12 @@ namespace AccessingSolutionObjects
          }
 
          _package = package;
+
          var commandService = ServiceProvider.GetService(typeof (IMenuCommandService)) as OleMenuCommandService;
          if (commandService != null)
          {
             var menuCommandId = new CommandID(GuidList.TopMenuGroupGuid, CommandId);
-            var menuItem = new MenuCommand(OnAccessVsWindows, menuCommandId);
+            var menuItem = new MenuCommand(OnAccessSolutionObjects, menuCommandId);
             commandService.AddCommand(menuItem);
          }
       }
@@ -52,7 +55,7 @@ namespace AccessingSolutionObjects
       /// <summary>
       ///    Gets the instance of the command.
       /// </summary>
-      public static AccessingVsWindows Instance { get; private set; }
+      public static AccessingLoadedSolution Instance { get; private set; }
 
       /// <summary>
       ///    Gets the service provider from the owner _package.
@@ -65,41 +68,28 @@ namespace AccessingSolutionObjects
       /// <param name="package">Owner _package, not null.</param>
       public static void Initialize(Package package)
       {
-         Instance = new AccessingVsWindows(package);
+         Instance = new AccessingLoadedSolution(package);
       }
-
-      /// <summary>
-      ///    This function is the callback used to execute the command when the menu item is clicked.
-      ///    See the constructor to see how the menu item is associated with this function using
-      ///    OleMenuCommandService service and MenuCommand class.
-      /// </summary>
-      /// <param name="sender">Event sender.</param>
-      /// <param name="e">Event args.</param>
-      private void OnAccessVsWindows(object sender, EventArgs e)
+      
+      private void OnAccessSolutionObjects(object sender, EventArgs e)
       {
          var devenvImpl = (DTE) ServiceProvider.GetService(typeof (DTE));
-         if (devenvImpl != null)
+         var solution = devenvImpl.Solution;
+         if (solution != null && solution.IsOpen)
          {
-            var windows = devenvImpl.Windows;
-            var count = windows.Count;
-            string results = $"{count} windows open... {Environment.NewLine}";
-
-            // Iterate the collection of windows
-            for (var i = 1; i <= count; i++)
+            var solutionName = solution.FullName;
+            var projects = solution.Projects.Cast<Project>().ToArray();
+            var projectNames = projects.Select(project => project.FullName).ToList();
+            var messageBuilder = new StringBuilder($"Loaded solution: {solutionName}");
+            foreach (var projectName in projectNames)
             {
-               var window = windows.Item(i);
-               var title = window.Caption;
-
-               // If the window is hosting a document, a valid Document object will be returned through Window.Document
-               results += window.Document != null
-                  ? $"Window '{title}' is a document window{Environment.NewLine}"
-                  : $"Window '{title}' is a tool window{Environment.NewLine}";
+               messageBuilder.AppendLine($"Loaded project: {projectName}");
             }
 
             VsShellUtilities.ShowMessageBox(
                ServiceProvider,
-               results,
-               "Window dump",
+               messageBuilder.ToString(),
+               "Solution information",
                OLEMSGICON.OLEMSGICON_INFO,
                OLEMSGBUTTON.OLEMSGBUTTON_OK,
                OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);

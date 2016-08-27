@@ -4,9 +4,8 @@
 // </copyright>
 //------------------------------------------------------------------------------
 
-using System.Linq;
 using System.Runtime.InteropServices;
-using EnvDTE;
+using AccessingSolutionObjects.Commands;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
@@ -24,8 +23,7 @@ namespace AccessingSolutionObjects
       IVsUpdateSolutionEvents2      
    {
       private IVsSolution2 _solution;
-      private uint _solutionEventsCookie;
-      private DTE _devenvImpl;      
+      private uint _solutionEventsCookie;      
 
       public int OnShellPropertyChange(int propid, object var) => VSConstants.S_OK;
 
@@ -41,7 +39,7 @@ namespace AccessingSolutionObjects
          pStubHierarchy.GetProperty(
             (uint) VSConstants.VSITEMID.Root, (int) __VSHPROPID.VSHPROPID_Name, out projectObject);
          // FIXME: Call out output window and write the name of the project
-         var projectName = projectObject as string;
+         //var projectName = projectObject as string;
          return VSConstants.S_OK;
       }
 
@@ -92,9 +90,12 @@ namespace AccessingSolutionObjects
       protected override void Initialize()
       {
          base.Initialize();
+         // NOTE: Stopped At Toolbox (MS Visual Studio 2015 Unleashed, page number 655)
          AccessingVsWindows.Initialize(this);
          AccessingLoadedSolution.Initialize(this);
-                  
+         AccessingTextDocument.Initialize(this);
+         AccessingVsTaskList.Initialize(this);
+
          _solution = ServiceProvider.GlobalProvider.GetService(typeof(SVsSolution)) as IVsSolution2;
          if (_solution != null)
          {
