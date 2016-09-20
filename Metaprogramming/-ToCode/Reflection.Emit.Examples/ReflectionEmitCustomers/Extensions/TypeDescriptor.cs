@@ -7,28 +7,7 @@ using System.Text;
 namespace ReflectionEmitCustomers.Extensions.Descriptors
 {
 	internal sealed class TypeDescriptor : Descriptor
-	{
-		private TypeDescriptor()
-			: base() { }
-
-		internal TypeDescriptor(Type type)
-			: this(type, type == null ? null : type.Assembly, true) { }
-
-		internal TypeDescriptor(Type type, bool showKind)
-			: base()
-		{
-			this.CreateDescriptor(type, type.Assembly, showKind);
-		}
-
-		internal TypeDescriptor(Type type, Assembly containingAssembly)
-			: this(type, containingAssembly, true) { }
-
-		internal TypeDescriptor(Type type, Assembly containingAssembly, bool showKind)
-			: base()
-		{
-			this.CreateDescriptor(type, containingAssembly, showKind);
-		}
-
+	{		
 		private static void CheckAssembly(Assembly containingAssembly)
 		{
 			if(containingAssembly == null)
