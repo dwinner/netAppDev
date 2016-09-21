@@ -5,20 +5,7 @@ using System.Reflection;
 namespace ReflectionEmitCustomers.Extensions
 {
 	public sealed class ReflectionEmitMethodGenerator
-	{
-		private AssemblyBuilder Assembly { get; set; }
-		private ModuleBuilder Module { get; set; }
-		private AssemblyName Name { get; set; }
-
-		public ReflectionEmitMethodGenerator()
-			: base()
-		{
-			this.Name = new AssemblyName() { Name = Guid.NewGuid().ToString("N") };
-			this.Assembly = AppDomain.CurrentDomain.DefineDynamicAssembly(
-				this.Name, AssemblyBuilderAccess.Run);
-			this.Module = this.Assembly.DefineDynamicModule(this.Name.Name);
-		}
-
+	{		
 		public Func<T, string> Generate<T>()
 		{
 			var target = typeof(T);
