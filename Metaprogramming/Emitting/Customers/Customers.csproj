@@ -51,7 +51,9 @@
     <Compile Include="Extensions\Descriptors\Descriptor.cs" />
     <Compile Include="Extensions\Descriptors\MethodDescriptor.cs" />
     <Compile Include="Extensions\Descriptors\TypeDescriptor.cs" />
+    <Compile Include="Extensions\MemberInfoExtensions.cs" />
     <Compile Include="Extensions\MethodBaseExtensions.cs" />
+    <Compile Include="Extensions\TypeExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -18,7 +18,7 @@ namespace Customers.Extensions.Descriptors
          AddLocation(method, parts);
          AddCallingConventions(method, parts);
          AddReturnValue(method, containingAssembly, parts);
-         parts.Add(method.GetName() + GetMethodArgumentInformation(method, containingAssembly));
+         parts.Add($"{method.GetName(containingAssembly)}{GetMethodArgumentInformation(method, containingAssembly)}");
          Value = string.Join(" ", parts.ToArray());
       }
 
