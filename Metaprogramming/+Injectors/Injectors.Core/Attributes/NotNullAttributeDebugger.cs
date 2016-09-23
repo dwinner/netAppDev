@@ -1,9 +1,9 @@
-﻿using ICSharpCode.NRefactory;
-using ICSharpCode.NRefactory.Visitors;
-using Injectors.Core.Extensions;
+﻿using Injectors.Core.Extensions;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 using System.Linq;
+using ICSharpCode.NRefactory;
+using ICSharpCode.NRefactory.Visitors;
 using NR = ICSharpCode.NRefactory.Ast;
 
 namespace Injectors.Core.Attributes
