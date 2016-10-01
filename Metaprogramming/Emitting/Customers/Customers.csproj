@@ -57,6 +57,7 @@
     <Compile Include="Extensions\MethodBaseExtensions.cs" />
     <Compile Include="Extensions\ReflectionEmitMethodGenerator.cs" />
     <Compile Include="Extensions\ReflectionEmitWithDebuggingMethodGenerator.cs" />
+    <Compile Include="Extensions\ToStringIlGenerator.cs" />
     <Compile Include="Extensions\ToStringViaReflectionEmitExtensions.cs" />
     <Compile Include="Extensions\ToStringViaReflectionEmitWithDebuggingExtensions.cs" />
     <Compile Include="Extensions\ToStringViaReflectionExtensions.cs" />
