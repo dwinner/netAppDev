@@ -7,9 +7,9 @@ using System.Collections.Generic;
 
 namespace ComparableObjects
 {
-   static class Program
+   internal static class Program
    {
-      static void Main()
+      private static void Main()
       {
          var number1 = new ComplexNumber(2, 3);
          var number2 = new ComplexNumber(3, 4);
@@ -26,7 +26,7 @@ namespace ComparableObjects
 
          Console.WriteLine("Before sort:");
          PrintArray(complexNumbers);
-         Array.Sort(complexNumbers);   // Note: сравнение проходит по умолчанию
+         Array.Sort(complexNumbers); // Note: сравнение проходит по умолчанию
          Console.WriteLine("After sort:");
          PrintArray(complexNumbers);
 
