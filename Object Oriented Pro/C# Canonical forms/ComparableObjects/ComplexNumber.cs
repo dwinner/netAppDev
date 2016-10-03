@@ -2,89 +2,50 @@
 
 namespace ComparableObjects
 {
-   public sealed class ComplexNumber : IComparable
+   public sealed class ComplexNumber : IComparable<ComplexNumber>
    {
-      private const double DefaultReal = 0.0;
-      private const double DefaultImaginary = 0.0;
+      private const double DefaultReal = default(double);
+      private const double DefaultImaginary = default(double);
 
-      private readonly double _real;
-      private readonly double _imaginary;
-
-      public double Real
+      public ComplexNumber(double real = DefaultReal, double imaginary = DefaultImaginary)
       {
-         get
-         {
-            return _real;
-         }
+         Real = real;
+         Imaginary = imaginary;
       }
 
-      public double Imaginary
-      {
-         get
-         {
-            return _imaginary;
-         }
-      }
+      private double Real { get; }
 
-      public double Magnitude
-      {
-         get
-         {
-            return Math.Sqrt(Math.Pow(_real, 2) + Math.Pow(_imaginary, 2));
-         }
-      }
+      private double Imaginary { get; }
 
-      public ComplexNumber(double real, double imaginary)
-      {
-         _real = real;
-         _imaginary = imaginary;
-      }
-
-      public ComplexNumber() : this(DefaultReal, DefaultImaginary) { }
+      private double Magnitude
+         => Math.Sqrt(Math.Pow(Real, 2) + Math.Pow(Imaginary, 2));      
 
       private bool Equals(ComplexNumber other)
-      {
-         return _real.Equals(other._real) && _imaginary.Equals(other._imaginary);
-      }
+         => Real.Equals(other.Real) && Imaginary.Equals(other.Imaginary);
 
       public override bool Equals(object obj)
-      {
-         if (ReferenceEquals(null, obj))
-            return false;
-         if (ReferenceEquals(this, obj))
-            return true;
-         return obj is ComplexNumber && Equals((ComplexNumber)obj);
-      }
+         =>
+            !ReferenceEquals(null, obj) &&
+            (ReferenceEquals(this, obj) || obj is ComplexNumber && Equals((ComplexNumber) obj));
 
       public override int GetHashCode()
       {
          unchecked
          {
-            return (int)Magnitude;
+            return (int) Magnitude;
          }
       }
 
-      public int CompareTo(object obj)
-      {
-         var that = obj as ComplexNumber;
-         if (that == null)
-            throw new ArgumentException("obj");
-         return Equals(that) ? 0 : Magnitude > that.Magnitude ? 1 : -1;
-      }
-
       public static bool operator ==(ComplexNumber firstNumber, ComplexNumber secondNumber)
-      {
-         return Equals(firstNumber, secondNumber);
-      }
+         => Equals(firstNumber, secondNumber);
 
       public static bool operator !=(ComplexNumber firstNumber, ComplexNumber secondNumber)
-      {
-         return !(firstNumber == secondNumber);
-      }
+         => !(firstNumber == secondNumber);
 
       public override string ToString()
-      {
-         return string.Format("Real: {0}, Imaginary: {1}", _real, _imaginary);
-      }
+         => string.Format("Real: {0}, Imaginary: {1}", Real, Imaginary);
+
+      public int CompareTo(ComplexNumber other)
+         => Equals(other) ? 0 : Magnitude > other.Magnitude ? 1 : -1;
    }
 }
