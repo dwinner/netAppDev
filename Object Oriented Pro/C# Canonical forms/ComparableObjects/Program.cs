@@ -4,6 +4,7 @@
 
 using System;
 using System.Collections.Generic;
+using static System.Console;
 
 namespace ComparableObjects
 {
@@ -19,7 +20,7 @@ namespace ComparableObjects
          UsingFunctionalComparer();
          UsingEqualityComparerInSets();
 
-         Console.ReadKey();
+         ReadKey();
       }
 
       private static void PrintArray<T>(IEnumerable<T> complexNumbers)
@@ -27,7 +28,7 @@ namespace ComparableObjects
       {
          foreach (var complexNumber in complexNumbers)
          {
-            Console.WriteLine("Magnitude: {0}. Real part = {1}. Img part = {2}",
+            WriteLine("Magnitude: {0}. Real part = {1}. Img part = {2}",
                complexNumber.ComputeMagnitude(),
                complexNumber.Real,
                complexNumber.Imaginary);
@@ -37,30 +38,30 @@ namespace ComparableObjects
       private static void UsingDefaultSortingStrategy()
       {
          var numbers = SampleNumbers;
-         Console.WriteLine("Before sort:");
+         WriteLine("Before sort:");
          PrintArray(numbers);
          Array.Sort(numbers);
-         Console.WriteLine("After sort:");
+         WriteLine("After sort:");
          PrintArray(numbers);
       }
 
       private static void UsingCustomComparer()
       {
          var numbers = SampleNumbers;
-         Console.WriteLine("Before sort:");
+         WriteLine("Before sort:");
          PrintArray(numbers);
          Array.Sort(numbers, ComplexNumber.DefaultComparer);
-         Console.WriteLine("After sort:");
+         WriteLine("After sort:");
          PrintArray(numbers);
       }
 
       private static void UsingFunctionalComparer()
       {
          var numbers = new List<ComplexNumber>(SampleNumbers);
-         Console.WriteLine("Before sort:");
+         WriteLine("Before sort:");
          PrintArray(numbers);
          numbers.Sort(ComplexNumber.DefaultComparison);
-         Console.WriteLine("After sort:");
+         WriteLine("After sort:");
          PrintArray(numbers);
       }
 

@@ -43,12 +43,15 @@ namespace ComparableObjects
 
       #region Default single instances
 
-      public static IEqualityComparer<ComplexNumber> DefaultEqualityComparer { get; } = new RealImaginaryEqualityComparer();
+      public static IEqualityComparer<ComplexNumber> DefaultEqualityComparer { get; }
+         = new RealImaginaryEqualityComparer();
 
-      public static IComparer<ComplexNumber> DefaultComparer { get; } = new ComplexNumberComparer();
+      public static IComparer<ComplexNumber> DefaultComparer { get; }
+         = new ComplexNumberComparer();
 
-      public static Comparison<ComplexNumber> DefaultComparison { get; } =
-         (first, second) => first.Equals(second) ? 0 : first.ComputeMagnitude() > second.ComputeMagnitude() ? 1 : -1;
+      public static Comparison<ComplexNumber> DefaultComparison { get; }
+         = (first, second)
+            => first.Equals(second) ? 0 : first.ComputeMagnitude() > second.ComputeMagnitude() ? 1 : -1;
 
       #endregion
 
