@@ -4,33 +4,21 @@ namespace StructuralComparison
 {
    public class Person : IEquatable<Person>
    {
-      public int Id { get; private set; }
+      public string FirstName { private get; set; }
 
-      public string FirstName { get; set; }
-
-      public string LastName { get; set; }
-
-      public Person()
-      {         
-      }
-
-      public Person(int id, string firstName, string lastName)
-      {
-         Id = id;
-         FirstName = firstName;
-         LastName = lastName;
-      }
+      public string LastName { private get; set; }
 
       public bool Equals(Person other)
       {
          if (other == null)
-            throw new ArgumentNullException("other");
+         {
+            throw new ArgumentNullException(nameof(other));
+         }
+
          return FirstName == other.FirstName && LastName == other.LastName;
       }
 
       public override string ToString()
-      {
-         return string.Format("Id: {0}, FirstName: {1}, LastName: {2}", Id, FirstName, LastName);
-      }
+         => $"FirstName: {FirstName}, LastName: {LastName}";
    }
 }
