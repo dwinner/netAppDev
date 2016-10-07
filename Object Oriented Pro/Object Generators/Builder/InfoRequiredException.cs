@@ -4,13 +4,13 @@ using System.Runtime.Serialization;
 namespace Builder
 {
    /// <summary>
-   /// Исключение приложения о необходимости ввода информации.
+   ///    Исключение приложения о необходимости ввода информации.
    /// </summary>
    [Serializable]
    public class InfoRequiredException : ApplicationException
-   {      
+   {
       /// <summary>
-      /// Флаги ошибок.
+      ///    Флаги ошибок.
       /// </summary>
       [Flags]
       public enum InfoErrors
@@ -21,11 +21,8 @@ namespace Builder
          DescriptionRequired = 0x4,
          AttendeeRequired = 0x8,
          LocationRequired = 0x10
-      }      
+      }
 
-      public InfoErrors InfoRequired { get; protected set; }
-
-      #region Наследованные конструкторы
 
       public InfoRequiredException()
       {
@@ -46,12 +43,12 @@ namespace Builder
       {
       }
 
-      #endregion
-
       public InfoRequiredException(string message, InfoErrors infoRequired)
          : base(message)
       {
          InfoRequired = infoRequired;
       }
+
+      public InfoErrors InfoRequired { get; }
    }
 }

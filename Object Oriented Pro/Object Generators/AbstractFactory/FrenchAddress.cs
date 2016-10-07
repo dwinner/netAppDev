@@ -7,6 +7,12 @@
       public override string GetCountry() => CountryLabel;
 
       public override string GetFullAddress()
-         => string.Format("{0}{1}{2}{3}{4}{1}{5}{1}", Street, EolString, PostalCode, Space, City, CountryLabel);
+         => string.Format("{0}{1}{2}{3}{4}{1}{5}{1}",
+               Street,
+               EolString,
+               PostalCode,
+               Space,
+               City,
+               CountryLabel);
    }
 }
