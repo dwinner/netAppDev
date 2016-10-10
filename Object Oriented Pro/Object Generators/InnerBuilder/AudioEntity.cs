@@ -2,22 +2,12 @@
 
 namespace InnerBuilder
 {
-   /// <summary>
-   ///    Сущность для аудио-записи
-   /// </summary>
-   public class AudioEntity : IEquatable<AudioEntity>
+   public sealed class AudioEntity : IEquatable<AudioEntity>
    {
       #region Строитель объектов внешнего класса
 
       public sealed class Builder
       {
-         /// <summary>
-         ///    Конструктор обязательных полей
-         /// </summary>
-         /// <param name="trackName">Имя трека</param>
-         /// <param name="duration">Время в секундах</param>
-         /// <param name="bitrate">Битрэйт</param>
-         /// <param name="size">Размер</param>
          public Builder(
             string trackName, int duration, int bitrate, int size)
          {
@@ -116,55 +106,16 @@ namespace InnerBuilder
       #endregion
 
       #region Поля объекта
-
-      /// <summary>
-      ///    Название композиции
-      /// </summary>
-      public string TrackName { get; set; }
-
-      /// <summary>
-      ///    Время композиции в секундах
-      /// </summary>
-      public int Duration { get; set; }
-
-      /// <summary>
-      ///    Качество звучания
-      /// </summary>
-      public int Bitrate { get; set; }
-
-      /// <summary>
-      ///    Ссылка на композицию
-      /// </summary>
-      public string TrackUrl { get; set; }
-
-      /// <summary>
-      ///    Группа или исполнитель
-      /// </summary>
-      public string Group { get; set; }
-
-      /// <summary>
-      ///    Год записи
-      /// </summary>
-      public int Year { get; set; }
-
-      /// <summary>
-      ///    Формат записи
-      /// </summary>
-      public string RecordFormat { get; set; }
-
-      /// <summary>
-      ///    Название альбома
-      /// </summary>
-      public string Album { get; set; }
-
-      /// <summary>
-      ///    Размер файла на диске
-      /// </summary>
-      public int Size { get; }
-
-      /// <summary>
-      ///    Жанр
-      /// </summary>
+      
+      public string TrackName { get; }      
+      public int Duration { get; }      
+      public int Bitrate { get; }      
+      public string TrackUrl { get; }      
+      public string Group { get; }      
+      public int Year { get; }      
+      public string RecordFormat { get; }      
+      public string Album { get; }      
+      public int Size { get; }      
       public string Genre { get; }
 
       /// <summary>

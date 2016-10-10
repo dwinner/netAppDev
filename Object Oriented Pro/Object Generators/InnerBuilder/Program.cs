@@ -22,6 +22,15 @@ namespace InnerBuilder
 
          Console.WriteLine(audioEntity.Genre);
          Console.WriteLine(audioEntity.Rate);
+         Console.WriteLine(audioEntity.TrackName);
+         Console.WriteLine(audioEntity.Duration);
+         Console.WriteLine(audioEntity.Bitrate);
+         Console.WriteLine(audioEntity.TrackUrl);
+         Console.WriteLine(audioEntity.Group);
+         Console.WriteLine(audioEntity.Year);
+         Console.WriteLine(audioEntity.RecordFormat);
+         Console.WriteLine(audioEntity.Album);
+         Console.WriteLine(audioEntity.Size);
 
          Console.WriteLine(audioEntity);
          Console.ReadKey();
