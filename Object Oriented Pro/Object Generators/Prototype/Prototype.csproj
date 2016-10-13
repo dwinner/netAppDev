@@ -44,6 +44,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Address.cs" />
+    <Compile Include="CopyExtensions.cs" />
     <Compile Include="DeepCopyManager.cs" />
     <Compile Include="ICopy.cs" />
     <Compile Include="Program.cs" />

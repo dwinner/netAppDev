@@ -47,8 +47,6 @@
     <Compile Include="GenTsSingleton.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ReflectionSingleton.cs" />
-    <Compile Include="TsSingleton.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Singleton.cd" />
