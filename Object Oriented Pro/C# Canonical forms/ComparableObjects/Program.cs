@@ -4,41 +4,71 @@
 
 using System;
 using System.Collections.Generic;
+using static System.Console;
 
 namespace ComparableObjects
 {
    internal static class Program
    {
+      private static ComplexNumber[] SampleNumbers
+         => new[] {new ComplexNumber(5, 6), new ComplexNumber(4, 5), new ComplexNumber(3, 4), new ComplexNumber(2, 3)};
+
       private static void Main()
       {
-         var number1 = new ComplexNumber(2, 3);
-         var number2 = new ComplexNumber(3, 4);
-         var number3 = new ComplexNumber(4, 5);
-         var number4 = new ComplexNumber(5, 6);
+         UsingDefaultSortingStrategy();
+         UsingCustomComparer();
+         UsingFunctionalComparer();
+         UsingEqualityComparerInSets();
 
-         var complexNumbers = new[]
-         {
-            number4,
-            number3,
-            number2,
-            number1
-         };
-
-         Console.WriteLine("Before sort:");
-         PrintArray(complexNumbers);
-         Array.Sort(complexNumbers); // Note: сравнение проходит по умолчанию
-         Console.WriteLine("After sort:");
-         PrintArray(complexNumbers);
-
-         Console.ReadKey();
+         ReadKey();
       }
 
       private static void PrintArray<T>(IEnumerable<T> complexNumbers)
+         where T : ComplexNumber
       {
          foreach (var complexNumber in complexNumbers)
          {
-            Console.WriteLine(complexNumber);
+            WriteLine("Magnitude: {0}. Real part = {1}. Img part = {2}",
+               complexNumber.ComputeMagnitude(),
+               complexNumber.Real,
+               complexNumber.Imaginary);
          }
+      }
+
+      private static void UsingDefaultSortingStrategy()
+      {
+         var numbers = SampleNumbers;
+         WriteLine("Before sort:");
+         PrintArray(numbers);
+         Array.Sort(numbers);
+         WriteLine("After sort:");
+         PrintArray(numbers);
+      }
+
+      private static void UsingCustomComparer()
+      {
+         var numbers = SampleNumbers;
+         WriteLine("Before sort:");
+         PrintArray(numbers);
+         Array.Sort(numbers, ComplexNumber.DefaultComparer);
+         WriteLine("After sort:");
+         PrintArray(numbers);
+      }
+
+      private static void UsingFunctionalComparer()
+      {
+         var numbers = new List<ComplexNumber>(SampleNumbers);
+         WriteLine("Before sort:");
+         PrintArray(numbers);
+         numbers.Sort(ComplexNumber.DefaultComparison);
+         WriteLine("After sort:");
+         PrintArray(numbers);
+      }
+
+      private static void UsingEqualityComparerInSets()
+      {
+         var numbers = new HashSet<ComplexNumber>(SampleNumbers, ComplexNumber.DefaultEqualityComparer);
+         PrintArray(numbers);
       }
    }
 }

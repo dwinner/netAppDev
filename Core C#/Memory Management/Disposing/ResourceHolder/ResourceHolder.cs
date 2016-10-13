@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 
 namespace ResourceHolder
 {
@@ -44,6 +45,18 @@ namespace ResourceHolder
          }
 
          // TODO: Реализация метода
+      }
+   }
+
+   static class Test
+   {
+      public static void Go()
+      {
+         using (var routineImpl =
+            new DisposeRoutineImpl(new FileStream("Test1.test", FileMode.Create), "Test2.test"))
+         {
+            Console.WriteLine(routineImpl);
+         }
       }
    }
 }

@@ -4,14 +4,11 @@ namespace FactoryMethod
 {
    public class PageImpl : IPage<ModuleImpl>
    {
-      public IList<ModuleImpl> PageCompositor { get; protected set; }
-
-      protected PageImpl(IList<ModuleImpl> pageCompositor)
+      protected PageImpl()
       {
-         PageCompositor = pageCompositor;
       }
 
-      protected PageImpl() { }
+      public IList<ModuleImpl> PageCompositor { get; protected set; }
 
       public virtual void AddModule()
       {

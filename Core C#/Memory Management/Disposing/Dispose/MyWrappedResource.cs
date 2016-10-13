@@ -9,24 +9,29 @@ namespace Finalizer
    {
       [DllImport("kernel32.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.StdCall,
          SetLastError = true)]
-      public static extern IntPtr CreateFile(string lpFileName, uint dwDesiredAccess, uint dwSharedMode,
-         IntPtr securityAttributes, uint dwCreationDisposition, uint dwFlagsAndAttributes, IntPtr hTemplateFile);
+      private static extern IntPtr CreateFile(string lpFileName,
+         uint dwDesiredAccess,
+         uint dwSharedMode,
+         IntPtr securityAttributes,
+         uint dwCreationDisposition,
+         uint dwFlagsAndAttributes,
+         IntPtr hTemplateFile);
 
       [DllImport("kernel32.dll", SetLastError = true)]
       [return: MarshalAs(UnmanagedType.Bool)]
       private static extern bool CloseHandle(IntPtr hObject);
 
-      private readonly IntPtr _handle = IntPtr.Zero;  // Тип IntPtr используется для представления дескрипторов ОС
+      private readonly IntPtr _handle;  // Тип IntPtr используется для представления дескрипторов ОС
 
       private bool _disposed;
       private readonly IDbConnection _conn;
 
-      private const string CONN_STR =
+      private const string ConnStr =
          "Data Source=DWINNER\\DWINNER;Initial Catalog=TestDB;User ID=sa;Password=bboytronik1985_DWINNER";
 
       public WrappedResource(string fileName)
       {
-         _conn = new SqlConnection(CONN_STR);   // Управляемый ресурс
+         _conn = new SqlConnection(ConnStr);   // Управляемый ресурс
          _handle = CreateFile(fileName, 0x80000000, 1, IntPtr.Zero, 3, 0, IntPtr.Zero);   // Неуправляемый ресурс
       }
 

@@ -2,11 +2,9 @@
 
 namespace FactoryMethod
 {
-   public class TechnicalModuleImpl : ModuleImpl
+   public sealed class TechnicalModuleImpl : ModuleImpl
    {
       public override void SomeModule()
-      {
-         Console.WriteLine("Technical content");
-      }
+         => Console.WriteLine("Technical content");
    }
 }
