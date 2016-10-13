@@ -1,8 +1,6 @@
-﻿using Customers;
-using ReflectionEmitCustomers.Builders;
-using System;
+﻿using Customers.Builders;
 
-namespace ReflectionEmitCustomers
+namespace Customers
 {
 	public sealed class CustomerDependencyInjected
 		: Customer

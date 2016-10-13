@@ -1,8 +1,6 @@
-﻿using Customers;
-using ReflectionEmitCustomers.Extensions;
-using System;
+﻿using Customers.Extensions;
 
-namespace ReflectionEmitCustomers
+namespace Customers
 {
 	public sealed class CustomerDynamicMethod : Customer
 	{

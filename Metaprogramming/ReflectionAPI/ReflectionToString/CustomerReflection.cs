@@ -1,4 +1,6 @@
-﻿namespace ReflectionToString
+﻿using Customers;
+
+namespace ReflectionToString
 {
    public sealed class CustomerReflection : Customer
    {

@@ -1,11 +1,11 @@
 ﻿using System;
 
-namespace ReflectionToString
+namespace Customers
 {
    public interface ICustomer
    {
-      Guid Id { get; set; }
       int Age { get; set; }
+      Guid Id { get; set; }
       string FirstName { get; set; }
       string LastName { get; set; }
    }

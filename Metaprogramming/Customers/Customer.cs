@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ReflectionToString
+namespace Customers
 {
    public abstract class Customer : ICustomer
    {
@@ -9,8 +9,8 @@ namespace ReflectionToString
          Id = Guid.NewGuid();
       }
 
-      public Guid Id { get; set; }
       public int Age { get; set; }
+      public Guid Id { get; set; }
       public string FirstName { get; set; }
       public string LastName { get; set; }
    }

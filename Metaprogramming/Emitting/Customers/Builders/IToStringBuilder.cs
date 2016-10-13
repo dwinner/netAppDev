@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace ReflectionEmitCustomers.Builders
+﻿namespace Customers.Builders
 {
 	public interface IToStringBuilder
 	{

@@ -1,7 +1,6 @@
-﻿using ReflectionEmitCustomers.Extensions;
-using System;
+﻿using Customers.Extensions;
 
-namespace ReflectionEmitCustomers.Builders
+namespace Customers.Builders
 {
 	public sealed class ToStringReflectionEmitBuilder
 		: IToStringBuilder
