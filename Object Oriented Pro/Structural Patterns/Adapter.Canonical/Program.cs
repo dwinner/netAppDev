@@ -14,5 +14,5 @@ namespace Adapter.Canonical
          target.Request();
          Console.Read();
       }
-   }   
+   }
 }

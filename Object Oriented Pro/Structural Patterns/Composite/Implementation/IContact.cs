@@ -1,7 +1,7 @@
 ﻿namespace Composite.Implementation
 {
    public interface IContact
-   {      
+   {
       string FirstName { get; set; }
 
       string LastName { get; set; }

@@ -5,7 +5,7 @@ namespace Composite.Canonical.Implementation
    /// <summary>
    /// Интерфейс компоновщика объектов
    /// </summary>   
-   public interface IUnit      
+   public interface IUnit
    {
       string Name { get; }
 

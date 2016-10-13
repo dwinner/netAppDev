@@ -21,6 +21,6 @@ namespace Composite.Implementation
 
       public string Title { get; set; }
 
-      public string Organization { get; set; }      
+      public string Organization { get; set; }
    }
 }

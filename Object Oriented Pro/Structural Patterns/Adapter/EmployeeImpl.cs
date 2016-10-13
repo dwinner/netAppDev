@@ -2,27 +2,19 @@
 {
    public class EmployeeImpl : IEmployee
    {
-      private readonly int _id;
-
       public EmployeeImpl(int id, string firstName, string lastName)
       {
-         _id = id;
+         Id = id;
          FirstName = firstName;
          LastName = lastName;
       }
 
-      public int Id
-      {
-         get { return _id; }
-      }
+      public int Id { get; }
 
-      public string FirstName { get; set; }
+      public string FirstName { get; }
 
-      public string LastName { get; set; }
+      public string LastName { get; }
 
-      public override string ToString()
-      {
-         return string.Format("{0}, {1}, {2}", _id, FirstName, LastName);
-      }
+      public override string ToString() => $"{Id}, {FirstName}, {LastName}";
    }
 }

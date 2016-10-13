@@ -24,7 +24,7 @@ namespace DynamicProxy
          where T : class
       {
          var objectProxy = new ObjectProxy(target, arrMethods, preAspect, postAspect);
-         var transparentProxy = (T) objectProxy.GetTransparentProxy();
+         var transparentProxy = (T)objectProxy.GetTransparentProxy();
          return transparentProxy;
       }
 
@@ -36,7 +36,7 @@ namespace DynamicProxy
          private readonly object _target;
 
          protected internal ObjectProxy(object target, string[] arrMethods, Decoration preAspect, Decoration postAspect)
-            : base(typeof (MarshalByRefObject))
+            : base(typeof(MarshalByRefObject))
          {
             _target = target;
             _preAspect = preAspect;
@@ -65,7 +65,7 @@ namespace DynamicProxy
             object returnValue;
             ReturnMessage returnMessage;
 
-            var methodMessage = (IMethodCallMessage) message;
+            var methodMessage = (IMethodCallMessage)message;
             var method = methodMessage.MethodBase;
 
             #region Препроцессирование

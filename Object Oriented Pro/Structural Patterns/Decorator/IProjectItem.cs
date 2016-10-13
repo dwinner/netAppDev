@@ -1,5 +1,5 @@
 ﻿namespace Decorator
-{   
+{
    /// <summary>
    /// Интерфейс элемента проекта
    /// </summary>      
