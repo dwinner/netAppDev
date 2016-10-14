@@ -25,6 +25,6 @@ namespace Composite.Implementation
       public double TimeRequired
       {
          get { return 0; }
-      }      
+      }
    }
 }

@@ -2,17 +2,18 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using static System.Console;
 
 namespace Builder
 {
-   class Program
+   internal static class Program
    {
-      static void Main()
+      private static void Main()
       {
-         AppointmentBuilder appointmentBuilder = new AppointmentBuilder();
+         var appointmentBuilder = new AppointmentBuilder();
          try
          {
-            Appointment appointment = Scheduler.CreateAppointment(appointmentBuilder,
+            var appointment = Scheduler.CreateAppointment(appointmentBuilder,
                new DateTime(2010, 7, 7),
                new DateTime(2011, 7, 7),
                "Trek conversion",
@@ -21,27 +22,37 @@ namespace Builder
                {
                   new ContactImpl("Denny", "Glover", "Gun", "Hollywood")
                });
+
+            foreach (var contact in appointment.Attendees)
+            {
+               WriteLine(contact);
+            }
+
+            WriteLine(appointment.Description);
+            WriteLine(appointment.StartDate);
+            WriteLine(appointment.EndDate);
+            WriteLine(appointment.Location);
          }
          catch (InfoRequiredException infoRequiredEx)
          {
             PrintExceptions(infoRequiredEx);
          }
 
-         Console.ReadKey();
+         ReadKey();
       }
 
       private static void PrintExceptions(InfoRequiredException infoRequired)
       {
-         InfoRequiredException.InfoErrors errors = infoRequired.InfoRequired;
-         StringBuilder errorStringBuilder = new StringBuilder();
-         foreach (InfoRequiredException.InfoErrors infoError in
-            Enum.GetValues(typeof(InfoRequiredException.InfoErrors))
+         var errors = infoRequired.InfoRequired;
+         var errorStringBuilder = new StringBuilder();
+         foreach (var infoError in
+            Enum.GetValues(typeof (InfoRequiredException.InfoErrors))
                .Cast<InfoRequiredException.InfoErrors>()
                .Where(infoError => errors.HasFlag(infoError)))
          {
             errorStringBuilder.AppendLine("Error: " + infoError);
          }
-         Console.WriteLine(errorStringBuilder.ToString());
+         WriteLine(errorStringBuilder.ToString());
       }
    }
 }

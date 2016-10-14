@@ -2,12 +2,12 @@
 
 namespace Singleton
 {
-   static class Program
+   internal static class Program
    {
-      static void Main()
+      private static void Main()
       {
-         Address singleAddress = GenTsSingleton<Address>.Instance;
-         Address anotherAddress = GenTsSingleton<Address>.Instance;
+         var singleAddress = GenTsSingleton<Address>.Instance;
+         var anotherAddress = GenTsSingleton<Address>.Instance;
 
          Console.WriteLine(singleAddress.GetHashCode());
          Console.WriteLine(anotherAddress.GetHashCode());
@@ -15,7 +15,7 @@ namespace Singleton
 
          GC.Collect();
 
-         Address addressAfterGc = GenTsSingleton<Address>.Instance;
+         var addressAfterGc = GenTsSingleton<Address>.Instance;
          Console.WriteLine(addressAfterGc.GetHashCode());
 
          Console.ReadKey();

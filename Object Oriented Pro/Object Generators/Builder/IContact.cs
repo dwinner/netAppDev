@@ -1,7 +1,7 @@
-п»їnamespace Decorator
+namespace Builder
 {
    /// <summary>
-   /// РРЅС‚РµСЂС„РµР№СЃ РґР»СЏ РєРѕРЅС‚Р°РєС‚Р°
+   ///    Интерфейс контактов.
    /// </summary>
    public interface IContact
    {

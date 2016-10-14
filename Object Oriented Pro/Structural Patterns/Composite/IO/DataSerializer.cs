@@ -1,7 +1,7 @@
-﻿using System;
+﻿using Composite.Implementation;
+using System;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
-using Composite.Implementation;
 
 namespace Composite.IO
 {

@@ -6,13 +6,17 @@ using System;
 
 namespace Adapter.Canonical
 {
-   static class Program
+   internal static class Program
    {
-      static void Main()
+      private static void Main()
       {
          var target = new Target();
          target.Request();
+
+         var objectAdapter = new ObjectAdapter();
+         objectAdapter.Request();
+
          Console.Read();
       }
-   }   
+   }
 }

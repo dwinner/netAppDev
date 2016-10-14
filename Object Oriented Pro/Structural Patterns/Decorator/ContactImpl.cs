@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Decorator
+﻿namespace Decorator
 {
    public class ContactImpl : IContact
    {

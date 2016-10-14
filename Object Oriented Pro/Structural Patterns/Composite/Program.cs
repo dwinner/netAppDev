@@ -1,11 +1,10 @@
-﻿/**
+﻿using Composite.Implementation;
+using Composite.IO;
+/**
  * Компоновщик объектов
  */
 
 using System;
-using System.IO;
-using Composite.Implementation;
-using Composite.IO;
 
 namespace Composite
 {
