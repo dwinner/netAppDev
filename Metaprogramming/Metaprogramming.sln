@@ -77,6 +77,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpringAopExample", "Tools\S
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CompilerPlatform", "CompilerPlatform", "{3B972B39-BE91-4CC4-8836-A06D3D2027B2}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoArrangeRefactoring", "CompilerPlatform\AutoArrangeRefactoring\AutoArrangeRefactoring\AutoArrangeRefactoring.csproj", "{4309166B-CDF2-4A18-AD04-F6253A79955E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoArrangeRefactoring.Vsix", "CompilerPlatform\AutoArrangeRefactoring\AutoArrangeRefactoring.Vsix\AutoArrangeRefactoring.Vsix.csproj", "{5FEF748C-3F71-4EC3-B92F-740C23F47467}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -309,6 +313,22 @@ Global
 		{276E707D-B9C7-4B8C-A28E-8B7FE5A8EBD7}.Release|Any CPU.Build.0 = Release|Any CPU
 		{276E707D-B9C7-4B8C-A28E-8B7FE5A8EBD7}.Release|x86.ActiveCfg = Release|Any CPU
 		{276E707D-B9C7-4B8C-A28E-8B7FE5A8EBD7}.Release|x86.Build.0 = Release|Any CPU
+		{4309166B-CDF2-4A18-AD04-F6253A79955E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4309166B-CDF2-4A18-AD04-F6253A79955E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4309166B-CDF2-4A18-AD04-F6253A79955E}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{4309166B-CDF2-4A18-AD04-F6253A79955E}.Debug|x86.Build.0 = Debug|Any CPU
+		{4309166B-CDF2-4A18-AD04-F6253A79955E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4309166B-CDF2-4A18-AD04-F6253A79955E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4309166B-CDF2-4A18-AD04-F6253A79955E}.Release|x86.ActiveCfg = Release|Any CPU
+		{4309166B-CDF2-4A18-AD04-F6253A79955E}.Release|x86.Build.0 = Release|Any CPU
+		{5FEF748C-3F71-4EC3-B92F-740C23F47467}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5FEF748C-3F71-4EC3-B92F-740C23F47467}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5FEF748C-3F71-4EC3-B92F-740C23F47467}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{5FEF748C-3F71-4EC3-B92F-740C23F47467}.Debug|x86.Build.0 = Debug|Any CPU
+		{5FEF748C-3F71-4EC3-B92F-740C23F47467}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5FEF748C-3F71-4EC3-B92F-740C23F47467}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5FEF748C-3F71-4EC3-B92F-740C23F47467}.Release|x86.ActiveCfg = Release|Any CPU
+		{5FEF748C-3F71-4EC3-B92F-740C23F47467}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -342,5 +362,7 @@ Global
 		{CCC2CAEE-AA31-40A7-8D88-7094C0E3B47A} = {A59ABFF8-9398-4DEA-BDB7-53DFD804CAD3}
 		{F91F3089-EB56-4E7D-AAC0-07D45CB86EEC} = {3070C202-94CE-459A-BDCF-8C64704A5F63}
 		{276E707D-B9C7-4B8C-A28E-8B7FE5A8EBD7} = {3070C202-94CE-459A-BDCF-8C64704A5F63}
+		{4309166B-CDF2-4A18-AD04-F6253A79955E} = {3B972B39-BE91-4CC4-8836-A06D3D2027B2}
+		{5FEF748C-3F71-4EC3-B92F-740C23F47467} = {3B972B39-BE91-4CC4-8836-A06D3D2027B2}
 	EndGlobalSection
 EndGlobal
