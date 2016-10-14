@@ -44,7 +44,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AddToSubtractExpressionVisitor.cs" />
-    <Compile Include="Constants.cs" />
+    <Compile Include="CustomerExpressions.cs" />
     <Compile Include="ExpressionGenerators.cs" />
     <Compile Include="MethodCreation.cs" />
     <Compile Include="Program.cs" />
@@ -58,6 +58,16 @@
     <Content Include="AddDebug.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Customers.Lib\Customers.Lib.csproj">
+      <Project>{24eabd41-3399-40e8-a0cf-948b229b65fd}</Project>
+      <Name>Customers.Lib</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Emitting\Customers\Customers.csproj">
+      <Project>{88a26b13-d8d9-4ef9-ab90-dc8c39c68be8}</Project>
+      <Name>Customers</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

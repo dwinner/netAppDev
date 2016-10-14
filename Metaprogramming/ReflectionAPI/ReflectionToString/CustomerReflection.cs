@@ -1,4 +1,4 @@
-﻿using Customers;
+﻿using Customers.Lib;
 
 namespace ReflectionToString
 {

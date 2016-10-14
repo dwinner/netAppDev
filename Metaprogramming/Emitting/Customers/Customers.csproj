@@ -80,9 +80,9 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Customers\Customers.csproj">
-      <Project>{24EABD41-3399-40E8-A0CF-948B229B65FD}</Project>
-      <Name>Customers</Name>
+    <ProjectReference Include="..\..\Customers.Lib\Customers.Lib.csproj">
+      <Project>{24eabd41-3399-40e8-a0cf-948b229b65fd}</Project>
+      <Name>Customers.Lib</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
