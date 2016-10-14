@@ -4,12 +4,12 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{DECAD86D-62C5-4003-8EAB-665B116A8227}</ProjectGuid>
+    <ProjectGuid>{3C5F1A88-F54A-4F89-B9DE-B14E53C56D15}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ReflectionToString</RootNamespace>
-    <AssemblyName>ReflectionToString</AssemblyName>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <RootNamespace>ExpressionSamples</RootNamespace>
+    <AssemblyName>ExpressionSamples</AssemblyName>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
   </PropertyGroup>
@@ -43,19 +43,21 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CustomerReflection.cs" />
-    <Compile Include="ObjectExtensions.cs" />
+    <Compile Include="AddToSubtractExpressionVisitor.cs" />
+    <Compile Include="Constants.cs" />
+    <Compile Include="ExpressionGenerators.cs" />
+    <Compile Include="MethodCreation.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ToStringViaExpressionsExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Customers\Customers.csproj">
-      <Project>{24EABD41-3399-40E8-A0CF-948B229B65FD}</Project>
-      <Name>Customers</Name>
-    </ProjectReference>
+    <Content Include="AddDebug.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
