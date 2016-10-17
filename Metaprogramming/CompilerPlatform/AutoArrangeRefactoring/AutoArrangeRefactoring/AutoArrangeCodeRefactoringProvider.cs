@@ -12,14 +12,12 @@ using Microsoft.CodeAnalysis.Rename;
 namespace AutoArrangeRefactoring
 {
    [ExportCodeRefactoringProvider(LanguageNames.CSharp,
-      Name = nameof(AutoArrangeRefactoringCodeRefactoringProvider)),
+      Name = nameof(AutoArrangeCodeRefactoringProvider)),
       Shared]
-   internal class AutoArrangeRefactoringCodeRefactoringProvider : CodeRefactoringProvider
+   public sealed class AutoArrangeCodeRefactoringProvider : CodeRefactoringProvider
    {
       public sealed override async Task ComputeRefactoringsAsync(CodeRefactoringContext context)
-      {
-         // TODO: Replace the following code with your own analysis, generating a CodeAction for each refactoring to offer
-
+      {         
          var root = await context.Document.GetSyntaxRootAsync(context.CancellationToken).ConfigureAwait(false);
 
          // Find the node at the selection.
@@ -31,24 +29,31 @@ namespace AutoArrangeRefactoring
          {
             return;
          }
+                  
+         var action = CodeAction.Create("Auto arrange code", cancellationToken => AutoArrangeCodeAsync(context.Document, typeDecl, cancellationToken));
 
-         // For any type declaration node, create a code action to reverse the identifier text.
-         var action = CodeAction.Create("Reverse type name", c => ReverseTypeNameAsync(context.Document, typeDecl, c));
-
-         // Register this code action.
+         // Register auto arrange code action.
          context.RegisterRefactoring(action);
       }
 
-      private async Task<Solution> ReverseTypeNameAsync(Document document, TypeDeclarationSyntax typeDecl,
+      private static async Task<Solution> AutoArrangeCodeAsync(Document document, BaseTypeDeclarationSyntax typeDeclaration,
          CancellationToken cancellationToken)
       {
+         AutoArrangeCaptureWalker arrangeCaptureWalker=new AutoArrangeCaptureWalker();
+         arrangeCaptureWalker.Visit(typeDeclaration);
+         AutoArrangeReplaceRewriter arrangeReplaceRewriter=new AutoArrangeReplaceRewriter(arrangeCaptureWalker);
+         var node = arrangeReplaceRewriter.Visit(typeDeclaration);
+
+         var root = await document.GetSyntaxRootAsync(cancellationToken).ConfigureAwait(false);
+         var newRoot = root.ReplaceNodes(new[] {typeDeclaration}, (a, b) => node);
+
          // Produce a reversed version of the type declaration's identifier token.
-         var identifierToken = typeDecl.Identifier;
+         var identifierToken = typeDeclaration.Identifier;
          var newName = new string(identifierToken.Text.ToCharArray().Reverse().ToArray());
 
          // Get the symbol representing the type to be renamed.
          var semanticModel = await document.GetSemanticModelAsync(cancellationToken);
-         var typeSymbol = semanticModel.GetDeclaredSymbol(typeDecl, cancellationToken);
+         var typeSymbol = semanticModel.GetDeclaredSymbol(typeDeclaration, cancellationToken);
 
          // Produce a new solution that has all references to that type renamed, including the declaration.
          var originalSolution = document.Project.Solution;

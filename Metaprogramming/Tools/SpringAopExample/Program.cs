@@ -1,6 +1,5 @@
 ﻿using System;
 using Spring.Aop.Framework;
-using SpringAOPExamples;
 
 namespace SpringAopExample
 {

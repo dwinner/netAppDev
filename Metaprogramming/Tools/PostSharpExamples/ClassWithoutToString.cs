@@ -1,6 +1,6 @@
 ﻿
 namespace PostSharpExamples
 {
-	[ToString]
+	//[ToString]
 	public sealed class ClassWithoutToString { }
 }

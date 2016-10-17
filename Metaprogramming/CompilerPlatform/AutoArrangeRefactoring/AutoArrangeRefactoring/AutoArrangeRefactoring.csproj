@@ -33,7 +33,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="AutoArrangeRefactoringCodeRefactoringProvider.cs" />
+    <Compile Include="AutoArrangeCaptureWalker.cs" />
+    <Compile Include="AutoArrangeCodeRefactoringProvider.cs" />
+    <Compile Include="AutoArrangeReplaceRewriter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

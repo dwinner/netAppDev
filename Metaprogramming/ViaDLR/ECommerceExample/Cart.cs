@@ -2,11 +2,11 @@
 #define USE_SAFE_ENGINE
 
 using System;
-using System.Linq;
-using DevJourney.Scripting;
 using System.Collections.Generic;
+using System.Linq;
+using RuleEngine;
 
-namespace DevJourney.Commerce
+namespace ECommerceExample
 {
   public delegate void CartChanged();
 
@@ -131,7 +131,7 @@ namespace DevJourney.Commerce
 
     [NonSerialized]
 #if USE_SAFE_ENGINE
-    private readonly RuleEngine _ruleEngine;
+    private readonly RuleEngine.RuleEngine _ruleEngine;
 #else
     private readonly UnsafeRuleEngine _ruleEngine;
 #endif
@@ -161,7 +161,7 @@ namespace DevJourney.Commerce
 #endif
 
 #if USE_SAFE_ENGINE
-      _ruleEngine = new RuleEngine(_appDomainMode);
+      _ruleEngine = new RuleEngine.RuleEngine(_appDomainMode);
       _ruleHandle = _ruleEngine.InsertRule(
         discountRule, _runtimeMode);
 #else

@@ -3,8 +3,9 @@ using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
-using TestHelper;
 using Wcf.Issues.Analyzer;
+using Wcf.Issues.Analyzer.Test.Helpers;
+using CodeFixVerifier = Wcf.Issues.Analyzer.Test.Verifiers.CodeFixVerifier;
 
 namespace Wcf.Issues.Analyzer.Test
 {
