@@ -48,18 +48,43 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Builders\IToStringBuilder.cs" />
+    <Compile Include="Builders\ToStringDynamicMethodBuilder.cs" />
+    <Compile Include="Builders\ToStringReflectionEmitBuilder.cs" />
+    <Compile Include="CustomerDependencyInjected.cs" />
+    <Compile Include="CustomerDynamicMethod.cs" />
+    <Compile Include="CustomerReflectionEmit.cs" />
+    <Compile Include="CustomerReflectionEmitWithDebugging.cs" />
+    <Compile Include="CustomerReflectionEmitWithVerification.cs" />
+    <Compile Include="Extensions\Constants.cs" />
     <Compile Include="Extensions\Descriptors\Descriptor.cs" />
     <Compile Include="Extensions\Descriptors\MethodDescriptor.cs" />
     <Compile Include="Extensions\Descriptors\TypeDescriptor.cs" />
+    <Compile Include="Extensions\IlGeneratorExtensions.cs" />
     <Compile Include="Extensions\MemberInfoExtensions.cs" />
     <Compile Include="Extensions\MethodBaseExtensions.cs" />
+    <Compile Include="Extensions\ReflectionEmitMethodGenerator.cs" />
+    <Compile Include="Extensions\ReflectionEmitWithDebuggingMethodGenerator.cs" />
+    <Compile Include="Extensions\ToStringIlGenerator.cs" />
+    <Compile Include="Extensions\ToStringViaDynamicMethodExtensions.cs" />
+    <Compile Include="Extensions\ToStringViaExpressionsExtensions.cs" />
+    <Compile Include="Extensions\ToStringViaReflectionEmitExtensions.cs" />
+    <Compile Include="Extensions\ToStringViaReflectionEmitWithDebuggingExtensions.cs" />
+    <Compile Include="Extensions\ToStringViaReflectionEmitWithVerificationExtensions.cs" />
+    <Compile Include="Extensions\ToStringViaReflectionExtensions.cs" />
+    <Compile Include="Extensions\ToStringWithDebuggingILGenerator.cs" />
     <Compile Include="Extensions\TypeExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\..\Customers.Lib\Customers.Lib.csproj">
+      <Project>{24eabd41-3399-40e8-a0cf-948b229b65fd}</Project>
+      <Name>Customers.Lib</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
