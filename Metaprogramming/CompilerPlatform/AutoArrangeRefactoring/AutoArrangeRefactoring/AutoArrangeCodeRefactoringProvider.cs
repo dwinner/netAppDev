@@ -18,13 +18,9 @@ namespace AutoArrangeRefactoring
    {
       public sealed override async Task ComputeRefactoringsAsync(CodeRefactoringContext context)
       {         
-         var root = await context.Document.GetSyntaxRootAsync(context.CancellationToken).ConfigureAwait(false);
-
-         // Find the node at the selection.
-         var node = root.FindNode(context.Span);
-
-         // Only offer a refactoring if the selected node is a type declaration node.
-         var typeDecl = node as TypeDeclarationSyntax;
+         var root = await context.Document.GetSyntaxRootAsync(context.CancellationToken).ConfigureAwait(false);         
+         var node = root.FindNode(context.Span);         
+         var typeDecl = node as BaseTypeDeclarationSyntax;
          if (typeDecl == null)
          {
             return;
