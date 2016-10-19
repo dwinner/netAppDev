@@ -8,20 +8,20 @@ using System.Collections.Generic;
 
 namespace StructuralComparison
 {
-   static class Program
+   internal static class Program
    {
-      static void Main()
+      private static void Main()
       {
          // Note 1) Используем EqualityComparer<T>.Default
-         var janet = new Person { FirstName = "Janet", LastName = "Jackson" };
-         Person[] persons1 = { new Person { FirstName = "Michael", LastName = "Jackson" }, janet };
-         Person[] persons2 = { new Person { FirstName = "Michael", LastName = "Jackson" }, janet };
-         if (persons1 != persons2)  // true
+         var janet = new Person {FirstName = "Janet", LastName = "Jackson"};
+         Person[] persons1 = {new Person {FirstName = "Michael", LastName = "Jackson"}, janet};
+         Person[] persons2 = {new Person {FirstName = "Michael", LastName = "Jackson"}, janet};
+         if (persons1 != persons2) // true
          {
             Console.WriteLine("Not the same reference");
          }
 
-         if (!persons1.Equals(persons2))  // true
+         if (!persons1.Equals(persons2)) // true
          {
             Console.WriteLine("Equals returns false - not the same reference");
          }
@@ -30,7 +30,7 @@ namespace StructuralComparison
           * Note: Структурное сравнение использует метод bool Equals(Person other) для своих целей и даcт true,
           * в противном случае IStructuralEquatable.Equals использует object.Equals
           */
-         if ((persons1 as IStructuralEquatable).Equals(persons2, EqualityComparer<Person>.Default))   // true
+         if ((persons1 as IStructuralEquatable).Equals(persons2, EqualityComparer<Person>.Default)) // true
          {
             Console.WriteLine("The same content");
          }
@@ -40,13 +40,11 @@ namespace StructuralComparison
          var secondTuple = Tuple.Create(1, "Stephanie");
          if (!Equals(firstTuple, secondTuple))
             Console.WriteLine("not the same reference to the tuple");
-
          if (firstTuple.Equals(secondTuple))
             Console.WriteLine("equals returns true");
 
          var tupleComparer = new TupleComparer();
-
-         if ((firstTuple as IStructuralEquatable).Equals(secondTuple, tupleComparer))
+         if (((IStructuralEquatable) firstTuple).Equals(secondTuple, tupleComparer))
          {
             Console.WriteLine("yes, using TubpleComparer");
          }

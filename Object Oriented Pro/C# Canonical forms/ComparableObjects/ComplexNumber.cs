@@ -1,11 +1,33 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace ComparableObjects
 {
-   public sealed class ComplexNumber : IComparable<ComplexNumber>
+   public class ComplexNumber : IComparable<ComplexNumber>, IEquatable<ComplexNumber>
    {
+      #region IComparable<ComplexNumber>
+
+      public int CompareTo(ComplexNumber other) => DefaultComparison(this, other);
+
+      #endregion
+
+      #region IEquatable<ComplexNumber>
+
+      public bool Equals(ComplexNumber other)
+         =>
+            !ReferenceEquals(null, other) &&
+            (ReferenceEquals(this, other) || Real.Equals(other.Real) && Imaginary.Equals(other.Imaginary));
+
+      #endregion
+
+      #region Private fields
+
       private const double DefaultReal = default(double);
       private const double DefaultImaginary = default(double);
+
+      #endregion
+
+      #region Ctor and public instance fields
 
       public ComplexNumber(double real = DefaultReal, double imaginary = DefaultImaginary)
       {
@@ -13,15 +35,27 @@ namespace ComparableObjects
          Imaginary = imaginary;
       }
 
-      private double Real { get; }
+      public double Real { get; }
 
-      private double Imaginary { get; }
+      public double Imaginary { get; }
 
-      private double Magnitude
-         => Math.Sqrt(Math.Pow(Real, 2) + Math.Pow(Imaginary, 2));      
+      #endregion
 
-      private bool Equals(ComplexNumber other)
-         => Real.Equals(other.Real) && Imaginary.Equals(other.Imaginary);
+      #region Default single instances
+
+      public static IEqualityComparer<ComplexNumber> DefaultEqualityComparer { get; }
+         = new RealImaginaryEqualityComparer();
+
+      public static IComparer<ComplexNumber> DefaultComparer { get; }
+         = new ComplexNumberComparer();
+
+      public static Comparison<ComplexNumber> DefaultComparison { get; }
+         = (first, second)
+            => first.Equals(second) ? 0 : first.ComputeMagnitude() > second.ComputeMagnitude() ? 1 : -1;
+
+      #endregion
+
+      #region System.Object
 
       public override bool Equals(object obj)
          =>
@@ -32,7 +66,7 @@ namespace ComparableObjects
       {
          unchecked
          {
-            return (int) Magnitude;
+            return (Real.GetHashCode()*397) ^ Imaginary.GetHashCode();
          }
       }
 
@@ -45,7 +79,22 @@ namespace ComparableObjects
       public override string ToString()
          => string.Format("Real: {0}, Imaginary: {1}", Real, Imaginary);
 
-      public int CompareTo(ComplexNumber other)
-         => Equals(other) ? 0 : Magnitude > other.Magnitude ? 1 : -1;
+      #endregion
+
+      #region Private classes
+
+      private sealed class ComplexNumberComparer : IComparer<ComplexNumber>
+      {
+         public int Compare(ComplexNumber x, ComplexNumber y) => DefaultComparison(x, y);
+      }
+
+      private sealed class RealImaginaryEqualityComparer : IEqualityComparer<ComplexNumber>
+      {
+         public bool Equals(ComplexNumber x, ComplexNumber y) => x.Equals(y);
+
+         public int GetHashCode(ComplexNumber obj) => obj.GetHashCode();
+      }
+
+      #endregion
    }
 }

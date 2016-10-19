@@ -2,11 +2,9 @@
 
 namespace Adapter.Canonical
 {
-   public class Adaptee
+   public sealed class Adaptee
    {
       public void SpecificRequest()
-      {
-         Console.WriteLine("Called Specific Request");
-      }
+         => Console.WriteLine("Called Specific Request");
    }
 }

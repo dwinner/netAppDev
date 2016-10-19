@@ -1,5 +1,5 @@
-﻿using System;
-using Composite.Canonical.Implementation;
+﻿using Composite.Canonical.Implementation;
+using System;
 
 namespace Composite.Canonical.Unit.Extensions
 {

@@ -4,7 +4,7 @@ namespace ResourceHolder
 {
    public abstract class DisposeRoutine : IDisposable
    {
-      protected virtual bool IsDisposed { get; set; }
+      private bool IsDisposed { get; set; }
 
       public void Dispose()
       {
@@ -17,7 +17,7 @@ namespace ResourceHolder
          Dispose(false);
       }
 
-      protected virtual void Dispose(bool disposing)
+      private void Dispose(bool disposing)
       {
          if (!IsDisposed)
          {
@@ -26,13 +26,13 @@ namespace ResourceHolder
                ManagedCleaning();
             }
 
-            UnmanagaedCleaning();
+            UnmanagedCleaning();
          }
 
          IsDisposed = true;
       }
 
-      protected abstract void UnmanagaedCleaning();
+      protected abstract void UnmanagedCleaning();
 
       protected abstract void ManagedCleaning();
    }

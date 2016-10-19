@@ -4,12 +4,6 @@ namespace FactoryMethod
 {
    public sealed class CatalogPage : PageImpl
    {
-      public CatalogPage(IList<ModuleImpl> pageCompositor)
-         : base(pageCompositor)
-      {
-         AddModule();
-      }
-
       public CatalogPage()
       {
          PageCompositor = new List<ModuleImpl>();

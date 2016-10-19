@@ -1,10 +1,10 @@
-﻿/**
+﻿using Composite.Canonical.Implementation;
+using Composite.Canonical.Unit.Extensions;
+/**
  * Каноническая форма компоновщика объектов
  */
 
 using System;
-using Composite.Canonical.Implementation;
-using Composite.Canonical.Unit.Extensions;
 
 namespace Composite.Canonical
 {

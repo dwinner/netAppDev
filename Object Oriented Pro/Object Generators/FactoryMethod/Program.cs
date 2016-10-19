@@ -6,9 +6,9 @@ using System;
 
 namespace FactoryMethod
 {
-   static class Program
+   internal static class Program
    {
-      static void Main()
+      private static void Main()
       {
          PageImpl catalogPage = new CatalogPage();
          catalogPage.AddModule();
@@ -20,5 +20,5 @@ namespace FactoryMethod
 
          Console.ReadKey();
       }
-   }   
+   }
 }

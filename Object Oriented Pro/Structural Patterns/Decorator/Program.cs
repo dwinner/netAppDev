@@ -1,6 +1,6 @@
 ﻿/**
  * Декоратор - динамическое добавление нового поведения для объектов
- */ 
+ */
 
 using System;
 
@@ -20,7 +20,7 @@ namespace Decorator
          };
 
          var firstTask = new ProjectTask<IProjectItem>("Perform months of diligent research", firstContact, 20.0);
-         var secondTask = new ProjectTask<IProjectItem>("Obtain grant from World Java Foundation", firstContact, 40.0);         
+         var secondTask = new ProjectTask<IProjectItem>("Obtain grant from World Java Foundation", firstContact, 40.0);
 
          // Создание декораторов
          ProjectDecorator firstDecorator = new SupportedProjectItem("JavaHistory.txt");

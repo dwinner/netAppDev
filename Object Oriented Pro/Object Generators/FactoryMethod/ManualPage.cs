@@ -5,11 +5,6 @@ namespace FactoryMethod
 {
    public class ManualPage : PageImpl
    {
-      public ManualPage(IList<ModuleImpl> pageCompositor)
-         : base(pageCompositor)
-      {
-      }
-
       public ManualPage()
       {
          PageCompositor = new List<ModuleImpl>();
@@ -30,6 +25,7 @@ namespace FactoryMethod
          {
             moduleImpl.SomeModule();
          }
+
          Console.WriteLine();
       }
    }

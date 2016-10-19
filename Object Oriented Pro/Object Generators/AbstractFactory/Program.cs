@@ -2,14 +2,14 @@
 
 namespace AbstractFactory
 {
-   class Program
+   internal static class Program
    {
-      static void Main()
+      private static void Main()
       {
          // Создание адресов США.
          IAddressFactory usAddressFactory = new UsAddressFactory();
-         Address usAddress = usAddressFactory.CreateAddress();
-         PhoneNumber usPhoneNumber = usAddressFactory.CreatePhoneNumber();
+         var usAddress = usAddressFactory.CreateAddress();
+         var usPhoneNumber = usAddressFactory.CreatePhoneNumber();
          usAddress.Street = "142 Lois Lane";
          usAddress.City = "Metropolis";
          usAddress.Region = "WY";
@@ -18,8 +18,8 @@ namespace AbstractFactory
 
          // Создание адресов Франции.
          IAddressFactory frenchAddressFactory = new FrenchAddressFactory();
-         Address frenchAddress = frenchAddressFactory.CreateAddress();
-         PhoneNumber frenchPhoneNumber = frenchAddressFactory.CreatePhoneNumber();
+         var frenchAddress = frenchAddressFactory.CreateAddress();
+         var frenchPhoneNumber = frenchAddressFactory.CreatePhoneNumber();
          frenchAddress.Street = "21 Rue Victor Hugo";
          frenchAddress.City = "Courbevoie";
          frenchAddress.Region = "Fr";
