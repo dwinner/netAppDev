@@ -3,11 +3,10 @@
 //#define ENABLE_RUBY
 
 using System;
-using System.Dynamic;
 using System.Collections.Generic;
 using Microsoft.Scripting.Hosting;
 
-namespace DevJourney.Scripting
+namespace RuleEngine
 {
   /// <summary>
   /// Describe the isolation mode of an AppDomain,

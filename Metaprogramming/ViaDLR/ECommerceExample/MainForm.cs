@@ -2,8 +2,7 @@
 using System.Windows.Forms;
 using System.Linq;
 using System.IO;
-using DevJourney.Scripting;
-using DevJourney.Commerce;
+using RuleEngine;
 
 namespace ECommerceExample
 {

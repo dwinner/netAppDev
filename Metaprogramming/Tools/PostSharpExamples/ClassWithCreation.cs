@@ -3,7 +3,7 @@
 //[assembly: PostSharpExamples.Creation]
 namespace PostSharpExamples
 {
-	[Creation]
+	//[Creation]
 	public sealed class ClassWithCreation
 	{
 		public ClassWithCreation()

@@ -1,7 +1,0 @@
-new StringBuilder()
-	.Append(\"Age: \")
-	.Append(Target.Age)
-	.Append(\" || \")
-	.Append(\"Name: \")
-	.Append(Target.Name)
-	.ToString()

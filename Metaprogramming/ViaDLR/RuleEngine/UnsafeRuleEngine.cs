@@ -1,9 +1,7 @@
-﻿using System;
-using System.Dynamic;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Microsoft.Scripting.Hosting;
 
-namespace DevJourney.Scripting
+namespace RuleEngine
 {
   public class UnsafeRuleEngine
   {

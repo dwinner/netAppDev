@@ -1,8 +1,8 @@
 ﻿using System;
-using System.Linq;
 using System.Collections.Generic;
+using System.Linq;
 
-namespace DevJourney.Scripting
+namespace RuleEngine
 {
   /// <summary>
   /// The prototypical rule containing a name,

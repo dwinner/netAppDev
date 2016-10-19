@@ -1,6 +1,6 @@
 ﻿namespace PostSharpExamples
 {
-	[Equals]
+	//[Equals]
 	public sealed class ClassWithEquals
 	{
 		public int IntData { get; set; }

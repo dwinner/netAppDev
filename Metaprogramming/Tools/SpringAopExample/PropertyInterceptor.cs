@@ -3,7 +3,7 @@ using System.Linq;
 using System.Reflection;
 using AopAlliance.Intercept;
 
-namespace SpringAOPExamples
+namespace SpringAopExample
 {
 	public sealed class PropertyInterceptor
 		: IMethodInterceptor
