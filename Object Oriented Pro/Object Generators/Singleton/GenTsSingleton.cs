@@ -3,7 +3,7 @@
 namespace Singleton
 {
    /// <summary>
-   /// Параметризованный потоко-безопасный "Одиночка"
+   ///    Параметризованный потоко-безопасный "Одиночка"
    /// </summary>
    /// <typeparam name="T">Параметр типа одиночки</typeparam>
    public static class GenTsSingleton<T>
@@ -19,8 +19,10 @@ namespace Singleton
             {
                return _instance;
             }
+
             var tempInstance = new T();
             Interlocked.CompareExchange(ref _instance, tempInstance, null);
+
             return _instance;
          }
       }

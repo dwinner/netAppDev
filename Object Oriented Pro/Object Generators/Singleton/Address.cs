@@ -19,7 +19,6 @@ namespace Singleton
 
       #endregion
 
-
       #region Свойства
 
       public string Type { get; set; }
@@ -33,7 +32,6 @@ namespace Singleton
       public string ZipCode { get; set; }
 
       #endregion
-
 
       public Address(string type, string street, string city, string state, string zipCode)
       {
@@ -59,8 +57,7 @@ namespace Singleton
 
       public override string ToString()
       {
-         return string.Format("Type: {0}, Street: {1}, City: {2}, State: {3}, ZipCode: {4}", Type, Street, City, State,
-            ZipCode);
+         return string.Format("Type: {0}, Street: {1}, City: {2}, State: {3}, ZipCode: {4}", Type, Street, City, State, ZipCode);
       }      
 
       public object Clone()

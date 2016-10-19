@@ -31,7 +31,7 @@ namespace Composite.Implementation
             _projectItems = value;
          }
       }
-      private LinkedList<T> _projectItems = new LinkedList<T>(); 
+      private LinkedList<T> _projectItems = new LinkedList<T>();
 
       public double TimeRequired
       {

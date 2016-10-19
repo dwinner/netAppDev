@@ -5,6 +5,6 @@
    /// </summary>
    public interface IProjectItem
    {
-      double TimeRequired { get; }    
+      double TimeRequired { get; }
    }
 }

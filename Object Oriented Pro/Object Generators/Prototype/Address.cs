@@ -1,39 +1,14 @@
 ﻿using System;
+using System.Threading;
 
 namespace Prototype
 {
    [Serializable]
-   public class Address : ICopy<Address>, ICloneable
+   public sealed class Address : ICopy<Address>, ICloneable
    {
-      #region Значения по умолчанию
-
-      private const string DefaultType = "";
-
-      private const string DefaultStreet = "";
-
-      private const string DefaultCity = "";
-
-      private const string DefaultState = "";
-
-      private const string DefaultZipCode = "";
-
-      #endregion
-
-
-      #region Свойства
-
-      public string Type { get; set; }
-
-      public string Street { get; set; }
-
-      public string City { get; set; }
-
-      public string State { get; set; }
-
-      public string ZipCode { get; set; }
-
-      #endregion
-
+      private readonly Lazy<DeepCopyManager<Address>> _deferredAddrCopyManager =
+         new Lazy<DeepCopyManager<Address>>(()
+            => new DeepCopyManager<Address>(), LazyThreadSafetyMode.PublicationOnly);
 
       public Address(string type, string street, string city, string state, string zipCode)
       {
@@ -46,9 +21,10 @@ namespace Prototype
 
       public Address()
          : this(DefaultType, DefaultStreet, DefaultCity, DefaultState, DefaultZipCode)
-      { }
+      {
+      }
 
-      private Address(Address address)  // Копирующий конструктор
+      private Address(Address address) // Copy ctor
       {
          Type = address.Type;
          Street = address.Street;
@@ -57,22 +33,42 @@ namespace Prototype
          ZipCode = address.ZipCode;
       }
 
+      object ICloneable.Clone() => new Address(this);
+
+      public Address Copy(bool deepCopy = false)
+         => deepCopy
+               ? _deferredAddrCopyManager.Value.DeepCopy(this)
+               : (Address) ((ICloneable) this).Clone();
+
       public override string ToString()
-      {
-         return string.Format("Type: {0}, Street: {1}, City: {2}, State: {3}, ZipCode: {4}", Type, Street, City, State,
-            ZipCode);
-      }
+         => $"Type: {Type}, Street: {Street}, City: {City}, State: {State}, ZipCode: {ZipCode}";
 
-      public Address Copy(bool deepCopy)
-      {
-         // Note: если не нужно исключение, то UniversalCopyUtility<Address>.DeepCopy(this)
-         return deepCopy ? new DeepCopyManager<Address>(this).DeepCopy() : (Address)Clone();
-      }
+      #region Defaults
 
-      public object Clone()
-      {
-         // Note: Если нет Copy ctor'а return MemberwiseClone();
-         return new Address(this);
-      }
+      private const string DefaultType = ""; // Not L10N
+
+      private const string DefaultStreet = ""; // Not L10N
+
+      private const string DefaultCity = ""; // Not L10N
+
+      private const string DefaultState = ""; // Not L10N
+
+      private const string DefaultZipCode = ""; // Not L10N
+
+      #endregion
+
+      #region Properties
+
+      public string Type { get; }
+
+      public string Street { get; }
+
+      public string City { get; }
+
+      public string State { get; }
+
+      public string ZipCode { get; }
+
+      #endregion
    }
 }

@@ -1,6 +1,6 @@
-﻿using System;
+﻿using Flyweight.AudioComparers;
+using System;
 using System.Collections.Generic;
-using Flyweight.AudioComparers;
 
 namespace Flyweight
 {

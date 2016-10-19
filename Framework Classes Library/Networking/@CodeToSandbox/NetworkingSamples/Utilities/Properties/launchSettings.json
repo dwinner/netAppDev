@@ -1,8 +1,0 @@
-{
-  "profiles": {
-    "Utilities": {
-      "commandName": "Utilities",
-      "commandLineArgs": "ipaddress 65.52.128.33"
-    }
-  }
-}

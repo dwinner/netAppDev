@@ -8,8 +8,7 @@ namespace Prototype
       public static T DeepCopy(T anyObject)
       {
          if (!typeof(T).IsSerializable)
-         {
-            // Note: Или заглушку Null-объекта
+         {            
             return default(T);
          }
 
@@ -19,6 +18,7 @@ namespace Prototype
             binaryFormatter.Serialize(memoryStream, anyObject);
             memoryStream.Flush();
             memoryStream.Seek(0, SeekOrigin.Begin);
+
             return (T)binaryFormatter.Deserialize(memoryStream);
          }  
       }

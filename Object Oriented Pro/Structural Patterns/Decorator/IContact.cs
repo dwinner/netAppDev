@@ -4,7 +4,7 @@
    /// Интерфейс для контакта
    /// </summary>
    public interface IContact
-   {      
+   {
       string FirstName { get; set; }
       string LastName { get; set; }
       string Title { get; set; }

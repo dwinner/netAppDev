@@ -1,5 +1,5 @@
 ﻿namespace Proxy
-{   
+{
    public interface IAddress
    {
       string Address { get; set; }
@@ -14,6 +14,6 @@
 
       string State { get; set; }
 
-      string ZipCode { get; set; }      
+      string ZipCode { get; set; }
    }
 }
