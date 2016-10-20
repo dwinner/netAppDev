@@ -6,7 +6,7 @@ namespace Singleton
    ///    Параметризованный потоко-безопасный "Одиночка"
    /// </summary>
    /// <typeparam name="T">Параметр типа одиночки</typeparam>
-   public static class GenTsSingleton<T>
+   public static class Singleton<T>
       where T : class, new()
    {
       private static T _instance;

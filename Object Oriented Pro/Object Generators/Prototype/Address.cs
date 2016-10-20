@@ -10,6 +10,8 @@ namespace Prototype
          new Lazy<DeepCopyManager<Address>>(()
             => new DeepCopyManager<Address>(), LazyThreadSafetyMode.PublicationOnly);
 
+      #region Constructors and cloning
+
       public Address(string type, string street, string city, string state, string zipCode)
       {
          Type = type;
@@ -33,12 +35,14 @@ namespace Prototype
          ZipCode = address.ZipCode;
       }
 
-      object ICloneable.Clone() => new Address(this);
+      object ICloneable.Clone() => new Address(this) /*MemberwiseClone()*/;
 
       public Address Copy(bool deepCopy = false)
          => deepCopy
-               ? _deferredAddrCopyManager.Value.DeepCopy(this)
-               : (Address) ((ICloneable) this).Clone();
+            ? _deferredAddrCopyManager.Value.DeepCopy(this)
+            : (Address) ((ICloneable) this).Clone();
+
+      #endregion
 
       public override string ToString()
          => $"Type: {Type}, Street: {Street}, City: {City}, State: {State}, ZipCode: {ZipCode}";
