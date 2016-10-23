@@ -7,7 +7,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{5aa28d5a-41cc-49f9-b59b-eb6a868aea22}</ProjectGuid>
     <ArchitectureToolsVersion>2.0.0.0</ArchitectureToolsVersion>
-    <Name>ModelingProject1</Name>
+    <Name>Modeling</Name>
     <RootNamespace>ModelingProject1</RootNamespace>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -29,25 +29,25 @@
       <SubType>Content</SubType>
       <DependentUpon>MVC.classdiagram</DependentUpon>
     </Content>
-    <Content Include="UMLClassDiagram1.classdiagram">
+    <Content Include="ClassDiagram.classdiagram">
       <SubType>Content</SubType>
     </Content>
-    <Content Include="UMLClassDiagram1.classdiagram.layout">
+    <Content Include="ClassDiagram.classdiagram.layout">
       <SubType>Content</SubType>
-      <DependentUpon>UMLClassDiagram1.classdiagram</DependentUpon>
+      <DependentUpon>ClassDiagram.classdiagram</DependentUpon>
     </Content>
     <Folder Include="ModelDefinition\" />
-    <Content Include="ModelDefinition\ModelingProject1.uml">
+    <Content Include="ModelDefinition\Modeling.uml">
       <SubType>Content</SubType>
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Validate Include="LayerDiagram1.layerdiagram">
+    <Validate Include="LayerDiagram.layerdiagram">
       <SubType>Content</SubType>
     </Validate>
-    <Validate Include="LayerDiagram1.layerdiagram.suppressions">
+    <Validate Include="LayerDiagram.layerdiagram.suppressions">
       <SubType>Content</SubType>
-      <DependentUpon>LayerDiagram1.layerdiagram</DependentUpon>
+      <DependentUpon>LayerDiagram.layerdiagram</DependentUpon>
     </Validate>
     <Validate Include="SampleAppLayers.layerdiagram">
       <SubType>Content</SubType>
