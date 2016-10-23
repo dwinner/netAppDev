@@ -1,7 +1,4 @@
-Entity Framework: http://metanit.com/sharp/entityframework/
 Model Validation: http://metanit.com/sharp/tutorial/22.1.php
-ASP.NET Core: http://metanit.com/sharp/aspnet5/
-ASP.NET Identity: http://metanit.com/sharp/mvc5/12.1.php
 Quartz.NET: http://metanit.com/sharp/mvc5/24.1.php
 GIT - How To: https://githowto.com/ru
 MongoDB: http://metanit.com/nosql/mongodb/
