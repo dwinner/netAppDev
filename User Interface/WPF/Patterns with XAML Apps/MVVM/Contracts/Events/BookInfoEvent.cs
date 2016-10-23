@@ -2,8 +2,8 @@
 
 namespace Contracts.Events
 {
-    public class BookInfoEvent : EventArgs
-    {
-        public int BookId { get; set; }
-    }
+   public class BookInfoEvent : EventArgs
+   {
+      public int BookId { get; set; }
+   }
 }

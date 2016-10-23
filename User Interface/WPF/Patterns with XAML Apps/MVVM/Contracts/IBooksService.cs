@@ -4,14 +4,14 @@ using System.Threading.Tasks;
 
 namespace Contracts
 {
-    public interface IBooksService
-    {
-        Task LoadBooksAsync();
+   public interface IBooksService
+   {
+      Task LoadBooksAsync();
 
-        IEnumerable<Book> Books { get; }
+      IEnumerable<Book> Books { get; }
 
-        Book GetBook(int bookId);
+      Book GetBook(int bookId);
 
-        Task<Book> AddOrUpdateBookAsync(Book book);
-    }
+      Task<Book> AddOrUpdateBookAsync(Book book);
+   }
 }

@@ -2,22 +2,22 @@
 
 namespace Framework
 {
-    public class EventAggregator<TEvent>
+   public class EventAggregator<TEvent>
         where TEvent : EventArgs
-    {
-        private static EventAggregator<TEvent> s_eventAggregator;
+   {
+      private static EventAggregator<TEvent> s_eventAggregator;
 
-        public static EventAggregator<TEvent> Instance => s_eventAggregator ?? (s_eventAggregator = new EventAggregator<TEvent>());
+      public static EventAggregator<TEvent> Instance => s_eventAggregator ?? (s_eventAggregator = new EventAggregator<TEvent>());
 
-        private EventAggregator()
-        {
-        }
+      private EventAggregator()
+      {
+      }
 
-        public event Action<object, TEvent> Event;
-  
-        public void Publish(object source, TEvent ev)
-        {
-            Event?.Invoke(source, ev);
-        }
-    }
+      public event Action<object, TEvent> Event;
+
+      public void Publish(object source, TEvent ev)
+      {
+         Event?.Invoke(source, ev);
+      }
+   }
 }

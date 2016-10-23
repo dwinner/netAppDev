@@ -1,6 +1,6 @@
 ﻿namespace Framework
 {
-    public abstract class ViewModelBase : BindableBase
-    {
-    }
+   public abstract class ViewModelBase : BindableBase
+   {
+   }
 }

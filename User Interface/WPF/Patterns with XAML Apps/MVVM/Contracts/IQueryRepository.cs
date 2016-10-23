@@ -3,10 +3,10 @@ using System.Threading.Tasks;
 
 namespace Contracts
 {
-    public interface IQueryRepository<T, in TKey>
+   public interface IQueryRepository<T, in TKey>
         where T : class
-    {
-        Task<T> GetItemAsync(TKey id);
-        Task<IEnumerable<T>> GetItemsAsync();
-    }
+   {
+      Task<T> GetItemAsync(TKey id);
+      Task<IEnumerable<T>> GetItemsAsync();
+   }
 }
