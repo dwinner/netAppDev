@@ -15,7 +15,11 @@ namespace Framework
 
       protected virtual bool SetProperty<T>(ref T item, T value, [CallerMemberName] string propertyName = null)
       {
-         if (EqualityComparer<T>.Default.Equals(item, value)) return false;
+         if (EqualityComparer<T>.Default.Equals(item, value))
+         {
+            return false;
+         }
+
          item = value;
          OnPropertyChanged(propertyName);
          return true;
