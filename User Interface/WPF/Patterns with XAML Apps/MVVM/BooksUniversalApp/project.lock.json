@@ -11807,7 +11807,7 @@
       ]
     },
     "Microsoft.Extensions.DependencyInjection/1.0.0-rc2-final": {
-      "sha512": "GJs2tDEeEJkLjfMzGLxIYPq1iWOhEw+tLPp8ca85gTCG5HE+HgGqR34u1UbNdLHN2u5Z3gtQikQtHjkxUtEH7A==",
+      "sha512": "TreRt5BDwivHosFbDpfaJ9CArhyZUHWzv9dlqZx2e0+PSbZznXRBg0QWteh+Y5gEPmJy6hANuz4ZeVK52nLKXA==",
       "type": "package",
       "path": "Microsoft.Extensions.DependencyInjection/1.0.0-rc2-final",
       "files": [
@@ -11820,7 +11820,7 @@
       ]
     },
     "Microsoft.Extensions.DependencyInjection.Abstractions/1.0.0-rc2-final": {
-      "sha512": "ibOgu9bHQTq2QhG1cK3jd7GdElLigecv15jIs+EpHf6jLDcdLcpH4pkLNugOLRhYohaf9fMiZIfHCFCc3gDbng==",
+      "sha512": "KRvRif+xioZSjml/O/Y6W/fksieNZ/hp+Bf/4Nau85gQleG8UJl+etaJXj18SWu8bQ3ApD4ikzq6qKXLlO8AMg==",
       "type": "package",
       "path": "Microsoft.Extensions.DependencyInjection.Abstractions/1.0.0-rc2-final",
       "files": [
@@ -11943,7 +11943,7 @@
       ]
     },
     "Microsoft.NETCore.Runtime.CoreCLR-arm/1.0.0": {
-      "sha512": "hoJfIl981eXwn9Tz8onO/J1xaYApIfp/YrhjSh9rRhml1U5Wj80LBgyp/6n+KI3VlvcAraThhnHnCTp+M3Uh+w==",
+      "sha512": "vUQyaKbHCa7BJAAzdfCP2FfBYOSt0YnDw7VMJLmD1/k68HIJgw1QO7GAfHhqoa39zkkvimC47QBH27wG4C5OGQ==",
       "type": "package",
       "path": "Microsoft.NETCore.Runtime.CoreCLR-arm/1.0.0",
       "files": [
