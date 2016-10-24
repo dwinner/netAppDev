@@ -5,7 +5,6 @@ namespace Models
    public class Book : BindableBase
    {
       private string _publisher;
-
       private string _title;
       public int BookId { get; set; }
 
