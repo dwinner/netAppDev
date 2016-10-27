@@ -1,69 +1,65 @@
-﻿using Contracts;
+﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Threading.Tasks;
+using System.Windows.Input;
+using Contracts;
 using Models;
 using Prism.Commands;
 using Prism.Events;
 using Prism.Mvvm;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Windows.Input;
 using ViewModels.Events;
 
 namespace ViewModels
 {
-    public class BooksViewModel : BindableBase
-    {
-        private IBooksRepository _booksRepository;
-        private IEventAggregator _eventAggregator;
+   public class BooksViewModel : BindableBase
+   {
+      private readonly ObservableCollection<Book> _books = new ObservableCollection<Book>();
+      private readonly IBooksRepository _booksRepository;
+      private readonly IEventAggregator _eventAggregator;
+      private bool _canGetBooks = true;
+      private Book _selectedBook;
 
-        public BooksViewModel(IBooksRepository booksRepository, IEventAggregator eventAggregator)
-        {
-            _booksRepository = booksRepository;
-            _eventAggregator = eventAggregator;
+      public BooksViewModel(IBooksRepository booksRepository, IEventAggregator eventAggregator)
+      {
+         _booksRepository = booksRepository;
+         _eventAggregator = eventAggregator;
+         GetBooksCommand = new DelegateCommand(() => OnGetBooksAsync().ConfigureAwait(true), CanGetBooks);
+         AddBookCommand = new DelegateCommand(OnAddBook);
+      }
 
-            GetBooksCommand = new DelegateCommand(OnGetBooks, CanGetBooks);
-            AddBookCommand = new DelegateCommand(OnAddBook);
-        }
-
-        private Book _selectedBook;
-        public Book SelectedBook
-        {
-            get { return _selectedBook; }
-            set
+      public Book SelectedBook
+      {
+         get { return _selectedBook; }
+         set
+         {
+            if (SetProperty(ref _selectedBook, value))
             {
-                if (SetProperty(ref _selectedBook, value))
-                {
-                    _eventAggregator.GetEvent<BookEvent>().Publish(new BookInfo { BookId = _selectedBook.BookId });
-                }
+               _eventAggregator.GetEvent<BookEvent>().Publish(new BookInfo {BookId = _selectedBook.BookId});
             }
-        }
+         }
+      }
 
-        private ObservableCollection<Book> _books = new ObservableCollection<Book>();
-        public IEnumerable<Book> Books => _books;
-        public ICommand GetBooksCommand { get; }
+      public IEnumerable<Book> Books => _books;
+      public ICommand GetBooksCommand { get; }
+      public ICommand AddBookCommand { get; }
 
-        public async void OnGetBooks()
-        {
-            (GetBooksCommand as DelegateCommand)?.RaiseCanExecuteChanged();
-            var books = await _booksRepository.GetItemsAsync();
-            _books.Clear();
-            foreach (var book in books)
-            {
-                _books.Add(book);
-            }
-            _canGetBooks = true;
-           (GetBooksCommand as DelegateCommand)?.RaiseCanExecuteChanged();
-        }
+      public async Task OnGetBooksAsync()
+      {
+         (GetBooksCommand as DelegateCommand)?.RaiseCanExecuteChanged();
+         var books = await _booksRepository.GetItemsAsync().ConfigureAwait(true);
+         _books.Clear();
+         foreach (var book in books)
+         {
+            _books.Add(book);
+         }
 
-        private bool _canGetBooks = true;
+         _canGetBooks = true;
+         (GetBooksCommand as DelegateCommand)?.RaiseCanExecuteChanged();
+      }
 
-        public bool CanGetBooks() => _canGetBooks;
+      public bool CanGetBooks() => _canGetBooks;
 
-        private void OnAddBook()
-        {
-            _eventAggregator.GetEvent<BookEvent>().Publish(new BookInfo { BookId = 0 });
-
-        }
-
-        public ICommand AddBookCommand { get; }
-    }
+      private void OnAddBook()
+         => _eventAggregator.GetEvent<BookEvent>().Publish(new BookInfo {BookId = 0});
+   }
 }

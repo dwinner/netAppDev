@@ -47,7 +47,9 @@
   <ItemGroup>
     <Compile Include="BooksViewModel.cs" />
     <Compile Include="BookViewModel.cs" />
+    <Compile Include="EditBookMode.cs" />
     <Compile Include="Events\BookEvent.cs" />
+    <Compile Include="Events\BookInfo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

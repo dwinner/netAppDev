@@ -1,76 +1,68 @@
-﻿using Contracts;
+﻿using System;
+using System.Threading.Tasks;
+using System.Windows.Input;
+using Contracts;
 using Models;
 using Prism.Commands;
 using Prism.Events;
 using Prism.Mvvm;
-using System.Windows.Input;
 using ViewModels.Events;
 
 namespace ViewModels
 {
-    public enum EditBookMode
-    {
-        Edit,
-        AddNew
-    }
+   public class BookViewModel : BindableBase
+   {
+      private readonly IBooksRepository _booksRepository;
+      private Book _book;
+      private EditBookMode _mode;
 
-    public class BookViewModel : BindableBase
-    {
-        private IBooksRepository _booksRepository;
-        private IEventAggregator _eventAggregator;
+      public BookViewModel(IBooksRepository booksRepository, IEventAggregator eventAggregator)
+      {
+         _booksRepository = booksRepository;
+         eventAggregator.GetEvent<BookEvent>().Subscribe(info => SetBookAsync(info).ConfigureAwait(true));
+         SaveBookCommand = new DelegateCommand(() => OnSaveBookAsync().ConfigureAwait(true));
+      }
 
-        public BookViewModel(IBooksRepository booksRepository, IEventAggregator eventAggregator)
-        {
-            _booksRepository = booksRepository;
-            _eventAggregator = eventAggregator;
+      public ICommand SaveBookCommand { get; }
 
-            SaveBookCommand = new DelegateCommand(OnSaveBook);
+      public Book Book
+      {
+         get { return _book; }
+         set { SetProperty(ref _book, value); }
+      }
 
-            _eventAggregator.GetEvent<BookEvent>().Subscribe(SetBook);
-        }
+      public EditBookMode Mode
+      {
+         get { return _mode; }
+         set { SetProperty(ref _mode, value); }
+      }
 
-        public ICommand SaveBookCommand { get; }
+      private async Task SetBookAsync(BookInfo bookInfo)
+      {
+         if (bookInfo.BookId == 0)
+         {
+            Mode = EditBookMode.AddNew;
+         }
+         else // get an existing book from the repository
+         {
+            Mode = EditBookMode.Edit;
+            Book = await _booksRepository.GetItemAsync(bookInfo.BookId).ConfigureAwait(true);
+         }
+      }
 
-        private Book _book;
-        public Book Book
-        {
-            get { return _book; }
-            set { SetProperty(ref _book, value); }
-        }
-
-        private EditBookMode _mode;
-        public EditBookMode Mode
-        {
-            get { return _mode; }
-            set { SetProperty(ref _mode, value); }
-        }
-
-        private async void SetBook(BookInfo bookInfo)
-        {
-            if (bookInfo.BookId == 0)
-            {
-                Mode = EditBookMode.AddNew;
-            }
-            else  // get an existing book from the repository
-            {
-                Mode = EditBookMode.Edit;
-                Book = await _booksRepository.GetItemAsync(bookInfo.BookId);
-            }
-        }
-
-        private async void OnSaveBook()
-        {
-            switch (Mode)
-            {
-                case EditBookMode.Edit:
-                    await _booksRepository.UpdateAsync(Book);
-                    break;
-                case EditBookMode.AddNew:
-                    await _booksRepository.AddAsync(Book);
-                    break;
-                default:
-                    break;
-            }
-        }
-    }
+      private async Task OnSaveBookAsync()
+      {
+         switch (Mode)
+         {
+            case EditBookMode.Edit:
+               await _booksRepository.UpdateAsync(Book).ConfigureAwait(true);
+               break;
+            case EditBookMode.AddNew:
+               await _booksRepository.AddAsync(Book).ConfigureAwait(true);
+               break;
+            default:
+               throw new ArgumentOutOfRangeException(nameof(Mode));
+         }
+      }
+   }
 }

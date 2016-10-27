@@ -19,31 +19,33 @@ namespace Services
 
       public async Task LoadBooksAsync()
       {
-         if (_books.Count > 0) return;
-
-         var books = await _booksRepository.GetItemsAsync();
-         _books.Clear();
-         foreach (var b in books)
+         if (_books.Count > 0)
          {
-            _books.Add(b);
+            return;
+         }
+
+         _books.Clear();
+         var books = await _booksRepository.GetItemsAsync().ConfigureAwait(true);
+         foreach (var book in books)
+         {
+            _books.Add(book);
          }
       }
 
-      public Book GetBook(int bookId) =>
-         _books.Where(b => b.BookId == bookId).SingleOrDefault();
+      public Book GetBook(int bookId) => _books.SingleOrDefault(book => book.BookId == bookId);
 
       public async Task<Book> AddOrUpdateBookAsync(Book book)
       {
-         Book updated = null;
+         Book updated;
          if (book.BookId == 0)
          {
-            updated = await _booksRepository.AddAsync(book);
+            updated = await _booksRepository.AddAsync(book).ConfigureAwait(true);
             _books.Add(updated);
          }
          else
          {
-            updated = await _booksRepository.UpdateAsync(book);
-            var old = _books.Where(b => b.BookId == updated.BookId).Single();
+            updated = await _booksRepository.UpdateAsync(book).ConfigureAwait(true);
+            var old = _books.Single(bk => bk.BookId == updated.BookId);
             var ix = _books.IndexOf(old);
             _books.RemoveAt(ix);
             _books.Insert(ix, updated);

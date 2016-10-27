@@ -1,46 +1,38 @@
-﻿using Contracts;
+﻿using System;
+using System.Windows;
+using Contracts;
 using Microsoft.Extensions.DependencyInjection;
 using Repositories;
 using Services;
-using System;
-using System.Windows;
 using ViewModels;
 
 namespace BooksDesktopApp
 {
-   /// <summary>
-   /// Interaction logic for App.xaml
-   /// </summary>
-   public partial class App : Application
+   public partial class App
    {
-      private IServiceProvider RegisterServices()
+      private BooksService _booksService;
+
+      private IServiceProvider Container { get; set; }
+
+      public BooksService BooksService =>
+         _booksService ?? (_booksService = new BooksService(new BooksSampleRepository()));
+
+      private static IServiceProvider RegisterServices()
       {
          var serviceCollection = new ServiceCollection();
          serviceCollection.AddTransient<BooksViewModel>();
          serviceCollection.AddTransient<BookViewModel>();
          serviceCollection.AddSingleton<IBooksService, BooksService>();
-         //     serviceCollection.AddSingleton<IBooksRepository, BooksSampleRepository>();
+         //serviceCollection.AddSingleton<IBooksRepository, BooksSampleRepository>();
          return serviceCollection.BuildServiceProvider();
       }
-
-      public IServiceProvider Container { get; private set; }
 
       protected override void OnStartup(StartupEventArgs e)
       {
          base.OnStartup(e);
-
          Container = RegisterServices();
-
-
          var mainWindow = new MainWindow();
          mainWindow.Show();
       }
-
-      private BooksService _booksService;
-      public BooksService BooksService =>
-          _booksService ?? (_booksService = new BooksService(new BooksSampleRepository()));
-
-
-
    }
 }

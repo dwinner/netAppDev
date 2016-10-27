@@ -1,17 +1,14 @@
-﻿using Models;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using Models;
 
 namespace Contracts
 {
    public interface IBooksService
    {
-      Task LoadBooksAsync();
-
       IEnumerable<Book> Books { get; }
-
+      Task LoadBooksAsync();
       Book GetBook(int bookId);
-
       Task<Book> AddOrUpdateBookAsync(Book book);
    }
 }

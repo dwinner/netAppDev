@@ -1,24 +1,27 @@
-﻿using Contracts;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+using System.Windows.Input;
+using Contracts;
 using Contracts.Events;
 using Framework;
 using Models;
-using System.Collections.Generic;
-using System.Windows.Input;
 
 namespace ViewModels
 {
    public class BooksViewModel : ViewModelBase
    {
-      private IBooksService _booksService;
+      private readonly IBooksService _booksService;
+      private bool _canGetBooks = true;
+      private Book _selectedBook;
 
       public BooksViewModel(IBooksService booksService)
       {
          _booksService = booksService;
-         GetBooksCommand = new DelegateCommand(OnGetBooks, CanGetBooks);
+         GetBooksCommand = new DelegateCommand(
+            () => OnGetBooksAsync().ConfigureAwait(true), CanGetBooks);
          AddBookCommand = new DelegateCommand(OnAddBook);
       }
 
-      private Book _selectedBook;
       public Book SelectedBook
       {
          get { return _selectedBook; }
@@ -26,31 +29,27 @@ namespace ViewModels
          {
             if (SetProperty(ref _selectedBook, value))
             {
-               EventAggregator<BookInfoEvent>.Instance.Publish(this, new BookInfoEvent { BookId = _selectedBook.BookId });
+               EventAggregator<BookInfoEvent>.Instance.Publish(
+                  this, new BookInfoEvent {BookId = _selectedBook.BookId});
             }
          }
       }
 
       public IEnumerable<Book> Books => _booksService.Books;
+
       public ICommand GetBooksCommand { get; }
+      public ICommand AddBookCommand { get; }
 
-      public async void OnGetBooks()
+      private async Task OnGetBooksAsync()
       {
-         await _booksService.LoadBooksAsync();
-
+         await _booksService.LoadBooksAsync().ConfigureAwait(true);
          _canGetBooks = false;
          (GetBooksCommand as DelegateCommand)?.RaiseCanExecuteChanged();
       }
 
-      private bool _canGetBooks = true;
+      private bool CanGetBooks() => _canGetBooks;
 
-      public bool CanGetBooks() => _canGetBooks;
-
-      private void OnAddBook()
-      {
-         EventAggregator<BookInfoEvent>.Instance.Publish(this, new BookInfoEvent { BookId = 0 });
-      }
-
-      public ICommand AddBookCommand { get; }
+      private void OnAddBook() =>
+         EventAggregator<BookInfoEvent>.Instance.Publish(this, new BookInfoEvent {BookId = 0});
    }
 }

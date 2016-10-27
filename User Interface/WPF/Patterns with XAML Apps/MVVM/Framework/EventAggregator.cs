@@ -3,21 +3,19 @@
 namespace Framework
 {
    public class EventAggregator<TEvent>
-        where TEvent : EventArgs
+      where TEvent : EventArgs
    {
-      private static EventAggregator<TEvent> s_eventAggregator;
-
-      public static EventAggregator<TEvent> Instance => s_eventAggregator ?? (s_eventAggregator = new EventAggregator<TEvent>());
+      private static EventAggregator<TEvent> _eventAggregatorImpl;
 
       private EventAggregator()
       {
       }
 
+      public static EventAggregator<TEvent> Instance
+         => _eventAggregatorImpl ?? (_eventAggregatorImpl = new EventAggregator<TEvent>());
+
       public event Action<object, TEvent> Event;
 
-      public void Publish(object source, TEvent ev)
-      {
-         Event?.Invoke(source, ev);
-      }
+      public void Publish(object source, TEvent ev) => Event?.Invoke(source, ev);
    }
 }
