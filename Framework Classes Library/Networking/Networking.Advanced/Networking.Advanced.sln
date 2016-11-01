@@ -23,6 +23,10 @@ Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "IPAddressesSample", "IPAddr
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "DnsLookupSample", "DnsLookupSample\DnsLookupSample.xproj", "{5E14560C-8730-4E0E-B559-B7773FCAD371}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Pipes", "Pipes", "{20CED475-53C6-4CDC-8D76-3507CCDA358E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TCP", "TCP", "{ACC19884-9303-4805-9D4E-47D46BA5ED4B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -72,5 +76,11 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{A99926A1-7864-4463-8490-7E7B29F89071} = {20CED475-53C6-4CDC-8D76-3507CCDA358E}
+		{AC55FB55-1ED0-4C9D-AF14-DA5B3F2A0E4E} = {20CED475-53C6-4CDC-8D76-3507CCDA358E}
+		{6526EC90-CF11-4F00-9437-BE989019E542} = {20CED475-53C6-4CDC-8D76-3507CCDA358E}
+		{9C31938A-4F24-4928-9E45-17041A01B087} = {20CED475-53C6-4CDC-8D76-3507CCDA358E}
 	EndGlobalSection
 EndGlobal
