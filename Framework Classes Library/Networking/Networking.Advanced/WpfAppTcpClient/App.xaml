@@ -1,9 +1,7 @@
-﻿<Application x:Class="WPFAppTcpClient.App"
+﻿<Application x:Class="WpfAppTcpClient.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:WPFAppTcpClient"
-             StartupUri="MainWindow.xaml">
+             StartupUri="WpfAppEntry.xaml">
     <Application.Resources>
-         
     </Application.Resources>
 </Application>

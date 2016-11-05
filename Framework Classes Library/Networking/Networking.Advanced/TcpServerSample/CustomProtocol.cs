@@ -2,8 +2,8 @@
 
 namespace TcpServerSample
 {
-   public static class CustomProtocol
-   {
+    public static class CustomProtocol
+    {
       public const string SessionId = "ID";
       public const string CommandHelo = "HELO";
       public const string CommandEcho = "ECO";
