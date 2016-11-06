@@ -117,7 +117,7 @@ namespace WpfAppTcpClient
       public string RemoteHost
       {
          get { return _remoteHost; }
-         set { SetProperty(ref _remoteHost, value); }
+         set { SetProperty(ref _remoteHost, value, nameof(RemoteHost)); }
       }
 
       private int _serverPort = 8800;
@@ -166,7 +166,7 @@ namespace WpfAppTcpClient
 
       public event PropertyChangedEventHandler PropertyChanged;
 
-      protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+      protected virtual void OnPropertyChanged(string propertyName)
          => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 
       private bool SetProperty<T>(ref T item, T value, [CallerMemberName] string propertyName = null)
@@ -178,7 +178,6 @@ namespace WpfAppTcpClient
 
          item = value;
          OnPropertyChanged(propertyName);
-
          return true;
       }
 
