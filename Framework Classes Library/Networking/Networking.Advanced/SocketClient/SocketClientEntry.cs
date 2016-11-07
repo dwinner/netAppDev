@@ -9,7 +9,7 @@ using static System.Console;
 
 namespace SocketClient
 {
-    class Program
+    class SocketClientEntry
     {
         static void Main(string[] args)
         {
