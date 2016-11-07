@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
@@ -9,106 +10,105 @@ using static System.Console;
 
 namespace SocketClient
 {
-    class SocketClientEntry
-    {
-        static void Main(string[] args)
-        {
-            if (args.Length != 2)
+   internal static class SocketClientEntry
+   {
+      private const int ReadBufferSize = 1024;
+
+      private static void Main(string[] args)
+      {
+         if (args.Length != 2)
+         {
+            ShowUsage();
+            return;
+         }
+
+         var hostName = args[0];
+         int port;
+         if (!int.TryParse(args[1], out port))
+         {
+            ShowUsage();
+            return;
+         }
+
+         WriteLine("press return when the server is started");
+         ReadLine();
+
+         SendAndReceiveAsync(hostName, port).Wait();
+         ReadLine();
+      }
+
+      private static void ShowUsage() => WriteLine("Usage: SocketClient server port");
+
+      private static async Task SendAndReceiveAsync(string hostName, int port)
+      {
+         try
+         {
+            var ipHost = await Dns.GetHostEntryAsync(hostName).ConfigureAwait(false);
+            var ipAddress =
+               ipHost.AddressList.FirstOrDefault(address => address.AddressFamily == AddressFamily.InterNetwork);
+            if (ipAddress == null)
             {
-                ShowUsage();
-                return;
+               WriteLine("no IPv4 address");
+               return;
             }
-            string hostName = args[0];
-            int port;
-            if (!int.TryParse(args[1], out port))
+
+            using (var client = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp))
             {
-                ShowUsage();
-                return;
+               client.Connect(ipAddress, port);
+               WriteLine("client successfully connected");
+               using (var stream = new NetworkStream(client))
+               {
+                  var tokenSource = new CancellationTokenSource();
+                  var tSender = SendAsync(stream, tokenSource);
+                  var tReceiver = ReceiveAsync(stream, tokenSource.Token);
+                  await Task.WhenAll(tSender, tReceiver).ConfigureAwait(false);
+               }               
             }
-            WriteLine("press return when the server is started");
-            ReadLine();
+         }
+         catch (SocketException ex)
+         {
+            WriteLine(ex.Message);
+         }
+      }
 
-            SendAndReceive(hostName, port).Wait();
-            ReadLine();
-        }
-
-        private static void ShowUsage()
-        {
-            WriteLine("Usage: SocketClient server port");
-        }
-
-        public static async Task SendAndReceive(string hostName, int port)
-        {
-            try
+      private static async Task SendAsync(Stream stream, CancellationTokenSource tokenSource)
+      {
+         WriteLine("Sender task");
+         while (true)
+         {
+            WriteLine("enter a string to send, shutdown to exit");
+            var line = ReadLine();
+            var buffer = Encoding.UTF8.GetBytes($"{line}\r\n");
+            await stream.WriteAsync(buffer, 0, buffer.Length).ConfigureAwait(false);
+            await stream.FlushAsync().ConfigureAwait(false);
+            if (string.Compare(line, "shutdown", StringComparison.OrdinalIgnoreCase) == 0)
             {
-                IPHostEntry ipHost = await Dns.GetHostEntryAsync(hostName);
-                IPAddress ipAddress = ipHost.AddressList.Where(address => address.AddressFamily == AddressFamily.InterNetwork).First();
-                if (ipAddress == null)
-                {
-                    WriteLine("no IPv4 address");
-                    return;
-                }
-
-                using (var client = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp))
-                {
-                    client.Connect(ipAddress, port);
-                    WriteLine("client successfully connected");
-                    var stream = new NetworkStream(client);
-                    var cts = new CancellationTokenSource();
-
-                    Task tSender = Sender(stream, cts);
-                    Task tReceiver = Receiver(stream, cts.Token);
-                    await Task.WhenAll(tSender, tReceiver);
-
-                }
+               tokenSource.Cancel();
+               WriteLine("sender task closes");
+               break;
             }
-            catch (SocketException ex)
-            {
-                WriteLine(ex.Message);
-            }
-        }
+         }
+      }
 
-        public static async Task Sender(NetworkStream stream, CancellationTokenSource cts)
-        {
-            WriteLine("Sender task");
+      private static async Task ReceiveAsync(Stream stream, CancellationToken token)
+      {
+         try
+         {
+            stream.ReadTimeout = 5000;
+            WriteLine("Receiver task");
+            var readBuffer = new byte[ReadBufferSize];
             while (true)
             {
-                WriteLine("enter a string to send, shutdown to exit");
-                string line = ReadLine();
-                byte[] buffer = Encoding.UTF8.GetBytes($"{line}\r\n");
-                await stream.WriteAsync(buffer, 0, buffer.Length);
-                await stream.FlushAsync();
-                if (string.Compare(line, "shutdown", ignoreCase: true) == 0)
-                {
-                    cts.Cancel();
-                    WriteLine("sender task closes");
-                    break;
-                }
+               Array.Clear(readBuffer, 0, ReadBufferSize);
+               var read = await stream.ReadAsync(readBuffer, 0, ReadBufferSize, token).ConfigureAwait(false);
+               var receivedLine = Encoding.UTF8.GetString(readBuffer, 0, read);
+               WriteLine($"received {receivedLine}");
             }
-        }
-
-        private const int ReadBufferSize = 1024;
-
-        public static async Task Receiver(NetworkStream stream, CancellationToken token)
-        {
-            try
-            {
-                stream.ReadTimeout = 5000;
-                WriteLine("Receiver task");
-                byte[] readBuffer = new byte[ReadBufferSize];
-                while (true)
-                {
-                    Array.Clear(readBuffer, 0, ReadBufferSize);
-
-                    int read = await stream.ReadAsync(readBuffer, 0, ReadBufferSize, token);
-                    string receivedLine = Encoding.UTF8.GetString(readBuffer, 0, read);
-                    WriteLine($"received {receivedLine}");
-                }
-            }
-            catch (OperationCanceledException ex)
-            {
-                WriteLine(ex.Message);
-            }
-        }
-    }
+         }
+         catch (OperationCanceledException ex)
+         {
+            WriteLine(ex.Message);
+         }
+      }
+   }
 }
