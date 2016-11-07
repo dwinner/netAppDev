@@ -1,0 +1,223 @@
+﻿<Activity mc:Ignorable="sap" x:Class="HolidayRequestProcess.HolidayRequestProcessDefinition" mva:VisualBasic.Settings="Assembly references and imported namespaces serialized as XML namespaces" xmlns="http://schemas.microsoft.com/netfx/2009/xaml/activities" xmlns:h="clr-namespace:HolidayRequestDataContracts;assembly=HolidayRequestDataContracts, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" xmlns:h1="clr-namespace:HolidayRequestDataContracts;assembly=HolidayRequestDataContracts" xmlns:hca="clr-namespace:HolidayRequestActivityLibrary.CalcIDService.Activities;assembly=HolidayRequestActivityLibrary" xmlns:hh="clr-namespace:HolidayRequestActivityLibrary.HRService;assembly=HolidayRequestActivityLibrary, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" xmlns:hh1="clr-namespace:HolidayRequestActivityLibrary.HRService;assembly=HolidayRequestActivityLibrary" xmlns:hha="clr-namespace:HolidayRequestActivityLibrary.HRService.Activities;assembly=HolidayRequestActivityLibrary" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:mv="clr-namespace:Microsoft.VisualBasic;assembly=System" xmlns:mva="clr-namespace:Microsoft.VisualBasic.Activities;assembly=System.Activities" xmlns:p="http://tempuri.org/" xmlns:p1="http://schemas.microsoft.com/netfx/2009/xaml/servicemodel" xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns:s1="clr-namespace:System;assembly=System" xmlns:s2="clr-namespace:System;assembly=System.Xml" xmlns:s3="clr-namespace:System;assembly=System.Core" xmlns:s4="clr-namespace:System;assembly=mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" xmlns:sad="clr-namespace:System.Activities.Debugger;assembly=System.Activities" xmlns:sap="http://schemas.microsoft.com/netfx/2009/xaml/activities/presentation" xmlns:scg="clr-namespace:System.Collections.Generic;assembly=System" xmlns:scg1="clr-namespace:System.Collections.Generic;assembly=System.ServiceModel" xmlns:scg2="clr-namespace:System.Collections.Generic;assembly=System.Core" xmlns:scg3="clr-namespace:System.Collections.Generic;assembly=mscorlib" xmlns:sd="clr-namespace:System.Data;assembly=System.Data" xmlns:sd1="clr-namespace:System.Data;assembly=System.Data.DataSetExtensions" xmlns:sl="clr-namespace:System.Linq;assembly=System.Core" xmlns:srs="clr-namespace:System.Runtime.Serialization;assembly=System.Runtime.Serialization, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" xmlns:ssa="clr-namespace:System.ServiceModel.Activities;assembly=System.ServiceModel.Activities" xmlns:ssx="clr-namespace:System.ServiceModel.XamlIntegration;assembly=System.ServiceModel" xmlns:st="clr-namespace:System.Text;assembly=mscorlib" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <Sequence sad:XamlDebuggerXmlReader.FileName="C:\WCFBookCases\TheHolidayRequestProcessSolution\HolidayRequestProcess\HolidayRequestProcessDefinition.xaml" sap:VirtualizedContainerService.HintSize="1051.2,2614.4">
+    <Sequence.Variables>
+      <Variable x:TypeArguments="h1:HolidayApprovalDataContract_Input" Name="holidayApprovalInput" />
+      <Variable x:TypeArguments="h1:HolidayApprovalDataContract_Output" Name="holidayApprovalOutput" />
+      <Variable x:TypeArguments="h1:HolidayRequestDataContract_Input" Name="holidayRequestInput" />
+      <Variable x:TypeArguments="h1:HolidayRequestDataContract_Output" Name="holidayRequestOutput" />
+      <Variable x:TypeArguments="x:Int32" Name="referenceID" />
+      <Variable x:TypeArguments="hh1:ApprovedHolidayData" Name="approvedHolidayInput" />
+      <Variable x:TypeArguments="p1:CorrelationHandle" Name="correlationHandle" />
+      <Variable x:TypeArguments="x:Int32" Name="retryCounter" />
+    </Sequence.Variables>
+    <sap:WorkflowViewStateService.ViewState>
+      <scg3:Dictionary x:TypeArguments="x:String, x:Object">
+        <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+      </scg3:Dictionary>
+    </sap:WorkflowViewStateService.ViewState>
+    <p1:Receive x:Name="__ReferenceID0" CanCreateInstance="True" sap:VirtualizedContainerService.HintSize="1028.8,91.2" OperationName="RequestHoliday" ServiceContractName="p:IService">
+      <p1:Receive.CorrelatesOn>
+        <p1:MessageQuerySet />
+      </p1:Receive.CorrelatesOn>
+      <p1:ReceiveParametersContent>
+        <OutArgument x:TypeArguments="h1:HolidayRequestDataContract_Input" x:Key="inputparam_holidayRequest">[holidayRequestInput]</OutArgument>
+      </p1:ReceiveParametersContent>
+    </p1:Receive>
+    <hca:GetNewReferenceID GetNewReferenceIDResult="[referenceID]" sap:VirtualizedContainerService.HintSize="1028.8,22.4" />
+    <Assign sap:VirtualizedContainerService.HintSize="1028.8,59.2">
+      <Assign.To>
+        <OutArgument x:TypeArguments="h1:HolidayRequestDataContract_Output">[holidayRequestOutput]</OutArgument>
+      </Assign.To>
+      <Assign.Value>
+        <InArgument x:TypeArguments="h1:HolidayRequestDataContract_Output">[New HolidayRequestDataContract_Output()]</InArgument>
+      </Assign.Value>
+    </Assign>
+    <Assign sap:VirtualizedContainerService.HintSize="1028.8,59.2">
+      <Assign.To>
+        <OutArgument x:TypeArguments="x:Int32">[holidayRequestOutput.ReferenceID]</OutArgument>
+      </Assign.To>
+      <Assign.Value>
+        <InArgument x:TypeArguments="x:Int32">[referenceID]</InArgument>
+      </Assign.Value>
+    </Assign>
+    <p1:SendReply Request="{x:Reference __ReferenceID0}" DisplayName="Send" sap:VirtualizedContainerService.HintSize="1028.8,91.2">
+      <p1:SendReply.CorrelationInitializers>
+        <p1:QueryCorrelationInitializer CorrelationHandle="[correlationHandle]">
+          <p1:XPathMessageQuery x:Key="key1">
+            <p1:XPathMessageQuery.Namespaces>
+              <ssx:XPathMessageContextMarkup>
+                <x:String x:Key="xg0">http://schemas.datacontract.org/2004/07/HolidayRequestDataContracts</x:String>
+                <x:String x:Key="xgSc">http://tempuri.org/</x:String>
+              </ssx:XPathMessageContextMarkup>
+            </p1:XPathMessageQuery.Namespaces>sm:body()/xgSc:RequestHolidayResponse/xgSc:outputparam_holidayRequest/xg0:ReferenceID</p1:XPathMessageQuery>
+        </p1:QueryCorrelationInitializer>
+      </p1:SendReply.CorrelationInitializers>
+      <p1:SendParametersContent>
+        <InArgument x:TypeArguments="h1:HolidayRequestDataContract_Output" x:Key="outputparam_holidayRequest">[holidayRequestOutput]</InArgument>
+      </p1:SendParametersContent>
+    </p1:SendReply>
+    <WriteLine sap:VirtualizedContainerService.HintSize="1028.8,62.4" Text="[String.Format(&quot;Received Request {0}&quot;, referenceID)]" />
+    <While sap:VirtualizedContainerService.HintSize="1028.8,1761.6" Condition="[retryCounter &lt; 3]">
+      <Pick sap:VirtualizedContainerService.HintSize="1003.2,1643.2">
+        <sap:WorkflowViewStateService.ViewState>
+          <scg3:Dictionary x:TypeArguments="x:String, x:Object">
+            <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+            <x:Boolean x:Key="IsPinned">False</x:Boolean>
+          </scg3:Dictionary>
+        </sap:WorkflowViewStateService.ViewState>
+        <PickBranch sap:VirtualizedContainerService.HintSize="296,1596.8">
+          <PickBranch.Trigger>
+            <Delay Duration="[System.TimeSpan.FromSeconds(30)]" sap:VirtualizedContainerService.HintSize="265.6,99.2" />
+          </PickBranch.Trigger>
+          <Sequence sap:VirtualizedContainerService.HintSize="265.6,286.4">
+            <sap:WorkflowViewStateService.ViewState>
+              <scg3:Dictionary x:TypeArguments="x:String, x:Object">
+                <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+              </scg3:Dictionary>
+            </sap:WorkflowViewStateService.ViewState>
+            <WriteLine sap:VirtualizedContainerService.HintSize="243.2,62.4" Text="Delayed" />
+            <Assign sap:VirtualizedContainerService.HintSize="243.2,59.2">
+              <Assign.To>
+                <OutArgument x:TypeArguments="x:Int32">[retryCounter]</OutArgument>
+              </Assign.To>
+              <Assign.Value>
+                <InArgument x:TypeArguments="x:Int32">[retryCounter + 1]</InArgument>
+              </Assign.Value>
+            </Assign>
+          </Sequence>
+        </PickBranch>
+        <PickBranch DisplayName="Branch2" sap:VirtualizedContainerService.HintSize="553.6,1596.8">
+          <PickBranch.Trigger>
+            <Sequence sap:VirtualizedContainerService.HintSize="523.2,644.8">
+              <Sequence.Variables>
+                <Variable x:TypeArguments="p1:CorrelationHandle" Name="__handle1" />
+              </Sequence.Variables>
+              <sap:WorkflowViewStateService.ViewState>
+                <scg3:Dictionary x:TypeArguments="x:String, x:Object">
+                  <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                </scg3:Dictionary>
+              </sap:WorkflowViewStateService.ViewState>
+              <p1:Receive x:Name="__ReferenceID1" CorrelatesWith="[correlationHandle]" sap:VirtualizedContainerService.HintSize="254.4,91.2" OperationName="ApproveRequest" ServiceContractName="p:IService">
+                <p1:Receive.CorrelatesOn>
+                  <p1:XPathMessageQuery x:Key="key1">
+                    <p1:XPathMessageQuery.Namespaces>
+                      <ssx:XPathMessageContextMarkup>
+                        <x:String x:Key="xg0">http://schemas.datacontract.org/2004/07/HolidayRequestDataContracts</x:String>
+                        <x:String x:Key="xgSc">http://tempuri.org/</x:String>
+                      </ssx:XPathMessageContextMarkup>
+                    </p1:XPathMessageQuery.Namespaces>sm:body()/xgSc:ApproveRequest/xgSc:inputparam_holidayApproval/xg0:ReferenceID</p1:XPathMessageQuery>
+                </p1:Receive.CorrelatesOn>
+                <p1:Receive.CorrelationInitializers>
+                  <p1:RequestReplyCorrelationInitializer CorrelationHandle="[__handle1]" />
+                </p1:Receive.CorrelationInitializers>
+                <p1:ReceiveParametersContent>
+                  <OutArgument x:TypeArguments="h1:HolidayApprovalDataContract_Input" x:Key="inputparam_holidayApproval">[holidayApprovalInput]</OutArgument>
+                </p1:ReceiveParametersContent>
+              </p1:Receive>
+              <Assign sap:VirtualizedContainerService.HintSize="254.4,59.2">
+                <Assign.To>
+                  <OutArgument x:TypeArguments="h1:HolidayApprovalDataContract_Output">[holidayApprovalOutput]</OutArgument>
+                </Assign.To>
+                <Assign.Value>
+                  <InArgument x:TypeArguments="h1:HolidayApprovalDataContract_Output">[New HolidayApprovalDataContract_Output()]</InArgument>
+                </Assign.Value>
+              </Assign>
+              <Assign sap:VirtualizedContainerService.HintSize="254.4,59.2">
+                <Assign.To>
+                  <OutArgument x:TypeArguments="x:Int32">[holidayApprovalOutput.EmployeeID]</OutArgument>
+                </Assign.To>
+                <Assign.Value>
+                  <InArgument x:TypeArguments="x:Int32">[holidayRequestInput.EmployeeID]</InArgument>
+                </Assign.Value>
+              </Assign>
+              <p1:SendReply Request="{x:Reference __ReferenceID1}" DisplayName="SendReplyToReceive" sap:VirtualizedContainerService.HintSize="254.4,91.2">
+                <p1:SendParametersContent>
+                  <InArgument x:TypeArguments="h1:HolidayApprovalDataContract_Output" x:Key="outputparam_holidayApproval">[holidayApprovalOutput]</InArgument>
+                </p1:SendParametersContent>
+              </p1:SendReply>
+              <Assign sap:VirtualizedContainerService.HintSize="254.4,59.2">
+                <Assign.To>
+                  <OutArgument x:TypeArguments="x:Int32">[retryCounter]</OutArgument>
+                </Assign.To>
+                <Assign.Value>
+                  <InArgument x:TypeArguments="x:Int32">99</InArgument>
+                </Assign.Value>
+              </Assign>
+            </Sequence>
+          </PickBranch.Trigger>
+          <If Condition="[holidayApprovalInput.ApprovedOrDenied = ApprovedOrDeniedEnum.Approved]" DisplayName="ApprovedOrDenied" sap:VirtualizedContainerService.HintSize="523.2,854.4">
+            <sap:WorkflowViewStateService.ViewState>
+              <scg3:Dictionary x:TypeArguments="x:String, x:Object">
+                <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                <x:Boolean x:Key="IsPinned">False</x:Boolean>
+              </scg3:Dictionary>
+            </sap:WorkflowViewStateService.ViewState>
+            <If.Then>
+              <Sequence sap:VirtualizedContainerService.HintSize="265.6,745.6">
+                <sap:WorkflowViewStateService.ViewState>
+                  <scg3:Dictionary x:TypeArguments="x:String, x:Object">
+                    <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                  </scg3:Dictionary>
+                </sap:WorkflowViewStateService.ViewState>
+                <WriteLine sap:VirtualizedContainerService.HintSize="243.2,62.4" Text="Approved" />
+                <Assign sap:VirtualizedContainerService.HintSize="243.2,59.2">
+                  <Assign.To>
+                    <OutArgument x:TypeArguments="hh1:ApprovedHolidayData">[approvedHolidayInput]</OutArgument>
+                  </Assign.To>
+                  <Assign.Value>
+                    <InArgument x:TypeArguments="hh1:ApprovedHolidayData">[New HolidayRequestActivityLibrary.HRService.ApprovedHolidayData]</InArgument>
+                  </Assign.Value>
+                </Assign>
+                <Assign sap:VirtualizedContainerService.HintSize="243.2,59.2">
+                  <Assign.To>
+                    <OutArgument x:TypeArguments="x:Int32">[approvedHolidayInput.ApprovedByManagerID]</OutArgument>
+                  </Assign.To>
+                  <Assign.Value>
+                    <InArgument x:TypeArguments="x:Int32">[holidayApprovalInput.ManagerID]</InArgument>
+                  </Assign.Value>
+                </Assign>
+                <Assign sap:VirtualizedContainerService.HintSize="243.2,59.2">
+                  <Assign.To>
+                    <OutArgument x:TypeArguments="x:Int32">[approvedHolidayInput.EmployeeID]</OutArgument>
+                  </Assign.To>
+                  <Assign.Value>
+                    <InArgument x:TypeArguments="x:Int32">[holidayRequestInput.EmployeeID]</InArgument>
+                  </Assign.Value>
+                </Assign>
+                <Assign sap:VirtualizedContainerService.HintSize="243.2,59.2">
+                  <Assign.To>
+                    <OutArgument x:TypeArguments="s:DateTime">[approvedHolidayInput.HolidayStartDate]</OutArgument>
+                  </Assign.To>
+                  <Assign.Value>
+                    <InArgument x:TypeArguments="s:DateTime">[holidayRequestInput.HolidayStartDate]</InArgument>
+                  </Assign.Value>
+                </Assign>
+                <Assign sap:VirtualizedContainerService.HintSize="243.2,59.2">
+                  <Assign.To>
+                    <OutArgument x:TypeArguments="s:DateTime">[approvedHolidayInput.HolidayEndDate]</OutArgument>
+                  </Assign.To>
+                  <Assign.Value>
+                    <InArgument x:TypeArguments="s:DateTime">[holidayRequestInput.HolidayEndDate]</InArgument>
+                  </Assign.Value>
+                </Assign>
+                <hha:ReceiveApprovedHolidayRequest sap:VirtualizedContainerService.HintSize="243.2,22.4" approvedHolidayData="[approvedHolidayInput]" />
+              </Sequence>
+            </If.Then>
+            <If.Else>
+              <Sequence sap:VirtualizedContainerService.HintSize="233.6,745.6">
+                <sap:WorkflowViewStateService.ViewState>
+                  <scg3:Dictionary x:TypeArguments="x:String, x:Object">
+                    <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                    <x:Boolean x:Key="IsPinned">False</x:Boolean>
+                  </scg3:Dictionary>
+                </sap:WorkflowViewStateService.ViewState>
+                <WriteLine sap:VirtualizedContainerService.HintSize="211.2,62.4" Text="Denied" />
+              </Sequence>
+            </If.Else>
+          </If>
+        </PickBranch>
+      </Pick>
+    </While>
+    <WriteLine sap:VirtualizedContainerService.HintSize="1028.8,62.4" Text="Process Done" />
+  </Sequence>
+</Activity>
