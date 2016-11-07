@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ReferenceGroup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ID="c7170b98-d9f5-4870-9210-b582550ab643" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
+  <ClientOptions>
+    <GenerateAsynchronousMethods>false</GenerateAsynchronousMethods>
+    <EnableDataBinding>true</EnableDataBinding>
+    <ExcludedTypes />
+    <ImportXmlTypes>false</ImportXmlTypes>
+    <GenerateInternalTypes>false</GenerateInternalTypes>
+    <GenerateMessageContracts>false</GenerateMessageContracts>
+    <NamespaceMappings />
+    <CollectionMappings />
+    <GenerateSerializableTypes>true</GenerateSerializableTypes>
+    <Serializer>Auto</Serializer>
+    <UseSerializerForFaults>true</UseSerializerForFaults>
+    <ReferenceAllAssemblies>true</ReferenceAllAssemblies>
+    <ReferencedAssemblies />
+    <ReferencedDataContractTypes />
+    <ServiceContractMappings />
+  </ClientOptions>
+  <MetadataSources>
+    <MetadataSource Address="http://localhost:9875/ReceiveApprovedHolidayRequestsService/MEX" Protocol="http" SourceId="1" />
+  </MetadataSources>
+  <Metadata>
+    <MetadataFile FileName="MEX.xsd" MetadataType="Schema" ID="01ec5265-5282-40c7-8432-c45bd77e6e19" SourceId="1" SourceUrl="http://localhost:9875/ReceiveApprovedHolidayRequestsService/MEX?xsd=xsd0" />
+    <MetadataFile FileName="MEX1.xsd" MetadataType="Schema" ID="8104c843-6540-4121-a883-00c3c1603a42" SourceId="1" SourceUrl="http://localhost:9875/ReceiveApprovedHolidayRequestsService/MEX?xsd=xsd1" />
+    <MetadataFile FileName="ReceiveApprovedHolidayRequestService.wsdl" MetadataType="Wsdl" ID="a13dbbe6-5f1a-44b1-aa61-ea015f8dd8cf" SourceId="1" SourceUrl="http://localhost:9875/ReceiveApprovedHolidayRequestsService/MEX" />
+    <MetadataFile FileName="MEX2.xsd" MetadataType="Schema" ID="30fa8f51-f008-4d7a-b6c5-a3138bc39de2" SourceId="1" SourceUrl="http://localhost:9875/ReceiveApprovedHolidayRequestsService/MEX?xsd=xsd2" />
+  </Metadata>
+  <Extensions>
+    <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />
+    <ExtensionFile FileName="configuration.svcinfo" Name="configuration.svcinfo" />
+  </Extensions>
+</ReferenceGroup>
