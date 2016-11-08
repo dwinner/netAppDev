@@ -9,184 +9,174 @@ using static System.Console;
 
 namespace SocketServer
 {
-    class SocketServerEntry
-    {
-        static void Main(string[] args)
-        {
-            if (args.Length != 1)
+   internal static class SocketServerEntry
+   {
+      private static void Main(string[] args)
+      {
+         if (args.Length != 1)
+         {
+            ShowUsage();
+            return;
+         }
+
+         int port;
+         if (!int.TryParse(args[0], out port))
+         {
+            ShowUsage();
+            return;
+         }
+
+         Listener(port);
+         ReadLine();
+      }
+
+      private static void ShowUsage() => WriteLine("SocketServer port");
+
+      private static void Listener(int port)
+      {
+         var listener = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp)
+         {
+            ReceiveTimeout = 5000, // receive timout 5 seconds
+            SendTimeout = 5000 // send timeout 5 seconds 
+         };
+
+         listener.Bind(new IPEndPoint(IPAddress.Any, port));
+         listener.Listen(15);
+
+         WriteLine($"listener started on port {port}");
+
+         var tokenSource = new CancellationTokenSource();
+         var taskFactory = new TaskFactory(TaskCreationOptions.LongRunning, TaskContinuationOptions.None);
+         taskFactory.StartNew(() => // listener task
+         {
+            WriteLine("listener task started");
+            while (true)
             {
-                ShowUsage();
-                return;
+               if (tokenSource.Token.IsCancellationRequested)
+               {
+                  tokenSource.Token.ThrowIfCancellationRequested();
+                  break;
+               }
+
+               WriteLine("waiting for accept");
+               var client = listener.Accept();
+               if (!client.Connected)
+               {
+                  WriteLine("not connected");
+                  continue;
+               }
+
+               WriteLine(
+                  $"client connected local address {((IPEndPoint) client.LocalEndPoint).Address} and port {((IPEndPoint) client.LocalEndPoint).Port}, remote address {((IPEndPoint) client.RemoteEndPoint).Address} and port {((IPEndPoint) client.RemoteEndPoint).Port}");
+
+               /*var t = */
+               CommunicateWithClientUsingSocketAsync(client);
             }
-            int port;
-            if (!int.TryParse(args[0], out port))
-            {
-                ShowUsage();
-                return;
-            }
-            Listener(port);
-            ReadLine();
-        }
 
-        private static void ShowUsage()
-        {
-            WriteLine("SocketServer port");
-        }
+            listener.Dispose();
+            WriteLine("Listener task closing");
+         }, tokenSource.Token);
 
-        public static void Listener(int port)
-        {
-            var listener = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-            listener.ReceiveTimeout = 5000; // receive timout 5 seconds
-            listener.SendTimeout = 5000; // send timeout 5 seconds 
+         WriteLine("Press return to exit");
+         ReadLine();
+         tokenSource.Cancel();
+      }
 
-            listener.Bind(new IPEndPoint(IPAddress.Any, port));
-            listener.Listen(backlog: 15);
-
-            WriteLine($"listener started on port {port}");
-
-            var cts = new CancellationTokenSource();
-
-
-            var tf = new TaskFactory(TaskCreationOptions.LongRunning, TaskContinuationOptions.None);
-            tf.StartNew(() =>  // listener task
-            {
-                WriteLine("listener task started");
-                while (true)
-                {
-                    if (cts.Token.IsCancellationRequested)
-                    {
-                        cts.Token.ThrowIfCancellationRequested();
-                        break;
-                    }
-                    WriteLine("waiting for accept");
-                    Socket client = listener.Accept();
-                    if (!client.Connected)
-                    {
-                        WriteLine("not connected");
-                        continue;
-                    }
-                    WriteLine($"client connected local address {((IPEndPoint)client.LocalEndPoint).Address} and port {((IPEndPoint)client.LocalEndPoint).Port}, remote address {((IPEndPoint)client.RemoteEndPoint).Address} and port {((IPEndPoint)client.RemoteEndPoint).Port}");
-
-                    Task t = CommunicateWithClientUsingSocketAsync(client);
-
-                }
-                listener.Dispose();
-                WriteLine("Listener task closing");
-
-            }, cts.Token);
-
-            WriteLine("Press return to exit");
-            ReadLine();
-            cts.Cancel();
-
-        }
-
-        private static Task CommunicateWithClientUsingSocketAsync(Socket socket)
-        {
-            return Task.Run(() =>
-            {
-                try
-                {
-                    using (socket)
-                    {
-
-                        bool completed = false;
-                        do
-                        {
-                            byte[] readBuffer = new byte[1024];
-                            int read = socket.Receive(readBuffer, 0, 1024, SocketFlags.None);
-                            string fromClient = Encoding.UTF8.GetString(readBuffer, 0, read);
-                            WriteLine($"read {read} bytes: {fromClient}");
-                            if (string.Compare(fromClient, "shutdown", ignoreCase: true) == 0)
-                            {
-                                completed = true;
-                            }
-
-                            byte[] writeBuffer = Encoding.UTF8.GetBytes($"echo {fromClient}");
-
-                            int send = socket.Send(writeBuffer);
-                            WriteLine($"sent {send} bytes");
-
-                        } while (!completed);
-                    }
-                    WriteLine("closed stream and client socket");
-                }
-                catch (SocketException ex)
-                {
-                    WriteLine(ex.Message);
-                }
-                catch (Exception ex)
-                {
-                    WriteLine(ex.Message);
-                }
-            });
-        }
-
-        private static async Task CommunicateWithClientUsingNetworkStreamAsync(Socket socket)
-        {
+      private static Task CommunicateWithClientUsingSocketAsync(Socket socket)
+         => Task.Run(() =>
+         {
             try
             {
-                using (var stream = new NetworkStream(socket, ownsSocket: true))
-                {
+               using (socket)
+               {
+                  var completed = false;
+                  do
+                  {
+                     const int readBufferSize = 1024;
+                     var readBuffer = new byte[readBufferSize];
+                     var read = socket.Receive(readBuffer, 0, readBufferSize, SocketFlags.None);
+                     var fromClient = Encoding.UTF8.GetString(readBuffer, 0, read);
+                     WriteLine($"read {read} bytes: {fromClient}");
+                     if (string.Compare(fromClient, "shutdown", StringComparison.OrdinalIgnoreCase) == 0)
+                     {
+                        completed = true;
+                     }
 
-                    bool completed = false;
-                    do
-                    {
-                        byte[] readBuffer = new byte[1024];
-                        int read = await stream.ReadAsync(readBuffer, 0, 1024);
-                        string fromClient = Encoding.UTF8.GetString(readBuffer, 0, read);
-                        WriteLine($"read {read} bytes: {fromClient}");
-                        if (string.Compare(fromClient, "shutdown", ignoreCase: true) == 0)
-                        {
-                            completed = true;
-                        }
-
-                        byte[] writeBuffer = Encoding.UTF8.GetBytes($"echo {fromClient}");
-
-                        await stream.WriteAsync(writeBuffer, 0, writeBuffer.Length);
-
-                    } while (!completed);
-                }
-                WriteLine("closed stream and client socket");
+                     var writeBuffer = Encoding.UTF8.GetBytes($"echo {fromClient}");
+                     var send = socket.Send(writeBuffer);
+                     WriteLine($"sent {send} bytes");
+                  } while (!completed);
+               }
+               WriteLine("closed stream and client socket");
+            }
+            catch (SocketException ex)
+            {
+               WriteLine(ex.Message);
             }
             catch (Exception ex)
             {
-                WriteLine(ex.Message);
+               WriteLine(ex.Message);
             }
-        }
+         });
 
-        private static async Task CommunicateWithClientUsingReadersAndWritersAsync(Socket socket)
-        {
-            try
+      private static async Task CommunicateWithClientUsingNetworkStreamAsync(Socket socket)
+      {
+         try
+         {
+            using (var stream = new NetworkStream(socket, true))
             {
-                using (var stream = new NetworkStream(socket, ownsSocket: true))
-                using (var reader = new StreamReader(stream, Encoding.UTF8, false, 8192, leaveOpen: true))
-                using (var writer = new StreamWriter(stream, Encoding.UTF8, 8192, leaveOpen: true))
-                {
-                    writer.AutoFlush = true;
+               var completed = false;
+               do
+               {
+                  const int readBuffersize = 1024;
+                  var readBuffer = new byte[readBuffersize];
+                  var read = await stream.ReadAsync(readBuffer, 0, readBuffersize).ConfigureAwait(false);
+                  var fromClient = Encoding.UTF8.GetString(readBuffer, 0, read);
+                  WriteLine($"read {read} bytes: {fromClient}");
+                  if (string.Compare(fromClient, "shutdown", StringComparison.OrdinalIgnoreCase) == 0)
+                  {
+                     completed = true;
+                  }
 
-                    bool completed = false;
-                    do
-                    {
-                        string fromClient = await reader.ReadLineAsync();
-                        WriteLine($"read {fromClient}");
-                        if (string.Compare(fromClient, "shutdown", ignoreCase: true) == 0)
-                        {
-                            completed = true;
-                        }
-
-                        await writer.WriteLineAsync($"echo {fromClient}");
-
-                    } while (!completed);
-                }
-                WriteLine("closed stream and client socket");
+                  var writeBuffer = Encoding.UTF8.GetBytes($"echo {fromClient}");
+                  await stream.WriteAsync(writeBuffer, 0, writeBuffer.Length).ConfigureAwait(false);
+               } while (!completed);
             }
-            catch (Exception ex)
+            WriteLine("closed stream and client socket");
+         }
+         catch (Exception ex)
+         {
+            WriteLine(ex.Message);
+         }
+      }
+
+      private static async Task CommunicateWithClientUsingReadersAndWritersAsync(Socket socket)
+      {
+         try
+         {
+            using (var networkStream = new NetworkStream(socket, true))
+            using (var reader = new StreamReader(networkStream, Encoding.UTF8, false, 8192, true))
+            using (var writer = new StreamWriter(networkStream, Encoding.UTF8, 8192, true) {AutoFlush = true})
             {
-                WriteLine(ex.Message);
+               var completed = false;
+               do
+               {
+                  var fromClient = await reader.ReadLineAsync().ConfigureAwait(false);
+                  WriteLine($"read {fromClient}");
+                  if (string.Compare(fromClient, "shutdown", StringComparison.OrdinalIgnoreCase) == 0)
+                  {
+                     completed = true;
+                  }
+
+                  await writer.WriteLineAsync($"echo {fromClient}").ConfigureAwait(false);
+               } while (!completed);
             }
-
-        }
-
-    }
+            WriteLine("closed stream and client socket");
+         }
+         catch (Exception ex)
+         {
+            WriteLine(ex.Message);
+         }
+      }
+   }
 }
