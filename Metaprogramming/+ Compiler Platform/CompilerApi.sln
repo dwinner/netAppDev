@@ -89,6 +89,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FormattingTrees", "Workspac
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WalkingTrees", "Syntax Walkers\WalkingTrees\WalkingTrees.csproj", "{F503614E-0397-4621-8DC2-30E1A8070E31}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RoadmapAnalyzer.Tests", "Code Analysis\RoadmapAnalyzer\RoadmapAnalyzer.Tests\RoadmapAnalyzer.Tests.csproj", "{0699840D-4666-44AF-9537-ED2835E87B60}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -323,6 +325,14 @@ Global
 		{F503614E-0397-4621-8DC2-30E1A8070E31}.Release|Any CPU.ActiveCfg = Release|x86
 		{F503614E-0397-4621-8DC2-30E1A8070E31}.Release|x86.ActiveCfg = Release|x86
 		{F503614E-0397-4621-8DC2-30E1A8070E31}.Release|x86.Build.0 = Release|x86
+		{0699840D-4666-44AF-9537-ED2835E87B60}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0699840D-4666-44AF-9537-ED2835E87B60}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0699840D-4666-44AF-9537-ED2835E87B60}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{0699840D-4666-44AF-9537-ED2835E87B60}.Debug|x86.Build.0 = Debug|Any CPU
+		{0699840D-4666-44AF-9537-ED2835E87B60}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0699840D-4666-44AF-9537-ED2835E87B60}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0699840D-4666-44AF-9537-ED2835E87B60}.Release|x86.ActiveCfg = Release|Any CPU
+		{0699840D-4666-44AF-9537-ED2835E87B60}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -362,5 +372,6 @@ Global
 		{D8758210-A845-4E33-9393-367A15E0F3CA} = {287498B4-331C-499F-A8B8-10A02DAD3149}
 		{723F1EDB-4D2B-47D2-9BB1-9719B55A4C72} = {A53A631B-73C5-41F8-B842-EC0C74F9EEFC}
 		{F503614E-0397-4621-8DC2-30E1A8070E31} = {B0CC976A-818E-48F6-A2E7-32A37C54944C}
+		{0699840D-4666-44AF-9537-ED2835E87B60} = {E9C39834-3473-4D98-9D65-09557506B144}
 	EndGlobalSection
 EndGlobal
