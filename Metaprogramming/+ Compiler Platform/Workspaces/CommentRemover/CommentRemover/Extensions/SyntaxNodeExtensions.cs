@@ -18,7 +18,7 @@ namespace CommentRemover.Extensions
          where T : SyntaxNode
          => await Task.FromResult(@this.RemoveComments()).ConfigureAwait(false);
 
-      public static T RemoveComments<T>(this T @this)
+      private static T RemoveComments<T>(this T @this)
          where T : SyntaxNode
       {
          var triviaToRemove = new List<Trivia>();
