@@ -18,6 +18,8 @@ namespace RoadmapAnalyzer.Fixes
    [ExportCodeFixProvider(LanguageNames.CSharp, Name = nameof(MustInvokeBaseMethodCodeFix)), Shared]
    public sealed class MustInvokeBaseMethodCodeFix : CodeFixProvider
    {
+      public const string CodeFixDescription = "Add base invocation";
+
       public sealed override ImmutableArray<string> FixableDiagnosticIds
          => ImmutableArray.Create(MustInvokeBaseMethodAnalyzer.DiagnosticId);
 
@@ -49,10 +51,9 @@ namespace RoadmapAnalyzer.Fixes
 
          #endregion
 
-         const string codeFixDescription = "Add base invocation";
          context.RegisterCodeFix(
-            CodeAction.Create(codeFixDescription, token => Task.FromResult(context.Document.WithSyntaxRoot(newRoot)),
-               codeFixDescription), diagnostic);
+            CodeAction.Create(CodeFixDescription, token => Task.FromResult(context.Document.WithSyntaxRoot(newRoot)),
+               CodeFixDescription), diagnostic);
       }      
 
       private static string CreateSafeLocalVariableName(SyntaxNode methodNode, ISymbol methodSymbol)

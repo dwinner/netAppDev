@@ -1,6 +1,4 @@
-﻿using MustInvokeBaseMethod;
-
-namespace MustInvokeBaseMethod.Analyzers.Test.Targets.MustInvokeBaseMethodAnalyzerTests
+﻿namespace RoadmapAnalyzer.Tests.Targets.MustInvokeBaseMethodAnalyzerTests
 {
 	public class Case3Base
 	{

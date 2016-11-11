@@ -10,17 +10,18 @@ namespace RoadmapAnalyzer.Rules
    [DiagnosticAnalyzer(LanguageNames.CSharp)]
    public sealed class MustInvokeBaseMethodAnalyzer : DiagnosticAnalyzer
    {
-      internal const string DiagnosticId = "MUST0001";
-      private const string Category = "Usage";
+      public const string DiagnosticId = "MUST0001";
+      public const string Category = "Usage";
+      public const DiagnosticSeverity DefaultSeverity = DiagnosticSeverity.Error;
 
-      private static readonly LocalizableString _Title =
+      public static readonly LocalizableString Title =
          "Find overriden methods that do not call the base class's method";
 
-      private static readonly LocalizableString _MessageFormat =
+      public static readonly LocalizableString MessageFormat =
          "Virtual methods with [MustInvoke] must be invoked in overrides";
 
       private static readonly DiagnosticDescriptor _Rule
-         = new DiagnosticDescriptor(DiagnosticId, _Title, _MessageFormat, Category, DiagnosticSeverity.Error, true);
+         = new DiagnosticDescriptor(DiagnosticId, Title, MessageFormat, Category, DefaultSeverity, true);
 
       public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } = ImmutableArray.Create(_Rule);
 
@@ -29,6 +30,7 @@ namespace RoadmapAnalyzer.Rules
 
       private static void AnalyzeMethodDeclaration(SyntaxNodeAnalysisContext context)
       {
+
          var methodDecl = context.Node as MethodDeclarationSyntax;
          if (methodDecl == null)
          {

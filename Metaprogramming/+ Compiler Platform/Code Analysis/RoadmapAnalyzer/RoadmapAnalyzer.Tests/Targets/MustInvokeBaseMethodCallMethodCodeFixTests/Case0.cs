@@ -1,6 +1,4 @@
-﻿using MustInvokeBaseMethod;
-
-namespace MustInvokeBaseMethod.Analyzers.Test.Targets.MustInvokeBaseMethodCallMethodCodeFixTests
+﻿namespace RoadmapAnalyzer.Tests.Targets.MustInvokeBaseMethodCallMethodCodeFixTests
 {
 	public class Case0Base
 	{
