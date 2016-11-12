@@ -40,6 +40,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="A.cs" />
+    <Compile Include="B.cs" />
     <Compile Include="MustInvokeAttribute.cs" />
     <Compile Include="MyBaseClass.cs" />
     <Compile Include="MySubClass.cs" />
