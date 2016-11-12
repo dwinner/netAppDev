@@ -97,6 +97,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommentRemover", "Workspace
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommentRemover.MsBuildTask", "Workspaces\CommentRemover\CommentRemover.MsBuildTask\CommentRemover.MsBuildTask.csproj", "{72CF6D65-C723-499A-A95F-8CAD82967B65}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommentRemover.ConsoleApp", "Workspaces\CommentRemover\CommentRemover.ConsoleApp\CommentRemover.ConsoleApp.csproj", "{E50CF672-628C-4768-8CCE-FA5FF2516656}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommentRemover.IntegrationApp", "Workspaces\CommentRemover\CommentRemover.IntegrationApp\CommentRemover.IntegrationApp.csproj", "{0EE889C3-C7B3-484E-A315-8EFF8E57AE09}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -355,6 +359,18 @@ Global
 		{72CF6D65-C723-499A-A95F-8CAD82967B65}.Release|Any CPU.Build.0 = Release|Any CPU
 		{72CF6D65-C723-499A-A95F-8CAD82967B65}.Release|x86.ActiveCfg = Release|Any CPU
 		{72CF6D65-C723-499A-A95F-8CAD82967B65}.Release|x86.Build.0 = Release|Any CPU
+		{E50CF672-628C-4768-8CCE-FA5FF2516656}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{E50CF672-628C-4768-8CCE-FA5FF2516656}.Debug|x86.ActiveCfg = Debug|x86
+		{E50CF672-628C-4768-8CCE-FA5FF2516656}.Debug|x86.Build.0 = Debug|x86
+		{E50CF672-628C-4768-8CCE-FA5FF2516656}.Release|Any CPU.ActiveCfg = Release|x86
+		{E50CF672-628C-4768-8CCE-FA5FF2516656}.Release|x86.ActiveCfg = Release|x86
+		{E50CF672-628C-4768-8CCE-FA5FF2516656}.Release|x86.Build.0 = Release|x86
+		{0EE889C3-C7B3-484E-A315-8EFF8E57AE09}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{0EE889C3-C7B3-484E-A315-8EFF8E57AE09}.Debug|x86.ActiveCfg = Debug|x86
+		{0EE889C3-C7B3-484E-A315-8EFF8E57AE09}.Debug|x86.Build.0 = Debug|x86
+		{0EE889C3-C7B3-484E-A315-8EFF8E57AE09}.Release|Any CPU.ActiveCfg = Release|x86
+		{0EE889C3-C7B3-484E-A315-8EFF8E57AE09}.Release|x86.ActiveCfg = Release|x86
+		{0EE889C3-C7B3-484E-A315-8EFF8E57AE09}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -398,5 +414,7 @@ Global
 		{78AE8C96-688E-4027-8DAD-CE970E91DDA6} = {A53A631B-73C5-41F8-B842-EC0C74F9EEFC}
 		{6105BD24-5755-43E8-AE33-069F659B13D2} = {78AE8C96-688E-4027-8DAD-CE970E91DDA6}
 		{72CF6D65-C723-499A-A95F-8CAD82967B65} = {78AE8C96-688E-4027-8DAD-CE970E91DDA6}
+		{E50CF672-628C-4768-8CCE-FA5FF2516656} = {78AE8C96-688E-4027-8DAD-CE970E91DDA6}
+		{0EE889C3-C7B3-484E-A315-8EFF8E57AE09} = {78AE8C96-688E-4027-8DAD-CE970E91DDA6}
 	EndGlobalSection
 EndGlobal
