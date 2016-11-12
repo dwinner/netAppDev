@@ -105,6 +105,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommentRemover.MsBuildTaskA
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommentRemover.Tests", "Workspaces\CommentRemover\CommentRemover.Tests\CommentRemover.Tests.csproj", "{78862BD4-C1A7-41A5-AFEB-E3349C973B07}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommentRemoverPackage", "Workspaces\CommentRemover\CommentRemoverPackage\CommentRemoverPackage.csproj", "{B244D969-280A-4A76-A326-4E8E3B9E9D58}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -389,6 +391,14 @@ Global
 		{78862BD4-C1A7-41A5-AFEB-E3349C973B07}.Release|Any CPU.Build.0 = Release|Any CPU
 		{78862BD4-C1A7-41A5-AFEB-E3349C973B07}.Release|x86.ActiveCfg = Release|Any CPU
 		{78862BD4-C1A7-41A5-AFEB-E3349C973B07}.Release|x86.Build.0 = Release|Any CPU
+		{B244D969-280A-4A76-A326-4E8E3B9E9D58}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B244D969-280A-4A76-A326-4E8E3B9E9D58}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B244D969-280A-4A76-A326-4E8E3B9E9D58}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{B244D969-280A-4A76-A326-4E8E3B9E9D58}.Debug|x86.Build.0 = Debug|Any CPU
+		{B244D969-280A-4A76-A326-4E8E3B9E9D58}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B244D969-280A-4A76-A326-4E8E3B9E9D58}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B244D969-280A-4A76-A326-4E8E3B9E9D58}.Release|x86.ActiveCfg = Release|Any CPU
+		{B244D969-280A-4A76-A326-4E8E3B9E9D58}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -436,5 +446,6 @@ Global
 		{0EE889C3-C7B3-484E-A315-8EFF8E57AE09} = {78AE8C96-688E-4027-8DAD-CE970E91DDA6}
 		{1B242458-B7A1-4972-8F0B-09D832EEEA1B} = {78AE8C96-688E-4027-8DAD-CE970E91DDA6}
 		{78862BD4-C1A7-41A5-AFEB-E3349C973B07} = {78AE8C96-688E-4027-8DAD-CE970E91DDA6}
+		{B244D969-280A-4A76-A326-4E8E3B9E9D58} = {78AE8C96-688E-4027-8DAD-CE970E91DDA6}
 	EndGlobalSection
 EndGlobal
