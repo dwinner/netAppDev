@@ -7,5 +7,5 @@ namespace MustInvoke
         protected override void OnInitialize()
         {
         }
-    }    
+    }
 }

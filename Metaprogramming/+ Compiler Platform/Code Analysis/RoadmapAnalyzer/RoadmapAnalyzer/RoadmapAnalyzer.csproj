@@ -32,10 +32,17 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Fixes\AddAsyncSuffixCodeFix.cs" />
     <Compile Include="Fixes\ConfigureAwaitCodeFix.cs" />
     <Compile Include="Fixes\FieldNameCodeFix.cs" />
     <Compile Include="Fixes\MustInvokeBaseMethodCodeFix.cs" />
     <Compile Include="Fixes\SingleStatementBodyCodeFix.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Rules\AddAsyncSuffixAnalyzer.cs" />
     <Compile Include="Rules\MustInvokeBaseMethodAnalyzer.cs" />
     <Compile Include="Refactoring\CodeGeneration.cs" />
     <Compile Include="Refactoring\PropertyCodeRefactoringProvider.cs" />
@@ -115,6 +122,12 @@
       <HintPath>..\..\..\packages\System.Reflection.Metadata.1.2.0\lib\portable-net45+win8\System.Reflection.Metadata.dll</HintPath>
       <Private>True</Private>
     </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\v4.5\Microsoft.Portable.CSharp.targets" />
   <Target Name="AfterBuild">

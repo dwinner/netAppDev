@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace AsyncSuffixAnalyzer_CS {
+namespace RoadmapAnalyzer.Properties {
     using System;
     using System.Reflection;
     
@@ -40,7 +40,7 @@ namespace AsyncSuffixAnalyzer_CS {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("AsyncSuffixAnalyzer_CS.Resources", typeof(Resources).GetTypeInfo().Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("RoadmapAnalyzer.Properties.Resources", typeof(Resources).GetTypeInfo().Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -64,27 +64,36 @@ namespace AsyncSuffixAnalyzer_CS {
         /// <summary>
         ///   Looks up a localized string similar to Names of asynchronous methods should end with Async.
         /// </summary>
-        internal static string AnalyzerDescription {
+        internal static string AddAsyncSuffix_Description {
             get {
-                return ResourceManager.GetString("AnalyzerDescription", resourceCulture);
+                return ResourceManager.GetString("AddAsyncSuffix_Description", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Name of asynchronous method &apos;{0}&apos; does not end with Async.
         /// </summary>
-        internal static string AnalyzerMessageFormat {
+        internal static string AddAsyncSuffix_MessageFormat {
             get {
-                return ResourceManager.GetString("AnalyzerMessageFormat", resourceCulture);
+                return ResourceManager.GetString("AddAsyncSuffix_MessageFormat", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Names of asynchronous methods should end with Async.
         /// </summary>
-        internal static string AnalyzerTitle {
+        internal static string AddAsyncSuffix_Title {
             get {
-                return ResourceManager.GetString("AnalyzerTitle", resourceCulture);
+                return ResourceManager.GetString("AddAsyncSuffix_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add Async suffix to asynchronous methods.
+        /// </summary>
+        internal static string AddAsyncSuffixCodeFix_Title {
+            get {
+                return ResourceManager.GetString("AddAsyncSuffixCodeFix_Title", resourceCulture);
             }
         }
     }
