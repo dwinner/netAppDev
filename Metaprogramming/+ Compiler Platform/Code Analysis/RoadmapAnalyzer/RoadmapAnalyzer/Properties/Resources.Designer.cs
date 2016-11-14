@@ -62,6 +62,15 @@ namespace RoadmapAnalyzer.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Add the indefinite article for the parameter &apos;{0}&apos;.
+        /// </summary>
+        internal static string AddArticleToParameterCodeFix_Title {
+            get {
+                return ResourceManager.GetString("AddArticleToParameterCodeFix_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Names of asynchronous methods should end with Async.
         /// </summary>
         internal static string AddAsyncSuffix_Description {

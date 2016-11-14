@@ -23,11 +23,11 @@ class MyClass
          var mscorlib = MetadataReference.CreateFromFile(typeof(object).Assembly.Location);
          var compilation = CSharpCompilation.Create("MyCompilation", new[] { _SourceTree }, new[] { mscorlib });
 
-         //SymbolVisitor visitor = new NamedTypeVisitor();
-         //visitor.Visit(compilation.GlobalNamespace);
+         SymbolVisitor visitor = new NamedTypeVisitor();
+         visitor.Visit(compilation.GlobalNamespace);
 
-         //SymbolVisitor visitor = new MethodSymbolVisitor();
-         //visitor.Visit(compilation.GlobalNamespace);
+         visitor = new MethodSymbolVisitor();
+         visitor.Visit(compilation.GlobalNamespace);
       }
    }
 }

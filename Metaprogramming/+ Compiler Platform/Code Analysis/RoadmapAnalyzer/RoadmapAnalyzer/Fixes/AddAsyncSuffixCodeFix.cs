@@ -17,7 +17,7 @@ namespace RoadmapAnalyzer.Fixes
    [ExportCodeFixProvider(LanguageNames.CSharp, Name = nameof(AddAsyncSuffixCodeFix)), Shared]
    public sealed class AddAsyncSuffixCodeFix : CodeFixProvider
    {
-      public const string DiagnosticId = AddAsyncSuffixAnalyzer.DiagnosticId;
+      private const string DiagnosticId = AddAsyncSuffixAnalyzer.DiagnosticId;
 
       public sealed override ImmutableArray<string> FixableDiagnosticIds => ImmutableArray.Create(DiagnosticId);
 

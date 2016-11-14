@@ -110,4 +110,7 @@
     <data name="AddAsyncSuffixCodeFix_Title" xml:space="preserve">
     <value>Add Async suffix to asynchronous methods</value>
   </data>
+    <data name="AddArticleToParameterCodeFix_Title" xml:space="preserve">
+    <value>Add the indefinite article for the parameter '{0}'</value>
+  </data>
 </root>

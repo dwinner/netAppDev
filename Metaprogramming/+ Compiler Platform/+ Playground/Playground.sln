@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConfigureAwaitTest", "Confi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MustInvoke", "MustInvoke\MustInvoke.csproj", "{0391BC66-DAED-4B7D-8C97-499382A6C40D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Naming", "Naming\Naming.csproj", "{ACE0D40A-CCD1-47BB-954B-F2B3126B95CE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{0391BC66-DAED-4B7D-8C97-499382A6C40D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0391BC66-DAED-4B7D-8C97-499382A6C40D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0391BC66-DAED-4B7D-8C97-499382A6C40D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ACE0D40A-CCD1-47BB-954B-F2B3126B95CE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ACE0D40A-CCD1-47BB-954B-F2B3126B95CE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ACE0D40A-CCD1-47BB-954B-F2B3126B95CE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ACE0D40A-CCD1-47BB-954B-F2B3126B95CE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
