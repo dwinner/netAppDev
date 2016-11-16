@@ -52,6 +52,7 @@
     <Compile Include="Rules\FieldNameAnalyzer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Rules\SingleStatementBodyAnalyzer.cs" />
+    <Compile Include="Rules\WcfOneWayOperationAnalyzer.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Diagnostic.nuspec">
