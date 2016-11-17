@@ -105,5 +105,32 @@ namespace RoadmapAnalyzer.Properties {
                 return ResourceManager.GetString("AddAsyncSuffixCodeFix_Title", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to One-way WCF operations must return System.Void.
+        /// </summary>
+        internal static string WcfOneWayOperation_Title {
+            get {
+                return ResourceManager.GetString("WcfOneWayOperation_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Make argument parameter of &apos;{0}&apos; false.
+        /// </summary>
+        internal static string WcfOneWayOperationCodeFix_MakeOneWayFalse_Title {
+            get {
+                return ResourceManager.GetString("WcfOneWayOperationCodeFix_MakeOneWayFalse_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Replace the return type of the method &apos;{0}&apos; to void.
+        /// </summary>
+        internal static string WcfOneWayOperationCodeFix_MakeVoidTitle {
+            get {
+                return ResourceManager.GetString("WcfOneWayOperationCodeFix_MakeVoidTitle", resourceCulture);
+            }
+        }
     }
 }

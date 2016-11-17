@@ -38,6 +38,7 @@
     <Compile Include="Fixes\FieldNameCodeFix.cs" />
     <Compile Include="Fixes\MustInvokeBaseMethodCodeFix.cs" />
     <Compile Include="Fixes\SingleStatementBodyCodeFix.cs" />
+    <Compile Include="Fixes\WcfOneWayOperationCodeFix.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

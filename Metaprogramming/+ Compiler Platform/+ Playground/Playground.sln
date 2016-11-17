@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Naming", "Naming\Naming.csp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoArrangeClass", "AutoArrangeClass\AutoArrangeClass.csproj", "{59B79647-3991-4FBF-AE3B-F721850E6E07}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WcfIssues", "WcfIssues\WcfIssues.csproj", "{D4F3D606-467D-484A-A468-37CB1E91A7EA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{59B79647-3991-4FBF-AE3B-F721850E6E07}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{59B79647-3991-4FBF-AE3B-F721850E6E07}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{59B79647-3991-4FBF-AE3B-F721850E6E07}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D4F3D606-467D-484A-A468-37CB1E91A7EA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D4F3D606-467D-484A-A468-37CB1E91A7EA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D4F3D606-467D-484A-A468-37CB1E91A7EA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D4F3D606-467D-484A-A468-37CB1E91A7EA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
