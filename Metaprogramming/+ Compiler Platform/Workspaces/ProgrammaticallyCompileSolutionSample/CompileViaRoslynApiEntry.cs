@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Microsoft.CodeAnalysis.MSBuild;
@@ -36,21 +35,14 @@ namespace ProgrammaticallyCompileSolutionSample
          {
             WriteLine("Compilation completed successfully.");
             WriteLine("Output directory: {0}", outputPath);
-         }
-
-         ReadKey();
+         }         
       }
 
       private static bool CompileSolution(string solutionPath, string outputPath)
-      {
-         var success = true;
-
-         var workspace = MSBuildWorkspace.Create();         
-         // workspace.LoadMetadataForReferencedProjects = true;
-
+      {         
+         var workspace = MSBuildWorkspace.Create();                  
          var solution = workspace.OpenSolutionAsync(solutionPath).Result;
-         var projectDependencyGraph = solution.GetProjectDependencyGraph();
-         // var assemblies = new Dictionary<string, Stream>();
+         var projectDependencyGraph = solution.GetProjectDependencyGraph();         
 
          foreach (
             var projectCompilation in
@@ -58,7 +50,7 @@ namespace ProgrammaticallyCompileSolutionSample
                   .Select(projectId => solution.GetProject(projectId).GetCompilationAsync().Result))
          {
             if (!string.IsNullOrEmpty(projectCompilation?.AssemblyName))
-            {              
+            {               
                using (var emitStream = new MemoryStream())
                {
                   var emitResult = projectCompilation.Emit(emitStream);
@@ -76,17 +68,17 @@ namespace ProgrammaticallyCompileSolutionSample
                   }
                   else
                   {
-                     success = false;
+                     return false;
                   }
                }
             }
             else
             {
-               success = false;
+               return false;
             }
          }
 
-         return success;
+         return true;
       }
    }
 }

@@ -1,7 +1,3 @@
-/**
- * Пример запуска процесса компиляции
- */
-
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using static System.Console;
