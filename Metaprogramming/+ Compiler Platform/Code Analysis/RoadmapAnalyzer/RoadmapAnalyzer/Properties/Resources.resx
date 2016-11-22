@@ -122,4 +122,19 @@
     <data name="WcfOneWayOperationCodeFix_MakeOneWayFalse_Title" xml:space="preserve">
     <value>Make argument parameter of '{0}' false</value>
   </data>
+    <data name="ConsiderDateTimeOffsetAnalyzer_Title" xml:space="preserve">
+    <value>Consider using DateTimeOffset</value>
+  </data>
+    <data name="ConsiderDateTimeOffsetAnalyzer_MessageFormat" xml:space="preserve">
+    <value>Consider replacing with DateTimeOffset</value>
+  </data>
+    <data name="ConsiderDateTimeOffsetAnalyzer_Description" xml:space="preserve">
+    <value>Consider using DateTimeOffset instead of DateTime</value>
+  </data>
+    <data name="ConsiderDateTimeOffsetCodeFix_Title" xml:space="preserve">
+    <value>Replace with DateTimeOffset</value>
+  </data>
+    <data name="PublicFieldRefactoring_Title" xml:space="preserve">
+    <value>Make first char upper case</value>
+  </data>
 </root>

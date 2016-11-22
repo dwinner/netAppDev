@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
     <Metadata>
-        <Identity Id="RoadmapAnalyzer.AppDevUnited.0dfe8e1c-ffb3-416c-92a1-0d3602016cee" Version="1.0.1.1" Language="en-US" Publisher="Denis Vinevtsev"/>
+        <Identity Id="RoadmapAnalyzer.AppDevUnited.0dfe8e1c-ffb3-416c-92a1-0d3602016cee" Version="1.0.1.3" Language="en-US" Publisher="Denis Vinevtsev"/>
         <DisplayName>RoadmapAnalyzer</DisplayName>
         <Description xml:space="preserve">This is a sample diagnostic extension for the .NET Compiler Platform ("Roslyn").</Description>
     </Metadata>

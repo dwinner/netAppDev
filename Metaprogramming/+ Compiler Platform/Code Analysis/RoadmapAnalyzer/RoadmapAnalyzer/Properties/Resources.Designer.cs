@@ -107,6 +107,51 @@ namespace RoadmapAnalyzer.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Consider using DateTimeOffset instead of DateTime.
+        /// </summary>
+        internal static string ConsiderDateTimeOffsetAnalyzer_Description {
+            get {
+                return ResourceManager.GetString("ConsiderDateTimeOffsetAnalyzer_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Consider replacing with DateTimeOffset.
+        /// </summary>
+        internal static string ConsiderDateTimeOffsetAnalyzer_MessageFormat {
+            get {
+                return ResourceManager.GetString("ConsiderDateTimeOffsetAnalyzer_MessageFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Consider using DateTimeOffset.
+        /// </summary>
+        internal static string ConsiderDateTimeOffsetAnalyzer_Title {
+            get {
+                return ResourceManager.GetString("ConsiderDateTimeOffsetAnalyzer_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Replace with DateTimeOffset.
+        /// </summary>
+        internal static string ConsiderDateTimeOffsetCodeFix_Title {
+            get {
+                return ResourceManager.GetString("ConsiderDateTimeOffsetCodeFix_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Make first char upper case.
+        /// </summary>
+        internal static string PublicFieldRefactoring_Title {
+            get {
+                return ResourceManager.GetString("PublicFieldRefactoring_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to One-way WCF operations must return System.Void.
         /// </summary>
         internal static string WcfOneWayOperation_Title {

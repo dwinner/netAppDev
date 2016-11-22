@@ -35,6 +35,7 @@
     <Compile Include="Fixes\AddArticleToParameterCodeFix.cs" />
     <Compile Include="Fixes\AddAsyncSuffixCodeFix.cs" />
     <Compile Include="Fixes\ConfigureAwaitCodeFix.cs" />
+    <Compile Include="Fixes\ConsiderDateTimeOffsetCodeFix.cs" />
     <Compile Include="Fixes\FieldNameCodeFix.cs" />
     <Compile Include="Fixes\MustInvokeBaseMethodCodeFix.cs" />
     <Compile Include="Fixes\SingleStatementBodyCodeFix.cs" />
@@ -44,8 +45,10 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="Refactoring\PublicFieldCodeRefactoringProvider.cs" />
     <Compile Include="Rules\AddArticleToParameterAnalyzer.cs" />
     <Compile Include="Rules\AddAsyncSuffixAnalyzer.cs" />
+    <Compile Include="Rules\ConsiderDateTimeOffsetAnalyzer.cs" />
     <Compile Include="Rules\MustInvokeBaseMethodAnalyzer.cs" />
     <Compile Include="Refactoring\CodeGeneration.cs" />
     <Compile Include="Refactoring\PropertyCodeRefactoringProvider.cs" />
