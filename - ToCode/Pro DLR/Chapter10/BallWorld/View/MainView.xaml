@@ -1,0 +1,36 @@
+﻿<Window x:Class="BallWorld.MainView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="clr-namespace:BallWorld.ViewModel" 
+    Title="Ball World" Width="800" Height="600">
+    <Window.Resources>
+        <local:ColorConverter x:Key="colorConverter" />
+        
+        <DataTemplate DataType="{x:Type local:BallViewModel}">
+            <StackPanel>
+                <Ellipse Fill="{Binding Color, Converter={StaticResource colorConverter}}" Width="{Binding Diameter}" Height="{Binding Diameter}" />
+            </StackPanel>
+        </DataTemplate>
+        
+        <DataTemplate DataType="{x:Type local:BallWorldViewModel}">
+            <ItemsControl ItemsSource="{Binding Path=Balls}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <Canvas />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemContainerStyle>
+                    <Style>
+                        <Setter Property="Canvas.Left" Value="{Binding Path=NormalPosition.X}" />
+                        <Setter Property="Canvas.Top" Value="{Binding Path=NormalPosition.Y}" />
+                    </Style>
+                </ItemsControl.ItemContainerStyle>
+            </ItemsControl>
+        </DataTemplate>
+
+    </Window.Resources>
+    
+    <Canvas x:Name="ballWorldCanvas">
+        <ContentControl x:Name="content" />
+    </Canvas>
+</Window>
