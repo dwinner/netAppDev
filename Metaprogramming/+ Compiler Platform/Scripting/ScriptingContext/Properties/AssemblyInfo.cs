@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("ScriptingPlayground")]
+[assembly: AssemblyTitle("ScriptingContext")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("ScriptingPlayground")]
+[assembly: AssemblyProduct("ScriptingContext")]
 [assembly: AssemblyCopyright("Copyright ©  2016")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("ba936552-c6d2-45d9-98e8-35ff7175dfe2")]
+[assembly: Guid("86b8adce-8faa-49a1-9295-0d1ac680d787")]
 
 // Version information for an assembly consists of the following four values:
 //
