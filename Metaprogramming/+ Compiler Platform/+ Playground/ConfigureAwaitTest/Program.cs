@@ -60,7 +60,7 @@ namespace ConfigureAwaitTest
         // NOTE: These methods will only trigger ConfigureAwait requirement violations if the project is compiled as a class library.
         //       Tweak the project settings accordingly after adding references to the compiled analyzers.
 
-        async Task Bar(Task t)
+        async Task BarAsync(Task t)
         {
             await t;
         }

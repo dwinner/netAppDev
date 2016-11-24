@@ -1,7 +1,3 @@
-/**
- * Запуск диагностик
- */
-
 using System;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -24,8 +20,7 @@ class Person
                .AddSyntaxTrees(tree)
                .AddReferences(MetadataReference.CreateFromFile(typeof (object).Assembly.Location))
                .WithOptions(new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
-
-         // Получим все диагностики
+         
          var diagnostics = compilation.GetDiagnostics();
          foreach (var diagnostic in diagnostics)
          {

@@ -8,12 +8,12 @@ namespace FindingSymbolSample
 {
    static class Program
    {
-      private static readonly Solution Solution =
+      private static readonly Solution _Solution =
          MSBuildWorkspace.Create().OpenSolutionAsync(@"..\..\..\Playground\Playground.sln").Result;
 
       static void Main()
       {
-         var project = Solution.Projects.Single(p => p.Name == "ConfigureAwaitTest");
+         var project = _Solution.Projects.Single(p => p.Name == "ConfigureAwaitTest");
 
          // Найдем символы Bar.Foo и Bar.Qux
          var compilation = project.GetCompilationAsync().Result;
@@ -25,7 +25,7 @@ namespace FindingSymbolSample
          Console.WriteLine("Find callers of Foo");
          Console.WriteLine();
 
-         var callers = SymbolFinder.FindCallersAsync(fooMethod, Solution).Result;
+         var callers = SymbolFinder.FindCallersAsync(fooMethod, _Solution).Result;
          foreach (var caller in callers)
          {
             Console.WriteLine(caller.CallingSymbol);
@@ -42,7 +42,7 @@ namespace FindingSymbolSample
          Console.WriteLine("Find all references to Qux");
          Console.WriteLine();
 
-         var references = SymbolFinder.FindReferencesAsync(quxProp, Solution).Result;
+         var references = SymbolFinder.FindReferencesAsync(quxProp, _Solution).Result;
          foreach (var reference in references)
          {
             Console.WriteLine(reference.Definition);

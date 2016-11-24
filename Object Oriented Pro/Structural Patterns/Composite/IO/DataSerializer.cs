@@ -1,7 +1,7 @@
-﻿using Composite.Implementation;
-using System;
+﻿using System;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
+using Composite.Implementation;
 
 namespace Composite.IO
 {
@@ -9,17 +9,19 @@ namespace Composite.IO
    {
       private const string DefaultStoreFileName = "project.dat";
 
-      public Project<IProjectItem> Project { get; set; }
-
       public DataSerializer(Project<IProjectItem> project)
       {
          Project = project;
       }
 
+      public Project<IProjectItem> Project { get; }
+
       public void Store()
       {
          var binaryFormatter = new BinaryFormatter();
-         using (Stream fileStream = new FileStream(DefaultStoreFileName, FileMode.OpenOrCreate, FileAccess.Write, FileShare.None))
+         using (
+            Stream fileStream = new FileStream(DefaultStoreFileName, FileMode.OpenOrCreate, FileAccess.Write,
+               FileShare.None))
          {
             binaryFormatter.Serialize(fileStream, Project);
          }
@@ -35,6 +37,7 @@ namespace Composite.IO
             {
                throw new NotSupportedException("Not Supported");
             }
+
             return project;
          }
       }

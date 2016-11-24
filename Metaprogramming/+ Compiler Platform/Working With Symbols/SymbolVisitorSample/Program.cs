@@ -7,7 +7,7 @@ namespace SymbolVisitorSample
 {
    internal static class Program
    {
-      private static readonly SyntaxTree SourceTree = CSharpSyntaxTree.ParseText(@"
+      private static readonly SyntaxTree _SourceTree = CSharpSyntaxTree.ParseText(@"
 class MyClass
 {
     class Nested
@@ -21,13 +21,13 @@ class MyClass
       private static void Main()
       {
          var mscorlib = MetadataReference.CreateFromFile(typeof(object).Assembly.Location);
-         var compilation = CSharpCompilation.Create("MyCompilation", new[] { SourceTree }, new[] { mscorlib });
+         var compilation = CSharpCompilation.Create("MyCompilation", new[] { _SourceTree }, new[] { mscorlib });
 
-         //SymbolVisitor visitor = new NamedTypeVisitor();
-         //visitor.Visit(compilation.GlobalNamespace);
+         SymbolVisitor visitor = new NamedTypeVisitor();
+         visitor.Visit(compilation.GlobalNamespace);
 
-         //SymbolVisitor visitor = new MethodSymbolVisitor();
-         //visitor.Visit(compilation.GlobalNamespace);
+         visitor = new MethodSymbolVisitor();
+         visitor.Visit(compilation.GlobalNamespace);
       }
    }
 }

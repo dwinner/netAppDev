@@ -1,5 +1,5 @@
 ﻿/**
- * Адаптер объектов.
+ * Object adapter.
  */
 
 using System;
@@ -15,8 +15,7 @@ namespace Adapter
          IEmployee secondEmployee = new EmployeeImpl(2, "Cristian", "Nagel");
          IEmployee thirdEmployee = new EmployeeImpl(3, "Ben", "Watson");
 
-         // 1) Сортировка через адаптер объектов
-
+         // 1) Sorting via the object adapter
          var employeeArray = new[]
          {
             new ComparebleEmployee(secondEmployee),
@@ -27,9 +26,8 @@ namespace Adapter
          Array.Sort(employeeArray);
          PrintArray(employeeArray);
 
-         // 2) Сортировка через стратегию обратного вызова
-
-         var empArray = new[] {thirdEmployee, secondEmployee, firstEmployee};
+         // 2) Sorting via the callback strategy
+         var empArray = new[] { thirdEmployee, secondEmployee, firstEmployee };
          PrintArray(empArray);
          Array.Sort(empArray,
             (aFirstEmp, aSecondEmp) => aFirstEmp.Id.CompareTo(aSecondEmp.Id));

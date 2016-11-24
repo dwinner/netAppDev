@@ -1,16 +1,16 @@
-﻿using Composite.Implementation;
-using Composite.IO;
+﻿using Composite.IO;
+using static System.Console;
+using static Composite.IO.DataCreator;
+
 /**
  * Компоновщик объектов
  */
 
-using System;
-
 namespace Composite
 {
-   static class Program
+   internal static class Program
    {
-      static void Main()
+      private static void Main()
       {
          #region Описание
 
@@ -41,16 +41,16 @@ namespace Composite
 
          #endregion
 
-         Project<IProjectItem> project = DataCreator.CreateTestData();
+         var project = CreateTestData();
          var dataSerializer = new DataSerializer(project);
          dataSerializer.Store();
-         Project<IProjectItem> retrieve = dataSerializer.Retrieve();
+         var retrieve = dataSerializer.Retrieve();
 
-         Console.WriteLine("Вычисляем время для проекта");
-         Console.WriteLine("\t{0}", retrieve.Description);
-         Console.WriteLine("Time required: {0}", project.TimeRequired);
+         WriteLine("Time for project");
+         WriteLine("\t{0}", retrieve.Description);
+         WriteLine("Time required: {0}", project.TimeRequired);
 
-         Console.ReadKey();
+         ReadKey();
       }
    }
 }

@@ -8,7 +8,7 @@ namespace AnalyzingSyntaxTreesViaLinq
 {
    internal static class Program
    {
-      private static readonly SyntaxTree SampleTree = CSharpSyntaxTree.ParseText(@"
+      private static readonly SyntaxTree _SampleTree = CSharpSyntaxTree.ParseText(@"
 public class MyClass
 {
   public void MyMethod()
@@ -22,7 +22,7 @@ public class MyClass
 
       private static void Main()
       {
-         var syntaxRoot = SampleTree.GetRoot();
+         var syntaxRoot = _SampleTree.GetRoot();
 
          // Первый объявленный класс
          var myClass = syntaxRoot.DescendantNodes().OfType<ClassDeclarationSyntax>().First();
