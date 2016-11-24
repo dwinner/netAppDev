@@ -44,7 +44,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BaseList.cs" />
-    <Compile Include="IBaseListImpl.cs" />
+    <Compile Include="IBaseList.cs" />
+    <Compile Include="NumberedList.cs" />
+    <Compile Include="OrderedList.cs" />
+    <Compile Include="OrnamentedList.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

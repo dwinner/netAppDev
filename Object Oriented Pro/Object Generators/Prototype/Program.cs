@@ -45,10 +45,10 @@ namespace Prototype
 
       private static void UsingICopy()
       {
-         var address = new Address("Local", "Revolution", "Tula", "TulaSt", "301360");
+         ICopy<Address> address = new Address("Local", "Revolution", "Tula", "TulaSt", "301360");
          var copy = address.Copy();
          Console.WriteLine(copy);
-      }
+      }      
 
       private static T Copy<T>(ICopy<T> objectToCopy, bool deep = true)
          => objectToCopy.Copy(deep);

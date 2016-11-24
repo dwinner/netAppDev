@@ -4,7 +4,7 @@ namespace InnerBuilder
 {
    public sealed class AudioEntity : IEquatable<AudioEntity>
    {
-      #region Строитель объектов внешнего класса
+      #region The object builder of the outer class
 
       public sealed class Builder
       {
@@ -19,7 +19,7 @@ namespace InnerBuilder
 
          public AudioEntity Build() => new AudioEntity(this);
 
-         #region Обязательные поля
+         #region Mandatory fields
 
          public string TrackName { get; }
 
@@ -31,7 +31,7 @@ namespace InnerBuilder
 
          #endregion
 
-         #region Необязательные поля
+         #region Optional fields
 
          public string TrackUrl { get; private set; }
             = string.Empty;
@@ -56,7 +56,7 @@ namespace InnerBuilder
 
          #endregion
 
-         #region Генераторы необязательных полей.
+         #region Generator methods for optional fields
 
          public Builder BuildTrackUrl(string aTrackUrl)
          {
@@ -105,7 +105,7 @@ namespace InnerBuilder
 
       #endregion
 
-      #region Поля объекта
+      #region Object fields and private constructor
       
       public string TrackName { get; }      
       public int Duration { get; }      
@@ -116,11 +116,7 @@ namespace InnerBuilder
       public string RecordFormat { get; }      
       public string Album { get; }      
       public int Size { get; }      
-      public string Genre { get; }
-
-      /// <summary>
-      ///    Оценка исполнения
-      /// </summary>
+      public string Genre { get; }      
       public int Rate { get; }
 
       private AudioEntity(Builder audioBuilder)
@@ -140,7 +136,7 @@ namespace InnerBuilder
 
       #endregion
 
-      #region System.Object
+      #region IEquatable<AudioEntity>
 
       public bool Equals(AudioEntity other)
          => !ReferenceEquals(null, other) &&
@@ -155,6 +151,10 @@ namespace InnerBuilder
              && Size == other.Size
              && string.Equals(Genre, other.Genre)
              && Rate == other.Rate);
+
+      #endregion
+
+      #region System.Object      
 
       public override bool Equals(object obj)
          => !ReferenceEquals(null, obj) &&
@@ -186,9 +186,24 @@ namespace InnerBuilder
       public static bool operator !=(AudioEntity left, AudioEntity right)
          => !Equals(left, right);
 
+      #endregion
+
+      #region ToString
+
       public override string ToString()
          =>
-            $"[AudioEntity TrackName={TrackName}, Duration={Duration}, Bitrate={Bitrate}, Size={Size}, TrackUrl={TrackUrl}, Group={Group}, Year={Year}, RecordFormat={RecordFormat}, Album={Album}, Genre={Genre}, Rate={Rate}]";
+            $"[AudioEntity" +
+            $"TrackName={TrackName}," +
+            $" Duration={Duration}, " +
+            $"Bitrate={Bitrate}, " +
+            $"Size={Size}, " +
+            $"TrackUrl={TrackUrl}, " +
+            $"Group={Group}, " +
+            $"Year={Year}, " +
+            $"RecordFormat={RecordFormat}, " +
+            $"Album={Album}, " +
+            $"Genre={Genre}, " +
+            $"Rate={Rate}]";
 
       #endregion
    }

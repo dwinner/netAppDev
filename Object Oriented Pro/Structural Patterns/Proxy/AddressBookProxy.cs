@@ -3,10 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 namespace Proxy
-{
-   /// <summary>
-   /// Суррогат (представитель для другого объекта) объекта AddressBookImpl
-   /// </summary>
+{   
    public class AddressBookProxy : IAddressBook<IAddress>
    {
       private readonly string _file;
@@ -38,8 +35,11 @@ namespace Proxy
             {
                return _addressBook.AllAddresses;
             }
+
             Open();
-            return _addressBook != null ? _addressBook.AllAddresses : new List<IAddress>(0);
+            return _addressBook != null
+               ? _addressBook.AllAddresses
+               : new List<IAddress>(0);
          }
       }
 
@@ -52,14 +52,17 @@ namespace Proxy
                return address;
             }
          }
+
          if (_addressBook == null)
          {
             Open();
          }
+
          if (_addressBook != null)
          {
             return _addressBook.GetAddress(description);
          }
+
          throw new InvalidOperationException();
       }
 
@@ -69,6 +72,7 @@ namespace Proxy
          {
             _addressBook = new AddressBookImpl(_file);
          }
+
          foreach (var address in _localAddresses)
          {
             _addressBook.Add(address);
@@ -84,10 +88,7 @@ namespace Proxy
          else if (_localAddresses.Count > 0)
          {
             Open();
-            if (_addressBook != null)
-            {
-               _addressBook.Save();
-            }
+            _addressBook?.Save();
          }
       }
    }

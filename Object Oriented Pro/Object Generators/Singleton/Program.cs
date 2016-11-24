@@ -6,8 +6,8 @@ namespace Singleton
    {
       private static void Main()
       {
-         var singleAddress = GenTsSingleton<Address>.Instance;
-         var anotherAddress = GenTsSingleton<Address>.Instance;
+         var singleAddress = Singleton<Address>.Instance;
+         var anotherAddress = Singleton<Address>.Instance;
 
          Console.WriteLine(singleAddress.GetHashCode());
          Console.WriteLine(anotherAddress.GetHashCode());
@@ -15,7 +15,7 @@ namespace Singleton
 
          GC.Collect();
 
-         var addressAfterGc = GenTsSingleton<Address>.Instance;
+         var addressAfterGc = Singleton<Address>.Instance;
          Console.WriteLine(addressAfterGc.GetHashCode());
 
          Console.ReadKey();

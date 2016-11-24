@@ -1,0 +1,1 @@
+﻿<%@ ServiceHost Language="C#" Debug="true" Service="CalculateReferenceIDService.CalculateReferenceIDService" CodeBehind="CalculateReferenceIDService.svc.cs" %>
