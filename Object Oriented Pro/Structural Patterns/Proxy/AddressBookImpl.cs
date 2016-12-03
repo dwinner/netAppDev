@@ -26,14 +26,8 @@ namespace Proxy
       public IAddress GetAddress(string description)
          => _addresses.FirstOrDefault(address => address.Description == description);
 
-      public void Open()
-      {
-         // Loading data...
-      }
+      public void Open() { /* Loading data... */ }
 
-      public void Save()
-      {
-         // Saving data...
-      }
+      public void Save() { /* Saving data... */ }
    }
 }

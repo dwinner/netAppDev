@@ -5,7 +5,9 @@ namespace Proxy
    [Serializable]
    public class AddressImpl : IAddress
    {
-      public AddressImpl(string description, string street, string city, string state, string zipCode, string type)
+      public AddressImpl(
+			string description, string street, string city,
+			string state, string zipCode, string type)
       {
          Description = description;
          Street = street;

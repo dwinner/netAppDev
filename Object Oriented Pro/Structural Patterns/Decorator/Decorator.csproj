@@ -44,7 +44,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ContactImpl.cs" />
-    <Compile Include="DeliverableTask.cs" />
     <Compile Include="DependentProjectItem.cs" />
     <Compile Include="IContact.cs" />
     <Compile Include="IProjectItem.cs" />

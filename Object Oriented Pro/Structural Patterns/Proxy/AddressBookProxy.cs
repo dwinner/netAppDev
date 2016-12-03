@@ -47,7 +47,8 @@ namespace Proxy
       {
          if (_localAddresses.Count > 0)
          {
-            foreach (var address in _localAddresses.Where(address => address.Description == description))
+            foreach (var address
+					in _localAddresses.Where(address => address.Description == description))
             {
                return address;
             }

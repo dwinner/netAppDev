@@ -21,9 +21,6 @@
       }
 
       public override string ToString()
-      {
-         return string.Format("FirstName: {0}, LastName: {1}, Title: {2}, Organization: {3}", FirstName, LastName, Title,
-            Organization);
-      }
+			=> $"FirstName: {FirstName}, LastName: {LastName}, Title: {Title}, Organization: {Organization}";
    }
 }
