@@ -1,0 +1,86 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "AttributeBasedSample", "AttributeBasedSample", "{78211B70-EB29-4591-B061-FC711A501E0F}"
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "CalculatorContract", "AttributeBasedSample\CalculatorContract\CalculatorContract.xproj", "{EA97C0AF-DBB8-47BB-A009-4ED1FFF12006}"
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "SimpleCalculator", "AttributeBasedSample\SimpleCalculator\SimpleCalculator.xproj", "{58A36E30-3166-4A70-9D47-D599DF99BDFA}"
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "SimpleHost", "AttributeBasedSample\SimpleHost\SimpleHost.xproj", "{0D5B6214-5FF8-4210-B5EE-E54C54318E1D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ConventionBasedSample", "ConventionBasedSample", "{75E792E8-77D6-46C1-9C7D-8483307EAE47}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CalculatorContract", "ConventionBasedSample\CalculatorContract\CalculatorContract.csproj", "{E7291914-8FA2-4602-8DA6-6AF74E72607D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleCalculator", "ConventionBasedSample\SimpleCalculator\SimpleCalculator.csproj", "{40CEA509-EE47-4AC2-9528-9B4F039C8736}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleHost", "ConventionBasedSample\SimpleHost\SimpleHost.csproj", "{FD459C4D-6954-4CC1-A51F-11E33C3A64D8}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UICalculator", "UICalculator", "{76ACC79A-8028-4BDB-BD45-57C84A493E53}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CalculatorContract", "UICalculator\CalculatorContract\CalculatorContract.csproj", "{E8522081-EC43-4399-B5E5-BC21D40BA2FD}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "TemperatureConversionShared", "UICalculator\TemperatureConversionShared\TemperatureConversionShared.shproj", "{2E499B12-2472-4B60-8351-793774A3A540}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CalculatorUtils", "UICalculator\CalculatorUtils\CalculatorUtils.csproj", "{B3164C52-E721-47F6-B22E-29A71B37EC50}"
+EndProject
+Global
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		UICalculator\TemperatureConversionShared\TemperatureConversionShared.projitems*{2e499b12-2472-4b60-8351-793774a3a540}*SharedItemsImports = 13
+	EndGlobalSection
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{EA97C0AF-DBB8-47BB-A009-4ED1FFF12006}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EA97C0AF-DBB8-47BB-A009-4ED1FFF12006}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EA97C0AF-DBB8-47BB-A009-4ED1FFF12006}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EA97C0AF-DBB8-47BB-A009-4ED1FFF12006}.Release|Any CPU.Build.0 = Release|Any CPU
+		{58A36E30-3166-4A70-9D47-D599DF99BDFA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{58A36E30-3166-4A70-9D47-D599DF99BDFA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{58A36E30-3166-4A70-9D47-D599DF99BDFA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{58A36E30-3166-4A70-9D47-D599DF99BDFA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0D5B6214-5FF8-4210-B5EE-E54C54318E1D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0D5B6214-5FF8-4210-B5EE-E54C54318E1D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0D5B6214-5FF8-4210-B5EE-E54C54318E1D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0D5B6214-5FF8-4210-B5EE-E54C54318E1D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E7291914-8FA2-4602-8DA6-6AF74E72607D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E7291914-8FA2-4602-8DA6-6AF74E72607D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E7291914-8FA2-4602-8DA6-6AF74E72607D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E7291914-8FA2-4602-8DA6-6AF74E72607D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{40CEA509-EE47-4AC2-9528-9B4F039C8736}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{40CEA509-EE47-4AC2-9528-9B4F039C8736}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{40CEA509-EE47-4AC2-9528-9B4F039C8736}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{40CEA509-EE47-4AC2-9528-9B4F039C8736}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FD459C4D-6954-4CC1-A51F-11E33C3A64D8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FD459C4D-6954-4CC1-A51F-11E33C3A64D8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FD459C4D-6954-4CC1-A51F-11E33C3A64D8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FD459C4D-6954-4CC1-A51F-11E33C3A64D8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E8522081-EC43-4399-B5E5-BC21D40BA2FD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E8522081-EC43-4399-B5E5-BC21D40BA2FD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E8522081-EC43-4399-B5E5-BC21D40BA2FD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E8522081-EC43-4399-B5E5-BC21D40BA2FD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B3164C52-E721-47F6-B22E-29A71B37EC50}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B3164C52-E721-47F6-B22E-29A71B37EC50}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B3164C52-E721-47F6-B22E-29A71B37EC50}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B3164C52-E721-47F6-B22E-29A71B37EC50}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{EA97C0AF-DBB8-47BB-A009-4ED1FFF12006} = {78211B70-EB29-4591-B061-FC711A501E0F}
+		{58A36E30-3166-4A70-9D47-D599DF99BDFA} = {78211B70-EB29-4591-B061-FC711A501E0F}
+		{0D5B6214-5FF8-4210-B5EE-E54C54318E1D} = {78211B70-EB29-4591-B061-FC711A501E0F}
+		{E7291914-8FA2-4602-8DA6-6AF74E72607D} = {75E792E8-77D6-46C1-9C7D-8483307EAE47}
+		{40CEA509-EE47-4AC2-9528-9B4F039C8736} = {75E792E8-77D6-46C1-9C7D-8483307EAE47}
+		{FD459C4D-6954-4CC1-A51F-11E33C3A64D8} = {75E792E8-77D6-46C1-9C7D-8483307EAE47}
+		{E8522081-EC43-4399-B5E5-BC21D40BA2FD} = {76ACC79A-8028-4BDB-BD45-57C84A493E53}
+		{2E499B12-2472-4B60-8351-793774A3A540} = {76ACC79A-8028-4BDB-BD45-57C84A493E53}
+		{B3164C52-E721-47F6-B22E-29A71B37EC50} = {76ACC79A-8028-4BDB-BD45-57C84A493E53}
+	EndGlobalSection
+EndGlobal

@@ -10,7 +10,7 @@ namespace Decorator
    {
       static void Main()
       {
-         // Создание элементов проекта
+         // Creating of the project elements
          IContact firstContact = new ContactImpl
          {
             FirstName = "Simone",
@@ -19,14 +19,18 @@ namespace Decorator
             Organization = "Institute for Advanced (Java) Studies"
          };
 
-         var firstTask = new ProjectTask<IProjectItem>("Perform months of diligent research", firstContact, 20.0);
-         var secondTask = new ProjectTask<IProjectItem>("Obtain grant from World Java Foundation", firstContact, 40.0);
+         var firstTask =
+				new ProjectTask<IProjectItem>(
+					"Perform months of diligent research", firstContact, 20.0);
+         var secondTask =
+				new ProjectTask<IProjectItem>(
+					"Obtain grant from World Java Foundation", firstContact, 40.0);
 
-         // Создание декораторов
+         // Creating decorators
          ProjectDecorator firstDecorator = new SupportedProjectItem("JavaHistory.txt");
          ProjectDecorator secondDecorator = new DependentProjectItem(secondTask);
 
-         // Добавляем декораторы к первой задаче
+         // Adding decorators to the first task
          firstDecorator.ProjectItem = firstTask;
          secondDecorator.ProjectItem = firstDecorator;
 

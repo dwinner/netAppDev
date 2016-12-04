@@ -1,8 +1,5 @@
 ﻿namespace Decorator
-{
-   /// <summary>
-   /// Интерфейс для контакта
-   /// </summary>
+{   
    public interface IContact
    {
       string FirstName { get; set; }

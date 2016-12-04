@@ -1,8 +1,5 @@
 ﻿namespace Decorator
-{
-   /// <summary>
-   /// Базовый класс для декорирования элементов проекта
-   /// </summary>
+{   
    public abstract class ProjectDecorator : IProjectItem
    {
       public IProjectItem ProjectItem { protected get; set; }

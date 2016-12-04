@@ -16,27 +16,18 @@ namespace Proxy
       public void Add(IAddress anAddress)
       {
          if (!_addresses.Contains(anAddress))
+         {
             _addresses.Add(anAddress);
+         }
       }
 
-      public IList<IAddress> AllAddresses
-      {
-         get { return _addresses; }
-      }
+      public IList<IAddress> AllAddresses => _addresses;
 
       public IAddress GetAddress(string description)
-      {
-         return _addresses.FirstOrDefault(address => address.Description == description);
-      }
+         => _addresses.FirstOrDefault(address => address.Description == description);
 
-      public void Open()
-      {
-         // Загрузка данных
-      }
+      public void Open() { /* Loading data... */ }
 
-      public void Save()
-      {
-         // Сохранение данных
-      }
+      public void Save() { /* Saving data... */ }
    }
 }

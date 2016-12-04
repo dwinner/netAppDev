@@ -2,18 +2,13 @@
 {
    public class DependentProjectItem : ProjectDecorator
    {
-      public IProjectItem DependentItem { get; set; }
+      public IProjectItem DependentItem { get; }
 
-      public DependentProjectItem() { }
-
-      public DependentProjectItem(IProjectItem dependentItem)
+	   public DependentProjectItem(IProjectItem dependentItem)
       {
          DependentItem = dependentItem;
       }
 
-      public override string ToString()
-      {
-         return string.Format("DependentItem: {0}", DependentItem);
-      }
+      public override string ToString() => $"DependentItem: {DependentItem}";
    }
 }

@@ -1,16 +1,16 @@
 ﻿/**
- * Мост
+ * Bridge
  */
 
-using System;
+using static System.Console;
 
 namespace Bridge
 {
-   class Program
+   internal static class Program
    {
-      static void Main()
+      private static void Main()
       {
-         IBaseListImpl implementation = new OrderedListImpl();
+         IBaseList implementation = new OrderedList();
          var listOne = new BaseList { BaseListImplementor = implementation };
          listOne.Add("One");
          listOne.Add("Two");
@@ -21,22 +21,22 @@ namespace Bridge
 
          BaseList listThree = new NumberedList { BaseListImplementor = implementation };
 
-         for (int i = 0; i < listOne.Count(); i++)
+         for (var i = 0; i < listOne.Count(); i++)
          {
-            Console.WriteLine("\t{0}", listOne[i]);
+            WriteLine("\t{0}", listOne[i]);
          }
 
-         for (int i = 0; i < listTwo.Count(); i++)
+         for (var i = 0; i < listTwo.Count(); i++)
          {
-            Console.WriteLine("\t{0}", listTwo[i]);
+            WriteLine("\t{0}", listTwo[i]);
          }
 
-         for (int i = 0; i < listThree.Count(); i++)
+         for (var i = 0; i < listThree.Count(); i++)
          {
-            Console.WriteLine("\t{0}", listThree[i]);
+            WriteLine("\t{0}", listThree[i]);
          }
 
-         Console.ReadKey();
+         ReadKey();
       }
    }
 }

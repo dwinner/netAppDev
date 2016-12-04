@@ -3,18 +3,11 @@ using System.Collections.Generic;
 
 namespace Decorator
 {
-   public class SupportedProjectItem : ProjectDecorator
+   public sealed class SupportedProjectItem : ProjectDecorator
    {
-      private readonly IList<string> _supportingDocuments = new List<string>();
+	   private IList<string> SupportingDocuments { get; } = new List<string>();
 
-      public IList<string> SupportingDocuments
-      {
-         get { return _supportingDocuments; }
-      }
-
-      public SupportedProjectItem() { }
-
-      public SupportedProjectItem(string newSupportingDocument)
+	   public SupportedProjectItem(string newSupportingDocument)
       {
          AddSupportingDocument(newSupportingDocument);
       }
@@ -22,19 +15,12 @@ namespace Decorator
       private void AddSupportingDocument(string newSupportingDocument)
       {
          if (!SupportingDocuments.Contains(newSupportingDocument))
-            SupportingDocuments.Add(newSupportingDocument);
+         {
+	         SupportingDocuments.Add(newSupportingDocument);
+         }
       }
 
-      public void RemoveSupportingDocument(string document)
-      {
-         SupportingDocuments.Remove(document);
-      }
-
-      public override string ToString()
-      {
-         return string.Format("{0}{1}\tSupporting Documents: ",
-            ProjectItem,
-            Environment.NewLine);
-      }
+	   public override string ToString()
+			=> $"{ProjectItem}{Environment.NewLine}\tSupporting Documents: ";
    }
 }
