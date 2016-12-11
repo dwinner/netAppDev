@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Calculator.Properties {
+namespace Wrox.ProCSharp.MAF.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
@@ -23,16 +23,13 @@ namespace Calculator.Properties {
             }
         }
         
-        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("f:\\Public\\DotNetAppDev\\Framework Classes Library\\PlugIn-AppDev\\Extensibility\\WPFC" +
-            "alculator\\+AddIns\\")]
-        public string AddInDirectory {
+        [global::System.Configuration.DefaultSettingValueAttribute("f:\\Public\\DotNetAppDev\\Framework Classes Library\\PlugIn-AppDev\\Managed-AddIn-Fram" +
+            "ework\\Pipeline")]
+        public string PipelinePath {
             get {
-                return ((string)(this["AddInDirectory"]));
-            }
-            set {
-                this["AddInDirectory"] = value;
+                return ((string)(this["PipelinePath"]));
             }
         }
     }

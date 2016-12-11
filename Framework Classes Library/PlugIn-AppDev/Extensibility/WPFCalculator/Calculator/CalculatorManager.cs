@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.ComponentModel.Composition.Hosting;
 using System.ComponentModel.Composition.Primitives;
-using System.Diagnostics.Contracts;
+using System.Diagnostics;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -34,7 +35,11 @@ namespace Calculator
 
       public async void InitializeContainer()
       {
-         _catalog = new DirectoryCatalog(Settings.Default.AddInDirectory);
+         var addInDir = Settings.Default.AddInDirectory;
+         var addInDirExists = Directory.Exists(addInDir);
+         Debug.Assert(addInDirExists);
+
+         _catalog = new DirectoryCatalog(addInDir);
 
          #region Реакция на изменение загружаемых в каталог дополнений
 
@@ -97,10 +102,7 @@ namespace Calculator
       }
 
       public Task InitializeOperationsAsync()
-      {
-         Contract.Requires(_calcImport != null);
-         Contract.Requires(_calcImport.Calculator != null);
-
+      {         
          return Task.Run(() =>
          {
             IList<IOperation> operations = _calcImport.Calculator.Value.GetOperations();

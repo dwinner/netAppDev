@@ -35,6 +35,8 @@ Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "FuelEconomyShared", "UICalc
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CalculatorViewModels", "UICalculator\CalculatorViewModels\CalculatorViewModels.csproj", "{64270847-C830-40B6-9CC7-AC9635E12245}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FuelEconomyUserControl", "UICalculator\FuelEconomyUserControl\FuelEconomyUserControl.csproj", "{AD326A23-A7D3-4A37-8376-F369574D4324}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		UICalculator\TemperatureConversionShared\TemperatureConversionShared.projitems*{2e499b12-2472-4b60-8351-793774a3a540}*SharedItemsImports = 13
@@ -89,6 +91,10 @@ Global
 		{64270847-C830-40B6-9CC7-AC9635E12245}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{64270847-C830-40B6-9CC7-AC9635E12245}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{64270847-C830-40B6-9CC7-AC9635E12245}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AD326A23-A7D3-4A37-8376-F369574D4324}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AD326A23-A7D3-4A37-8376-F369574D4324}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AD326A23-A7D3-4A37-8376-F369574D4324}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AD326A23-A7D3-4A37-8376-F369574D4324}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -107,5 +113,6 @@ Global
 		{2C0C4FC4-6269-4797-AACA-72910B2BE59C} = {76ACC79A-8028-4BDB-BD45-57C84A493E53}
 		{4EB4E2D7-1F9E-466E-B379-20D13FC0E2EC} = {76ACC79A-8028-4BDB-BD45-57C84A493E53}
 		{64270847-C830-40B6-9CC7-AC9635E12245} = {76ACC79A-8028-4BDB-BD45-57C84A493E53}
+		{AD326A23-A7D3-4A37-8376-F369574D4324} = {76ACC79A-8028-4BDB-BD45-57C84A493E53}
 	EndGlobalSection
 EndGlobal

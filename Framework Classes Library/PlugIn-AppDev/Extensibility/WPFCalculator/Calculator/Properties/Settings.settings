@@ -3,7 +3,7 @@
   <Profiles />
   <Settings>
     <Setting Name="AddInDirectory" Type="System.String" Scope="User">
-      <Value Profile="(Default)">d:\Programming and Development\C#, .NET\@Managed Extensibility Framework\WPFCalculator\+ AddIns\</Value>
+      <Value Profile="(Default)">f:\Public\DotNetAppDev\Framework Classes Library\PlugIn-AppDev\Extensibility\WPFCalculator\+AddIns\</Value>
     </Setting>
   </Settings>
 </SettingsFile>
