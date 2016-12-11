@@ -11,4 +11,9 @@
   <ItemGroup>
     <Content Include="$(MSBuildThisFileDirectory)Images\Temperature.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)TempConversionType.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)TemperatureConversionExtension.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)TemperatureConversionViewModel.cs" />
+  </ItemGroup>
 </Project>

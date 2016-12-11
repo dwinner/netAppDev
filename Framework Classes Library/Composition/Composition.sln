@@ -27,9 +27,18 @@ Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "TemperatureConversionShared
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CalculatorUtils", "UICalculator\CalculatorUtils\CalculatorUtils.csproj", "{B3164C52-E721-47F6-B22E-29A71B37EC50}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdvancedOperations", "UICalculator\AdvancedOperations\AdvancedOperations.csproj", "{7D431419-EC57-4B82-BA71-F26D8B309712}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleCalculator", "UICalculator\SimpleCalculator\SimpleCalculator.csproj", "{2C0C4FC4-6269-4797-AACA-72910B2BE59C}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "FuelEconomyShared", "UICalculator\FuelEconomyShared\FuelEconomyShared.shproj", "{4EB4E2D7-1F9E-466E-B379-20D13FC0E2EC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CalculatorViewModels", "UICalculator\CalculatorViewModels\CalculatorViewModels.csproj", "{64270847-C830-40B6-9CC7-AC9635E12245}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		UICalculator\TemperatureConversionShared\TemperatureConversionShared.projitems*{2e499b12-2472-4b60-8351-793774a3a540}*SharedItemsImports = 13
+		UICalculator\FuelEconomyShared\FuelEconomyShared.projitems*{4eb4e2d7-1f9e-466e-b379-20d13fc0e2ec}*SharedItemsImports = 13
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -68,6 +77,18 @@ Global
 		{B3164C52-E721-47F6-B22E-29A71B37EC50}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B3164C52-E721-47F6-B22E-29A71B37EC50}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B3164C52-E721-47F6-B22E-29A71B37EC50}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7D431419-EC57-4B82-BA71-F26D8B309712}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7D431419-EC57-4B82-BA71-F26D8B309712}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7D431419-EC57-4B82-BA71-F26D8B309712}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7D431419-EC57-4B82-BA71-F26D8B309712}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2C0C4FC4-6269-4797-AACA-72910B2BE59C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2C0C4FC4-6269-4797-AACA-72910B2BE59C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2C0C4FC4-6269-4797-AACA-72910B2BE59C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2C0C4FC4-6269-4797-AACA-72910B2BE59C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{64270847-C830-40B6-9CC7-AC9635E12245}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{64270847-C830-40B6-9CC7-AC9635E12245}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{64270847-C830-40B6-9CC7-AC9635E12245}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{64270847-C830-40B6-9CC7-AC9635E12245}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -82,5 +103,9 @@ Global
 		{E8522081-EC43-4399-B5E5-BC21D40BA2FD} = {76ACC79A-8028-4BDB-BD45-57C84A493E53}
 		{2E499B12-2472-4B60-8351-793774A3A540} = {76ACC79A-8028-4BDB-BD45-57C84A493E53}
 		{B3164C52-E721-47F6-B22E-29A71B37EC50} = {76ACC79A-8028-4BDB-BD45-57C84A493E53}
+		{7D431419-EC57-4B82-BA71-F26D8B309712} = {76ACC79A-8028-4BDB-BD45-57C84A493E53}
+		{2C0C4FC4-6269-4797-AACA-72910B2BE59C} = {76ACC79A-8028-4BDB-BD45-57C84A493E53}
+		{4EB4E2D7-1F9E-466E-B379-20D13FC0E2EC} = {76ACC79A-8028-4BDB-BD45-57C84A493E53}
+		{64270847-C830-40B6-9CC7-AC9635E12245} = {76ACC79A-8028-4BDB-BD45-57C84A493E53}
 	EndGlobalSection
 EndGlobal
