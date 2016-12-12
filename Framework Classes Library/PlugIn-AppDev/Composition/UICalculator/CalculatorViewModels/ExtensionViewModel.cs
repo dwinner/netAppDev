@@ -12,7 +12,7 @@ namespace CalculatorViewModels
 		{
 			ActivateCommand=new DelegateCommand(OnActivate);
 			CloseCommand=new DelegateCommand(OnClose);
-			Extension = extension;
+			Extension = extension;			
 		}
 
 		public object UI
