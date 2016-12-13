@@ -149,16 +149,40 @@
       <Project>{4943A04F-83C0-4E77-A15A-6C2EE851D25B}</Project>
       <Name>CalculatorUtils</Name>
     </ProjectReference>
+    <ProjectReference Include="..\FuelEconomy\FuelEconomy.csproj">
+      <Project>{e9e00dbe-e65e-455a-9a40-2cbe10ee9873}</Project>
+      <Name>FuelEconomy</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Operations\Operations.csproj">
+      <Project>{21cc6f4d-47e9-4815-96dd-3156819bb786}</Project>
+      <Name>Operations</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SimpleCalculator\SimpleCalculator.csproj">
+      <Project>{7e542e23-2095-455b-b20f-7c9328384601}</Project>
+      <Name>SimpleCalculator</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\TemperatureConversion\TemperatureConversion.csproj">
+      <Project>{4321121c-9788-4519-b63e-cc8d95732e2a}</Project>
+      <Name>TemperatureConversion</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Images\Addin.png" />
-    <Resource Include="Images\App.png" />
-    <Resource Include="Images\Delete.png" />
-    <Resource Include="Images\Refresh.png" />
+    <Content Include="Images\Addin.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\App.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\Delete.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\Refresh.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>copy "$(TargetPath)" "$(SolutionDir)WPFCalculator\+AddIns"</PostBuildEvent>
+    <PostBuildEvent>copy "$(TargetPath)" "$(SolutionDir)+AddIns"</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

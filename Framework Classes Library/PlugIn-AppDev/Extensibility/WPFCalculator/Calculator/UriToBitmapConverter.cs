@@ -11,11 +11,11 @@ namespace Calculator
    {
       public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
       {
-         string uri = value.ToString();
+         var uri = value.ToString();
          if (string.IsNullOrEmpty(uri))
             return null;
 
-         FileStream stream = File.OpenRead(Path.Combine(Settings.Default.AddInDirectory, uri));
+         var stream = File.OpenRead(Path.Combine(Settings.Default.AddInDirectory, uri));
          var image = new BitmapImage();
          image.BeginInit();
          image.StreamSource = stream;
