@@ -1,9 +1,9 @@
-﻿namespace CalculatorUtils
+﻿namespace Wrox.ProCSharp.Composition
 {
-	public class CalculatorExtensionMetadata
-	{
-		public string Title { get; set; }
-		public string Description { get; set; }
-		public string ImageUrl { get; set; }
-	}
+    public class CalculatorExtensionMetadata
+    {
+        public string Title { get; }
+        public string Description { get; }
+        public string ImageUri { get; }
+    }
 }

@@ -1,12 +1,16 @@
 ﻿using System;
 using System.Composition;
 
-namespace CalculatorUtils
+namespace Wrox.ProCSharp.Composition
 {
-	[MetadataAttribute]
-	[AttributeUsage(AttributeTargets.Class)]
-	public class SpeedMetadataAttribute : Attribute
-	{
-		public Speed Speed { get; set; }
-	}
+    [MetadataAttribute]
+    [AttributeUsage(AttributeTargets.Class)]
+    public class SpeedMetadataAttribute : Attribute
+    {
+        public SpeedMetadataAttribute()
+        {
+        }
+
+        public Speed Speed { get; set; }
+    }
 }

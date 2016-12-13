@@ -1,7 +1,8 @@
-﻿namespace CalculatorContract
+﻿namespace Wrox.ProCSharp.Composition
 {
-	public interface ICalculatorExtension
-	{
-		object UI { get; }
-	}
+    public interface ICalculatorExtension
+  {
+    // returns a FrameworkElement
+    object UI { get; }
+  }
 }

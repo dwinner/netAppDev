@@ -2,38 +2,39 @@
 using System.Collections.Generic;
 using System.Composition;
 using System.Composition.Hosting;
-using CalculatorContract;
-using CalculatorUtils;
 
-namespace CalculatorViewModels
+namespace Wrox.ProCSharp.Composition
 {
-	public class CalculatorManager
-	{
-		private readonly CalculatorImport _calculatorImport;
+    public class CalculatorManager
+    {
+        private CalculatorImport _calcImport;
+        public event EventHandler<ImportEventArgs> ImportsSatisfied;
 
-		public CalculatorManager()
-		{
-			_calculatorImport = new CalculatorImport();
-			_calculatorImport.ImportsSatisfied += (sender, args) => OnImportsSatisfied(args);
-		}
+        public CalculatorManager()
+        {
+            _calcImport = new CalculatorImport();
+            _calcImport.ImportsSatisfied += (sender, e) =>
+            {
+                ImportsSatisfied?.Invoke(this, e);
+            };
+        }
 
-		public event EventHandler<ImportEventArgs> ImportsSatisfied;
 
-		public void InitializeContainer(params Type[] parts)
-		{
-			var configuration = new ContainerConfiguration().WithParts(parts);
-			using (var host = configuration.CreateContainer())
-			{
-				host.SatisfyImports(_calculatorImport);
-			}
-		}
+        public void InitializeContainer(params Type[] parts)
+        {
+            var configuration = new ContainerConfiguration().WithParts(parts);
+            using (CompositionHost host = configuration.CreateContainer())
+            {
+                host.SatisfyImports(_calcImport);
+            }
+        }
 
-		public IEnumerable<IOperation> GetOperators() => _calculatorImport.Calculator.Value.GetOperations();
+        public IEnumerable<IOperation> GetOperators() =>
+            _calcImport.Calculator.Value.GetOperations();
 
-		public double InvokeCalculator(IOperation operation, double[] operands)
-			=> _calculatorImport.Calculator.Value.Operate(operation, operands);
 
-		private void OnImportsSatisfied(ImportEventArgs importEventArgs)
-			=> ImportsSatisfied?.Invoke(this, importEventArgs);
-	}
+        public double InvokeCalculator(IOperation operation, double[] operands) =>
+            _calcImport.Calculator.Value.Operate(operation, operands);
+
+    }
 }

@@ -1,26 +1,38 @@
 ﻿using System;
 using System.Windows.Input;
-using CalculatorUtils.Annotations;
 
-namespace CalculatorUtils
+namespace Wrox.ProCSharp.Composition
 {
-	public class DelegateCommand : ICommand
-	{
-		private readonly Func<bool> _canExecute;
-		private readonly Action _execute;
+    public class DelegateCommand : ICommand
+    {
+        private Action _execute;
+        private Func<bool> _canExecute;
 
-		public DelegateCommand([NotNull] Action execute, [CanBeNull] Func<bool> canExecute = null)
-		{
-			_execute = execute;
-			_canExecute = canExecute;
-		}
+        public DelegateCommand(Action execute, Func<bool> canExecute)
+        {
+            if (execute == null)
+                throw new ArgumentNullException(nameof(execute));
 
-		public bool CanExecute(object parameter) => _canExecute?.Invoke() ?? true;
+            _execute = execute;
+            _canExecute = canExecute;
+        }
 
-		public void Execute(object parameter) => _execute.Invoke();
+        public DelegateCommand(Action execute)
+            : this(execute, null)
+        { }
 
-		public event EventHandler CanExecuteChanged;
+        public event EventHandler CanExecuteChanged;
 
-		public void RaiseCanExecuteChanged() => CanExecuteChanged?.Invoke(this, EventArgs.Empty);
-	}
+        public bool CanExecute(object parameter) => _canExecute?.Invoke() ?? true;
+
+        public void Execute(object parameter)
+        {
+            _execute();
+        }
+
+        public void RaiseCanExecuteChanged()
+        {
+            CanExecuteChanged?.Invoke(this, EventArgs.Empty);
+        }
+    }
 }

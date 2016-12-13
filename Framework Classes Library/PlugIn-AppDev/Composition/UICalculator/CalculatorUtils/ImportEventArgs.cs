@@ -1,7 +1,9 @@
-﻿namespace CalculatorUtils
+﻿using System;
+
+namespace Wrox.ProCSharp.Composition
 {
-	public class ImportEventArgs
-	{
-		public string StatusMessage { get; set; }
-	}
+    public class ImportEventArgs : EventArgs
+    {
+        public string StatusMessage { get; set; }
+    }
 }
