@@ -1,12 +1,13 @@
-﻿using CalcAddInAdapter.Properties;
+﻿using System.AddIn.Contract;
+using System.AddIn.Pipeline;
+using CalcAddInAdapter.Properties;
 using CalcContract;
 using CalcView;
-using System.AddIn.Contract;
-using System.AddIn.Pipeline;
 
 namespace CalcAddInAdapter
 {
    [AddInAdapter, UsedImplicitly]
+   // ReSharper disable once UnusedMember.Global
    internal class CalculatorViewToContractAddInAdapter : ContractBase, ICalculatorContract
    {
       private readonly Calculator _view;

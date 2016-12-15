@@ -1,50 +1,32 @@
-﻿using CalcContract;
+﻿using System.AddIn.Pipeline;
+using CalcContract;
 using HostView;
-using System.AddIn.Pipeline;
 
 namespace HostAdapter
 {
    internal class OperationContractToViewHostAdapter : Operation
    {
+      // ReSharper disable once NotAccessedField.Local
+      private ContractHandle _handle;
+
+      public OperationContractToViewHostAdapter(IOperationContract contract)
+      {
+         Contract = contract;
+         _handle = new ContractHandle(contract);
+      }
+
       // internal IOperationContract contract;
 
       public IOperationContract Contract { get; private set; }
 
-      private ContractHandle handle;
-
-      public OperationContractToViewHostAdapter(IOperationContract contract)
-      {
-         this.Contract = contract;
-         handle = new ContractHandle(contract);
-      }
-
       public override string Name
       {
-         get
-         {
-            return Contract.Name;
-         }
+         get { return Contract.Name; }
       }
 
       public override int NumberOperands
       {
-         get
-         {
-            return Contract.NumberOperands;
-         }
-      }
-   }
-
-   internal static class OperationHostAdapters
-   {
-      internal static IOperationContract ViewToContractAdapter(Operation view)
-      {
-         return ((OperationContractToViewHostAdapter)view).Contract;
-      }
-
-      internal static Operation ContractToViewAdapter(IOperationContract contract)
-      {
-         return new OperationContractToViewHostAdapter(contract);
+         get { return Contract.NumberOperands; }
       }
    }
 }

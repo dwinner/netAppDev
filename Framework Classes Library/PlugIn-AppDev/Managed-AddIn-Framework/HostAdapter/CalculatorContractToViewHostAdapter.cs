@@ -1,17 +1,19 @@
-﻿using CalcContract;
+﻿using System.AddIn.Pipeline;
+using System.Collections.Generic;
+using CalcContract;
 using HostAdapter.Properties;
 using HostView;
-using System.AddIn.Pipeline;
-using System.Collections.Generic;
 
 namespace HostAdapter
 {
    [HostAdapter]
+   // ReSharper disable once UnusedMember.Global
    internal class CalculatorContractToViewHostAdapter : Calculator
    {
       private readonly ICalculatorContract _contract;
-      [UsedImplicitly]
-      private ContractHandle _handle;
+
+      // ReSharper disable once NotAccessedField.Local
+      [UsedImplicitly] private ContractHandle _handle;
 
       public CalculatorContractToViewHostAdapter(ICalculatorContract contract)
       {

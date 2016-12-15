@@ -1,19 +1,41 @@
-﻿using HostView;
-using System;
+﻿using System;
 using System.AddIn.Hosting;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Windows;
-using Wrox.ProCSharp.MAF.Properties;
+using HostView;
 
 namespace Wrox.ProCSharp.MAF
 {
    public partial class CalculatorHostWindow
    {
-      private Calculator _activeAddIn;
+      private static readonly string _DefaultPipelinePath;
+      private Calculator _activatedAddIn;
       private Operation _currentOperation;
+
+      static CalculatorHostWindow()
+      {
+         var currentDirectory = Environment.CurrentDirectory;
+         var currentDirInfo = new DirectoryInfo(currentDirectory);
+         if (currentDirInfo.Parent != null)
+         {
+            if (currentDirInfo.Parent.Parent != null)
+            {
+               var directoryInfo = currentDirInfo.Parent.Parent.Parent;
+               if (directoryInfo != null)
+               {
+                  _DefaultPipelinePath
+                     = string.Format("{0}{1}Pipeline", directoryInfo.FullName, Path.DirectorySeparatorChar);
+               }
+            }
+         }
+         else
+         {
+            throw new InvalidOperationException("Failed pipeline directory path");
+         }
+      }
 
       public CalculatorHostWindow()
       {
@@ -25,7 +47,7 @@ namespace Wrox.ProCSharp.MAF
       {
          try
          {
-            listAddIns.DataContext = AddInStore.FindAddIns(typeof(Calculator), Settings.Default.PipelinePath);
+            AddInListBox.DataContext = AddInStore.FindAddIns(typeof (Calculator), _DefaultPipelinePath);
          }
          catch (DirectoryNotFoundException)
          {
@@ -34,20 +56,30 @@ namespace Wrox.ProCSharp.MAF
          }
       }
 
-      private void ListOperatons()
+      private void ListOperations()
       {
-         listOperations.DataContext = _activeAddIn.GetOperations();
+         OperationsListBox.DataContext = _activatedAddIn.GetOperations();
       }
 
       private void ListOperands(IEnumerable<double> operands)
       {
-         listOperands.DataContext =
-            operands.Select((operand, index) => new OperandUi { Index = index + 1, Value = operand }).ToArray();
+         OperandListBox.DataContext =
+            operands.Select((operand, index) => new OperandUi {Index = index + 1, Value = operand}).ToArray();
       }
 
-      private void UpdateStore(object sender, RoutedEventArgs e)
+      private void OnUpdateStore(object sender, RoutedEventArgs e)
       {
-         string[] messages = AddInStore.Update(Settings.Default.PipelinePath);
+         var messages = AddInStore.Update(_DefaultPipelinePath);
+         if (messages.Length != 0)
+         {
+            MessageBox.Show(string.Join(Environment.NewLine, messages), "AddInStore Warnings", MessageBoxButton.OK,
+               MessageBoxImage.Warning);
+         }
+      }
+
+      private void OnRebuildStore(object sender, RoutedEventArgs e)
+      {
+         var messages = AddInStore.Rebuild(_DefaultPipelinePath);
          if (messages.Length != 0)
          {
             MessageBox.Show(string.Join("\n", messages), "AddInStore Warnings", MessageBoxButton.OK,
@@ -55,65 +87,48 @@ namespace Wrox.ProCSharp.MAF
          }
       }
 
-      private void RebuildStore(object sender, RoutedEventArgs e)
-      {
-         string[] messages = AddInStore.Rebuild(Settings.Default.PipelinePath);
-         if (messages.Length != 0)
-         {
-            MessageBox.Show(string.Join("\n", messages), "AddInStore Warnings", MessageBoxButton.OK,
-               MessageBoxImage.Warning);
-         }
-      }
-
-      private void RefreshAddIns(object sender, RoutedEventArgs e)
+      private void OnRefreshAddIns(object sender, RoutedEventArgs e)
       {
          FindAddIns();
       }
 
-      private void App_Exit(object sender, RoutedEventArgs e)
+      private void OnExit(object sender, RoutedEventArgs e)
       {
          Application.Current.Shutdown();
       }
 
       private void ActivateAddIn(object sender, RoutedEventArgs e)
       {
-         var el = sender as FrameworkElement;
-
-         Trace.Assert(el != null, "ActivateAddIn invoked from the wrong control type");
-
-         var addIn = el.Tag as AddInToken;
-         Trace.Assert(el.Tag != null,
-            String.Format("An AddInToken must be assigned to the Tag property of the control {0}", el.Name));
-
-         var process = new AddInProcess { KeepAlive = false };
-
+         var element = sender as FrameworkElement;
+         Debug.Assert(element != null, "element != null");
+         var addIn = element.Tag as AddInToken;         
+         var process = new AddInProcess {KeepAlive = false};
          if (addIn != null)
-            _activeAddIn = addIn.Activate<Calculator>(process, AddInSecurityLevel.Internet);
+         {
+            _activatedAddIn = addIn.Activate<Calculator>(process, AddInSecurityLevel.Internet);
+         }
 
-         ListOperatons();
+         ListOperations();
       }
 
       private void OperationSelected(object sender, RoutedEventArgs e)
       {
-         var el = sender as FrameworkElement;
-         Trace.Assert(el != null, "OperationSelected invoked from the wrong control type");
+         var element = sender as FrameworkElement;
+         Debug.Assert(element != null, "element != null");
+         var currentOperation = element.Tag as Operation;         
+         _currentOperation = currentOperation;
+         Debug.Assert(currentOperation != null, "currentOperation != null");
+         ListOperands(new double[currentOperation.NumberOperands]);
 
-         var op = el.Tag as Operation;
-         Trace.Assert(op != null,
-            String.Format("An Operation must be assigned to the Tag property of the of the control {0}", el.Name));
-
-         _currentOperation = op;
-         ListOperands(new double[op.NumberOperands]);
-
-         buttonCalculate.IsEnabled = true;
+         ButtonCalculate.IsEnabled = true;
       }
 
       private void Calculate(object sender, RoutedEventArgs e)
       {
-         var operandsUi = (OperandUi[])listOperands.DataContext;
-         double[] operands = operandsUi.Select(opui => opui.Value).ToArray();
-         double result = _activeAddIn.Operate(_currentOperation, operands);
-         labelResult.Content = result;
+         var operandsUi = (OperandUi[]) OperandListBox.DataContext;
+         var operands = operandsUi.Select(operandUi => operandUi.Value).ToArray();
+         var result = _activatedAddIn.Operate(_currentOperation, operands);
+         ResultLabel.Content = result;
       }
 
       private class OperandUi

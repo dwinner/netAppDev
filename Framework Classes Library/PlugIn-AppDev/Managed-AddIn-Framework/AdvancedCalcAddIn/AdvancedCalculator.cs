@@ -1,12 +1,13 @@
-﻿using AdvancedCalcAddIn.Properties;
-using CalcView;
-using System;
+﻿using System;
 using System.AddIn;
 using System.Collections.Generic;
+using AdvancedCalcAddIn.Properties;
+using CalcView;
 
 namespace AdvancedCalcAddIn
 {
    [AddIn("Advanced Calc", Publisher = "Wrox Press", Version = "1.1.0.0", Description = "Sample AddIn"), UsedImplicitly]
+   // ReSharper disable once UnusedMember.Global
    public class AdvancedCalculatorV1 : Calculator
    {
       private readonly List<Operation> _operations;
@@ -39,15 +40,15 @@ namespace AdvancedCalcAddIn
             case "-":
                return operand[0] - operand[1];
             case "/":
-               return operand[0] / operand[1];
+               return operand[0]/operand[1];
             case "*":
-               return operand[0] * operand[1];
+               return operand[0]*operand[1];
             case "++":
                return ++operand[0];
             case "--":
                return --operand[0];
             case "%":
-               return operand[0] % operand[1];
+               return operand[0]%operand[1];
             default:
                throw new InvalidOperationException(string.Format("invalid operation {0}", operation.Name));
          }

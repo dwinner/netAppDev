@@ -1,7 +1,7 @@
-﻿using CalcContract;
-using CalcView;
-using System;
+﻿using System;
 using System.AddIn.Pipeline;
+using CalcContract;
+using CalcView;
 
 namespace CalcAddInAdapter
 {
@@ -14,9 +14,15 @@ namespace CalcAddInAdapter
          _view = view;
       }
 
-      public string Name { get { return _view.Name; } }
+      public string Name
+      {
+         get { return _view.Name; }
+      }
 
-      public int NumberOperands { get { return _view.NumberOperands; } }
+      public int NumberOperands
+      {
+         get { return _view.NumberOperands; }
+      }
 
       public static IOperationContract ViewToContractAdapter(Operation view)
       {
@@ -27,7 +33,9 @@ namespace CalcAddInAdapter
       {
          var addInAdapter = contract as OperationViewToContractAddInAdapter;
          if (addInAdapter != null)
+         {
             return addInAdapter._view;
+         }
 
          throw new InvalidOperationException("contract is null");
       }

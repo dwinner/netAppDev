@@ -8,6 +8,7 @@ namespace HostAdapter
    internal class OperationContractToViewHostAdapter : Operation
    {
       [UsedImplicitly]
+      // ReSharper disable once NotAccessedField.Local
       private ContractHandle _handle;
 
       public OperationContractToViewHostAdapter(IOperationContract contract)
