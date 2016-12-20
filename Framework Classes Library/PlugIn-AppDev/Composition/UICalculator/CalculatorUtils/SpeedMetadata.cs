@@ -1,13 +1,13 @@
-﻿namespace Wrox.ProCSharp.Composition
+﻿namespace CalculatorUtils
 {
-    public enum Speed
-    {
-        Fast,
-        Slow
-    }
+	public enum Speed
+	{
+		Fast,
+		Slow
+	}
 
-    public class SpeedMetadata
-    {
-        public Speed Speed { get; set; }
-    }
+	public class SpeedMetadata
+	{
+		public Speed Speed { get; set; }
+	}
 }

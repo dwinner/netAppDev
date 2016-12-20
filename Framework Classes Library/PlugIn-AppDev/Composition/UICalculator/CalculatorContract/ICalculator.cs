@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 
-namespace Wrox.ProCSharp.Composition
+namespace CalculatorContract
 {
-    public interface ICalculator
-    {
-        IList<IOperation> GetOperations();
-        double Operate(IOperation operation, double[] operands);
-    }
+	public interface ICalculator
+	{
+		IList<IOperation> GetOperations();
+		double Operate(IOperation operation, double[] operands);
+	}
 }

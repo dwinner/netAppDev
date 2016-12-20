@@ -1,20 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Composition;
+using CalculatorContract;
+using CalculatorUtils;
 
-namespace Wrox.ProCSharp.Composition
+namespace CalculatorViewModels
 {
-    public class CalculatorExtensionsImport
-    {
-        public event EventHandler<ImportEventArgs> ImportsSatisfied;
+	public class CalculatorExtensionsImport
+	{
+		public event EventHandler<ImportEventArgs> ImportsSatisfied;
 
-        [ImportMany()]
-        public IEnumerable<Lazy<ICalculatorExtension, CalculatorExtensionMetadataAttribute>> CalculatorExtensions { get; set; }
+		[ImportMany()]
+		public IEnumerable<Lazy<ICalculatorExtension, CalculatorExtensionMetadataAttribute>> CalculatorExtensions { get; set; }
 
-        [OnImportsSatisfied]
-        public void OnImportsSatisfied()
-        {
-            ImportsSatisfied?.Invoke(this, new ImportEventArgs { StatusMessage = "ICalculatorExtension imports successful" });
-        }
-    }
+		[OnImportsSatisfied]
+		public void OnImportsSatisfied()
+		{
+			ImportsSatisfied?.Invoke(this, new ImportEventArgs { StatusMessage = "ICalculatorExtension imports successful" });
+		}
+	}
 }

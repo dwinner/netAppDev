@@ -1,19 +1,21 @@
 ﻿using System;
 using System.Composition;
+using CalculatorContract;
+using CalculatorUtils;
 
-namespace Wrox.ProCSharp.Composition
+namespace CalculatorViewModels
 {
-    public class CalculatorImport
-    {
-        public event EventHandler<ImportEventArgs> ImportsSatisfied;
+	public class CalculatorImport
+	{
+		public event EventHandler<ImportEventArgs> ImportsSatisfied;
 
-        [Import]
-        public Lazy<ICalculator> Calculator { get; set; }
+		[Import]
+		public Lazy<ICalculator> Calculator { get; set; }
 
-        [OnImportsSatisfied]
-        public void OnImportsSatisfied()
-        {
-            ImportsSatisfied?.Invoke(this, new ImportEventArgs { StatusMessage = "ICalculator import successful" });
-        }
-    }
+		[OnImportsSatisfied]
+		public void OnImportsSatisfied()
+		{
+			ImportsSatisfied?.Invoke(this, new ImportEventArgs { StatusMessage = "ICalculator import successful" });
+		}
+	}
 }

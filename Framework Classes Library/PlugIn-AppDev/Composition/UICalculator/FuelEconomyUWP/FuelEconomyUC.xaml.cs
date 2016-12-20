@@ -4,11 +4,11 @@
 
 namespace FuelEconomyUWP
 {
-    public sealed partial class FuelEconomyUC : UserControl
-    {
-        public FuelEconomyUC()
-        {
-            this.InitializeComponent();
-        }
-    }
+	public sealed partial class FuelEconomyUC : UserControl
+	{
+		public FuelEconomyUC()
+		{
+			this.InitializeComponent();
+		}
+	}
 }

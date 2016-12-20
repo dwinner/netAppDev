@@ -1,22 +1,25 @@
-﻿#if WPF
+﻿
+using System.Composition;
+#if WPF
 using FuelEconomyWPF;
 #endif
 #if WINDOWS_UWP
-using FuelEconomyUWP;
-#endif
 using System.Composition;
+#endif
+using CalculatorContract;
+using CalculatorUtils;
 
-namespace Wrox.ProCSharp.Composition
+namespace FuelEconomyUWP
 {
-    [Export(typeof(ICalculatorExtension))]
-    [CalculatorExtensionMetadata(
-      Title = "Fuel Economy",
-      Description = "Calculate fuel economy",
-      ImageUri = "Images/Fuel.png")]
-    public class FuelCalculatorExtension : ICalculatorExtension
-    {
-        private object _control;
-        public object UI => _control ?? (_control = new FuelEconomyUC());
+	[Export(typeof(ICalculatorExtension))]
+	[CalculatorExtensionMetadata(
+		Title = "Fuel Economy",
+		Description = "Calculate fuel economy",
+		ImageUri = "Images/Fuel.png")]
+	public class FuelCalculatorExtension : ICalculatorExtension
+	{
+		private object _control;
+		public object UI => _control ?? (_control = new FuelEconomyUC());
 
-    }
+	}
 }

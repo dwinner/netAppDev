@@ -1,20 +1,19 @@
 ﻿using System.Windows.Controls;
-using Wrox.ProCSharp.Composition;
+using FuelEconomyUWP;
 
 namespace FuelEconomyWPF
 {
-    /// <summary>
-    /// Interaction logic for FuelEconomyUC.xaml
-    /// </summary>
-    public partial class FuelEconomyUC : UserControl
-    {
-        public FuelEconomyUC()
-        {
-            InitializeComponent();
-            this.DataContext = this;
-        }
+	/// <summary>
+	/// Interaction logic for FuelEconomyUC.xaml
+	/// </summary>
+	public partial class FuelEconomyUC : UserControl
+	{
+		public FuelEconomyUC()
+		{
+			InitializeComponent();
+			this.DataContext = this;
+		}
 
-        public FuelEconomyViewModel ViewModel { get; } = new FuelEconomyViewModel();
-
-    }
+		public FuelEconomyViewModel ViewModel { get; } = new FuelEconomyViewModel();
+	}
 }

@@ -1,8 +1,8 @@
-﻿namespace Wrox.ProCSharp.Composition
+﻿namespace CalculatorContract
 {
-    public interface IOperation
-    {
-        string Name { get; }
-        int NumberOperands { get; }
-    }
+	public interface IOperation
+	{
+		string Name { get; }
+		int NumberOperands { get; }
+	}
 }
