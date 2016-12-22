@@ -6,7 +6,6 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:storeDatabase="clr-namespace:StoreDatabase;assembly=StoreDatabase"
         mc:Ignorable="d">
-
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -23,17 +22,16 @@
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
-            <TextBlock Grid.Column="0" Margin="7" Text="Product ID:"/>
-            <TextBox Name="txtId" Margin="5" Grid.Column="1" Text="356"/>
-            <Button Click="OnGetProduct" Margin="5" Padding="2" Grid.Column="2" Content="Get Product"/>
+            <TextBlock Grid.Column="0" Margin="7" Text="Product ID:" />
+            <TextBox Name="IdTextBox" Margin="5" Grid.Column="1" Text="356" />
+            <Button Click="OnGetProduct" Margin="5" Padding="2" Grid.Column="2" Content="Get Product" />
         </Grid>
 
         <Border Grid.Row="1" Padding="7" Margin="7" Background="LightSteelBlue">
-            <Grid Name="gridProductDetails" d:DataContext="{d:DesignInstance storeDatabase:Product}">
-
+            <Grid Name="ProductDetailsGrid" d:DataContext="{d:DesignInstance storeDatabase:Product}">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition />
+                    <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
@@ -44,13 +42,13 @@
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
 
-                <TextBlock Grid.Row="0" Grid.Column="0" Margin="7" Text="Model Number:"/>
-                <TextBox Margin="5" Grid.Row="0" Grid.Column="1" Text="{Binding Path=ModelNumber}"/>
+                <TextBlock Grid.Row="0" Grid.Column="0" Margin="7" Text="Model Number:" />
+                <TextBox Margin="5" Grid.Row="0" Grid.Column="1" Text="{Binding Path=ModelNumber}" />
 
-                <TextBlock Margin="7" Grid.Row="1" Grid.Column="0" Text="Model Name:"/>
+                <TextBlock Margin="7" Grid.Row="1" Grid.Column="0" Text="Model Name:" />
                 <TextBox Margin="5" Grid.Row="1" Grid.Column="1" Text="{Binding Path=ModelName}" />
 
-                <TextBlock Margin="7" Grid.Row="2" Grid.Column="0" Text="Unit Cost:"/>
+                <TextBlock Margin="7" Grid.Row="2" Grid.Column="0" Text="Unit Cost:" />
                 <TextBox Margin="5" Grid.Row="2" Grid.Column="1">
                     <TextBox.Text>
                         <Binding Path="UnitCost">
@@ -61,14 +59,14 @@
                     </TextBox.Text>
                 </TextBox>
 
-                <TextBlock Margin="7,7,7,0" Grid.Row="3" Grid.Column="0" Text="Description:"/>
+                <TextBlock Margin="7,7,7,0" Grid.Row="3" Grid.Column="0" Text="Description:" />
                 <TextBox Margin="7" Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2"
                          VerticalScrollBarVisibility="Visible" TextWrapping="Wrap" Text="{Binding Path=Description}" />
 
                 <StackPanel Orientation="Horizontal" Margin="3" Grid.Row="5" Grid.ColumnSpan="2" Grid.Column="0"
                             HorizontalAlignment="Right">
                     <Button Click="OnUpdateProduct" IsDefault="True"
-                            Margin="2" Padding="10,2,10,2" Content="Update"/>
+                            Margin="2" Padding="10,2,10,2" Content="Update" />
                 </StackPanel>
             </Grid>
         </Border>
