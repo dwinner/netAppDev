@@ -29,8 +29,9 @@ namespace i18nViaMarkupExt
       {
          var binding = new Binding("Value")
          {
-            Source = new TranslationData(Key)
+            Source = new TranslationData(Key)            
          };
+
          return binding.ProvideValue(serviceProvider);
       }
    }
