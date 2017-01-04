@@ -1,29 +1,22 @@
-using StoreDatabase;
 using System.Collections.Generic;
 using System.Windows;
+using StoreDatabase;
 
 namespace DataBinding
 {
-   /// <summary>
-   /// Interaction logic for DataTemplateList.xaml
-   /// </summary>
+	public partial class DataTemplateList
+	{
+		private ICollection<Product> _products;
 
-   public partial class DataTemplateList : System.Windows.Window
-   {
+		public DataTemplateList()
+		{
+			InitializeComponent();
+		}
 
-      public DataTemplateList()
-      {
-         InitializeComponent();
-      }
-
-      private ICollection<Product> products;
-
-      private void cmdGetProducts_Click(object sender, RoutedEventArgs e)
-      {
-         products = App.StoreDb.GetProducts();
-         lstProducts.ItemsSource = products;
-
-      }
-
-   }
+		private void OnGetProducts(object sender, RoutedEventArgs e)
+		{
+			_products = App.StoreDb.GetProducts();
+			ProductListBox.ItemsSource = _products;
+		}
+	}
 }

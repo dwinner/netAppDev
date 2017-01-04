@@ -10,14 +10,14 @@
             <Button Content="RadioButtonList"/>
             <Button Content="CheckBoxList"/>
             <Button Content="VariedStyles"/>
-            <Button>DataTemplateList</Button>
-            <Button>DataTemplateByType</Button>
-            <Button>DataTemplateImages</Button>
-            <Button>DataTemplateControls</Button>
-            <Button>VariedTemplates</Button>
-            <Button>ExpandingDataTemplate</Button>
-            <Button>WrappedList</Button>
-            <Button>ComboBoxSelectionBox</Button>
+            <Button Content="DataTemplateList"/>
+            <Button Content="DataTemplateByType"/>
+            <Button Content="DataTemplateImages"/>
+            <Button Content="DataTemplateControls"/>
+            <Button Content="VariedTemplates"/>
+            <Button Content="ExpandingDataTemplate"/>
+            <Button Content="WrappedList"/>
+            <Button Content="ComboBoxSelectionBox"/>
         </StackPanel>
     </Grid>
 </Window>

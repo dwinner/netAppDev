@@ -1,37 +1,31 @@
-using StoreDatabase;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows;
-using System.Windows.Controls;
+using StoreDatabase;
 
 namespace DataBinding
 {
-   /// <summary>
-   /// Interaction logic for DataTemplateList.xaml
-   /// </summary>
+	public partial class VariedTemplates
+	{
+		private ICollection<Product> _products;
 
-   public partial class VariedTemplates : System.Windows.Window
-   {
+		public VariedTemplates()
+		{
+			InitializeComponent();
+		}
 
-      public VariedTemplates()
-      {
-         InitializeComponent();
-      }
+		private void OnGetProducts(object sender, RoutedEventArgs e)
+		{
+			_products = App.StoreDb.GetProducts();
+			ProductsListBox.ItemsSource = _products;
+		}
 
-      private ICollection<Product> products;
-
-      private void cmdGetProducts_Click(object sender, RoutedEventArgs e)
-      {
-         products = App.StoreDb.GetProducts();
-         lstProducts.ItemsSource = products;
-      }
-
-      private void cmdApplyChange_Click(object sender, RoutedEventArgs e)
-      {
-         ((ObservableCollection<Product>)products)[1].CategoryName = "Travel";
-         DataTemplateSelector selector = lstProducts.ItemTemplateSelector;
-         lstProducts.ItemTemplateSelector = null;
-         lstProducts.ItemTemplateSelector = selector;
-      }
-   }
+		private void OnApplyChange(object sender, RoutedEventArgs e)
+		{
+			((ObservableCollection<Product>) _products)[1].CategoryName = "Travel";
+			var selector = ProductsListBox.ItemTemplateSelector;
+			ProductsListBox.ItemTemplateSelector = null;
+			ProductsListBox.ItemTemplateSelector = selector;
+		}
+	}
 }

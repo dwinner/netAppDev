@@ -4,30 +4,25 @@ using System.Windows.Controls;
 
 namespace DataBinding
 {
-   /// <summary>
-   /// Interaction logic for DataTemplateControls.xaml
-   /// </summary>
+	public partial class DataTemplateControls
+	{
+		public DataTemplateControls()
+		{
+			InitializeComponent();
+			CategoryListBox.ItemsSource = App.StoreDbDataSet.GetCategoriesAndProducts().Tables["Categories"].DefaultView;
+		}
 
-   public partial class DataTemplateControls : System.Windows.Window
-   {
+		private void OnView(object sender, RoutedEventArgs e)
+		{
+			var button = (Button) sender;
+			var row = (DataRowView) button.Tag;
+			CategoryListBox.SelectedItem = row;
 
-      public DataTemplateControls()
-      {
-         InitializeComponent();
-         lstCategories.ItemsSource = App.StoreDbDataSet.GetCategoriesAndProducts().Tables["Categories"].DefaultView;
-      }
+			// Alternate selection approach.
+			//ListBoxItem item = (ListBoxItem)lstCategories.ItemContainerGenerator.ContainerFromItem(row);
+			//item.IsSelected = true;
 
-      private void cmdView_Clicked(object sender, RoutedEventArgs e)
-      {
-         Button cmd = (Button)sender;
-         DataRowView row = (DataRowView)cmd.Tag;
-         lstCategories.SelectedItem = row;
-
-         // Alternate selection approach.
-         //ListBoxItem item = (ListBoxItem)lstCategories.ItemContainerGenerator.ContainerFromItem(row);
-         //item.IsSelected = true;
-
-         MessageBox.Show("You chose category #" + row["CategoryID"].ToString() + ": " + (string)row["CategoryName"]);
-      }
-   }
+			MessageBox.Show($"You chose category #{row["CategoryID"]}: {(string) row["CategoryName"]}");
+		}
+	}
 }
