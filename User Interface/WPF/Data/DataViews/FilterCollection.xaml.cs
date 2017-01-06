@@ -1,133 +1,91 @@
-using System;
 using System.Collections.Generic;
-using System.Text;
+using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
-using System.ComponentModel;
 using StoreDatabase;
 
 namespace DataBinding
 {
-    /// <summary>
-    /// Interaction logic for FilterCollection.xaml
-    /// </summary>
+	public partial class FilterCollection
+	{
+		private ProductByPriceFilterer _filterer;
+		private ICollection<Product> _products;
 
-    public partial class FilterCollection : System.Windows.Window
-    {
+		public FilterCollection()
+		{
+			InitializeComponent();
+		}
 
-        public FilterCollection()
-        {
-            InitializeComponent();
-        }
+		private void OnGetProducts(object sender, RoutedEventArgs e)
+		{
+			_products = App.StoreDb.GetProducts();
+			ProductListBox.ItemsSource = _products;
 
+			var productsView = CollectionViewSource.GetDefaultView(ProductListBox.ItemsSource);
+			productsView.SortDescriptions.Add(new SortDescription(nameof(Product.ModelName), ListSortDirection.Ascending));
 
-        private ICollection<Product> products;
+			var listCollectionView = CollectionViewSource.GetDefaultView(ProductListBox.ItemsSource) as ListCollectionView;			
+			// Now if you edit and reduce the price (below the filter condition) the record will disappear automatically.
+			if (listCollectionView != null)
+			{
+				listCollectionView.IsLiveFiltering = true;
+				listCollectionView.LiveFilteringProperties.Add(nameof(Product.UnitCost));
+			}
 
-        private void cmdGetProducts_Click(object sender, RoutedEventArgs e)
-        {
-            products = App.StoreDb.GetProducts();
-            lstProducts.ItemsSource = products;
+			//view.GroupDescriptions.Add(new PropertyGroupDescription("CategoryName"));
+			//ListCollectionView view = (ListCollectionView)CollectionViewSource.GetDefaultView(lstProducts.ItemsSource);
+			//view.CustomSort = new SortByModelNameLength();
+		}
 
-            ICollectionView view = CollectionViewSource.GetDefaultView(lstProducts.ItemsSource);
-            
-            view.SortDescriptions.Add(new SortDescription("ModelName", ListSortDirection.Ascending));
+		private void OnApplyFilter(object sender, RoutedEventArgs e)
+		{
+			decimal minimumPrice;
+			if (decimal.TryParse(MinPriceTextBox.Text, out minimumPrice))
+			{
+				var listCollectionView = CollectionViewSource.GetDefaultView(ProductListBox.ItemsSource) as ListCollectionView;
+				if (listCollectionView != null)
+				{
+					_filterer = new ProductByPriceFilterer(minimumPrice);
+					listCollectionView.Filter = _filterer.FilterItem;
+					listCollectionView.Refresh();
+				}
+			}
+		}
 
-            ListCollectionView lcview = CollectionViewSource.GetDefaultView(lstProducts.ItemsSource) as ListCollectionView;
-            // Now if you edit and reduce the price (below the filter condition) the record will disappear automatically.
-            lcview.IsLiveFiltering = true;
-            lcview.LiveFilteringProperties.Add("UnitCost");
+		private void OnRemoveFilter(object sender, RoutedEventArgs e)
+		{
+			var listCollectionView = CollectionViewSource.GetDefaultView(ProductListBox.ItemsSource) as ListCollectionView;
+			if (listCollectionView != null)
+			{
+				listCollectionView.Filter = null;
+			}
+		}
 
-            //view.GroupDescriptions.Add(new PropertyGroupDescription("CategoryName"));
+		private void OnMinPriceChanged(object sender, TextChangedEventArgs e)
+		{
+			var view = CollectionViewSource.GetDefaultView(ProductListBox.ItemsSource) as ListCollectionView;
+			if (view != null)
+			{
+				decimal minimumPrice;
+				if (decimal.TryParse(MinPriceTextBox.Text, out minimumPrice) && (_filterer != null))
+				{
+					_filterer.MinimumPrice = minimumPrice;
+					//view.Refresh();
+				}
+			}
+		}
+	}
 
-            //ListCollectionView view = (ListCollectionView)CollectionViewSource.GetDefaultView(lstProducts.ItemsSource);
-            //view.CustomSort = new SortByModelNameLength();
-
-        }
-
-        private void cmdFilter_Click(object sender, RoutedEventArgs e)
-        {
-            decimal minimumPrice;
-            if (Decimal.TryParse(txtMinPrice.Text, out minimumPrice))
-            {
-                ListCollectionView view = CollectionViewSource.GetDefaultView(lstProducts.ItemsSource) as ListCollectionView;
-
-                if (view != null)
-                {
-                    filterer = new ProductByPriceFilterer(minimumPrice);
-                    view.Filter = new Predicate<object>(filterer.FilterItem);
-                    view.Refresh();
-                }
-            }
-        }               
-
-        private void cmdRemoveFilter_Click(object sender, RoutedEventArgs e)
-        {
-            ListCollectionView view = CollectionViewSource.GetDefaultView(lstProducts.ItemsSource) as ListCollectionView;
-            if (view != null)
-            {
-                view.Filter = null;
-            }
-        }
-
-        private ProductByPriceFilterer filterer;
-
-        private void txtMinPrice_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            ListCollectionView view = CollectionViewSource.GetDefaultView(lstProducts.ItemsSource) as ListCollectionView;
-            if (view != null)
-            {                
-                decimal minimumPrice;
-                if (Decimal.TryParse(txtMinPrice.Text, out minimumPrice) && (filterer != null))
-                {
-                    filterer.MinimumPrice = minimumPrice;
-                    //view.Refresh();
-                }
-            }
-        }
-    }
-
-    public class ProductByPriceFilterer
-    {
-        public decimal MinimumPrice
-        {
-            get;
-            set;
-        }
-
-        public ProductByPriceFilterer(decimal minimumPrice)
-        {
-            MinimumPrice = minimumPrice;
-        }
-
-        public bool FilterItem(Object item)
-        {
-            Product product = item as Product;
-            if (product != null)
-            {
-                if (product.UnitCost > MinimumPrice)
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
-    }
-
-    public class SortByModelNameLength : System.Collections.IComparer
-    {
-        public int Compare(object x, object y)
-        {
-            Product productX = (Product)x;
-            Product productY = (Product)y;
-            return productX.ModelName.Length.CompareTo(productY.ModelName.Length);
-        }
-    }
-
+/*
+	public class SortByModelNameLength : IComparer
+	{
+		public int Compare(object x, object y)
+		{
+			var productX = (Product) x;
+			var productY = (Product) y;
+			return productX.ModelName.Length.CompareTo(productY.ModelName.Length);
+		}
+	}
+*/
 }
-

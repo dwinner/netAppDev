@@ -4,11 +4,11 @@
         Title="Menu" Height="382.6" Width="246.4">
     <Grid>
         <StackPanel Margin="5" Button.Click="ButtonClick">
-            <Button>NavigateCollection</Button>
-            <Button>FilterCollection</Button>
-            <Button>FilterDataSet</Button>
-            <Button>GroupList</Button>
-            <Button>GroupInRanges</Button>
+            <Button Content="NavigateCollection" />
+            <Button Content="FilterCollection" />
+            <Button Content="FilterDataSet" />
+            <Button Content="GroupList" />
+            <Button Content="GroupInRanges" />
         </StackPanel>
     </Grid>
 </Window>

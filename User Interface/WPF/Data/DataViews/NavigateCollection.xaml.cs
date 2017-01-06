@@ -1,61 +1,34 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
-using System.ComponentModel;
-using StoreDatabase;
 
 namespace DataBinding
-{
-    /// <summary>
-    /// Interaction logic for NavigateCollection.xaml
-    /// </summary>
+{	
+	public partial class NavigateCollection
+	{
+		private readonly ListCollectionView _view;
 
-    public partial class NavigateCollection : System.Windows.Window
-    {
-        private ICollection<Product> products;
-        private ListCollectionView view;
+		public NavigateCollection()
+		{
+			InitializeComponent();
+			var products = App.StoreDb.GetProducts();
+			DataContext = products;
+			_view = (ListCollectionView) CollectionViewSource.GetDefaultView(DataContext);
+			_view.CurrentChanged += OnCurrentChanged;
+			ProductComboBox.ItemsSource = products;
+		}
 
-        public NavigateCollection()
-        {
-            InitializeComponent();
-            
-            products = App.StoreDb.GetProducts();
+		private void OnNext(object sender, RoutedEventArgs e) => _view.MoveCurrentToNext();
 
-            this.DataContext = products;
-            view = (ListCollectionView)CollectionViewSource.GetDefaultView(this.DataContext);
-            view.CurrentChanged += new EventHandler(view_CurrentChanged);
+		private void OnPrevious(object sender, RoutedEventArgs e) => _view.MoveCurrentToPrevious();
 
-            lstProducts.ItemsSource = products;            
-        }
+		private void OnSelectionChanged(object sender, RoutedEventArgs e) => _view.MoveCurrentTo(ProductComboBox.SelectedItem);
 
-        private void cmdNext_Click(object sender, RoutedEventArgs e)
-        {    
-            view.MoveCurrentToNext();          
-        }
-        private void cmdPrev_Click(object sender, RoutedEventArgs e)
-        {
-            view.MoveCurrentToPrevious();
-        }
-
-        private void lstProducts_SelectionChanged(object sender, RoutedEventArgs e)
-        {
-           // view.MoveCurrentTo(lstProducts.SelectedItem);
-        }
-
-        private void view_CurrentChanged(object sender, EventArgs e)
-        {
-            lblPosition.Text = "Record " + (view.CurrentPosition + 1).ToString() +
-                " of " + view.Count.ToString();
-            cmdPrev.IsEnabled = view.CurrentPosition > 0;
-            cmdNext.IsEnabled = view.CurrentPosition < view.Count - 1; 
-        }
-    }
+		private void OnCurrentChanged(object sender, EventArgs e)
+		{
+			PositionTextBlock.Text = $"Record {_view.CurrentPosition + 1} of {_view.Count}";
+			PrevButton.IsEnabled = _view.CurrentPosition > 0;
+			NextButton.IsEnabled = _view.CurrentPosition < _view.Count - 1;
+		}
+	}
 }
