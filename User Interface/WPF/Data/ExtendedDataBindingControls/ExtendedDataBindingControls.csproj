@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{5A23CBD0-ED5F-4838-81FA-F3E582EFAF98}</ProjectGuid>
+    <ProjectGuid>{45D3BC63-A28B-46F6-BDB2-639E811B7B89}</ProjectGuid>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <RootNamespace>DataBinding</RootNamespace>
     <AssemblyName>DataBinding</AssemblyName>
@@ -227,7 +227,7 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\StoreDatabase\StoreDatabase.csproj">
+    <ProjectReference Include="..\StoreDatabaseDbBased\StoreDatabase.csproj">
       <Project>{E0BEF018-8722-4B11-ACBA-5C6C5E7102D6}</Project>
       <Name>StoreDatabase</Name>
     </ProjectReference>
