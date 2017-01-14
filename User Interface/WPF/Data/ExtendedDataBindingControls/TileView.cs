@@ -13,7 +13,7 @@ namespace DataBinding
 
       public Brush SelectedBackground { get; set; } = Brushes.Transparent;
 
-      public Brush SelectedBorderBrush { get; set; } = Brushes.Black;
+      public Brush SelectedBorderBrush { get; } = Brushes.Black;
 
       protected override object DefaultStyleKey
          => new ComponentResourceKey(GetType(), TileViewResourceId);
