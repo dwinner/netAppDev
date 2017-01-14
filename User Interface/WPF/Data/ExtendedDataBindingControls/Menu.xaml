@@ -4,9 +4,9 @@
         Title="Menu" Height="385" Width="252">
     <Grid>
         <StackPanel Button.Click="ButtonClick">
-            <Button>BasicListView</Button>
-            <Button>AdvancedListView</Button>
-            <Button>CustomListViewTest</Button>
+            <Button Content="BasicListView"/>
+            <Button Content="AdvancedListView"/>
+            <Button Content="CustomListViewTest"/>
             <Button>BoundTreeView</Button>
             <Button>BoundTreeViewDataSet</Button>
             <Button>DirectoryTreeView</Button>

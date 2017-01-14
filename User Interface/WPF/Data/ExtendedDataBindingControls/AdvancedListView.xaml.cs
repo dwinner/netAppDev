@@ -2,29 +2,16 @@ using System.Windows;
 
 namespace DataBinding
 {
-   /// <summary>
-   /// Interaction logic for AdvancedListView.xaml
-   /// </summary>
-
-   public partial class AdvancedListView : System.Windows.Window
+   public partial class AdvancedListView
    {
-
       public AdvancedListView()
       {
          InitializeComponent();
-
-         lstProducts.ItemsSource = App.StoreDb.GetProducts();
+         ProductListView.ItemsSource = App.StoreDb.GetProducts();
       }
 
-
-
-      private void gridViewColumn_Click(object sender, RoutedEventArgs e)
+      private void OnGridViewColumnClick(object sender, RoutedEventArgs e)
       {
-
       }
-
-
-
-
    }
 }

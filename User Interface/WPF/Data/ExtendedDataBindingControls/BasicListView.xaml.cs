@@ -1,19 +1,11 @@
 namespace DataBinding
 {
-   /// <summary>
-   /// Interaction logic for BasicListView.xaml
-   /// </summary>
-
-   public partial class BasicListView : System.Windows.Window
+   public partial class BasicListView
    {
-
-
       public BasicListView()
       {
          InitializeComponent();
-
-         lstProducts.ItemsSource = App.StoreDb.GetProducts();
+         ProductListView.ItemsSource = App.StoreDb.GetProducts();
       }
-
    }
 }

@@ -2,23 +2,18 @@ using System.Windows.Controls;
 
 namespace DataBinding
 {
-   /// <summary>
-   /// Interaction logic for CustomListViewTest.xaml
-   /// </summary>
-
-   public partial class CustomListViewTest : System.Windows.Window
+   public partial class CustomListViewTest
    {
       public CustomListViewTest()
       {
          InitializeComponent();
-
-         lstProducts.ItemsSource = App.StoreDb.GetProducts();
-
+         ProductListView.ItemsSource = App.StoreDb.GetProducts();
       }
-      private void lstView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+
+      private void OnViewChanged(object sender, SelectionChangedEventArgs e)
       {
-         ComboBoxItem selectedItem = (ComboBoxItem)lstView.SelectedItem;
-         lstProducts.View = (ViewBase)this.FindResource(selectedItem.Content);
+         var selectedItem = (ComboBoxItem) ViewComboBox.SelectedItem;
+         ProductListView.View = (ViewBase) FindResource(selectedItem.Content);
       }
    }
 }

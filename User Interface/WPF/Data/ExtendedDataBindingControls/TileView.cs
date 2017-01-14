@@ -4,37 +4,21 @@ using System.Windows.Media;
 
 namespace DataBinding
 {
-   public class TileView : ViewBase
+   public sealed class TileView : ViewBase
    {
-      private DataTemplate itemTemplate;
-      public DataTemplate ItemTemplate
-      {
-         get { return itemTemplate; }
-         set { itemTemplate = value; }
-      }
+      private const string TileViewResourceId = "TileView";
+      private const string TileViewItemResourceId = "TileViewItem";
 
-      private Brush selectedBackground = Brushes.Transparent;
-      public Brush SelectedBackground
-      {
-         get { return selectedBackground; }
-         set { selectedBackground = value; }
-      }
+      public DataTemplate ItemTemplate { get; set; }
 
-      private Brush selectedBorderBrush = Brushes.Black;
-      public Brush SelectedBorderBrush
-      {
-         get { return selectedBorderBrush; }
-         set { selectedBorderBrush = value; }
-      }
+      public Brush SelectedBackground { get; set; } = Brushes.Transparent;
+
+      public Brush SelectedBorderBrush { get; set; } = Brushes.Black;
 
       protected override object DefaultStyleKey
-      {
-         get { return new ComponentResourceKey(GetType(), "TileView"); }
-      }
+         => new ComponentResourceKey(GetType(), TileViewResourceId);
 
       protected override object ItemContainerDefaultStyleKey
-      {
-         get { return new ComponentResourceKey(GetType(), "TileViewItem"); }
-      }
+         => new ComponentResourceKey(GetType(), TileViewItemResourceId);
    }
 }
