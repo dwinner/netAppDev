@@ -1,23 +1,12 @@
-﻿using System.Windows;
-
-namespace DataBinding
+﻿namespace DataBinding
 {
-   /// <summary>
-   /// Interaction logic for DataGridEditing.xaml
-   /// </summary>
-   public partial class DataGridEditing : Window
+   public partial class DataGridEditing
    {
       public DataGridEditing()
       {
-
          InitializeComponent();
-         categoryColumn.ItemsSource = App.StoreDb.GetCategories();
-         gridProducts.ItemsSource = App.StoreDb.GetProducts();
-
+         CategoryColumn.ItemsSource = App.StoreDb.GetCategories();
+         ProductDataGrid.ItemsSource = App.StoreDb.GetProducts();
       }
-
-
-
-
    }
 }

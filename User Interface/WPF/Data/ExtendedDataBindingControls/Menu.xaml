@@ -10,10 +10,10 @@
             <Button Content="BoundTreeView" />
             <Button Content="BoundTreeViewDataSet" />
             <Button Content="DirectoryTreeView" />
-            <Button>DataGridTest</Button>
-            <Button>DataGridRowDetails</Button>
-            <Button>DataGridEditing</Button>
-            <Button>DataGridGrouping</Button>
+            <Button Content="DataGridTest" />
+            <Button Content="DataGridRowDetails" />
+            <Button Content="DataGridEditing" />
+            <Button Content="DataGridGrouping" />
         </StackPanel>
     </Grid>
 </Window>

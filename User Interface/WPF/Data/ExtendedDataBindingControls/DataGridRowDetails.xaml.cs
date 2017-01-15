@@ -1,17 +1,11 @@
-﻿using System.Windows;
-
-namespace DataBinding
+﻿namespace DataBinding
 {
-   /// <summary>
-   /// Interaction logic for DataGridRowDetails.xaml
-   /// </summary>
-   public partial class DataGridRowDetails : Window
+   public partial class DataGridRowDetails
    {
       public DataGridRowDetails()
       {
          InitializeComponent();
-
-         gridProducts.ItemsSource = App.StoreDb.GetProducts(); ;
+         ProductDataGrid.ItemsSource = App.StoreDb.GetProducts();         
       }
    }
 }
