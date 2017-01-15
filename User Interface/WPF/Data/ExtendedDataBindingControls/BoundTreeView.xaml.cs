@@ -1,18 +1,11 @@
 namespace DataBinding
 {
-   /// <summary>
-   /// Interaction logic for BoundTreeView.xaml
-   /// </summary>
-
-   public partial class BoundTreeView : System.Windows.Window
+   public partial class BoundTreeView
    {
-
       public BoundTreeView()
       {
          InitializeComponent();
-
-         treeCategories.ItemsSource = App.StoreDb.GetCategoriesAndProducts();
+         CategoryTreeView.ItemsSource = App.StoreDb.GetCategoriesAndProducts();
       }
-
    }
 }

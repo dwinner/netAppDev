@@ -1,44 +1,40 @@
 using System.IO;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 
 namespace DataBinding
-{
-   /// <summary>
-   /// Interaction logic for DirectoryTreeView.xaml
-   /// </summary>
-
-   public partial class DirectoryTreeView : System.Windows.Window
+{   
+   public partial class DirectoryTreeView
    {
-
       public DirectoryTreeView()
       {
          InitializeComponent();
-
          BuildTree();
       }
 
-
       private void BuildTree()
       {
-         treeFileSystem.Items.Clear();
-
-         foreach (DriveInfo drive in DriveInfo.GetDrives())
-         {
-            TreeViewItem item = new TreeViewItem();
-            item.Tag = drive;
-            item.Header = drive.ToString();
-
-            // This placeholder string is never shown,
-            // because the node begins in collapsed state.
-            item.Items.Add("*");
-            treeFileSystem.Items.Add(item);
-         }
+         FileSystemTreeView.Items.Clear();
+         var driveItems = DriveInfo.GetDrives().Select(BuildTreeItem).ToList();
+         driveItems.ForEach(item => FileSystemTreeView.Items.Add(item));
       }
 
-      private void item_Expanded(object sender, RoutedEventArgs e)
+      private static TreeViewItem BuildTreeItem(DriveInfo driveInfo)
       {
-         TreeViewItem item = (TreeViewItem)e.OriginalSource;
+         var item = new TreeViewItem
+         {
+            Tag = driveInfo,
+            Header = driveInfo.ToString()
+         };
+         item.Items.Add("*"); // This placeholder string is never shown, because the node begins in collapsed state.
+
+         return item;
+      }
+
+      private void OnExpanded(object sender, RoutedEventArgs e)
+      {
+         var item = (TreeViewItem) e.OriginalSource;
 
          // Perform a refresh every time item is expanded.
          // Optionally, you could perform this only the first
@@ -49,23 +45,26 @@ namespace DataBinding
          item.Items.Clear();
 
          DirectoryInfo dir;
-         if (item.Tag is DriveInfo)
+         var tag = item.Tag as DriveInfo;
+         if (tag != null)
          {
-            DriveInfo drive = (DriveInfo)item.Tag;
+            var drive = tag;
             dir = drive.RootDirectory;
          }
          else
          {
-            dir = (DirectoryInfo)item.Tag;
+            dir = (DirectoryInfo) item.Tag;
          }
 
          try
          {
-            foreach (DirectoryInfo subDir in dir.GetDirectories())
+            foreach (var subDir in dir.GetDirectories())
             {
-               TreeViewItem newItem = new TreeViewItem();
-               newItem.Tag = subDir;
-               newItem.Header = subDir.ToString();
+               var newItem = new TreeViewItem
+               {
+                  Tag = subDir,
+                  Header = subDir.ToString()
+               };
                newItem.Items.Add("*");
                item.Items.Add(newItem);
             }
@@ -77,8 +76,5 @@ namespace DataBinding
             // You can catch and then ignore this exception.
          }
       }
-
    }
-
-
 }
