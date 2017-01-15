@@ -1,6 +1,4 @@
-﻿using TranslationByMarkupExtension;
-
-namespace i18nViaMarkupExt
+﻿namespace i18nViaMarkupExt
 {
    public partial class MainWindow
    {

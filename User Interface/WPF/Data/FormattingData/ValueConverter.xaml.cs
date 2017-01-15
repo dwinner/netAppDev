@@ -7,41 +7,41 @@ using StoreDatabase;
 
 namespace DataBinding
 {
-   public partial class ValueConverter
-   {
-      Product product;
+	public partial class ValueConverter
+	{
+		private Product _product;
 
-      public ValueConverter()
-      {
-         InitializeComponent();
-      }
+		public ValueConverter()
+		{
+			InitializeComponent();
+		}
 
-      void OnGetProduct(object sender, RoutedEventArgs e)
-      {
-         int id;
-         if (int.TryParse(txtId.Text, out id))
-         {
-            try
-            {
-               product = App.StoreDb.GetProduct(id);
-               gridProductDetails.DataContext = product;
-            }
-            catch (Exception)
-            {
-               MessageBox.Show("Error contacting database.");
-            }
-         }
-         else
-         {
-            MessageBox.Show("Invalid ID.");
-         }
-      }
+		private void OnGetProduct(object sender, RoutedEventArgs e)
+		{
+			int id;
+			if (int.TryParse(IdTextBox.Text, out id))
+			{
+				try
+				{
+					_product = App.StoreDb.GetProduct(id);
+					ProductDetailsGrid.DataContext = _product;
+				}
+				catch (Exception)
+				{
+					MessageBox.Show("Error contacting database.");
+				}
+			}
+			else
+			{
+				MessageBox.Show("Invalid ID.");
+			}
+		}
 
-      void OnUpdateProduct(object sender, RoutedEventArgs e)
-      {
-         // Make sure update has taken place.
-         FocusManager.SetFocusedElement(this, (Button) sender);
-         MessageBox.Show(product.UnitCost.ToString(CultureInfo.InvariantCulture));
-      }
-   }
+		private void OnUpdateProduct(object sender, RoutedEventArgs e)
+		{
+			// Make sure update has taken place.
+			FocusManager.SetFocusedElement(this, (Button) sender);
+			MessageBox.Show(_product.UnitCost.ToString(CultureInfo.InvariantCulture));
+		}
+	}
 }

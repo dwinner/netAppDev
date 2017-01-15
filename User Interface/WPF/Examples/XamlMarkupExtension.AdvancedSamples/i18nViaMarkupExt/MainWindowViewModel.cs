@@ -13,6 +13,6 @@ namespace i18nViaMarkupExt
             (s, e) => TranslationManager.Instance.CurrentLanguage = (CultureInfo) Languages.CurrentItem;
       }
 
-      public ICollectionView Languages { get; private set; }
+      public ICollectionView Languages { get; set; }
    }
 }

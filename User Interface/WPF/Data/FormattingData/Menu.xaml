@@ -4,25 +4,20 @@
         Title="Menu" Height="407" Width="238">
     <Grid>
         <StackPanel Margin="5" Button.Click="ButtonClick">
-            <Button>ValueConverter</Button>
-            <Button>MoreValueConverters</Button><!-- NOTE: stopped here -->
-            <Button>ListStyles</Button>
-
-            <Button>RadioButtonList</Button>
-            <Button>CheckBoxList</Button>
-            <Button>VariedStyles</Button>
-
-            <Button>DataTemplateList</Button>
-            <Button>DataTemplateByType</Button>
-            <Button>DataTemplateImages</Button>
-            <Button>DataTemplateControls</Button>
-            <Button>VariedTemplates</Button>
-            <Button>ExpandingDataTemplate</Button>
-            <Button>WrappedList</Button>
-
-            <Button>ComboBoxSelectionBox</Button>
-
+            <Button Content="ValueConverter"/>
+            <Button Content="MoreValueConverters"/>
+            <Button Content="ListStyles"/>
+            <Button Content="RadioButtonList"/>
+            <Button Content="CheckBoxList"/>
+            <Button Content="VariedStyles"/>
+            <Button Content="DataTemplateList"/>
+            <Button Content="DataTemplateByType"/>
+            <Button Content="DataTemplateImages"/>
+            <Button Content="DataTemplateControls"/>
+            <Button Content="VariedTemplates"/>
+            <Button Content="ExpandingDataTemplate"/>
+            <Button Content="WrappedList"/>
+            <Button Content="ComboBoxSelectionBox"/>
         </StackPanel>
-
     </Grid>
 </Window>

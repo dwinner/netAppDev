@@ -4,19 +4,19 @@ using StoreDatabase;
 
 namespace DataBinding
 {
-   public partial class MoreValueConverters
-   {
-      ICollection<Product> products;
+	public partial class MoreValueConverters
+	{
+		private ICollection<Product> _products;
 
-      public MoreValueConverters()
-      {
-         InitializeComponent();
-      }
+		public MoreValueConverters()
+		{
+			InitializeComponent();
+		}
 
-      void OnGetProducts(object sender, RoutedEventArgs e)
-      {
-         products = App.StoreDb.GetProducts();
-         lstProducts.ItemsSource = products;
-      }
-   }
+		private void OnGetProducts(object sender, RoutedEventArgs e)
+		{
+			_products = App.StoreDb.GetProducts();
+			ProductsListBox.ItemsSource = _products;
+		}
+	}
 }

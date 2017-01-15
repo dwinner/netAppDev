@@ -1,0 +1,19 @@
+﻿<Window x:Class="DataBinding.Menu"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Menu" Height="385" Width="252">
+    <Grid>
+        <StackPanel Button.Click="ButtonClick">
+            <Button Content="BasicListView" />
+            <Button Content="AdvancedListView" />
+            <Button Content="CustomListViewTest" />
+            <Button Content="BoundTreeView" />
+            <Button Content="BoundTreeViewDataSet" />
+            <Button Content="DirectoryTreeView" />
+            <Button Content="DataGridTest" />
+            <Button Content="DataGridRowDetails" />
+            <Button Content="DataGridEditing" />
+            <Button Content="DataGridGrouping" />
+        </StackPanel>
+    </Grid>
+</Window>
