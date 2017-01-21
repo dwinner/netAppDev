@@ -4,51 +4,49 @@ using System.Windows.Shapes;
 
 namespace Windows
 {
-   /// <summary>
-   /// Interaction logic for OfficeWindow.xaml
-   /// </summary>
-
-   public partial class ModernWindow : System.Windows.Window
+   public partial class ModernWindow
    {
+      private bool _isWiden;
 
       public ModernWindow()
       {
          InitializeComponent();
       }
 
-      bool isWiden = false;
-      private void window_initiateWiden(object sender, System.Windows.Input.MouseEventArgs e)
+      private void OnInitiateWiden(object sender, MouseEventArgs e)
       {
-         isWiden = true;
+         _isWiden = true;
       }
-      private void window_endWiden(object sender, System.Windows.Input.MouseEventArgs e)
+
+      private void OnEndWiden(object sender, MouseEventArgs e)
       {
-         isWiden = false;
+         _isWiden = false;
 
          // Make sure capture is released.
-         Rectangle rect = (Rectangle)sender;
+         var rect = (Rectangle) sender;
          rect.ReleaseMouseCapture();
       }
 
-      private void window_Widen(object sender, System.Windows.Input.MouseEventArgs e)
+      private void OnWiden(object sender, MouseEventArgs e)
       {
-         Rectangle rect = (Rectangle)sender;
-         if (isWiden)
+         var rect = (Rectangle) sender;
+         if (_isWiden)
          {
             rect.CaptureMouse();
-            double newWidth = e.GetPosition(this).X + 5;
-            if (newWidth > 0) this.Width = newWidth;
+            var newWidth = e.GetPosition(this).X + 5;
+            if (newWidth > 0)
+               Width = newWidth;
          }
       }
 
-      private void titleBar_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+      private void TitleBar_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
       {
-         this.DragMove();
+         DragMove();
       }
 
-      private void cmdClose_Click(object sender, RoutedEventArgs e)
+      private void OnClose(object sender, RoutedEventArgs e)
       {
-         this.Close();
+         Close();
       }
    }
 }

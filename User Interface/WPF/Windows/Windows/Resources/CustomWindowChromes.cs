@@ -3,77 +3,84 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Shapes;
 
-namespace ControlTemplates
+namespace Windows.Resources
 {
-   public partial class CustomWindowChrome : ResourceDictionary
+   public partial class CustomWindowChrome
    {
+      private bool _isResizing;
+      private ResizeType _resizeType;
+
       public CustomWindowChrome()
       {
          InitializeComponent();
       }
 
-      private bool isResizing = false;
-      [Flags()]
-      private enum ResizeType
+      private void OnInitiateResizeWe(object sender, MouseEventArgs e)
       {
-         Width, Height
-      }
-      private ResizeType resizeType;
-
-
-      private void window_initiateResizeWE(object sender, System.Windows.Input.MouseEventArgs e)
-      {
-         isResizing = true;
-         resizeType = ResizeType.Width;
-      }
-      private void window_initiateResizeNS(object sender, System.Windows.Input.MouseEventArgs e)
-      {
-         isResizing = true;
-         resizeType = ResizeType.Height;
+         _isResizing = true;
+         _resizeType = ResizeType.Width;
       }
 
-      private void window_endResize(object sender, System.Windows.Input.MouseEventArgs e)
+      private void OnInitiateResizeNs(object sender, MouseEventArgs e)
       {
-         isResizing = false;
+         _isResizing = true;
+         _resizeType = ResizeType.Height;
+      }
+
+      private void OnEndResize(object sender, MouseEventArgs e)
+      {
+         _isResizing = false;
 
          // Make sure capture is released.
-         Rectangle rect = (Rectangle)sender;
+         var rect = (Rectangle) sender;
          rect.ReleaseMouseCapture();
       }
 
-      private void window_Resize(object sender, System.Windows.Input.MouseEventArgs e)
+      private void OnResize(object sender, MouseEventArgs e)
       {
-         Rectangle rect = (Rectangle)sender;
-         Window win = (Window)rect.TemplatedParent;
+         var rect = (Rectangle) sender;
+         var win = (Window) rect.TemplatedParent;
 
-         if (isResizing)
+         if (_isResizing)
          {
             rect.CaptureMouse();
-            if (resizeType == ResizeType.Width)
+            if (_resizeType == ResizeType.Width)
             {
-               double width = e.GetPosition(win).X + 5;
-               if (width > 0) win.Width = width;
+               var width = e.GetPosition(win).X + 5;
+               if (width > 0)
+               {
+                  win.Width = width;
+               }
             }
-            if (resizeType == ResizeType.Height)
+
+            if (_resizeType == ResizeType.Height)
             {
-               double height = e.GetPosition(win).Y + 5;
-               if (height > 0) win.Height = height;
+               var height = e.GetPosition(win).Y + 5;
+               if (height > 0)
+               {
+                  win.Height = height;
+               }
             }
          }
       }
 
-      private void titleBar_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+      private void TitleBar_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
       {
-         Window win = (Window)
-             ((FrameworkElement)sender).TemplatedParent;
+         var win = (Window) ((FrameworkElement) sender).TemplatedParent;
          win.DragMove();
       }
 
-      private void cmdClose_Click(object sender, RoutedEventArgs e)
+      private void OnClose(object sender, RoutedEventArgs e)
       {
-         Window win = (Window)
-             ((FrameworkElement)sender).TemplatedParent;
+         var win = (Window) ((FrameworkElement) sender).TemplatedParent;
          win.Close();
+      }
+
+      [Flags]
+      private enum ResizeType
+      {
+         Width,
+         Height
       }
    }
 }

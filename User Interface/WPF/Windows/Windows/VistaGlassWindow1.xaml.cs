@@ -3,34 +3,24 @@ using System.Windows.Media;
 
 namespace Windows
 {
-   /// <summary>
-   /// Interaction logic for VistaGlassWindow.xaml
-   /// </summary>
-
-   public partial class VistaGlassWindow1 : System.Windows.Window
+   public partial class VistaGlassWindow1
    {
-
       public VistaGlassWindow1()
       {
          InitializeComponent();
       }
 
-
       private void OnLoaded(object sender, RoutedEventArgs e)
       {
-
          try
          {
-            VistaGlassHelper.ExtendGlass(this, -1, -1, -1, -1);
-
+            VistaGlassHelper.ExtendGlass(this, -1, -1, -1);
          }
          // If not Vista, paint background white.
          catch //(DllNotFoundException)
          {
-            this.Background = Brushes.White;
+            Background = Brushes.White;
          }
       }
-
-
    }
 }

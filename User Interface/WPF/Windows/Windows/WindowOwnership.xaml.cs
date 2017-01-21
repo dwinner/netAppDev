@@ -2,26 +2,24 @@ using System.Windows;
 
 namespace Windows
 {
-   /// <summary>
-   /// Interaction logic for WindowOwnership.xaml
-   /// </summary>
-
-   public partial class WindowOwnership : System.Windows.Window
+   public partial class WindowOwnership
    {
-
       public WindowOwnership()
       {
          InitializeComponent();
       }
 
-      private void cmdCreate_Click(object sender, RoutedEventArgs e)
+      private void OnCreateOwnedWindow(object sender, RoutedEventArgs e)
       {
-         WindowOwnership win = new WindowOwnership();
-         win.Owner = this;
-         win.Title = "Owned Window";
-         win.Height = this.Height / 2;
-         win.Width = this.Width / 2;
-         win.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+         var win = new WindowOwnership
+         {
+            Owner = this,
+            Title = "Owned Window",
+            Height = Height / 2,
+            Width = Width / 2,
+            WindowStartupLocation = WindowStartupLocation.CenterOwner
+         };
+
          win.Show();
       }
    }

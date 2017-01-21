@@ -1,30 +1,29 @@
-using Microsoft.Win32;
+using System.Globalization;
 using System.Windows;
+using Microsoft.Win32;
 
 namespace Windows
 {
-   public class WindowPositionHelper
+   public static class WindowPositionHelper
    {
-      public static string RegPath = @"Software\MyApp\";
+      private const string RegPath = @"Software\MyApp\";
+      private const string WindowsBoundsLabel = "Bounds";
 
       public static void SaveSize(Window win)
       {
          // Create or retrieve a reference to a key where the settings
          // will be stored.
-         RegistryKey key;
-         key = Registry.CurrentUser.CreateSubKey(RegPath + win.Name);
-
-         key.SetValue("Bounds", win.RestoreBounds.ToString(System.Globalization.CultureInfo.InvariantCulture));
+         var key = Registry.CurrentUser.CreateSubKey(string.Format("{0}{1}", RegPath, win.Name));
+         if (key != null)
+            key.SetValue(WindowsBoundsLabel, win.RestoreBounds.ToString(CultureInfo.InvariantCulture));
       }
 
       public static void SetSize(Window win)
       {
-         RegistryKey key;
-         key = Registry.CurrentUser.OpenSubKey(RegPath + win.Name);
-
+         var key = Registry.CurrentUser.OpenSubKey(string.Format("{0}{1}", RegPath, win.Name));
          if (key != null)
          {
-            Rect bounds = Rect.Parse(key.GetValue("Bounds").ToString());
+            var bounds = Rect.Parse(key.GetValue(WindowsBoundsLabel).ToString());
 
             win.Top = bounds.Top;
             win.Left = bounds.Left;
@@ -37,31 +36,6 @@ namespace Windows
                win.Height = bounds.Height;
             }
          }
-      }
-   }
-
-   public class WindowPositionHelperConfig
-   {
-      public static void SaveSize(Window win)
-      {
-         Properties.Settings.Default.WindowPosition = win.RestoreBounds;
-         Properties.Settings.Default.Save();
-      }
-
-      public static void SetSize(Window win)
-      {
-         Rect rect = Properties.Settings.Default.WindowPosition;
-         win.Top = rect.Top;
-         win.Left = rect.Left;
-
-         // Only restore the size for a manually sized
-         // window.
-         if (win.SizeToContent == SizeToContent.Manual)
-         {
-            win.Width = rect.Width;
-            win.Height = rect.Height;
-         }
-
       }
    }
 }

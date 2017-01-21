@@ -3,23 +3,21 @@ using System.Windows.Input;
 
 namespace Windows
 {
-
-   public partial class TransparentWithShapes : Window
+   public partial class TransparentWithShapes
    {
-
       public TransparentWithShapes()
       {
          InitializeComponent();
       }
 
-      private void window_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+      private void OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
       {
-         this.DragMove();
+         DragMove();
       }
 
-      private void cmdClose_Click(object sender, RoutedEventArgs e)
+      private void OnClose(object sender, RoutedEventArgs e)
       {
-         this.Close();
+         Close();
       }
    }
 }

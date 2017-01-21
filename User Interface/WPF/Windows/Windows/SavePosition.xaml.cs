@@ -2,24 +2,19 @@ using System.Windows;
 
 namespace Windows
 {
-   /// <summary>
-   /// Interaction logic for SavePosition.xaml
-   /// </summary>
-
-   public partial class SavePosition : System.Windows.Window
+   public partial class SavePosition
    {
-
       public SavePosition()
       {
          InitializeComponent();
       }
 
-      private void cmdSave_Click(object sender, RoutedEventArgs e)
+      private void OnSave(object sender, RoutedEventArgs e)
       {
          WindowPositionHelper.SaveSize(this);
       }
 
-      private void cmdRestore_Click(object sender, RoutedEventArgs e)
+      private void OnRestore(object sender, RoutedEventArgs e)
       {
          WindowPositionHelper.SetSize(this);
       }
