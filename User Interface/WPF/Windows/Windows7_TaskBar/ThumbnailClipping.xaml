@@ -4,12 +4,12 @@
         Title="ThumbnailClipping" Height="300" Width="300">
     <Grid Name="LayoutRoot">
         <StackPanel>
-            <Button Click="cmdShrinkPreview_Click" Margin="10" Padding="20">Set the Preview on Button #1</Button>
-            <Button Click="cmdShrinkPreview_Click" Margin="10" Padding="20">Set the Preview on Button #2</Button>
-            <Button Click="cmdShrinkPreview_Click" Margin="10" Padding="20">Set the Preview on Button #3</Button>         
+            <Button Click="OnShrinkPreviewClick" Margin="10" Padding="20" Content="Set the Preview on Button #1" />
+            <Button Click="OnShrinkPreviewClick" Margin="10" Padding="20" Content="Set the Preview on Button #2" />
+            <Button Click="OnShrinkPreviewClick" Margin="10" Padding="20" Content="Set the Preview on Button #3" />
         </StackPanel>
     </Grid>
     <Window.TaskbarItemInfo>
-        <TaskbarItemInfo x:Name="taskBarItem"></TaskbarItemInfo>
+        <TaskbarItemInfo x:Name="TaskBarItem" />
     </Window.TaskbarItemInfo>
 </Window>

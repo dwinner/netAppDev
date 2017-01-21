@@ -3,14 +3,13 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              StartupUri="ThumbnailButtons.xaml" Startup="Application_Startup">
     <Application.Resources>
-         
     </Application.Resources>
-    
+
     <JumpList.JumpList>
         <JumpList>
-            <JumpTask Title="Notepad"  
-                   Description="Run Notepad"
-                   ApplicationPath="c:\windows\notepad.exe"      />           
+            <JumpTask Title="Notepad"
+                      Description="Run Notepad"
+                      ApplicationPath="c:\windows\notepad.exe" />
         </JumpList>
     </JumpList.JumpList>
 </Application>

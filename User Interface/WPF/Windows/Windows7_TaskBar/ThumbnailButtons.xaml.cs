@@ -1,33 +1,26 @@
 ﻿using System;
-using System.Windows;
 using System.Windows.Media.Imaging;
+using System.Windows.Shell;
 
 namespace Windows7_TaskBar
 {
-   /// <summary>
-   /// Interaction logic for ThumbnailButtons.xaml
-   /// </summary>
-   public partial class ThumbnailButtons : Window
+   public partial class ThumbnailButtons
    {
       public ThumbnailButtons()
       {
          InitializeComponent();
       }
 
-      private void cmdPlay_Click(object sender, EventArgs e)
+      private void OnPlay(object sender, EventArgs e)
       {
-         taskBarItem.ProgressState = System.Windows.Shell.TaskbarItemProgressState.Indeterminate;
-         taskBarItem.Overlay = new BitmapImage(
-new Uri("pack://application:,,,/play.png"));
+         TaskBarItem.ProgressState = TaskbarItemProgressState.Indeterminate;
+         TaskBarItem.Overlay = new BitmapImage(new Uri("pack://application:,,,/play.png"));
       }
 
-      private void cmdPause_Click(object sender, EventArgs e)
+      private void OnPause(object sender, EventArgs e)
       {
-         taskBarItem.ProgressState = System.Windows.Shell.TaskbarItemProgressState.None;
-         taskBarItem.Overlay = new BitmapImage(
-new Uri("pack://application:,,,/pause.png"));
+         TaskBarItem.ProgressState = TaskbarItemProgressState.None;
+         TaskBarItem.Overlay = new BitmapImage(new Uri("pack://application:,,,/pause.png"));
       }
-
-
    }
 }

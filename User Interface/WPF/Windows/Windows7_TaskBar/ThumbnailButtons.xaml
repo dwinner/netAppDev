@@ -4,24 +4,23 @@
         Title="ThumbnailButtons" Height="300" Width="300">
     <Grid>
         <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Orientation="Horizontal">
-            <Button Margin="5" Click="cmdPlay_Click">
-                <Image Source="play-big.png" Stretch="None" ></Image>
+            <Button Margin="5" Click="OnPlay">
+                <Image Source="play-big.png" Stretch="None" />
             </Button>
-            <Button Margin="5" Click="cmdPause_Click">
-                <Image Source="pause-big.png" Stretch="None"></Image>
+            <Button Margin="5" Click="OnPause">
+                <Image Source="pause-big.png" Stretch="None" />
             </Button>
         </StackPanel>
     </Grid>
 
     <Window.TaskbarItemInfo>
-        <TaskbarItemInfo x:Name="taskBarItem">
+        <TaskbarItemInfo x:Name="TaskBarItem">
             <TaskbarItemInfo.ThumbButtonInfos>
                 <ThumbButtonInfo ImageSource="play.png" Description="Play"
-     Click="cmdPlay_Click"></ThumbButtonInfo>
+                                 Click="OnPlay" />
                 <ThumbButtonInfo ImageSource="pause.png" Description="Pause"
-     Click="cmdPause_Click"></ThumbButtonInfo>
+                                 Click="OnPause" />
             </TaskbarItemInfo.ThumbButtonInfos>
         </TaskbarItemInfo>
     </Window.TaskbarItemInfo>
-
 </Window>
