@@ -1,11 +1,6 @@
-﻿using System.Windows;
-
-namespace JumpListApplicationTask
+﻿namespace JumpListApplicationTask
 {
-   /// <summary>
-   /// Interaction logic for Window1.xaml
-   /// </summary>
-   public partial class Window1 : Window
+   public partial class Window1
    {
       public Window1()
       {
