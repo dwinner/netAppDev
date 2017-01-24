@@ -3,24 +3,18 @@ using System.Windows.Navigation;
 
 namespace NavigationApplication
 {
-   /// <summary>
-   /// Interaction logic for EmbeddedPage.xaml
-   /// </summary>
-
-   public partial class EmbeddedPage : System.Windows.Controls.Page
+   public partial class EmbeddedPage
    {
       public EmbeddedPage()
       {
          InitializeComponent();
       }
-      private void chkOwnsJournal_Click(object sender, RoutedEventArgs e)
+
+      private void OnCheckOwnsJournal(object sender, RoutedEventArgs e)
       {
-         if (chkOwnsJournal.IsChecked == true)
-            embeddedFrame.JournalOwnership = JournalOwnership.OwnsJournal;
-         else
-            embeddedFrame.JournalOwnership = JournalOwnership.UsesParentJournal;
+         EmbeddedFrame.JournalOwnership = OwnsJournalCheckBox.IsChecked == true
+            ? JournalOwnership.OwnsJournal
+            : JournalOwnership.UsesParentJournal;
       }
-
-
    }
 }

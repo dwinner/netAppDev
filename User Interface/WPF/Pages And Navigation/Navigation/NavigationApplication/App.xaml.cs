@@ -1,24 +1,20 @@
+using System.Net;
 using System.Windows;
 using System.Windows.Navigation;
 
 namespace NavigationApplication
 {
-   /// <summary>
-   /// Interaction logic for App.xaml
-   /// </summary>
-
-   public partial class App : System.Windows.Application
+   public partial class App
    {
       private void App_NavigationFailed(object sender, NavigationFailedEventArgs e)
       {
-         if (e.Exception is System.Net.WebException)
+         if (e.Exception is WebException)
          {
-            MessageBox.Show("Website " + e.Uri.ToString() + " cannot be reached.");
+            MessageBox.Show(string.Format("Website {0} cannot be reached.", e.Uri));
 
-            // Neutralize the erorr so the application continues running.
+            // Neutralize the error so the application continues running.
             e.Handled = true;
          }
       }
-
    }
 }
