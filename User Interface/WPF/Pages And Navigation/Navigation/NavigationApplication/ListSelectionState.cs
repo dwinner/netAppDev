@@ -6,40 +6,29 @@ namespace NavigationApplication
 {
    public delegate void ReplayListChange(ListSelectionJournalEntry state);
 
-   [Serializable()]
+   [Serializable]
    public class ListSelectionJournalEntry : CustomContentState
    {
-      private List<String> sourceItems;
-      public List<String> SourceItems
-      {
-         get { return sourceItems; }
-      }
-
-      private List<String> targetItems;
-      public List<String> TargetItems
-      {
-         get { return targetItems; }
-      }
-      private string journalName;
-      private ReplayListChange replayListChange;
+      private readonly string _journalName;
+      private readonly ReplayListChange _replayListChange;
 
       public ListSelectionJournalEntry(
-          List<String> sourceItems, List<String> targetItems,
-          string journalName, ReplayListChange replayListChange)
+         List<string> sourceItems, List<string> targetItems, string journalName, ReplayListChange replayListChange)
       {
-         this.sourceItems = sourceItems;
-         this.targetItems = targetItems;
-         this.journalName = journalName;
-         this.replayListChange = replayListChange;
+         SourceItems = sourceItems;
+         TargetItems = targetItems;
+         _journalName = journalName;
+         _replayListChange = replayListChange;
       }
+
+      public List<string> SourceItems { get; private set; }
+
+      public List<string> TargetItems { get; private set; }
 
       // Need to override this property, if you want a CustomJournalEntry to appear in your back/forward stack
       public override string JournalEntryName
       {
-         get
-         {
-            return journalName;
-         }
+         get { return _journalName; }
       }
 
       // MANDATORY:  Need to override this method to restore the required state.
@@ -47,8 +36,7 @@ namespace NavigationApplication
       // a new ListBoxItem, we set the flag to false.
       public override void Replay(NavigationService navigationService, NavigationMode mode)
       {
-         this.replayListChange(this);
+         _replayListChange(this);
       }
-
    }
 }

@@ -1,123 +1,106 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Documents;
 using System.Windows.Navigation;
 
 namespace NavigationApplication
 {
-   /// <summary>
-   /// Interaction logic for PageWithMultipleJournalEntries.xaml
-   /// </summary>
-
-   public partial class PageWithMultipleJournalEntries : System.Windows.Controls.Page, IProvideCustomContentState
+   public partial class PageWithMultipleJournalEntries : IProvideCustomContentState
    {
+      private string _restoredStateName;
+
       public PageWithMultipleJournalEntries()
       {
          InitializeComponent();
       }
 
-      private void Page_Loaded(object sender, EventArgs e)
+      public CustomContentState GetContentState()
       {
-         lstSource.Items.Add("Red");
-         lstSource.Items.Add("Blue");
-         lstSource.Items.Add("Green");
-         lstSource.Items.Add("Yellow");
-         lstSource.Items.Add("Orange");
-         lstSource.Items.Add("Black");
-         lstSource.Items.Add("Pink");
-         lstSource.Items.Add("Purple");
+         return
+            GetJournalEntry(_restoredStateName != string.Empty
+               ? _restoredStateName
+               : "PageWithMultipleJournalEntries");
       }
 
-      private void cmdAdd_Click(object sender, RoutedEventArgs e)
+      private void OnPageLoaded(object sender, EventArgs e)
       {
-         if (lstSource.SelectedIndex != -1)
+         SourceListBox.Items.Add("Red");
+         SourceListBox.Items.Add("Blue");
+         SourceListBox.Items.Add("Green");
+         SourceListBox.Items.Add("Yellow");
+         SourceListBox.Items.Add("Orange");
+         SourceListBox.Items.Add("Black");
+         SourceListBox.Items.Add("Pink");
+         SourceListBox.Items.Add("Purple");
+      }
+
+      private void OnAdd(object sender, RoutedEventArgs e)
+      {
+         if (SourceListBox.SelectedIndex != -1)
          {
             // Determine the best name to use in the navigation history.
-            NavigationService nav = NavigationService.GetNavigationService(this);
-            string itemText = lstSource.SelectedItem.ToString();
-            string journalName = "Added " + itemText;
+            var navSvc = NavigationService.GetNavigationService(this);
+            var itemText = SourceListBox.SelectedItem.ToString();
+            var journalName = string.Format("Added {0}", itemText);
 
             // Update the journal (using the method shown below.)        
-            nav.AddBackEntry(GetJournalEntry(journalName));
+            if (navSvc != null)
+               navSvc.AddBackEntry(GetJournalEntry(journalName));
 
             // Now perform the change.
-            lstTarget.Items.Add(itemText);
-            lstSource.Items.Remove(itemText);
+            TargetListBox.Items.Add(itemText);
+            SourceListBox.Items.Remove(itemText);
          }
-
       }
 
-      private bool isReplaying;
       private void Replay(ListSelectionJournalEntry state)
       {
-         this.isReplaying = true;
+         SourceListBox.Items.Clear();
+         foreach (var item in state.SourceItems)
+            SourceListBox.Items.Add(item);
 
-         lstSource.Items.Clear();
-         foreach (string item in state.SourceItems)
-         { lstSource.Items.Add(item); }
+         TargetListBox.Items.Clear();
+         foreach (var item in state.TargetItems)
+            TargetListBox.Items.Add(item);
 
-         lstTarget.Items.Clear();
-         foreach (string item in state.TargetItems)
-         { lstTarget.Items.Add(item); }
-
-         restoredStateName = state.JournalEntryName;
-         this.isReplaying = false;
+         _restoredStateName = state.JournalEntryName;
       }
 
-      private string restoredStateName;
-
-      private void cmdRemove_Click(object sender, RoutedEventArgs e)
+      private void OnRemove(object sender, RoutedEventArgs e)
       {
-         if (lstTarget.SelectedIndex != -1)
-         {
-            // Determine the best name to use in the navigation history.
-            NavigationService nav = NavigationService.GetNavigationService(this);
-            string itemText = lstTarget.SelectedItem.ToString();
-            string journalName = "Removed " + itemText;
+         if (TargetListBox.SelectedIndex == -1)
+            return;
 
-            // Update the journal (using the method shown below.)        
-            nav.AddBackEntry(GetJournalEntry(journalName));
+         // Determine the best name to use in the navigation history.
+         var navSvc = NavigationService.GetNavigationService(this);
+         var itemText = TargetListBox.SelectedItem.ToString();
+         var journalName = string.Format("Removed {0}", itemText);
 
-            // Perform the change.
-            lstSource.Items.Add(itemText);
-            lstTarget.Items.Remove(itemText);
-         }
+         // Update the journal (using the method shown below.)        
+         if (navSvc != null)
+            navSvc.AddBackEntry(GetJournalEntry(journalName));
+
+         // Perform the change.
+         SourceListBox.Items.Add(itemText);
+         TargetListBox.Items.Remove(itemText);
       }
 
       private ListSelectionJournalEntry GetJournalEntry(string journalName)
       {
          // Get the state of both lists (using a helper method).
-         List<String> source = GetListState(lstSource);
-         List<String> target = GetListState(lstTarget);
+         var source = GetListState(SourceListBox);
+         var target = GetListState(TargetListBox);
 
          // Create the custom state object with this information.
          // Point the callback to the Replay method in this class.
-         return new ListSelectionJournalEntry(
-           source, target, journalName, Replay);
+         return new ListSelectionJournalEntry(source, target, journalName, Replay);
       }
 
-
-      public CustomContentState GetContentState()
+      private static List<string> GetListState(ItemsControl list)
       {
-         string journalName;
-         if (restoredStateName != "")
-            journalName = restoredStateName;
-         else
-            journalName = "PageWithMultipleJournalEntries";
-
-         return GetJournalEntry(journalName);
-      }
-
-      private List<String> GetListState(ListBox list)
-      {
-         List<string> items = new List<string>();
-         foreach (string item in list.Items)
-         {
-            items.Add(item);
-         }
-         return items;
+         return list.Items.Cast<string>().ToList();
       }
    }
 }
