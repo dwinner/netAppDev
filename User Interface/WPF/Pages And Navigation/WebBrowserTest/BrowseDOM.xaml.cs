@@ -1,63 +1,51 @@
-﻿using mshtml;
+﻿using System.Collections;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using mshtml;
 
 namespace WebBrowserTest
 {
-   /// <summary>
-   /// Interaction logic for BrowseDOM.xaml
-   /// </summary>
-   public partial class BrowseDOM : Window
+   public partial class BrowseDom
    {
-      public BrowseDOM()
+      public BrowseDom()
       {
          InitializeComponent();
       }
 
-      private void cmdAnalyzeDOM_Click(object sender, RoutedEventArgs e)
+      private void OnAnalyzeDom(object sender, RoutedEventArgs e)
       {
-         cmdBuildTree_Click(null, null);
+         OnBuildTree();
       }
 
-      private void cmdBuildTree_Click(object sender, System.EventArgs e)
+      private void OnBuildTree()
       {
          // Analyzing a page takes a nontrivial amount of time.
          // Use the hourglass cursor to warn the user.
-         this.Cursor = Cursors.Wait;
+         Cursor = Cursors.Wait;
 
-         HTMLDocument dom = (HTMLDocument)webBrowser.Document;
+         var dom = (HTMLDocument)WebBrowser.Document;
 
          // Process all the HTML elements on the page.
-         ProcessElement(dom.documentElement, treeDOM.Items);
+         ProcessElement(dom.documentElement, TreeDom.Items);
 
-         this.Cursor = null;
+         Cursor = null;
       }
 
-      private void ProcessElement(IHTMLElement parentElement,
-        ItemCollection nodes)
+      private static void ProcessElement(IHTMLElement parentElement, IList nodes)
       {
          // Scan through the collection of elements.
          foreach (IHTMLElement element in parentElement.children)
          {
             // Create a new node that shows the tag name.
-            TreeViewItem node = new TreeViewItem();
-            node.Header = "<" + element.tagName + ">";
+            var node = new TreeViewItem { Header = string.Format("<{0}>", element.tagName) };
             nodes.Add(node);
 
-            if ((element.children.length == 0) && (element.innerText != null))
-            {
-               // If this element doesn't contain any other elements, add
-               // any leftover text content as a new node.
+            if (element.children.length == 0 && element.innerText != null)
                node.Items.Add(element.innerText);
-            }
             else
-            {
-               // If this element contains other elements, process them recursively.
                ProcessElement(element, node.Items);
-            }
          }
       }
-
    }
 }

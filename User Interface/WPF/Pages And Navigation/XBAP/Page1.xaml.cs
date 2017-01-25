@@ -7,39 +7,31 @@ using System.Windows;
 
 namespace XBAP
 {
-   /// <summary>
-   /// Interaction logic for Page1.xaml
-   /// </summary>
-
-   public partial class Page1 : System.Windows.Controls.Page
+   public partial class Page1
    {
-
       public Page1()
       {
          InitializeComponent();
       }
 
-      private void cmdWrite_Click(object sender, RoutedEventArgs e)
+      private void OnWrite(object sender, RoutedEventArgs e)
       {
-         System.IO.File.WriteAllText("c:\\test.txt", "This isn't allowed.");
+         File.WriteAllText("c:\\test.txt", "This isn't allowed.");
       }
 
-      private void cmdWriteSafely_Click(object sender, RoutedEventArgs e)
+      private void OnSafelyWrite(object sender, RoutedEventArgs e)
       {
-         string content = "This is a test";
+         const string content = "This is a test";
 
          // Create a permission that represents writing to a file.
-         string filePath = "c:\\highscores.txt";
-         FileIOPermission permission = new FileIOPermission(
-           FileIOPermissionAccess.Write, filePath);
+         const string filePath = "c:\\highscores.txt";
+         var permission = new FileIOPermission(FileIOPermissionAccess.Write, filePath);
 
          // Check for this permission.
          if (CheckPermission(permission))
-         {
-            // Write to local hard drive.
             try
             {
-               using (FileStream fs = File.Create(filePath))
+               using (var fs = File.Create(filePath))
                {
                   WriteHighScores(fs, content);
                }
@@ -48,16 +40,12 @@ namespace XBAP
             {
                MessageBox.Show(err.Message);
             }
-         }
          else
-         {
-            // Write to isolated storage.
             try
             {
-               IsolatedStorageFile store =
-                 IsolatedStorageFile.GetUserStoreForApplication();
-               using (IsolatedStorageFileStream fs = new IsolatedStorageFileStream(
-                 "highscores.txt", FileMode.Create, store))
+               var store =
+                  IsolatedStorageFile.GetUserStoreForApplication();
+               using (var fs = new IsolatedStorageFileStream("highscores.txt", FileMode.Create, store))
                {
                   WriteHighScores(fs, content);
                }
@@ -66,24 +54,21 @@ namespace XBAP
             {
                MessageBox.Show(err.Message);
             }
-         }
       }
 
-      private void cmdReadSafely_Click(object sender, RoutedEventArgs e)
+      private void OnSafelyRead(object sender, RoutedEventArgs e)
       {
-         string content = "";
+         var content = string.Empty;
 
          // Create a permission that represents writing to a file.
-         string filePath = "c:\\highscores.txt";
-         FileIOPermission permission = new FileIOPermission(
-           FileIOPermissionAccess.Write, filePath);
+         const string filePath = "c:\\highscores.txt";
+         var permission = new FileIOPermission(FileIOPermissionAccess.Read, filePath);
 
          // Check for this permission.
          if (CheckPermission(permission))
-         {
             try
             {
-               using (FileStream fs = File.Open(filePath, FileMode.Open))
+               using (var fs = File.Open(filePath, FileMode.Open))
                {
                   content = ReadHighScores(fs);
                }
@@ -92,16 +77,11 @@ namespace XBAP
             {
                MessageBox.Show(err.Message);
             }
-         }
          else
-         {
-            // Read from isolated storage.
             try
             {
-               IsolatedStorageFile store =
-                 IsolatedStorageFile.GetUserStoreForApplication();
-               using (IsolatedStorageFileStream fs = new IsolatedStorageFileStream(
-                 "highscores.txt", FileMode.Open, store))
+               var store = IsolatedStorageFile.GetUserStoreForApplication();
+               using (var fs = new IsolatedStorageFileStream("highscores.txt", FileMode.Open, store))
                {
                   content = ReadHighScores(fs);
                }
@@ -110,14 +90,14 @@ namespace XBAP
             {
                MessageBox.Show(err.Message);
             }
-         }
 
-         if (content != "") MessageBox.Show(content);
+         if (content != string.Empty)
+            MessageBox.Show(content);
       }
 
       // A better implementation would cache this information over the lifetime of the application,
       // so the permission only needs to be evaluated once.
-      private bool CheckPermission(CodeAccessPermission requestedPermission)
+      private static bool CheckPermission(IStackWalk requestedPermission)
       {
          try
          {
@@ -131,20 +111,22 @@ namespace XBAP
          }
       }
 
-      private void WriteHighScores(FileStream fs, string content)
+      private static void WriteHighScores(Stream fileStream, string content)
       {
-         StreamWriter w = new StreamWriter(fs);
-         w.WriteLine(content);
-         w.Close();
-         fs.Close();
+         using (var writer = new StreamWriter(fileStream))
+         {
+            writer.WriteLine(content);
+         }
       }
 
-      private string ReadHighScores(FileStream fs)
+      private static string ReadHighScores(Stream fileStream)
       {
-         StreamReader r = new StreamReader(fs);
-         string content = r.ReadToEnd();
-         r.Close();
-         fs.Close();
+         string content;
+         using (var reader = new StreamReader(fileStream))
+         {
+            content = reader.ReadToEnd();
+         }
+
          return content;
       }
    }

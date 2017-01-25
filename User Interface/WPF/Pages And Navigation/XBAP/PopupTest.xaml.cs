@@ -1,56 +1,54 @@
 using System.Windows;
+using System.Windows.Forms;
 using System.Windows.Media;
 
 namespace XBAP
 {
-   /// <summary>
-   /// Interaction logic for PopupTest.xaml
-   /// </summary>
-
-   public partial class PopupTest : System.Windows.Controls.Page
+   public partial class PopupTest
    {
       public PopupTest()
       {
          InitializeComponent();
       }
 
-      private void cmdStart_Click(object sender, RoutedEventArgs e)
+      private void OnStart(object sender, RoutedEventArgs e)
       {
          DisableMainPage();
       }
-      private void dialog_cmdOK_Click(object sender, RoutedEventArgs e)
+
+      private void OnOk(object sender, RoutedEventArgs e)
       {
          // Copy name from the Popup into the main page.
-         lblName.Content = "You entered: " + txtName.Text;
-
+         LblName.Content = string.Format("You entered: {0}", TxtName.Text);
          EnableMainPage();
       }
-      private void dialog_cmdCancel_Click(object sender, RoutedEventArgs e)
+
+      private void OnCancel(object sender, RoutedEventArgs e)
       {
          EnableMainPage();
       }
 
       private void EnableMainPage()
       {
-         mainPage.IsEnabled = true;
-         this.Background = null;
-         dialogPopUp.IsOpen = false;
-      }
-      private void DisableMainPage()
-      {
-         mainPage.IsEnabled = false;
-         this.Background = Brushes.LightGray;
-         dialogPopUp.IsOpen = true;
+         MainPage.IsEnabled = true;
+         Background = null;
+         DialogPopUp.IsOpen = false;
       }
 
-      private void cmdStartWF_Click(object sender, RoutedEventArgs e)
+      private void DisableMainPage()
       {
-         UserNameWinForm form = new UserNameWinForm();
-         if (form.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+         MainPage.IsEnabled = false;
+         Background = Brushes.LightGray;
+         DialogPopUp.IsOpen = true;
+      }
+
+      private void OnStartWinForm(object sender, RoutedEventArgs e)
+      {
+         using (var form = new UserNameWinForm())
          {
-            lblNameWF.Content = form.UserName;
+            if (form.ShowDialog() == DialogResult.OK)
+               LblNameWf.Content = form.UserName;
          }
-         form.Dispose();
       }
    }
 }

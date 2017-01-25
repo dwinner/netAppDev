@@ -1,20 +1,17 @@
 ﻿using System.Runtime.InteropServices;
 using System.Windows;
+using System.IO;
 
 namespace WebBrowserTest
-{
-   /// <summary>
-   /// Interaction logic for CallWpfWithJavaScript.xaml
-   /// </summary>
+{   
    public partial class CallWpfWithJavaScript : Window
    {
       public CallWpfWithJavaScript()
       {
          InitializeComponent();
-
-         webBrowser.Navigate("file:///" +
-             System.IO.Path.Combine(System.IO.Path.GetDirectoryName(Application.ResourceAssembly.Location), "sample.htm"));
-         webBrowser.ObjectForScripting = new HtmlBridge();
+         WebBrowser.Navigate(string.Format("file:///{0}",
+            Path.Combine(Path.GetDirectoryName(Application.ResourceAssembly.Location), "sample.htm")));
+         WebBrowser.ObjectForScripting = new HtmlBridge();
       }
    }
 
@@ -23,7 +20,7 @@ namespace WebBrowserTest
    {
       public void WebClick(string source)
       {
-         MessageBox.Show("Received: " + source);
+         MessageBox.Show(string.Format("Received: {0}", source));
       }
    }
 
