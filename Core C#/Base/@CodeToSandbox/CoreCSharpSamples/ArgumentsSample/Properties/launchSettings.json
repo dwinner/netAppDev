@@ -1,8 +1,0 @@
-{
-  "profiles": {
-    "ArgumentsSample": {
-      "commandName": "ArgumentsSample",
-      "commandLineArgs": "/a /b /c"
-    }
-  }
-}
