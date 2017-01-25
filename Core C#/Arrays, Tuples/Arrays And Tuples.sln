@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.24720.0
+# Visual Studio 15
+VisualStudioVersion = 15.0.26020.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleArrays", "SimpleArrays\SimpleArrays.csproj", "{F3B34C4D-B3B4-42E3-AE56-7AC3D3ED499C}"
 EndProject
@@ -22,6 +22,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StructuralComparison", "StructuralComparison\StructuralComparison.csproj", "{543B9FE7-B3E2-4AD1-9685-840250AD9C27}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArrayInStack", "ArrayInStack\ArrayInStack.csproj", "{4643EF2D-6196-4442-AD1F-2BCAF7D8E48C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImplicitTupleSample", "ImplicitTupleSample\ImplicitTupleSample.csproj", "{54CEC601-9849-4413-8E35-F4A040D4054A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -69,6 +71,10 @@ Global
 		{4643EF2D-6196-4442-AD1F-2BCAF7D8E48C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4643EF2D-6196-4442-AD1F-2BCAF7D8E48C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4643EF2D-6196-4442-AD1F-2BCAF7D8E48C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{54CEC601-9849-4413-8E35-F4A040D4054A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{54CEC601-9849-4413-8E35-F4A040D4054A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{54CEC601-9849-4413-8E35-F4A040D4054A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{54CEC601-9849-4413-8E35-F4A040D4054A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
