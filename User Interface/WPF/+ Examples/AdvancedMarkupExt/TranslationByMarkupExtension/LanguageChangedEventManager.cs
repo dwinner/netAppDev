@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows;
 
-namespace i18nViaMarkupExt
+namespace TranslationByMarkupExtension
 {
    public class LanguageChangedEventManager : WeakEventManager
    {
@@ -9,7 +9,7 @@ namespace i18nViaMarkupExt
       {
          get
          {
-            var managerType = typeof (LanguageChangedEventManager);
+            var managerType = typeof(LanguageChangedEventManager);
             var manager = (LanguageChangedEventManager) GetCurrentManager(managerType);
             if (manager == null)
             {

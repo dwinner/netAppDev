@@ -2,7 +2,7 @@
 using System.Globalization;
 using System.Windows.Data;
 
-namespace i18nViaMarkupExt
+namespace TranslationByMarkupExtension
 {
    public class MainWindowViewModel
    {
@@ -13,6 +13,6 @@ namespace i18nViaMarkupExt
             (s, e) => TranslationManager.Instance.CurrentLanguage = (CultureInfo) Languages.CurrentItem;
       }
 
-      public ICollectionView Languages { get; set; }
+      public ICollectionView Languages { get; private set; }
    }
 }

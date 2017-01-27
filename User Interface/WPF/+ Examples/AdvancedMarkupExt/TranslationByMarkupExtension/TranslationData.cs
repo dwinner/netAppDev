@@ -2,11 +2,15 @@
 using System.ComponentModel;
 using System.Windows;
 
-namespace i18nViaMarkupExt
+namespace TranslationByMarkupExtension
 {
    public class TranslationData : IWeakEventListener, INotifyPropertyChanged
    {
+      #region Private Members
+
       private readonly string _key;
+
+      #endregion
 
       /// <summary>
       ///    Initializes a new instance of the <see cref="TranslationData" /> class.
@@ -23,18 +27,11 @@ namespace i18nViaMarkupExt
          get { return TranslationManager.Instance.Translate(_key); }
       }
 
+      #region INotifyPropertyChanged Members
+
       public event PropertyChangedEventHandler PropertyChanged;
 
-      public bool ReceiveWeakEvent(Type managerType, object sender, EventArgs e)
-      {
-         if (managerType == typeof (LanguageChangedEventManager))
-         {
-            OnLanguageChanged(sender, e);
-            return true;
-         }
-
-         return false;
-      }
+      #endregion
 
       /// <summary>
       ///    Releases unmanaged resources and performs other cleanup operations before the
@@ -45,12 +42,25 @@ namespace i18nViaMarkupExt
          LanguageChangedEventManager.RemoveListener(TranslationManager.Instance, this);
       }
 
+      #region IWeakEventListener Members
+
+      public bool ReceiveWeakEvent(Type managerType, object sender, EventArgs e)
+      {
+         if (managerType == typeof(LanguageChangedEventManager))
+         {
+            OnLanguageChanged(sender, e);
+            return true;
+         }
+
+         return false;
+      }
+
       private void OnLanguageChanged(object sender, EventArgs e)
       {
          if (PropertyChanged != null)
-         {
             PropertyChanged(this, new PropertyChangedEventArgs("Value"));
-         }
       }
+
+      #endregion
    }
 }

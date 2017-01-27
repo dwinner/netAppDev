@@ -2,7 +2,7 @@
 using System.Windows.Data;
 using System.Windows.Markup;
 
-namespace i18nViaMarkupExt
+namespace TranslationByMarkupExtension
 {
    /// <summary>
    ///    The Translate Markup extension returns a binding to a TranslationData
@@ -10,6 +10,12 @@ namespace i18nViaMarkupExt
    /// </summary>
    public class TranslateExtension : MarkupExtension
    {
+      #region Private Members
+
+      #endregion
+
+      #region Construction
+
       /// <summary>
       ///    Initializes a new instance of the <see cref="TranslateExtension" /> class.
       /// </summary>
@@ -18,6 +24,8 @@ namespace i18nViaMarkupExt
       {
          Key = key;
       }
+
+      #endregion
 
       [ConstructorArgument("key")]
       public string Key { get; set; }
@@ -29,7 +37,7 @@ namespace i18nViaMarkupExt
       {
          var binding = new Binding("Value")
          {
-            Source = new TranslationData(Key)            
+            Source = new TranslationData(Key)
          };
 
          return binding.ProvideValue(serviceProvider);

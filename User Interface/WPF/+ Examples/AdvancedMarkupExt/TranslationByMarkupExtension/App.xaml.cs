@@ -1,12 +1,7 @@
-﻿/**
- * Локализация приложений с помощью расширений разметки
- */
-
-using System.Reflection;
+﻿using System.Reflection;
 using System.Windows;
-using TranslationByMarkupExtension;
 
-namespace i18nViaMarkupExt
+namespace TranslationByMarkupExtension
 {
    public partial class App
    {

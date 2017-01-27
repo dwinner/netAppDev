@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Globalization;
 
-namespace i18nViaMarkupExt
+namespace TranslationByMarkupExtension
 {
    public interface ITranslationProvider
    {

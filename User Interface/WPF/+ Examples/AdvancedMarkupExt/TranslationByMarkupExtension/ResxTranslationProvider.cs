@@ -3,13 +3,19 @@ using System.Globalization;
 using System.Reflection;
 using System.Resources;
 
-namespace i18nViaMarkupExt
+namespace TranslationByMarkupExtension
 {
    /// <summary>
    /// </summary>
    public class ResxTranslationProvider : ITranslationProvider
    {
+      #region Private Members
+
       private readonly ResourceManager _resourceManager;
+
+      #endregion
+
+      #region Construction
 
       /// <summary>
       ///    Initializes a new instance of the <see cref="ResxTranslationProvider" /> class.
@@ -21,6 +27,10 @@ namespace i18nViaMarkupExt
          _resourceManager = new ResourceManager(baseName, assembly);
       }
 
+      #endregion
+
+      #region ITranslationProvider Members
+
       /// <summary>
       ///    See <see cref="ITranslationProvider.Translate" />
       /// </summary>
@@ -29,9 +39,10 @@ namespace i18nViaMarkupExt
          return _resourceManager.GetString(key);
       }
 
-      /// <summary>
-      ///    See <see cref="ITranslationProvider.AvailableLanguages" />
-      /// </summary>
+      #endregion
+
+      #region ITranslationProvider Members
+      
       public IEnumerable<CultureInfo> Languages
       {
          get
@@ -41,5 +52,7 @@ namespace i18nViaMarkupExt
             yield return new CultureInfo("en");
          }
       }
+
+      #endregion
    }
 }

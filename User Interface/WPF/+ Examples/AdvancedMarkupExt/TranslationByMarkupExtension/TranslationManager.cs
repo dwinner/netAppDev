@@ -4,7 +4,7 @@ using System.Globalization;
 using System.Linq;
 using System.Threading;
 
-namespace i18nViaMarkupExt
+namespace TranslationByMarkupExtension
 {
    public class TranslationManager
    {
@@ -27,7 +27,9 @@ namespace i18nViaMarkupExt
       {
          get
          {
-            return TranslationProvider != null ? TranslationProvider.Languages : Enumerable.Empty<CultureInfo>();
+            return TranslationProvider != null
+               ? TranslationProvider.Languages
+               : Enumerable.Empty<CultureInfo>();
          }
       }
 
@@ -43,9 +45,7 @@ namespace i18nViaMarkupExt
       private void OnLanguageChanged()
       {
          if (LanguageChanged != null)
-         {
             LanguageChanged(this, EventArgs.Empty);
-         }
       }
 
       public object Translate(string key)
@@ -54,9 +54,7 @@ namespace i18nViaMarkupExt
          {
             var translatedValue = TranslationProvider.Translate(key);
             if (translatedValue != null)
-            {
                return translatedValue;
-            }
          }
 
          return string.Format("!{0}!", key);
