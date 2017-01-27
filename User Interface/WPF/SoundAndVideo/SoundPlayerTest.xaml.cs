@@ -1,73 +1,70 @@
 using System;
+using System.IO;
 using System.Media;
 using System.Windows;
 using System.Windows.Media;
 
 namespace SoundAndVideo
 {
-   /// <summary>
-   /// Interaction logic for SoundPlayerTest.xaml
-   /// </summary>
-
-   public partial class SoundPlayerTest : System.Windows.Window
+   public partial class SoundPlayerTest
    {
+      private readonly MediaPlayer _mediaPlayer = new MediaPlayer();
 
       public SoundPlayerTest()
       {
          InitializeComponent();
       }
 
-      private void cmdPlayAudio_Click(object sender, RoutedEventArgs e)
+      private void OnPlayAudio(object sender, RoutedEventArgs e)
       {
-         SoundPlayer player = new SoundPlayer();
-         player.Stream = Properties.Resources.chimes;
+         var soundPlayer = new SoundPlayer {Stream = Properties.Resources.chimes};
          try
          {
-            player.Load();
-            player.PlaySync();
+            soundPlayer.Load();
+            soundPlayer.PlaySync();
          }
-         catch (System.IO.FileNotFoundException err)
+         catch (FileNotFoundException)
          {
             // An error will occur here if the file can't be found.
          }
-         catch (FormatException err)
+         catch (FormatException)
          {
             // A FormatException will occur here if the file doesn't
             // contain valid WAV audio.
          }
       }
 
-      private void cmdPlayAudioAsync_Click(object sender, RoutedEventArgs e)
+      private void OnPlayAudioAsync(object sender, RoutedEventArgs e)
       {
-         SoundPlayer player = new SoundPlayer();
-         player.SoundLocation = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "test.wav");
+         var soundPlayer = new SoundPlayer
+         {
+            SoundLocation = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "test.wav")
+         };
          try
          {
-            player.Load();
-            player.Play();
+            soundPlayer.Load();
+            soundPlayer.Play();
          }
-         catch (System.IO.FileNotFoundException err)
+         catch (FileNotFoundException)
          {
             // An error will occur here if the file can't be found.
          }
-         catch (FormatException err)
+         catch (FormatException)
          {
             // A FormatException will occur here if the file doesn't
             // contain valid WAV audio.
          }
       }
 
-      private MediaPlayer player = new MediaPlayer();
-
-      private void cmdPlayWithMediaPlayer_Click(object sender, RoutedEventArgs e)
+      private void OnPlayWithMediaPlayer(object sender, RoutedEventArgs e)
       {
-         player.Open(new Uri("test.mp3", UriKind.Relative));
-         player.Play();
+         _mediaPlayer.Open(new Uri("test.mp3", UriKind.Relative));
+         _mediaPlayer.Play();
       }
 
-      private void window_Closed(object sender, EventArgs e)
+      private void OnClosed(object sender, EventArgs e)
       {
-         player.Close();
+         _mediaPlayer.Close();
       }
    }
 }

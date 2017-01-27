@@ -1,54 +1,41 @@
 using System;
 using System.Windows;
-using System.Windows.Controls;
 
 namespace SoundAndVideo
 {
-   /// <summary>
-   /// Interaction logic for CodePlayback.xaml
-   /// </summary>
-
-   public partial class CodePlayback : System.Windows.Window
+   public partial class CodePlayback
    {
-
       public CodePlayback()
       {
          InitializeComponent();
-
-
       }
 
-      private void sliderSpeed_ValueChanged(object sender, RoutedEventArgs e)
+      private void OnPlay(object sender, RoutedEventArgs e)
       {
-         media.SpeedRatio = ((Slider)sender).Value;
+         Media.Play();
       }
 
-      private void cmdPlay_Click(object sender, RoutedEventArgs e)
+      private void OnPause(object sender, RoutedEventArgs e)
       {
-         media.Play();
-      }
-      private void cmdPause_Click(object sender, RoutedEventArgs e)
-      {
-         media.Pause();
-      }
-      private void cmdStop_Click(object sender, RoutedEventArgs e)
-      {
-         media.Stop();
-         media.SpeedRatio = 1;
-      }
-      private void media_MediaOpened(object sender, RoutedEventArgs e)
-      {
-         sliderPosition.Maximum = media.NaturalDuration.TimeSpan.TotalSeconds;
-      }
-      private void sliderPosition_ValueChanged(object sender, RoutedEventArgs e)
-      {
-         media.Pause();
-         media.Position = TimeSpan.FromSeconds(sliderPosition.Value);
-         media.Play();
+         Media.Pause();
       }
 
+      private void OnStop(object sender, RoutedEventArgs e)
+      {
+         Media.Stop();
+         Media.SpeedRatio = 1;
+      }
 
+      private void OnMediaOpened(object sender, RoutedEventArgs e)
+      {
+         SliderPosition.Maximum = Media.NaturalDuration.TimeSpan.TotalSeconds;
+      }
 
-
+      private void OnSliderPositionChanged(object sender, RoutedEventArgs e)
+      {
+         Media.Pause();
+         Media.Position = TimeSpan.FromSeconds(SliderPosition.Value);
+         Media.Play();
+      }
    }
 }

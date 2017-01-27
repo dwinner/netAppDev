@@ -4,43 +4,43 @@ using System.Windows.Media.Animation;
 
 namespace SoundAndVideo
 {
-   /// <summary>
-   /// Interaction logic for SynchronizedAnimation.xaml
-   /// </summary>
-
-   public partial class SynchronizedAnimation : System.Windows.Window
+   public partial class SynchronizedAnimation
    {
+      private bool _suppressSeek;
 
       public SynchronizedAnimation()
       {
          InitializeComponent();
       }
-      private bool suppressSeek;
-      private void sliderPosition_ValueChanged(object sender, RoutedEventArgs e)
+
+      private void OnSliderPositionChanged(object sender, RoutedEventArgs e)
       {
-         if (!suppressSeek)
-            mediaStoryboard.Storyboard.Seek(DocumentRoot, TimeSpan.FromSeconds(sliderPosition.Value), TimeSeekOrigin.BeginTime);
-      }
-      private void media_MediaOpened(object sender, RoutedEventArgs e)
-      {
-         sliderPosition.Maximum = media.NaturalDuration.TimeSpan.TotalSeconds;
+         if (!_suppressSeek)
+            mediaStoryboard.Storyboard.Seek(
+               DocumentRoot, TimeSpan.FromSeconds(PositionSlider.Value), TimeSeekOrigin.BeginTime);
       }
 
-      private void storyboard_CurrentTimeInvalidated(object sender, EventArgs e)
+      private void OnMediaOpened(object sender, RoutedEventArgs e)
+      {
+         PositionSlider.Maximum = Media.NaturalDuration.TimeSpan.TotalSeconds;
+      }
+
+      private void OnCurrentTimeInvalidated(object sender, EventArgs e)
       {
          // Sender is the clock that was created for this storyboard.
-         Clock storyboardClock = (Clock)sender;
+         var storyboardClock = (Clock) sender;
 
          if (storyboardClock.CurrentProgress == null)
          {
-            lblTime.Text = "[[ stopped ]]";
+            TimeLabel.Text = "[[ stopped ]]";
          }
          else
          {
-            lblTime.Text = "Position: " + storyboardClock.CurrentTime.ToString();
-            suppressSeek = true;
-            sliderPosition.Value = storyboardClock.CurrentTime.Value.TotalSeconds;
-            suppressSeek = false;
+            TimeLabel.Text = string.Format("Position: {0}", storyboardClock.CurrentTime);
+            _suppressSeek = true;
+            if (storyboardClock.CurrentTime != null)
+               PositionSlider.Value = storyboardClock.CurrentTime.Value.TotalSeconds;
+            _suppressSeek = false;
          }
       }
    }
