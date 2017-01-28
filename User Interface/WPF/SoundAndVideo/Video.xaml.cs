@@ -3,24 +3,17 @@ using System.Windows;
 
 namespace SoundAndVideo
 {
-   /// <summary>
-   /// Interaction logic for Video.xaml
-   /// </summary>
-
-   public partial class Video : System.Windows.Window
+   public partial class Video
    {
-
       public Video()
       {
          InitializeComponent();
-
       }
 
-      private void cmdPlay_Click(object sender, RoutedEventArgs e)
+      private void OnPlay(object sender, RoutedEventArgs e)
       {
-         video.Position = TimeSpan.Zero;
-         video.Play();
+         VideoEl.Position = TimeSpan.Zero;
+         VideoEl.Play();
       }
-
    }
 }

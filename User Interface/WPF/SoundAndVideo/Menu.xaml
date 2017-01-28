@@ -9,10 +9,10 @@
             <Button Content="CodePlayback" />
             <Button Content="DeclarativePlayback" />
             <Button Content="SynchronizedAnimation" />
-            <Button>Video</Button>
-            <Button>AnimatedVideoWindow</Button>
-            <Button>SpeechSynthesis</Button>
-            <Button>SpeechRecognition</Button>
+            <Button Content="Video" />
+            <Button Content="AnimatedVideoWindow" />
+            <Button Content="SpeechSynthesis" />
+            <Button Content="SpeechRecognition" />
         </StackPanel>
     </Grid>
 </Window>

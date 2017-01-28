@@ -3,52 +3,48 @@ using System.Speech.Recognition;
 
 namespace SoundAndVideo
 {
-   /// <summary>
-   /// Interaction logic for SpeechRecognition.xaml
-   /// </summary>
-
-   public partial class SpeechRecognition : System.Windows.Window
+   public partial class SpeechRecognition
    {
-      SpeechRecognizer recognizer = new SpeechRecognizer();
+      private readonly SpeechRecognizer _recognizer = new SpeechRecognizer();
 
       public SpeechRecognition()
       {
          InitializeComponent();
 
-         GrammarBuilder grammar = new GrammarBuilder();
+         var grammar = new GrammarBuilder();
          grammar.Append(new Choices("red", "blue", "green", "black", "white"));
          grammar.Append(new Choices("on", "off"));
 
-         recognizer.LoadGrammar(new Grammar(grammar));
-         recognizer.SpeechDetected += recognizer_SpeechDetected;
-         recognizer.SpeechRecognized += recognizer_SpeechRecognized;
-         recognizer.SpeechRecognitionRejected += recognizer_SpeechRejected;
-         recognizer.SpeechHypothesized += recognizer_SpeechHypothesized;
+         _recognizer.LoadGrammar(new Grammar(grammar));
+         _recognizer.SpeechDetected += OnSpeechDetected;
+         _recognizer.SpeechRecognized += OnSpeechRecognized;
+         _recognizer.SpeechRecognitionRejected += OnSpeechRejected;
+         _recognizer.SpeechHypothesized += OnSpeechHypothesized;
       }
 
-      private void recognizer_SpeechRecognized(object sender, SpeechRecognizedEventArgs e)
+      private void OnSpeechRecognized(object sender, SpeechRecognizedEventArgs e)
       {
-         lbl.Content = "You said: " + e.Result.Text;
+         SpeechRecognitionLabel.Content = string.Format("You said: {0}", e.Result.Text);
       }
 
-      private void recognizer_SpeechDetected(object sender, SpeechDetectedEventArgs e)
+      private void OnSpeechDetected(object sender, SpeechDetectedEventArgs e)
       {
-         lbl.Content = "Speech detected.";
+         SpeechRecognitionLabel.Content = "Speech detected.";
       }
 
-      private void recognizer_SpeechHypothesized(object sender, SpeechHypothesizedEventArgs e)
+      private void OnSpeechHypothesized(object sender, SpeechHypothesizedEventArgs e)
       {
-         lbl.Content = "Speech uncertain.";
+         SpeechRecognitionLabel.Content = "Speech uncertain.";
       }
 
-      private void recognizer_SpeechRejected(object sender, SpeechRecognitionRejectedEventArgs e)
+      private void OnSpeechRejected(object sender, SpeechRecognitionRejectedEventArgs e)
       {
-         lbl.Content = "Speech rejected.";
+         SpeechRecognitionLabel.Content = "Speech rejected.";
       }
 
       protected override void OnClosed(EventArgs e)
       {
-         recognizer.Dispose();
+         _recognizer.Dispose();
       }
    }
 }

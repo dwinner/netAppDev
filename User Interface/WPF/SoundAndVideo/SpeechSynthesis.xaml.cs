@@ -4,44 +4,38 @@ using System.Windows;
 
 namespace SoundAndVideo
 {
-   /// <summary>
-   /// Interaction logic for SpeechSynthesis.xaml
-   /// </summary>
-
-   public partial class SpeechSynthesis : System.Windows.Window
+   public partial class SpeechSynthesis
    {
-
       public SpeechSynthesis()
       {
          InitializeComponent();
       }
 
-      private void cmdSpeak_Click(object sender, RoutedEventArgs e)
+      private void OnSpeak(object sender, RoutedEventArgs e)
       {
-         SpeechSynthesizer synthesizer = new SpeechSynthesizer();
-         synthesizer.Speak(txtWords.Text);
+         var synthesizer = new SpeechSynthesizer();
+         synthesizer.Speak(WordsTextBox.Text);
       }
 
-      private void cmdPromptTest_Click(object sender, RoutedEventArgs e)
+      private void OnPrompt(object sender, RoutedEventArgs e)
       {
-         PromptBuilder prompt = new PromptBuilder();
+         var promptBuilder = new PromptBuilder();
 
-         prompt.AppendText("How are you");
-         prompt.AppendBreak(TimeSpan.FromSeconds(2));
-         prompt.AppendText("How ", PromptEmphasis.Reduced);
-         PromptStyle style = new PromptStyle();
-         style.Rate = PromptRate.ExtraSlow;
-         style.Emphasis = PromptEmphasis.Strong;
-         prompt.StartStyle(style);
-         prompt.AppendText("are ");
-         prompt.EndStyle();
-         prompt.AppendText("you?");
+         promptBuilder.AppendText("How are you");
+         promptBuilder.AppendBreak(TimeSpan.FromSeconds(2));
+         promptBuilder.AppendText("How ", PromptEmphasis.Reduced);
+         var style = new PromptStyle
+         {
+            Rate = PromptRate.ExtraSlow,
+            Emphasis = PromptEmphasis.Strong
+         };
+         promptBuilder.StartStyle(style);
+         promptBuilder.AppendText("are ");
+         promptBuilder.EndStyle();
+         promptBuilder.AppendText("you?");
 
-
-
-         SpeechSynthesizer synthesizer = new SpeechSynthesizer();
-         synthesizer.Speak(prompt);
-
+         var synthesizer = new SpeechSynthesizer();
+         synthesizer.Speak(promptBuilder);
       }
    }
 }
