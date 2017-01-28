@@ -5,6 +5,12 @@ VisualStudioVersion = 12.0.40629.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImageViewer", "ImageViewer\ImageViewer.csproj", "{D262057B-B550-4E98-AEF6-613D9FCBFA75}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "PopupNotificationIcon", "PopupNotificationIcon", "{999B688C-3BCF-48D5-9432-50E407EF36BA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExtendedWindowsControls", "PopupNotificationIcon\ExtendedWindowsControls\ExtendedWindowsControls.csproj", "{EF9D9A9B-C739-4606-B1EF-4F662DCF5EF9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfXamlPopup", "PopupNotificationIcon\WpfXamlPopup\WpfXamlPopup.csproj", "{9CD11B90-9CBA-4435-B51C-BAEAE1E7FAD9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,8 +21,20 @@ Global
 		{D262057B-B550-4E98-AEF6-613D9FCBFA75}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D262057B-B550-4E98-AEF6-613D9FCBFA75}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D262057B-B550-4E98-AEF6-613D9FCBFA75}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EF9D9A9B-C739-4606-B1EF-4F662DCF5EF9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EF9D9A9B-C739-4606-B1EF-4F662DCF5EF9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EF9D9A9B-C739-4606-B1EF-4F662DCF5EF9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EF9D9A9B-C739-4606-B1EF-4F662DCF5EF9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9CD11B90-9CBA-4435-B51C-BAEAE1E7FAD9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9CD11B90-9CBA-4435-B51C-BAEAE1E7FAD9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9CD11B90-9CBA-4435-B51C-BAEAE1E7FAD9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9CD11B90-9CBA-4435-B51C-BAEAE1E7FAD9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{EF9D9A9B-C739-4606-B1EF-4F662DCF5EF9} = {999B688C-3BCF-48D5-9432-50E407EF36BA}
+		{9CD11B90-9CBA-4435-B51C-BAEAE1E7FAD9} = {999B688C-3BCF-48D5-9432-50E407EF36BA}
 	EndGlobalSection
 EndGlobal

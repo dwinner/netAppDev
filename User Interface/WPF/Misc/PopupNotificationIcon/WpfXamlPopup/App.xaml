@@ -4,10 +4,10 @@
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="SlickButtonRD.xaml"></ResourceDictionary>
-                <ResourceDictionary Source="MainGridStyleRD.xaml"></ResourceDictionary>
-                <ResourceDictionary Source="StealthButtonRD.xaml"></ResourceDictionary> 
+                <ResourceDictionary Source="SlickButtonRD.xaml" />
+                <ResourceDictionary Source="MainGridStyleRD.xaml" />
+                <ResourceDictionary Source="StealthButtonRD.xaml" />
             </ResourceDictionary.MergedDictionaries>
-        </ResourceDictionary> 
+        </ResourceDictionary>
     </Application.Resources>
 </Application>
