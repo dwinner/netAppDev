@@ -1,0 +1,110 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <Name>StoreDb</Name>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectVersion>4.1</ProjectVersion>
+    <ProjectGuid>{51406fff-592b-40f1-afd3-842cfd001601}</ProjectGuid>
+    <DSP>Microsoft.Data.Tools.Schema.Sql.Sql120DatabaseSchemaProvider</DSP>
+    <OutputType>Database</OutputType>
+    <RootPath>
+    </RootPath>
+    <RootNamespace>StoreDb</RootNamespace>
+    <AssemblyName>StoreDb</AssemblyName>
+    <ModelCollation>1033, CI</ModelCollation>
+    <DefaultFileStructure>BySchemaAndSchemaType</DefaultFileStructure>
+    <DeployToDatabase>True</DeployToDatabase>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetLanguage>CS</TargetLanguage>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <SqlServerVerification>False</SqlServerVerification>
+    <IncludeCompositeObjects>True</IncludeCompositeObjects>
+    <TargetDatabaseSet>True</TargetDatabaseSet>
+    <GenerateCreateScript>True</GenerateCreateScript>
+    <IncludeSchemaNameInFileName>True</IncludeSchemaNameInFileName>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <OutputPath>bin\Release\</OutputPath>
+    <BuildScriptName>$(MSBuildProjectName).sql</BuildScriptName>
+    <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <DefineDebug>false</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <OutputPath>bin\Debug\</OutputPath>
+    <BuildScriptName>$(MSBuildProjectName).sql</BuildScriptName>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <DefineDebug>true</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">11.0</VisualStudioVersion>
+    <!-- Default to the v11.0 targets path if the targets file for the current VS version is not found -->
+    <SSDTExists Condition="Exists('$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\SSDT\Microsoft.Data.Tools.Schema.SqlTasks.targets')">True</SSDTExists>
+    <VisualStudioVersion Condition="'$(SSDTExists)' == ''">11.0</VisualStudioVersion>
+  </PropertyGroup>
+  <Import Condition="'$(SQLDBExtensionsRefPath)' != ''" Project="$(SQLDBExtensionsRefPath)\Microsoft.Data.Tools.Schema.SqlTasks.targets" />
+  <Import Condition="'$(SQLDBExtensionsRefPath)' == ''" Project="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\SSDT\Microsoft.Data.Tools.Schema.SqlTasks.targets" />
+  <ItemGroup>
+    <Folder Include="Properties" />
+    <Folder Include="Tables" />
+    <Folder Include="Procedures" />
+    <Folder Include="DML" />
+  </ItemGroup>
+  <ItemGroup>
+    <Build Include="Tables\dbo.Categories.sql" />
+    <Build Include="Procedures\dbo.CustomerAdd.sql" />
+    <Build Include="Procedures\dbo.CustomerAlsoBought.sql" />
+    <Build Include="Procedures\dbo.CustomerDetail.sql" />
+    <Build Include="Tables\dbo.Customers.sql" />
+    <Build Include="Tables\dbo.ShoppingCart.sql" />
+    <Build Include="Tables\dbo.Reviews.sql" />
+    <Build Include="Tables\dbo.Products.sql" />
+    <Build Include="Tables\dbo.Orders.sql" />
+    <Build Include="Tables\dbo.OrderDetails.sql" />
+    <Build Include="Procedures\dbo.CustomerLogin.sql" />
+    <Build Include="Procedures\dbo.OrdersDetail.sql" />
+    <Build Include="Procedures\dbo.OrdersList.sql" />
+    <Build Include="Procedures\dbo.ProductCategoryList.sql" />
+    <Build Include="Procedures\dbo.ProductDetail.sql" />
+    <Build Include="Procedures\dbo.ProductSearch.sql" />
+    <Build Include="Procedures\dbo.ProductsByCategory.sql" />
+    <Build Include="Procedures\dbo.ProductsMostPopular.sql" />
+    <Build Include="Procedures\dbo.ReviewsAdd.sql" />
+    <Build Include="Procedures\dbo.ReviewsList.sql" />
+    <Build Include="Procedures\dbo.ShoppingCartAddItem.sql" />
+    <Build Include="Procedures\dbo.ShoppingCartEmpty.sql" />
+    <Build Include="Procedures\dbo.OrdersAdd.sql" />
+    <Build Include="Procedures\dbo.ShoppingCartItemCount.sql" />
+    <Build Include="Procedures\dbo.ShoppingCartList.sql" />
+    <Build Include="Procedures\dbo.ShoppingCartMigrate.sql" />
+    <Build Include="Procedures\dbo.ShoppingCartRemoveAbandoned.sql" />
+    <Build Include="Procedures\dbo.ShoppingCartRemoveItem.sql" />
+    <Build Include="Procedures\dbo.ShoppingCartTotal.sql" />
+    <Build Include="Procedures\dbo.ShoppingCartUpdate.sql" />
+    <Build Include="Alter_DDL.sql" />
+    <Build Include="Procedures\dbo.GetProducts.sql" />
+    <Build Include="Procedures\dbo.GetProductByID.sql" />
+    <Build Include="Procedures\dbo.GetCategories.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="DML\dbo.Categories.data.sql" />
+    <None Include="DML\dbo.Customers.data.sql" />
+    <None Include="DML\dbo.Orders.data.sql" />
+    <None Include="DML\dbo.OrderDetails.data.sql" />
+    <None Include="DML\dbo.Products.data.sql" />
+    <None Include="DML\dbo.Reviews.data.sql" />
+  </ItemGroup>
+</Project>
