@@ -5,7 +5,7 @@
     <Grid>
         <StackPanel Margin="5" Button.Click="ButtonClick">
             <Button Content="OneTriangleMesh" />
-            <Button>CubeMesh</Button>
+            <Button Content="CubeMesh"/>
             <Button>PersonIn3D</Button>
             <Button>Materials</Button>
             <Button>TextureMapping</Button>
