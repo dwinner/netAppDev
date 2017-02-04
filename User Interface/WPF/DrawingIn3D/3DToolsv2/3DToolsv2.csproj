@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{5F603892-DE40-4246-A969-1C6717AFE35D}</ProjectGuid>
+    <ProjectGuid>{D3730080-1332-4C31-9148-55C45BAF8D1F}</ProjectGuid>
     <RootNamespace>_3DTools</RootNamespace>
     <AssemblyName>3DTools</AssemblyName>
     <WarningLevel>4</WarningLevel>
