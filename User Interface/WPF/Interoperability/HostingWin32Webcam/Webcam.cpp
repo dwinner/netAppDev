@@ -7,13 +7,13 @@
 
 int _width = 0;
 int _height = 0;
-IGraphBuilder* _graphBuilder = NULL;
-IMediaControl* _mediaControl = NULL;
-IVMRWindowlessControl* _windowlessControl = NULL;
-IBaseFilter* _baseFilter = NULL;
-IPin* _pin = NULL;
+IGraphBuilder* _graphBuilder = nullptr;
+IMediaControl* _mediaControl = nullptr;
+IVMRWindowlessControl* _windowlessControl = nullptr;
+IBaseFilter* _baseFilter = nullptr;
+IPin* _pin = nullptr;
 bool _initialized = false;
-HWND _hwnd = NULL;
+HWND _hwnd = nullptr;
 
 LRESULT WINAPI WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
@@ -29,43 +29,62 @@ LRESULT WINAPI WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
    return 0;
 }
 
+void Webcam::FreeMedia(AM_MEDIA_TYPE* type)
+{
+   if (type == nullptr)
+      return;
+
+   if (type->cbFormat != NULL)
+      CoTaskMemFree(static_cast<PVOID>(type->pbFormat));
+
+   if (type->pUnk != nullptr)
+      type->pUnk->Release();
+
+   CoTaskMemFree(static_cast<PVOID>(type));
+}
+
+void Webcam::SetupWindow()
+{
+   WNDCLASS wc;
+   wc.style = CS_VREDRAW | CS_HREDRAW;
+   wc.lpfnWndProc = WndProc;
+   wc.cbClsExtra = 0;
+   wc.cbWndExtra = 0;
+   wc.hInstance = GetModuleHandle(nullptr);
+   wc.hIcon = LoadIcon(nullptr, IDI_APPLICATION);
+   wc.hCursor = LoadCursor(nullptr, IDC_ARROW);
+   wc.hbrBackground = reinterpret_cast<HBRUSH>(COLOR_SCROLLBAR + 1);
+   wc.lpszMenuName = nullptr;
+   wc.lpszClassName = L"WebcamClass";
+
+   RegisterClass(&wc);
+}
+
 HRESULT Webcam::Initialize(int width, int height)
 {
    _width = width;
    _height = height;
 
    // Create and register the Window Class
-   WNDCLASS wc;
-   wc.style = CS_VREDRAW | CS_HREDRAW;
-   wc.lpfnWndProc = WndProc;
-   wc.cbClsExtra = 0;
-   wc.cbWndExtra = 0;
-   wc.hInstance = GetModuleHandle(NULL);
-   wc.hIcon = LoadIcon(NULL, IDI_APPLICATION);
-   wc.hCursor = LoadCursor(NULL, IDC_ARROW);
-   wc.hbrBackground = (HBRUSH)(COLOR_SCROLLBAR + 1);
-   wc.lpszMenuName = 0;
-   wc.lpszClassName = L"WebcamClass";
+   SetupWindow();
 
-   RegisterClass(&wc);
-
-   HRESULT hr = CoCreateInstance(CLSID_FilterGraph, NULL, CLSCTX_INPROC_SERVER, IID_IGraphBuilder, (void **)&_graphBuilder);
+   auto hr = CoCreateInstance(CLSID_FilterGraph, nullptr, CLSCTX_INPROC_SERVER, IID_IGraphBuilder, reinterpret_cast<void **>(&_graphBuilder));
 
    if (FAILED(hr))
       return hr;
 
-   IBaseFilter* pBaseFilter = NULL;
-   ICreateDevEnum* pCreateDevEnum = NULL;
-   IEnumMediaTypes* pEnumMediaTypes = NULL;
-   IEnumMoniker* pEnumMoniker = NULL;
-   IEnumPins* pEnumPins = NULL;
-   IVMRFilterConfig* pFilterConfig = NULL;
-   IMoniker* pMoniker = NULL;
-   IAMStreamConfig* pStreamConfig = NULL;
+   IBaseFilter* pBaseFilter = nullptr;
+   ICreateDevEnum* pCreateDevEnum = nullptr;
+   IEnumMediaTypes* pEnumMediaTypes = nullptr;
+   IEnumMoniker* pEnumMoniker = nullptr;
+   IEnumPins* pEnumPins = nullptr;
+   IVMRFilterConfig* pFilterConfig = nullptr;
+   IMoniker* pMoniker = nullptr;
+   IAMStreamConfig* pStreamConfig = nullptr;
 
    __try
    {
-      hr = CoCreateInstance(CLSID_VideoMixingRenderer, NULL, CLSCTX_INPROC, IID_IBaseFilter, (void**)&pBaseFilter);
+      hr = CoCreateInstance(CLSID_VideoMixingRenderer, nullptr, CLSCTX_INPROC, IID_IBaseFilter, reinterpret_cast<void**>(&pBaseFilter));
       if (FAILED(hr))
          return hr;
 
@@ -73,7 +92,7 @@ HRESULT Webcam::Initialize(int width, int height)
       if (FAILED(hr))
          return hr;
 
-      hr = pBaseFilter->QueryInterface(IID_IVMRFilterConfig, (void**)&pFilterConfig);
+      hr = pBaseFilter->QueryInterface(IID_IVMRFilterConfig, reinterpret_cast<void**>(&pFilterConfig));
       if (FAILED(hr))
          return hr;
 
@@ -81,11 +100,11 @@ HRESULT Webcam::Initialize(int width, int height)
       if (FAILED(hr))
          return hr;
 
-      hr = pBaseFilter->QueryInterface(IID_IVMRWindowlessControl, (void**)&_windowlessControl);
+      hr = pBaseFilter->QueryInterface(IID_IVMRWindowlessControl, reinterpret_cast<void**>(&_windowlessControl));
       if (FAILED(hr))
          return hr;
 
-      hr = CoCreateInstance(CLSID_SystemDeviceEnum, NULL, CLSCTX_INPROC_SERVER, IID_ICreateDevEnum, (void**)&pCreateDevEnum);
+      hr = CoCreateInstance(CLSID_SystemDeviceEnum, nullptr, CLSCTX_INPROC_SERVER, IID_ICreateDevEnum, reinterpret_cast<void**>(&pCreateDevEnum));
       if (FAILED(hr))
          return hr;
 
@@ -102,7 +121,7 @@ HRESULT Webcam::Initialize(int width, int height)
       if (FAILED(hr))
          return hr;
 
-      hr = pMoniker->BindToObject(0, 0, IID_IBaseFilter, (void**)&_baseFilter);
+      hr = pMoniker->BindToObject(nullptr, nullptr, IID_IBaseFilter, reinterpret_cast<void**>(&_baseFilter));
       if (FAILED(hr))
          return hr;
 
@@ -118,67 +137,64 @@ HRESULT Webcam::Initialize(int width, int height)
       if (FAILED(hr))
          return hr;
 
-      hr = pEnumPins->Next(1, &_pin, NULL);
+      hr = pEnumPins->Next(1, &_pin, nullptr);
       if (FAILED(hr))
          return hr;
 
-      hr = _graphBuilder->QueryInterface(IID_IMediaControl, (void **)&_mediaControl);
+      hr = _graphBuilder->QueryInterface(IID_IMediaControl, reinterpret_cast<void **>(&_mediaControl));
       if (FAILED(hr))
          return hr;
 
-      AM_MEDIA_TYPE* type = NULL;
+      AM_MEDIA_TYPE* type = nullptr;
 
       hr = _pin->EnumMediaTypes(&pEnumMediaTypes);
       if (SUCCEEDED(hr))
       {
-         while (pEnumMediaTypes->Next(1, &type, 0) == S_OK)
+         while (pEnumMediaTypes->Next(1, &type, nullptr) == S_OK)
          {
             if (type->formattype == FORMAT_VideoInfo)
             {
-               VIDEOINFOHEADER *vih = (VIDEOINFOHEADER *)type->pbFormat;
+               auto videoInfoHeader = reinterpret_cast<VIDEOINFOHEADER *>(type->pbFormat);
 
-               if (vih->bmiHeader.biWidth == width && vih->bmiHeader.biHeight == height)
+               if (videoInfoHeader->bmiHeader.biWidth == width && videoInfoHeader->bmiHeader.biHeight == height)
                {
-                  hr = _pin->QueryInterface(IID_IAMStreamConfig, (void **)&pStreamConfig);
-                  if (SUCCEEDED(hr))
+                  hr = _pin->QueryInterface(IID_IAMStreamConfig, reinterpret_cast<void **>(&pStreamConfig));
+                  if (SUCCEEDED(hr) && type != nullptr)
                   {
-                     if (type != NULL)
-                     {
-                        hr = pStreamConfig->SetFormat(type);
-
-                        if (type != NULL)
-                        {
-                           if (type->cbFormat != NULL) CoTaskMemFree((PVOID)type->pbFormat);
-                           if (type->pUnk != NULL) type->pUnk->Release();
-                           CoTaskMemFree((PVOID)type);
-                        }
-                     }
+                     hr = pStreamConfig->SetFormat(type);
+                     FreeMedia(type);
                   }
+
                   break;
                }
 
-               if (type != NULL)
-               {
-                  if (type->cbFormat != NULL) CoTaskMemFree((PVOID)type->pbFormat);
-                  if (type->pUnk != NULL) type->pUnk->Release();
-                  CoTaskMemFree((PVOID)type);
-               }
+               FreeMedia(type);
             }
          }
       }
+
       _initialized = true;
    }
    __finally
    {
-      if (pBaseFilter) pBaseFilter->Release();
-      if (pCreateDevEnum) pCreateDevEnum->Release();
-      if (pEnumMediaTypes) pEnumMediaTypes->Release();
-      if (pEnumMoniker) pEnumMoniker->Release();
-      if (pEnumPins) pEnumPins->Release();
-      if (pFilterConfig) pFilterConfig->Release();
-      if (pMoniker) pMoniker->Release();
-      if (pStreamConfig) pStreamConfig->Release();
+      if (pBaseFilter)
+         pBaseFilter->Release();
+      if (pCreateDevEnum)
+         pCreateDevEnum->Release();
+      if (pEnumMediaTypes)
+         pEnumMediaTypes->Release();
+      if (pEnumMoniker)
+         pEnumMoniker->Release();
+      if (pEnumPins)
+         pEnumPins->Release();
+      if (pFilterConfig)
+         pFilterConfig->Release();
+      if (pMoniker)
+         pMoniker->Release();
+      if (pStreamConfig)
+         pStreamConfig->Release();
    }
+
    return hr;
 }
 
@@ -196,7 +212,8 @@ HRESULT Webcam::AttachToWindow(HWND hwnd)
    rcDest.top = 0;
    rcDest.bottom = _height;
    _windowlessControl->SetVideoClippingWindow(hwnd);
-   return _windowlessControl->SetVideoPosition(NULL, &rcDest);
+
+   return _windowlessControl->SetVideoPosition(nullptr, &rcDest);
 }
 
 HRESULT Webcam::Start()
@@ -229,23 +246,28 @@ HRESULT Webcam::Repaint()
    if (!_initialized || !_windowlessControl)
       return E_FAIL;
 
-   HDC hdc = GetDC(_hwnd);
+   auto hdc = GetDC(_hwnd);
    return _windowlessControl->RepaintVideo(_hwnd, hdc);
 }
 
 HRESULT Webcam::Terminate()
 {
-   HRESULT hr = Webcam::Stop();
+   auto hr = Stop();
 
    if (_pin)
    {
       _pin->Disconnect();
       _pin->Release();
    }
-   if (_graphBuilder) _graphBuilder->Release();
-   if (_mediaControl) _mediaControl->Release();
-   if (_windowlessControl) _windowlessControl->Release();
-   if (_baseFilter) _baseFilter->Release();
+
+   if (_graphBuilder)
+      _graphBuilder->Release();
+   if (_mediaControl)
+      _mediaControl->Release();
+   if (_windowlessControl)
+      _windowlessControl->Release();
+   if (_baseFilter)
+      _baseFilter->Release();
 
    return hr;
 }

@@ -43,10 +43,10 @@ protected:
    }
 };
 
-ref class Window1 : Window
+ref class WebcamWindow : Window
 {
 public:
-   Window1()
+   WebcamWindow()
    {
       DockPanel^ panel = gcnew DockPanel();
       MyHwndHost^ host = gcnew MyHwndHost();
@@ -62,7 +62,7 @@ public:
       Webcam::Start();
    }
 
-   ~Window1()
+   ~WebcamWindow()
    {
       Webcam::Terminate();
    }
