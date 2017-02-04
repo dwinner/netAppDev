@@ -4,7 +4,7 @@
         Title="Menu" Height="321" Width="244">
     <Grid>
         <StackPanel Margin="5" Button.Click="ButtonClick">
-            <Button>OneTriangleMesh</Button>
+            <Button Content="OneTriangleMesh" />
             <Button>CubeMesh</Button>
             <Button>PersonIn3D</Button>
             <Button>Materials</Button>
