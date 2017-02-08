@@ -6,7 +6,7 @@
         <StackPanel Margin="5" Button.Click="ButtonClick">
             <Button Content="OneTriangleMesh" />
             <Button Content="CubeMesh"/>
-            <Button>PersonIn3D</Button>
+            <Button Content="PersonIn3D"/>
             <Button>Materials</Button>
             <Button>TextureMapping</Button>
             <Button>VideoIn3D</Button>
