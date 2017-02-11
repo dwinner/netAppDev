@@ -1,17 +1,10 @@
-
 namespace DrawingIn3D
 {
-   /// <summary>
-   /// Interaction logic for TextureMapping.xaml
-   /// </summary>
-
-   public partial class TextureMapping : System.Windows.Window
+   public partial class TextureMapping
    {
-
       public TextureMapping()
       {
          InitializeComponent();
       }
-
    }
 }

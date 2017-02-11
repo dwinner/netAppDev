@@ -5,15 +5,15 @@
     <Grid>
         <StackPanel Margin="5" Button.Click="ButtonClick">
             <Button Content="OneTriangleMesh" />
-            <Button Content="CubeMesh"/>
-            <Button Content="PersonIn3D"/>
-            <Button>Materials</Button>
-            <Button>TextureMapping</Button>
-            <Button>VideoIn3D</Button>
-            <Button>HitTesting</Button>
-            <Button>AnimatedRing</Button>
-            <Button>TrackballRing</Button>
-            <Button>ElementsIn3D</Button>
+            <Button Content="CubeMesh" />
+            <Button Content="PersonIn3D" />
+            <Button Content="Materials" />
+            <Button Content="TextureMapping" />
+            <Button Content="VideoIn3D" />
+            <Button Content="HitTesting" />
+            <Button Content="AnimatedRing" />
+            <Button Content="TrackballRing" />
+            <Button Content="ElementsIn3D" />
         </StackPanel>
     </Grid>
 </Window>

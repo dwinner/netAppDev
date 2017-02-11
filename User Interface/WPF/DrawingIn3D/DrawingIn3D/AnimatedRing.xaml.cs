@@ -1,17 +1,10 @@
-
 namespace DrawingIn3D
 {
-   /// <summary>
-   /// Interaction logic for Materials.xaml
-   /// </summary>
-
-   public partial class AnimatedRing : System.Windows.Window
+   public partial class AnimatedRing
    {
-
       public AnimatedRing()
       {
          InitializeComponent();
       }
-
    }
 }

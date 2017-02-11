@@ -2,35 +2,27 @@ using System.Windows;
 using System.Windows.Media.Media3D;
 
 namespace DrawingIn3D
-{
-   /// <summary>
-   /// Interaction logic for Materials.xaml
-   /// </summary>
-
-   public partial class Materials : System.Windows.Window
+{   
+   public partial class Materials
    {
-
       public Materials()
       {
          InitializeComponent();
       }
-      private void chk_Click(object sender, RoutedEventArgs e)
+
+      private void OnChangeMaterial(object sender, RoutedEventArgs e)
       {
-         materialsGroup.Children.Clear();
-         if (chkBackground.IsChecked == true)
-            rect.Visibility = Visibility.Visible;
-         else
-            rect.Visibility = Visibility.Hidden;
+         MaterialsGroup.Children.Clear();
+         Rect.Visibility = BackgroundCheckBox.IsChecked == true ? Visibility.Visible : Visibility.Hidden;
 
-         if (chkDiffuse.IsChecked == true)
-            materialsGroup.Children.Add((Material)FindResource("diffuse"));
+         if (DiffuseCheckBox.IsChecked == true)
+            MaterialsGroup.Children.Add((Material) FindResource("Diffuse"));
 
-         if (chkSpecular.IsChecked == true)
-            materialsGroup.Children.Add((Material)FindResource("specular"));
+         if (SpecularCheckBox.IsChecked == true)
+            MaterialsGroup.Children.Add((Material) FindResource("Specular"));
 
-         if (chkEmissive.IsChecked == true)
-            materialsGroup.Children.Add((Material)FindResource("emissive"));
-
+         if (EmissiveCheckBox.IsChecked == true)
+            MaterialsGroup.Children.Add((Material) FindResource("Emissive"));
       }
    }
 }

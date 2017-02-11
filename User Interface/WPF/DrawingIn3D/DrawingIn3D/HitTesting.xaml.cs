@@ -1,5 +1,4 @@
 using System;
-using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
@@ -7,63 +6,64 @@ using System.Windows.Media.Media3D;
 
 namespace DrawingIn3D
 {
-   /// <summary>
-   /// Interaction logic for Materials.xaml
-   /// </summary>
-
-   public partial class HitTesting : System.Windows.Window
+   public partial class HitTesting
    {
-
       public HitTesting()
       {
          InitializeComponent();
       }
 
-      private void ringVisual_MouseDown(object sender, MouseButtonEventArgs e)
+      private void OnRingVisualMouseDown(object sender, MouseButtonEventArgs e)
       {
-         Point location = e.GetPosition(viewport);
+         var location = e.GetPosition(Viewport);
+         var meshHitResult = (RayMeshGeometry3DHitTestResult) VisualTreeHelper.HitTest(Viewport, location);
+         AxisRotation.Axis = new Vector3D(
+            -meshHitResult.PointHit.Y, meshHitResult.PointHit.X, 0);
 
-         RayMeshGeometry3DHitTestResult meshHitResult = (RayMeshGeometry3DHitTestResult)VisualTreeHelper.HitTest(viewport, location);
+         var animation = new DoubleAnimation
+         {
+            To = 40,
+            DecelerationRatio = 1,
+            Duration = TimeSpan.FromSeconds(0.15),
+            AutoReverse = true
+         };
 
-         axisRotation.Axis = new Vector3D(
-                  -meshHitResult.PointHit.Y, meshHitResult.PointHit.X, 0);
-
-         DoubleAnimation animation = new DoubleAnimation();
-         animation.To = 40;
-         animation.DecelerationRatio = 1;
-         animation.Duration = TimeSpan.FromSeconds(0.15);
-         animation.AutoReverse = true;
-         axisRotation.BeginAnimation(AxisAngleRotation3D.AngleProperty, animation);
+         AxisRotation.BeginAnimation(AxisAngleRotation3D.AngleProperty, animation);
       }
 
-      // Alternative implementation using the Viewport.MouseDown event.
-      private void viewport_MouseDown(object sender, MouseButtonEventArgs e)
+/*
+      private void OnViewportMouseDown(object sender, MouseButtonEventArgs e)
       {
-         Point location = e.GetPosition(viewport);
-         HitTestResult hitResult = VisualTreeHelper.HitTest(viewport, location);
+         var location = e.GetPosition(viewport);
+         var hitResult = VisualTreeHelper.HitTest(viewport, location);
 
-         if (hitResult != null && hitResult.VisualHit == ringVisual)
+         if (hitResult != null && Equals(hitResult.VisualHit, ringVisual))
          {
             // Hit the ring.
          }
 
-         RayMeshGeometry3DHitTestResult meshHitResult = hitResult as RayMeshGeometry3DHitTestResult;
-         if (meshHitResult != null && meshHitResult.ModelHit == ringModel)
+         var meshHitResult = hitResult as RayMeshGeometry3DHitTestResult;
+         if (meshHitResult != null && Equals(meshHitResult.ModelHit, ringModel))
          {
             // Hit the ring.
          }
-         if (meshHitResult != null && meshHitResult.MeshHit == ringMesh)
+
+         if (meshHitResult != null && Equals(meshHitResult.MeshHit, ringMesh))
          {
             axisRotation.Axis = new Vector3D(
-                -meshHitResult.PointHit.Y, meshHitResult.PointHit.X, 0);
+               -meshHitResult.PointHit.Y, meshHitResult.PointHit.X, 0);
 
-            DoubleAnimation animation = new DoubleAnimation();
-            animation.To = 40;
-            animation.DecelerationRatio = 1;
-            animation.Duration = TimeSpan.FromSeconds(0.15);
-            animation.AutoReverse = true;
+            var animation = new DoubleAnimation
+            {
+               To = 40,
+               DecelerationRatio = 1,
+               Duration = TimeSpan.FromSeconds(0.15),
+               AutoReverse = true
+            };
+
             axisRotation.BeginAnimation(AxisAngleRotation3D.AngleProperty, animation);
          }
       }
+*/
    }
 }
