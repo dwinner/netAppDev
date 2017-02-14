@@ -3,7 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
 VisualStudioVersion = 12.0.40629.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "HostingWin32Webcam", "HostingWin32Webcam\HostingWin32Webcam.vcxproj", "{D7415997-F7AC-468C-A03F-165AEAEA62B5}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Win32", "Win32", "{B4755C64-EB5C-4CD8-B005-4F01A5DC62FE}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Win32HostingWPF", "Win32\Hosting WPF in Win32\Win32Window.vcxproj", "{8625A303-646D-4D87-BC14-29CD4D079CD9}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "HostingWin32Webcam", "Win32\HostingWin32Webcam\HostingWin32Webcam.vcxproj", "{D7415997-F7AC-468C-A03F-165AEAEA62B5}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Win32HostingWPF", "Win32\Hosting WPF in Win32 with Resizing\Resizing.vcxproj", "{5044DA49-95D7-438B-AEDB-2759A93B35B6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,12 +17,25 @@ Global
 		Release|Win32 = Release|Win32
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{8625A303-646D-4D87-BC14-29CD4D079CD9}.Debug|Win32.ActiveCfg = Debug|Win32
+		{8625A303-646D-4D87-BC14-29CD4D079CD9}.Debug|Win32.Build.0 = Debug|Win32
+		{8625A303-646D-4D87-BC14-29CD4D079CD9}.Release|Win32.ActiveCfg = Release|Win32
+		{8625A303-646D-4D87-BC14-29CD4D079CD9}.Release|Win32.Build.0 = Release|Win32
 		{D7415997-F7AC-468C-A03F-165AEAEA62B5}.Debug|Win32.ActiveCfg = Debug|Win32
 		{D7415997-F7AC-468C-A03F-165AEAEA62B5}.Debug|Win32.Build.0 = Debug|Win32
 		{D7415997-F7AC-468C-A03F-165AEAEA62B5}.Release|Win32.ActiveCfg = Release|Win32
 		{D7415997-F7AC-468C-A03F-165AEAEA62B5}.Release|Win32.Build.0 = Release|Win32
+		{5044DA49-95D7-438B-AEDB-2759A93B35B6}.Debug|Win32.ActiveCfg = Debug|Win32
+		{5044DA49-95D7-438B-AEDB-2759A93B35B6}.Debug|Win32.Build.0 = Debug|Win32
+		{5044DA49-95D7-438B-AEDB-2759A93B35B6}.Release|Win32.ActiveCfg = Release|Win32
+		{5044DA49-95D7-438B-AEDB-2759A93B35B6}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{8625A303-646D-4D87-BC14-29CD4D079CD9} = {B4755C64-EB5C-4CD8-B005-4F01A5DC62FE}
+		{D7415997-F7AC-468C-A03F-165AEAEA62B5} = {B4755C64-EB5C-4CD8-B005-4F01A5DC62FE}
+		{5044DA49-95D7-438B-AEDB-2759A93B35B6} = {B4755C64-EB5C-4CD8-B005-4F01A5DC62FE}
 	EndGlobalSection
 EndGlobal
