@@ -40,7 +40,7 @@ protected:
    {
       // Just a formality:
       ::DestroyWindow((HWND)hwnd.Handle.ToInt32());
-   }
+   }   
 };
 
 ref class WebcamWindow : Window
@@ -65,5 +65,5 @@ public:
    ~WebcamWindow()
    {
       Webcam::Terminate();
-   }
+   }   
 };

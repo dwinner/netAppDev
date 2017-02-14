@@ -2,11 +2,8 @@
 // Modified version of the "Meshes" sample from the DirectX SDK.
 // Copyright (c) Microsoft Corporation. All rights reserved.
 //-----------------------------------------------------------------------------
-#include "stdafx.h"
 #include <Windows.h>
 #include <d3dx9.h>
-#include <timeapi.h>
-#include <winuser.h>
 
 //-----------------------------------------------------------------------------
 // Global variables
@@ -70,8 +67,7 @@ HRESULT InitGeometry()
                                    &pD3DXMtrlBuffer, NULL, &g_dwNumMaterials,
                                    &g_pMesh ) ) )
     {
-        //MessageBox(  );
-       MessageBoxA(NULL, "Could not find tiger.x", "Meshes.exe", MB_OK);
+        MessageBox( NULL, L"Could not find tiger.x", L"Meshes.exe", MB_OK );
         return E_FAIL;
     }
 
@@ -112,7 +108,7 @@ HRESULT InitGeometry()
                                                         strTexture,
                                                         &g_pMeshTextures[i] ) ) )
                 {
-                    MessageBoxA( NULL, "Could not find texture map", "Meshes.exe", MB_OK );
+                    MessageBox( NULL, L"Could not find texture map", L"Meshes.exe", MB_OK );
                 }
             }
         }
@@ -141,7 +137,7 @@ extern "C" __declspec(dllexport) IDirect3DSurface9* WINAPI Initialize(HWND hwnd,
 		        true, // lockable (true for compatibility with Windows XP.  False is preferred for Windows Vista or later)
 		        &g_pd3dSurface, NULL)))
 		    {
-				MessageBoxA(NULL, "NULL!", "Missing File", 0);
+				MessageBox(NULL, L"NULL!", L"Missing File", 0);
 		        return NULL;
 		    }
 		    g_pd3dDevice->SetRenderTarget(0, g_pd3dSurface);
