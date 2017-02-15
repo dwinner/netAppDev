@@ -2,17 +2,17 @@ using System.Windows;
 
 namespace HostingActiveXviaXaml
 {
-   public partial class Window1 : Window
+   public partial class Window1
    {
       public Window1()
       {
          InitializeComponent();
       }
 
-      void connectButton_Click(object sender, RoutedEventArgs e)
+      private void OnConnect(object sender, RoutedEventArgs e)
       {
-         termServ.Server = serverBox.Text;
-         termServ.Connect();
+         TermServ.Server = ServerBox.Text;
+         TermServ.Connect();
       }
    }
 }
