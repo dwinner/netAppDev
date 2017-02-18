@@ -1,7 +1,7 @@
 ﻿<Application x:Class="UsingSystemColors.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:UsingSystemColors"
+             xmlns:valueConverters="clr-namespace:ValueConverters;assembly=ValueConverters"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
         <Style x:Key="PieStyle" TargetType="{x:Type ProgressBar}">
@@ -29,8 +29,8 @@
 
                         <!-- Resources -->
                         <ControlTemplate.Resources>
-                            <local:ValueMinMaxToPointConverter x:Key="Converter1" />
-                            <local:ValueMinMaxToIsLargeArcConverter x:Key="Converter2" />
+                            <valueConverters:ValueMinMaxToPointConverter x:Key="Converter1" />
+                            <valueConverters:ValueMinMaxToIsLargeArcConverter x:Key="Converter2" />
                         </ControlTemplate.Resources>
 
                         <!-- Visual tree -->

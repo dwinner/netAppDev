@@ -2,7 +2,7 @@
 using System.Globalization;
 using System.Windows.Data;
 
-namespace UsingSystemColors
+namespace ValueConverters
 {
    public sealed class ValueMinMaxToIsLargeArcConverter : IMultiValueConverter
    {

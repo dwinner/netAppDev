@@ -3,7 +3,7 @@ using System.Globalization;
 using System.Windows;
 using System.Windows.Data;
 
-namespace UsingSystemColors
+namespace ValueConverters
 {
    public sealed class ValueMinMaxToPointConverter : IMultiValueConverter
    {
@@ -30,7 +30,7 @@ namespace UsingSystemColors
          var x = 10 + 10 * Math.Cos(current);
          var y = 10 + 10 * Math.Sin(current);
 
-         return new Point(x, y);
+         return new Point(x, y);         
       }
 
       public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
