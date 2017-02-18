@@ -1,50 +1,52 @@
-﻿using MvvmPrimer.Annotations;
-using MvvmPrimer.Infrastructure;
+﻿using MvvmPrimer.Infrastructure;
 using MvvmPrimer.Models;
 
 namespace MvvmPrimer.ViewModels
 {
 	public sealed class PhoneViewModel : ViewModelBase
 	{
-		private string _company;
-		private int _price;
-		private string _title;		
-
-		public PhoneViewModel([NotNull] Phone phone)
+		public PhoneViewModel()
 		{
-			Title = phone.Title;
-			Company = phone.Company;
-			Price = phone.Price;
+			Phone = new Phone {Company = "New company", Price = 0, Title = "New title"};
+		}
+
+		public PhoneViewModel(Phone phone)
+		{
+			Phone = phone;
 		}
 
 		public string Title
 		{
-			get { return _title; }
+			get { return Phone.Title; }
 			set
 			{
-				_title = value;
+				Phone.Title = value;
 				OnPropertyChanged();
 			}
 		}
 
 		public string Company
 		{
-			get { return _company; }
+			get { return Phone.Company; }
 			set
 			{
-				_company = value;
+				Phone.Company = value;
 				OnPropertyChanged();
 			}
 		}
 
 		public int Price
 		{
-			get { return _price; }
+			get { return Phone.Price; }
 			set
 			{
-				_price = value;
+				Phone.Price = value;
 				OnPropertyChanged();
 			}
 		}
+
+		public Phone Phone { get; }
+
+		public override string ToString() => Phone.ToString();
 	}
 }

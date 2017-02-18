@@ -1,4 +1,5 @@
-﻿using MvvmPrimer.ViewModels;
+﻿using Microsoft.Practices.Unity;
+using MvvmPrimer.ViewModels;
 
 namespace MvvmPrimer
 {
@@ -7,7 +8,12 @@ namespace MvvmPrimer
 		public MainWindow()
 		{
 			InitializeComponent();
-			DataContext = new ApplicationViewModel();
+		}
+
+		[Dependency]
+		public ApplicationViewModel ViewModel
+		{
+			set { DataContext = value; }
 		}
 	}
 }

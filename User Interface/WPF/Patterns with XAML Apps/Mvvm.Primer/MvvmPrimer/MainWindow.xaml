@@ -4,10 +4,12 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:system="clr-namespace:System;assembly=mscorlib"
+        xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
         xmlns:viewModels="clr-namespace:MvvmPrimer.ViewModels"
         mc:Ignorable="d"
         Title="Mvvm-primer" Height="350" Width="525"
         d:DataContext="{d:DesignInstance viewModels:ApplicationViewModel}">
+
     <Window.Resources>
         <system:Double x:Key="SharedFontSize">14</system:Double>
         <Style TargetType="TextBlock">
@@ -17,13 +19,26 @@
             <Setter Property="FontSize" Value="{StaticResource SharedFontSize}" />
         </Style>
     </Window.Resources>
+
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="0.8*" />
         </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="25" />
+            <RowDefinition Height="0.2*" />
+            <RowDefinition Height="0.2*" />
+        </Grid.RowDefinitions>
 
-        <ListBox Grid.Column="0" ItemsSource="{Binding Phones}"
+        <Menu Grid.ColumnSpan="2" Grid.Row="0" Grid.Column="0">
+            <MenuItem Header="File">
+                <MenuItem Header="Open" Command="{Binding OpenCommand}" />
+                <MenuItem Header="Save" Command="{Binding SaveCommand}" />
+            </MenuItem>
+        </Menu>
+
+        <ListBox Grid.Column="0" Grid.Row="1" ItemsSource="{Binding Phones}"
                  SelectedItem="{Binding SelectedPhone}">
             <ListBox.ItemTemplate>
                 <DataTemplate>
@@ -36,7 +51,28 @@
             </ListBox.ItemTemplate>
         </ListBox>
 
-        <StackPanel Grid.Column="1" DataContext="{Binding SelectedPhone}">
+        <StackPanel Grid.Row="2" Grid.Column="0" Orientation="Horizontal" HorizontalAlignment="Stretch">
+            <StackPanel.Resources>
+                <Style x:Key="SharedButtonDimensions" TargetType="Button">
+                    <Setter Property="Width" Value="20" />
+                    <Setter Property="Height" Value="20" />
+                </Style>
+            </StackPanel.Resources>
+            <Button Command="{Binding AddCommand}" Content="+"
+                    Style="{StaticResource SharedButtonDimensions}" />
+            <Button Command="{Binding RemoveCommand}" CommandParameter="{Binding SelectedPhone}" Content="-"
+                    Style="{StaticResource SharedButtonDimensions}" />
+            <Button Content="2x" Style="{StaticResource SharedButtonDimensions}">
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="MouseDoubleClick">
+                        <i:InvokeCommandAction Command="{Binding DoubleCommand}"
+                                               CommandParameter="{Binding SelectedPhone}" />
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+            </Button>
+        </StackPanel>
+
+        <StackPanel Grid.Column="1" Grid.Row="1" Grid.RowSpan="2" DataContext="{Binding SelectedPhone}">
             <TextBlock Text="Selected element" />
             <TextBlock Text="Model" />
             <TextBox Text="{Binding Title, UpdateSourceTrigger=PropertyChanged}" />

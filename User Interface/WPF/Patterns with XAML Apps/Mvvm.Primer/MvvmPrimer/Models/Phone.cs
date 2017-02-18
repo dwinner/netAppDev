@@ -7,5 +7,8 @@
 		public string Company { get; set; }
 
 		public int Price { get; set; }
+
+		public override string ToString()
+			=> $"{nameof(Title)}: {Title}, {nameof(Company)}: {Company}, {nameof(Price)}: {Price}";
 	}
 }
