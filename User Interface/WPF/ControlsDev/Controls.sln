@@ -1,6 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
+# Visual Studio 2013
+VisualStudioVersion = 12.0.40629.0
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ControlTemplates", "ControlTemplates", "{9B0A88C5-DDE8-44AE-A66C-47B4A2C995C2}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CustomControls", "CustomControls", "{D2B3E01A-BE0E-4C27-99D7-C7B6A348E0B3}"
@@ -14,6 +16,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CustomControls", "CustomControls\CustomControls\CustomControls.csproj", "{98A994BA-5A6D-4E1B-BDF4-C1662C99CB1A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CustomControlsClient", "CustomControls\CustomControlsClient\CustomControlsClient.csproj", "{6E16DE9C-E4CD-4E4F-9057-759880D82D19}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileInputBoxSample", "CustomControls\FileInputBoxSample\FileInputBoxSample.csproj", "{8C8229A5-7C49-44A4-BFF7-8789031672CE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -41,6 +45,10 @@ Global
 		{6E16DE9C-E4CD-4E4F-9057-759880D82D19}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6E16DE9C-E4CD-4E4F-9057-759880D82D19}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6E16DE9C-E4CD-4E4F-9057-759880D82D19}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8C8229A5-7C49-44A4-BFF7-8789031672CE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8C8229A5-7C49-44A4-BFF7-8789031672CE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8C8229A5-7C49-44A4-BFF7-8789031672CE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8C8229A5-7C49-44A4-BFF7-8789031672CE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -51,5 +59,6 @@ Global
 		{89EDB283-3CB3-4FD2-9324-E5C2CE838C86} = {9B0A88C5-DDE8-44AE-A66C-47B4A2C995C2}
 		{98A994BA-5A6D-4E1B-BDF4-C1662C99CB1A} = {D2B3E01A-BE0E-4C27-99D7-C7B6A348E0B3}
 		{6E16DE9C-E4CD-4E4F-9057-759880D82D19} = {D2B3E01A-BE0E-4C27-99D7-C7B6A348E0B3}
+		{8C8229A5-7C49-44A4-BFF7-8789031672CE} = {D2B3E01A-BE0E-4C27-99D7-C7B6A348E0B3}
 	EndGlobalSection
 EndGlobal
