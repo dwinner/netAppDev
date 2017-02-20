@@ -1,9 +1,19 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
+# Visual Studio 2013
+VisualStudioVersion = 12.0.40629.0
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LayoutPanels", "LayoutPanels\LayoutPanels.csproj", "{9C2EE061-1D03-4EA5-BCB3-479EED3B2F22}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PinnedPanesApp", "PinnedPanesApp\PinnedPanesApp.csproj", "{286866F1-BFB4-4FCC-939B-D1A1F87A9C92}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleCanvasSample", "SimpleCanvasSample\SimpleCanvasSample.csproj", "{435C1529-E030-4FF4-8804-9D119AB9E4DF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleStackPanelSample", "SimpleStackPanelSample\SimpleStackPanelSample.csproj", "{5E81A8ED-3A99-48AE-9172-15B5D47A44A2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OverlapPanelSample", "OverlapPanelSample\OverlapPanelSample.csproj", "{8B021191-5927-44B2-91BE-5288F4D1F58F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FunCanvasSample", "FunCanvasSample\FunCanvasSample.csproj", "{9DDB5987-54AD-411B-A4CA-0956D501AC1C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -19,6 +29,22 @@ Global
 		{286866F1-BFB4-4FCC-939B-D1A1F87A9C92}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{286866F1-BFB4-4FCC-939B-D1A1F87A9C92}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{286866F1-BFB4-4FCC-939B-D1A1F87A9C92}.Release|Any CPU.Build.0 = Release|Any CPU
+		{435C1529-E030-4FF4-8804-9D119AB9E4DF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{435C1529-E030-4FF4-8804-9D119AB9E4DF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{435C1529-E030-4FF4-8804-9D119AB9E4DF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{435C1529-E030-4FF4-8804-9D119AB9E4DF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5E81A8ED-3A99-48AE-9172-15B5D47A44A2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5E81A8ED-3A99-48AE-9172-15B5D47A44A2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5E81A8ED-3A99-48AE-9172-15B5D47A44A2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5E81A8ED-3A99-48AE-9172-15B5D47A44A2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8B021191-5927-44B2-91BE-5288F4D1F58F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8B021191-5927-44B2-91BE-5288F4D1F58F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8B021191-5927-44B2-91BE-5288F4D1F58F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8B021191-5927-44B2-91BE-5288F4D1F58F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9DDB5987-54AD-411B-A4CA-0956D501AC1C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9DDB5987-54AD-411B-A4CA-0956D501AC1C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9DDB5987-54AD-411B-A4CA-0956D501AC1C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9DDB5987-54AD-411B-A4CA-0956D501AC1C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
