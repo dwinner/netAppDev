@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Multitouch", "Multitouch\Mu
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AttachedEventSample", "AttachedEventSample\AttachedEventSample.csproj", "{DF1093A0-E885-4A80-98AF-C3206D27A75D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ListViewDnDSample", "ListViewDnDSample\ListViewDnDSample.csproj", "{CE930F1E-F4AB-4E03-B0AD-D67DFFB69B8B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -49,6 +51,16 @@ Global
 		{DF1093A0-E885-4A80-98AF-C3206D27A75D}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{DF1093A0-E885-4A80-98AF-C3206D27A75D}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{DF1093A0-E885-4A80-98AF-C3206D27A75D}.Release|x86.ActiveCfg = Release|Any CPU
+		{CE930F1E-F4AB-4E03-B0AD-D67DFFB69B8B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CE930F1E-F4AB-4E03-B0AD-D67DFFB69B8B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CE930F1E-F4AB-4E03-B0AD-D67DFFB69B8B}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{CE930F1E-F4AB-4E03-B0AD-D67DFFB69B8B}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{CE930F1E-F4AB-4E03-B0AD-D67DFFB69B8B}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{CE930F1E-F4AB-4E03-B0AD-D67DFFB69B8B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CE930F1E-F4AB-4E03-B0AD-D67DFFB69B8B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CE930F1E-F4AB-4E03-B0AD-D67DFFB69B8B}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{CE930F1E-F4AB-4E03-B0AD-D67DFFB69B8B}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{CE930F1E-F4AB-4E03-B0AD-D67DFFB69B8B}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
