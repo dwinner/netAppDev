@@ -27,6 +27,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SystemTrayApp", "SystemTray
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ToastNotifications", "ToastNotifications\ToastNotifications.csproj", "{FAD329F7-AE4B-40A3-931F-9BDA5BCAF7CE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BitmapFromVisual", "BitmapFromVisual\BitmapFromVisual.csproj", "{8369F1B6-AAEE-48D5-A9AF-420486B19E39}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -147,6 +149,16 @@ Global
 		{FAD329F7-AE4B-40A3-931F-9BDA5BCAF7CE}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{FAD329F7-AE4B-40A3-931F-9BDA5BCAF7CE}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{FAD329F7-AE4B-40A3-931F-9BDA5BCAF7CE}.Release|x86.ActiveCfg = Release|Any CPU
+		{8369F1B6-AAEE-48D5-A9AF-420486B19E39}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8369F1B6-AAEE-48D5-A9AF-420486B19E39}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8369F1B6-AAEE-48D5-A9AF-420486B19E39}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{8369F1B6-AAEE-48D5-A9AF-420486B19E39}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{8369F1B6-AAEE-48D5-A9AF-420486B19E39}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{8369F1B6-AAEE-48D5-A9AF-420486B19E39}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8369F1B6-AAEE-48D5-A9AF-420486B19E39}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8369F1B6-AAEE-48D5-A9AF-420486B19E39}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{8369F1B6-AAEE-48D5-A9AF-420486B19E39}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{8369F1B6-AAEE-48D5-A9AF-420486B19E39}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
