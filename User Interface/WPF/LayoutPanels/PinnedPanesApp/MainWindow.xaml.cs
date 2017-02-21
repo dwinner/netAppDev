@@ -17,9 +17,9 @@ namespace PinnedPanesApp
          InitializeComponent();
 
          // Initialize the dummy columns used when docking:
-         _column1CloneForLayer0 = new ColumnDefinition {SharedSizeGroup = "column1"};
-         _column2CloneForLayer0 = new ColumnDefinition {SharedSizeGroup = "column2"};
-         _column2CloneForLayer1 = new ColumnDefinition {SharedSizeGroup = "column2"};
+         _column1CloneForLayer0 = new ColumnDefinition { SharedSizeGroup = "column1" };
+         _column2CloneForLayer0 = new ColumnDefinition { SharedSizeGroup = "column2" };
+         _column2CloneForLayer1 = new ColumnDefinition { SharedSizeGroup = "column2" };
       }
 
       // Toggle between docked and undocked states (Pane 1)

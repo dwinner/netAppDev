@@ -1,8 +1,8 @@
-﻿using System.ComponentModel;
+﻿using PostSharp.Patterns.Contracts;
+using System.ComponentModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using PostSharp.Patterns.Contracts;
 
 namespace SimpleCanvasSample
 {
@@ -27,7 +27,7 @@ namespace SimpleCanvasSample
       [AttachedPropertyBrowsableForChildren]
       public static double GetTop([Required] DependencyObject element)
       {
-         return (double) element.GetValue(TopProperty);
+         return (double)element.GetValue(TopProperty);
       }
 
       [TypeConverter(typeof(LengthConverter))]
@@ -41,7 +41,7 @@ namespace SimpleCanvasSample
       [AttachedPropertyBrowsableForChildren]
       public static double GetLeft([Required] DependencyObject element)
       {
-         return (double) element.GetValue(LeftProperty);
+         return (double)element.GetValue(LeftProperty);
       }
 
       protected override Size MeasureOverride(Size availableSize)

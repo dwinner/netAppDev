@@ -20,7 +20,7 @@ namespace FunCanvasSample
 
       public string Face
       {
-         get { return (string) GetValue(FaceProperty); }
+         get { return (string)GetValue(FaceProperty); }
          set { SetValue(FaceProperty, value); }
       }
    }

@@ -16,7 +16,7 @@ namespace SimpleStackPanelSample
       /// </summary>
       public Orientation Orientation
       {
-         get { return (Orientation) GetValue(OrientationProperty); }
+         get { return (Orientation)GetValue(OrientationProperty); }
          set { SetValue(OrientationProperty, value); }
       }
 

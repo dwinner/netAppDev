@@ -18,7 +18,7 @@ namespace OverlapPanelSample
       /// </summary>
       public Orientation Orientation
       {
-         get { return (Orientation) GetValue(OrientationProperty); }
+         get { return (Orientation)GetValue(OrientationProperty); }
          set { SetValue(OrientationProperty, value); }
       }
 
@@ -66,9 +66,9 @@ namespace OverlapPanelSample
          // места поровну на всех потомков                 
          var overlap = Orientation == Orientation.Vertical
             ? (finalSize.Height > _totalChildrenSize
-               // Если нам выделили места больше, чем _totalChildrenSize, то отрицательное перекрытие означает растяжение
+            // Если нам выделили места больше, чем _totalChildrenSize, то отрицательное перекрытие означает растяжение
                ? (_totalChildrenSize - finalSize.Height) / Children.Count
-               // В этом случае DesiredSize дает фактический меньший размер
+            // В этом случае DesiredSize дает фактический меньший размер
                : (_totalChildrenSize - DesiredSize.Height) / Children.Count)
             : (finalSize.Width > _totalChildrenSize
                ? (_totalChildrenSize - finalSize.Width) / Children.Count

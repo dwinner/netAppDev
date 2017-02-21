@@ -21,19 +21,19 @@ namespace FunCanvasSample
 
       public double AngleIncrement
       {
-         get { return (double) GetValue(AngleIncrementProperty); }
+         get { return (double)GetValue(AngleIncrementProperty); }
          set { SetValue(AngleIncrementProperty, value); }
       }
 
       public Orientation Orientation
       {
-         get { return (Orientation) GetValue(OrientationProperty); }
+         get { return (Orientation)GetValue(OrientationProperty); }
          set { SetValue(OrientationProperty, value); }
       }
 
       public double Spacing
       {
-         get { return (double) GetValue(SpacingProperty); }
+         get { return (double)GetValue(SpacingProperty); }
          set { SetValue(SpacingProperty, value); }
       }
 
@@ -77,9 +77,9 @@ namespace FunCanvasSample
       {
          var angle = Children.Count % 2 != 0
             // Нечетное, значит, угол среднего потомка равен 0 
-            ? -AngleIncrement * ((double) Children.Count / 2)
+            ? -AngleIncrement * ((double)Children.Count / 2)
             // Четное, два средних потомка отстоят на половину AngleIncrement по разные стороны от 0
-            : -AngleIncrement * ((double) Children.Count / 2) + AngleIncrement / 2;
+            : -AngleIncrement * ((double)Children.Count / 2) + AngleIncrement / 2;
 
          // Поворачиваем на 90 градусов, если ориентация вертикальная
          if (Orientation == Orientation.Vertical)
