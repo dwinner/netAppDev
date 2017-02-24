@@ -1,5 +1,5 @@
 ﻿using System.Windows;
-using SQLiteApp.Models;
+using SQLiteApp.ViewModels;
 
 namespace SQLiteApp
 {
@@ -15,9 +15,6 @@ namespace SQLiteApp
 
 		public Phone Phone { get; }
 
-		private void OnAccept(object sender, RoutedEventArgs e)
-		{
-			DialogResult = true;
-		}
+		private void OnAccept(object sender, RoutedEventArgs e) => DialogResult = true;
 	}
 }

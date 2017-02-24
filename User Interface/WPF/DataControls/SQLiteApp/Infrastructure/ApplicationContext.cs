@@ -1,5 +1,5 @@
 ﻿using System.Data.Entity;
-using SQLiteApp.Models;
+using SQLiteApp.ViewModels;
 
 namespace SQLiteApp.Infrastructure
 {

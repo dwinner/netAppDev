@@ -5,14 +5,14 @@ namespace FirstsStepsRUI.ViewModels
 {
    public class PlaceHolderViewModel : ReactiveObject, IRoutableViewModel
    {
-      public IScreen HostScreen { get; protected set; }
+      public IScreen HostScreen { get; private set; }
 
       public string UrlPathSegment
       {
          get { return "Placeholder"; }
       }
 
-      public ReactiveCommand<Unit> ChangeView { get; protected set; }
+      public ReactiveCommand<Unit> ChangeView { get; private set; }
 
       public PlaceHolderViewModel(IScreen screen)
       {

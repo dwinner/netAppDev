@@ -3,20 +3,22 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:models="clr-namespace:SQLiteApp.Models"
+        xmlns:viewModels="clr-namespace:SQLiteApp.ViewModels"
         mc:Ignorable="d"
-        Title="SQLite App" Height="350" Width="525">
+        Title="SQLite App" Height="350" Width="525"
+        d:DataContext="{d:DesignInstance viewModels:AppViewModel}">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition />
             <RowDefinition Height="50" />
         </Grid.RowDefinitions>
 
-        <ListBox x:Name="PhonesListBox" ItemsSource="{Binding}"
+        <ListBox ItemsSource="{Binding Phones}"
+                 SelectedItem="{Binding SelectedPhone}"
                  Grid.Row="0">
             <ListBox.ItemTemplate>
                 <DataTemplate>
-                    <StackPanel d:DataContext="{d:DesignInstance models:Phone}">
+                    <StackPanel d:DataContext="{d:DesignInstance viewModels:Phone}">
                         <TextBlock Text="{Binding Title}" FontSize="16" />
                         <TextBlock Text="{Binding Company}" FontSize="12" />
                         <TextBlock Text="{Binding Price}" FontSize="13" />
@@ -29,15 +31,15 @@
             <StackPanel.Resources>
                 <Style x:Key="CommonButtonStyle" TargetType="Button">
                     <Setter Property="Margin" Value="10" />
-                    <Setter Property="Width" Value="70"></Setter>
+                    <Setter Property="Width" Value="70" />
                 </Style>
             </StackPanel.Resources>
-            <Button Content="Add" Click="OnAddAsync"
-                    Style="{StaticResource CommonButtonStyle}" />
-            <Button Content="Change" Click="OnEditAsync"
-                    Style="{StaticResource CommonButtonStyle}" />
-            <Button Content="Remove" Click="OnRemoveAsync"
-                    Style="{StaticResource CommonButtonStyle}" />
+            <Button Content="Add" Style="{StaticResource CommonButtonStyle}"
+                    Command="{Binding AddCommand}" />
+            <Button Content="Change" Style="{StaticResource CommonButtonStyle}"
+                    Command="{Binding EditCommand}" />
+            <Button Content="Remove" Style="{StaticResource CommonButtonStyle}"
+                    Command="{Binding DeleteCommand}" />
         </StackPanel>
     </Grid>
 </Window>

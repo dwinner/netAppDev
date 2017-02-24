@@ -1,9 +1,9 @@
-﻿using FirstsStepsRUI.Models;
-using FirstsStepsRUI.Repositories;
-using ReactiveUI;
-using System;
+﻿using System;
 using System.Linq;
 using System.Reactive.Linq;
+using FirstsStepsRUI.Models;
+using FirstsStepsRUI.Repositories;
+using ReactiveUI;
 
 namespace FirstsStepsRUI.ViewModels
 {
@@ -11,21 +11,7 @@ namespace FirstsStepsRUI.ViewModels
    {
       // Services
       private readonly IUserRepository _userRepository;
-      // Properties
-      public string UrlPathSegment { get { return "Shell"; } }
-      public IScreen HostScreen { get; protected set; }
-      public ReactiveCommand<object> LoadUser { get; protected set; }
       private User _user;
-      public User User
-      {
-         get { return _user; }
-         set { this.RaiseAndSetIfChanged(ref _user, value); }
-      }
-      // ViewModels
-      public MenuViewModel MenuViewModel { get; set; }
-      // Might as well be a dialog
-      public LoginViewModel LoginViewModel { get; set; }
-
 
       public ShellViewModel(IScreen screen, IUserRepository userRepository)
       {
@@ -38,6 +24,26 @@ namespace FirstsStepsRUI.ViewModels
          HostScreen.Router.Navigate.Execute(LoginViewModel);
          this.WhenAnyValue(vm => vm.LoginViewModel.User).Subscribe(user => User = user);
       }
+
+      private User User
+      {
+         get { return _user; }
+         set { this.RaiseAndSetIfChanged(ref _user, value); }
+      }
+
+      // ViewModels
+      public MenuViewModel MenuViewModel { get; private set; }
+
+      // Might as well be a dialog
+      private LoginViewModel LoginViewModel { get; set; }
+      
+      // Properties
+      public string UrlPathSegment
+      {
+         get { return "Shell"; }
+      }
+
+      public IScreen HostScreen { get; private set; }
 
       private void SetInterfaceByUser()
       {

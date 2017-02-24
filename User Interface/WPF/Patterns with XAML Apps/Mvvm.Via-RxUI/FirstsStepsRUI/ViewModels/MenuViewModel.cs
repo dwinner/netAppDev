@@ -10,9 +10,8 @@ namespace FirstsStepsRUI.ViewModels
 {
    public class MenuViewModel : ReactiveObject
    {
-      private readonly IUserRepository _userRepository;
-      public ReactiveCommand<IList<Menu>> LoadMenu { get; protected set; }
-      public ReactiveList<MenuOptionViewModel> Menu { get; protected set; }
+      private ReactiveCommand<IList<Menu>> LoadMenu { get; set; }
+      public ReactiveList<MenuOptionViewModel> Menu { get; private set; }
 
       private User _user;
       public User User
@@ -32,12 +31,12 @@ namespace FirstsStepsRUI.ViewModels
       {
          if (userRepository == null)
             throw new ArgumentNullException("userRepository");
-         _userRepository = userRepository;
+
          Menu = new ReactiveList<MenuOptionViewModel>();
          // Use WhenAny to observe one or more values
          var canLoadMenu = this.WhenAny(m => m.User, user => user.Value != null);
          // hook function to command, shouldn't contain UI/complex logic
-         LoadMenu = ReactiveCommand.CreateAsyncTask(canLoadMenu, _ => _userRepository.GetMenuByUser(User));
+         LoadMenu = ReactiveCommand.CreateAsyncTask(canLoadMenu, _ => userRepository.GetMenuByUser(User));
          // RxApp.MainThreadScheduler is our UI thread, you can go wild here
          LoadMenu.ObserveOn(RxApp.MainThreadScheduler).Subscribe(menu =>
          {
