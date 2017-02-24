@@ -1,0 +1,94 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{705E1273-B28A-4B28-A472-DBC875933505}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>ConsoleAppHosting</RootNamespace>
+    <AssemblyName>ConsoleAppHosting</AssemblyName>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\AddInInfrastructure\RuleImports\RuleImports.csproj">
+      <Project>{007FC7ED-D6B6-47AA-91E0-72B70FB2034C}</Project>
+      <Name>RuleImports</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\AddIns\ArchitectureIssues\ArchitectureIssues.csproj">
+      <Project>{0226b1a1-03da-4f3e-b147-9c2b0fe528d4}</Project>
+      <Name>ArchitectureIssues</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\AddIns\BadControlFlow\BadControlFlow.csproj">
+      <Project>{cd8d74d7-cd94-4175-a923-147419d308c7}</Project>
+      <Name>BadControlFlow</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\AddIns\Concurrency\Concurrency.csproj">
+      <Project>{6805f44a-2821-45cc-8271-a735a1756856}</Project>
+      <Name>Concurrency</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\AddIns\DebugIssues\DebugIssues.csproj">
+      <Project>{8cc0a85e-f36d-4b1c-9b65-60cfd018028a}</Project>
+      <Name>DebugIssues</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\AddIns\LinqIssues\LinqIssues.csproj">
+      <Project>{109b98d7-a06a-4791-99d5-c3011eb5f30a}</Project>
+      <Name>LinqIssues</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\AddIns\Numerical\Numerical.csproj">
+      <Project>{25636a69-6db4-4eb8-b780-bcb850ab7570}</Project>
+      <Name>Numerical</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Contracts\RuleContracts\RuleContracts.csproj">
+      <Project>{95b7a4cc-1ff8-4559-b688-5f8f29d7f1f4}</Project>
+      <Name>RuleContracts</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
