@@ -8,17 +8,14 @@ namespace BadControlFlow
 	[Export(typeof(IRuleGroup))]
 	public sealed class BadControlFlowRuleGroup : IRuleGroup
 	{
-		public IList<IRule> GetRules()
+		public IList<IRule> GetRules() => new List<IRule>
 		{
-			return new List<IRule>
-			{
-				new ExcessiveLogicalCheck(),
-				new SameIfElseBlockRule(),
-				new SameIfRule(),
-				new SameReturn(),
-				new WrongNullCheckRule()
-			};
-		}
+			new ExcessiveLogicalCheck(),
+			new SameIfElseBlockRule(),
+			new SameIfRule(),
+			new SameReturn(),
+			new WrongNullCheckRule()
+		};
 
 		public RuleCategory Category { get; } = RuleCategory.BadControlFlow;
 	}
