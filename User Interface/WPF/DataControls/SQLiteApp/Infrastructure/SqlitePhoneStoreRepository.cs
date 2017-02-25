@@ -9,14 +9,19 @@ namespace SQLiteApp.Infrastructure
 	{
 		private readonly SqLiteDatabaseContext _context = new SqLiteDatabaseContext();
 
-		public async Task<bool> AddAsync(Phone aPhone)
+		public SqlitePhoneStoreRepository()
 		{
-			_context.Phones.Add(aPhone);
-			var affected = await _context.SaveChangesAsync().ConfigureAwait(false);
-			return affected == 1;
+			_context.Phones.Load();
 		}
 
-		public async Task<bool> UpdateAsync(Phone aPhone)
+		public async Task<Phone> AddAsync(Phone aPhone)
+		{
+			var newPhone = _context.Phones.Add(aPhone);
+			await _context.SaveChangesAsync().ConfigureAwait(false);
+			return newPhone;
+		}
+
+		public async Task<Phone> UpdateAsync(Phone aPhone)
 		{
 			var phoneToUpdate = await _context.Phones.FindAsync(aPhone.Id).ConfigureAwait(false);
 			if (phoneToUpdate != null)
@@ -25,18 +30,24 @@ namespace SQLiteApp.Infrastructure
 				phoneToUpdate.Title = aPhone.Title;
 				phoneToUpdate.Price = aPhone.Price;
 				_context.Entry(phoneToUpdate).State = EntityState.Modified;
-				var affected = await _context.SaveChangesAsync().ConfigureAwait(false);
-				return affected == 1;
+				await _context.SaveChangesAsync().ConfigureAwait(false);
+				return phoneToUpdate;
 			}
 
-			return false;
+			return aPhone;
 		}
 
-		public async Task<bool> RemoveAsync(Phone aPhone)
+		public async Task<Phone> RemoveAsync(Phone aPhone)
 		{
-			_context.Phones.Remove(aPhone);
-			var affected = await _context.SaveChangesAsync().ConfigureAwait(false);
-			return affected > 0;
+			var phoneToDelete = await _context.Phones.FindAsync(aPhone.Id).ConfigureAwait(false);
+			if (phoneToDelete != null)
+			{
+				var deletedPhone = _context.Phones.Remove(phoneToDelete);
+				await _context.SaveChangesAsync().ConfigureAwait(false);
+				return deletedPhone;
+			}
+
+			return aPhone;
 		}
 
 		public IEnumerable<Phone> Phones => _context.Phones.Local.ToBindingList();

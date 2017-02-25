@@ -6,9 +6,9 @@ namespace SQLiteApp.Infrastructure
 {
 	public interface IPhoneStoreRepository
 	{
-		Task<bool> AddAsync(Phone aPhone);
-		Task<bool> UpdateAsync(Phone aPhone);
-		Task<bool> RemoveAsync(Phone aPhone);
 		IEnumerable<Phone> Phones { get; }
+		Task<Phone> AddAsync(Phone aPhone);
+		Task<Phone> UpdateAsync(Phone aPhone);
+		Task<Phone> RemoveAsync(Phone aPhone);
 	}
 }

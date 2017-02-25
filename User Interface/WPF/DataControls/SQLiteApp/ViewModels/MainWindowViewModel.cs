@@ -1,18 +1,24 @@
-﻿using System.Data.Entity;
+﻿using System;
+using System.Linq;
 using System.Reactive;
+using System.Reactive.Linq;
+using System.Windows;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using SQLiteApp.Infrastructure;
+using SQLiteApp.Models;
+using static ReactiveUI.RxApp;
 
 namespace SQLiteApp.ViewModels
 {
 	public sealed class MainWindowViewModel : ReactiveObject
 	{
+		private readonly IPhoneStoreRepository _repository;
+
 		public MainWindowViewModel(IPhoneStoreRepository repository)
 		{
-			var appCtx = new SqLiteDatabaseContext();
-			appCtx.Phones.Load();
-			Phones = new ReactiveList<PhoneViewModel>( /*repository.Phones.Select(phone => new PhoneViewModel(phone))*/);
+			_repository = repository;
+			Phones = new ReactiveList<PhoneViewModel>(_repository.Phones.Select(phone => new PhoneViewModel(phone)));
 			SetupAddCommand();
 			SetupDeleteMethod();
 			SetupEditCommand();
@@ -24,53 +30,70 @@ namespace SQLiteApp.ViewModels
 		[Reactive]
 		public PhoneViewModel SelectedPhone { get; set; }
 
-		public ReactiveCommand<Unit, Unit> AddCommand { get; private set; }
+		public ReactiveCommand<Unit, Phone> AddCommand { get; private set; }
 
 		public ReactiveCommand<Unit, Unit> DeleteCommand { get; private set; }
 
-		public ReactiveCommand<Unit, Unit> EditCommand { get; private set; }
-
-		private void SetupEditCommand()
-		{
-			EditCommand = ReactiveCommand.Create(() =>
-			{
-				if (SelectedPhone != null)
-				{
-					var phoneWindow = new PhoneWindow(new PhoneViewModel(SelectedPhone));
-					if (phoneWindow.ShowDialog() == true)
-					{
-						SelectedPhone.Price = phoneWindow.PhoneViewModel.Price;
-						SelectedPhone.Company = phoneWindow.PhoneViewModel.Company;
-						SelectedPhone.Title = phoneWindow.PhoneViewModel.Title;
-						// TODO: Add cross cutting notification for affected model + view model
-						//await repository.UpdateAsync(phoneWindow.PhoneViewModel).ConfigureAwait(true);
-					}
-				}
-			});
-		}
-
-		private void SetupDeleteMethod()
-		{
-			DeleteCommand = ReactiveCommand.Create(() =>
-			{
-				if (SelectedPhone != null)
-					Phones.Remove(SelectedPhone);
-			});
-		}
+		public ReactiveCommand<Unit, Phone> EditCommand { get; private set; }
 
 		private void SetupAddCommand()
 		{
-			AddCommand = ReactiveCommand.Create(() =>
+			AddCommand = ReactiveCommand.CreateFromTask<Unit, Phone>(async unit =>
 			{
 				var phoneWindow = new PhoneWindow(new PhoneViewModel());
 				if (phoneWindow.ShowDialog() == true)
 				{
 					var newPhone = phoneWindow.PhoneViewModel;
-					Phones.Add(newPhone);
-					// TODO: Add cross cutting notification for affected model
-					//await repository.AddAsync(newPhone).ConfigureAwait(true);
+					var addedPhone = await _repository.AddAsync(newPhone).ConfigureAwait(true);
+					return addedPhone;
 				}
+
+				return null;
 			});
+
+			AddCommand.ObserveOn(MainThreadScheduler).Subscribe(newPhone => { Phones.Add(newPhone); });
+
+			AddCommand.ThrownExceptions.Subscribe(ex => { MessageBox.Show(ex.Message); });
+		}
+
+		private void SetupEditCommand()
+		{
+			EditCommand = ReactiveCommand.CreateFromTask<Unit, Phone>(async unit =>
+			{
+				var phoneWindow = new PhoneWindow(new PhoneViewModel(SelectedPhone));
+				if (phoneWindow.ShowDialog() == true)
+				{
+					var phone = await _repository.UpdateAsync(new Phone(phoneWindow.PhoneViewModel)).ConfigureAwait(false);
+					return phone;
+				}
+
+				return new Phone(SelectedPhone);
+			}, this.WhenAny(vm => vm.SelectedPhone, change => change.Value != null));
+
+			EditCommand.ObserveOn(MainThreadScheduler).Subscribe(updatedPhone =>
+			{
+				SelectedPhone.Price = updatedPhone.Price;
+				SelectedPhone.Company = updatedPhone.Company;
+				SelectedPhone.Title = updatedPhone.Title;
+			});
+
+			EditCommand.ThrownExceptions.Subscribe(ex => { MessageBox.Show(ex.Message); });
+		}
+
+		private void SetupDeleteMethod()
+		{
+			DeleteCommand =
+				ReactiveCommand.CreateFromTask<Unit, Unit>(
+					async dummy =>
+					{
+						await _repository.RemoveAsync(SelectedPhone).ConfigureAwait(false);
+						return Unit.Default;
+					},
+					this.WhenAny(vm => vm.SelectedPhone, change => change.Value != null));
+
+			DeleteCommand.ObserveOn(MainThreadScheduler).Subscribe(dummy => { Phones.Remove(SelectedPhone); });
+
+			DeleteCommand.ThrownExceptions.Subscribe(ex => { MessageBox.Show(ex.Message); });
 		}
 	}
 }
