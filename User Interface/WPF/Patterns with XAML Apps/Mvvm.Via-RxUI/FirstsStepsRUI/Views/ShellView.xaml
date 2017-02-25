@@ -5,16 +5,16 @@
         Title="ShellView" Height="300" Width="600" MinWidth="200" MinHeight="100">
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="100"></ColumnDefinition>
-            <ColumnDefinition Width="*"></ColumnDefinition>
+            <ColumnDefinition Width="100" />
+            <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
         <StackPanel Grid.Column="0">
-            <rui:ViewModelViewHost x:Name="Menu"></rui:ViewModelViewHost>
+            <rui:ViewModelViewHost x:Name="Menu" />
         </StackPanel>
         <rui:RoutedViewHost x:Name="ContentView" Grid.Column="1" Width="Auto">
             <rui:RoutedViewHost.DefaultContent>
                 <Border Background="Gainsboro">
-                    <TextBlock Text="No view loaded."></TextBlock>
+                    <TextBlock Text="No view loaded." />
                 </Border>
             </rui:RoutedViewHost.DefaultContent>
         </rui:RoutedViewHost>

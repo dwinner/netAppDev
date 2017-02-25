@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Reactive.Linq;
 using FirstsStepsRUI.Models;
-using FirstsStepsRUI.Repositories;
+using FirstsStepsRUI.Repositories.Abstracts;
 using ReactiveUI;
 
 namespace FirstsStepsRUI.ViewModels
@@ -36,7 +36,7 @@ namespace FirstsStepsRUI.ViewModels
 
       // Might as well be a dialog
       private LoginViewModel LoginViewModel { get; set; }
-      
+
       // Properties
       public string UrlPathSegment
       {

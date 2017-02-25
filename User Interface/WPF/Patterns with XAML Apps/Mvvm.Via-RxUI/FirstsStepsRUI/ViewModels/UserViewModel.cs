@@ -4,7 +4,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using FirstsStepsRUI.Models;
-using FirstsStepsRUI.Repositories;
+using FirstsStepsRUI.Repositories.Abstracts;
+using FirstsStepsRUI.Repositories.Concretes;
 using ReactiveUI;
 
 namespace FirstsStepsRUI.ViewModels
@@ -21,7 +22,7 @@ namespace FirstsStepsRUI.ViewModels
          HostScreen = screen;
          // Commands
          var canSubmit = this.WhenAny(e => e.Code, code => code.Value.IsValid());
-         Submit = ReactiveCommand.CreateAsyncTask(canSubmit, _ => userRepository.Submit(Model));
+         Submit = ReactiveCommand.CreateAsyncTask(canSubmit, _ => userRepository.SubmitAsync(Model));
          Submit.Subscribe(result => MessageBox.Show(result ? "Success" : "Failure"));
          // Observe on UI thread
          Submit.ThrownExceptions.ObserveOn(RxApp.MainThreadScheduler)
@@ -92,6 +93,6 @@ namespace FirstsStepsRUI.ViewModels
          get { return "User"; }
       }
 
-      public IScreen HostScreen { get; protected set; }
+      public IScreen HostScreen { get; private set; }
    }
 }

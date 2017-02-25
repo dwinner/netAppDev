@@ -8,7 +8,7 @@ namespace FirstsStepsRUI.Models
    {
       public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
       {
-         return value == null ? User.GetGroupName(UserGroup.Worker) : User.GetGroupName((UserGroup)value);
+         return value == null ? User.GetGroupName(UserGroup.Worker) : User.GetGroupName((UserGroup) value);
       }
 
       public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

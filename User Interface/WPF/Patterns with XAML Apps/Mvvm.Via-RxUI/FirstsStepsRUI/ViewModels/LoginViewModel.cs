@@ -3,7 +3,8 @@ using System.Reactive.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using FirstsStepsRUI.Models;
-using FirstsStepsRUI.Repositories;
+using FirstsStepsRUI.Repositories.Abstracts;
+using FirstsStepsRUI.Repositories.Concretes;
 using ReactiveUI;
 
 namespace FirstsStepsRUI.ViewModels
@@ -18,13 +19,15 @@ namespace FirstsStepsRUI.ViewModels
       {
          HostScreen = screen;
          var canSubmit = this.WhenAny(m => m.UserName, m => m.Password, (user, password) => user.Value.IsValid());
+
          // We use "_" because we don't use the parameter
-         Login = ReactiveCommand.CreateAsyncTask(canSubmit, _ => userRepository.Login(UserName, Password.Password));
+         Login = ReactiveCommand.CreateAsyncTask(canSubmit, _ => userRepository.LoginAsync(UserName, Password.Password));
          Login.ObserveOn(RxApp.MainThreadScheduler).Subscribe(user =>
          {
             User = user;
             HostScreen.Router.Navigate.Execute(new UserViewModel(HostScreen, user, userRepository));
          });
+
          // TODO use UserError.RegisterHandler
          Login.ThrownExceptions.ObserveOn(RxApp.MainThreadScheduler).Subscribe(e => MessageBox.Show(e.Message));
       }

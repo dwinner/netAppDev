@@ -1,13 +1,13 @@
-﻿using FirstsStepsRUI.Models;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using FirstsStepsRUI.Models;
 
-namespace FirstsStepsRUI.Repositories
+namespace FirstsStepsRUI.Repositories.Abstracts
 {
    public interface IUserRepository
    {
-      Task<User> Login(string userName, string unsecurePassword);
-      Task<IList<Menu>> GetMenuByUser(User user);
-      Task<bool> Submit(User user);
+      Task<User> LoginAsync(string userName, string unsecurePassword);
+      Task<IList<Menu>> GetMenuByUserAsync(User user);
+      Task<bool> SubmitAsync(User user);
    }
 }

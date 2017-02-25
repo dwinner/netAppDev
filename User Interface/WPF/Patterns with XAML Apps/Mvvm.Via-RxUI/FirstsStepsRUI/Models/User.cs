@@ -1,14 +1,7 @@
-﻿using System;
-
-namespace FirstsStepsRUI.Models
+﻿namespace FirstsStepsRUI.Models
 {
    public class User
    {
-      public int Id { get; private set; }
-      public string Code { get; set; }
-      public bool Blocked { get; set; }
-      public UserGroup Group { get; set; }
-
       public User(int id, string code, bool blocked, UserGroup userGroup)
       {
          Id = id;
@@ -17,9 +10,14 @@ namespace FirstsStepsRUI.Models
          Group = userGroup;
       }
 
+      public int Id { get; private set; }
+      public string Code { get; set; }
+      public bool Blocked { get; private set; }
+      public UserGroup Group { get; set; }
+
       public override string ToString()
       {
-         return String.Format("{0}: {1}", Id, Code);
+         return string.Format("{0}: {1}", Id, Code);
       }
 
       public static string GetGroupName(UserGroup group)
@@ -32,11 +30,5 @@ namespace FirstsStepsRUI.Models
                return group.ToString();
          }
       }
-   }
-
-   public enum UserGroup
-   {
-      Admin,
-      Worker
    }
 }

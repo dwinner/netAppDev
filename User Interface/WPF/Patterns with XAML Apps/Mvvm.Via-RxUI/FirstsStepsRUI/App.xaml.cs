@@ -1,27 +1,27 @@
-﻿using FirstsStepsRUI.Repositories;
+﻿using System.Windows;
+using FirstsStepsRUI.Repositories.Concretes;
 using FirstsStepsRUI.ViewModels;
 using FirstsStepsRUI.Views;
 using ReactiveUI;
 using Splat;
-using System.Windows;
 
 namespace FirstsStepsRUI
 {
-   public partial class App : Application
+   public partial class App
    {
-      public static AppBootstrapper Bootstrapper;
-      public static ShellView ShellView;
+      private static ShellView _shellView;
 
       public App()
       {
-         Bootstrapper = new AppBootstrapper();
+         var bootstrapper = new AppBootstrapper();
+         bootstrapper.Locate();
       }
 
       protected override void OnStartup(StartupEventArgs e)
       {
          base.OnStartup(e);
-         ShellView = (ShellView)Locator.Current.GetService<IViewFor<ShellViewModel>>();
-         ShellView.Show();
+         _shellView = (ShellView) Locator.Current.GetService<IViewFor<ShellViewModel>>();
+         _shellView.Show();
       }
    }
 }

@@ -5,7 +5,7 @@
     <Application.Resources>
         <ResourceDictionary>
             <!--if you don't user mergedDictionaries the usercontrols won't find the resources-->
-            <ResourceDictionary.MergedDictionaries />
+            <!--<ResourceDictionary.MergedDictionaries />-->
             <models:UserGroupConverter x:Key="UserGroupConverter" />
         </ResourceDictionary>
     </Application.Resources>

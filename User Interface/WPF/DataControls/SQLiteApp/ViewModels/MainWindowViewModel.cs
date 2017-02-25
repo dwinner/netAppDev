@@ -1,5 +1,4 @@
 ﻿using System.Data.Entity;
-using System.Linq;
 using System.Reactive;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
@@ -13,39 +12,10 @@ namespace SQLiteApp.ViewModels
 		{
 			var appCtx = new SqLiteDatabaseContext();
 			appCtx.Phones.Load();
-			Phones = new ReactiveList<PhoneViewModel>(repository.Phones.Select(phone => new PhoneViewModel(phone)));
-
-			AddCommand = ReactiveCommand.CreateFromTask(async () =>
-			{
-				var phoneWindow = new PhoneWindow(new PhoneViewModel());
-				if (phoneWindow.ShowDialog() == true)
-				{
-					var newPhone = phoneWindow.PhoneViewModel;
-					Phones.Add(newPhone);
-					await repository.AddAsync(newPhone).ConfigureAwait(true);	// TODO: Add cross cutting notification for affected model
-				}
-			});			
-
-			DeleteCommand = ReactiveCommand.CreateFromTask(async () =>
-			{
-				if (SelectedPhone != null)
-				{
-					Phones.Remove(SelectedPhone);
-					await repository.RemoveAsync(SelectedPhone).ConfigureAwait(true); // TODO: Add cross cutting notification for affected model
-				}
-			});
-
-			EditCommand = ReactiveCommand.CreateFromTask(async () =>
-			{
-				if (SelectedPhone != null)
-				{
-					var phoneWindow = new PhoneWindow(new PhoneViewModel(SelectedPhone));
-					if (phoneWindow.ShowDialog() == true)
-					{
-						await repository.UpdateAsync(phoneWindow.PhoneViewModel).ConfigureAwait(true);   // TODO: Add cross cutting notification for affected model + view model
-					}
-				}
-			});
+			Phones = new ReactiveList<PhoneViewModel>( /*repository.Phones.Select(phone => new PhoneViewModel(phone))*/);
+			SetupAddCommand();
+			SetupDeleteMethod();
+			SetupEditCommand();
 		}
 
 		[Reactive]
@@ -54,10 +24,53 @@ namespace SQLiteApp.ViewModels
 		[Reactive]
 		public PhoneViewModel SelectedPhone { get; set; }
 
-		public ReactiveCommand<Unit, Unit> AddCommand { get; }
+		public ReactiveCommand<Unit, Unit> AddCommand { get; private set; }
 
-		public ReactiveCommand<Unit, Unit> DeleteCommand { get; }
+		public ReactiveCommand<Unit, Unit> DeleteCommand { get; private set; }
 
-		public ReactiveCommand<Unit, Unit> EditCommand { get; }
+		public ReactiveCommand<Unit, Unit> EditCommand { get; private set; }
+
+		private void SetupEditCommand()
+		{
+			EditCommand = ReactiveCommand.Create(() =>
+			{
+				if (SelectedPhone != null)
+				{
+					var phoneWindow = new PhoneWindow(new PhoneViewModel(SelectedPhone));
+					if (phoneWindow.ShowDialog() == true)
+					{
+						SelectedPhone.Price = phoneWindow.PhoneViewModel.Price;
+						SelectedPhone.Company = phoneWindow.PhoneViewModel.Company;
+						SelectedPhone.Title = phoneWindow.PhoneViewModel.Title;
+						// TODO: Add cross cutting notification for affected model + view model
+						//await repository.UpdateAsync(phoneWindow.PhoneViewModel).ConfigureAwait(true);
+					}
+				}
+			});
+		}
+
+		private void SetupDeleteMethod()
+		{
+			DeleteCommand = ReactiveCommand.Create(() =>
+			{
+				if (SelectedPhone != null)
+					Phones.Remove(SelectedPhone);
+			});
+		}
+
+		private void SetupAddCommand()
+		{
+			AddCommand = ReactiveCommand.Create(() =>
+			{
+				var phoneWindow = new PhoneWindow(new PhoneViewModel());
+				if (phoneWindow.ShowDialog() == true)
+				{
+					var newPhone = phoneWindow.PhoneViewModel;
+					Phones.Add(newPhone);
+					// TODO: Add cross cutting notification for affected model
+					//await repository.AddAsync(newPhone).ConfigureAwait(true);
+				}
+			});
+		}
 	}
 }

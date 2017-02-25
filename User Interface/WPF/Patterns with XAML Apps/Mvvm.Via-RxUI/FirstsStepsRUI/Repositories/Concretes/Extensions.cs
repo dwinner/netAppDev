@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace FirstsStepsRUI.Repositories
+﻿namespace FirstsStepsRUI.Repositories.Concretes
 {
    public static class Extensions
    {
@@ -11,7 +9,7 @@ namespace FirstsStepsRUI.Repositories
 
       public static bool IsInvalid(this string value)
       {
-         return String.IsNullOrWhiteSpace(value);
+         return string.IsNullOrWhiteSpace(value);
       }
    }
 }

@@ -79,6 +79,8 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Models\Credentials.cs" />
+    <Compile Include="Models\MenuOption.cs" />
+    <Compile Include="Models\UserGroup.cs" />
     <Compile Include="Models\UserGroupConverter.cs" />
     <Compile Include="Repositories\Abstracts\IUserRepository.cs" />
     <Compile Include="Repositories\Concretes\AppBootstrapper.cs" />

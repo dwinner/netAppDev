@@ -2,12 +2,12 @@
 {
    public class Menu
    {
-      public MenuOption Option { get; private set; }
-
       public Menu(MenuOption option)
       {
          Option = option;
       }
+
+      public MenuOption Option { get; private set; }
 
       public override string ToString()
       {
@@ -21,13 +21,5 @@
 
          return name;
       }
-
-   }
-
-   public enum MenuOption
-   {
-      Login,
-      User,
-      Placeholder
    }
 }
