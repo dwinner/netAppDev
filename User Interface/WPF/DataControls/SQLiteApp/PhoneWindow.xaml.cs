@@ -5,15 +5,15 @@ namespace SQLiteApp
 {
 	public partial class PhoneWindow
 	{
-		public PhoneWindow(Phone phone)
+		public PhoneWindow(PhoneViewModel phoneViewModel)
 		{
 			InitializeComponent();
 
-			Phone = phone;
-			DataContext = Phone;
+			PhoneViewModel = phoneViewModel;
+			DataContext = PhoneViewModel;
 		}
 
-		public Phone Phone { get; }
+		public PhoneViewModel PhoneViewModel { get; }
 
 		private void OnAccept(object sender, RoutedEventArgs e) => DialogResult = true;
 	}
