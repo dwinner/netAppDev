@@ -163,3 +163,4 @@ $RECYCLE.BIN/
 /Aspect Oriented Pro/Aop.InPractice/.vs/config
 .vs/
 *.db
+*.opendb
