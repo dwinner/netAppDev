@@ -1,17 +1,10 @@
-
 namespace Documents
 {
-   /// <summary>
-   /// Interaction logic for Figures.xaml
-   /// </summary>
-
-   public partial class Figures : System.Windows.Window
+   public partial class Figures
    {
-
       public Figures()
       {
          InitializeComponent();
       }
-
    }
 }

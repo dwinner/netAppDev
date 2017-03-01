@@ -1,70 +1,53 @@
-using System;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
+using MoreLinq;
 
 namespace Documents
 {
-   /// <summary>
-   /// Interaction logic for MadLibs.xaml
-   /// </summary>
-
-   public partial class MadLibs : System.Windows.Window
+   public partial class MadLibs
    {
-
       public MadLibs()
       {
          InitializeComponent();
       }
 
-      private void WindowLoaded(Object sender, RoutedEventArgs e)
+      private void OnLoaded(object sender, RoutedEventArgs e)
       {
          // Clear grid of text entry controls.
-         gridWords.Children.Clear();
+         GridWords.Children.Clear();
 
-         // Look at paragraphs.
-         foreach (Block block in document.Blocks)
+         // Look at paragraphs and then the spans inside
+         Document.Blocks.OfType<Paragraph>().SelectMany(paragraph => paragraph.Inlines.OfType<Span>()).ForEach(span =>
          {
-            Paragraph paragraph = block as Paragraph;
+            var newRowDefinition = new RowDefinition();
+            GridWords.RowDefinitions.Add(newRowDefinition);
+            var rowIndex = GridWords.RowDefinitions.Count - 1;
 
-            // Look for spans.
-            foreach (Inline inline in paragraph.Inlines)
-            {
-               Span span = inline as Span;
-               if (span != null)
-               {
-                  RowDefinition row = new RowDefinition();
-                  gridWords.RowDefinitions.Add(row);
+            var newLabel = new Label {Content = string.Format("{0}:", span.Tag)};
+            Grid.SetColumn(newLabel, 0);
+            Grid.SetRow(newLabel, rowIndex);
+            GridWords.Children.Add(newLabel);
 
-                  Label lbl = new Label();
-                  lbl.Content = inline.Tag.ToString() + ":";
-                  Grid.SetColumn(lbl, 0);
-                  Grid.SetRow(lbl, gridWords.RowDefinitions.Count - 1);
-                  gridWords.Children.Add(lbl);
+            var newTextBox = new TextBox();
+            Grid.SetColumn(newTextBox, 1);
+            Grid.SetRow(newTextBox, rowIndex);
+            GridWords.Children.Add(newTextBox);
 
-                  TextBox txt = new TextBox();
-                  Grid.SetColumn(txt, 1);
-                  Grid.SetRow(txt, gridWords.RowDefinitions.Count - 1);
-                  gridWords.Children.Add(txt);
-
-                  txt.Tag = span.Inlines.FirstInline;
-               }
-            }
-         }
+            newTextBox.Tag = span.Inlines.FirstInline;
+         });
       }
 
-      private void cmdGenerate_Click(Object sender, RoutedEventArgs e)
+      private void OnGenerate(object sender, RoutedEventArgs e)
       {
-         foreach (UIElement child in gridWords.Children)
-         {
-            if (Grid.GetColumn(child) == 1)
-            {
-               TextBox txt = (TextBox)child;
-
-               if (txt.Text != "") ((Run)txt.Tag).Text = txt.Text;
-            }
-         }
-         docViewer.Visibility = Visibility.Visible;
+         GridWords.Children
+            .OfType<UIElement>()
+            .Where(element => Grid.GetColumn(element) == 1)
+            .Cast<TextBox>()
+            .Where(textBox => !string.IsNullOrEmpty(textBox.Text))
+            .ForEach(textBox => ((Run) textBox.Tag).Text = textBox.Text);
+         DocViewer.Visibility = Visibility.Visible;
       }
    }
 }

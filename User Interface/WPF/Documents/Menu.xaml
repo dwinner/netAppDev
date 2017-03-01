@@ -4,9 +4,9 @@
         Title="Menu" Height="321" Width="244">
     <Grid>
         <StackPanel Margin="5" Button.Click="ButtonClick">
-            <Button Content="FlowContent"/>
-            <Button>Figures</Button>
-            <Button>MadLibs</Button>
+            <Button Content="FlowContent" />
+            <Button Content="Figures" />
+            <Button Content="MadLibs" />
             <Button>StyledDocument</Button>
             <Button>TextJustification</Button>
             <Button>PagedContent</Button>
