@@ -23,10 +23,10 @@ namespace Calculator
          _containerManager = new CalculatorManager(_viewModel);
          _containerManager.InitializeContainer();
 
-         BindingOperations.EnableCollectionSynchronization(_viewModel.CalcAddInOperators,
-            _viewModel.SyncCalcAddInOperators);
-         BindingOperations.EnableCollectionSynchronization(_viewModel.ActivatedExtensions,
-            _viewModel.SyncActivatedExtensions);
+         BindingOperations.EnableCollectionSynchronization(
+            _viewModel.CalcAddInOperators, _viewModel.SyncCalcAddInOperators);
+         BindingOperations.EnableCollectionSynchronization(
+            _viewModel.ActivatedExtensions, _viewModel.SyncActivatedExtensions);
       }
 
       private void OnClose(object sender, ExecutedRoutedEventArgs e)
@@ -38,9 +38,9 @@ namespace Calculator
       {
          if (_currentOperands.Length == 2)
          {
-            string[] input = _viewModel.Input.Split(' ');
+            var input = _viewModel.Input.Split(' ');
             _currentOperands[1] = double.Parse(input[2]);
-            await _containerManager.InvokeCalculatorAsync(_currentOperation, _currentOperands);
+            await _containerManager.InvokeCalculatorAsync(_currentOperation, _currentOperands).ConfigureAwait(true);
          }
       }
 
@@ -78,7 +78,10 @@ namespace Calculator
          if (originalSourceButton != null)
          {
             var control = originalSourceButton.Tag as Lazy<ICalculatorExtension>;
-            if (control != null) _viewModel.ActivatedExtensions.Add(control);
+            if (control != null)
+            {
+               _viewModel.ActivatedExtensions.Add(control);
+            }
          }
       }
 
