@@ -9,9 +9,9 @@ using System.Windows.Forms;
 
 namespace HardwareInfo
 {
-   static class Program
+   internal static class Program
    {
-      static void Main()
+      private static void Main()
       {
          Console.WriteLine("Machine: {0}", Environment.MachineName);
          Console.WriteLine("# of processors (logical): {0}", Environment.ProcessorCount);
@@ -30,26 +30,47 @@ namespace HardwareInfo
             Console.WriteLine("\tBitsPerPixel: {0}", screen.BitsPerPixel);
          }
       }
-      
+
       private static int CountPhysicalProcessors()
       {
          var searcher = new ManagementObjectSearcher("SELECT * FROM Win32_PhysicalMemory");
          var managementObjectCollection = searcher.Get();
-         return (from ManagementObject manObj in managementObjectCollection
-                 select manObj["NumberOfProcessors"]
-                    into numOfProcObj
-                    select (int)numOfProcObj).FirstOrDefault();
+         try
+         {
+            return
+            (from ManagementObject manObj in managementObjectCollection
+               select manObj["NumberOfProcessors"]
+               into numOfProcObj
+               select (int) numOfProcObj).FirstOrDefault();
+         }
+         catch (ManagementException managementEx)
+         {
+            Console.WriteLine(
+               "Error code: {0}. Error info: {1}", managementEx.ErrorCode, managementEx.ErrorInformation);
+         }
+
+         return 0;
       }
 
       private static long CountPhysicalMemory()
       {
          var searcher = new ManagementObjectSearcher("SELECT * FROM Win32_ComputerSystem");
          var manObjColl = searcher.Get();
-         return
+         try
+         {
+            return
             (from ManagementObject manObj in manObjColl
-             select manObj["Capacity"]
-                into capacityObj
-                select (long)capacityObj).Sum();
-      }       
+               select manObj["Capacity"]
+               into capacityObj
+               select (long) capacityObj).Sum();
+         }
+         catch (ManagementException managementEx)
+         {
+            Console.WriteLine(
+               "Error code: {0}. Error info: {1}", managementEx.ErrorCode, managementEx.ErrorInformation);
+         }
+
+         return 0L;
+      }
    }
 }
