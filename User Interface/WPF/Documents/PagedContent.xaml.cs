@@ -1,17 +1,10 @@
-
 namespace Documents
 {
-   /// <summary>
-   /// Interaction logic for PagedContent.xaml
-   /// </summary>
-
-   public partial class PagedContent : System.Windows.Window
+   public partial class PagedContent
    {
-
       public PagedContent()
       {
          InitializeComponent();
       }
-
    }
 }

@@ -7,9 +7,9 @@
             <Button Content="FlowContent" />
             <Button Content="Figures" />
             <Button Content="MadLibs" />
-            <Button>StyledDocument</Button>
-            <Button>TextJustification</Button>
-            <Button>PagedContent</Button>
+            <Button Content="StyledDocument" />
+            <Button Content="TextJustification" />
+            <Button Content="PagedContent" />
             <Button>RichTextEditor</Button>
             <Button>ViewXPS</Button>
             <Button>FlowDocumentAnnotations</Button>
