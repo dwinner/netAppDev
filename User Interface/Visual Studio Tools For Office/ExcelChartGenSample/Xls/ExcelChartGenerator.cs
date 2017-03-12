@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Excel;
 using ExcelChartGenSample.Poco;
-using ExcelApp = Excel.Application;
+using Microsoft.Office.Interop.Excel;
+using ExcelApp = Microsoft.Office.Interop.Excel.Application;
 
 namespace ExcelChartGenSample.Xls
 {
