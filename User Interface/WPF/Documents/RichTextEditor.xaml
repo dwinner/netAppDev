@@ -12,17 +12,17 @@
         
         <ToolBarTray>
             <ToolBar>
-                <Button Click="cmdNew_Click">New</Button>
-                <Button Click="cmdOpen_Click">Open</Button>
-                <Button Click="cmdSave_Click">Save</Button>
+                <Button Click="OnNew" Content="New"/>
+                <Button Click="OnOpen" Content="Open"/>
+                <Button Click="OnSave" Content="Save"/>
             </ToolBar>
             <ToolBar FontFamily="Times New Roman">
-                <Button FontWeight="Bold" Click="cmdBold_Click">B</Button>
-                <Button FontStyle="Italic" Command="EditingCommands.ToggleItalic">I</Button>
-                <Button Command="EditingCommands.ToggleUnderline">U</Button>
+                <Button FontWeight="Bold" Click="OnBold" Content="B"/>
+                <Button FontStyle="Italic" Command="EditingCommands.ToggleItalic" Content="I"/>
+                <Button Command="EditingCommands.ToggleUnderline" Content="U"/>
             </ToolBar>
             <ToolBar>
-                <Button Click="cmdShowXAML_Click">Show Flow Document XAML</Button>
+                <Button Click="OnShowXaml" Content="Show Flow Document XAML"/>
             </ToolBar>
         </ToolBarTray>
         

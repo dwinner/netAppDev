@@ -13,16 +13,12 @@ namespace Documents
          InitializeComponent();
       }
 
-      private void cmdBold_Click(object sender, RoutedEventArgs e)
+      private void OnBold(object sender, RoutedEventArgs e)
       {
-         if (RichTextBox.Selection.Text == "")
+         if (RichTextBox.Selection.Text == string.Empty && RichTextBox.Selection.Start.Paragraph != null)
          {
             var fontWeight = RichTextBox.Selection.Start.Paragraph.FontWeight;
-            if (fontWeight == FontWeights.Bold)
-               fontWeight = FontWeights.Normal;
-            else
-               fontWeight = FontWeights.Bold;
-
+            fontWeight = fontWeight == FontWeights.Bold ? FontWeights.Normal : FontWeights.Bold;
             RichTextBox.Selection.Start.Paragraph.FontWeight = fontWeight;
          }
          else
@@ -30,50 +26,41 @@ namespace Documents
             var obj = RichTextBox.Selection.GetPropertyValue(TextElement.FontWeightProperty);
             if (obj == DependencyProperty.UnsetValue)
             {
-               var range = new TextRange(RichTextBox.Selection.Start,
-                  RichTextBox.Selection.Start);
+               var range = new TextRange(RichTextBox.Selection.Start, RichTextBox.Selection.Start);
                obj = range.GetPropertyValue(TextElement.FontWeightProperty);
             }
 
             var fontWeight = (FontWeight) obj;
-
-            if (fontWeight == FontWeights.Bold)
-               fontWeight = FontWeights.Normal;
-            else
-               fontWeight = FontWeights.Bold;
-
-            RichTextBox.Selection.ApplyPropertyValue(
-               TextElement.FontWeightProperty, fontWeight);
+            fontWeight = fontWeight == FontWeights.Bold ? FontWeights.Normal : FontWeights.Bold;
+            RichTextBox.Selection.ApplyPropertyValue(TextElement.FontWeightProperty, fontWeight);
          }
       }
 
-      private void cmdShowXAML_Click(object sender, RoutedEventArgs e)
+      private void OnShowXaml(object sender, RoutedEventArgs e)
       {
          UpdateMarkupDisplay();
       }
 
       private void UpdateMarkupDisplay()
       {
-         TextRange range;
-
-         range = new TextRange(RichTextBox.Document.ContentStart, RichTextBox.Document.ContentEnd);
-
-         var stream = new MemoryStream();
-         range.Save(stream, DataFormats.Xaml);
-         stream.Position = 0;
-
-         var r = new StreamReader(stream);
-
-         FlowDocumentMarkupTextBox.Text = r.ReadToEnd();
-         r.Close();
-         stream.Close();
+         var range = new TextRange(RichTextBox.Document.ContentStart, RichTextBox.Document.ContentEnd);
+         using (var memoryStream = new MemoryStream())
+         {
+            range.Save(memoryStream, DataFormats.Xaml);
+            memoryStream.Position = 0;
+            using (var streamReader = new StreamReader(memoryStream))
+            {
+               FlowDocumentMarkupTextBox.Text = streamReader.ReadToEnd();
+            }
+         }
       }
 
-
-      private void cmdOpen_Click(object sender, RoutedEventArgs e)
+      private void OnOpen(object sender, RoutedEventArgs e)
       {
-         var openFile = new OpenFileDialog();
-         openFile.Filter = "XAML Files (*.xaml)|*.xaml|RichText Files (*.rtf)|*.rtf|All Files (*.*)|*.*";
+         var openFile = new OpenFileDialog
+         {
+            Filter = "XAML Files (*.xaml)|*.xaml|RichText Files (*.rtf)|*.rtf|All Files (*.*)|*.*"
+         };
 
          if (openFile.ShowDialog() == true)
          {
@@ -81,20 +68,21 @@ namespace Documents
             var documentTextRange = new TextRange(
                RichTextBox.Document.ContentStart, RichTextBox.Document.ContentEnd);
 
-            using (var fs = File.Open(openFile.FileName, FileMode.Open))
+            using (var fileStream = File.Open(openFile.FileName, FileMode.Open))
             {
-               if (Path.GetExtension(openFile.FileName).ToLower() == ".rtf")
-                  documentTextRange.Load(fs, DataFormats.Rtf);
-               else
-                  documentTextRange.Load(fs, DataFormats.Xaml);
+               var extension = Path.GetExtension(openFile.FileName);
+               documentTextRange.Load(fileStream,
+                  extension != null && extension.ToLower() == ".rtf" ? DataFormats.Rtf : DataFormats.Xaml);
             }
          }
       }
 
-      private void cmdSave_Click(object sender, RoutedEventArgs e)
+      private void OnSave(object sender, RoutedEventArgs e)
       {
-         var saveFile = new SaveFileDialog();
-         saveFile.Filter = "XAML Files (*.xaml)|*.xaml|RichText Files (*.rtf)|*.rtf|All Files (*.*)|*.*";
+         var saveFile = new SaveFileDialog
+         {
+            Filter = "XAML Files (*.xaml)|*.xaml|RichText Files (*.rtf)|*.rtf|All Files (*.*)|*.*"
+         };
 
          if (saveFile.ShowDialog() == true)
          {
@@ -103,17 +91,16 @@ namespace Documents
                RichTextBox.Document.ContentStart, RichTextBox.Document.ContentEnd);
 
             // If this file exists, it's overwritten.
-            using (var fs = File.Create(saveFile.FileName))
+            using (var fileStream = File.Create(saveFile.FileName))
             {
-               if (Path.GetExtension(saveFile.FileName).ToLower() == ".rtf")
-                  documentTextRange.Save(fs, DataFormats.Rtf);
-               else
-                  documentTextRange.Save(fs, DataFormats.Xaml);
+               var extension = Path.GetExtension(saveFile.FileName);
+               documentTextRange.Save(fileStream,
+                  extension != null && extension.ToLower() == ".rtf" ? DataFormats.Rtf : DataFormats.Xaml);
             }
          }
       }
 
-      private void cmdNew_Click(object sender, RoutedEventArgs e)
+      private void OnNew(object sender, RoutedEventArgs e)
       {
          RichTextBox.Document = new FlowDocument();
       }
@@ -123,7 +110,7 @@ namespace Documents
          if (e.RightButton == MouseButtonState.Pressed)
          {
             var location = RichTextBox.GetPositionFromPoint(Mouse.GetPosition(RichTextBox), true);
-            var word = WordBreaker.GetWordRange(location);
+            var word = location.GetWordRange();
             FlowDocumentMarkupTextBox.Text = word.Text;
          }
       }

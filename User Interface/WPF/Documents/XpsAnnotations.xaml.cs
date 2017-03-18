@@ -8,61 +8,51 @@ using System.Windows.Xps.Packaging;
 
 namespace Documents
 {
-   /// <summary>
-   /// Interaction logic for XpsAnnotations.xaml
-   /// </summary>
-
-   public partial class XpsAnnotations : System.Windows.Window
+   public partial class XpsAnnotations
    {
+      private XpsDocument _doc;
+      private AnnotationService _service;
 
       public XpsAnnotations()
       {
          InitializeComponent();
       }
 
-
-      private AnnotationService service;
-      private XpsDocument doc;
-
-      private void window_Loaded(object sender, RoutedEventArgs e)
+      private void OnLoaded(object sender, RoutedEventArgs e)
       {
-         doc = new XpsDocument("ch19.xps", FileAccess.ReadWrite);
-         docViewer.Document = doc.GetFixedDocumentSequence();
+         _doc = new XpsDocument("ch19.xps", FileAccess.ReadWrite);
+         DocViewer.Document = _doc.GetFixedDocumentSequence();
+         _service = AnnotationService.GetService(DocViewer);
+         if (_service != null)
+            return;
 
-         service = AnnotationService.GetService(docViewer);
-         if (service == null)
+         var annotationUri = PackUriHelper.CreatePartUri(new Uri("AnnotationStream", UriKind.Relative));
+         var package = PackageStore.GetPackage(_doc.Uri);
+         var annotationPart = package.PartExists(annotationUri)
+            ? package.GetPart(annotationUri)
+            : package.CreatePart(annotationUri, "Annotations/Stream");
+
+         // Load annotations from the package.
+         if (annotationPart != null)
          {
-            Uri annotationUri = PackUriHelper.CreatePartUri(new Uri("AnnotationStream", UriKind.Relative));
-            Package package = PackageStore.GetPackage(doc.Uri);
-            PackagePart annotationPart = null;
-            if (package.PartExists(annotationUri))
-            {
-               annotationPart = package.GetPart(annotationUri);
-            }
-            else
-            {
-               annotationPart = package.CreatePart(annotationUri, "Annotations/Stream");
-            }
-
-            // Load annotations from the package.
             AnnotationStore store = new XmlStreamStore(annotationPart.GetStream());
-            service = new AnnotationService(docViewer);
-            service.Enable(store);
-
+            _service = new AnnotationService(DocViewer);
+            _service.Enable(store);
          }
       }
-      private void window_Unloaded(object sender, RoutedEventArgs e)
+
+      private void OnUnloaded(object sender, RoutedEventArgs e)
       {
-         if (service != null && service.IsEnabled)
+         if (_service != null && _service.IsEnabled)
          {
             // Flush annotations to stream.
-            service.Store.Flush();
+            _service.Store.Flush();
 
             // Disable annotations.
-            service.Disable();
+            _service.Disable();
          }
 
-         doc.Close();
+         _doc.Close();
       }
    }
 }

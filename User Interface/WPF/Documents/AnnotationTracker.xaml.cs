@@ -11,80 +11,89 @@ using System.Windows.Documents;
 
 namespace Documents
 {
-   public partial class AnnotationTracker : Window
+   public partial class AnnotationTracker
    {
-      private Stream stream;
-      private AnnotationService service;
-      private AnnotationStore store;
-      private IAnchorInfo info;
+      private IAnchorInfo _info;
+      private AnnotationService _service;
+      private AnnotationStore _store;
+      private Stream _stream;
 
       public AnnotationTracker()
       {
          InitializeComponent();
 
-         this.Loaded += new RoutedEventHandler(MainWindow_Loaded);
-         this.Closed += new EventHandler(MainWindow_Closed);
+         Loaded += MainWindow_Loaded;
+         Closed += MainWindow_Closed;
       }
 
-      void MainWindow_Loaded(object sender, RoutedEventArgs e)
+      private void MainWindow_Loaded(object sender, RoutedEventArgs e)
       {
          // Use permanent annotation storage
-         this.stream = new FileStream("storage.xml", FileMode.OpenOrCreate);
-         this.service = new AnnotationService(this.flowDocumentReader);
-         this.store = new XmlStreamStore(this.stream);
-         this.store.AutoFlush = true;
-         this.service.Enable(this.store);
+         _stream = new FileStream("storage.xml", FileMode.OpenOrCreate);
+         _service = new AnnotationService(FlowDocumentReader);
+         _store = new XmlStreamStore(_stream) {AutoFlush = true};
+         _service.Enable(_store);
 
          // Detect when annotations are added or deleted
-         this.service.Store.StoreContentChanged += new StoreContentChangedEventHandler(AnnotationStore_StoreContentChanged);
+         _service.Store.StoreContentChanged += AnnotationStore_StoreContentChanged;
 
          // Bind to annotations in store
-         BindToAnnotations(this.store.GetAnnotations());
+         BindToAnnotations(_store.GetAnnotations());
       }
 
-      void MainWindow_Closed(object sender, EventArgs e)
+      private void MainWindow_Closed(object sender, EventArgs e)
       {
-         if (this.service != null && this.service.IsEnabled)
+         if (_service != null && _service.IsEnabled)
          {
-            this.service.Disable();
-            this.stream.Close();
+            _service.Disable();
+            _stream.Close();
          }
       }
 
-      void AnnotationStore_StoreContentChanged(object sender, StoreContentChangedEventArgs e)
+      private void AnnotationStore_StoreContentChanged(object sender, StoreContentChangedEventArgs e)
       {
          // Bind to refreshed annotations store
-         BindToAnnotations(this.store.GetAnnotations());
+         BindToAnnotations(_store.GetAnnotations());
       }
 
       //<SnippetHandler>
-      void annotationsListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+      private void OnAnnotationsListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
       {
+         var listBox = sender as ListBox;
+         if (listBox == null)
+            return;
 
-         Annotation comment = (sender as ListBox).SelectedItem as Annotation;
-         if (comment != null)
+         var comment = listBox.SelectedItem as Annotation;
+         if (comment == null)
+            return;
+
+         // IAnchorInfo info;
+         // service is an AnnotationService object
+         // comment is an Annotation object
+         _info = AnnotationHelper.GetAnchorInfo(_service, comment);
+         var resolvedAnchor = _info.ResolvedAnchor as TextAnchor;
+         if (resolvedAnchor != null)
          {
-            // IAnchorInfo info;
-            // service is an AnnotationService object
-            // comment is an Annotation object
-            info = AnnotationHelper.GetAnchorInfo(this.service, comment);
-            TextAnchor resolvedAnchor = info.ResolvedAnchor as TextAnchor;
-            TextPointer textPointer = (TextPointer)resolvedAnchor.BoundingStart;
-            textPointer.Paragraph.BringIntoView();
+            var textPointer = resolvedAnchor.BoundingStart as TextPointer;
+            if (textPointer != null && textPointer.Paragraph != null)
+               textPointer.Paragraph.BringIntoView();
          }
       }
+
       //</SnippetHandler>
 
-      void BindToAnnotations(IList<Annotation> annotations)
+      private void BindToAnnotations(IList<Annotation> annotations)
       {
          // Bind to annotations in store
-         this.annotationsListBox.DataContext = annotations;
+         AnnotationsListBox.DataContext = annotations;
 
          // Sort annotations by creation time
-         SortDescription sortDescription = new SortDescription();
-         sortDescription.PropertyName = "CreationTime";
-         sortDescription.Direction = ListSortDirection.Descending;
-         ICollectionView view = CollectionViewSource.GetDefaultView(this.annotationsListBox.DataContext);
+         var sortDescription = new SortDescription
+         {
+            PropertyName = "CreationTime",
+            Direction = ListSortDirection.Descending
+         };
+         var view = CollectionViewSource.GetDefaultView(AnnotationsListBox.DataContext);
          view.SortDescriptions.Clear();
          view.SortDescriptions.Add(sortDescription);
       }

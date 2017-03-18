@@ -10,11 +10,11 @@
             <Button Content="StyledDocument" />
             <Button Content="TextJustification" />
             <Button Content="PagedContent" />
-            <Button>RichTextEditor</Button>
-            <Button>ViewXPS</Button>
-            <Button>FlowDocumentAnnotations</Button>
-            <Button>AnnotationTracker</Button>
-            <Button>XpsAnnotations</Button>
+            <Button Content="RichTextEditor"/>
+            <Button Content="ViewXps"/>
+            <Button Content="FlowDocumentAnnotations"/>
+            <Button Content="AnnotationTracker"/>
+            <Button Content="XpsAnnotations"/>
         </StackPanel>
     </Grid>
 </Window>
