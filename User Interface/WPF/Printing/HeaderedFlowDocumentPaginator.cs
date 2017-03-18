@@ -7,61 +7,68 @@ namespace Printing
 {
    public class HeaderedFlowDocumentPaginator : DocumentPaginator
    {
-      private DocumentPaginator flowDocumentPaginator;
+      private readonly DocumentPaginator _flowDocumentPaginator;
 
-      public HeaderedFlowDocumentPaginator(FlowDocument document)
+      public HeaderedFlowDocumentPaginator(IDocumentPaginatorSource document)
       {
-         flowDocumentPaginator = ((IDocumentPaginatorSource)document).DocumentPaginator;
+         _flowDocumentPaginator = document.DocumentPaginator;
       }
 
+      /// <inheritdoc />
+      public override bool IsPageCountValid
+      {
+         get { return _flowDocumentPaginator.IsPageCountValid; }
+      }
+
+      /// <inheritdoc />
+      public override int PageCount
+      {
+         get { return _flowDocumentPaginator.PageCount; }
+      }
+
+      /// <inheritdoc />
+      public override Size PageSize
+      {
+         get { return _flowDocumentPaginator.PageSize; }
+         set { _flowDocumentPaginator.PageSize = value; }
+      }
+
+      /// <inheritdoc />
+      public override IDocumentPaginatorSource Source
+      {
+         get { return _flowDocumentPaginator.Source; }
+      }
+
+      /// <inheritdoc />
       public override DocumentPage GetPage(int pageNumber)
       {
          // Get the requested page.
-         DocumentPage page = flowDocumentPaginator.GetPage(pageNumber);
+         var page = _flowDocumentPaginator.GetPage(pageNumber);
 
          // Wrap the page in a Visual. You can then add a transformation and extras.
-         ContainerVisual newVisual = new ContainerVisual();
+         var newVisual = new ContainerVisual();
          newVisual.Children.Add(page.Visual);
+         newVisual.Children.Add(CreateHeader(pageNumber)); // Add the title to the visual.         
+         var newPage = new DocumentPage(newVisual); // Wrap the visual in a new page.
 
+         return newPage;
+      }
+
+      private static DrawingVisual CreateHeader(int pageNumber)
+      {
          // Create a header. 
-         DrawingVisual header = new DrawingVisual();
-         using (DrawingContext context = header.RenderOpen())
+         var header = new DrawingVisual();
+         using (var context = header.RenderOpen())
          {
-            Typeface typeface = new Typeface("Times New Roman");
-            FormattedText text = new FormattedText("Page " + (pageNumber + 1).ToString(),
-              CultureInfo.CurrentCulture, FlowDirection.LeftToRight,
-              typeface, 14, Brushes.Black);
+            var typeface = new Typeface("Times New Roman");
+            var text = new FormattedText(string.Format("Page {0}", pageNumber + 1), CultureInfo.CurrentCulture,
+               FlowDirection.LeftToRight, typeface, 14, Brushes.Black);
 
             // Leave a quarter-inch of space between the page edge and this text.
             context.DrawText(text, new Point(96 * 0.25, 96 * 0.25));
          }
-         // Add the title to the visual.
-         newVisual.Children.Add(header);
 
-         // Wrap the visual in a new page.
-         DocumentPage newPage = new DocumentPage(newVisual);
-         return newPage;
-      }
-
-      public override bool IsPageCountValid
-      {
-         get { return flowDocumentPaginator.IsPageCountValid; }
-      }
-
-      public override int PageCount
-      {
-         get { return flowDocumentPaginator.PageCount; }
-      }
-
-      public override System.Windows.Size PageSize
-      {
-         get { return flowDocumentPaginator.PageSize; }
-         set { flowDocumentPaginator.PageSize = value; }
-      }
-
-      public override IDocumentPaginatorSource Source
-      {
-         get { return flowDocumentPaginator.Source; }
+         return header;
       }
    }
 }
