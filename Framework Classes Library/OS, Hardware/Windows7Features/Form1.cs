@@ -1,7 +1,9 @@
-﻿using System;
-using System.Windows.Forms;
-using Microsoft.WindowsAPICodePack.ApplicationServices;
+﻿using Microsoft.WindowsAPICodePack.ApplicationServices;
+using Microsoft.WindowsAPICodePack.Dialogs;
 using Microsoft.WindowsAPICodePack.Shell;
+using System;
+using System.Linq;
+using System.Windows.Forms;
 
 namespace Windows7Features
 {
@@ -20,7 +22,7 @@ namespace Windows7Features
 
       private void buttonWin7OFD_Click(object sender, EventArgs e)
       {
-         var commonOpenFileDialog = new Microsoft.WindowsAPICodePack.Dialogs.CommonOpenFileDialog
+         var commonOpenFileDialog = new CommonOpenFileDialog
          {
             AddToMostRecentlyUsedList = true,
             IsFolderPicker = true,
@@ -28,18 +30,24 @@ namespace Windows7Features
          };
          // Позволяет обращаться к панели управления и библиотекам
 
-         if (commonOpenFileDialog.ShowDialog() == Microsoft.WindowsAPICodePack.Dialogs.CommonFileDialogResult.Ok)
+         if (commonOpenFileDialog.ShowDialog() == CommonFileDialogResult.Ok)
          {
-            ShellObject shellObj = commonOpenFileDialog.FileAsShellObject;
+            var selectedFileNames = commonOpenFileDialog.FileNames.ToArray();
+            if (selectedFileNames.Length > 0)
+            {
+               Array.ForEach(selectedFileNames, file => textBoxInfo.AppendText(string.Format("\t{0}", file)));
+            }
+
+            var shellObj = commonOpenFileDialog.FileAsShellObject;
             var library = shellObj as ShellLibrary;
             if (library != null)
             {
-               textBoxInfo.AppendText(string.Format("You picked a library: {0}, Type: {1}", library.Name, library.LibraryType));
-               foreach (ShellFileSystemFolder folder in (ShellLibrary)shellObj)
-               {
+               textBoxInfo.AppendText(string.Format("You picked a library: {0}, Type: {1}", library.Name,
+                  library.LibraryType));
+               foreach (var folder in (ShellLibrary)shellObj)
                   textBoxInfo.AppendText("\t" + folder.Path);
-               }
             }
+
             textBoxInfo.AppendText(Environment.NewLine);
          }
       }

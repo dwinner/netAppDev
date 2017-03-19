@@ -1,8 +1,8 @@
-﻿using System;
+﻿using EventLogDemo.Properties;
+using System;
 using System.Diagnostics;
 using System.Text;
 using System.Windows.Forms;
-using EventLogDemo.Properties;
 
 namespace EventLogDemo
 {

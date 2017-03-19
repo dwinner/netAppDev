@@ -6,11 +6,11 @@ using System;
 
 namespace OsVersions
 {
-   class Program
+   internal static class Program
    {
-      static void Main()
+      private static void Main()
       {
-         OperatingSystem operatingSystem = Environment.OSVersion;
+         var operatingSystem = Environment.OSVersion;
          Console.WriteLine("Platform: {0}", operatingSystem.Platform);
          Console.WriteLine("Service Pack: {0}", operatingSystem.ServicePack);
          Console.WriteLine("Version: {0}", operatingSystem.Version);

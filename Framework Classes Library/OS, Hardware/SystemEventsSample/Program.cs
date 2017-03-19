@@ -7,9 +7,9 @@ using Microsoft.Win32;
 
 namespace SystemEventsSample
 {
-   class Program
+   internal static class Program
    {
-      static void Main()
+      private static void Main()
       {
          SystemEvents.DisplaySettingsChanged +=
             (sender, args) => Console.WriteLine("Пользователь изменил параметры дисплеев");
@@ -70,13 +70,11 @@ namespace SystemEventsSample
 
          SystemEvents.SessionEnding += (sender, args) =>
          {
-            bool cancel = args.Cancel;
+            var cancel = args.Cancel;
             Console.WriteLine(cancel ? "Пользователь отменил запрос на окончание сеанса" : string.Empty);
 
             if (cancel)
-            {
                return;
-            }
 
             string statusMessage;
             switch (args.Reason)
@@ -99,7 +97,7 @@ namespace SystemEventsSample
 
          SystemEvents.SessionSwitch += (sender, args) =>
          {
-            SessionSwitchReason switchReason = args.Reason;
+            var switchReason = args.Reason;
             Console.WriteLine("Изменился режим использования: {0}", switchReason);
          };
 
@@ -107,7 +105,7 @@ namespace SystemEventsSample
 
          SystemEvents.UserPreferenceChanged += (sender, args) =>
          {
-            UserPreferenceCategory preferenceCategory = args.Category;
+            var preferenceCategory = args.Category;
             Console.WriteLine("Произошло изменение пользовательских параметров: {0}", preferenceCategory);
          };
 
