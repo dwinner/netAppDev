@@ -4,50 +4,47 @@ using AdvancedOperations;
 using CalculatorContract;
 using CalculatorViewModels;
 using FuelEconomyUWP;
-using FuelEconomyWPF;
 using SimpleCalculator;
 using TemperatureConversionUWP;
-using TemperatureConversionWPF;
 
 namespace WPFCalculatorHost
-{
-	/// <summary>
-	/// Interaction logic for MainWindow.xaml
-	/// </summary>
-	public partial class MainWindow : Window
+{	
+	public partial class MainWindow
 	{
 		public MainWindow()
 		{
 			InitializeComponent();
-			this.DataContext = this;
+			DataContext = this;
 
 			CalculatorViewModel = new CalculatorViewModel();
-			CalculatorViewModel.Init(typeof(Calculator), typeof(SubtractOperation), typeof(SlowAddOperation), typeof(AddOperation));
+			CalculatorViewModel.Init(
+				typeof(Calculator),
+				typeof(SubtractOperation),
+				typeof(SlowAddOperation),
+				typeof(AddOperation));
 
 			CalculatorExtensionsViewModel = new CalculatorExtensionsViewModel();
-			CalculatorExtensionsViewModel.Init(typeof(FuelCalculatorExtension), typeof(TemperatureConversionExtension));
+			CalculatorExtensionsViewModel.Init(
+				typeof(FuelCalculatorExtension),
+				typeof(TemperatureConversionExtension));
 		}
 
 		public CalculatorViewModel CalculatorViewModel { get; }
+
+		public CalculatorExtensionsViewModel CalculatorExtensionsViewModel { get; }
 
 		private void OnNumberClick(object sender, RoutedEventArgs e)
 		{
 			var b = e.Source as Button;
 			if (b != null)
-			{
 				CalculatorViewModel.Input += b.Content.ToString();
-			}
 		}
 
 		private void OnDefineOperation(object sender, RoutedEventArgs e)
 		{
 			var b = e.Source as Button;
 			if (b != null)
-			{
 				CalculatorViewModel.CurrentOperation = b.Tag as IOperation;
-			}
 		}
-
-		public CalculatorExtensionsViewModel CalculatorExtensionsViewModel { get; }
 	}
 }

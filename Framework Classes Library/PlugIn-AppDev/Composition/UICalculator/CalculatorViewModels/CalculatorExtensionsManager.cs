@@ -10,32 +10,26 @@ namespace CalculatorViewModels
 {
 	public sealed class CalculatorExtensionsManager
 	{
-		private CalculatorExtensionsImport _calcExtensionImport;
-		public event EventHandler<ImportEventArgs> ImportsSatisfied;
+		private readonly CalculatorExtensionsImport _calcExtensionImport;
 
 		public CalculatorExtensionsManager()
 		{
 			_calcExtensionImport = new CalculatorExtensionsImport();
-			_calcExtensionImport.ImportsSatisfied += (sender, e) =>
-			{
-				ImportsSatisfied?.Invoke(this, e);
-			};
+			_calcExtensionImport.ImportsSatisfied += (sender, e) => { ImportsSatisfied?.Invoke(this, e); };
 		}
 
+		public event EventHandler<ImportEventArgs> ImportsSatisfied;
 
 		public void InitializeContainer(params Type[] parts)
 		{
 			var configuration = new ContainerConfiguration().WithParts(parts);
-			using (CompositionHost host = configuration.CreateContainer())
+			using (var host = configuration.CreateContainer())
 			{
 				host.SatisfyImports(_calcExtensionImport);
-
 			}
 		}
 
 		public IEnumerable<Lazy<ICalculatorExtension, CalculatorExtensionMetadataAttribute>> GetExtensionInformation() =>
-			 _calcExtensionImport.CalculatorExtensions.ToArray();
-
-
+			_calcExtensionImport.CalculatorExtensions.ToArray();
 	}
 }

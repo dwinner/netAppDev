@@ -28,6 +28,4 @@ namespace AdvancedOperations
 			return x + y;
 		}
 	}
-
-
 }

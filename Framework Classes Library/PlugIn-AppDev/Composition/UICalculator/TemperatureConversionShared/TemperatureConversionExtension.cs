@@ -1,13 +1,12 @@
-﻿
-using System.Composition;
+﻿using System.Composition;
+using CalculatorContract;
+using CalculatorUtils;
 #if WPF
 using TemperatureConversionWPF;
 #endif
 #if WINDOWS_UWP
 using System.Composition;
 #endif
-using CalculatorContract;
-using CalculatorUtils;
 
 
 namespace TemperatureConversionUWP
@@ -20,7 +19,6 @@ namespace TemperatureConversionUWP
 	public class TemperatureConversionExtension : ICalculatorExtension
 	{
 		private object _control;
-		public object UI => _control ?? (_control = new TemperatureConversionUC());
-
+		public object Ui => _control ?? (_control = new TemperatureConversionUserControl());
 	}
 }

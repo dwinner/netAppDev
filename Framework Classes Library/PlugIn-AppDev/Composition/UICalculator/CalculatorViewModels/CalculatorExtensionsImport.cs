@@ -10,13 +10,11 @@ namespace CalculatorViewModels
 	{
 		public event EventHandler<ImportEventArgs> ImportsSatisfied;
 
-		[ImportMany()]
+		[ImportMany]
 		public IEnumerable<Lazy<ICalculatorExtension, CalculatorExtensionMetadataAttribute>> CalculatorExtensions { get; set; }
 
 		[OnImportsSatisfied]
 		public void OnImportsSatisfied()
-		{
-			ImportsSatisfied?.Invoke(this, new ImportEventArgs { StatusMessage = "ICalculatorExtension imports successful" });
-		}
+			=> ImportsSatisfied?.Invoke(this, new ImportEventArgs {StatusMessage = "ICalculatorExtension imports successful"});
 	}
 }

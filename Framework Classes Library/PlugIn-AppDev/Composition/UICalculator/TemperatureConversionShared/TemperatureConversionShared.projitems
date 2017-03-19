@@ -9,6 +9,7 @@
     <Import_RootNamespace>TemperatureConversionShared</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)TempConversionType.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)TemperatureConversionExtension.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)TemperatureConversionViewModel.cs" />
   </ItemGroup>

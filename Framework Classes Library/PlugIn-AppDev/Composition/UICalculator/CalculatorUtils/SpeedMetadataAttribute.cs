@@ -7,10 +7,6 @@ namespace CalculatorUtils
 	[AttributeUsage(AttributeTargets.Class)]
 	public class SpeedMetadataAttribute : Attribute
 	{
-		public SpeedMetadataAttribute()
-		{
-		}
-
 		public Speed Speed { get; set; }
 	}
 }

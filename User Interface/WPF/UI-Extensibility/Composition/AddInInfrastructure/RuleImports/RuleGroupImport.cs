@@ -15,6 +15,7 @@ namespace RuleImports
 		private void OnImportsSatisfied(ImportEventArgs e) => ImportsSatisfied?.Invoke(this, e);
 
 		[OnImportsSatisfied]
-		public void OnSatisfy() => OnImportsSatisfied(new ImportEventArgs {StatusMessage = "Rule group imports successfully"});
+		public void OnImportsSatisfied()
+			=> OnImportsSatisfied(new ImportEventArgs {StatusMessage = "Rule group imports successfully"});
 	}
 }

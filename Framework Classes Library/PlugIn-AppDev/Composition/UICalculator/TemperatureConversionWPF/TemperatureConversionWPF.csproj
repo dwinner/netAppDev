@@ -68,12 +68,12 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
-    <Page Include="TemperatureConversionUC.xaml">
+    <Page Include="TemperatureConversionUserControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Compile Include="TemperatureConversionUC.xaml.cs">
-      <DependentUpon>TemperatureConversionUC.xaml</DependentUpon>
+    <Compile Include="TemperatureConversionUserControl.xaml.cs">
+      <DependentUpon>TemperatureConversionUserControl.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
