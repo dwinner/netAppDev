@@ -5,23 +5,17 @@ using System.Windows.Media;
 
 namespace Printing
 {
-   /// <summary>
-   /// Interaction logic for PrintWithoutUserIntervention.xaml
-   /// </summary>
-
-   public partial class PrintWithoutUserIntervention : System.Windows.Window
+   public partial class PrintWithoutUserIntervention
    {
-
       public PrintWithoutUserIntervention()
       {
          InitializeComponent();
       }
 
-      private void cmdPrint_Click(object sender, RoutedEventArgs e)
+      private void OnPrint(object sender, RoutedEventArgs e)
       {
-         PrintDialog dialog = new PrintDialog();
-         dialog.PrintQueue = LocalPrintServer.GetDefaultPrintQueue();
-         dialog.PrintVisual((Visual)sender, "Automatic Printout");
+         var dialog = new PrintDialog {PrintQueue = LocalPrintServer.GetDefaultPrintQueue()};
+         dialog.PrintVisual((Visual) sender, "Automatic Printout");
       }
    }
 }

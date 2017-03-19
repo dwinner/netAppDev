@@ -93,6 +93,9 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
+    <Compile Include="store.cs">
+      <DependentUpon>store.xsd</DependentUpon>
+    </Compile>
     <Compile Include="Xps.xaml.cs">
       <SubType>Code</SubType>
       <DependentUpon>Xps.xaml</DependentUpon>
@@ -143,6 +146,9 @@
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <None Include="store.xsc">
+      <DependentUpon>store.xsd</DependentUpon>
     </None>
     <None Include="store.xsd">
       <SubType>Designer</SubType>
@@ -223,6 +229,9 @@
   <ItemGroup>
     <None Include="store.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="store.xss">
+      <DependentUpon>store.xsd</DependentUpon>
     </None>
     <None Include="test.xps">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

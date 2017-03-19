@@ -8,10 +8,10 @@
             <Button Content="PrintScaledVisual" />
             <Button Content="PrintFlowDocument" />
             <Button Content="PrintFlowDocumentWithHeader" />
-            <Button>PrintCustomPage</Button>
-            <Button>PrintCustomPages</Button>
-            <Button>PrintWithoutUserIntervention</Button>
-            <Button>PrintQueues</Button>
+            <Button Content="PrintCustomPage" />
+            <Button Content="PrintCustomPages" />
+            <Button Content="PrintWithoutUserIntervention" />
+            <Button Content="PrintQueues" />
             <Button>Xps</Button>
         </StackPanel>
     </Grid>

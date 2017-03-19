@@ -6,81 +6,69 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Markup;
-using System.Windows.Xps;
 using System.Windows.Xps.Packaging;
 
 namespace Printing
 {
-   /// <summary>
-   /// Interaction logic for Xps.xaml
-   /// </summary>
-
-   public partial class Xps : System.Windows.Window
+   public partial class Xps
    {
+      private readonly PrintDialog _printDialog = new PrintDialog();
 
       public Xps()
       {
          InitializeComponent();
       }
 
-
       private void Window_Loaded(object sender, EventArgs e)
       {
-         XpsDocument doc = new XpsDocument("test.xps", FileAccess.ReadWrite);
-         docViewer.Document = doc.GetFixedDocumentSequence();
-
-         doc.Close();
-      }
-
-      private PrintDialog printDialog = new PrintDialog();
-      private void cmdPrintXps_Click(object sender, RoutedEventArgs e)
-      {
-         if (printDialog.ShowDialog() == true)
+         using (var doc = new XpsDocument("test.xps", FileAccess.ReadWrite))
          {
-            printDialog.PrintDocument(docViewer.Document.DocumentPaginator, "A Fixed Document");
+            DocViewer.Document = doc.GetFixedDocumentSequence();
          }
       }
 
-      private void cmdPrintFlow_Click(object sender, RoutedEventArgs e)
+      private void OnPrintXps(object sender, RoutedEventArgs e)
       {
-         string filePath = System.IO.Path.Combine(Directory.GetCurrentDirectory(), "FlowDocument1.xaml");
-         if (printDialog.ShowDialog() == true)
-         {
-            PrintQueue queue = printDialog.PrintQueue;
-            XpsDocumentWriter writer = PrintQueue.CreateXpsDocumentWriter(queue);
+         if (_printDialog.ShowDialog() == true)
+            _printDialog.PrintDocument(DocViewer.Document.DocumentPaginator, "A Fixed Document");
+      }
 
-            using (FileStream fs = File.Open(filePath, FileMode.Open))
+      private void OnPrintFlow(object sender, RoutedEventArgs e)
+      {
+         var filePath = Path.Combine(Directory.GetCurrentDirectory(), "FlowDocument1.xaml");
+         if (_printDialog.ShowDialog() == true)
+         {
+            var queue = _printDialog.PrintQueue;
+            var writer = PrintQueue.CreateXpsDocumentWriter(queue);
+
+            using (var stream = File.Open(filePath, FileMode.Open))
             {
-               FlowDocument flowDocument = (FlowDocument)XamlReader.Load(fs);
-               writer.Write(((IDocumentPaginatorSource)flowDocument).DocumentPaginator);
+               var flowDocument = (FlowDocument) XamlReader.Load(stream);
+               writer.Write(((IDocumentPaginatorSource) flowDocument).DocumentPaginator);
             }
          }
       }
 
-      private void cmdShowFlow_Click(object sender, RoutedEventArgs e)
+      private void OnShowFlow(object sender, RoutedEventArgs e)
       {
          // Load the XPS content into memory.
-         MemoryStream ms = new MemoryStream();
-         Package package = Package.Open(ms, FileMode.Create, FileAccess.ReadWrite);
-         Uri DocumentUri = new Uri("pack://InMemoryDocument.xps");
-         PackageStore.AddPackage(DocumentUri, package);
-         XpsDocument xpsDocument = new XpsDocument(package, CompressionOption.Fast,
-             DocumentUri.AbsoluteUri);
-
-         // Load the XPS content into a temporary file (alternative approach).
-         //if (File.Exists("test2.xps")) File.Delete("test2.xps");
-         //    XpsDocument xpsDocument = new XpsDocument("test2.xps", FileAccess.ReadWrite);
-
-         using (FileStream fs = File.Open("FlowDocument1.xaml", FileMode.Open))
+         Package package;
+         using (var memoryStream = new MemoryStream())
          {
-            FlowDocument doc = (FlowDocument)XamlReader.Load(fs);
-            XpsDocumentWriter writer = XpsDocument.CreateXpsDocumentWriter(xpsDocument);
+            package = Package.Open(memoryStream, FileMode.Create, FileAccess.ReadWrite);
+         }
 
-            writer.Write(((IDocumentPaginatorSource)doc).DocumentPaginator);
+         var documentUri = new Uri("pack://InMemoryDocument.xps");
+         PackageStore.AddPackage(documentUri, package);
+         using (var xpsDocument = new XpsDocument(package, CompressionOption.Fast, documentUri.AbsoluteUri))
+         using (var fileStream = File.Open("FlowDocument1.xaml", FileMode.Open, FileAccess.ReadWrite))
+         {
+            var doc = (FlowDocument) XamlReader.Load(fileStream);
+            var writer = XpsDocument.CreateXpsDocumentWriter(xpsDocument);
+            writer.Write(((IDocumentPaginatorSource) doc).DocumentPaginator);
 
             // Display the new XPS document in a viewer.
-            docViewer.Document = xpsDocument.GetFixedDocumentSequence();
-            xpsDocument.Close();
+            DocViewer.Document = xpsDocument.GetFixedDocumentSequence();
          }
       }
    }

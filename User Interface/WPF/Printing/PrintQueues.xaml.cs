@@ -4,132 +4,125 @@ using System.Windows;
 using System.Windows.Controls;
 
 namespace Printing
-{
-   /// <summary>
-   /// Interaction logic for PrintQueues.xaml
-   /// </summary>
-
-   public partial class PrintQueues : System.Windows.Window
-   {
+{   
+   public partial class PrintQueues
+   {      
+      private readonly PrintServer _printServer = new PrintServer();
 
       public PrintQueues()
       {
          InitializeComponent();
       }
 
-      // This code doesn't include any error handling in order to be as clear as possible.
-      // Obviously, error handling is required when accessing a printer.
-      // (For example, Windows security settings could cause an error.)        
-
-
-      private PrintServer printServer = new PrintServer();
-
-      private void Window_Loaded(object sender, EventArgs e)
+      private void OnPrintQueueWindow_Loaded(object sender, EventArgs e)
       {
-         lstQueues.DisplayMemberPath = "FullName";
-         lstQueues.SelectedValuePath = "FullName";
-         lstQueues.ItemsSource = printServer.GetPrintQueues();
+         PrintQueuesListBox.DisplayMemberPath = "FullName";
+         PrintQueuesListBox.SelectedValuePath = "FullName";
+         PrintQueuesListBox.ItemsSource = _printServer.GetPrintQueues();
       }
 
-      private void lstQueues_SelectionChanged(object sender, SelectionChangedEventArgs e)
+      private void OnPrintQueue_SelectionChanged(object sender, SelectionChangedEventArgs e)
       {
-         PrintQueue queue = printServer.GetPrintQueue(lstQueues.SelectedValue.ToString());
-         lblQueueStatus.Text = "Queue Status: " + queue.QueueStatus.ToString();
-         lblJobStatus.Text = "";
-         lstJobs.DisplayMemberPath = "JobName";
-         lstJobs.SelectedValuePath = "JobIdentifier";
-
-         lstJobs.ItemsSource = queue.GetPrintJobInfoCollection();
+         var queue = _printServer.GetPrintQueue(PrintQueuesListBox.SelectedValue.ToString());
+         QueueStatusTextBox.Text = string.Format("Queue Status: {0}", queue.QueueStatus);
+         JobStatusTextBlock.Text = string.Empty;
+         JobsListBox.DisplayMemberPath = "JobName";
+         JobsListBox.SelectedValuePath = "JobIdentifier";
+         JobsListBox.ItemsSource = queue.GetPrintJobInfoCollection();
       }
 
-      private void lstJobs_SelectionChanged(object sender, SelectionChangedEventArgs e)
+      private void OnJobs_SelectionChanged(object sender, SelectionChangedEventArgs e)
       {
-         if (lstJobs.SelectedValue == null)
+         if (JobsListBox.SelectedValue == null)
          {
-            lblJobStatus.Text = "";
+            JobStatusTextBlock.Text = string.Empty;
          }
          else
          {
-            PrintQueue queue = printServer.GetPrintQueue(lstQueues.SelectedValue.ToString());
-            PrintSystemJobInfo job = queue.GetJob((int)lstJobs.SelectedValue);
+            var queue = _printServer.GetPrintQueue(PrintQueuesListBox.SelectedValue.ToString());
+            var job = queue.GetJob((int) JobsListBox.SelectedValue);
 
-            lblJobStatus.Text = "Job Status: " + job.JobStatus.ToString();
+            JobStatusTextBlock.Text = string.Format("Job Status: {0}", job.JobStatus);
          }
       }
 
-
-      private void cmdPauseQueue_Click(object sender, RoutedEventArgs e)
+      private void OnPauseQueue(object sender, RoutedEventArgs e)
       {
-         if (lstQueues.SelectedValue != null)
+         if (PrintQueuesListBox.SelectedValue != null)
          {
-            PrintQueue queue = printServer.GetPrintQueue(lstQueues.SelectedValue.ToString());
+            var queue = _printServer.GetPrintQueue(PrintQueuesListBox.SelectedValue.ToString());
             queue.Pause();
          }
       }
-      private void cmdResumeQueue_Click(object sender, RoutedEventArgs e)
+
+      private void OnResumeQueue(object sender, RoutedEventArgs e)
       {
-         if (lstQueues.SelectedValue != null)
+         if (PrintQueuesListBox.SelectedValue != null)
          {
-            PrintQueue queue = printServer.GetPrintQueue(lstQueues.SelectedValue.ToString());
+            var queue = _printServer.GetPrintQueue(PrintQueuesListBox.SelectedValue.ToString());
             queue.Resume();
          }
       }
-      private void cmdRefreshQueue_Click(object sender, RoutedEventArgs e)
+
+      private void OnRefreshQueue(object sender, RoutedEventArgs e)
       {
-         if (lstQueues.SelectedValue != null)
+         if (PrintQueuesListBox.SelectedValue != null)
          {
-            PrintQueue queue = printServer.GetPrintQueue(lstQueues.SelectedValue.ToString());
+            var queue = _printServer.GetPrintQueue(PrintQueuesListBox.SelectedValue.ToString());
             queue.Refresh();
          }
       }
-      private void cmdPurgeQueue_Click(object sender, RoutedEventArgs e)
+
+      private void OnPurgeQueue(object sender, RoutedEventArgs e)
       {
-         if (lstQueues.SelectedValue != null)
+         if (PrintQueuesListBox.SelectedValue != null)
          {
-            PrintQueue queue = printServer.GetPrintQueue(lstQueues.SelectedValue.ToString());
+            var queue = _printServer.GetPrintQueue(PrintQueuesListBox.SelectedValue.ToString());
             queue.Purge();
          }
       }
 
-
-      private void cmdPauseJob_Click(object sender, RoutedEventArgs e)
+      private void OnPauseJob(object sender, RoutedEventArgs e)
       {
-         if (lstJobs.SelectedValue != null)
+         if (JobsListBox.SelectedValue != null)
          {
-            PrintQueue queue = printServer.GetPrintQueue(lstQueues.SelectedValue.ToString());
-            PrintSystemJobInfo job = queue.GetJob((int)lstJobs.SelectedValue);
+            var queue = _printServer.GetPrintQueue(PrintQueuesListBox.SelectedValue.ToString());
+            var job = queue.GetJob((int) JobsListBox.SelectedValue);
             job.Pause();
          }
       }
-      private void cmdResumeJob_Click(object sender, RoutedEventArgs e)
+
+      private void OnResumeJob(object sender, RoutedEventArgs e)
       {
-         if (lstJobs.SelectedValue != null)
+         if (JobsListBox.SelectedValue != null)
          {
-            PrintQueue queue = printServer.GetPrintQueue(lstQueues.SelectedValue.ToString());
-            PrintSystemJobInfo job = queue.GetJob((int)lstJobs.SelectedValue);
+            var queue = _printServer.GetPrintQueue(PrintQueuesListBox.SelectedValue.ToString());
+            var job = queue.GetJob((int) JobsListBox.SelectedValue);
             job.Resume();
          }
       }
-      private void cmdRefreshJob_Click(object sender, RoutedEventArgs e)
+
+      private void OnRefreshJob(object sender, RoutedEventArgs e)
       {
-         if (lstJobs.SelectedValue != null)
+         if (JobsListBox.SelectedValue != null)
          {
-            PrintQueue queue = printServer.GetPrintQueue(lstQueues.SelectedValue.ToString());
-            PrintSystemJobInfo job = queue.GetJob((int)lstJobs.SelectedValue);
+            var queue = _printServer.GetPrintQueue(PrintQueuesListBox.SelectedValue.ToString());
+            var job = queue.GetJob((int) JobsListBox.SelectedValue);
             job.Refresh();
 
-            lstJobs_SelectionChanged(null, null);
+            OnJobs_SelectionChanged(null, null);
          }
       }
-      private void cmdCancelJob_Click(object sender, RoutedEventArgs e)
+
+      private void OnCancelJob(object sender, RoutedEventArgs e)
       {
-         if (lstJobs.SelectedValue != null)
+         if (JobsListBox.SelectedValue != null)
          {
-            PrintQueue queue = printServer.GetPrintQueue(lstQueues.SelectedValue.ToString());
-            PrintSystemJobInfo job = queue.GetJob((int)lstJobs.SelectedValue);
+            var queue = _printServer.GetPrintQueue(PrintQueuesListBox.SelectedValue.ToString());
+            var job = queue.GetJob((int) JobsListBox.SelectedValue);
             job.Cancel();
 
-            lstQueues_SelectionChanged(null, null);
+            OnPrintQueue_SelectionChanged(null, null);
          }
       }
    }
