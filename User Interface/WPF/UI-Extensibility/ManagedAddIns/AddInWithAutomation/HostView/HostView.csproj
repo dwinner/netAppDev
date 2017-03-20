@@ -61,7 +61,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="HostViews.cs" />
+    <Compile Include="HostObject.cs" />
+    <Compile Include="ImageProcessorHostView.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

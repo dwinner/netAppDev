@@ -10,9 +10,4 @@ namespace Contract
 
       void Initialize(IHostObjectContract hostObj);
    }
-
-   public interface IHostObjectContract : IContract
-   {
-      void ReportProgress(int progressPercent);
-   }
 }

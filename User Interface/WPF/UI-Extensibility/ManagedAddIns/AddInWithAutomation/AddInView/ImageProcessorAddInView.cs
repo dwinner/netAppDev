@@ -9,9 +9,4 @@ namespace AddInView
 
       public abstract void Initialize(HostObject hostObj);
    }
-
-   public abstract class HostObject
-   {
-      public abstract void ReportProgress(int progressPercent);
-   }
 }

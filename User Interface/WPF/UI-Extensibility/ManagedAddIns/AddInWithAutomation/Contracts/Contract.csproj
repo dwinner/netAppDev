@@ -64,7 +64,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Contracts.cs" />
+    <Compile Include="IImageProcessorContract.cs" />
+    <Compile Include="IHostObjectContract.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
