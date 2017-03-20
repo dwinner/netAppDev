@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace HostView
+﻿namespace HostView
 {
-    public abstract class ImageProcessorHostView
-    {
-        public abstract byte[] ProcessImageBytes(byte[] pixels);
-    }
+   public abstract class ImageProcessorHostView
+   {
+      public abstract byte[] ProcessImageBytes(byte[] pixels);
+   }
 }

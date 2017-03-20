@@ -1,26 +1,26 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.AddIn.Pipeline;
+﻿using System.AddIn.Pipeline;
+using Contract;
+using HostView;
+using JetBrains.Annotations;
 
 namespace HostSideAdapter
 {
-    [HostAdapter]
-    public class ImageProcessorContractToViewHostAdapter : HostView.ImageProcessorHostView
-    {
-        private Contract.IImageProcessorContract contract;
-        private ContractHandle contractHandle;
+   [HostAdapter]
+   [UsedImplicitly]
+   public class ImageProcessorContractToViewHostAdapter : ImageProcessorHostView
+   {
+      private readonly IImageProcessorContract _contract;
+      [UsedImplicitly] private ContractHandle _contractHandle;
 
-        public ImageProcessorContractToViewHostAdapter(Contract.IImageProcessorContract contract)
-        {            
-            this.contract = contract;
-            contractHandle = new ContractHandle(contract);
-        }              
+      public ImageProcessorContractToViewHostAdapter(IImageProcessorContract contract)
+      {
+         _contract = contract;
+         _contractHandle = new ContractHandle(contract);
+      }
 
-        public override byte[] ProcessImageBytes(byte[] pixels)
-        {
-            return contract.ProcessImageBytes(pixels);
-        }
-    }
+      public override byte[] ProcessImageBytes(byte[] pixels)
+      {
+         return _contract.ProcessImageBytes(pixels);
+      }
+   }
 }

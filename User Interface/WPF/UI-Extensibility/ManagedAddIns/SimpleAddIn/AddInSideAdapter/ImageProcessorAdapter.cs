@@ -1,25 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.AddIn.Pipeline;
+﻿using System.AddIn.Pipeline;
+using AddInView;
+using Contract;
+using JetBrains.Annotations;
 
 namespace AddInSideAdapter
 {
-    [AddInAdapter]
-    public class ImageProcessorViewToContractAdapter : ContractBase, Contract.IImageProcessorContract
-    {
-        private AddInView.ImageProcessorAddInView view;
+   [AddInAdapter]
+   [UsedImplicitly]
+   public class ImageProcessorViewToContractAdapter : ContractBase, IImageProcessorContract
+   {
+      private readonly ImageProcessorAddInView _view;
 
-        public ImageProcessorViewToContractAdapter(AddInView.ImageProcessorAddInView view)
-        {
-            this.view = view;
-        }
+      public ImageProcessorViewToContractAdapter(ImageProcessorAddInView view)
+      {
+         _view = view;
+      }
 
-        public byte[] ProcessImageBytes(byte[] pixels)
-        {
-            return view.ProcessImageBytes(pixels);
-        }
-    }
+      public byte[] ProcessImageBytes(byte[] pixels)
+      {
+         return _view.ProcessImageBytes(pixels);
+      }
+   }
 }
-
