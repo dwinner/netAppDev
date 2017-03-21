@@ -1,24 +1,28 @@
 ﻿using System.AddIn.Pipeline;
 using System.IO;
 using System.Windows;
+using Contract;
+using HostView;
+using JetBrains.Annotations;
 
 namespace HostSideAdapter
 {
    [HostAdapter]
-   public class ImageProcessorContractToViewHostAdapter : HostView.ImageProcessorHostView
+   [UsedImplicitly]
+   public class ImageProcessorContractToViewHostAdapter : ImageProcessorHostView
    {
-      private Contract.IImageProcessorContract contract;
-      private ContractHandle contractHandle;
+      private readonly IImageProcessorContract _contract;
+      [UsedImplicitly] private ContractHandle _contractHandle;
 
-      public ImageProcessorContractToViewHostAdapter(Contract.IImageProcessorContract contract)
+      public ImageProcessorContractToViewHostAdapter(IImageProcessorContract contract)
       {
-         this.contract = contract;
-         contractHandle = new ContractHandle(contract);
+         _contract = contract;
+         _contractHandle = new ContractHandle(contract);
       }
 
       public override FrameworkElement GetVisual(Stream imageStream)
       {
-         return FrameworkElementAdapters.ContractToViewAdapter(contract.GetVisual(imageStream));
+         return FrameworkElementAdapters.ContractToViewAdapter(_contract.GetVisual(imageStream));
       }
    }
 }

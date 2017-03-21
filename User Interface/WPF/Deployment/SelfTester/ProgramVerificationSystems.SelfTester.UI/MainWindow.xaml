@@ -1,0 +1,269 @@
+﻿<Window x:Class="ProgramVerificationSystems.SelfTester.UI.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:local="clr-namespace:ProgramVerificationSystems.SelfTester.UI"
+        xmlns:poco="clr-namespace:ProgramVerificationSystems.SelfTester.Model.Poco;assembly=SelfTester.Model"
+        xmlns:properties="clr-namespace:ProgramVerificationSystems.SelfTester.UI.Properties"
+        xmlns:toolkit="clr-namespace:System.Windows.Controls;assembly=System.Windows.Controls.Input.Toolkit"
+        Title="SelfTester" Height="480" Width="640"
+        WindowStartupLocation="CenterScreen"
+        WindowState="Maximized" Topmost="{Binding IsChecked, ElementName=TopmostCheckBox}" 
+        Closing="MainWindow_OnClosing" Icon="pvscat.ico">
+
+    <Window.Resources>
+        <local:RunningStatusToColorConverter x:Key="RunningStatusToColorConverter" />
+        <local:RunningStatusToStringConverter x:Key="RunningStatusToStringConverter" />
+        <!-- Стиль для кнопок из панели запуска -->
+        <Style x:Key="TestButtonDimensionsStyle" TargetType="Button">
+            <Style.Setters>
+                <Setter Property="Margin">
+                    <Setter.Value>
+                        10,10,10,10
+                    </Setter.Value>
+                </Setter>
+                <Setter Property="Padding">
+                    <Setter.Value>
+                        3
+                    </Setter.Value>
+                </Setter>
+                <Setter Property="MaxWidth">
+                    <Setter.Value>
+                        45
+                    </Setter.Value>
+                </Setter>
+            </Style.Setters>
+            <Style.Triggers>
+                <Trigger Property="IsPressed" Value="True">
+                    <Setter Property="BorderThickness" Value="5" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <!-- Стиль для программной установки невыделения ячеек для неустановленных VS -->
+        <Style x:Key="NoSelectableColumnStyle" TargetType="{x:Type DataGridCell}">
+            <Setter Property="IsEnabled" Value="False" />
+        </Style>
+    </Window.Resources>
+
+    <DockPanel LastChildFill="True">
+        <!-- Верхняя Dock-панель -->
+        <Menu DockPanel.Dock="Top" Height="Auto" Width="Auto">
+            <Menu.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <DockPanel HorizontalAlignment="Stretch"/>
+                </ItemsPanelTemplate>
+            </Menu.ItemsPanel>
+            <MenuItem HorizontalAlignment="Left" Header="_Testing Run" x:Name="TestingRunMenuItem" StaysOpenOnClick="True" />
+            <MenuItem HorizontalAlignment="Left">
+                <MenuItem.Header>
+                    <CheckBox x:Name="ShutdownCheckBox"
+                              Content="Shutdown"
+                              ToolTip="Shutdown PC on finishing current analysis session" />
+                </MenuItem.Header>
+            </MenuItem>
+            <MenuItem HorizontalAlignment="Right">
+                <MenuItem.Header>
+                    <CheckBox x:Name="TopmostCheckBox" Content="Stay On Top"></CheckBox>
+                </MenuItem.Header>
+            </MenuItem>
+        </Menu>
+        <!-- Элементы автозавершения под главным меню -->
+        <Grid DockPanel.Dock="Top">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="3*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Label Grid.Row="0" Grid.Column="0" HorizontalAlignment="Right" VerticalAlignment="Center"
+                   Content="Search solution:" />
+            <toolkit:AutoCompleteBox Grid.Row="0" Grid.Column="1" HorizontalAlignment="Stretch"
+                                     VerticalAlignment="Center" Margin="5,0,5,0"
+                                     x:Name="SolutionAutoCompleteBox"
+                                     IsTextCompletionEnabled="True" FilterMode="StartsWith"
+                                     SelectionChanged="OnCompleteSelectionChanged"
+                                     PreviewKeyUp="OnCompletePreviewKeyUp" />
+        </Grid>
+        <!-- Нижняя Dock-панель -->
+        <Grid DockPanel.Dock="Bottom" ShowGridLines="False" Margin="10,10,0,10" UseLayoutRounding="True">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <StackPanel Grid.Row="1" Grid.Column="0"
+                        Orientation="Horizontal"
+                        VerticalAlignment="Stretch" HorizontalAlignment="Left" Margin="0,0,0,0">
+                <Image x:Name="AnalisysResultImage" VerticalAlignment="Stretch" HorizontalAlignment="Left"
+                       MaxWidth="45" />
+            </StackPanel>
+           
+            <ProgressBar Grid.Row="1" Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Bottom"
+                         Margin="5,0,5,10" x:Name="TestingProgressBar" MinWidth="150" MinHeight="40"
+                         Visibility="Hidden" />
+            <TextBlock Grid.Row="1" Grid.Column="1"
+                       Text="{Binding ElementName=TestingProgressBar, Path=Value, StringFormat={}{0:0}%}"
+                       HorizontalAlignment="Center" VerticalAlignment="Center"
+                       Visibility="{Binding Visibility, ElementName=TestingProgressBar}" />
+
+            <StackPanel Grid.Row="1" Grid.Column="2"
+                        Orientation="Horizontal"
+                        VerticalAlignment="Bottom" HorizontalAlignment="Right"
+                        Margin="0,0,0,0">
+                <Label VerticalAlignment="Bottom" HorizontalAlignment="Left"
+                       Content="Time passed:" />
+                <Label VerticalAlignment="Bottom" HorizontalAlignment="Left"
+                       x:Name="TimerLabel" Content="{Binding TimeElapsed}" />
+                <Button x:Name="StartStopButton" MaxHeight="45" Style="{StaticResource TestButtonDimensionsStyle}"
+                        Click="OnStartStopTester_Click"
+                        Tag="{x:Static local:ButtonState.Stopped}">
+                    <Image x:Name="StartStopImage" />
+                </Button>
+                <Button Style="{StaticResource TestButtonDimensionsStyle}" ToolTip="Open HTML log for testing run"
+                        Click="TesterLogButton_OnClick">
+                    <Image Source="Pics/test_log.png" />
+                </Button>
+                <Button Style="{StaticResource TestButtonDimensionsStyle}" ToolTip="Open Selected Diff Logs"
+                        Click="BatchOpeningLogsButton_OnClick">
+                    <Image Source="Pics/diff.png" />
+                </Button>
+                <Button x:Name="ApproveButton" Style="{StaticResource TestButtonDimensionsStyle}"
+                        ToolTip="Apply Results"
+                        Click="ApproveButton_OnClick">
+                    <Image Source="Pics/approve.png" />
+                </Button>
+            </StackPanel>
+        </Grid>
+        <!-- Остальное пространство DockPanel'и -->
+        <DataGrid x:Name="SlnInfoDataGrid" AutoGenerateColumns="False" Padding="10" Margin="5"
+                  SelectionMode="Extended" SelectionUnit="CellOrRowHeader"
+                  PreviewMouseDown="OnSlnInfoDataGrid_MouseClick"
+                  MouseDoubleClick="OnSlnInfoDataGrid_MouseDoubleClick"                  
+                  CanUserSortColumns="False" CanUserReorderColumns="False" IsReadOnly="True"
+                  MinColumnWidth="100">
+
+            <DataGrid.Resources>
+                <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}"
+                                 Color="{x:Static SystemColors.HighlightColor}" />
+            </DataGrid.Resources>
+
+            <DataGrid.Columns>
+
+                <DataGridTextColumn Header="{x:Static properties:Resources.AllColumnName}" Width="1.2*"
+                                    Binding="{Binding Path=SolutionFileName, Mode=OneWay}">
+                    <DataGridTextColumn.CellStyle>
+                        <Style TargetType="DataGridCell">
+                            <Setter Property="ToolTip" Value="{Binding TestSolutionInfo.AbsSolutionFileName}" />
+                            <Setter Property="Foreground" Value="Black" />
+                            <Setter Property="FontWeight" Value="Bold" />
+                        </Style>
+                    </DataGridTextColumn.CellStyle>
+                </DataGridTextColumn>
+
+                <!-- Набор запусков для PVSStudio -->
+                <DataGridTemplateColumn x:Name="PvsVs2010Column"
+                                        Header="{x:Static properties:Resources.PvsVs2010ColumnName}" Width="*">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate DataType="poco:SolutionInfoViewModel">
+                            <Label
+                                Content="{Binding Path=LaunchStatusOnPvsVs2010, Mode=OneWay, Converter={StaticResource RunningStatusToStringConverter}}"
+                                Background="{Binding Path=LaunchStatusOnPvsVs2010, Mode=OneWay, Converter={StaticResource RunningStatusToColorConverter}}" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                    <DataGridTemplateColumn.CellStyle>
+                        <Style TargetType="{x:Type DataGridCell}">
+                            <Setter Property="IsEnabled"
+                                    Value="{Binding Path=LaunchStatusOnPvsVs2010, Mode=OneWay, Converter={StaticResource RunningStatusToColorConverter}}" />
+                            <Style.Triggers>
+                                <Trigger Property="IsSelected" Value="True">
+                                    <Setter Property="BorderThickness" Value="3" />
+                                </Trigger>
+                                <Trigger Property="IsSelected" Value="False">
+                                    <Setter Property="BorderThickness" Value="3" />
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </DataGridTemplateColumn.CellStyle>
+                </DataGridTemplateColumn>
+
+                <DataGridTemplateColumn x:Name="PvsVs2012Column"
+                                        Header="{x:Static properties:Resources.PvsVs2012ColumnName}" Width="*">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate DataType="poco:SolutionInfoViewModel">
+                            <Label
+                                Content="{Binding Path=LaunchStatusOnPvsVs2012, Mode=OneWay, Converter={StaticResource RunningStatusToStringConverter}}"
+                                Background="{Binding Path=LaunchStatusOnPvsVs2012, Mode=OneWay, Converter={StaticResource RunningStatusToColorConverter}}" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                    <DataGridTemplateColumn.CellStyle>
+                        <Style TargetType="{x:Type DataGridCell}">
+                            <Setter Property="IsEnabled"
+                                    Value="{Binding Path=LaunchStatusOnPvsVs2012, Mode=OneWay, Converter={StaticResource RunningStatusToColorConverter}}" />
+                            <Style.Triggers>
+                                <Trigger Property="IsSelected" Value="True">
+                                    <Setter Property="BorderThickness" Value="3" />
+                                </Trigger>
+                                <Trigger Property="IsSelected" Value="False">
+                                    <Setter Property="BorderThickness" Value="3" />
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </DataGridTemplateColumn.CellStyle>
+                </DataGridTemplateColumn>
+
+                <DataGridTemplateColumn x:Name="PvsVs2013Column"
+                                        Header="{x:Static properties:Resources.PvsVs2013ColumnName}" Width="*">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate DataType="poco:SolutionInfoViewModel">
+                            <Label
+                                Content="{Binding Path=LaunchStatusOnPvsVs2013, Mode=OneWay, Converter={StaticResource RunningStatusToStringConverter}}"
+                                Background="{Binding Path=LaunchStatusOnPvsVs2013, Mode=OneWay, Converter={StaticResource RunningStatusToColorConverter}}" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                    <DataGridTemplateColumn.CellStyle>
+                        <Style TargetType="{x:Type DataGridCell}">
+                            <Setter Property="IsEnabled"
+                                    Value="{Binding Path=LaunchStatusOnPvsVs2013, Mode=OneWay, Converter={StaticResource RunningStatusToColorConverter}}" />
+                            <Style.Triggers>
+                                <Trigger Property="IsSelected" Value="True">
+                                    <Setter Property="BorderThickness" Value="3" />
+                                </Trigger>
+                                <Trigger Property="IsSelected" Value="False">
+                                    <Setter Property="BorderThickness" Value="3" />
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </DataGridTemplateColumn.CellStyle>
+                </DataGridTemplateColumn>
+
+                <DataGridTemplateColumn x:Name="PvsVs2015Column"
+                                        Header="{x:Static properties:Resources.PvsVs2015ColumnName}" Width="*">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate DataType="poco:SolutionInfoViewModel">
+                            <Label
+                                Content="{Binding Path=LaunchStatusOnPvsVs2015, Mode=OneWay, Converter={StaticResource RunningStatusToStringConverter}}"
+                                Background="{Binding Path=LaunchStatusOnPvsVs2015, Mode=OneWay, Converter={StaticResource RunningStatusToColorConverter}}"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                    <DataGridTemplateColumn.CellStyle>
+                        <Style TargetType="{x:Type DataGridCell}">
+                            <Setter Property="IsEnabled"
+                                    Value="{Binding Path=LaunchStatusOnPvsVs2015, Mode=OneWay, Converter={StaticResource RunningStatusToColorConverter}}" />
+                            <Style.Triggers>
+                                <Trigger Property="IsSelected" Value="True">
+                                    <Setter Property="BorderThickness" Value="3" />
+                                </Trigger>
+                                <Trigger Property="IsSelected" Value="False">
+                                    <Setter Property="BorderThickness" Value="3" />
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </DataGridTemplateColumn.CellStyle>
+                </DataGridTemplateColumn>
+
+            </DataGrid.Columns>
+        </DataGrid>
+    </DockPanel>
+</Window>

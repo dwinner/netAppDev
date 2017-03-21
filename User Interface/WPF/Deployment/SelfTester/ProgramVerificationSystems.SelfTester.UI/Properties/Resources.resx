@@ -1,0 +1,237 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="IncorrectOperation" xml:space="preserve">
+    <value>Incorrect Operation Occured</value>
+  </data>
+  <data name="SelectSln" xml:space="preserve">
+    <value>Select at least one solution</value>
+  </data>
+  <data name="NoSln" xml:space="preserve">
+    <value>No solutions to test</value>
+  </data>
+  <data name="TesterRunning" xml:space="preserve">
+    <value>Tester is running now</value>
+  </data>
+  <data name="VsNotInstalled" xml:space="preserve">
+    <value>Visual Studio {0} in not installed on this machine</value>
+  </data>
+  <data name="RunningTooltip" xml:space="preserve">
+    <value>Running</value>
+  </data>
+  <data name="AreYouSure" xml:space="preserve">
+    <value>Analyzer is running now. Do you really want to exit application?</value>
+  </data>
+  <data name="AnalyzerRunning" xml:space="preserve">
+    <value>Analyzer is on running</value>
+  </data>
+  <data name="EraseAll" xml:space="preserve">
+    <value>Erase All</value>
+  </data>
+  <data name="NewTest" xml:space="preserve">
+    <value>New Test</value>
+  </data>
+  <data name="HaveDiffs" xml:space="preserve">
+    <value>Results of the analysis have {0} differences</value>
+  </data>
+  <data name="HaveNoDiffs" xml:space="preserve">
+    <value>Results of the analysis have no differences</value>
+  </data>
+  <data name="AnalisysNotFinished" xml:space="preserve">
+    <value>Analisys is not finished yet</value>
+  </data>
+  <data name="AllColumnName" xml:space="preserve">
+    <value>All</value>
+  </data>
+  <data name="PvsVs2010ColumnName" xml:space="preserve">
+    <value>VS2010</value>
+  </data>  
+  <data name="PvsVs2012ColumnName" xml:space="preserve">
+    <value>VS2012</value>
+  </data>
+  <data name="PvsVs2013ColumnName" xml:space="preserve">
+    <value>VS2013</value>
+  </data>  
+  <data name="PvsVs2015ColumnName" xml:space="preserve">
+    <value>VS2015</value>
+  </data>
+  <data name="WannaContinue" xml:space="preserve">
+    <value>This will update the local and build server etalon logs for selected solutions,{0}replacing them with the logs from the specified path.{0}Are you sure you want to continue?</value>
+  </data>
+  <data name="NoSuitableSolutions" xml:space="preserve">
+    <value>No suitable solutions</value>
+  </data>
+  <data name="NoSuitableSolutionsMsg" xml:space="preserve">
+    <value>There are no suitable selected solutions for approving etalons.</value>
+  </data>
+  <data name="WarningTitle" xml:space="preserve">
+    <value>Warning</value>
+  </data>
+  <data name="SelectRunCaption" xml:space="preserve">
+    <value>Select Testing Run</value>
+  </data>
+  <data name="SelectRunMsg" xml:space="preserve">
+    <value>Select testing run from Testing Run menu</value>
+  </data>
+  <data name="SuccessUpdated" xml:space="preserve">
+    <value>{0} log(s) was(were) successfully updated.{1}{2} log(s) was(were) successfully created</value>
+  </data>
+  <data name="ApplicationName" xml:space="preserve">
+    <value>SelfTester</value>
+  </data>
+  <data name="BackgroundError" xml:space="preserve">
+    <value>Occured Background Error: {0}</value>
+  </data>
+  <data name="AnalisysNotRunningNow" xml:space="preserve">
+    <value>Analisys is not running now</value>
+  </data>
+  <data name="EtalonApproveBuildServerPathNotFound" xml:space="preserve">
+    <value>Approving etalons on build server failed: path '{0}' was not found.</value>
+  </data>
+    <data name="PrevNotFinished" xml:space="preserve">
+    <value>Previous analysis has not been completed.{0}Click OK if you want to abort the previous analysis,{0}or Cancel/Close to restart the application</value>
+  </data>
+    <data name="FreeSpaceWarn" xml:space="preserve">
+    <value>Free disk space: {0} gb. Recommended minimum: {1}.{2} Are you sure you want continue working?!</value>
+  </data>
+  <data name="CisOutMsg" xml:space="preserve">
+    <value>Mode: {0}. Solution {1} received the status of {2}</value>
+  </data>
+  <data name="CisFailMsg" xml:space="preserve">
+    <value>Analysis failed on solution {0}. (Mode: {1}). Reason: {2}</value>
+  </data>
+    <data name="ExitCodeMessage" xml:space="preserve">
+    <value>devenv exit code: {0}</value>
+  </data>
+    <data name="WatchActivityLog" xml:space="preserve">
+    <value>Watch this activity log for investigating problems {0}</value>
+  </data>
+    <data name="AutocompleteSelectionNotFound" xml:space="preserve">
+    <value>Solution {0} is not found</value>
+  </data>
+    <data name="WaitBatchOpening" xml:space="preserve">
+    <value>Your selected solutions are still opening.{0}Please wait until the previous operation is completed</value>
+  </data>
+    <data name="DevenvStarting" xml:space="preserve">
+    <value>Starting Visual Studio...</value>
+  </data>
+    <data name="NoSelDiffs" xml:space="preserve">
+    <value>Your selected solutions have no differences, or they opening, or still opened</value>
+  </data>
+</root>

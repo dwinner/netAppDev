@@ -1,23 +1,26 @@
 ﻿using System.AddIn.Contract;
 using System.AddIn.Pipeline;
 using System.IO;
+using AddInView;
+using Contract;
+using JetBrains.Annotations;
 
 namespace AddInSideAdapter
 {
    [AddInAdapter]
-   public class ImageProcessorViewToContractAdapter : ContractBase, Contract.IImageProcessorContract
+   [UsedImplicitly]
+   public class ImageProcessorViewToContractAdapter : ContractBase, IImageProcessorContract
    {
-      private AddInView.ImageProcessorAddInView view;
+      private readonly ImageProcessorAddInView _view;
 
-      public ImageProcessorViewToContractAdapter(AddInView.ImageProcessorAddInView view)
+      public ImageProcessorViewToContractAdapter(ImageProcessorAddInView view)
       {
-         this.view = view;
+         _view = view;
       }
 
       public INativeHandleContract GetVisual(Stream imageStream)
       {
-         return FrameworkElementAdapters.ViewToContractAdapter(view.GetVisual(imageStream));
+         return FrameworkElementAdapters.ViewToContractAdapter(_view.GetVisual(imageStream));
       }
    }
 }
-
