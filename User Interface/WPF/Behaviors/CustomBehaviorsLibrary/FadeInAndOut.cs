@@ -34,7 +34,7 @@ namespace CustomBehaviorsLibrary
 
          // Set up the storyboard.            
          Storyboard.SetTargetProperty(_fadeAnimation, new PropertyPath("Opacity"));
-         Storyboard.SetTarget(_fadeAnimation, this.Target);
+         Storyboard.SetTarget(_fadeAnimation, Target);
 
          // Set up the animation.
          // It's important to do this at the last possible instant,

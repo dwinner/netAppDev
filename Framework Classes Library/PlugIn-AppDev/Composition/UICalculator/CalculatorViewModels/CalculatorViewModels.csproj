@@ -45,12 +45,16 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ActivatedExtensionEventArgs.cs" />
     <Compile Include="CalculatorExtensionsImport.cs" />
     <Compile Include="CalculatorExtensionsViewModel.cs" />
     <Compile Include="CalculatorImport.cs" />
     <Compile Include="CalculatorExtensionsManager.cs" />
     <Compile Include="CalculatorManager.cs" />
     <Compile Include="CalculatorViewModel.cs" />
+    <Compile Include="ExtensionChange.cs" />
+    <Compile Include="ExtensionHandler.cs" />
+    <Compile Include="ExtensionViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

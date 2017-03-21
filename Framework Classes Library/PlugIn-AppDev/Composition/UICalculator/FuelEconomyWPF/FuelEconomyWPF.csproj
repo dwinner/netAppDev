@@ -64,13 +64,13 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="FuelEconomyUC.xaml.cs">
-      <DependentUpon>FuelEconomyUC.xaml</DependentUpon>
+    <Compile Include="FuelEconomyUserControl.xaml.cs">
+      <DependentUpon>FuelEconomyUserControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Page Include="FuelEconomyUC.xaml">
+    <Page Include="FuelEconomyUserControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

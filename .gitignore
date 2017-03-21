@@ -162,4 +162,5 @@ $RECYCLE.BIN/
 /ASP.NET/SignalR/+ Examples/StockTicker/.vs/config
 /Aspect Oriented Pro/Aop.InPractice/.vs/config
 .vs/
-*.VC.db
+*.db
+*.opendb

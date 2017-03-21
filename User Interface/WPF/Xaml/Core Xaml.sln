@@ -1,6 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
+# Visual Studio 2013
+VisualStudioVersion = 12.0.40629.0
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CodeIntro", "CodeIntro\CodeIntro.csproj", "{2335B619-180B-451B-9308-81F943B5FC76}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XamlIntro", "XamlIntro\XamlIntro.csproj", "{5961BFAC-BFDF-4925-B97A-3254C88D7275}"
@@ -28,6 +30,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NonCompiledXaml", "NonCompiledXaml\NonCompiledXaml.csproj", "{9629388D-3978-4D10-875D-56A93ED1836C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TranslationByMarkupExtension", "TranslationByMarkupExtension\TranslationByMarkupExtension.csproj", "{11107EB4-AEAD-40DA-90CE-B226E34E14FC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GenericsAndXamlTypeResolver", "GenericsAndXamlTypeResolver\GenericsAndXamlTypeResolver.csproj", "{17D64293-7BEE-4D12-97AD-4CEFB6566423}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -179,6 +183,16 @@ Global
 		{11107EB4-AEAD-40DA-90CE-B226E34E14FC}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{11107EB4-AEAD-40DA-90CE-B226E34E14FC}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{11107EB4-AEAD-40DA-90CE-B226E34E14FC}.Release|x86.ActiveCfg = Release|Any CPU
+		{17D64293-7BEE-4D12-97AD-4CEFB6566423}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{17D64293-7BEE-4D12-97AD-4CEFB6566423}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{17D64293-7BEE-4D12-97AD-4CEFB6566423}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{17D64293-7BEE-4D12-97AD-4CEFB6566423}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{17D64293-7BEE-4D12-97AD-4CEFB6566423}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{17D64293-7BEE-4D12-97AD-4CEFB6566423}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{17D64293-7BEE-4D12-97AD-4CEFB6566423}.Release|Any CPU.Build.0 = Release|Any CPU
+		{17D64293-7BEE-4D12-97AD-4CEFB6566423}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{17D64293-7BEE-4D12-97AD-4CEFB6566423}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{17D64293-7BEE-4D12-97AD-4CEFB6566423}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

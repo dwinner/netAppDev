@@ -3,12 +3,11 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:WPFCalculatorHost"
         xmlns:conv="clr-namespace:WPFCalculatorHost.Converters"
         mc:Ignorable="d"
         Title="Calculator" Height="410" Width="525">
     <Window.Resources>
-        <conv:UriToBitmapConverter x:Key="bitmapConverter" />
+        <conv:UriToBitmapConverter x:Key="BitmapConverter" />
     </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
@@ -21,18 +20,21 @@
             <ColumnDefinition />
         </Grid.ColumnDefinitions>
         <Ribbon Grid.ColumnSpan="2">
-            <Ribbon.CommandBindings>
-            </Ribbon.CommandBindings>
             <Ribbon.ApplicationMenu>
                 <RibbonApplicationMenu SmallImageSource="Images/App.png">
                     <RibbonApplicationMenuItem Header="Exit" Command="Close" />
                 </RibbonApplicationMenu>
             </Ribbon.ApplicationMenu>
             <RibbonTab Header="Home">
-                <RibbonGroup Header="Addins" ItemsSource="{Binding CalculatorExtensionsViewModel.Extensions, Mode=OneWay}">
+                <RibbonGroup Header="Addins"
+                             ItemsSource="{Binding CalculatorExtensionsViewModel.Extensions, Mode=OneWay}">
                     <RibbonGroup.ItemTemplate>
                         <DataTemplate>
-                            <RibbonButton ToolTip="{Binding Extension.Metadata.Description, Mode=OneTime}" Label="{Binding Extension.Metadata.Title, Mode=OneTime}" Tag="{Binding Path=Extension, Mode=OneTime}" LargeImageSource="{Binding Extension.Metadata.ImageUri, Converter={StaticResource bitmapConverter}, Mode=OneTime}" Command="{Binding ActivateCommand}" />
+                            <RibbonButton ToolTip="{Binding Extension.Metadata.Description, Mode=OneTime}"
+                                          Label="{Binding Extension.Metadata.Title, Mode=OneTime}"
+                                          Tag="{Binding Path=Extension, Mode=OneTime}"
+                                          LargeImageSource="{Binding Extension.Metadata.ImageUri, Converter={StaticResource BitmapConverter}, Mode=OneTime}"
+                                          Command="{Binding ActivateCommand}" />
                         </DataTemplate>
                     </RibbonGroup.ItemTemplate>
                 </RibbonGroup>
@@ -85,38 +87,47 @@
                 <Button Grid.Row="3" Grid.Column="0" Content="0" Grid.ColumnSpan="2" />
                 <Button Grid.Row="3" Grid.Column="2" Content="." />
             </Grid>
-            <ListBox Grid.Row="0" Grid.Column="1" ItemsSource="{Binding CalculatorViewModel.CalcAddInOperators, Mode=OneTime}" Margin="2">
+            <ListBox Grid.Row="0" Grid.Column="1"
+                     ItemsSource="{Binding CalculatorViewModel.CalcAddInOperators, Mode=OneTime}" Margin="2">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
-                        <Button Width="40" Height="30" Content="{Binding Name, Mode=OneTime}" Margin="2" Padding="4" Tag="{Binding Mode=OneTime}" Click="OnDefineOperation" />
+                        <Button Width="40" Height="30" Content="{Binding Name, Mode=OneTime}" Margin="2" Padding="4"
+                                Tag="{Binding Mode=OneTime}" Click="OnDefineOperation" />
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListBox>
             <TextBlock Text="{Binding CalculatorViewModel.Input, Mode=OneWay}" Grid.Row="1" Grid.Column="1" />
             <TextBlock Text="{Binding CalculatorViewModel.Result, Mode=OneWay}" Grid.Row="2" Grid.Column="1" />
-            <Button  Content="Calculate" Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="3" Margin="5" Command="{Binding CalculatorViewModel.CalculateCommand, Mode=OneTime}" />
+            <Button Content="Calculate" Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="3" Margin="5"
+                    Command="{Binding CalculatorViewModel.CalculateCommand, Mode=OneTime}" />
         </Grid>
-        <GridSplitter Grid.Row="1" Grid.Column="0" HorizontalAlignment="Right" VerticalAlignment="Stretch" Width="5" ShowsPreview="True" />
-        <TabControl Grid.Row="1" Grid.Column="1" Margin="2" ItemsSource="{Binding CalculatorExtensionsViewModel.ActivatedExtensions, Mode=OneWay}" SelectedItem="{Binding CalculatorExtensionsViewModel.SelectedExtension, Mode=TwoWay}">
+        <GridSplitter Grid.Row="1" Grid.Column="0" HorizontalAlignment="Right" VerticalAlignment="Stretch" Width="5"
+                      ShowsPreview="True" />
+        <TabControl Grid.Row="1" Grid.Column="1" Margin="2"
+                    ItemsSource="{Binding CalculatorExtensionsViewModel.ActivatedExtensions, Mode=OneWay}"
+                    SelectedItem="{Binding CalculatorExtensionsViewModel.SelectedExtension, Mode=TwoWay}">
             <TabControl.ContentTemplate>
                 <DataTemplate>
-                    <ContentPresenter Content="{Binding Extension.Value.UI, Mode=OneWay}" />
+                    <ContentPresenter Content="{Binding Extension.Value.Ui, Mode=OneWay}" />
                 </DataTemplate>
             </TabControl.ContentTemplate>
             <TabControl.ItemTemplate>
                 <DataTemplate>
                     <StackPanel Orientation="Horizontal" Margin="0">
                         <TextBlock Text="{Binding Extension.Metadata.Title, Mode=OneWay}" Margin="0" />
-                        <Button Content="X" Margin="5,1" Tag="{Binding Extension, Mode=OneWay}" Command="{Binding CloseCommand}" />
+                        <Button Content="X" Margin="5,1" Tag="{Binding Extension, Mode=OneWay}"
+                                Command="{Binding CloseCommand}" />
                     </StackPanel>
                 </DataTemplate>
             </TabControl.ItemTemplate>
         </TabControl>
         <ScrollViewer Grid.Row="2" Grid.Column="0">
-            <TextBlock ScrollViewer.VerticalScrollBarVisibility="Auto" Text="{Binding CalculatorViewModel.Status, Mode=OneWay}" Margin="2" />
+            <TextBlock ScrollViewer.VerticalScrollBarVisibility="Auto"
+                       Text="{Binding CalculatorViewModel.Status, Mode=OneWay}" Margin="2" />
         </ScrollViewer>
         <ScrollViewer Grid.Row="2" Grid.Column="1">
-            <TextBlock ScrollViewer.VerticalScrollBarVisibility="Auto" Text="{Binding CalculatorExtensionsViewModel.Status, Mode=OneWay}" Margin="2" />
+            <TextBlock ScrollViewer.VerticalScrollBarVisibility="Auto"
+                       Text="{Binding CalculatorExtensionsViewModel.Status, Mode=OneWay}" Margin="2" />
         </ScrollViewer>
     </Grid>
 </Window>

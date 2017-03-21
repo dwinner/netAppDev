@@ -10,23 +10,19 @@ namespace WPFCalculatorHost.Converters
 	{
 		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
 		{
-			if (value == null) return null;
-
-			BitmapImage image = null;
-			string uri = value.ToString();
+			var uri = value?.ToString();
 			if (uri != null)
 			{
 				var stream = File.OpenRead(uri);
-				image = new BitmapImage();
+				var image = new BitmapImage();
 				image.BeginInit();
 				image.StreamSource = stream;
 				image.EndInit();
+
 				return image;
 			}
-			else
-			{
-				return null;
-			}
+
+			return null;
 		}
 
 		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

@@ -15,13 +15,13 @@ namespace SimpleCalculator
 		[Import("Subtract")]
 		public IBinaryOperation SubtractMethod { get; set; }
 
-		public IList<IOperation> GetOperations() => new List<IOperation>()
-				{
-					 new Operation { Name="+", NumberOperands=2},
-					 new Operation { Name="-", NumberOperands=2},
-					 new Operation { Name="/", NumberOperands=2},
-					 new Operation { Name="*", NumberOperands=2}
-				};
+		public IEnumerable<IOperation> GetOperations() => new List<IOperation>
+		{
+			new Operation {Name = "+", NumberOperands = 2},
+			new Operation {Name = "-", NumberOperands = 2},
+			new Operation {Name = "/", NumberOperands = 2},
+			new Operation {Name = "*", NumberOperands = 2}
+		};
 
 		public double Operate(IOperation operation, double[] operands)
 		{
@@ -30,11 +30,8 @@ namespace SimpleCalculator
 			{
 				case "+":
 					foreach (var addMethod in AddMethods)
-					{
-
 						if (addMethod.Metadata.Speed == Speed.Fast)
 							result = addMethod.Value.Operation(operands[0], operands[1]);
-					}
 					//result = operands[0] + operands[1];
 					break;
 				case "-":
@@ -53,6 +50,7 @@ namespace SimpleCalculator
 				default:
 					throw new InvalidOperationException($"invalid operation {operation.Name}");
 			}
+
 			return result;
 		}
 	}

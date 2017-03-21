@@ -40,7 +40,8 @@ namespace CustomBehaviorsLibrary
       private void AssociatedObject_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
       {
          // Find the canvas.
-         if (_canvas == null) _canvas = VisualTreeHelper.GetParent(AssociatedObject) as Canvas;
+         if (_canvas == null)
+            _canvas = VisualTreeHelper.GetParent(AssociatedObject) as Canvas;
 
          // Dragging mode begins.
          _isDragging = true;

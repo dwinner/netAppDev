@@ -1,13 +1,12 @@
-﻿
-using System.Composition;
+﻿using System.Composition;
+using CalculatorContract;
+using CalculatorUtils;
 #if WPF
 using FuelEconomyWPF;
 #endif
 #if WINDOWS_UWP
 using System.Composition;
 #endif
-using CalculatorContract;
-using CalculatorUtils;
 
 namespace FuelEconomyUWP
 {
@@ -19,7 +18,6 @@ namespace FuelEconomyUWP
 	public class FuelCalculatorExtension : ICalculatorExtension
 	{
 		private object _control;
-		public object UI => _control ?? (_control = new FuelEconomyUC());
-
+		public object Ui => _control ?? (_control = new FuelEconomyUserControl());
 	}
 }

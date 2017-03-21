@@ -1,0 +1,12 @@
+﻿<Window x:Class="Skins.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Skin support" Height="350" Width="525">
+    <Grid>
+        <StackPanel Style="{DynamicResource DialogStyle}">
+            <Label Style="{DynamicResource HeadingStyle}" Content="Loading..."/>
+            <ProgressBar Value="35" MinHeight="20" Margin="20"/>
+            <Button Style="{DynamicResource CancelButtonStyle}" Width="70" Click="OnCancel" Content="Cancel"/>
+        </StackPanel>
+    </Grid>
+</Window>

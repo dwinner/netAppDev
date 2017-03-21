@@ -8,16 +8,50 @@ namespace CalculatorViewModels
 {
 	public class CalculatorViewModel : BindableBase
 	{
+		private readonly CalculatorManager _calculatorManager;
+		private double[] _currentOperands;
+		private IOperation _currentOperation;
+		private string _input;
+		private double _result;
+		private string _status;
+
 		public CalculatorViewModel()
 		{
 			_calculatorManager = new CalculatorManager();
-			_calculatorManager.ImportsSatisfied += (sender, e) =>
-			{
-				Status += $"{e.StatusMessage}\n";
-			};
+			_calculatorManager.ImportsSatisfied += (sender, e) => { Status += $"{e.StatusMessage}\n"; };
 
 			CalculateCommand = new DelegateCommand(OnCalculate);
 		}
+
+		public ICommand CalculateCommand { get; set; }
+
+		public string Status
+		{
+			get { return _status; }
+			set { SetProperty(ref _status, value); }
+		}
+
+		public string Input
+		{
+			get { return _input; }
+			set { SetProperty(ref _input, value); }
+		}
+
+		public double Result
+		{
+			get { return _result; }
+			set { SetProperty(ref _result, value); }
+		}
+
+		public string FullInputText { get; set; }
+
+		public IOperation CurrentOperation
+		{
+			get { return _currentOperation; }
+			set { SetCurrentOperation(value); }
+		}
+
+		public ObservableCollection<IOperation> CalcAddInOperators { get; } = new ObservableCollection<IOperation>();
 
 		public void Init(params Type[] parts)
 		{
@@ -25,15 +59,8 @@ namespace CalculatorViewModels
 			var operators = _calculatorManager.GetOperators();
 			CalcAddInOperators.Clear();
 			foreach (var op in operators)
-			{
 				CalcAddInOperators.Add(op);
-			}
-
 		}
-
-		private CalculatorManager _calculatorManager;
-
-		public ICommand CalculateCommand { get; set; }
 
 
 		public void OnClearLog()
@@ -45,55 +72,11 @@ namespace CalculatorViewModels
 		{
 			if (_currentOperands.Length == 2)
 			{
-				string[] input = Input.Split(' ');
+				var input = Input.Split(' ');
 				_currentOperands[1] = double.Parse(input[2]);
 				Result = _calculatorManager.InvokeCalculator(_currentOperation, _currentOperands);
 			}
-
 		}
-
-		private string _status;
-
-		public string Status
-		{
-			get { return _status; }
-			set { SetProperty(ref _status, value); }
-		}
-
-		private string _input;
-		public string Input
-		{
-			get { return _input; }
-			set { SetProperty(ref _input, value); }
-		}
-
-		private double _result;
-		public double Result
-		{
-			get { return _result; }
-			set { SetProperty(ref _result, value); }
-		}
-
-		private string _fullInputText;
-
-		public string FullInputText
-		{
-			get { return _fullInputText; }
-			set { _fullInputText = value; }
-		}
-
-		private IOperation _currentOperation;
-
-		public IOperation CurrentOperation
-		{
-			get { return _currentOperation; }
-			set
-			{
-				SetCurrentOperation(value);
-			}
-		}
-
-		private double[] _currentOperands;
 
 		private void SetCurrentOperation(IOperation op)
 		{
@@ -110,6 +93,5 @@ namespace CalculatorViewModels
 				Status = ex.Message;
 			}
 		}
-		public ObservableCollection<IOperation> CalcAddInOperators { get; } = new ObservableCollection<IOperation>();
 	}
 }

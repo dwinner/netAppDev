@@ -7,15 +7,13 @@ namespace CalculatorViewModels
 {
 	public class CalculatorImport
 	{
-		public event EventHandler<ImportEventArgs> ImportsSatisfied;
-
 		[Import]
 		public Lazy<ICalculator> Calculator { get; set; }
 
+		public event EventHandler<ImportEventArgs> ImportsSatisfied;
+
 		[OnImportsSatisfied]
 		public void OnImportsSatisfied()
-		{
-			ImportsSatisfied?.Invoke(this, new ImportEventArgs { StatusMessage = "ICalculator import successful" });
-		}
+			=> ImportsSatisfied?.Invoke(this, new ImportEventArgs {StatusMessage = "ICalculator import successful"});
 	}
 }

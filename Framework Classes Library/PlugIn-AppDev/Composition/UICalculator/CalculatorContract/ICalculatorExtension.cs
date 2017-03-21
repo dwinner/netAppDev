@@ -3,6 +3,6 @@
 	public interface ICalculatorExtension
 	{
 		// returns a FrameworkElement
-		object UI { get; }
+		object Ui { get; }
 	}
 }
