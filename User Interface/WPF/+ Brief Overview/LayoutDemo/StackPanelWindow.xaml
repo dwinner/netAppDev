@@ -3,14 +3,14 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="StackPanelWindow" Height="300" Width="300">
     <StackPanel Orientation="Vertical">
-        <Label>Label</Label>
-        <TextBox>TextBox</TextBox>
-        <CheckBox>CheckBox</CheckBox>
-        <CheckBox>CheckBox</CheckBox>
+        <Label Content="Label" />
+        <TextBox Text="TextBox" />
+        <CheckBox Content="CheckBox" />
+        <CheckBox Content="CheckBox" />
         <ListBox>
-            <ListBoxItem>ListBoxItem One</ListBoxItem>
-            <ListBoxItem>ListBoxItem Two</ListBoxItem>
+            <ListBoxItem Content="ListBoxItem One" />
+            <ListBoxItem Content="ListBoxItem Two" />
         </ListBox>
-        <Button>Button</Button>
+        <Button Content="Button" />
     </StackPanel>
 </Window>
