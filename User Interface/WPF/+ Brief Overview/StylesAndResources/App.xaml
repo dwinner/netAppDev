@@ -5,9 +5,8 @@
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="/ResourceLib;component/Dictionary1.xaml" />
+                <ResourceDictionary Source="/ResourceLib;component/ResDictionary.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
-         
     </Application.Resources>
 </Application>

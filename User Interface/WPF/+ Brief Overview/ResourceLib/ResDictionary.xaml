@@ -6,7 +6,7 @@
         <GradientStop Offset="0.7" Color="DarkCyan" />
     </LinearGradientBrush>
 
-    <Style x:Key="PinkButtonStyle" TargetType="Button"> 
+    <Style x:Key="PinkButtonStyle" TargetType="Button">
         <Setter Property="FontSize" Value="22" />
         <Setter Property="Foreground" Value="White" />
         <Setter Property="Background">
