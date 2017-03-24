@@ -23,6 +23,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ResourceLib", "ResourceLib\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StylesAndResources", "StylesAndResources\StylesAndResources.csproj", "{56C1F2DA-329B-4103-8A0E-84C54B470F3F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TriggerDemo", "TriggerDemo\TriggerDemo.csproj", "{A60D24D6-94F4-4E3A-8F70-CFFD0DD68769}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TemplateDemo", "TemplateDemo\TemplateDemo.csproj", "{6B393C83-AF3F-43B4-8FC1-23041860918F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -69,6 +73,14 @@ Global
 		{56C1F2DA-329B-4103-8A0E-84C54B470F3F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{56C1F2DA-329B-4103-8A0E-84C54B470F3F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{56C1F2DA-329B-4103-8A0E-84C54B470F3F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A60D24D6-94F4-4E3A-8F70-CFFD0DD68769}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A60D24D6-94F4-4E3A-8F70-CFFD0DD68769}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A60D24D6-94F4-4E3A-8F70-CFFD0DD68769}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A60D24D6-94F4-4E3A-8F70-CFFD0DD68769}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6B393C83-AF3F-43B4-8FC1-23041860918F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6B393C83-AF3F-43B4-8FC1-23041860918F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6B393C83-AF3F-43B4-8FC1-23041860918F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6B393C83-AF3F-43B4-8FC1-23041860918F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
