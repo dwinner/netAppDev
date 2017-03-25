@@ -5,7 +5,7 @@
     <StackPanel>
         <Button Content="Ellipse Animation" Click="OnEllipseAnimation" />
         <Button Content="Button Animation" Click="OnButtonAnimation" />
-        <Button Content="Keyframe Animation" Click="OnKeyframeAnimation" />
+        <Button Content="Keyframe Animation" Click="OnKeyFrameAnimation" />
         <Button Content="Event Trigger" Click="OnEventTrigger" />
     </StackPanel>
 </Window>

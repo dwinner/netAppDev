@@ -2,10 +2,7 @@
 
 namespace AnimationDemo
 {
-   /// <summary>
-   /// Interaction logic for MainWindow.xaml
-   /// </summary>
-   public partial class MainWindow : Window
+   public partial class MainWindow
    {
       public MainWindow()
       {
@@ -22,7 +19,7 @@ namespace AnimationDemo
          new ButtonAnimationWindow().Show();
       }
 
-      private void OnKeyframeAnimation(object sender, RoutedEventArgs e)
+      private void OnKeyFrameAnimation(object sender, RoutedEventArgs e)
       {
          new KeyFrameWindow().Show();
       }
