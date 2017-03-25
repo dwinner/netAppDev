@@ -29,6 +29,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TemplateDemo", "TemplateDem
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AnimationDemo", "AnimationDemo\AnimationDemo.csproj", "{3AE2889C-9DF8-4AEB-BD8D-6D43D9087927}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VisualStateDemo", "VisualStateDemo\VisualStateDemo.csproj", "{BF49B0AB-F155-4F75-9D33-575308980B11}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -87,6 +89,10 @@ Global
 		{3AE2889C-9DF8-4AEB-BD8D-6D43D9087927}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3AE2889C-9DF8-4AEB-BD8D-6D43D9087927}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3AE2889C-9DF8-4AEB-BD8D-6D43D9087927}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BF49B0AB-F155-4F75-9D33-575308980B11}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BF49B0AB-F155-4F75-9D33-575308980B11}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BF49B0AB-F155-4F75-9D33-575308980B11}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BF49B0AB-F155-4F75-9D33-575308980B11}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
