@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.40629.0
+# Visual Studio 15
+VisualStudioVersion = 15.0.26228.9
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShapesDemo", "ShapesDemo\ShapesDemo.csproj", "{EAF6D143-E6FD-4048-A85F-A5B084A03402}"
 EndProject
@@ -32,6 +32,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VisualStateDemo", "VisualStateDemo\VisualStateDemo.csproj", "{BF49B0AB-F155-4F75-9D33-575308980B11}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ThreeDDemo", "ThreeDDemo\ThreeDDemo.csproj", "{7F0EAFC5-5712-460B-835F-47AD887E4381}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BooksDemo", "BooksDemo\BooksDemo.csproj", "{6BB60631-134E-4E44-A4CA-888663AC2FF9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -99,6 +101,10 @@ Global
 		{7F0EAFC5-5712-460B-835F-47AD887E4381}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7F0EAFC5-5712-460B-835F-47AD887E4381}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7F0EAFC5-5712-460B-835F-47AD887E4381}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6BB60631-134E-4E44-A4CA-888663AC2FF9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6BB60631-134E-4E44-A4CA-888663AC2FF9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6BB60631-134E-4E44-A4CA-888663AC2FF9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6BB60631-134E-4E44-A4CA-888663AC2FF9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
