@@ -6,35 +6,35 @@ using StoreDatabase;
 
 namespace DataBinding
 {
-   public partial class BindingGroupValidation
-   {
-      ICollection<Product> products;
+	public partial class BindingGroupValidation
+	{
+		private ICollection<Product> _products;
 
-      public BindingGroupValidation()
-      {
-         InitializeComponent();
-      }
+		public BindingGroupValidation()
+		{
+			InitializeComponent();
+		}
 
-      void OnGetProducts(object sender, RoutedEventArgs e)
-      {
-         products = App.StoreDb.GetProducts();
-         productsListBox.ItemsSource = products;
-      }
+		private void OnGetProducts(object sender, RoutedEventArgs e)
+		{
+			_products = App.StoreDb.GetProducts();
+			ProductsListBox.ItemsSource = _products;
+		}
 
-      void OnUpdateProduct(object sender, RoutedEventArgs e)
-      {
-         // Make sure update has taken place.
-         FocusManager.SetFocusedElement(this, (Button) sender);
-      }
+		private void OnUpdateProduct(object sender, RoutedEventArgs e)
+		{
+			// Make sure update has taken place.
+			FocusManager.SetFocusedElement(this, (Button) sender);
+		}
 
-      void OnLostFocus(object sender, RoutedEventArgs e)
-      {
-         productBindingGroup.CommitEdit();
-      }
+		private void OnLostFocus(object sender, RoutedEventArgs e)
+		{
+			ProductBindingGroup.CommitEdit();
+		}
 
-      void OnSelectionChanged(object sender, SelectionChangedEventArgs e)
-      {
-         productBindingGroup.CommitEdit();
-      }
-   }
+		private void OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+		{
+			ProductBindingGroup.CommitEdit();
+		}
+	}
 }
