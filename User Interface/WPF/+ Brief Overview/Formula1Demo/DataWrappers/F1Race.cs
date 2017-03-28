@@ -26,7 +26,7 @@ namespace Formula1Demo.DataWrappers
          select new F1RaceResult
          {
             Position = raceResult.Position,
-            Racer = $"{raceResult.Racer.FirstName} {raceResult.Racer.LastName}",
+            Racer = raceResult.Racer.FirstName + " " + raceResult.Racer.LastName,
             Car = f1Context.Teams.FirstOrDefault(team => team.Id == raceResult.TeamId).Name
          };
    }

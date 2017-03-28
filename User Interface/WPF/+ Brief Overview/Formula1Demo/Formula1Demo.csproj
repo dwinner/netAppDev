@@ -61,6 +61,15 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="UserControls\F1CustomGridUserControl.xaml.cs">
+      <DependentUpon>F1CustomGridUserControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\F1GridGroupingUserControl.xaml.cs">
+      <DependentUpon>F1GridGroupingUserControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\F1GridUserControl.xaml.cs">
+      <DependentUpon>F1GridUserControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UserControls\F1TreeUserControl.xaml.cs">
       <DependentUpon>F1TreeUserControl.xaml</DependentUpon>
     </Compile>
@@ -80,6 +89,18 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="UserControls\F1CustomGridUserControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserControls\F1GridGroupingUserControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserControls\F1GridUserControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="UserControls\F1TreeUserControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

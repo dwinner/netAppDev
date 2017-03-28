@@ -15,7 +15,8 @@ namespace Formula1Demo.DataWrappers
       {
          using (var f1Context = new Formula1Entities())
          {
-            return (from race in f1Context.Races
+            return
+            (from race in f1Context.Races
                where race.Date.Year == Year
                orderby race.Date
                select new F1Race

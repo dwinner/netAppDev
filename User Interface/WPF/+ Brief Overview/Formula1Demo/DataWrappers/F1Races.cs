@@ -33,7 +33,7 @@ namespace Formula1Demo.DataWrappers
             race.Date.Year,
             race.Circuit.Country,
             raceResult.Position,
-            Racer = $"{raceResult.Racer.FirstName} {raceResult.Racer.LastName}",
+            Racer = raceResult.Racer.FirstName + " " + raceResult.Racer.LastName,
             Car = aDataContext.Teams.FirstOrDefault(team => team.Id == raceResult.TeamId).Name,
             raceResult.Points
          };
