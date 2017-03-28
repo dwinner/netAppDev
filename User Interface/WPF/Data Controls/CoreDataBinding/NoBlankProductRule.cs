@@ -21,7 +21,7 @@ namespace DataBinding
          var newModelName = (string) bindingGroup.GetValue(product, nameof(Product.ModelName));
          var newModelNumber = (string) bindingGroup.GetValue(product, nameof(Product.ModelNumber));
 
-         return (newModelName == string.Empty) && (newModelNumber == string.Empty)
+         return newModelName == string.Empty && newModelNumber == string.Empty
             ? new ValidationResult(false, "A product requires a ModelName or ModelNumber.")
             : new ValidationResult(true, null);
       }

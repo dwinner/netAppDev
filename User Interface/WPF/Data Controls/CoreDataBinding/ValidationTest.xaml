@@ -19,9 +19,9 @@
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
-            <ListBox Name="lstProducts" Margin="5" DisplayMemberPath="ModelName" />
+            <ListBox x:Name="LstProducts" Margin="5" DisplayMemberPath="ModelName" />
             <StackPanel Grid.Row="1" HorizontalAlignment="Right" Orientation="Horizontal" Margin="5,2,5,10">
-                <Button Margin="2,0,0,0" Padding="2" Click="OnGetProducts" Content="Get Products"/>
+                <Button Margin="2,0,0,0" Padding="2" Click="OnGetProducts" Content="Get Products" />
             </StackPanel>
         </Grid>
 
@@ -30,8 +30,8 @@
                       Height="5" />
 
         <Border Grid.Row="2" Padding="7" Margin="7" Background="LightSteelBlue">
-            <Grid Name="gridProductDetails"
-                  DataContext="{Binding ElementName=lstProducts, Path=SelectedItem}"
+            <Grid x:Name="GridProductDetails"
+                  DataContext="{Binding ElementName=LstProducts, Path=SelectedItem}"
                   d:DataContext="{d:DesignInstance storeDatabase:Product}"
                   Validation.Error="OnValidationError">
                 <Grid.Resources>
@@ -42,9 +42,10 @@
                                     <DockPanel LastChildFill="True">
                                         <TextBlock DockPanel.Dock="Right"
                                                    Foreground="Red" FontSize="14" FontWeight="Bold"
-                                                   ToolTip="{Binding ElementName=adornerPlaceholder, Path=AdornedElement.(Validation.Errors)[0].ErrorContent}" Text="*"/>
+                                                   ToolTip="{Binding ElementName=adornerPlaceholder, Path=AdornedElement.(Validation.Errors)[0].ErrorContent}"
+                                                   Text="*" />
                                         <Border BorderBrush="Green" BorderThickness="1">
-                                            <AdornedElementPlaceholder Name="adornerPlaceholder" />
+                                            <AdornedElementPlaceholder x:Name="adornerPlaceholder" />
                                         </Border>
                                     </DockPanel>
                                 </ControlTemplate>
@@ -71,7 +72,7 @@
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
 
-                <TextBlock Margin="7" Text="Model Number:"/>
+                <TextBlock Margin="7" Text="Model Number:" />
                 <TextBox Margin="5" Grid.Row="0" Grid.Column="1">
                     <TextBox.Text>
                         <Binding Path="ModelNumber" NotifyOnValidationError="true">
@@ -82,10 +83,10 @@
                     </TextBox.Text>
                 </TextBox>
 
-                <TextBlock Margin="7" Grid.Row="1" Grid.Column="0" Text="Model Name:"/>
+                <TextBlock Margin="7" Grid.Row="1" Grid.Column="0" Text="Model Name:" />
                 <TextBox Margin="5" Grid.Row="1" Grid.Column="1" Text="{Binding Path=ModelName}" />
 
-                <TextBlock Margin="7" Grid.Row="2" Grid.Column="0" Text="Unit Cost:"/>
+                <TextBlock Margin="7" Grid.Row="2" Grid.Column="0" Text="Unit Cost:" />
                 <TextBox Margin="5" Grid.Row="2" Grid.Column="1">
                     <TextBox.Text>
                         <Binding Path="UnitCost" NotifyOnValidationError="true" StringFormat="{}{0:C}">
@@ -97,15 +98,15 @@
                     </TextBox.Text>
                 </TextBox>
 
-                <TextBlock Margin="7,7,7,0" Grid.Row="3" Grid.Column="0" Text="Description:"/>
-                
+                <TextBlock Margin="7,7,7,0" Grid.Row="3" Grid.Column="0" Text="Description:" />
+
                 <TextBox Margin="7" Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2"
                          VerticalScrollBarVisibility="Visible" TextWrapping="Wrap" Text="{Binding Path=Description}" />
 
                 <StackPanel Orientation="Horizontal" Margin="3" Grid.Row="5" Grid.ColumnSpan="2" Grid.Column="0"
                             HorizontalAlignment="Right">
-                    <Button Click="OnUpdateProduct" IsDefault="True" Margin="2" Padding="10,2,10,2" Content="Update"/>
-                    <Button Click="OnGetExceptions" Margin="2" Padding="10,2,10,2" Content="Get Validation Errors"/>
+                    <Button Click="OnUpdateProduct" IsDefault="True" Margin="2" Padding="10,2,10,2" Content="Update" />
+                    <Button Click="OnGetExceptions" Margin="2" Padding="10,2,10,2" Content="Get Validation Errors" />
                 </StackPanel>
             </Grid>
         </Border>

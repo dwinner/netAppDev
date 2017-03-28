@@ -17,7 +17,7 @@
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
-            <ListBox Grid.Row="0" Name="productsListBox" Margin="5" DisplayMemberPath="ModelName"
+            <ListBox Grid.Row="0" x:Name="ProductsListBox" Margin="5" DisplayMemberPath="ModelName"
                      SelectionChanged="OnSelectionChanged" />
 
             <StackPanel Grid.Row="1" HorizontalAlignment="Right" Orientation="Horizontal" Margin="5,2,5,10">
@@ -30,7 +30,7 @@
                       Height="5" />
 
         <Border Grid.Row="2" Padding="7" Margin="7" Background="LightSteelBlue">
-            <Grid DataContext="{Binding ElementName=productsListBox, Path=SelectedItem}"
+            <Grid DataContext="{Binding ElementName=ProductsListBox, Path=SelectedItem}"
                   LostFocus="OnLostFocus"
                   d:DataContext="{d:DesignData Product}">
 
@@ -49,7 +49,7 @@
                 </Grid.RowDefinitions>
 
                 <Grid.BindingGroup>
-                    <BindingGroup x:Name="productBindingGroup">
+                    <BindingGroup x:Name="ProductBindingGroup">
                         <BindingGroup.ValidationRules>
                             <local:NoBlankProductRule />
                         </BindingGroup.ValidationRules>
@@ -80,7 +80,7 @@
                 <StackPanel Orientation="Horizontal" Margin="3" Grid.Row="5" Grid.ColumnSpan="2" Grid.Column="0"
                             HorizontalAlignment="Right">
                     <Button Click="OnUpdateProduct" IsDefault="True"
-                            Margin="2" Padding="10,2,10,2" Content="Update"/>
+                            Margin="2" Padding="10,2,10,2" Content="Update" />
                 </StackPanel>
             </Grid>
         </Border>

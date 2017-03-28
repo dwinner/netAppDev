@@ -4,16 +4,16 @@
         Title="Menu" Height="321" Width="244">
     <Grid>
         <StackPanel Margin="5" Button.Click="ButtonClick">
-            <Button>BindProductObject</Button>
-            <Button>EditProductObject</Button>
-            <Button>BindToCollection</Button>
-            <Button>BindToDataSet</Button>
-            <Button>BindToLinqFilteredCollection</Button>
-            <Button>VirtualizationTest</Button>
-            <Button>ValidationTest</Button>
-            <Button>BindingGroupValidation</Button>
-            <Button>BindToObjectDataProvider</Button>
-            <Button>BindToXmlDataProvider</Button>
+            <Button Content="BindProductObject" />
+            <Button Content="EditProductObject" />
+            <Button Content="BindToCollection" />
+            <Button Content="BindToDataSet" />
+            <Button Content="BindToLinqFilteredCollection" />
+            <Button Content="VirtualizationTest" />
+            <Button Content="ValidationTest" />
+            <Button Content="BindingGroupValidation" />
+            <Button Content="BindToObjectDataProvider" />
+            <Button Content="BindToXmlDataProvider" />
         </StackPanel>
     </Grid>
 </Window>
