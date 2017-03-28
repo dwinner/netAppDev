@@ -59,6 +59,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Formula1.Data.Orm", "Formul
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Formula1Demo", "Formula1Demo\Formula1Demo.csproj", "{92533D91-ED68-4CA1-92D2-91349F418C64}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LiveShaping", "LiveShaping\LiveShaping.csproj", "{19ECA3F2-E754-4765-896D-5828FBD69FB0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -279,6 +281,14 @@ Global
 		{92533D91-ED68-4CA1-92D2-91349F418C64}.Release|Any CPU.Build.0 = Release|Any CPU
 		{92533D91-ED68-4CA1-92D2-91349F418C64}.Release|x86.ActiveCfg = Release|Any CPU
 		{92533D91-ED68-4CA1-92D2-91349F418C64}.Release|x86.Build.0 = Release|Any CPU
+		{19ECA3F2-E754-4765-896D-5828FBD69FB0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{19ECA3F2-E754-4765-896D-5828FBD69FB0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{19ECA3F2-E754-4765-896D-5828FBD69FB0}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{19ECA3F2-E754-4765-896D-5828FBD69FB0}.Debug|x86.Build.0 = Debug|Any CPU
+		{19ECA3F2-E754-4765-896D-5828FBD69FB0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{19ECA3F2-E754-4765-896D-5828FBD69FB0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{19ECA3F2-E754-4765-896D-5828FBD69FB0}.Release|x86.ActiveCfg = Release|Any CPU
+		{19ECA3F2-E754-4765-896D-5828FBD69FB0}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
