@@ -1,40 +1,29 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
-namespace Wrox.ProCSharp.WPF
+namespace LiveShaping
 {
-  /// <summary>
-  /// Interaction logic for MainWindow.xaml
-  /// </summary>
-  public partial class MainWindow : Window
-  {
-    private LapChart lapChart = new LapChart();
-    public MainWindow()
+    /// <summary>
+    /// Interaction logic for MainWindow.xaml
+    /// </summary>
+    public partial class MainWindow : Window
     {
-      InitializeComponent();
-      this.DataContext = lapChart.GetLapInfo();
-
-      Task.Run(async () =>
+        private LapChart _lapChart = new LapChart();
+        public MainWindow()
         {
-          bool raceContinues = true;
-          while (raceContinues)
-          {
-            await Task.Delay(3000);
-            raceContinues = lapChart.NextLap();
-          }
-        });
+            InitializeComponent();
+            this.DataContext = _lapChart.GetLapInfo();
+
+            Task.Run(async () =>
+            {
+                bool raceContinues = true;
+                while (raceContinues)
+                {
+                    await Task.Delay(3000);
+                    raceContinues = _lapChart.NextLap();
+                }
+            });
+        }
     }
-  }
 }
+
