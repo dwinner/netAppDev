@@ -2,7 +2,7 @@ using Android.App;
 
 namespace SatelliteMovingApp
 {
-   [Activity(Label = "StartScreenActivity")]
+   [Activity(Label = nameof(StartScreenActivity))]
    public class StartScreenActivity : Activity
    {
    }

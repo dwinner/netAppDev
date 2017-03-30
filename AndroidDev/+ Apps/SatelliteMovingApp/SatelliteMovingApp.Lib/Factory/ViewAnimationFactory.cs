@@ -1,7 +1,7 @@
 ﻿using Android.Views.Animations;
 using Java.Lang;
 
-namespace SatelliteMovingApp.Lib
+namespace SatelliteMovingApp.Lib.Factory
 {
    /// <summary>
    ///    Генератор объектов для анимации представлений
