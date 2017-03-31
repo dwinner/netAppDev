@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Xml.Serialization;
 using Math = Java.Lang.Math;
 
 namespace SatelliteMovingApp.Lib.Model
@@ -6,6 +7,7 @@ namespace SatelliteMovingApp.Lib.Model
    /// <summary>
    ///    Класс-модель для параметров спутника
    /// </summary>
+   [XmlRoot(nameof(Satellite))]
    [Serializable]
    public sealed class Satellite //: ISerializable
       : IEquatable<Satellite>

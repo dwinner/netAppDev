@@ -1,20 +1,16 @@
-﻿using System;
-using Android.App;
+﻿using Android.App;
 using Android.Content;
 using Android.OS;
-using Android.Util;
 using Android.Views.Animations;
 using Android.Widget;
 using JetBrains.Annotations;
-using Org.Apache.Http.Impl.IO;
-using Animation = Android.Views.Animations.Animation;
 
 namespace SatelliteMovingApp
 {
    /// <summary>
    ///    Активность для экрана заставки
    /// </summary>
-   [Activity(Label = nameof(SplashScreenActivity), MainLauncher = true, NoHistory = true)]
+   [Activity(Label = "Splash", MainLauncher = true, NoHistory = true)]
    [UsedImplicitly]
    public class SplashScreenActivity : Activity
    {
@@ -60,7 +56,7 @@ namespace SatelliteMovingApp
             StartActivity(new Intent(this, typeof(MenuScreenActivity)));
             Finish();
          };
-         bottomTitle.StartAnimation(secondFadeIn);                
+         bottomTitle.StartAnimation(secondFadeIn);
 
          var spinIn = AnimationUtils.LoadAnimation(this, Resource.Animation.GradualApproach);
          var controller = new LayoutAnimationController(spinIn) {Order = DelayOrder.Normal};

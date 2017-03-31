@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
@@ -11,13 +10,10 @@ using Android.Util;
 using Android.Views;
 using Android.Widget;
 using Java.Lang;
-using JetBrains.Annotations;
 using SatelliteMovingApp.Lib.Model;
 using SatelliteMovingApp.Lib.Utils;
-using static SatelliteMovingApp.Lib.Factory.ToastHandlerFactory;
 using Exception = System.Exception;
 using Math = System.Math;
-using String = Java.Lang.String;
 
 namespace SatelliteMovingApp
 {
@@ -75,7 +71,62 @@ namespace SatelliteMovingApp
       private void SetupSaveButton()
       {
          var saveButton = FindViewById<Button>(Resource.Id.SaveButtonId);
-         saveButton.SetOnClickListener(new SaveButtonClickListener(this));
+         saveButton.Click += (sender, args) =>
+         {
+            if (_motionParams.Count > 0)
+               _motionParams.Clear();
+
+            // Сбор информации из текстовых полей ввода
+            nextTableRow:
+            for (var i = 0; i < _settingsTable.ChildCount; i++)
+            {
+               var tableRow = _settingsTable.GetChildAt(i) as TableRow;
+               if (tableRow == null)
+                  continue;
+
+               long currentTime = -1;
+               float currentDistance = -1;
+
+               for (var j = 0; j < tableRow.ChildCount; j++)
+               {
+                  var currentView = tableRow.GetChildAt(j);
+                  if (!(currentView is EditText))
+                     goto nextTableRow;
+
+                  var editText = (EditText) currentView;
+                  var editTextId = editText.Id;
+                  var currentText = editText.Text.Trim();
+                  if (currentText.Length == 0)
+                     goto nextTableRow;
+
+                  if (editTextId % 2 != 0)
+                  {
+                     if (!long.TryParse(currentText, out currentTime) || currentTime <= 0)
+                     {
+                        var errorMessage = Resources.GetString(Resource.String.NegativeTimeError);
+                        AlertDialogUtil.ShowSimpleDialog(this, errorMessage);
+                        editText.RequestFocus();
+                        return;
+                     }
+                  }
+                  else
+                  {
+                     if (!float.TryParse(currentText, out currentDistance) || !(currentDistance > 0))
+                     {
+                        var errorMessage = Resources.GetString(Resource.String.NegativeTimeError);
+                        AlertDialogUtil.ShowSimpleDialog(this, errorMessage);
+                        editText.RequestFocus();
+                        return;
+                     }
+                  }
+               }
+
+               _motionParams.Add(new Satellite(currentTime, currentDistance));
+            }
+
+            if (VerifyDistances())
+               SaveSettings(SettingsFileName);
+         };
       }
 
       /// <summary>
@@ -84,7 +135,18 @@ namespace SatelliteMovingApp
       private void SetupDeleteButton()
       {
          var deleteButton = FindViewById<Button>(Resource.Id.DeleteButtonId);
-         deleteButton.SetOnClickListener(new DelButtonClickListener(this));
+         deleteButton.Click += (sender, args) =>
+         {
+            if (_currentRecordId == -1)
+            {
+               deleteButton.Enabled = false;
+            }
+            else
+            {
+               _settingsTable.RemoveViewAt(_settingsTable.ChildCount - 1);
+               _currentRecordId = UniqueIdGen.PrevId;
+            }
+         };
       }
 
       /// <summary>
@@ -95,7 +157,42 @@ namespace SatelliteMovingApp
          var addButton = FindViewById<Button>(Resource.Id.AddButtonId);
          var deleteButton = FindViewById<Button>(Resource.Id.DeleteButtonId);
          deleteButton.Enabled = _currentRecordId != -1;
-         addButton.SetOnClickListener(new AddButtonClickListener(this));
+         addButton.Click += (sender, args) =>
+         {
+            deleteButton.Enabled = _currentRecordId != -1;
+
+            using (var row = new TableRow(this))
+            {
+               int nextId;
+               using (
+                  var speedEditText = new EditText(this)
+                  {
+                     InputType = InputTypes.ClassNumber,
+                     Hint = Resources.GetString(Resource.String.SpeedHint),
+                     Id = UniqueIdGen.NextId
+                  })
+               {
+                  speedEditText.SetMaxLines(1);
+                  _currentRecordId = speedEditText.Id;
+                  nextId = speedEditText.Id + 1;
+                  row.AddView(speedEditText);
+               }
+
+               using (
+                  var distanceEditText = new EditText(this)
+                  {
+                     InputType = InputTypes.ClassNumber | InputTypes.NumberFlagDecimal,
+                     Hint = Resources.GetString(Resource.String.DistanceHint),
+                     Id = nextId
+                  })
+               {
+                  distanceEditText.SetMaxLines(1);
+                  row.AddView(distanceEditText);
+               }
+
+               _settingsTable.AddView(row);
+            }
+         };
       }
 
       /// <summary>
@@ -106,7 +203,7 @@ namespace SatelliteMovingApp
       {
          try
          {
-            using (var fIn = OpenFileInput(settingsFileName))
+            using (var fIn = Assets.Open(settingsFileName))
             {
                var binaryFormatter = new BinaryFormatter();
                var satellites = binaryFormatter.Deserialize(fIn) as List<Satellite>;
@@ -168,7 +265,13 @@ namespace SatelliteMovingApp
                var speedAboutButton = new Button(this) {Text = Resources.GetString(Resource.String.SpeedTableHeader)})
             {
                var speedHelpText = Resources.GetString(Resource.String.SpeedHelpText);
-               speedAboutButton.SetOnClickListener(CreateCenterToast(this, speedHelpText));
+               speedAboutButton.Click += (sender, args) =>
+               {
+                  var helpToast = Toast.MakeText(this, speedHelpText, ToastLength.Long);
+                  helpToast.SetGravity(GravityFlags.Center, 0, 0);
+                  helpToast.Show();
+               };
+               
                headerRow.AddView(speedAboutButton);
             }
 
@@ -180,7 +283,13 @@ namespace SatelliteMovingApp
                })
             {
                var distanceHelpText = Resources.GetString(Resource.String.DistanceHelpText);
-               distanceAboutButton.SetOnClickListener(CreateCenterToast(this, distanceHelpText));
+               distanceAboutButton.Click += (sender, args) =>
+               {
+                  var helpToast = Toast.MakeText(this, distanceHelpText, ToastLength.Long);
+                  helpToast.SetGravity(GravityFlags.Center, 0, 0);
+                  helpToast.Show();
+               };
+
                headerRow.AddView(distanceAboutButton);
             }
 
@@ -192,7 +301,7 @@ namespace SatelliteMovingApp
       {
          try
          {
-            using (var fOs = OpenFileOutput(settingsFileName, FileCreationMode.Private))
+            using (var fOs = Assets.Open(settingsFileName))
             {
                var binaryFormatter = new BinaryFormatter();
                binaryFormatter.Serialize(fOs, _motionParams);
@@ -251,8 +360,6 @@ namespace SatelliteMovingApp
          return true;
       }
 
-      #region Internal types
-
       private static class UniqueIdGen
       {
          private static int _currentId = -1;
@@ -261,167 +368,5 @@ namespace SatelliteMovingApp
 
          internal static int PrevId => _currentId -= 2;
       }
-
-      private sealed class AddButtonClickListener : View.IOnClickListener
-      {
-         private readonly SettingsScreenActivity _owner;
-
-         public AddButtonClickListener(SettingsScreenActivity owner)
-         {
-            _owner = owner;
-         }
-
-         public void Dispose()
-         {
-         }
-
-         [UsedImplicitly]
-         public IntPtr Handle { get; }
-
-         public void OnClick(View view)
-         {
-            var deleteButton = _owner.FindViewById<Button>(Resource.Id.DeleteButtonId);
-            deleteButton.Enabled = _owner._currentRecordId != -1;
-
-            using (var row = new TableRow(_owner))
-            {
-               int nextId;
-               using (
-                  var speedEditText = new EditText(_owner)
-                  {
-                     InputType = InputTypes.ClassNumber,
-                     Hint = _owner.Resources.GetString(Resource.String.SpeedHint),
-                     Id = UniqueIdGen.NextId
-                  })
-               {
-                  speedEditText.SetMaxLines(1);
-                  _owner._currentRecordId = speedEditText.Id;
-                  nextId = speedEditText.Id + 1;
-                  row.AddView(speedEditText);
-               }
-
-               using (
-                  var distanceEditText = new EditText(_owner)
-                  {
-                     InputType = InputTypes.ClassNumber | InputTypes.NumberFlagDecimal,
-                     Hint = _owner.Resources.GetString(Resource.String.DistanceHint),
-                     Id = nextId
-                  })
-               {
-                  distanceEditText.SetMaxLines(1);
-                  row.AddView(distanceEditText);
-               }
-
-               _owner._settingsTable.AddView(row);
-            }
-         }
-      }
-
-      private sealed class DelButtonClickListener : View.IOnClickListener
-      {
-         private readonly SettingsScreenActivity _owner;
-
-         public DelButtonClickListener(SettingsScreenActivity owner)
-         {
-            _owner = owner;
-         }
-
-         public void Dispose()
-         {
-         }
-
-         [UsedImplicitly]
-         public IntPtr Handle { get; }
-
-         public void OnClick(View v)
-         {
-            var deleteButton = _owner.FindViewById<Button>(Resource.Id.DeleteButtonId);
-            if (_owner._currentRecordId == -1)
-            {
-               deleteButton.Enabled = false;
-            }
-            else
-            {
-               _owner._settingsTable.RemoveViewAt(_owner._settingsTable.ChildCount - 1);
-               _owner._currentRecordId = UniqueIdGen.PrevId;
-            }
-         }
-      }
-
-      private sealed class SaveButtonClickListener : View.IOnClickListener
-      {
-         private readonly SettingsScreenActivity _owner;
-
-         public SaveButtonClickListener(SettingsScreenActivity owner)
-         {
-            _owner = owner;
-         }
-
-         public void Dispose()
-         {
-         }
-
-         [UsedImplicitly]
-         public IntPtr Handle { get; }
-
-         public void OnClick(View view)
-         {
-            if (_owner._motionParams.Count > 0)
-               _owner._motionParams.Clear();
-
-            // Сбор информации из текстовых полей ввода
-            nextTableRow:
-            for (var i = 0; i < _owner._settingsTable.ChildCount; i++)
-            {
-               var tableRow = _owner._settingsTable.GetChildAt(i) as TableRow;
-               if (tableRow == null)
-                  continue;
-
-               long currentTime = -1;
-               float currentDistance = -1;
-
-               for (var j = 0; j < tableRow.ChildCount; j++)
-               {
-                  var currentView = tableRow.GetChildAt(j);
-                  if (!(currentView is EditText))
-                     goto nextTableRow;
-
-                  var editText = (EditText) currentView;
-                  var editTextId = editText.Id;
-                  var currentText = editText.Text.Trim();
-                  if (currentText.Length == 0)
-                     goto nextTableRow;
-
-                  if (editTextId % 2 != 0)
-                  {
-                     if (!long.TryParse(currentText, out currentTime) || currentTime <= 0)
-                     {
-                        var errorMessage = _owner.Resources.GetString(Resource.String.NegativeTimeError);
-                        AlertDialogUtil.ShowSimpleDialog(_owner, errorMessage);
-                        editText.RequestFocus();
-                        return;
-                     }
-                  }
-                  else
-                  {
-                     if (!float.TryParse(currentText, out currentDistance) || !(currentDistance > 0))
-                     {
-                        var errorMessage = _owner.Resources.GetString(Resource.String.NegativeTimeError);
-                        AlertDialogUtil.ShowSimpleDialog(_owner, errorMessage);
-                        editText.RequestFocus();
-                        return;
-                     }
-                  }
-               }
-
-               _owner._motionParams.Add(new Satellite(currentTime, currentDistance));
-            }
-
-            if (_owner.VerifyDistances())
-               _owner.SaveSettings(SettingsFileName);
-         }
-      }
-
-      #endregion
    }
 }

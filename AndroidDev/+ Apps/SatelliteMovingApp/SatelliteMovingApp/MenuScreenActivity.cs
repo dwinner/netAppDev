@@ -1,7 +1,6 @@
 ﻿using Android.App;
 using Android.Content;
 using Android.OS;
-using Android.Views;
 using Android.Widget;
 using static System.StringComparison;
 
@@ -10,39 +9,29 @@ namespace SatelliteMovingApp
    /// <summary>
    ///    Активность для экрана главного меню
    /// </summary>
-   [Activity(Label = nameof(MenuScreenActivity))]
-   public class MenuScreenActivity : Activity
+   [Activity(Label = "Main menu")]
+   public class MenuScreenActivity : ListActivity
    {
       protected override void OnCreate(Bundle savedInstanceState)
       {
          base.OnCreate(savedInstanceState);
 
-         SetContentView(Resource.Layout.MenuScreen);
-         SetupMenuListView();
-      }
-
-      private void SetupMenuListView()
-      {
-         var menuListView = FindViewById<ListView>(Resource.Id.MenuListViewId);
-         string[] menuItems =
+         ListAdapter = new ArrayAdapter<string>(this, Resource.Layout.MainMenuItem, new[]
          {
             Resources.GetString(Resource.String.MenuItemStart),
             Resources.GetString(Resource.String.MenuItemSettings),
             Resources.GetString(Resource.String.MenuItemAbout)
-         };
-         View view = FindViewById(Resource.Layout.MainMenuItem);
-         var textView = FindViewById<TextView>(Resource.Id.MainMenuTextView);
-         menuListView.Adapter = new ArrayAdapter<string>(this, Resource.Layout.MainMenuItem, menuItems);
-         menuListView.ItemClick += (sender, e) =>
+         });
+         ListView.ItemClick += (sender, args) =>
          {
-            var clickedTextView = e.View as TextView;
-            if (clickedTextView != null)
-            {
-               var text = clickedTextView.Text;
-               var intent = GetCurrentIntent(text);
-               if (intent != null)
-                  StartActivity(intent);
-            }
+            var clickedTextView = args.View as TextView;
+            if (clickedTextView == null)
+               return;
+
+            var text = clickedTextView.Text;
+            var intent = GetCurrentIntent(text);
+            if (intent != null)
+               StartActivity(intent);
          };
       }
 

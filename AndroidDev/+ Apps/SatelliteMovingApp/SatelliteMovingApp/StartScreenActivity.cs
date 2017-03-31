@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Serialization.Formatters.Binary;
+using System.Xml.Serialization;
 using Android.App;
 using Android.Content;
 using Android.OS;
@@ -139,8 +139,8 @@ namespace SatelliteMovingApp
          {
             using (var fIn = OpenFileInput(settingsFileName))
             {
-               var binaryFormatter = new BinaryFormatter();
-               var satellites = binaryFormatter.Deserialize(fIn) as List<Satellite>;
+               var xmlSerializer = new XmlSerializer(typeof(Satellite));
+               var satellites = xmlSerializer.Deserialize(fIn) as List<Satellite>;
                if (satellites == null || satellites.Count == 0)
                {
                   var helpToast = Toast.MakeText(this, Resources.GetString(Resource.String.SatellitesHaveNot),
