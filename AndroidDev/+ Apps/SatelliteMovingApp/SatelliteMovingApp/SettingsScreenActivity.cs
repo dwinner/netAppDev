@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using Android.App;
 using Android.Content;
@@ -9,9 +10,14 @@ using Android.Text;
 using Android.Util;
 using Android.Views;
 using Android.Widget;
+using Java.Lang;
 using JetBrains.Annotations;
 using SatelliteMovingApp.Lib.Model;
+using SatelliteMovingApp.Lib.Utils;
 using static SatelliteMovingApp.Lib.Factory.ToastHandlerFactory;
+using Exception = System.Exception;
+using Math = System.Math;
+using String = Java.Lang.String;
 
 namespace SatelliteMovingApp
 {
@@ -21,7 +27,7 @@ namespace SatelliteMovingApp
    [Activity(Label = nameof(SettingsScreenActivity))]
    public class SettingsScreenActivity : Activity
    {
-      private const string SettingsFileName = "satellites.dat";
+      internal const string SettingsFileName = "satellites.dat";
       private const float MinimumDistanceBetween = 5F;
       private int _currentRecordId = -1;
       private List<Satellite> _motionParams;
@@ -63,9 +69,13 @@ namespace SatelliteMovingApp
          SetupSaveButton();
       }
 
+      /// <summary>
+      ///    Установка кнопки сохранения данных таблицы
+      /// </summary>
       private void SetupSaveButton()
       {
-         throw new NotImplementedException();
+         var saveButton = FindViewById<Button>(Resource.Id.SaveButtonId);
+         saveButton.SetOnClickListener(new SaveButtonClickListener(this));
       }
 
       /// <summary>
@@ -178,6 +188,69 @@ namespace SatelliteMovingApp
          }
       }
 
+      private void SaveSettings(string settingsFileName)
+      {
+         try
+         {
+            using (var fOs = OpenFileOutput(settingsFileName, FileCreationMode.Private))
+            {
+               var binaryFormatter = new BinaryFormatter();
+               binaryFormatter.Serialize(fOs, _motionParams);
+            }
+         }
+         catch (IOException ioEx)
+         {
+            Log.Error(GetType().Name, ioEx.Message, ioEx);
+         }
+      }
+
+      /// <summary>
+      ///    Проверка спутников на столкновения с землей и друг с другом
+      /// </summary>
+      /// <returns>true, если столкновений не будет, false в противном случае</returns>
+      private bool VerifyDistances()
+      {
+         if (_motionParams.Count == 0)
+            return true;
+
+#pragma warning disable 618
+         var earth = Resources.GetDrawable(Resource.Drawable.globe);
+         var satellite = Resources.GetDrawable(Resource.Drawable.action_satellite);
+#pragma warning restore 618
+         var maxEarth = Math.Max(earth.IntrinsicWidth, earth.IntrinsicHeight);
+         var maxSatellite = Math.Max(satellite.IntrinsicWidth, satellite.IntrinsicHeight);
+
+         _motionParams.Sort(
+            (satellite1, satellite2) =>
+               Float.FloatToIntBits(satellite1.Distance) - Float.FloatToIntBits(satellite2.Distance));
+
+         var satObject = _motionParams[0];
+         if (satObject.Distance < Math.Sqrt(2) / 2 * (maxEarth + maxSatellite)) // Спутник столкнется с землей
+         {
+            var errorMessage = String.Format(Resources.GetString(Resource.String.EarthCollideError),
+               Math.Sqrt(2) / 2 * (maxEarth + maxSatellite));
+            AlertDialogUtil.ShowSimpleDialog(this, errorMessage);
+            return false;
+         }
+
+         for (var i = 1; i < _motionParams.Count; i++)
+         {
+            var currentSatellite = _motionParams[i];
+            var prevSatellite = _motionParams[i - 1];
+            var diffDistance = currentSatellite.Distance - prevSatellite.Distance;
+            if (diffDistance < MinimumDistanceBetween)
+            {
+               // Расстояние между спутниками меньше минимально допустимого
+               var errorMessage = String.Format(Resources.GetString(Resource.String.SatelliteCollideError),
+                  currentSatellite.Distance, prevSatellite.Distance, MinimumDistanceBetween);
+               AlertDialogUtil.ShowSimpleDialog(this, errorMessage);
+               return false;
+            }
+         }
+
+         return true;
+      }
+
       #region Internal types
 
       private static class UniqueIdGen
@@ -272,6 +345,80 @@ namespace SatelliteMovingApp
                _owner._settingsTable.RemoveViewAt(_owner._settingsTable.ChildCount - 1);
                _owner._currentRecordId = UniqueIdGen.PrevId;
             }
+         }
+      }
+
+      private sealed class SaveButtonClickListener : View.IOnClickListener
+      {
+         private readonly SettingsScreenActivity _owner;
+
+         public SaveButtonClickListener(SettingsScreenActivity owner)
+         {
+            _owner = owner;
+         }
+
+         public void Dispose()
+         {
+         }
+
+         [UsedImplicitly]
+         public IntPtr Handle { get; }
+
+         public void OnClick(View view)
+         {
+            if (_owner._motionParams.Count > 0)
+               _owner._motionParams.Clear();
+
+            // Сбор информации из текстовых полей ввода
+            nextTableRow:
+            for (var i = 0; i < _owner._settingsTable.ChildCount; i++)
+            {
+               var tableRow = _owner._settingsTable.GetChildAt(i) as TableRow;
+               if (tableRow == null)
+                  continue;
+
+               long currentTime = -1;
+               float currentDistance = -1;
+
+               for (var j = 0; j < tableRow.ChildCount; j++)
+               {
+                  var currentView = tableRow.GetChildAt(j);
+                  if (!(currentView is EditText))
+                     goto nextTableRow;
+
+                  var editText = (EditText) currentView;
+                  var editTextId = editText.Id;
+                  var currentText = editText.Text.Trim();
+                  if (currentText.Length == 0)
+                     goto nextTableRow;
+
+                  if (editTextId % 2 != 0)
+                  {
+                     if (!long.TryParse(currentText, out currentTime) || currentTime <= 0)
+                     {
+                        var errorMessage = _owner.Resources.GetString(Resource.String.NegativeTimeError);
+                        AlertDialogUtil.ShowSimpleDialog(_owner, errorMessage);
+                        editText.RequestFocus();
+                        return;
+                     }
+                  }
+                  else
+                  {
+                     if (!float.TryParse(currentText, out currentDistance) || !(currentDistance > 0))
+                     {
+                        var errorMessage = _owner.Resources.GetString(Resource.String.NegativeTimeError);
+                        AlertDialogUtil.ShowSimpleDialog(_owner, errorMessage);
+                        editText.RequestFocus();
+                        return;
+                     }
+                  }
+               }
+
+               _owner._motionParams.Add(new Satellite(currentTime, currentDistance));
+            }
+
+            if (_owner.VerifyDistances())
+               _owner.SaveSettings(SettingsFileName);
          }
       }
 

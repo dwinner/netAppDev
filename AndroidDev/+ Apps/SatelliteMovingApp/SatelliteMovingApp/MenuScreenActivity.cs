@@ -1,11 +1,9 @@
-﻿using System;
-using Android.App;
+﻿using Android.App;
 using Android.Content;
-using Android.Content.Res;
 using Android.OS;
 using Android.Views;
 using Android.Widget;
-using JetBrains.Annotations;
+using static System.StringComparison;
 
 namespace SatelliteMovingApp
 {
@@ -32,55 +30,33 @@ namespace SatelliteMovingApp
             Resources.GetString(Resource.String.MenuItemSettings),
             Resources.GetString(Resource.String.MenuItemAbout)
          };
+         View view = FindViewById(Resource.Layout.MainMenuItem);
+         var textView = FindViewById<TextView>(Resource.Id.MainMenuTextView);
          menuListView.Adapter = new ArrayAdapter<string>(this, Resource.Layout.MainMenuItem, menuItems);
-         menuListView.OnItemClickListener = new ItemClickListenerImlp(Resources, this);
-      }
-
-      private sealed class ItemClickListenerImlp : AdapterView.IOnItemClickListener
-      {
-         private readonly Activity _ownerActivity;
-         private readonly Resources _resources;
-
-         public ItemClickListenerImlp(Resources resources, Activity ownerActivity)
+         menuListView.ItemClick += (sender, e) =>
          {
-            _resources = resources;
-            _ownerActivity = ownerActivity;
-         }
-
-         public void Dispose()
-         {
-         }
-
-         [UsedImplicitly]
-         public IntPtr Handle { get; }
-
-         public void OnItemClick(AdapterView parent, View view, int position, long id)
-         {
-            var clickedTextView = view as TextView;
+            var clickedTextView = e.View as TextView;
             if (clickedTextView != null)
             {
                var text = clickedTextView.Text;
                var intent = GetCurrentIntent(text);
                if (intent != null)
-                  _ownerActivity.StartActivity(intent);
+                  StartActivity(intent);
             }
-         }
+         };
+      }
 
-         private Intent GetCurrentIntent(string text)
-         {
-            Intent intent = null;
-            if (text.Equals(_resources.GetString(Resource.String.MenuItemStart),
-               StringComparison.CurrentCultureIgnoreCase))
-               intent = new Intent(_ownerActivity, typeof(StartScreenActivity));
-            else if (text.Equals(_resources.GetString(Resource.String.MenuItemSettings),
-               StringComparison.CurrentCultureIgnoreCase))
-               intent = new Intent(_ownerActivity, typeof(SettingsScreenActivity));
-            else if (text.Equals(_resources.GetString(Resource.String.MenuItemAbout),
-               StringComparison.CurrentCultureIgnoreCase))
-               intent = new Intent(_ownerActivity, typeof(AboutScreenActivity));
+      private Intent GetCurrentIntent(string text)
+      {
+         Intent intent = null;
+         if (text.Equals(Resources.GetString(Resource.String.MenuItemStart), CurrentCultureIgnoreCase))
+            intent = new Intent(this, typeof(StartScreenActivity));
+         else if (text.Equals(Resources.GetString(Resource.String.MenuItemSettings), CurrentCultureIgnoreCase))
+            intent = new Intent(this, typeof(SettingsScreenActivity));
+         else if (text.Equals(Resources.GetString(Resource.String.MenuItemAbout), CurrentCultureIgnoreCase))
+            intent = new Intent(this, typeof(AboutScreenActivity));
 
-            return intent;
-         }
+         return intent;
       }
    }
 }

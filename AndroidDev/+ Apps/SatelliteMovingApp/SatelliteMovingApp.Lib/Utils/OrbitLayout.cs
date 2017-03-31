@@ -14,7 +14,7 @@ namespace SatelliteMovingApp.Lib.Utils
    /// </summary>
    public sealed class OrbitLayout : ViewGroup
    {
-      public OrbitLayout(SortedDictionary<Satellite, View> aSatelliteMap, Context aContext)
+      public OrbitLayout(IDictionary<Satellite, View> aSatelliteMap, Context aContext)
          : this(aContext)
       {
          SetupSatelliteMap(aSatelliteMap);
@@ -45,7 +45,7 @@ namespace SatelliteMovingApp.Lib.Utils
       {
       }
 
-      public SortedDictionary<Satellite, View> SatelliteMap { get; set; }
+      public IDictionary<Satellite, View> SatelliteMap { get; set; }
 
       public List<Satellite> SatelliteList { get; set; }
 
@@ -53,7 +53,7 @@ namespace SatelliteMovingApp.Lib.Utils
       ///    Установка карты соответствия параметров спутника с его View
       /// </summary>
       /// <param name="aSatelliteMap">Карта соответствия параметров спутника с его View</param>
-      private void SetupSatelliteMap(SortedDictionary<Satellite, View> aSatelliteMap)
+      private void SetupSatelliteMap(IDictionary<Satellite, View> aSatelliteMap)
       {
          SatelliteMap = aSatelliteMap;
          var layoutParams = new LayoutParams(LayoutParams.WrapContent, LayoutParams.WrapContent);

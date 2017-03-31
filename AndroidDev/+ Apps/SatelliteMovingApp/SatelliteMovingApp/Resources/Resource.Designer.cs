@@ -66,23 +66,23 @@ namespace SatelliteMovingApp
 		public partial class Color
 		{
 			
-			// aapt resource value: 0x7f060004
-			public const int MenuItemGlow = 2131099652;
+			// aapt resource value: 0x7f050004
+			public const int MenuItemGlow = 2131034116;
 			
-			// aapt resource value: 0x7f060003
-			public const int MenuTitleColor = 2131099651;
+			// aapt resource value: 0x7f050003
+			public const int MenuTitleColor = 2131034115;
 			
-			// aapt resource value: 0x7f060005
-			public const int SettingsTitleColor = 2131099653;
+			// aapt resource value: 0x7f050005
+			public const int SettingsTitleColor = 2131034117;
 			
-			// aapt resource value: 0x7f060000
-			public const int SplashTitleColor = 2131099648;
+			// aapt resource value: 0x7f050000
+			public const int SplashTitleColor = 2131034112;
 			
-			// aapt resource value: 0x7f060001
-			public const int VersionBackground = 2131099649;
+			// aapt resource value: 0x7f050001
+			public const int VersionBackground = 2131034113;
 			
-			// aapt resource value: 0x7f060002
-			public const int VersionColor = 2131099650;
+			// aapt resource value: 0x7f050002
+			public const int VersionColor = 2131034114;
 			
 			static Color()
 			{
@@ -97,29 +97,29 @@ namespace SatelliteMovingApp
 		public partial class Dimension
 		{
 			
-			// aapt resource value: 0x7f070005
-			public const int AboutTextPadding = 2131165189;
+			// aapt resource value: 0x7f060005
+			public const int AboutTextPadding = 2131099653;
 			
-			// aapt resource value: 0x7f070006
-			public const int AboutTextSize = 2131165190;
+			// aapt resource value: 0x7f060006
+			public const int AboutTextSize = 2131099654;
 			
-			// aapt resource value: 0x7f070004
-			public const int MenuItemSize = 2131165188;
+			// aapt resource value: 0x7f060004
+			public const int MenuItemSize = 2131099652;
 			
-			// aapt resource value: 0x7f070003
-			public const int MenuTitleSize = 2131165187;
+			// aapt resource value: 0x7f060003
+			public const int MenuTitleSize = 2131099651;
 			
-			// aapt resource value: 0x7f070007
-			public const int SettingsTitleSize = 2131165191;
+			// aapt resource value: 0x7f060007
+			public const int SettingsTitleSize = 2131099655;
 			
-			// aapt resource value: 0x7f070000
-			public const int SplashTitleSize = 2131165184;
+			// aapt resource value: 0x7f060000
+			public const int SplashTitleSize = 2131099648;
 			
-			// aapt resource value: 0x7f070002
-			public const int VersionSize = 2131165186;
+			// aapt resource value: 0x7f060002
+			public const int VersionSize = 2131099650;
 			
-			// aapt resource value: 0x7f070001
-			public const int VersionSpacing = 2131165185;
+			// aapt resource value: 0x7f060001
+			public const int VersionSpacing = 2131099649;
 			
 			static Dimension()
 			{
@@ -360,101 +360,95 @@ namespace SatelliteMovingApp
 		public partial class String
 		{
 			
-			// aapt resource value: 0x7f05000f
-			public const int AboutTitle = 2131034127;
+			// aapt resource value: 0x7f07000d
+			public const int AboutTitle = 2131165197;
 			
-			// aapt resource value: 0x7f050012
-			public const int AddBtnText = 2131034130;
+			// aapt resource value: 0x7f070010
+			public const int AddBtnText = 2131165200;
 			
-			// aapt resource value: 0x7f050004
-			public const int AppDesc = 2131034116;
+			// aapt resource value: 0x7f070002
+			public const int AppDesc = 2131165186;
 			
-			// aapt resource value: 0x7f050002
-			public const int AppName = 2131034114;
+			// aapt resource value: 0x7f070000
+			public const int AppName = 2131165184;
 			
-			// aapt resource value: 0x7f050007
-			public const int AppVersionInfo = 2131034119;
+			// aapt resource value: 0x7f070005
+			public const int AppVersionInfo = 2131165189;
 			
-			// aapt resource value: 0x7f050001
-			public const int ApplicationName = 2131034113;
+			// aapt resource value: 0x7f070011
+			public const int DelBtnTxt = 2131165201;
 			
-			// aapt resource value: 0x7f050013
-			public const int DelBtnTxt = 2131034131;
+			// aapt resource value: 0x7f070009
+			public const int DemoString = 2131165193;
 			
-			// aapt resource value: 0x7f05000b
-			public const int DemoString = 2131034123;
+			// aapt resource value: 0x7f07001c
+			public const int DistanceHelpText = 2131165212;
 			
-			// aapt resource value: 0x7f05001e
-			public const int DistanceHelpText = 2131034142;
+			// aapt resource value: 0x7f070018
+			public const int DistanceHint = 2131165208;
 			
-			// aapt resource value: 0x7f05001a
-			public const int DistanceHint = 2131034138;
+			// aapt resource value: 0x7f07001a
+			public const int DistanceTableHeader = 2131165210;
 			
-			// aapt resource value: 0x7f05001c
-			public const int DistanceTableHeader = 2131034140;
+			// aapt resource value: 0x7f070012
+			public const int EarthCollideError = 2131165202;
 			
-			// aapt resource value: 0x7f050014
-			public const int EarthCollideError = 2131034132;
+			// aapt resource value: 0x7f070008
+			public const int EarthImageDesc = 2131165192;
 			
-			// aapt resource value: 0x7f05000a
-			public const int EarthImageDesc = 2131034122;
+			// aapt resource value: 0x7f070007
+			public const int MainMenuTitle = 2131165191;
 			
-			// aapt resource value: 0x7f050000
-			public const int Hello = 2131034112;
+			// aapt resource value: 0x7f07000c
+			public const int MenuItemAbout = 2131165196;
 			
-			// aapt resource value: 0x7f050009
-			public const int MainMenuTitle = 2131034121;
+			// aapt resource value: 0x7f07000b
+			public const int MenuItemSettings = 2131165195;
 			
-			// aapt resource value: 0x7f05000e
-			public const int MenuItemAbout = 2131034126;
+			// aapt resource value: 0x7f07000a
+			public const int MenuItemStart = 2131165194;
 			
-			// aapt resource value: 0x7f05000d
-			public const int MenuItemSettings = 2131034125;
+			// aapt resource value: 0x7f070015
+			public const int NegativeDistanceError = 2131165205;
 			
-			// aapt resource value: 0x7f05000c
-			public const int MenuItemStart = 2131034124;
+			// aapt resource value: 0x7f070014
+			public const int NegativeTimeError = 2131165204;
 			
-			// aapt resource value: 0x7f050017
-			public const int NegativeDistanceError = 2131034135;
+			// aapt resource value: 0x7f070013
+			public const int SatelliteCollideError = 2131165203;
 			
-			// aapt resource value: 0x7f050016
-			public const int NegativeTimeError = 2131034134;
+			// aapt resource value: 0x7f070006
+			public const int SatelliteImagesDesc = 2131165190;
 			
-			// aapt resource value: 0x7f050015
-			public const int SatelliteCollideError = 2131034133;
+			// aapt resource value: 0x7f07001d
+			public const int SatellitesHaveNot = 2131165213;
 			
-			// aapt resource value: 0x7f050008
-			public const int SatelliteImagesDesc = 2131034120;
+			// aapt resource value: 0x7f07000f
+			public const int SaveBtnText = 2131165199;
 			
-			// aapt resource value: 0x7f05001f
-			public const int SatellitesHaveNot = 2131034143;
+			// aapt resource value: 0x7f07000e
+			public const int SettingsTopTitle = 2131165198;
 			
-			// aapt resource value: 0x7f050011
-			public const int SaveBtnText = 2131034129;
+			// aapt resource value: 0x7f07001b
+			public const int SpeedHelpText = 2131165211;
 			
-			// aapt resource value: 0x7f050010
-			public const int SettingsTopTitle = 2131034128;
+			// aapt resource value: 0x7f070017
+			public const int SpeedHint = 2131165207;
 			
-			// aapt resource value: 0x7f05001d
-			public const int SpeedHelpText = 2131034141;
+			// aapt resource value: 0x7f070019
+			public const int SpeedTableHeader = 2131165209;
 			
-			// aapt resource value: 0x7f050019
-			public const int SpeedHint = 2131034137;
+			// aapt resource value: 0x7f070004
+			public const int SplashBottomTitle = 2131165188;
 			
-			// aapt resource value: 0x7f05001b
-			public const int SpeedTableHeader = 2131034139;
+			// aapt resource value: 0x7f070001
+			public const int SplashScreenActivityTitle = 2131165185;
 			
-			// aapt resource value: 0x7f050006
-			public const int SplashBottomTitle = 2131034118;
+			// aapt resource value: 0x7f070003
+			public const int SplashTopTitle = 2131165187;
 			
-			// aapt resource value: 0x7f050003
-			public const int SplashScreenActivityTitle = 2131034115;
-			
-			// aapt resource value: 0x7f050005
-			public const int SplashTopTitle = 2131034117;
-			
-			// aapt resource value: 0x7f050018
-			public const int TypeMismatchError = 2131034136;
+			// aapt resource value: 0x7f070016
+			public const int TypeMismatchError = 2131165206;
 			
 			static String()
 			{
