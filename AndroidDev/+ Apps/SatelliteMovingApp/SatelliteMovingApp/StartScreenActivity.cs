@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Xml.Serialization;
 using Android.App;
 using Android.Content;
 using Android.OS;
@@ -17,7 +16,7 @@ namespace SatelliteMovingApp
    /// <summary>
    ///    Активность для экрана вращения спутников вокруг земли
    /// </summary>
-   [Activity(Label = nameof(StartScreenActivity))]
+   [Activity(Label = "Satellite App")]
    public class StartScreenActivity : Activity
    {
       private SortedDictionary<Satellite, View> _satelliteMap;
@@ -133,24 +132,20 @@ namespace SatelliteMovingApp
       /// </summary>
       /// <param name="settingsFileName">Имя файла с текущими параметрами</param>
       /// <returns>Список объектов Satellite</returns>
-      private List<Satellite> RetrieveCurrentSettings(string settingsFileName)
+      private IList<Satellite> RetrieveCurrentSettings(string settingsFileName)
       {
          try
          {
-            using (var fIn = OpenFileInput(settingsFileName))
+            var satellites = SatelliteSettings.Impl.Read(settingsFileName);
+            if (satellites == null || satellites.Count == 0)
             {
-               var xmlSerializer = new XmlSerializer(typeof(Satellite));
-               var satellites = xmlSerializer.Deserialize(fIn) as List<Satellite>;
-               if (satellites == null || satellites.Count == 0)
-               {
-                  var helpToast = Toast.MakeText(this, Resources.GetString(Resource.String.SatellitesHaveNot),
-                     ToastLength.Long);
-                  helpToast.SetGravity(GravityFlags.Center, 0, 0);
-                  helpToast.Show();
-               }
-
-               return satellites ?? Enumerable.Empty<Satellite>().ToList();
+               var helpToast = Toast.MakeText(this, Resources.GetString(Resource.String.SatellitesHaveNot),
+                  ToastLength.Long);
+               helpToast.SetGravity(GravityFlags.Center, 0, 0);
+               helpToast.Show();
             }
+
+            return satellites ?? Enumerable.Empty<Satellite>().ToList();
          }
          catch (Exception ex)
          {

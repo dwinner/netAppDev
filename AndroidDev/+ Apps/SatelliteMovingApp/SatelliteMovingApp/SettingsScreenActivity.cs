@@ -20,10 +20,10 @@ namespace SatelliteMovingApp
    /// <summary>
    ///    Активность для экрана установок параметров спутников
    /// </summary>
-   [Activity(Label = nameof(SettingsScreenActivity))]
+   [Activity(Label = "Settings")]
    public class SettingsScreenActivity : Activity
    {
-      internal const string SettingsFileName = "satellites.dat";
+      internal const string SettingsFileName = "settings.xml";
       private const float MinimumDistanceBetween = 5F;
       private int _currentRecordId = -1;
       private List<Satellite> _motionParams;
@@ -76,10 +76,9 @@ namespace SatelliteMovingApp
             if (_motionParams.Count > 0)
                _motionParams.Clear();
 
-            // Сбор информации из текстовых полей ввода
-            nextTableRow:
+            // Сбор информации из текстовых полей ввода            
             for (var i = 0; i < _settingsTable.ChildCount; i++)
-            {
+            {            
                var tableRow = _settingsTable.GetChildAt(i) as TableRow;
                if (tableRow == null)
                   continue;
@@ -119,13 +118,18 @@ namespace SatelliteMovingApp
                         return;
                      }
                   }
-               }
+               }            
 
                _motionParams.Add(new Satellite(currentTime, currentDistance));
+
+            nextTableRow:
+               ;
             }
 
             if (VerifyDistances())
                SaveSettings(SettingsFileName);
+
+            StartActivity(new Intent(this, typeof(StartScreenActivity)));
          };
       }
 
@@ -203,49 +207,45 @@ namespace SatelliteMovingApp
       {
          try
          {
-            using (var fIn = Assets.Open(settingsFileName))
+            var satellites = SatelliteSettings.Impl.Read(settingsFileName);
+            if (satellites == null || satellites.Count == 0)
+               return;
+
+            _motionParams.AddRange(satellites);
+            _motionParams.ForEach(satellite =>
             {
-               var binaryFormatter = new BinaryFormatter();
-               var satellites = binaryFormatter.Deserialize(fIn) as List<Satellite>;
-               if (satellites == null || satellites.Count == 0)
-                  return;
-
-               _motionParams.AddRange(satellites);
-               _motionParams.ForEach(satellite =>
+               var roundingTime = satellite.RoundingTime;
+               using (var tableRow = new TableRow(this))
                {
-                  var roundingTime = satellite.RoundingTime;
-                  using (var tableRow = new TableRow(this))
+                  int nextId;
+
+                  using (var speedText = new EditText(this)
                   {
-                     int nextId;
-
-                     using (var speedText = new EditText(this)
-                     {
-                        InputType = InputTypes.ClassNumber,
-                        Text = roundingTime.ToString(),
-                        Id = UniqueIdGen.NextId
-                     })
-                     {
-                        speedText.SetMaxLines(1);
-                        _currentRecordId = speedText.Id;
-                        nextId = speedText.Id + 1;
-                        tableRow.AddView(speedText);
-                     }
-
-                     using (var distanceText = new EditText(this)
-                     {
-                        InputType = InputTypes.ClassNumber | InputTypes.NumberFlagDecimal,
-                        Text = satellite.Distance.ToString(CultureInfo.CurrentCulture),
-                        Id = nextId
-                     })
-                     {
-                        distanceText.SetMaxLines(1);
-                        tableRow.AddView(distanceText);
-                     }
-
-                     _settingsTable.AddView(tableRow);
+                     InputType = InputTypes.ClassNumber,
+                     Text = roundingTime.ToString(),
+                     Id = UniqueIdGen.NextId
+                  })
+                  {
+                     speedText.SetMaxLines(1);
+                     _currentRecordId = speedText.Id;
+                     nextId = speedText.Id + 1;
+                     tableRow.AddView(speedText);
                   }
-               });
-            }
+
+                  using (var distanceText = new EditText(this)
+                  {
+                     InputType = InputTypes.ClassNumber | InputTypes.NumberFlagDecimal,
+                     Text = satellite.Distance.ToString(CultureInfo.CurrentCulture),
+                     Id = nextId
+                  })
+                  {
+                     distanceText.SetMaxLines(1);
+                     tableRow.AddView(distanceText);
+                  }
+
+                  _settingsTable.AddView(tableRow);
+               }
+            });
          }
          catch (Exception ex)
          {
@@ -271,7 +271,7 @@ namespace SatelliteMovingApp
                   helpToast.SetGravity(GravityFlags.Center, 0, 0);
                   helpToast.Show();
                };
-               
+
                headerRow.AddView(speedAboutButton);
             }
 
@@ -301,11 +301,7 @@ namespace SatelliteMovingApp
       {
          try
          {
-            using (var fOs = Assets.Open(settingsFileName))
-            {
-               var binaryFormatter = new BinaryFormatter();
-               binaryFormatter.Serialize(fOs, _motionParams);
-            }
+            SatelliteSettings.Impl.Write(settingsFileName, _motionParams);            
          }
          catch (IOException ioEx)
          {
@@ -334,10 +330,11 @@ namespace SatelliteMovingApp
                Float.FloatToIntBits(satellite1.Distance) - Float.FloatToIntBits(satellite2.Distance));
 
          var satObject = _motionParams[0];
-         if (satObject.Distance < Math.Sqrt(2) / 2 * (maxEarth + maxSatellite)) // Спутник столкнется с землей
+         var thresholdDistance = Math.Sqrt(2) / 2 * (maxEarth + maxSatellite);
+         if (satObject.Distance < thresholdDistance) // Спутник столкнется с землей
          {
             var errorMessage = String.Format(Resources.GetString(Resource.String.EarthCollideError),
-               Math.Sqrt(2) / 2 * (maxEarth + maxSatellite));
+               thresholdDistance);
             AlertDialogUtil.ShowSimpleDialog(this, errorMessage);
             return false;
          }

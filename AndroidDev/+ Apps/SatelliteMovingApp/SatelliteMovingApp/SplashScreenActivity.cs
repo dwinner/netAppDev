@@ -63,9 +63,10 @@ namespace SatelliteMovingApp
          var tableLayout = FindViewById<TableLayout>(Resource.Id.TableLayoutId);
          for (var i = 0; i < tableLayout.ChildCount; i++)
          {
-            var rowView = tableLayout.GetChildAt(i) as TableRow;
-            if (rowView != null)
+            if (tableLayout.GetChildAt(i) is TableRow rowView)
+            {
                rowView.LayoutAnimation = controller;
+            }            
          }
       }
    }

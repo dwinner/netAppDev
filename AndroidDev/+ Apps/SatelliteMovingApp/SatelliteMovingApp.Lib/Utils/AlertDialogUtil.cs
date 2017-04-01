@@ -9,6 +9,7 @@ namespace SatelliteMovingApp.Lib.Utils
       {
          var errorDialog = new AlertDialog.Builder(anOwnerActivity).SetMessage(aMessage).Create();
          errorDialog.SetButton((int) DialogButtonType.Positive, "Ok", (sender, args) => { });
+         errorDialog.Show();
       }
    }
 }

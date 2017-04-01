@@ -9,7 +9,7 @@ namespace SatelliteMovingApp.Lib.Model
    /// </summary>
    [XmlRoot(nameof(Satellite))]
    [Serializable]
-   public sealed class Satellite //: ISerializable
+   public sealed class Satellite
       : IEquatable<Satellite>
    {
       private const long SerialVersionUid = -1101121520854880773L;
@@ -25,22 +25,32 @@ namespace SatelliteMovingApp.Lib.Model
          Angle = angle;
       }
 
+      public Satellite()
+      {         
+      }
+
       /// <summary>
       ///    Время, в миллисекундах, за которое спутник делает один оборот вокруг земли
       /// </summary>
+      [XmlElement]
       public long RoundingTime { get; set; }
 
       /// <summary>
       ///    Расстояние спутника, в dp, от центра земли
       /// </summary>
+      [XmlElement]
       public float Distance { get; set; }
 
       /// <summary>
       ///    Начальное положение спутника на орбите, в радианах
       /// </summary>
+      [XmlElement]
       public float Angle { get; set; }
 
+      [XmlIgnore]
       public static float RandomAngle => (float) (2 * Math.Pi * Math.Random());
+
+      #region IEquatable<Satellite>, System.Object
 
       public bool Equals(Satellite other)
          =>
@@ -68,5 +78,7 @@ namespace SatelliteMovingApp.Lib.Model
       public static bool operator ==(Satellite left, Satellite right) => Equals(left, right);
 
       public static bool operator !=(Satellite left, Satellite right) => !Equals(left, right);
+
+      #endregion
    }
 }

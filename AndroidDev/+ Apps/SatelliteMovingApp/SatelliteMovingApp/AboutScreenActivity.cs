@@ -12,7 +12,7 @@ namespace SatelliteMovingApp
    /// <summary>
    ///    Активность для экрана About
    /// </summary>
-   [Activity(Label = nameof(AboutScreenActivity))]
+   [Activity(Label = "About")]
    [UsedImplicitly]
    public class AboutScreenActivity : Activity
    {
