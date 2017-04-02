@@ -4,7 +4,6 @@ using Android.OS;
 using Android.Views;
 using Android.Views.Animations;
 using Android.Widget;
-using Res = QuizApp.Resource;
 
 namespace QuizApp
 {

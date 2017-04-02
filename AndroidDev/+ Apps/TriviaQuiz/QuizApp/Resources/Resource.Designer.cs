@@ -494,146 +494,149 @@ namespace QuizApp
 		public partial class String
 		{
 			
-			// aapt resource value: 0x7f0a0001
-			public const int Splash = 2131361793;
-			
-			// aapt resource value: 0x7f0a000c
-			public const int all_scores = 2131361804;
-			
-			// aapt resource value: 0x7f0a0005
-			public const int app_logo_bottom = 2131361797;
-			
-			// aapt resource value: 0x7f0a0004
-			public const int app_logo_top = 2131361796;
-			
-			// aapt resource value: 0x7f0a0000
-			public const int app_name = 2131361792;
-			
-			// aapt resource value: 0x7f0a0006
-			public const int app_version_info = 2131361798;
-			
-			// aapt resource value: 0x7f0a002e
-			public const int exit = 2131361838;
+			// aapt resource value: 0x7f0a0002
+			public const int Splash = 2131361794;
 			
 			// aapt resource value: 0x7f0a000d
-			public const int friends_scores = 2131361805;
+			public const int all_scores = 2131361805;
 			
-			// aapt resource value: 0x7f0a0029
-			public const int gender_female = 2131361833;
+			// aapt resource value: 0x7f0a0006
+			public const int app_logo_bottom = 2131361798;
 			
-			// aapt resource value: 0x7f0a0028
-			public const int gender_male = 2131361832;
+			// aapt resource value: 0x7f0a0005
+			public const int app_logo_top = 2131361797;
 			
-			// aapt resource value: 0x7f0a002a
-			public const int gender_neutral = 2131361834;
-			
-			// aapt resource value: 0x7f0a0003
-			public const int help = 2131361795;
+			// aapt resource value: 0x7f0a0001
+			public const int app_name = 2131361793;
 			
 			// aapt resource value: 0x7f0a0007
-			public const int menu = 2131361799;
+			public const int app_version_info = 2131361799;
 			
-			// aapt resource value: 0x7f0a000b
-			public const int menu_item_help = 2131361803;
-			
-			// aapt resource value: 0x7f0a0009
-			public const int menu_item_play = 2131361801;
-			
-			// aapt resource value: 0x7f0a000a
-			public const int menu_item_scores = 2131361802;
-			
-			// aapt resource value: 0x7f0a0008
-			public const int menu_item_settings = 2131361800;
-			
-			// aapt resource value: 0x7f0a002c
-			public const int no = 2131361836;
-			
-			// aapt resource value: 0x7f0a002d
-			public const int no_questions = 2131361837;
+			// aapt resource value: 0x7f0a002f
+			public const int exit = 2131361839;
 			
 			// aapt resource value: 0x7f0a000e
-			public const int no_scores = 2131361806;
+			public const int friends_scores = 2131361806;
 			
-			// aapt resource value: 0x7f0a0010
-			public const int rank = 2131361808;
+			// aapt resource value: 0x7f0a002a
+			public const int gender_female = 2131361834;
 			
-			// aapt resource value: 0x7f0a0011
-			public const int score = 2131361809;
-			
-			// aapt resource value: 0x7f0a0002
-			public const int scores = 2131361794;
-			
-			// aapt resource value: 0x7f0a0014
-			public const int settings = 2131361812;
-			
-			// aapt resource value: 0x7f0a0019
-			public const int settings_button_dob = 2131361817;
-			
-			// aapt resource value: 0x7f0a001f
-			public const int settings_button_favoriteplace = 2131361823;
-			
-			// aapt resource value: 0x7f0a0023
-			public const int settings_button_favplace_map = 2131361827;
-			
-			// aapt resource value: 0x7f0a001a
-			public const int settings_button_pwd = 2131361818;
-			
-			// aapt resource value: 0x7f0a0017
-			public const int settings_dob = 2131361815;
-			
-			// aapt resource value: 0x7f0a0018
-			public const int settings_dob_not_set = 2131361816;
-			
-			// aapt resource value: 0x7f0a0016
-			public const int settings_email = 2131361814;
-			
-			// aapt resource value: 0x7f0a001e
-			public const int settings_favoriteplace = 2131361822;
-			
-			// aapt resource value: 0x7f0a0020
-			public const int settings_favoriteplace_not_set = 2131361824;
-			
-			// aapt resource value: 0x7f0a0021
-			public const int settings_favplace_coords = 2131361825;
-			
-			// aapt resource value: 0x7f0a0022
-			public const int settings_favplace_currentlocation = 2131361826;
-			
-			// aapt resource value: 0x7f0a001b
-			public const int settings_gender = 2131361819;
-			
-			// aapt resource value: 0x7f0a0015
-			public const int settings_nickname = 2131361813;
-			
-			// aapt resource value: 0x7f0a001c
-			public const int settings_password = 2131361820;
-			
-			// aapt resource value: 0x7f0a001d
-			public const int settings_password2 = 2131361821;
-			
-			// aapt resource value: 0x7f0a0027
-			public const int settings_pwd_equal = 2131361831;
-			
-			// aapt resource value: 0x7f0a0026
-			public const int settings_pwd_not_equal = 2131361830;
-			
-			// aapt resource value: 0x7f0a0025
-			public const int settings_pwd_not_set = 2131361829;
-			
-			// aapt resource value: 0x7f0a0024
-			public const int settings_pwd_set = 2131361828;
-			
-			// aapt resource value: 0x7f0a000f
-			public const int username = 2131361807;
-			
-			// aapt resource value: 0x7f0a0012
-			public const int wait_msg = 2131361810;
-			
-			// aapt resource value: 0x7f0a0013
-			public const int wait_title = 2131361811;
+			// aapt resource value: 0x7f0a0029
+			public const int gender_male = 2131361833;
 			
 			// aapt resource value: 0x7f0a002b
-			public const int yes = 2131361835;
+			public const int gender_neutral = 2131361835;
+			
+			// aapt resource value: 0x7f0a0004
+			public const int help = 2131361796;
+			
+			// aapt resource value: 0x7f0a0008
+			public const int menu = 2131361800;
+			
+			// aapt resource value: 0x7f0a000c
+			public const int menu_item_help = 2131361804;
+			
+			// aapt resource value: 0x7f0a000a
+			public const int menu_item_play = 2131361802;
+			
+			// aapt resource value: 0x7f0a000b
+			public const int menu_item_scores = 2131361803;
+			
+			// aapt resource value: 0x7f0a0009
+			public const int menu_item_settings = 2131361801;
+			
+			// aapt resource value: 0x7f0a002d
+			public const int no = 2131361837;
+			
+			// aapt resource value: 0x7f0a002e
+			public const int no_questions = 2131361838;
+			
+			// aapt resource value: 0x7f0a000f
+			public const int no_scores = 2131361807;
+			
+			// aapt resource value: 0x7f0a0000
+			public const int quiz_game_title = 2131361792;
+			
+			// aapt resource value: 0x7f0a0011
+			public const int rank = 2131361809;
+			
+			// aapt resource value: 0x7f0a0012
+			public const int score = 2131361810;
+			
+			// aapt resource value: 0x7f0a0003
+			public const int scores = 2131361795;
+			
+			// aapt resource value: 0x7f0a0015
+			public const int settings = 2131361813;
+			
+			// aapt resource value: 0x7f0a001a
+			public const int settings_button_dob = 2131361818;
+			
+			// aapt resource value: 0x7f0a0020
+			public const int settings_button_favoriteplace = 2131361824;
+			
+			// aapt resource value: 0x7f0a0024
+			public const int settings_button_favplace_map = 2131361828;
+			
+			// aapt resource value: 0x7f0a001b
+			public const int settings_button_pwd = 2131361819;
+			
+			// aapt resource value: 0x7f0a0018
+			public const int settings_dob = 2131361816;
+			
+			// aapt resource value: 0x7f0a0019
+			public const int settings_dob_not_set = 2131361817;
+			
+			// aapt resource value: 0x7f0a0017
+			public const int settings_email = 2131361815;
+			
+			// aapt resource value: 0x7f0a001f
+			public const int settings_favoriteplace = 2131361823;
+			
+			// aapt resource value: 0x7f0a0021
+			public const int settings_favoriteplace_not_set = 2131361825;
+			
+			// aapt resource value: 0x7f0a0022
+			public const int settings_favplace_coords = 2131361826;
+			
+			// aapt resource value: 0x7f0a0023
+			public const int settings_favplace_currentlocation = 2131361827;
+			
+			// aapt resource value: 0x7f0a001c
+			public const int settings_gender = 2131361820;
+			
+			// aapt resource value: 0x7f0a0016
+			public const int settings_nickname = 2131361814;
+			
+			// aapt resource value: 0x7f0a001d
+			public const int settings_password = 2131361821;
+			
+			// aapt resource value: 0x7f0a001e
+			public const int settings_password2 = 2131361822;
+			
+			// aapt resource value: 0x7f0a0028
+			public const int settings_pwd_equal = 2131361832;
+			
+			// aapt resource value: 0x7f0a0027
+			public const int settings_pwd_not_equal = 2131361831;
+			
+			// aapt resource value: 0x7f0a0026
+			public const int settings_pwd_not_set = 2131361830;
+			
+			// aapt resource value: 0x7f0a0025
+			public const int settings_pwd_set = 2131361829;
+			
+			// aapt resource value: 0x7f0a0010
+			public const int username = 2131361808;
+			
+			// aapt resource value: 0x7f0a0013
+			public const int wait_msg = 2131361811;
+			
+			// aapt resource value: 0x7f0a0014
+			public const int wait_title = 2131361812;
+			
+			// aapt resource value: 0x7f0a002c
+			public const int yes = 2131361836;
 			
 			static String()
 			{
