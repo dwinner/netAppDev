@@ -2,7 +2,7 @@ using Android.App;
 
 namespace QuizApp
 {
-   [Activity(Label = "QuizMenuActivity")]
+   [Activity(Label = "@string/menu")]
    public class QuizMenuActivity : Activity
    {
    }
