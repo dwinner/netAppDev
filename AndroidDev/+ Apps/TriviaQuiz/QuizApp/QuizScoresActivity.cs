@@ -71,10 +71,10 @@ namespace QuizApp
       /// <summary>
       ///    Заполнение информации таблицы из анализатора XML
       /// </summary>
-      /// <param name="tableLayout">Таблица для заполнения</param>
+      /// <param name="viewGroup">Таблица для заполнения</param>
       /// <param name="xmlReader">Стандартный парсер ресурсов XML, содержащий информацию о счетах</param>
       /// <exception cref="XmlException">Если возникли ошибки в ходе работы xml pull-парсера</exception>
-      private void ProcessScores(TableLayout tableLayout, XmlReader xmlReader)
+      private void ProcessScores(ViewGroup viewGroup, XmlReader xmlReader)
       {
          var foundScores = false;
 
@@ -94,7 +94,7 @@ namespace QuizApp
                   var scoreValue = xmlReader.MoveToAttribute("score") ? xmlReader.Value : string.Empty;
                   var scoreRank = xmlReader.MoveToAttribute("rank") ? xmlReader.Value : string.Empty;
                   var scoreUserName = xmlReader.MoveToAttribute("username") ? xmlReader.Value : string.Empty;
-                  InsertScoreRow(tableLayout, scoreValue, scoreRank, scoreUserName);
+                  InsertScoreRow(viewGroup, scoreValue, scoreRank, scoreUserName);
                }
             }
          }
@@ -105,7 +105,7 @@ namespace QuizApp
             var newTableRow = new TableRow(this);
             var noResultsTextView = new TextView(this) {Text = Resources.GetString(Resource.String.no_scores)};
             newTableRow.AddView(noResultsTextView);
-            tableLayout.AddView(newTableRow);
+            viewGroup.AddView(newTableRow);
          }
       }
 
