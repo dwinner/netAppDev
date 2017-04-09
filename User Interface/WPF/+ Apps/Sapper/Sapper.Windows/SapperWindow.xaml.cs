@@ -2,9 +2,6 @@
 {   
    public partial class SapperWindow
    {
-      public SapperWindow()
-      {
-         InitializeComponent();
-      }
+      public SapperWindow() => InitializeComponent();
    }
 }
