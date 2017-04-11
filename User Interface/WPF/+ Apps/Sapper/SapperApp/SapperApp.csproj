@@ -88,6 +88,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Sapper.MinefieldControl\Sapper.MinefieldControl.csproj">
+      <Project>{56633d43-1832-4a67-88c1-5024cff04515}</Project>
+      <Name>Sapper.MinefieldControl</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Sapper.Windows\Sapper.Windows.csproj">
       <Project>{b503cd02-d1eb-4581-a785-dfb67d0c9dc2}</Project>
       <Name>Sapper.Windows</Name>

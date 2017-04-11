@@ -21,16 +21,8 @@
     <Window.Resources>
         <Style x:Key="ShapeStyle" TargetType="Shape">
             <Style.Setters>
-                <Setter Property="Stroke">
-                    <Setter.Value>
-                        Blue
-                    </Setter.Value>
-                </Setter>
-                <Setter Property="Fill">
-                    <Setter.Value>
-                        LightBlue
-                    </Setter.Value>
-                </Setter>
+                <Setter Property="Stroke" Value="Blue"/>
+                <Setter Property="Fill" Value="LightBlue"/>
             </Style.Setters>
         </Style>
     </Window.Resources>
@@ -82,7 +74,7 @@
         <!-- NOTE: Surface of drawing canvas -->
         <Viewbox Stretch="Uniform" Grid.Row="2">
             <Border Margin="5" BorderBrush="Black" BorderThickness="1" HorizontalAlignment="Left">
-                <Canvas Name="SurfaceCanvas" Width="640" Height="480" ClipToBounds="True" Background="AliceBlue"
+                <Canvas x:Name="SurfaceCanvas" Width="640" Height="480" ClipToBounds="True" Background="AliceBlue"
                         MouseLeftButtonDown="OnMouseLeftButtonDown"
                         MouseLeftButtonUp="OnMouseLeftButtonUp"
                         MouseMove="OnMouseMove" />
