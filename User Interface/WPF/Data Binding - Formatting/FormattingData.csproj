@@ -239,12 +239,6 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\StoreDatabaseDbBased\StoreDatabase.csproj">
-      <Project>{E0BEF018-8722-4B11-ACBA-5C6C5E7102D6}</Project>
-      <Name>StoreDatabase</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
       <Visible>False</Visible>
       <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
@@ -295,6 +289,16 @@
     <None Include="image.gif">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Data Binding - StoreDb %28DB based%29\StoreDatabase.csproj">
+      <Project>{e0bef018-8722-4b11-acba-5c6c5e7102d6}</Project>
+      <Name>StoreDatabase</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Data Binding - StoreDb\StoreDb.sqlproj">
+      <Project>{51406fff-592b-40f1-afd3-842cfd001601}</Project>
+      <Name>StoreDb</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>
