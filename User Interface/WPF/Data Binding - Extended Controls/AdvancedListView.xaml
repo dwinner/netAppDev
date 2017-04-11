@@ -13,7 +13,7 @@
     </Window.Resources>
 
     <Grid>
-        <ListView Margin="5" Name="ProductListView" GridViewColumnHeader.Click="OnGridViewColumnClick"
+        <ListView Margin="5" x:Name="ProductListView" GridViewColumnHeader.Click="OnGridViewColumnClick"
                   d:DataContext="{d:DesignInstance storeDatabase:Product}">
             <ListView.ItemContainerStyle>
                 <Style>
