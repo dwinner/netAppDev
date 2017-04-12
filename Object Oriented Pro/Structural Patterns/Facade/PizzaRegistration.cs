@@ -1,12 +1,10 @@
-﻿using System;
+﻿using static System.Console;
 
 namespace Facade
 {
    internal class PizzaRegistration
    {
       public void GetPizzaRegistrationStuff()
-      {
-         Console.WriteLine("Pizza Registration stuff");
-      }
+         => WriteLine("Pizza Registration stuff");
    }
 }

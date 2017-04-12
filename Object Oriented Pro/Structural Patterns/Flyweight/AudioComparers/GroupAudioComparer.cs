@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using PostSharp.Patterns.Contracts;
 
 namespace Flyweight.AudioComparers
 {
-   class GroupAudioComparer : IComparer<AudioEntity>
+   internal class GroupAudioComparer : IComparer<AudioEntity>
    {
-      public int Compare(AudioEntity x, AudioEntity y)
-      {
-         return string.Compare(x.Group, y.Group, StringComparison.CurrentCulture);
-      }
+      public int Compare([Required] AudioEntity x, [Required] AudioEntity y)
+         => string.Compare(x.Group, y.Group, StringComparison.CurrentCulture);
    }
 }

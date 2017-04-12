@@ -27,6 +27,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamicProxy", "DynamicProx
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamicProxy.Test", "DynamicProxy.Test\DynamicProxy.Test.csproj", "{24226755-5910-4C07-9301-FEE1B93AE8AC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImmutableObjectSample", "ImmutableObjectSample\ImmutableObjectSample.csproj", "{0E847172-B4BD-4571-A664-1E040DE36110}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -161,6 +163,18 @@ Global
 		{24226755-5910-4C07-9301-FEE1B93AE8AC}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{24226755-5910-4C07-9301-FEE1B93AE8AC}.Release|x86.ActiveCfg = Release|Any CPU
 		{24226755-5910-4C07-9301-FEE1B93AE8AC}.Release|x86.Build.0 = Release|Any CPU
+		{0E847172-B4BD-4571-A664-1E040DE36110}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0E847172-B4BD-4571-A664-1E040DE36110}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0E847172-B4BD-4571-A664-1E040DE36110}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{0E847172-B4BD-4571-A664-1E040DE36110}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{0E847172-B4BD-4571-A664-1E040DE36110}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{0E847172-B4BD-4571-A664-1E040DE36110}.Debug|x86.Build.0 = Debug|Any CPU
+		{0E847172-B4BD-4571-A664-1E040DE36110}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0E847172-B4BD-4571-A664-1E040DE36110}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0E847172-B4BD-4571-A664-1E040DE36110}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{0E847172-B4BD-4571-A664-1E040DE36110}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{0E847172-B4BD-4571-A664-1E040DE36110}.Release|x86.ActiveCfg = Release|Any CPU
+		{0E847172-B4BD-4571-A664-1E040DE36110}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

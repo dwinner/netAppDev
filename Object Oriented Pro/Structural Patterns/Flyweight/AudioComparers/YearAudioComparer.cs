@@ -1,12 +1,11 @@
 ﻿using System.Collections.Generic;
+using PostSharp.Patterns.Contracts;
 
 namespace Flyweight.AudioComparers
 {
-   class YearAudioComparer : IComparer<AudioEntity>
+   internal class YearAudioComparer : IComparer<AudioEntity>
    {
-      public int Compare(AudioEntity x, AudioEntity y)
-      {
-         return x.Year - y.Year;
-      }
+      public int Compare([Required] AudioEntity x, [Required] AudioEntity y)
+         => x.Year - y.Year;
    }
 }
