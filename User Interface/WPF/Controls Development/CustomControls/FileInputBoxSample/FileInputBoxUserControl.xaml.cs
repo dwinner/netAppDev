@@ -5,14 +5,14 @@ using Microsoft.Win32;
 
 namespace FileInputBoxSample
 {
-   [ContentProperty("FileName")]
+   [ContentProperty(nameof(FileName))]
    public partial class FileInputBoxUserControl
    {
-      public static readonly DependencyProperty FileNameProperty = DependencyProperty.Register(
-         "FileName", typeof(string), typeof(FileInputBoxUserControl), new PropertyMetadata(default(string)));
+	   public static readonly DependencyProperty FileNameProperty = DependencyProperty.Register(nameof(FileName),
+		   typeof(string), typeof(FileInputBoxUserControl), new PropertyMetadata(default(string)));
 
-      public static readonly RoutedEvent FileNameChangedEvent = EventManager.RegisterRoutedEvent("FileNameChanged",
-         RoutingStrategy.Bubble, typeof(RoutedEventHandler), typeof(FileInputBoxUserControl));
+	   public static readonly RoutedEvent FileNameChangedEvent = EventManager.RegisterRoutedEvent(nameof(FileNameChanged),
+		   RoutingStrategy.Bubble, typeof(RoutedEventHandler), typeof(FileInputBoxUserControl));
 
       public FileInputBoxUserControl()
       {

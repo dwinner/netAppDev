@@ -1,8 +1,4 @@
-﻿///
-/// Copyright(C) MixModes Inc. 2010
-/// 
-
-using MixModes.Synergy.VisualFramework.Windows;
+﻿using MixModes.Synergy.VisualFramework.Windows;
 using System.IO;
 using System.Windows.Controls;
 using System.Windows.Media;
