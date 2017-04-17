@@ -3,16 +3,10 @@
 namespace Command
 {
    /// <summary>
-   /// Конкретная реализация команд
+   ///    Конкретная реализация команд
    /// </summary>
    public class CalculatorCommand : IExecuteCommand
    {
-      public char TheOperator { get; set; }
-
-      public int Operand { get; set; }
-
-      public Calculator Calculator { get; set; }
-
       public CalculatorCommand(char theOperator, int operand, Calculator calculator)
       {
          TheOperator = theOperator;
@@ -20,15 +14,15 @@ namespace Command
          Calculator = calculator;
       }
 
-      public void Execute()
-      {
-         Calculator.Operation(TheOperator, Operand);
-      }
+      public char TheOperator { get; }
 
-      public void UnExecute()
-      {
-         Calculator.Operation(Undo(TheOperator), Operand);
-      }
+      public int Operand { get; }
+
+      public Calculator Calculator { get; }
+
+      public void Execute() => Calculator.Operation(TheOperator, Operand);
+
+      public void UnExecute() => Calculator.Operation(Undo(TheOperator), Operand);
 
       private static char Undo(char theOperator)
       {

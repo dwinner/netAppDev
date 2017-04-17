@@ -1,6 +1,4 @@
-﻿using System.Reflection;
-
-namespace Interpreter
+﻿namespace Interpreter
 {
    public class VariableExpression : IExpression
    {
@@ -15,15 +13,15 @@ namespace Interpreter
 
       public void Interpret(IContext context)
       {
-         object source = context.Get(_lookup);
+         var source = context.Get(_lookup);
          if (source != null)
          {
-            PropertyInfo propertyInfo = source.GetType().GetProperty(_methodName);
+            var propertyInfo = source.GetType().GetProperty(_methodName);
             if (propertyInfo != null)
             {
-               object result = propertyInfo.GetGetMethod().Invoke(source, null);
+               var result = propertyInfo.GetGetMethod().Invoke(source, null);
                context.AddVariable(this, result);
-            }            
+            }
          }
       }
    }

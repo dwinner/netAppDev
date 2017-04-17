@@ -11,7 +11,7 @@
       {
          ComparisonExpressionA.Interpret(context);
          ComparisonExpressionB.Interpret(context);
-         bool result = (bool) context.Get(ComparisonExpressionA) && (bool) context.Get(ComparisonExpressionB);
+         var result = (bool) context.Get(ComparisonExpressionA) && (bool) context.Get(ComparisonExpressionB);
          context.AddVariable(this, result);
       }
    }

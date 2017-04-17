@@ -1,12 +1,11 @@
 ﻿using System.Collections.Generic;
+using PostSharp.Patterns.Contracts;
 
 namespace Flyweight.AudioComparers
 {
-   class BitrateAudioComparer : IComparer<AudioEntity>
+   internal class BitrateAudioComparer : IComparer<AudioEntity>
    {
-      public int Compare(AudioEntity x, AudioEntity y)
-      {
-         return x.Bitrate - y.Bitrate;
-      }
+      public int Compare([Required] AudioEntity x, [Required] AudioEntity y)
+         => x.Bitrate - y.Bitrate;
    }
 }

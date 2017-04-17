@@ -9,9 +9,6 @@
          _value = value;
       }
 
-      public void Interpret(IContext context)
-      {
-         context.AddVariable(this, _value);
-      }
+      public void Interpret(IContext context) => context.AddVariable(this, _value);
    }
 }

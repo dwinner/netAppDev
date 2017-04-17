@@ -19,11 +19,11 @@
                                 <ColumnDefinition Width="Auto" />
                             </Grid.ColumnDefinitions>
 
-                            <Slider Name="PART_RedSlider" Minimum="0" Maximum="255"
+                            <Slider x:Name="PART_RedSlider" Minimum="0" Maximum="255"
                                     Margin="{TemplateBinding Padding}" />
-                            <Slider Grid.Row="1" Grid.Column="0" Name="PART_GreenSlider" Minimum="0" Maximum="255"
+                            <Slider Grid.Row="1" Grid.Column="0" x:Name="PART_GreenSlider" Minimum="0" Maximum="255"
                                     Margin="{TemplateBinding Padding}" />
-                            <Slider Grid.Row="2" Grid.Column="0" Name="PART_BlueSlider" Minimum="0" Maximum="255"
+                            <Slider Grid.Row="2" Grid.Column="0" x:Name="PART_BlueSlider" Minimum="0" Maximum="255"
                                     Margin="{TemplateBinding Padding}" />
 
                             <Rectangle Grid.Column="1" Grid.Row="0" Grid.RowSpan="3"

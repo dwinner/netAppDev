@@ -43,7 +43,7 @@
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type RepeatButton}">
                     <Grid Margin="1">
-                        <Ellipse Name="Border" StrokeThickness="1" Stroke="{StaticResource StandardBorderBrush}"
+                        <Ellipse x:Name="Border" StrokeThickness="1" Stroke="{StaticResource StandardBorderBrush}"
                                  Fill="{StaticResource StandardBrush}" />
                         <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
                     </Grid>
@@ -100,7 +100,7 @@
                     Fill="{StaticResource GlyphBrush}"
                     Data="M 0 4 L 8 4 L 4 0 Z" />
             </RepeatButton>
-            <Track Name="PART_Track" Grid.Row="1"
+            <Track x:Name="PART_Track" Grid.Row="1"
                    IsDirectionReversed="True" ViewportSize="0">
                 <Track.DecreaseRepeatButton>
                     <RepeatButton Command="ScrollBar.PageUpCommand" Style="{StaticResource ScrollBarPageButtonStyle}" />
@@ -140,7 +140,7 @@
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type ListBox}">
                     <Border
-                        Name="Border"
+                        x:Name="Border"
                         Background="{StaticResource ListBoxBackgroundBrush}"
                         BorderBrush="{StaticResource StandardBorderBrush}"
                         BorderThickness="1"
@@ -160,7 +160,7 @@
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type ListBoxItem}">
                     <Border
-                        Name="Border" BorderThickness="2" CornerRadius="3"
+                        x:Name="Border" BorderThickness="2" CornerRadius="3"
                         Padding="1"
                         SnapsToDevicePixels="True">
                         <ContentPresenter />

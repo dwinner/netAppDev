@@ -3,16 +3,16 @@
  */
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
+using static System.Console;
 
 namespace Interpreter
 {
-   static class Program
+   internal static class Program
    {
-      static void Main()
+      private static void Main()
       {
-         ContactList candidates = MakeContactList();
+         var candidates = MakeContactList();
          IContext context = new ContextImpl();
 
          IContact testContact = new ContactImpl();
@@ -20,17 +20,17 @@ namespace Interpreter
          var uConstantExpression = new ConstantExpression("u");
          var containsExpression = new ContainsExpression(lastNameVariableExpression, uConstantExpression);
 
-         IList<IContact> matchingExpression = candidates.ContactsMatchingExpression(containsExpression, context, testContact);
-         Array.ForEach(matchingExpression.ToArray(), Console.WriteLine);
-         Console.WriteLine();
+         var matchingExpression = candidates.ContactsMatchingExpression(containsExpression, context, testContact);
+         Array.ForEach(matchingExpression.ToArray(), WriteLine);
+         WriteLine();
 
          var titleVariableExpression = new VariableExpression(testContact, "Title");
          var titleConstantExpression = new ConstantExpression("LT");
          var equalsExpression = new EqualsExpression(titleVariableExpression, titleConstantExpression);
 
-         IList<IContact> expression = candidates.ContactsMatchingExpression(equalsExpression, context, testContact);
-         Array.ForEach(expression.ToArray(), Console.WriteLine);
-         Console.WriteLine();
+         var expression = candidates.ContactsMatchingExpression(equalsExpression, context, testContact);
+         Array.ForEach(expression.ToArray(), WriteLine);
+         WriteLine();
 
          var lastNameExpression = new VariableExpression(testContact, "LastName");
          var lastNameConstant = new ConstantExpression("S");
@@ -38,8 +38,8 @@ namespace Interpreter
 
          var andExpression = new AndExpression(equalsExpression, lastNameContains);
 
-         IList<IContact> contactsMatchingExpression = candidates.ContactsMatchingExpression(andExpression, context, testContact);
-         Console.WriteLine(contactsMatchingExpression);
+         var contactsMatchingExpression = candidates.ContactsMatchingExpression(andExpression, context, testContact);
+         WriteLine(contactsMatchingExpression);
       }
 
       private static ContactList MakeContactList()

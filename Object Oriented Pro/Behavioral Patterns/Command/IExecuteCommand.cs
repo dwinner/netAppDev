@@ -1,7 +1,7 @@
 ﻿namespace Command
 {
    /// <summary>
-   /// Интерфейс команды
+   ///    Интерфейс команды
    /// </summary>
    public interface IExecuteCommand
    {

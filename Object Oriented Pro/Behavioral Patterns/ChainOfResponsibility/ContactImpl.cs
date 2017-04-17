@@ -2,15 +2,13 @@
 {
    public class ContactImpl : IContact
    {
-      public string FirstName { get; set; }
+      public string FirstName { get; }
 
-      public string LastName { get; set; }
+      public string LastName { get; }
 
-      public string Title { get; set; }
+      public string Title { get; }
 
-      public string Organization { get; set; }
-
-      public ContactImpl() { }
+      public string Organization { get; }
 
       public ContactImpl(string firstName, string lastName, string title, string organization)
       {
@@ -20,10 +18,7 @@
          Organization = organization;
       }
 
-      public override string ToString()
-      {
-         return string.Format("FirstName: {0}, LastName: {1}, Title: {2}, Organization: {3}", FirstName, LastName, Title,
-            Organization);
-      }
+      public override string ToString() =>
+         $"FirstName: {FirstName}, LastName: {LastName}, Title: {Title}, Organization: {Organization}";
    }
 }

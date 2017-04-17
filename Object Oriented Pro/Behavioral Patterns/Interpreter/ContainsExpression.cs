@@ -13,15 +13,17 @@ namespace Interpreter
       {
          ExpressionA.Interpret(context);
          ExpressionB.Interpret(context);
-         object exprAresult = context.Get(ExpressionA);
-         object exprBResult = context.Get(ExpressionB);
+         var exprAresult = context.Get(ExpressionA);
+         var exprBResult = context.Get(ExpressionB);
          var resultA = exprAresult as string;
          var resultB = exprBResult as string;
-         if (resultA != null && resultB != null && resultA.IndexOf(resultB, StringComparison.Ordinal) != -1)
+         if (resultA != null && resultB != null
+         	 && resultA.IndexOf(resultB, StringComparison.Ordinal) != -1)
          {
             context.AddVariable(this, true);
             return;
          }
+
          context.AddVariable(this, false);
       }
    }

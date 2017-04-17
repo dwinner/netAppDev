@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using static Flyweight.AudioComparerFactory;
 
 namespace Flyweight
 {
@@ -6,15 +7,15 @@ namespace Flyweight
    {
       private static AudioComparerFlyweight _instance;
 
-      public static AudioComparerFlyweight Instance
+      private readonly IDictionary<AudioComparisonType, IComparer<AudioEntity>> _audioComparers;
+
+      private AudioComparerFlyweight()
       {
-         get { return _instance ?? (_instance = new AudioComparerFlyweight()); }
+         _audioComparers = new SortedDictionary<AudioComparisonType, IComparer<AudioEntity>>();
       }
 
-      private AudioComparerFlyweight() { }
-
-      private readonly IDictionary<AudioComparisonType, IComparer<AudioEntity>> _audioComparers =
-         new SortedDictionary<AudioComparisonType, IComparer<AudioEntity>>();
+      public static AudioComparerFlyweight Instance { get; }
+         = _instance ?? (_instance = new AudioComparerFlyweight());
 
       public IComparer<AudioEntity> this[AudioComparisonType comparisonType]
       {
@@ -22,10 +23,8 @@ namespace Flyweight
          {
             IComparer<AudioEntity> audioComparer;
             if (_audioComparers.TryGetValue(comparisonType, out audioComparer))
-            {
                return audioComparer;
-            }
-            _audioComparers[comparisonType] = AudioComparerFactory.GetTypeComparer(comparisonType);
+            _audioComparers[comparisonType] = GetTypeComparer(comparisonType);
             return _audioComparers[comparisonType];
          }
       }

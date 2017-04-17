@@ -1,11 +1,13 @@
-﻿using Flyweight.AudioComparers;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using Flyweight.AudioComparers;
+using JetBrains.Annotations;
 
 namespace Flyweight
 {
    public static class AudioComparerFactory
    {
+      [NotNull]
       public static IComparer<AudioEntity> GetTypeComparer(AudioComparisonType comparisonType)
       {
          switch (comparisonType)

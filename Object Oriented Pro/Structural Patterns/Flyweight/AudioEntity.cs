@@ -14,8 +14,6 @@
       public string Genre { get; set; }
 
       public override string ToString()
-      {
-         return string.Format("Album: {0}, TrackName: {1}", Album, TrackName);
-      }
+         => $"Album: {Album}, TrackName: {TrackName}";
    }
 }

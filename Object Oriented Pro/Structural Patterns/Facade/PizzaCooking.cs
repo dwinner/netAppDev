@@ -1,12 +1,10 @@
-﻿using System;
+﻿using static System.Console;
 
 namespace Facade
 {
    internal class PizzaCooking
    {
       public void GetPizzaServiceStuff()
-      {
-         Console.WriteLine("Pizza Service stuff");
-      }
+         => WriteLine("Pizza Service stuff");
    }
 }

@@ -22,8 +22,8 @@
     </Window.Resources>
 
     <StackPanel>
-        <Button Template="{StaticResource ButtonWithCustomChrome}">Test Custom</Button>
-        <Button>Test Normal</Button>
-        <Button Template="{StaticResource ButtonWithCustomChrome}">Test Custom</Button>
+        <Button Template="{StaticResource ButtonWithCustomChrome}" Content="Test Custom" />
+        <Button Content="Test Normal" />
+        <Button Template="{StaticResource ButtonWithCustomChrome}" Content="Test Custom" />
     </StackPanel>
 </Window>

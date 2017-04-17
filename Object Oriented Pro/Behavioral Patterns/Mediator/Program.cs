@@ -6,9 +6,9 @@ using System;
 
 namespace Mediator
 {
-   static class Program
+   internal static class Program
    {
-      static void Main()
+      private static void Main()
       {
          var mediator = new ConcreteMediator();
          mediator.FirstColleague = new ConcreteColleague1(mediator);

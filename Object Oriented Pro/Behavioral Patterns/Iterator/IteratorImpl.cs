@@ -10,27 +10,18 @@
          _aggregator = aggregator;
       }
 
-      public T First()
-      {
-         return _aggregator[0];
-      }
+      public T First() => _aggregator[0];
 
       public T Next()
       {
-         T returnValue = default(T);
+         var returnValue = default(T);
          if (_currentIndex < _aggregator.Count - 1)
             returnValue = _aggregator[++_currentIndex];
          return returnValue;
       }
 
-      public bool IsDone()
-      {
-         return _currentIndex >= _aggregator.Count;
-      }
+      public bool IsDone() => _currentIndex >= _aggregator.Count;
 
-      public T CurrentItem()
-      {
-         return _aggregator[_currentIndex];
-      }
+      public T CurrentItem() => _aggregator[_currentIndex];
    }
 }

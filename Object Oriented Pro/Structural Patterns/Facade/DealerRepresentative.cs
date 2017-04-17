@@ -9,16 +9,6 @@
       private readonly PizzaRegistration _registration;
       private readonly PizzaCooking _service;
 
-      public void GetPizzaUpdate()
-      {
-         _delivery.GetDeliveryStaff();
-         _finance.GetPizzaFinanceStuff();
-         _insurance.GetPizzaInsuranceStuff();
-         _order.GetPizzaOrderStuff();
-         _registration.GetPizzaRegistrationStuff();
-         _service.GetPizzaServiceStuff();
-      }
-
       public DealerRepresentative()
       {
          _delivery = new PizzaDelivery();
@@ -27,6 +17,16 @@
          _order = new PizzaOrder();
          _registration = new PizzaRegistration();
          _service = new PizzaCooking();
+      }
+
+      public void GetPizzaUpdate()
+      {
+         _delivery.GetDeliveryStaff();
+         _finance.GetPizzaFinanceStuff();
+         _insurance.GetPizzaInsuranceStuff();
+         _order.GetPizzaOrderStuff();
+         _registration.GetPizzaRegistrationStuff();
+         _service.GetPizzaServiceStuff();
       }
    }
 }

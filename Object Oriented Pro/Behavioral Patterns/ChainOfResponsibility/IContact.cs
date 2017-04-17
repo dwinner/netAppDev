@@ -2,12 +2,12 @@
 {
    public interface IContact
    {
-      string FirstName { get; set; }
+      string FirstName { get; }
 
-      string LastName { get; set; }
+      string LastName { get; }
 
-      string Title { get; set; }
+      string Title { get; }
 
-      string Organization { get; set; }
+      string Organization { get; }
    }
 }

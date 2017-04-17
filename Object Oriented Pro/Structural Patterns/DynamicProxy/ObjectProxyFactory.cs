@@ -26,7 +26,7 @@ namespace DynamicProxy
          var objectProxy = new ObjectProxy(target, arrMethods, preAspect, postAspect);
          var transparentProxy = (T)objectProxy.GetTransparentProxy();
          return transparentProxy;
-      }
+      }      
 
       private class ObjectProxy : RealProxy, IRemotingTypeInfo
       {

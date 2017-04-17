@@ -1,4 +1,4 @@
-﻿using System;
+﻿using static System.Console;
 
 namespace Mediator
 {
@@ -9,14 +9,9 @@ namespace Mediator
       {
       }
 
-      public void Send(string message)
-      {
-         Mediator.Send(message, this);
-      }
+      public void Send(string message) => Mediator.Send(message, this);
 
-      public void Notify(string message)
-      {
-         Console.WriteLine("Colleague1 gets message: {0}", message);
-      }
+      public static void Notify(string message)
+         => WriteLine("Colleague1 gets message: {0}", message);
    }
 }
