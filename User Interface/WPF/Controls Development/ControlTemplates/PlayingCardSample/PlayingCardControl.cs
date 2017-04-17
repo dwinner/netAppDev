@@ -5,13 +5,13 @@ namespace PlayingCardSample
 {
    public sealed class PlayingCardControl : ToggleButton
    {
-      public static readonly DependencyProperty FaceProperty = DependencyProperty.Register(
-         "Face", typeof(string), typeof(PlayingCardControl), new PropertyMetadata(default(string)));
+	   public static readonly DependencyProperty FaceProperty = DependencyProperty.Register(nameof(Face), typeof(string),
+		   typeof(PlayingCardControl), new PropertyMetadata(default(string)));
 
       static PlayingCardControl()
       {
-         DefaultStyleKeyProperty.OverrideMetadata(typeof(PlayingCardControl),
-            new FrameworkPropertyMetadata(typeof(PlayingCardControl)));
+	      DefaultStyleKeyProperty.OverrideMetadata(typeof(PlayingCardControl),
+		      new FrameworkPropertyMetadata(typeof(PlayingCardControl)));
       }
 
       public string Face

@@ -22,7 +22,7 @@ namespace CustomControls
 		#region Custom routed events
 
 		public static readonly RoutedEvent ColorChangedEvent =
-			EventManager.RegisterRoutedEvent("ColorChanged", RoutingStrategy.Bubble,
+			EventManager.RegisterRoutedEvent(nameof(ColorChanged), RoutingStrategy.Bubble,
 				typeof(RoutedPropertyChangedEventHandler<Color>), typeof(ColorPicker));
 
 		#endregion
@@ -102,7 +102,7 @@ namespace CustomControls
 
 			var brush = GetTemplateChild("PART_PreviewBrush") as SolidColorBrush;
 			if (brush != null)
-				SetBinding(ColorProperty, new Binding("Color") {Source = brush, Mode = BindingMode.OneWayToSource});
+				SetBinding(ColorProperty, new Binding(nameof(Color)) {Source = brush, Mode = BindingMode.OneWayToSource});
 		}
 
 		#region Dependency properties

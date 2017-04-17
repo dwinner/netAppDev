@@ -4,106 +4,100 @@ using System.Windows.Controls.Primitives;
 
 namespace CustomControls
 {
-   /// <summary>
-   ///   Элемент с поддержкой визуальных состояний
-   /// </summary>
-   [TemplatePart(Name = "FlipButton", Type = typeof (ToggleButton))]
-   [TemplatePart(Name = "FlipButtonAlternate", Type = typeof (ToggleButton))]
-   [TemplateVisualState(Name = "Normal", GroupName = "ViewStates")]
-   [TemplateVisualState(Name = "Flipped", GroupName = "ViewStates")]
-   public class FlipPanel : Control
-   {
-      #region Свойства зависимости
+	/// <summary>
+	///    Элемент с поддержкой визуальных состояний
+	/// </summary>
+	[TemplatePart(Name = "FlipButton", Type = typeof(ToggleButton))]
+	[TemplatePart(Name = "FlipButtonAlternate", Type = typeof(ToggleButton))]
+	[TemplateVisualState(Name = "Normal", GroupName = "ViewStates")]
+	[TemplateVisualState(Name = "Flipped", GroupName = "ViewStates")]
+	public class FlipPanel : Control
+	{
+		static FlipPanel()
+		{
+			DefaultStyleKeyProperty.OverrideMetadata(typeof(FlipPanel), new FrameworkPropertyMetadata(typeof(FlipPanel)));
+		}
 
-      public static readonly DependencyProperty FrontContentProperty =
-         DependencyProperty.Register("FrontContent", typeof (object), typeof (FlipPanel), null);
+		public override void OnApplyTemplate()
+		{
+			base.OnApplyTemplate();
 
-      public static readonly DependencyProperty BackContentProperty =
-         DependencyProperty.Register("BackContent", typeof (object), typeof (FlipPanel), null);
+			// Привязка события ToggleButton.Click
+			var flipButton = GetTemplateChild("FlipButton") as ToggleButton;
+			if (flipButton != null)
+				flipButton.Click += OnFlipButtonClick;
 
-      public static readonly DependencyProperty CornerRadiusProperty =
-         DependencyProperty.Register("CornerRadius", typeof (CornerRadius), typeof (FlipPanel), null);
+			// При необходимости разрешить две кнопки (по одной на каждую сторону панели).
+			var flipButtonAlternate = GetTemplateChild("FlipButtonAlternate") as ToggleButton;
+			if (flipButtonAlternate != null)
+				flipButtonAlternate.Click += OnFlipButtonClick;
 
-      public static readonly DependencyProperty IsFlippedProperty =
-         DependencyProperty.Register("IsFlipped", typeof (bool), typeof (FlipPanel), null);
+			// Обеспечить соответствие визуальных элементов текущему состоянию
+			ChangeVisualState(false);
+		}
 
-      #endregion
+		private void OnFlipButtonClick(object sender, RoutedEventArgs e)
+			=> IsFlipped = !IsFlipped;
 
-      static FlipPanel()
-      {
-         DefaultStyleKeyProperty.OverrideMetadata(typeof (FlipPanel), new FrameworkPropertyMetadata(typeof (FlipPanel)));
-      }
+		private void ChangeVisualState(bool useTransitions)
+		{
+			VisualStateManager.GoToState(this, !IsFlipped ? "Normal" : "Flipped", useTransitions);
 
-      #region Свойства
+			var front = FrontContent as UIElement;
+			if (front != null)
+				front.Visibility = IsFlipped ? Visibility.Hidden : Visibility.Visible;
 
-      public object FrontContent
-      {
-         get { return GetValue(FrontContentProperty); }
-         set { SetValue(FrontContentProperty, value); }
-      }
+			var back = BackContent as UIElement;
+			if (back != null)
+				back.Visibility = IsFlipped ? Visibility.Visible : Visibility.Hidden;
+		}
 
-      public object BackContent
-      {
-         get { return GetValue(BackContentProperty); }
-         set { SetValue(BackContentProperty, value); }
-      }
+		#region Свойства зависимости
 
-      public CornerRadius CornerRadius
-      {
-         get { return (CornerRadius) GetValue(CornerRadiusProperty); }
-         set { SetValue(CornerRadiusProperty, value); }
-      }
+		public static readonly DependencyProperty FrontContentProperty =
+			DependencyProperty.Register("FrontContent", typeof(object), typeof(FlipPanel), null);
 
-      public bool IsFlipped
-      {
-         get { return (bool) GetValue(IsFlippedProperty); }
-         set
-         {
-            SetValue(IsFlippedProperty, value);
-            ChangeVisualState(true);
-         }
-      }
+		public static readonly DependencyProperty BackContentProperty =
+			DependencyProperty.Register("BackContent", typeof(object), typeof(FlipPanel), null);
 
-      #endregion
+		public static readonly DependencyProperty CornerRadiusProperty =
+			DependencyProperty.Register("CornerRadius", typeof(CornerRadius), typeof(FlipPanel), null);
 
-      public override void OnApplyTemplate()
-      {
-         base.OnApplyTemplate();
+		public static readonly DependencyProperty IsFlippedProperty =
+			DependencyProperty.Register("IsFlipped", typeof(bool), typeof(FlipPanel), null);
 
-         // Привязка события ToggleButton.Click
-         var flipButton = GetTemplateChild("FlipButton") as ToggleButton;
-         if (flipButton != null)
-            flipButton.Click += OnFlipButtonClick;
+		#endregion
 
-         // При необходимости разрешить две кнопки (по одной на каждую сторону панели).
-         var flipButtonAlternate = GetTemplateChild("FlipButtonAlternate") as ToggleButton;
-         if (flipButtonAlternate != null)
-            flipButtonAlternate.Click += OnFlipButtonClick;
+		#region Свойства
 
-         // Обеспечить соответствие визуальных элементов текущему состоянию
-         ChangeVisualState(false);
-      }
+		public object FrontContent
+		{
+			get { return GetValue(FrontContentProperty); }
+			set { SetValue(FrontContentProperty, value); }
+		}
 
-      void OnFlipButtonClick(object sender, RoutedEventArgs e)
-      {
-         IsFlipped = !IsFlipped;
-      }
+		public object BackContent
+		{
+			get { return GetValue(BackContentProperty); }
+			set { SetValue(BackContentProperty, value); }
+		}
 
-      void ChangeVisualState(bool useTransitions)
-      {
-         VisualStateManager.GoToState(this, !IsFlipped ? "Normal" : "Flipped", useTransitions);
-         
-         var front = FrontContent as UIElement;
-         if (front != null)
-         {
-            front.Visibility = IsFlipped ? Visibility.Hidden : Visibility.Visible;
-         }
+		public CornerRadius CornerRadius
+		{
+			get { return (CornerRadius) GetValue(CornerRadiusProperty); }
+			set { SetValue(CornerRadiusProperty, value); }
+		}
 
-         var back = BackContent as UIElement;
-         if (back != null)
-         {
-            back.Visibility = IsFlipped ? Visibility.Visible : Visibility.Hidden;
-         }
-      }
-   }
+		public bool IsFlipped
+		{
+			get { return (bool) GetValue(IsFlippedProperty); }
+			set
+			{
+				SetValue(IsFlippedProperty, value);
+				ChangeVisualState(true);
+			}
+		}
+
+		#endregion
+	}
 }

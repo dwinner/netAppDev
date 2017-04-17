@@ -43,11 +43,11 @@
                         </Ellipse.Fill>
                     </Ellipse>
 
-                    <Slider Name="PART_RedSlider" Grid.Row="0" Grid.Column="1" />
+                    <Slider x:Name="PART_RedSlider" Grid.Row="0" Grid.Column="1" />
                     <TextBlock Grid.Row="1" Grid.Column="1" Text="RED"/>
-                    <Slider Name="PART_GreenSlider" Grid.Row="0" Grid.Column="2" />
+                    <Slider x:Name="PART_GreenSlider" Grid.Row="0" Grid.Column="2" />
                     <TextBlock Grid.Row="1" Grid.Column="2" Text="GREEN"/>
-                    <Slider Name="PART_BlueSlider" Grid.Row="0" Grid.Column="3" />
+                    <Slider x:Name="PART_BlueSlider" Grid.Row="0" Grid.Column="3" />
                     <TextBlock Grid.Row="1" Grid.Column="3" Text="BLUE"/>
                 </Grid>
             </Border>
@@ -56,10 +56,10 @@
     
     <StackPanel>
         <lib:ColorPicker
-            Name="colorPicker1" Margin="2" Padding="3" Color="AliceBlue" />
+            x:Name="FirstColorPicker" Margin="2" Padding="3" Color="AliceBlue" />
         <lib:ColorPicker
             Template="{StaticResource FancyColorPickerTemplate}"
-            Color="{Binding ElementName=colorPicker1, Path=Color, Mode=TwoWay}"
+            Color="{Binding ElementName=FirstColorPicker, Path=Color, Mode=TwoWay}"
             Margin="5,20,5,5" />
     </StackPanel>
 </Window>
