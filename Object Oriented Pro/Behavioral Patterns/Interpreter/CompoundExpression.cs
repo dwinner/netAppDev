@@ -2,10 +2,11 @@
 {
    public abstract class CompoundExpression : IExpression
    {
-      protected ComparisonExpression ComparisonExpressionA;
-      protected ComparisonExpression ComparisonExpressionB;
+      protected readonly ComparisonExpression ComparisonExpressionA;
+      protected readonly ComparisonExpression ComparisonExpressionB;
 
-      protected CompoundExpression(ComparisonExpression comparisonExpressionA, ComparisonExpression comparisonExpressionB)
+      protected CompoundExpression(ComparisonExpression comparisonExpressionA,
+         ComparisonExpression comparisonExpressionB)
       {
          ComparisonExpressionA = comparisonExpressionA;
          ComparisonExpressionB = comparisonExpressionB;

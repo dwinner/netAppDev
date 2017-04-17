@@ -2,8 +2,8 @@
 {
    public abstract class ComparisonExpression : IExpression
    {
-      protected IExpression ExpressionA;
-      protected IExpression ExpressionB;
+      protected readonly IExpression ExpressionA;
+      protected readonly IExpression ExpressionB;
 
       protected ComparisonExpression(IExpression expressionA, IExpression expressionB)
       {

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace Iterator
 {
@@ -12,21 +11,9 @@ namespace Iterator
          _listItems = new List<T>();
       }
 
-      public AggregatorImpl(IList<T> listItems)
-      {
-         _listItems = listItems;
-      }
+      public IIterator<T> Create() => new IteratorImpl<T>(this);
 
-      public IIterator<T> Create()
-      {
-         return new IteratorImpl<T>(this);
-      }
-
-      public int Count
-      {
-         get { return _listItems.Count; }
-         set { throw new NotImplementedException(); }
-      }
+      public int Count => _listItems.Count;
 
       public T this[int index]
       {

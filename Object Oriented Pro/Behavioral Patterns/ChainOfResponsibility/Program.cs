@@ -3,15 +3,14 @@
  */
 
 using System;
-using System.Collections.Generic;
 
 namespace ChainOfResponsibility
 {
-   static class Program
+   internal static class Program
    {
-      static void Main()
+      private static void Main()
       {
-         IProjectItem data = CreateData();
+         var data = CreateData();
          GetItemInfo(data);
       }
 
@@ -32,13 +31,17 @@ namespace ChainOfResponsibility
          project.Add(task2);
          project.Add(task3);
 
-         IProjectItem task4 = new ProjectTask(task1, "Fortune1", "Use psychic hotline to predict winning lottery numbers", null, false);
-         IProjectItem task5 = new ProjectTask(task1, "Fortune2", "Invest winnings to ensure 50% annual interest", contact1, true);
-         IProjectItem task6 = new ProjectTask(task2, "Isle1", "Research whether climate is better in the Atlantic or Pacific", contact1, true);
+         IProjectItem task4 = new ProjectTask(task1, "Fortune1",
+            "Use psychic hotline to predict winning lottery numbers", null, false);
+         IProjectItem task5 = new ProjectTask(task1, "Fortune2", "Invest winnings to ensure 50% annual interest",
+            contact1, true);
+         IProjectItem task6 = new ProjectTask(task2, "Isle1",
+            "Research whether climate is better in the Atlantic or Pacific", contact1, true);
          IProjectItem task7 = new ProjectTask(task2, "Isle2", "Locate an island for auction on EBay", null, false);
          IProjectItem task8 = new ProjectTask(task2, "Isle2a", "Negotiate for sale of the island", null, false);
          IProjectItem task9 = new ProjectTask(task3, "Name1", "Research every possible name in the world", null, true);
-         IProjectItem task10 = new ProjectTask(task3, "Name2", "Eliminate any choices that are not coffee-related", contact4, false);
+         IProjectItem task10 = new ProjectTask(task3, "Name2", "Eliminate any choices that are not coffee-related",
+            contact4, false);
 
          task1.Add(task4);
          task1.Add(task5);
@@ -59,11 +62,9 @@ namespace ChainOfResponsibility
          Console.WriteLine();
          if (item.ProjectItems != null)
          {
-            IEnumerator<IProjectItem> itemEnumerator = item.ProjectItems.GetEnumerator();
+            var itemEnumerator = item.ProjectItems.GetEnumerator();
             while (itemEnumerator.MoveNext())
-            {
                GetItemInfo(itemEnumerator.Current);
-            }
          }
       }
    }

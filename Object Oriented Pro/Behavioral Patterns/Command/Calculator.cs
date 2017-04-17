@@ -3,20 +3,24 @@
 namespace Command
 {
    /// <summary>
-   /// Получатель команд
+   ///    Получатель команд
    /// </summary>
-   public class Calculator
+   public sealed class Calculator
    {
       private int _current;
 
-      public Calculator(int current)
+      private Calculator(int current)
       {
          _current = current;
       }
 
       public Calculator()
          : this(0)
-      { }
+      {
+      }
+      
+      private void LogResult(char @operator, int operand)
+         => Console.WriteLine("Current value = {0,3} (following {1} {2})", _current, @operator, operand);
 
       public void Operation(char anOperator, int operand)
       {
@@ -43,11 +47,6 @@ namespace Command
          }
 
          LogResult(anOperator, operand);
-      }
-
-      protected virtual void LogResult(char @operator, int operand)
-      {
-         Console.WriteLine("Current value = {0,3} (following {1} {2})", _current, @operator, operand);
-      }
+      }      
    }
 }

@@ -4,25 +4,15 @@ namespace ChainOfResponsibility
 {
    public class Project : IProjectItem
    {
-      public IContact Owner { get; set; }
+      public IContact Owner { get; }
 
-      public string Details { get; set; }
+      public string Details { get; }
 
-      public string Name { get; set; }
+      public string Name { get; }
 
-      public IList<IProjectItem> ProjectItems { get; private set; }
+      public IList<IProjectItem> ProjectItems { get; }
 
-      public IProjectItem Parent { get; private set; }
-
-      public bool IsPrimaryTask
-      {
-         get
-         {
-            return false;
-         }
-      }
-
-      public Project() { }
+      public IProjectItem Parent { get; }
 
       public Project(string name, string details, IContact owner)
       {
@@ -41,14 +31,6 @@ namespace ChainOfResponsibility
          }
       }
 
-      public bool Remove(IProjectItem projectItem)
-      {
-         return ProjectItems.Remove(projectItem);
-      }
-
-      public override string ToString()
-      {
-         return Name;
-      }
+      public override string ToString() => Name;
    }
 }

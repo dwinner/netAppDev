@@ -2,13 +2,13 @@
  * Абстракция для способов обхода контейнеров
  */
 
-using System;
+using static System.Console;
 
 namespace Iterator
 {
-   static class Program
+   internal static class Program
    {
-      static void Main()
+      private static void Main()
       {
          IAggregator<string> strAggregator = new AggregatorImpl<string>();
          strAggregator[0] = "Item A";
@@ -18,16 +18,16 @@ namespace Iterator
 
          IIterator<string> iterator = new IteratorImpl<string>(strAggregator);
 
-         Console.WriteLine("Iterating over collection");
+         WriteLine("Iterating over collection");
 
-         string currentItem = iterator.First();
+         var currentItem = iterator.First();
          while (currentItem != null)
          {
-            Console.WriteLine(currentItem);
+            WriteLine(currentItem);
             currentItem = iterator.Next();
          }
 
-         Console.ReadLine();
+         ReadLine();
       }
    }
 }

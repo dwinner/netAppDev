@@ -6,23 +6,23 @@ using System;
 
 namespace Command
 {
-   static class Program
+   internal static class Program
    {
-      static void Main()
+      private static void Main()
       {
-         // Создаем пользователя
+         // Creating the user
          var user = new User();
 
-         // Пусть он что-нибудь сделает
+         // Let the user do something
          user.Compute('+', 100);
          user.Compute('-', 50);
          user.Compute('*', 10);
          user.Compute('/', 2);
 
-         // Отменяем 4 команды
+         // Undo 4 last commands
          user.Undo(4);
 
-         // Вернем 3 отмененные команды
+         // Redo 3 cancelled commands
          user.Redo(3);
 
          Console.ReadKey();

@@ -4,13 +4,14 @@
    {
       public OrExpression(IExpression expressionA, IExpression expressionB)
          : base(expressionA, expressionB)
-      { }
+      {
+      }
 
       public override void Interpret(IContext context)
       {
          ExpressionA.Interpret(context);
          ExpressionB.Interpret(context);
-         bool result = (bool) context.Get(ExpressionA) || (bool) context.Get(ExpressionB);
+         var result = (bool) context.Get(ExpressionA) || (bool) context.Get(ExpressionB);
          context.AddVariable(this, result);
       }
    }

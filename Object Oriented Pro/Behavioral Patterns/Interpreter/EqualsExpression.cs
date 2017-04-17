@@ -11,7 +11,7 @@
       {
          ExpressionA.Interpret(context);
          ExpressionB.Interpret(context);
-         bool result = context.Get(ExpressionA).Equals(context.Get(ExpressionB));
+         var result = context.Get(ExpressionA).Equals(context.Get(ExpressionB));
          context.AddVariable(this, result);
       }
    }
