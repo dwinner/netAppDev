@@ -23,7 +23,7 @@
             </Grid.RowDefinitions>
 
             <Button Margin="7,7,7,0" Padding="2" Click="OnGetProducts" Content="Get Products"/>
-            <ListBox Grid.Row="1" Margin="7,3,7,10" Name="ProductListBox" HorizontalContentAlignment="Stretch">
+            <ListBox Grid.Row="1" Margin="7,3,7,10" x:Name="ProductListBox" HorizontalContentAlignment="Stretch">
                 <ListBox.ItemContainerStyle>
                     <Style>
                         <Setter Property="Control.Padding" Value="0" />
