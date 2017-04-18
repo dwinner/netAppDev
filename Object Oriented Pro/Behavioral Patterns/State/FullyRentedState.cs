@@ -9,24 +9,12 @@
          _automat = automat;
       }
 
-      public string GotApplication()
-      {
-         return "Sorry, we're fully rented.";
-      }
+      public string GotApplication() => "Sorry, we're fully rented.";
 
-      public string CheckApplication()
-      {
-         return "Sorry, we're fully rented.";
-      }
+      public string CheckApplication() => "Sorry, we're fully rented.";
 
-      public string RentAppartment()
-      {
-         return "Sorry, we're fully rented.";
-      }
+      public string RentAppartment() => "Sorry, we're fully rented.";
 
-      public string DispenseKeys()
-      {
-         return "Sorry, we're fully rented.";
-      }
+      public string DispenseKeys() => "Sorry, we're fully rented.";
    }
 }

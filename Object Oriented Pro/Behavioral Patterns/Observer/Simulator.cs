@@ -7,14 +7,8 @@ namespace Observer
    {
       private readonly string[] _moves = {"5", "3", "1", "6", "7"};
 
-      public IEnumerator<string> GetEnumerator()
-      {
-         return ((IEnumerable<string>) _moves).GetEnumerator();
-      }
+      public IEnumerator<string> GetEnumerator() => ((IEnumerable<string>) _moves).GetEnumerator();
 
-      IEnumerator IEnumerable.GetEnumerator()
-      {
-         return GetEnumerator();
-      }
+      IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
    }
 }

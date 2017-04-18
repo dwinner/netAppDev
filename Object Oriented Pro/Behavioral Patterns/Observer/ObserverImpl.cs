@@ -3,13 +3,13 @@
 namespace Observer
 {
    /// <summary>
-   /// Реализация наблюдателя
+   ///    Observer impl
    /// </summary>
    public class ObserverImpl : IObserver<string>
    {
+      private readonly string _gap;
       private readonly string _name;
       private string _state;
-      private readonly string _gap;
 
       public ObserverImpl(ISubject<string> subject, string name, string gap)
       {

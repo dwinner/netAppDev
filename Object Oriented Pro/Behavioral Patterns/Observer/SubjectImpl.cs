@@ -3,16 +3,20 @@
 namespace Observer
 {
    /// <summary>
-   /// Реализация субъекта
+   ///    Subject impl
    /// </summary>
    public class SubjectImpl : ISubject<string>
    {
+      private string _subjectState;
+
+      public SubjectImpl()
+      {
+         Observers = new List<IObserver<string>>();
+      }
+
       public string SubjectState
       {
-         get
-         {
-            return _subjectState;
-         }
+         get { return _subjectState; }
          set
          {
             if (value != _subjectState)
@@ -22,14 +26,8 @@ namespace Observer
             }
          }
       }
-      private string _subjectState;
 
-      public IList<IObserver<string>> Observers { get; private set; }      
-
-      public SubjectImpl()
-      {
-         Observers = new List<IObserver<string>>();
-      }
+      public IList<IObserver<string>> Observers { get; }
 
       public bool Add(IObserver<string> observer)
       {
@@ -45,22 +43,15 @@ namespace Observer
       public void Add(params IObserver<string>[] observers)
       {
          foreach (var observer in observers)
-         {
             Add(observer);
-         }
       }
 
-      public bool Remove(IObserver<string> observer)
-      {
-         return Observers.Remove(observer);
-      }
+      public bool Remove(IObserver<string> observer) => Observers.Remove(observer);
 
       public void Notify(string state)
       {
          foreach (var observer in Observers)
-         {
             observer.Update(state);
-         }
       }
    }
 }

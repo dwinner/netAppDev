@@ -14,24 +14,7 @@
 
       public string ZipCode { get; set; }
 
-      public AddressImpl(string type, string description, string street, string city, string state, string zipCode)
-      {
-         Type = type;
-         Description = description;
-         Street = street;
-         City = city;
-         State = state;
-         ZipCode = zipCode;
-      }
-
-      public AddressImpl()
-      {         
-      }
-
-      public override string ToString()
-      {
-         return string.Format("Type: {0}, Description: {1}, Street: {2}, City: {3}, State: {4}, ZipCode: {5}", Type,
-            Description, Street, City, State, ZipCode);
-      }
+      public override string ToString() =>
+         $"Type: {Type}, Description: {Description}, Street: {Street}, City: {City}, State: {State}, ZipCode: {ZipCode}";
    }
 }

@@ -13,10 +13,7 @@ namespace State
          _random = new Random(DateTime.Now.Millisecond);
       }
 
-      public string GotApplication()
-      {
-         return "We already got your application.";
-      }
+      public string GotApplication() => "We already got your application.";
 
       public string CheckApplication()
       {
@@ -32,14 +29,8 @@ namespace State
          return "Sorry, you were not approved.";
       }
 
-      public string RentAppartment()
-      {
-         return "You must have your application checked.";
-      }
+      public string RentAppartment() => "You must have your application checked.";
 
-      public string DispenseKeys()
-      {
-         return "You must have your application checked.";
-      }
+      public string DispenseKeys() => "You must have your application checked.";
    }
 }

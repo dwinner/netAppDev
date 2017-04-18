@@ -15,19 +15,10 @@
          return "Thanks for the application.";
       }
 
-      public string CheckApplication()
-      {
-         return "You have to submit an application.";
-      }
+      public string CheckApplication() => "You have to submit an application.";
 
-      public string RentAppartment()
-      {
-         return "You have to submit an application.";
-      }
+      public string RentAppartment() => "You have to submit an application.";
 
-      public string DispenseKeys()
-      {
-         return "You have to submit an application.";
-      }
+      public string DispenseKeys() => "You have to submit an application.";
    }
 }

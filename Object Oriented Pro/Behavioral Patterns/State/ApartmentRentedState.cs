@@ -10,14 +10,10 @@
       }
 
       public string GotApplication()
-      {
-         return "Hang on, we'ra renting you an apartmeny.";
-      }
+         => "Hang on, we'ra renting you an apartmeny.";
 
       public string CheckApplication()
-      {
-         return "Hang on, we'ra renting you an apartmeny.";
-      }
+         => "Hang on, we'ra renting you an apartmeny.";
 
       public string RentAppartment()
       {
@@ -27,7 +23,9 @@
 
       public string DispenseKeys()
       {
-         _automat.State = _automat.Count <= 0 ? _automat.FullyRentedState : _automat.WaitingState;
+         _automat.State = _automat.Count <= 0
+            ? _automat.FullyRentedState
+            : _automat.WaitingState;
          return "Here are your keys!";
       }
    }

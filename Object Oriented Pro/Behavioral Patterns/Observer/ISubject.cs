@@ -1,9 +1,9 @@
 ﻿namespace Observer
 {
    /// <summary>
-   /// Интерфейс субъекта
+   ///    Subject interface
    /// </summary>
-   /// <typeparam name="T">Тип состояния</typeparam>
+   /// <typeparam name="T">State type</typeparam>
    public interface ISubject<T>
    {
       bool Add(IObserver<T> observer);

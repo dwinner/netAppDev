@@ -4,24 +4,6 @@ namespace State
 {
    public class AutomatImpl : IAutomat
    {
-      private IAutomatState _state;
-
-      public IAutomatState WaitingState { get; private set; }
-
-      public IAutomatState ApplicationState { get; private set; }
-
-      public IAutomatState ApartmentRentedState { get; private set; }
-
-      public IAutomatState FullyRentedState { get; private set; }
-
-      public IAutomatState State
-      {
-         get { return _state; }
-         set { _state = value; }
-      }
-
-      public int Count { get; set; }
-
       public AutomatImpl(int n)
       {
          Count = n;
@@ -29,23 +11,29 @@ namespace State
          ApplicationState = new GotApplicationState(this);
          ApartmentRentedState = new ApartmentRentedState(this);
          FullyRentedState = new FullyRentedState(this);
-         _state = WaitingState;
+         State = WaitingState;
       }
 
-      public void GotApplication()
-      {
-         Console.WriteLine(_state.GotApplication());
-      }
+      public IAutomatState WaitingState { get; }
 
-      public void CheckApplication()
-      {
-         Console.WriteLine(_state.CheckApplication());
-      }
+      public IAutomatState ApplicationState { get; }
+
+      public IAutomatState ApartmentRentedState { get; }
+
+      public IAutomatState FullyRentedState { get; }
+
+      public IAutomatState State { private get; set; }
+
+      public int Count { get; set; }
+
+      public void GotApplication() => Console.WriteLine(State.GotApplication());
+
+      public void CheckApplication() => Console.WriteLine(State.CheckApplication());
 
       public void RentApartment()
       {
-         Console.WriteLine(_state.RentAppartment());
-         Console.WriteLine(_state.DispenseKeys());
+         Console.WriteLine(State.RentAppartment());
+         Console.WriteLine(State.DispenseKeys());
       }
    }
 }

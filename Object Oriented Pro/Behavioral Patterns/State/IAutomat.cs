@@ -2,13 +2,7 @@
 {
    public interface IAutomat
    {
-      void GotApplication();
-
-      void CheckApplication();
-
-      void RentApartment();
-
-      IAutomatState State { get; set; }
+      IAutomatState State { set; }
 
       IAutomatState WaitingState { get; }
 
@@ -19,5 +13,10 @@
       IAutomatState FullyRentedState { get; }
 
       int Count { get; set; }
+      void GotApplication();
+
+      void CheckApplication();
+
+      void RentApartment();
    }
 }

@@ -7,11 +7,11 @@ using System.Threading;
 
 namespace Observer
 {
-   static class Program
+   internal static class Program
    {
       private const int Speed = 100;
 
-      static void Main()
+      private static void Main()
       {
          var simulator = new Simulator();
          var subject = new SubjectImpl();

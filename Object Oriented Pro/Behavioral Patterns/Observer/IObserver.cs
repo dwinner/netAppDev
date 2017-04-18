@@ -1,9 +1,9 @@
 ﻿namespace Observer
 {
    /// <summary>
-   /// Интерфейс наблюдателя
+   ///    Observer interface
    /// </summary>
-   /// <typeparam name="T">Тип состояния</typeparam>
+   /// <typeparam name="T">State type</typeparam>
    public interface IObserver<in T>
    {
       void Update(T subjectState);
