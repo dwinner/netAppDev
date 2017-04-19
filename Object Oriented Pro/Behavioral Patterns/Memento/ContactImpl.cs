@@ -14,7 +14,8 @@ namespace Memento
 
       public IAddress Address { get; set; }
 
-      public ContactImpl(string firstName, string lastName, string title, string organization, IAddress address)
+      public ContactImpl(
+         string firstName, string lastName, string title, string organization, IAddress address)
       {
          FirstName = firstName;
          LastName = lastName;

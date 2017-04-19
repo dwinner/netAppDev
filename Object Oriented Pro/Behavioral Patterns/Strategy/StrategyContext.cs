@@ -9,9 +9,6 @@
          Strategy = strategy;
       }
 
-      public void Execute()
-      {
-         Strategy.Algorithm();
-      }
+      public void Execute() => Strategy.Algorithm();
    }
 }

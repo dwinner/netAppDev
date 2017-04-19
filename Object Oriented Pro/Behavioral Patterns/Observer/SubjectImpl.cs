@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Observer
 {
@@ -27,7 +28,7 @@ namespace Observer
          }
       }
 
-      public IList<IObserver<string>> Observers { get; }
+      public List<IObserver<string>> Observers { get; }
 
       public bool Add(IObserver<string> observer)
       {
@@ -41,17 +42,12 @@ namespace Observer
       }
 
       public void Add(params IObserver<string>[] observers)
-      {
-         foreach (var observer in observers)
-            Add(observer);
-      }
+         => Array.ForEach(observers, observer => Add(observer));
 
-      public bool Remove(IObserver<string> observer) => Observers.Remove(observer);
+      public bool Remove(IObserver<string> observer)
+         => Observers.Remove(observer);
 
       public void Notify(string state)
-      {
-         foreach (var observer in Observers)
-            observer.Update(state);
-      }
+         => Observers.ForEach(observer => observer.Update(state));
    }
 }

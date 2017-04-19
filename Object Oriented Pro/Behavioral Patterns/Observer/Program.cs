@@ -24,7 +24,7 @@ namespace Observer
             foreach (var s in simulator)
             {
                Console.WriteLine("Subject: {0}", s);
-               subject.SubjectState = s; // возбуждаем уведомление для наблюдателей
+               subject.SubjectState = s; // Raise notifications for observers
                Thread.Sleep(Speed);
             }
          });

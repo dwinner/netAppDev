@@ -13,6 +13,7 @@
       IAutomatState FullyRentedState { get; }
 
       int Count { get; set; }
+
       void GotApplication();
 
       void CheckApplication();

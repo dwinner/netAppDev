@@ -20,9 +20,9 @@ namespace TemplateMethod
          Console.WriteLine(" Task and Deliverable, have different methods of");
          Console.WriteLine(" providing a cost estimate.");
          Console.WriteLine();
-
          Console.WriteLine("Creating a demo Task and Deliverable");
          Console.WriteLine();
+
          var primaryTask = new Task("Put a JVM on the moon", "Lunar mission as part of the JavaSpace program ;)", 240.0,
             100.0);
          primaryTask.Add(new Task("Establish ground control", "", 1000.0, 10.0));
@@ -35,7 +35,6 @@ namespace TemplateMethod
          Console.WriteLine("Total cost estimate for: " + primaryTask);
          Console.WriteLine("\t" + primaryTask.CostEstimate());
          Console.WriteLine();
-
          Console.WriteLine("Total cost estimate for: " + deliverableOne);
          Console.WriteLine("\t" + deliverableOne.CostEstimate());
       }

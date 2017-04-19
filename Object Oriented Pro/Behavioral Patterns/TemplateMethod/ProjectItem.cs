@@ -2,33 +2,27 @@
 {
    public abstract class ProjectItem
    {
-      public string Name { get; set; }
-
-      public string Description { get; set; }
-
-      public double Rate { get; set; }
-
-      protected ProjectItem(string name, string description, double rate)
+      protected ProjectItem(
+         string name, string description, double rate)
       {
          Name = name;
          Description = description;
          Rate = rate;
       }
 
-      protected ProjectItem() { }
+      public string Name { get; }
+
+      public string Description { get; }
+
+      public double Rate { get; }
 
       public abstract double TimeRequired();
 
       public abstract double MaterialCost();
 
       public double CostEstimate()
-      {
-         return TimeRequired() * Rate + MaterialCost();
-      }
+         => TimeRequired() * Rate + MaterialCost();
 
-      public override string ToString()
-      {
-         return Name;
-      }
+      public override string ToString() => Name;
    }
 }

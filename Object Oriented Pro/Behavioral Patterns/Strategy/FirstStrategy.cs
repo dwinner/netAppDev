@@ -1,12 +1,10 @@
-﻿using System;
+﻿using static System.Console;
 
 namespace Strategy
 {
    public class FirstStrategy : IStrategy
    {
       public void Algorithm()
-      {
-         Console.WriteLine("Выполняется алгоритм стратегии 1");
-      }
+         => WriteLine("Algorithm of the first strategy");
    }
 }

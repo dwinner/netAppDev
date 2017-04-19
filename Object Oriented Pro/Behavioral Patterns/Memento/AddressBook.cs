@@ -31,7 +31,7 @@ namespace Memento
       {
          var stringBuilder = new StringBuilder(_contacts.Count * 0x40);
          foreach (var contact in Contacts)
-            stringBuilder.Append(contact + Environment.NewLine);
+            stringBuilder.AppendFormat("{0}{1}", contact, Environment.NewLine);
 
          return stringBuilder.ToString();
       }
