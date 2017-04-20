@@ -10,13 +10,15 @@ namespace AutoMapper.Simple
     {
         private static void Main()
         {
-            // Конфигурация отображения одного объекта в другой
+            // The configuration of mapping one object to another
             Mapper.CreateMap<UserDto, User>()
                 .ForMember(user => user.FullName,
-                    expression => expression.MapFrom(dto => string.Format("{0} {1}", dto.FirstName, dto.LastName)))
+                    expression
+                    		=> expression.MapFrom(
+                    			 	dto => string.Format("{0} {1}", dto.FirstName, dto.LastName)))
                 .ForMember(user => user.Email, expression => expression.MapFrom(dto => dto.Email));
 
-            // Преобразуем объект автоматическим отображением
+            // Convert the object via auto mapping
             var mappedUser = Mapper.Map<User>(new UserDto
             {
                 FirstName = "Ivan",

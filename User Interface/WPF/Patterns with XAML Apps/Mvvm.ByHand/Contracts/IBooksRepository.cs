@@ -2,7 +2,8 @@
 
 namespace Contracts
 {
-   public interface IBooksRepository : IQueryRepository<Book, int>, IUpdateRepository<Book, int>
+   public interface IBooksRepository
+      : IQueryRepository<Book, int>, IUpdateRepository<Book, int>
    {
    }
 }

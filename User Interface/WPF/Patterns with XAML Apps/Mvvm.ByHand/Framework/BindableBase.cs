@@ -14,13 +14,10 @@ namespace Framework
       protected bool SetProperty<T>(ref T item, T value, [CallerMemberName] string propertyName = null)
       {
          if (EqualityComparer<T>.Default.Equals(item, value))
-         {
             return false;
-         }
 
-         item = value;         
-         OnPropertyChanged(propertyName);         
-
+         item = value;
+         OnPropertyChanged(propertyName);
          return true;
       }
    }

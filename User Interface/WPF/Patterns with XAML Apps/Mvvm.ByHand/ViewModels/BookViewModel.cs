@@ -33,6 +33,7 @@ namespace ViewModels
       private void LoadBook(object sender, BookInfoEvent bookInfo)
          => Book = bookInfo.BookId == 0 ? new Book() : _booksService.GetBook(bookInfo.BookId);
 
-      private async Task OnSaveBookAsync() => Book = await _booksService.AddOrUpdateBookAsync(Book).ConfigureAwait(true);
+      private async Task OnSaveBookAsync()
+         => Book = await _booksService.AddOrUpdateBookAsync(Book).ConfigureAwait(true);
    }
 }
