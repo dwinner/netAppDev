@@ -1,43 +1,30 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 
 namespace Visitor
 {
    public class EmployeeCollection : IEnumerable<Employee>, IElement
    {
-      private readonly IList<Employee> _employees;
-
-      public IList<Employee> Employees
+      private EmployeeCollection(IList<Employee> employees)
       {
-         get { return _employees; }
-      }
-
-      public EmployeeCollection(IList<Employee> employees)
-      {
-         _employees = employees;
+         Employees = employees;
       }
 
       public EmployeeCollection()
-         : this(new List<Employee>()) { }
-
-      public IEnumerator<Employee> GetEnumerator()
+         : this(new List<Employee>())
       {
-         return _employees.GetEnumerator();
       }
 
-      IEnumerator IEnumerable.GetEnumerator()
-      {
-         return GetEnumerator();
-      }
+      public IList<Employee> Employees { get; }
 
       public void Accept(IVisitor visitor)
       {
-         foreach (var employee in _employees)
-         {
+         foreach (var employee in Employees)
             employee.Accept(visitor);
-         }
-         Console.WriteLine();
       }
+
+      public IEnumerator<Employee> GetEnumerator() => Employees.GetEnumerator();
+
+      IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
    }
 }

@@ -1,4 +1,4 @@
-﻿using System;
+﻿using static System.Console;
 
 namespace Visitor
 {
@@ -10,7 +10,7 @@ namespace Visitor
          if (employee != null)
          {
             employee.Income *= 1.10;
-            Console.WriteLine("{0} {1}'s new income: {2:C}",
+            WriteLine("{0} {1}'s new income: {2:C}",
                employee.GetType().Name,
                employee.Name,
                employee.Income);

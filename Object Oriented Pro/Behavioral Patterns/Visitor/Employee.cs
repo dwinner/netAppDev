@@ -2,12 +2,6 @@
 {
    public class Employee : IElement
    {
-      public string Name { get; set; }
-
-      public double Income { get; set; }
-
-      public int VacationDays { get; set; }
-
       public Employee(string name, double income, int vacationDays)
       {
          Name = name;
@@ -15,9 +9,12 @@
          VacationDays = vacationDays;
       }
 
-      public void Accept(IVisitor visitor)
-      {
-         visitor.Visit(this);
-      }
+      public string Name { get; }
+
+      public double Income { get; set; }
+
+      public int VacationDays { get; }
+
+      public void Accept(IVisitor visitor) => visitor.Visit(this);
    }
 }

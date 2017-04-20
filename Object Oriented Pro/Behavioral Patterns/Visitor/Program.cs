@@ -6,9 +6,9 @@ using System;
 
 namespace Visitor
 {
-   static class Program
+   internal static class Program
    {
-      static void Main()
+      private static void Main()
       {
          var employeeCollection = new EmployeeCollection();
          employeeCollection.Employees.Add(new Employee("Hank", 25000.0, 14));

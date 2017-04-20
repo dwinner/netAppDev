@@ -1,4 +1,4 @@
-﻿using System;
+﻿using static System.Console;
 
 namespace Visitor
 {
@@ -8,12 +8,10 @@ namespace Visitor
       {
          var employee = element as Employee;
          if (employee != null)
-         {
-            Console.WriteLine("{0} {1}'s new vacation days: {2}",
+            WriteLine("{0} {1}'s new vacation days: {2}",
                employee.GetType().Name,
                employee.Name,
                employee.VacationDays);
-         }
       }
    }
 }
