@@ -10,7 +10,7 @@ namespace Variance
    {
       static void Main()
       {
-         // Ковариантность
+         // Covariance
          IIndex<Rectangle> rectangles = RectangeCollection.Rectangles;
          IIndex<Shape> shapes = rectangles;
          for (int i = 0; i < shapes.Count; i++)
@@ -18,7 +18,7 @@ namespace Variance
             Console.WriteLine(shapes[i]);
          }
 
-         // Контравариантность
+         // Contravariance
          IDisplay<Shape> shapeDisplay = new ShapeDisplay();
          IDisplay<Rectangle> rectangeDisplay = shapeDisplay;
          rectangeDisplay.Show(rectangles[0]);

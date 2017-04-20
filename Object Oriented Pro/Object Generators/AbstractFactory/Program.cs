@@ -6,7 +6,7 @@ namespace AbstractFactory
    {
       private static void Main()
       {
-         // Создание адресов США.
+         // Creating USA-addresses.
          IAddressFactory usAddressFactory = new UsAddressFactory();
          var usAddress = usAddressFactory.CreateAddress();
          var usPhoneNumber = usAddressFactory.CreatePhoneNumber();
@@ -16,7 +16,7 @@ namespace AbstractFactory
          usAddress.PostalCode = "54321";
          usPhoneNumber.TelephoneNumber = "7039214722";
 
-         // Создание адресов Франции.
+         // Creating France-addresses.
          IAddressFactory frenchAddressFactory = new FrenchAddressFactory();
          var frenchAddress = frenchAddressFactory.CreateAddress();
          var frenchPhoneNumber = frenchAddressFactory.CreatePhoneNumber();
