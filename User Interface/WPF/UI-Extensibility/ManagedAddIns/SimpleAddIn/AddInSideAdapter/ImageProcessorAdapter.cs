@@ -1,12 +1,10 @@
 ﻿using System.AddIn.Pipeline;
 using AddInView;
 using Contract;
-using JetBrains.Annotations;
 
 namespace AddInSideAdapter
 {
    [AddInAdapter]
-   [UsedImplicitly]
    public class ImageProcessorViewToContractAdapter : ContractBase, IImageProcessorContract
    {
       private readonly ImageProcessorAddInView _view;

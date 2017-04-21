@@ -1,7 +1,6 @@
 ﻿using System;
 using System.AddIn;
 using AddInView;
-using JetBrains.Annotations;
 
 namespace FadeImageAddIn
 {
@@ -9,7 +8,6 @@ namespace FadeImageAddIn
       Version = "1.0.0.0",
       Publisher = "SupraImage",
       Description = "Darkens the picture")]
-   [UsedImplicitly]
    public class FadeImageProcessor : ImageProcessorAddInView
    {
       public override byte[] ProcessImageBytes(byte[] pixels)

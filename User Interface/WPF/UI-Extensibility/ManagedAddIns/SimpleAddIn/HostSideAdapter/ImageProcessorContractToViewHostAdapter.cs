@@ -1,16 +1,14 @@
 ﻿using System.AddIn.Pipeline;
 using Contract;
 using HostView;
-using JetBrains.Annotations;
 
 namespace HostSideAdapter
 {
    [HostAdapter]
-   [UsedImplicitly]
    public class ImageProcessorContractToViewHostAdapter : ImageProcessorHostView
    {
       private readonly IImageProcessorContract _contract;
-      [UsedImplicitly] private ContractHandle _contractHandle;
+      private ContractHandle _contractHandle;
 
       public ImageProcessorContractToViewHostAdapter(IImageProcessorContract contract)
       {

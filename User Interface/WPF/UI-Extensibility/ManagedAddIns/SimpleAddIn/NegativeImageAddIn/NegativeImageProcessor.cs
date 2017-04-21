@@ -1,6 +1,5 @@
 ﻿using System.AddIn;
 using AddInView;
-using JetBrains.Annotations;
 
 namespace NegativeImageAddIn
 {
@@ -8,7 +7,6 @@ namespace NegativeImageAddIn
       Version = "1.0.0.0",
       Publisher = "Imaginomics",
       Description = "Inverts colors to look like a photo negative")]
-   [UsedImplicitly]
    public class NegativeImageProcessor : ImageProcessorAddInView
    {
       public override byte[] ProcessImageBytes(byte[] pixels)
