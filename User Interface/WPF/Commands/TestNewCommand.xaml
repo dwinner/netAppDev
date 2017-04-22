@@ -15,10 +15,11 @@
         </Menu>
 
         <Button Margin="5" Padding="5" Command="ApplicationCommands.New"
-                ToolTip="{x:Static ApplicationCommands.New}">
-            New
-        </Button>
-        <Button Margin="5" Padding="5" Visibility="Hidden" Command="ApplicationCommands.Open">Open (unwired)</Button>
-        <Button Margin="5" Padding="5" Visibility="Hidden" Click="cmdDoCommand_Click">DoCommand</Button>
+                ToolTip="{x:Static ApplicationCommands.New}"
+                Content="New" />
+        <Button Margin="5" Padding="5" Visibility="Hidden" Command="ApplicationCommands.Open"
+                Content="Open (unwired)" />
+        <Button Margin="5" Padding="5" Visibility="Hidden" Click="cmdDoCommand_Click"
+                Content="DoCommand" />
     </StackPanel>
 </Window>

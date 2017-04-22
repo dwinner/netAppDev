@@ -5,12 +5,12 @@
         Title="CustomControlsClient" Height="300" Width="300">
     <StackPanel>
         <lib:ColorPickerUserControl
-            Name="colorPicker" Margin="2" Padding="3"
+            x:Name="ColorPicker" Margin="2" Padding="3"
             ColorChanged="OnColorChanged" Color="Yellow" />
-        <Button Click="OnGetClick" Margin="5,20,5,0" Padding="2" Content="Get Color"/>
-        <Button Click="OnSetClick" Margin="5,0,5,0" Padding="2" Content="Reset Color"/>
-        <Button Command="Undo" CommandTarget="{Binding ElementName=colorPicker}"
-                Margin="5,0,5,0" Padding="2" Content="Undo"/>
-        <TextBlock Name="lblColor" Margin="10" />
+        <Button Click="OnGetClick" Margin="5,20,5,0" Padding="2" Content="Get Color" />
+        <Button Click="OnSetClick" Margin="5,0,5,0" Padding="2" Content="Reset Color" />
+        <Button Command="Undo" CommandTarget="{Binding ElementName=ColorPicker}"
+                Margin="5,0,5,0" Padding="2" Content="Undo" />
+        <TextBlock x:Name="ColorLabel" Margin="10" />
     </StackPanel>
 </Window>

@@ -52,7 +52,6 @@ namespace SQLiteApp.ViewModels
 			});
 
 			AddCommand.ObserveOn(MainThreadScheduler).Subscribe(newPhone => { Phones.Add(newPhone); });
-
 			AddCommand.ThrownExceptions.Subscribe(ex => { MessageBox.Show(ex.Message); });
 		}
 
@@ -92,7 +91,6 @@ namespace SQLiteApp.ViewModels
 					this.WhenAny(vm => vm.SelectedPhone, change => change.Value != null));
 
 			DeleteCommand.ObserveOn(MainThreadScheduler).Subscribe(dummy => { Phones.Remove(SelectedPhone); });
-
 			DeleteCommand.ThrownExceptions.Subscribe(ex => { MessageBox.Show(ex.Message); });
 		}
 	}

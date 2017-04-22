@@ -33,6 +33,6 @@
         <TextBox Margin="5" Grid.Row="2"
                  TextWrapping="Wrap" AcceptsReturn="True" />
 
-        <ListBox Grid.Row="3" Name="HistoryListBox" Margin="5" DisplayMemberPath="CommandName" />
+        <ListBox Grid.Row="3" x:Name="HistoryListBox" Margin="5" DisplayMemberPath="CommandName" />
     </Grid>
 </Window>

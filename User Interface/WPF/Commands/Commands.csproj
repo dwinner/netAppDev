@@ -132,6 +132,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CommandHistoryItem.cs" />
     <Compile Include="CommandSlider.cs" />
     <Compile Include="CustomCommand.xaml.cs">
       <SubType>Code</SubType>
@@ -141,6 +142,7 @@
       <SubType>Code</SubType>
       <DependentUpon>CustomControlWithCommand.xaml</DependentUpon>
     </Compile>
+    <Compile Include="DataCommands.cs" />
     <Compile Include="Menu.xaml.cs">
       <DependentUpon>Menu.xaml</DependentUpon>
     </Compile>

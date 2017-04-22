@@ -78,9 +78,9 @@ namespace Commands
         //to query the command to see if it can execute or not.
         public void OnReadOnlyChecked(object sender, RoutedEventArgs e)
         {
-            if (txtBoxTarget != null)
+            if (TargetTextBox != null)
             {
-                txtBoxTarget.IsReadOnly = true;
+                TargetTextBox.IsReadOnly = true;
                 CommandManager.InvalidateRequerySuggested();
             }
         }
@@ -90,9 +90,9 @@ namespace Commands
         //to query the command to see if it can execute or not.
         public void OnReadOnlyUnChecked(object sender, RoutedEventArgs e)
         {
-            if (txtBoxTarget != null)
+            if (TargetTextBox != null)
             {
-                txtBoxTarget.IsReadOnly = false;
+                TargetTextBox.IsReadOnly = false;
                 CommandManager.InvalidateRequerySuggested();
             }
         }
