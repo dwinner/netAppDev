@@ -1,8 +1,8 @@
 ﻿// Сериализация больших объектов
 
+using ProtoBuf;
 using System;
 using System.IO;
-using ProtoBuf;
 using ProtocolBufferSerializer = ProtoBuf.Serializer;
 
 namespace BigObjectsSerialization

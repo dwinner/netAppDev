@@ -19,14 +19,16 @@ namespace ManagingSerialization
    {
       private readonly double _radius;
       // NOTE: Если это новое поле, добавленное в класс, модуль форматирования не вбросит исключение SerializationException
-      [OptionalField] private readonly Guid _serialVersionGuid = NewGuid();
+      [OptionalField]
+      private readonly Guid _serialVersionGuid = NewGuid();
 
-      [NonSerialized] private double _area;
+      [NonSerialized]
+      private double _area;
 
       public Circle(double radius)
       {
          _radius = radius;
-         _area = PI*_radius*_radius;
+         _area = PI * _radius * _radius;
       }
 
       #region Методы управления сериализацией
@@ -53,7 +55,7 @@ namespace ManagingSerialization
       private void OnDeserialized(StreamingContext context)
       {
          // NOTE: Инициализация временного состояния полей
-         _area = PI*_radius*_radius;
+         _area = PI * _radius * _radius;
       }
 
       #endregion

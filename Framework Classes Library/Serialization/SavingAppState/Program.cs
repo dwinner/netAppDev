@@ -1,10 +1,10 @@
 ﻿// Сохранение состояния приложения
 
+using SavingAppState.Properties;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
-using SavingAppState.Properties;
 
 namespace SavingAppState
 {

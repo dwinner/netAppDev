@@ -33,7 +33,7 @@ namespace DeepcloningViaSerialization
             };
             formatter.Serialize(stream, original);
             stream.Position = 0;
-            return (T) formatter.Deserialize(stream);
+            return (T)formatter.Deserialize(stream);
          }
       }
    }

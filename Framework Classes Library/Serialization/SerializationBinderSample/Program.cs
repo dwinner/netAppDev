@@ -23,7 +23,7 @@ namespace SerializationBinderSample
          var assemblyVer1 = Assembly.GetExecutingAssembly().GetName();
          assemblyVer1.Version = new Version(1, 0, 0, 0);
          return assemblyName == assemblyVer1.ToString() && typeName == nameof(Ver1)
-            ? typeof (Ver2) // При десериализации объекта Ver1 версии v1.0.0.0 превращаем его в Ver2
+            ? typeof(Ver2) // При десериализации объекта Ver1 версии v1.0.0.0 превращаем его в Ver2
             : Type.GetType($"{typeName}, {assemblyName}"); // В противном случае возвращаем запрошенный тип
       }
    }

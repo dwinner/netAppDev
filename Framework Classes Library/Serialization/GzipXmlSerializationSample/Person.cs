@@ -23,14 +23,14 @@ namespace GzipXmlSerializationSample
       public override bool Equals(object obj)
       {
          return !ReferenceEquals(null, obj) &&
-                (ReferenceEquals(this, obj) || obj.GetType() == GetType() && Equals((Person) obj));
+                (ReferenceEquals(this, obj) || obj.GetType() == GetType() && Equals((Person)obj));
       }
 
       public override int GetHashCode()
       {
          unchecked
          {
-            return ((FirstName?.GetHashCode() ?? 0)*397) ^
+            return ((FirstName?.GetHashCode() ?? 0) * 397) ^
                    (LastName?.GetHashCode() ?? 0);
          }
       }

@@ -20,7 +20,7 @@ namespace SerializationSurrogateSample
             var surrogateSelector = new SurrogateSelector();
 
             // 3. Селектор выбирает наш суррогат для объекта DateTime
-            surrogateSelector.AddSurrogate(typeof (DateTime), formatter.Context,
+            surrogateSelector.AddSurrogate(typeof(DateTime), formatter.Context,
                new UniversalToLocalTimeSerializationSurrogate());
 
             // NOTE: AddSurrogate можно вызывать более одного раза и зарегистрировать несколько суррогатов
@@ -38,7 +38,7 @@ namespace SerializationSurrogateSample
 
             // Десериализация универсального времени и преобразование объекта DateTime в локальное время
             stream.Position = 0;
-            var localTimeAfterDeserialize = (DateTime) formatter.Deserialize(stream);
+            var localTimeAfterDeserialize = (DateTime)formatter.Deserialize(stream);
 
             // Проверка корректности работы
             Console.WriteLine("{0} = {1}", nameof(localTimeBeforeSerialize), localTimeBeforeSerialize);

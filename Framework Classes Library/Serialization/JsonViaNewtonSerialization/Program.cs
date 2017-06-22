@@ -1,10 +1,10 @@
 ﻿// Альтернативный способ сериализации в формате JSON
 
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
 using static System.String;
 
 namespace JsonViaNewtonSerialization

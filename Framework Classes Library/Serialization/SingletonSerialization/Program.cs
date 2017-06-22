@@ -6,8 +6,8 @@ using System.IO;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Security.Permissions;
-using static System.DateTime;
 using static SingletonSerialization.Singleton;
+using static System.DateTime;
 
 namespace SingletonSerialization
 {
