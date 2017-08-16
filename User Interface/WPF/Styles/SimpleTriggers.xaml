@@ -25,11 +25,11 @@
 
     <StackPanel Margin="5">
         <Button Padding="5" Margin="5"
-                Style="{StaticResource BigFontButton}" Content="A Customized Button"/>
-        <TextBlock Margin="5" Text="Normal Content."/>
-        <Button Padding="5" Margin="5" Content="A Normal Button"/>
-        <TextBlock Margin="5" Text="More normal Content."/>
+                Style="{StaticResource BigFontButton}" Content="A Customized Button" />
+        <TextBlock Margin="5" Text="Normal Content." />
+        <Button Padding="5" Margin="5" Content="A Normal Button" />
+        <TextBlock Margin="5" Text="More normal Content." />
         <Button Padding="5" Margin="5"
-                Style="{StaticResource BigFontButton}" Content="Another Customized Button"/>
+                Style="{StaticResource BigFontButton}" Content="Another Customized Button" />
     </StackPanel>
 </Window>

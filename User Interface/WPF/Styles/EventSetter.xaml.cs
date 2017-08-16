@@ -3,7 +3,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 
 namespace Styles
-{   
+{
    public partial class EventSetter
    {
       public EventSetter()
@@ -13,11 +13,12 @@ namespace Styles
 
       private void OnMouseEnter(object sender, MouseEventArgs e)
       {
-         ((TextBlock)sender).Background = new SolidColorBrush(Colors.LightGoldenrodYellow);
+         ((TextBlock) sender).Background = new SolidColorBrush(Colors.LightGoldenrodYellow);
       }
+
       private void OnMouseLeave(object sender, MouseEventArgs e)
       {
-         ((TextBlock)sender).Background = null;
+         ((TextBlock) sender).Background = null;
       }
    }
 }

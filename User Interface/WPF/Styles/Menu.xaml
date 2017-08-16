@@ -4,13 +4,13 @@
         Title="Menu" Height="321" Width="244">
     <Grid>
         <StackPanel Margin="5" Button.Click="ButtonClick">
-            <Button>ReuseFontWithResources</Button>
-            <Button>ReuseFontWithStyles</Button>
-            <Button>EventSetter</Button>
-            <Button>StyleInheritance</Button>
-            <Button>AutomaticStyles</Button>
-            <Button>SimpleTriggers</Button>
-            <Button>EventTriggers</Button>
+            <Button Content="ReuseFontWithResources" />
+            <Button Content="ReuseFontWithStyles" />
+            <Button Content="EventSetter" />
+            <Button Content="StyleInheritance" />
+            <Button Content="AutomaticStyles"/>
+            <Button Content="SimpleTriggers"/>
+            <Button Content="EventTriggers"/>
         </StackPanel>
     </Grid>
 </Window>

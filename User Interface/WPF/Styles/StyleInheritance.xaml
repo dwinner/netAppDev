@@ -17,12 +17,12 @@
 
     <StackPanel Margin="5">
         <Button Padding="5" Margin="5"
-                Style="{StaticResource BigFontButtonStyle}" Content="Uses BigFontButtonStyle"/>
-        <TextBlock Margin="5">Normal Content.</TextBlock>
-        <Button Padding="5" Margin="5" Content="A Normal Button"/>
-        <TextBlock Margin="5" Text="More normal Content."/>
+                Style="{StaticResource BigFontButtonStyle}" Content="Uses BigFontButtonStyle" />
+        <TextBlock Margin="5" Text="Normal Content." />
+        <Button Padding="5" Margin="5" Content="A Normal Button" />
+        <TextBlock Margin="5" Text="More normal Content." />
         <Button Padding="5" Margin="5"
                 Style="{StaticResource EmphasizedBigFontButtonStyle}"
-                Content="Uses EmphasizedBigFontButtonStyle"/>
+                Content="Uses EmphasizedBigFontButtonStyle" />
     </StackPanel>
 </Window>

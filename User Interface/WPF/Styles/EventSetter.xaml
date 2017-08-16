@@ -11,8 +11,8 @@
     </Window.Resources>
 
     <StackPanel>
-        <TextBlock Style="{StaticResource MouseOverHighlightStyle}">Hover over me.</TextBlock>
-        <TextBlock Padding="5">Don't bother with me.</TextBlock>
-        <TextBlock Style="{StaticResource MouseOverHighlightStyle}">Hover over me.</TextBlock>
+        <TextBlock Style="{StaticResource MouseOverHighlightStyle}" Text="Hover over me." />
+        <TextBlock Padding="5" Text="Don't bother with me." />
+        <TextBlock Style="{StaticResource MouseOverHighlightStyle}" Text="Hover over me." />
     </StackPanel>
 </Window>

@@ -12,17 +12,15 @@
         <Button Padding="5" Margin="5"
                 FontFamily="{StaticResource ButtonFontFamily}"
                 FontWeight="{StaticResource ButtonFontWeight}"
-                FontSize="{StaticResource ButtonFontSize}">
-            A Customized Button
-        </Button>
-        <TextBlock Margin="5">Normal Content.</TextBlock>
-        <Button Padding="5" Margin="5">A Normal Button</Button>
-        <TextBlock Margin="5">More normal Content.</TextBlock>
+                FontSize="{StaticResource ButtonFontSize}"
+                Content="A Customized Button" />
+        <TextBlock Margin="5" Text="Normal Content." />
+        <Button Padding="5" Margin="5" Content="A Normal Button" />
+        <TextBlock Margin="5" Text="More normal Content." />
         <Button Padding="5" Margin="5"
                 FontFamily="{StaticResource ButtonFontFamily}"
                 FontWeight="{StaticResource ButtonFontWeight}"
-                FontSize="{StaticResource ButtonFontSize}">
-            Another Customized Button
-        </Button>
+                FontSize="{StaticResource ButtonFontSize}"
+                Content="Another Customized Button" />
     </StackPanel>
 </Window>
