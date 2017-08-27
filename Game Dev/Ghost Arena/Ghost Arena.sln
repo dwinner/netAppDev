@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2015
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ghost Arena.Plugins", "Ghost Arena.Plugins.csproj", "{AFC7A320-B78A-49FB-D476-E0B1878B8ACE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ghost Arena.Editor.Plugins", "Ghost Arena.Editor.Plugins.csproj", "{C9542EE1-8297-DF9E-5336-0F84679F378E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{AFC7A320-B78A-49FB-D476-E0B1878B8ACE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AFC7A320-B78A-49FB-D476-E0B1878B8ACE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AFC7A320-B78A-49FB-D476-E0B1878B8ACE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AFC7A320-B78A-49FB-D476-E0B1878B8ACE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C9542EE1-8297-DF9E-5336-0F84679F378E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C9542EE1-8297-DF9E-5336-0F84679F378E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C9542EE1-8297-DF9E-5336-0F84679F378E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C9542EE1-8297-DF9E-5336-0F84679F378E}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
