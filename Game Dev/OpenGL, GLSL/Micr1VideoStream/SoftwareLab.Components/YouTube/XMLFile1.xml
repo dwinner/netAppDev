@@ -1,0 +1,450 @@
+﻿<?xml version='1.0' encoding='UTF-8'?>
+<rss xmlns:app='http://purl.org/atom/app#' xmlns:atom='http://www.w3.org/2005/Atom' xmlns:media='http://search.yahoo.com/mrss/' xmlns:openSearch='http://a9.com/-/spec/opensearchrss/1.0/' xmlns:gd='http://schemas.google.com/g/2005' xmlns:gml='http://www.opengis.net/gml' xmlns:yt='http://gdata.youtube.com/schemas/2007' xmlns:georss='http://www.georss.org/georss' version='2.0'>
+  <channel>
+    <description></description>
+    <atom:id>http://gdata.youtube.com/feeds/api/videos</atom:id>
+    <lastBuildDate>Sat, 16 Jun 2012 15:47:53 +0000</lastBuildDate>
+    <category domain='http://schemas.google.com/g/2005#kind'>http://gdata.youtube.com/schemas/2007#video</category>
+    <title>YouTube Videos matching query: football -soccer</title>
+    <image>
+      <url>http://www.youtube.com/img/pic_youtubelogo_123x63.gif</url>
+      <title>YouTube Videos matching query: football -soccer</title>
+      <link>http://www.youtube.com</link>
+    </image>
+    <link>http://www.youtube.com</link>
+    <atom:link rel='self' href='http://gdata.youtube.com/feeds/api/videos?alt=rss&amp;q=football+-soccer&amp;start-index=11&amp;max-results=10&amp;orderby=published&amp;v=1'/>
+    <managingEditor>YouTube</managingEditor>
+    <generator>YouTube data API</generator>
+    <openSearch:totalResults>12829</openSearch:totalResults>
+    <openSearch:startIndex>11</openSearch:startIndex>
+    <openSearch:itemsPerPage>10</openSearch:itemsPerPage>
+    <item>
+      <guid isPermaLink='false'>http://gdata.youtube.com/feeds/api/videos/Ymx4YAqkIWU</guid>
+      <pubDate>Sat, 16 Jun 2012 15:21:03 +0000</pubDate>
+      <atom:updated>2012-06-16T15:21:03.000Z</atom:updated>
+      <category domain='http://schemas.google.com/g/2005#kind'>http://gdata.youtube.com/schemas/2007#video</category>
+      <category domain='http://gdata.youtube.com/schemas/2007/categories.cat'>Comedy</category>
+      <category domain='http://gdata.youtube.com/schemas/2007/keywords.cat'>fart</category>
+      <category domain='http://gdata.youtube.com/schemas/2007/keywords.cat'>farting</category>
+      <category domain='http://gdata.youtube.com/schemas/2007/keywords.cat'>funny</category>
+      <category domain='http://gdata.youtube.com/schemas/2007/keywords.cat'>flatulence</category>
+      <category domain='http://gdata.youtube.com/schemas/2007/keywords.cat'>gas</category>
+      <category domain='http://gdata.youtube.com/schemas/2007/keywords.cat'>wind</category>
+      <category domain='http://gdata.youtube.com/schemas/2007/keywords.cat'>trump</category>
+      <category domain='http://gdata.youtube.com/schemas/2007/keywords.cat'>steve</category>
+      <category domain='http://gdata.youtube.com/schemas/2007/keywords.cat'>the</category>
+      <category domain='http://gdata.youtube.com/schemas/2007/keywords.cat'>fartman</category>
+      <title>Steve the Fartman Blows Off part 85 (Euro 2012)</title>
+      <description>This is take 2 the proper one. What do my subscribers think of Euro 2012 so far? Sorry if i have offended any Swedish football fans, i didn't mean it. I don't think England will win it, they will probably be lucky to get to the semi-finals.</description>
+      <link>http://www.youtube.com/watch?v=Ymx4YAqkIWU&amp;feature=youtube_gdata</link>
+      <author>fartmanuk</author>
+      <gd:comments>
+        <gd:feedLink rel='http://gdata.youtube.com/schemas/2007#comments' href='http://gdata.youtube.com/feeds/api/videos/Ymx4YAqkIWU/comments?v=1' countHint='0'/>
+      </gd:comments>
+      <yt:hd/>
+      <media:group>
+        <media:category label='Comedy' scheme='http://gdata.youtube.com/schemas/2007/categories.cat'>Comedy</media:category>
+        <media:content url='http://www.youtube.com/v/Ymx4YAqkIWU?version=3&amp;f=videos&amp;app=youtube_gdata' type='application/x-shockwave-flash' medium='video' isDefault='true' expression='full' duration='81' yt:format='5'/>
+        <media:content url='rtsp://v5.cache4.c.youtube.com/CiILENy73wIaGQllIaQKYHhsYhMYDSANFEgGUgZ2aWRlb3MM/0/0/0/video.3gp' type='video/3gpp' medium='video' expression='full' duration='81' yt:format='1'/>
+        <media:content url='rtsp://v6.cache7.c.youtube.com/CiILENy73wIaGQllIaQKYHhsYhMYESARFEgGUgZ2aWRlb3MM/0/0/0/video.3gp' type='video/3gpp' medium='video' expression='full' duration='81' yt:format='6'/>
+        <media:description type='plain'>This is take 2 the proper one. What do my subscribers think of Euro 2012 so far? Sorry if i have offended any Swedish football fans, i didn't mean it. I don't think England will win it, they will probably be lucky to get to the semi-finals.</media:description>
+        <media:keywords>fart, farting, funny, flatulence, gas, wind, trump, steve, the, fartman</media:keywords>
+        <media:player url='http://www.youtube.com/watch?v=Ymx4YAqkIWU&amp;feature=youtube_gdata_player'/>
+        <media:thumbnail url='http://i.ytimg.com/vi/Ymx4YAqkIWU/0.jpg' height='360' width='480' time='00:00:40.500'/>
+        <media:thumbnail url='http://i.ytimg.com/vi/Ymx4YAqkIWU/1.jpg' height='90' width='120' time='00:00:20.250'/>
+        <media:thumbnail url='http://i.ytimg.com/vi/Ymx4YAqkIWU/2.jpg' height='90' width='120' time='00:00:40.500'/>
+        <media:thumbnail url='http://i.ytimg.com/vi/Ymx4YAqkIWU/3.jpg' height='90' width='120' time='00:01:00.750'/>
+        <media:title type='plain'>Steve the Fartman Blows Off part 85 (Euro 2012)</media:title>
+        <yt:duration seconds='81'/>
+      </media:group>
+    </item>
+    <item>
+      <guid isPermaLink='false'>http://gdata.youtube.com/feeds/api/videos/OTmKM7qPmQE</guid>
+      <pubDate>Sat, 16 Jun 2012 15:21:15 +0000</pubDate>
+      <atom:updated>2012-06-16T15:21:15.000Z</atom:updated>
+      <category domain='http://schemas.google.com/g/2005#kind'>http://gdata.youtube.com/schemas/2007#video</category>
+      <category domain='http://gdata.youtube.com/schemas/2007/categories.cat'>Games</category>
+      <category domain='http://gdata.youtube.com/schemas/2007/keywords.cat'>Na`Vi</category>
+      <category domain='http://gdata.youtube.com/schemas/2007/keywords.cat'>navi</category>
+      <category domain='http://gdata.youtube.com/schemas/2007/keywords.cat'>Natus Vincere</category>
+      <category domain='http://gdata.youtube.com/schemas/2007/keywords.cat'>DOTA2</category>
+      <category domain='http://gdata.youtube.com/schemas/2007/keywords.cat'>YALTA</category>
+      <category domain='http://gdata.youtube.com/schemas/2007/keywords.cat'>Ukraine</category>
+      <category domain='http://gdata.youtube.com/schemas/2007/keywords.cat'>EURO</category>
+      <category domain='http://gdata.youtube.com/schemas/2007/keywords.cat'>2012</category>
+      <title>Road trip and Football Na`Vi stars in Sweden</title>
+      <description>Powered by www.navi-gaming.com FORUM forum.navi-gaming.com</description>
+      <link>http://www.youtube.com/watch?v=OTmKM7qPmQE&amp;feature=youtube_gdata</link>
+      <author>natusvinceretv</author>
+      <gd:comments>
+        <gd:feedLink rel='http://gdata.youtube.com/schemas/2007#comments' href='http://gdata.youtube.com/feeds/api/videos/OTmKM7qPmQE/comments?v=1' countHint='4'/>
+      </gd:comments>
+      <yt:hd/>
+      <media:group>
+        <media:category label='Gaming' scheme='http://gdata.youtube.com/schemas/2007/categories.cat'>Games</media:category>
+        <media:content url='http://www.youtube.com/v/OTmKM7qPmQE?version=3&amp;f=videos&amp;app=youtube_gdata' type='application/x-shockwave-flash' medium='video' isDefault='true' expression='full' duration='92' yt:format='5'/>
+        <media:content url='rtsp://v7.cache1.c.youtube.com/CiILENy73wIaGQkBmY-6M4o5ORMYDSANFEgGUgZ2aWRlb3MM/0/0/0/video.3gp' type='video/3gpp' medium='video' expression='full' duration='92' yt:format='1'/>
+        <media:content url='rtsp://v4.cache2.c.youtube.com/CiILENy73wIaGQkBmY-6M4o5ORMYESARFEgGUgZ2aWRlb3MM/0/0/0/video.3gp' type='video/3gpp' medium='video' expression='full' duration='92' yt:format='6'/>
+        <media:description type='plain'>Powered by www.navi-gaming.com FORUM forum.navi-gaming.com</media:description>
+        <media:keywords>Na`Vi, navi, Natus Vincere, DOTA2, YALTA, Ukraine, EURO, 2012</media:keywords>
+        <media:player url='http://www.youtube.com/watch?v=OTmKM7qPmQE&amp;feature=youtube_gdata_player'/>
+        <media:thumbnail url='http://i.ytimg.com/vi/OTmKM7qPmQE/0.jpg' height='360' width='480' time='00:00:46'/>
+        <media:thumbnail url='http://i.ytimg.com/vi/OTmKM7qPmQE/1.jpg' height='90' width='120' time='00:00:23'/>
+        <media:thumbnail url='http://i.ytimg.com/vi/OTmKM7qPmQE/2.jpg' height='90' width='120' time='00:00:46'/>
+        <media:thumbnail url='http://i.ytimg.com/vi/OTmKM7qPmQE/3.jpg' height='90' width='120' time='00:01:09'/>
+        <media:title type='plain'>Road trip and Football Na`Vi stars in Sweden</media:title>
+        <yt:duration seconds='92'/>
+      </media:group>
+      <gd:rating average='5.0' max='5' min='1' numRaters='9' rel='http://schemas.google.com/g/2005#overall'/>
+      <yt:statistics favoriteCount='0' viewCount='113'/>
+    </item>
+    <item>
+      <guid isPermaLink='false'>http://gdata.youtube.com/feeds/api/videos/MzMyodtRzlI</guid>
+      <pubDate>Sat, 16 Jun 2012 15:20:21 +0000</pubDate>
+      <atom:updated>2012-06-16T15:20:21.000Z</atom:updated>
+      <category domain='http://schemas.google.com/g/2005#kind'>http://gdata.youtube.com/schemas/2007#video</category>
+      <category domain='http://gdata.youtube.com/schemas/2007/categories.cat'>People</category>
+      <category domain='http://gdata.youtube.com/schemas/2007/keywords.cat'>Untitled</category>
+      <title>Freestyle Football Session</title>
+      <description>enjoy :)! Like comment subscribe ps i'll try and start to upload to this channel again :)</description>
+      <link>http://www.youtube.com/watch?v=MzMyodtRzlI&amp;feature=youtube_gdata</link>
+      <author>Ikikx000</author>
+      <gd:comments>
+        <gd:feedLink rel='http://gdata.youtube.com/schemas/2007#comments' href='http://gdata.youtube.com/feeds/api/videos/MzMyodtRzlI/comments?v=1' countHint='0'/>
+      </gd:comments>
+      <yt:hd/>
+      <media:group>
+        <media:category label='People &amp; Blogs' scheme='http://gdata.youtube.com/schemas/2007/categories.cat'>People</media:category>
+        <media:content url='http://www.youtube.com/v/MzMyodtRzlI?version=3&amp;f=videos&amp;app=youtube_gdata' type='application/x-shockwave-flash' medium='video' isDefault='true' expression='full' duration='80' yt:format='5'/>
+        <media:content url='rtsp://v6.cache5.c.youtube.com/CiILENy73wIaGQlSzlHboTIzMxMYDSANFEgGUgZ2aWRlb3MM/0/0/0/video.3gp' type='video/3gpp' medium='video' expression='full' duration='80' yt:format='1'/>
+        <media:content url='rtsp://v1.cache6.c.youtube.com/CiILENy73wIaGQlSzlHboTIzMxMYESARFEgGUgZ2aWRlb3MM/0/0/0/video.3gp' type='video/3gpp' medium='video' expression='full' duration='80' yt:format='6'/>
+        <media:description type='plain'>enjoy :)! Like comment subscribe ps i'll try and start to upload to this channel again :)</media:description>
+        <media:keywords>Untitled</media:keywords>
+        <media:player url='http://www.youtube.com/watch?v=MzMyodtRzlI&amp;feature=youtube_gdata_player'/>
+        <media:thumbnail url='http://i.ytimg.com/vi/MzMyodtRzlI/0.jpg' height='360' width='480' time='00:00:40'/>
+        <media:thumbnail url='http://i.ytimg.com/vi/MzMyodtRzlI/1.jpg' height='90' width='120' time='00:00:20'/>
+        <media:thumbnail url='http://i.ytimg.com/vi/MzMyodtRzlI/2.jpg' height='90' width='120' time='00:00:40'/>
+        <media:thumbnail url='http://i.ytimg.com/vi/MzMyodtRzlI/3.jpg' height='90' width='120' time='00:01:00'/>
+        <media:title type='plain'>Freestyle Football Session</media:title>
+        <yt:duration seconds='80'/>
+      </media:group>
+    </item>
+    <item>
+      <guid isPermaLink='false'>http://gdata.youtube.com/feeds/api/videos/ZMso24WsyL0</guid>
+      <pubDate>Sat, 16 Jun 2012 15:14:21 +0000</pubDate>
+      <atom:updated>2012-06-16T15:14:21.000Z</atom:updated>
+      <category domain='http://schemas.google.com/g/2005#kind'>http://gdata.youtube.com/schemas/2007#video</category>
+      <category domain='http://gdata.youtube.com/schemas/2007/categories.cat'>Nonprofit</category>
+      <category domain='http://gdata.youtube.com/schemas/2007/keywords.cat'>Men's Health Week</category>
+      <category domain='http://gdata.youtube.com/schemas/2007/keywords.cat'>Matthew Stafford</category>
+      <category domain='http://gdata.youtube.com/schemas/2007/keywords.cat'>Matt Stafford</category>
+      <category domain='http://gdata.youtube.com/schemas/2007/keywords.cat'>BCBSM</category>
+      <category domain='http://gdata.youtube.com/schemas/2007/keywords.cat'>Michigan</category>
+      <category domain='http://gdata.youtube.com/schemas/2007/keywords.cat'>Detroit Lions</category>
+      <category domain='http://gdata.youtube.com/schemas/2007/keywords.cat'>diet</category>
+      <category domain='http://gdata.youtube.com/schemas/2007/keywords.cat'>healthy eating</category>
+      <title>Men's Health Week Challenge #6: Eat Something Light</title>
+      <description>Join A Healthier Michigan (@HealthierMI) and Matthew Stafford (@Staff_9) for Men's Health Week from June 11-17 and help fight preventable health problems among men and boys. Men's Health Week is celebrated each year to raise awareness of preventable health problems among men and boys throughout the week leading up to and including Father's Day. This year Blue Cross Blue Shield of Michigan and Matthew Stafford are teaming up to challenge the men of Michigan to take control of their health and do better for themselves. Each day this week, A Healthier Michigan will share a video challenge from Matthew Stafford on Facebook and Twitter with instructions on how to participate and win. We'll also be sharing great tips to keep men healthy on the blog, so visit every day to learn how to become healthier. Follow @HealthierMI and @Staff_9 on Twitter and like us on Facebook to tune in throughout the week, and join the conversation on Twitter using the hashtag #MenofMI. Get creative each day with the challenge for your chance to win an autographed Detroit Lions football! For full contest rules, visit www.ahealthiermichigan.org</description>
+      <link>http://www.youtube.com/watch?v=ZMso24WsyL0&amp;feature=youtube_gdata</link>
+      <author>bcbsmnews</author>
+      <gd:comments>
+        <gd:feedLink rel='http://gdata.youtube.com/schemas/2007#comments' href='http://gdata.youtube.com/feeds/api/videos/ZMso24WsyL0/comments?v=1' countHint='0'/>
+      </gd:comments>
+      <media:group>
+        <media:category label='Nonprofits &amp; Activism' scheme='http://gdata.youtube.com/schemas/2007/categories.cat'>Nonprofit</media:category>
+        <media:content url='http://www.youtube.com/v/ZMso24WsyL0?version=3&amp;f=videos&amp;app=youtube_gdata' type='application/x-shockwave-flash' medium='video' isDefault='true' expression='full' duration='56' yt:format='5'/>
+        <media:content url='rtsp://v5.cache6.c.youtube.com/CiILENy73wIaGQm9yKyF2yjLZBMYDSANFEgGUgZ2aWRlb3MM/0/0/0/video.3gp' type='video/3gpp' medium='video' expression='full' duration='56' yt:format='1'/>
+        <media:content url='rtsp://v5.cache5.c.youtube.com/CiILENy73wIaGQm9yKyF2yjLZBMYESARFEgGUgZ2aWRlb3MM/0/0/0/video.3gp' type='video/3gpp' medium='video' expression='full' duration='56' yt:format='6'/>
+        <media:description type='plain'>Join A Healthier Michigan (@HealthierMI) and Matthew Stafford (@Staff_9) for Men's Health Week from June 11-17 and help fight preventable health problems among men and boys. Men's Health Week is celebrated each year to raise awareness of preventable health problems among men and boys throughout the week leading up to and including Father's Day. This year Blue Cross Blue Shield of Michigan and Matthew Stafford are teaming up to challenge the men of Michigan to take control of their health and do better for themselves. Each day this week, A Healthier Michigan will share a video challenge from Matthew Stafford on Facebook and Twitter with instructions on how to participate and win. We'll also be sharing great tips to keep men healthy on the blog, so visit every day to learn how to become healthier. Follow @HealthierMI and @Staff_9 on Twitter and like us on Facebook to tune in throughout the week, and join the conversation on Twitter using the hashtag #MenofMI. Get creative each day with the challenge for your chance to win an autographed Detroit Lions football! For full contest rules, visit www.ahealthiermichigan.org</media:description>
+        <media:keywords>Men's Health Week, Matthew Stafford, Matt Stafford, BCBSM, Michigan, Detroit Lions, diet, healthy eating</media:keywords>
+        <media:player url='http://www.youtube.com/watch?v=ZMso24WsyL0&amp;feature=youtube_gdata_player'/>
+        <media:thumbnail url='http://i.ytimg.com/vi/ZMso24WsyL0/0.jpg' height='360' width='480' time='00:00:28'/>
+        <media:thumbnail url='http://i.ytimg.com/vi/ZMso24WsyL0/1.jpg' height='90' width='120' time='00:00:14'/>
+        <media:thumbnail url='http://i.ytimg.com/vi/ZMso24WsyL0/2.jpg' height='90' width='120' time='00:00:28'/>
+        <media:thumbnail url='http://i.ytimg.com/vi/ZMso24WsyL0/3.jpg' height='90' width='120' time='00:00:42'/>
+        <media:title type='plain'>Men's Health Week Challenge #6: Eat Something Light</media:title>
+        <yt:duration seconds='56'/>
+      </media:group>
+      <yt:statistics favoriteCount='0' viewCount='3'/>
+    </item>
+    <item>
+      <guid isPermaLink='false'>http://gdata.youtube.com/feeds/api/videos/IoCoBJI7PTk</guid>
+      <pubDate>Sat, 16 Jun 2012 15:12:50 +0000</pubDate>
+      <atom:updated>2012-06-16T15:12:50.000Z</atom:updated>
+      <category domain='http://schemas.google.com/g/2005#kind'>http://gdata.youtube.com/schemas/2007#video</category>
+      <category domain='http://gdata.youtube.com/schemas/2007/categories.cat'>Games</category>
+      <category domain='http://gdata.youtube.com/schemas/2007/keywords.cat'>CGWKOTD</category>
+      <category domain='http://gdata.youtube.com/schemas/2007/keywords.cat'>Amazing</category>
+      <category domain='http://gdata.youtube.com/schemas/2007/keywords.cat'>Trickshot</category>
+      <category domain='http://gdata.youtube.com/schemas/2007/keywords.cat'>Sick</category>
+      <category domain='http://gdata.youtube.com/schemas/2007/keywords.cat'>Awesome</category>
+      <category domain='http://gdata.youtube.com/schemas/2007/keywords.cat'>Ps3</category>
+      <category domain='http://gdata.youtube.com/schemas/2007/keywords.cat'>xbox</category>
+      <category domain='http://gdata.youtube.com/schemas/2007/keywords.cat'>cod</category>
+      <category domain='http://gdata.youtube.com/schemas/2007/keywords.cat'>cod4</category>
+      <category domain='http://gdata.youtube.com/schemas/2007/keywords.cat'>black</category>
+      <category domain='http://gdata.youtube.com/schemas/2007/keywords.cat'>ops</category>
+      <category domain='http://gdata.youtube.com/schemas/2007/keywords.cat'>mw3</category>
+      <category domain='http://gdata.youtube.com/schemas/2007/keywords.cat'>triple</category>
+      <category domain='http://gdata.youtube.com/schemas/2007/keywords.cat'>quad</category>
+      <category domain='http://gdata.youtube.com/schemas/2007/keywords.cat'>bestcodshots</category>
+      <category domain='http://gdata.youtube.com/schemas/2007/keywords.cat'>codshotoftheday</category>
+      <category domain='http://gdata.youtube.com/schemas/2007/keywords.cat'>xcodshots</category>
+      <category domain='http://gdata.youtube.com/schemas/2007/keywords.cat'>amazingfilms247</category>
+      <category domain='http://gdata.youtube.com/schemas/2007/keywords.cat'>restnt</category>
+      <category domain='http://gdata.youtube.com/schemas/2007/keywords.cat'>operatorperry</category>
+      <category domain='http://gdata.youtube.com/schemas/2007/keywords.cat'>fazeclan</category>
+      <category domain='http://gdata.youtube.com/schemas/2007/keywords.cat'>fazefakie</category>
+      <category domain='http://gdata.youtube.com/schemas/2007/keywords.cat'>ilance210</category>
+      <category domain='http://gdata.youtube.com/schemas/2007/keywords.cat'>whiteboy7thst</category>
+      <category domain='http://gdata.youtube.com/schemas/2007/keywords.cat'>modern</category>
+      <category domain='http://gdata.youtube.com/schemas/2007/keywords.cat'>warfare</category>
+      <category domain='http://gdata.youtube.com/schemas/2007/keywords.cat'>call</category>
+      <category domain='http://gdata.youtube.com/schemas/2007/keywords.cat'>of</category>
+      <category domain='http://gdata.youtube.com/schemas/2007/keywords.cat'>duty</category>
+      <category domain='http://gdata.youtube.com/schemas/2007/keywords.cat'>montage</category>
+      <category domain='http://gdata.youtube.com/schemas/2007/keywords.cat'>killcam</category>
+      <category domain='http://gdata.youtube.com/schemas/2007/keywords.cat'>best</category>
+      <category domain='http://gdata.youtube.com/schemas/2007/keywords.cat'>shot</category>
+      <category domain='http://gdata.youtube.com/schemas/2007/keywords.cat'>ever</category>
+      <category domain='http://gdata.youtube.com/schemas/2007/keywords.cat'>guns</category>
+      <category domain='http://gdata.youtube.com/schemas/2007/keywords.cat'>fpsrussia</category>
+      <category domain='http://gdata.youtube.com/schemas/2007/keywords.cat'>rwj</category>
+      <category domain='http://gdata.youtube.com/schemas/2007/keywords.cat'>predatorcinema</category>
+      <category domain='http://gdata.youtube.com/schemas/2007/keywords.cat'>bestcodcomedy</category>
+      <category domain='http://gdata.youtube.com/schemas/2007/keywords.cat'>community</category>
+      <category domain='http://gdata.youtube.com/schemas/2007/keywords.cat'>tage</category>
+      <category domain='http://gdata.youtube.com/schemas/2007/keywords.cat'>ladder</category>
+      <category domain='http://gdata.youtube.com/schemas/2007/keywords.cat'>stall</category>
+      <category domain='http://gdata.youtube.com/schemas/2007/keywords.cat'>noscope</category>
+      <category domain='http://gdata.youtube.com/schemas/2007/keywords.cat'>optic</category>
+      <category domain='http://gdata.youtube.com/schemas/2007/keywords.cat'>top</category>
+      <category domain='http://gdata.youtube.com/schemas/2007/keywords.cat'>plays</category>
+      <category domain='http://gdata.youtube.com/schemas/2007/keywords.cat'>headshot</category>
+      <category domain='http://gdata.youtube.com/schemas/2007/keywords.cat'>yeousch</category>
+      <category domain='http://gdata.youtube.com/schemas/2007/keywords.cat'>reloaded</category>
+      <category domain='http://gdata.youtube.com/schemas/2007/keywords.cat'>freddiew</category>
+      <category domain='http://gdata.youtube.com/schemas/2007/keywords.cat'>gamesprout</category>
+      <category domain='http://gdata.youtube.com/schemas/2007/keywords.cat'>hazardcinema</category>
+      <category domain='http://gdata.youtube.com/schemas/2007/keywords.cat'>darth</category>
+      <category domain='http://gdata.youtube.com/schemas/2007/keywords.cat'>Mw2</category>
+      <category domain='http://gdata.youtube.com/schemas/2007/keywords.cat'>Cod5</category>
+      <category domain='http://gdata.youtube.com/schemas/2007/keywords.cat'>Gameplay</category>
+      <category domain='http://gdata.youtube.com/schemas/2007/keywords.cat'>Duty:</category>
+      <category domain='http://gdata.youtube.com/schemas/2007/keywords.cat'>pwnagetheatre</category>
+      <title>Mw2/Black Ops/Cod4/WaW Challenge Lobby Update</title>
+      <description>msg the host, not me! i only show u these vids and cl's. i would help you but i myself dont host so i cant :/ ohbeestly is the most reliable out of them all and jdixon93hd1080p for black ops Be Sure to Like/Fav and Subscribe to not only us but the player/editor/creator as well! NEW Community Channel : www.youtube.com Current Background made by: www.youtube.com check out our epic partners here: www.youtube.com they got partnership! TAGS: Experience Walkthrough Gametrailers posted a Xbox 360 Dashboard Walkthrough bluexephos Hacking GamerTag free money Recon Armor PS3 Microsoft ELITE Master xjawz tgn dare mlg astro gaming dr.dre Chief machinima Call Xbox LIVE sims 2 skyrim gtav gta5 pokemon Dash Board came early beta version reactstv messi ronaldo football uefa convexnetwork tulisa cheatsboring program software demo major nelson blog free xbox live codes everydat prizerebel rewards1 hack generated generate online google virus unblock WII E3 2008 New Xbox 360 Dashboard Walkthrough Gametrailers posted penguin a Xbox 360 points coins change Dashboard armor halo 3 skulls Walkthrough Extra Tags] IGNORE [Extra Tags] E3 2008 New Xbox 360 Dashboard Hacking Club GamerTag Suspened PayPal reconFree Xbox Live Generator HALO 3 General mrwaterfalls Instantly Easy 50 boosting Service GWA Gator360 Supposed cp 1 Wwe Adam free money Recon Armor Master Chief PS3 Microsoft ELITE Master Chief machinima As Xbox 360® readies What is machinima for the next wave of audience gamertag change expansion &lt;b&gt;...&lt;/b&gt;</description>
+      <link>http://www.youtube.com/watch?v=IoCoBJI7PTk&amp;feature=youtube_gdata</link>
+      <author>PwnageTheatre</author>
+      <gd:comments>
+        <gd:feedLink rel='http://gdata.youtube.com/schemas/2007#comments' href='http://gdata.youtube.com/feeds/api/videos/IoCoBJI7PTk/comments?v=1' countHint='0'/>
+      </gd:comments>
+      <yt:hd/>
+      <media:group>
+        <media:category label='Gaming' scheme='http://gdata.youtube.com/schemas/2007/categories.cat'>Games</media:category>
+        <media:content url='http://www.youtube.com/v/IoCoBJI7PTk?version=3&amp;f=videos&amp;app=youtube_gdata' type='application/x-shockwave-flash' medium='video' isDefault='true' expression='full' duration='240' yt:format='5'/>
+        <media:content url='rtsp://v8.cache3.c.youtube.com/CiILENy73wIaGQk5PTuSBKiAIhMYDSANFEgGUgZ2aWRlb3MM/0/0/0/video.3gp' type='video/3gpp' medium='video' expression='full' duration='240' yt:format='1'/>
+        <media:content url='rtsp://v7.cache8.c.youtube.com/CiILENy73wIaGQk5PTuSBKiAIhMYESARFEgGUgZ2aWRlb3MM/0/0/0/video.3gp' type='video/3gpp' medium='video' expression='full' duration='240' yt:format='6'/>
+        <media:description type='plain'>msg the host, not me! i only show u these vids and cl's. i would help you but i myself dont host so i cant :/ ohbeestly is the most reliable out of them all and jdixon93hd1080p for black ops Be Sure to Like/Fav and Subscribe to not only us but the player/editor/creator as well! NEW Community Channel : www.youtube.com Current Background made by: www.youtube.com check out our epic partners here: www.youtube.com they got partnership! TAGS: Experience Walkthrough Gametrailers posted a Xbox 360 Dashboard Walkthrough bluexephos Hacking GamerTag free money Recon Armor PS3 Microsoft ELITE Master xjawz tgn dare mlg astro gaming dr.dre Chief machinima Call Xbox LIVE sims 2 skyrim gtav gta5 pokemon Dash Board came early beta version reactstv messi ronaldo football uefa convexnetwork tulisa cheatsboring program software demo major nelson blog free xbox live codes everydat prizerebel rewards1 hack generated generate online google virus unblock WII E3 2008 New Xbox 360 Dashboard Walkthrough Gametrailers posted penguin a Xbox 360 points coins change Dashboard armor halo 3 skulls Walkthrough Extra Tags] IGNORE [Extra Tags] E3 2008 New Xbox 360 Dashboard Hacking Club GamerTag Suspened PayPal reconFree Xbox Live Generator HALO 3 General mrwaterfalls Instantly Easy 50 boosting Service GWA Gator360 Supposed cp 1 Wwe Adam free money Recon Armor Master Chief PS3 Microsoft ELITE Master Chief machinima As Xbox 360® readies What is machinima for the next wave of audience gamertag change expansion &lt;b&gt;...&lt;/b&gt;</media:description>
+        <media:keywords>CGWKOTD, Amazing, Trickshot, Sick, Awesome, Ps3, xbox, cod, cod4, black, ops, mw3, triple, quad, bestcodshots, codshotoftheday, xcodshots, amazingfilms247, restnt, operatorperry, fazeclan, fazefakie, ilance210, whiteboy7thst, modern, warfare, call, of, duty, montage, killcam, best, shot, ever, guns, fpsrussia, rwj, predatorcinema, bestcodcomedy, community, tage, ladder, stall, noscope, optic, top, plays, headshot, yeousch, reloaded, freddiew, gamesprout, hazardcinema, darth, Mw2, Cod5, Gameplay, Duty:, pwnagetheatre</media:keywords>
+        <media:player url='http://www.youtube.com/watch?v=IoCoBJI7PTk&amp;feature=youtube_gdata_player'/>
+        <media:thumbnail url='http://i.ytimg.com/vi/IoCoBJI7PTk/0.jpg' height='360' width='480' time='00:02:00'/>
+        <media:thumbnail url='http://i.ytimg.com/vi/IoCoBJI7PTk/1.jpg' height='90' width='120' time='00:01:00'/>
+        <media:thumbnail url='http://i.ytimg.com/vi/IoCoBJI7PTk/2.jpg' height='90' width='120' time='00:02:00'/>
+        <media:thumbnail url='http://i.ytimg.com/vi/IoCoBJI7PTk/3.jpg' height='90' width='120' time='00:03:00'/>
+        <media:title type='plain'>Mw2/Black Ops/Cod4/WaW Challenge Lobby Update</media:title>
+        <yt:duration seconds='240'/>
+      </media:group>
+      <gd:rating average='3.0' max='5' min='1' numRaters='2' rel='http://schemas.google.com/g/2005#overall'/>
+      <yt:statistics favoriteCount='0' viewCount='13'/>
+    </item>
+    <item>
+      <guid isPermaLink='false'>http://gdata.youtube.com/feeds/api/videos/SzMi6-5I4jw</guid>
+      <pubDate>Sat, 16 Jun 2012 15:11:07 +0000</pubDate>
+      <atom:updated>2012-06-16T15:11:07.000Z</atom:updated>
+      <category domain='http://schemas.google.com/g/2005#kind'>http://gdata.youtube.com/schemas/2007#video</category>
+      <category domain='http://gdata.youtube.com/schemas/2007/categories.cat'>People</category>
+      <category domain='http://gdata.youtube.com/schemas/2007/keywords.cat'>M4H04032</category>
+      <title>football 15months old boy １歳３か月でサッカー</title>
+      <description>ボールを掴もうとする様子もなく手も使ってないし、来たボールは蹴りに行く（というかパスを返しにくる）ところは一応わかっている様子。</description>
+      <link>http://www.youtube.com/watch?v=SzMi6-5I4jw&amp;feature=youtube_gdata</link>
+      <author>m1oe</author>
+      <gd:comments>
+        <gd:feedLink rel='http://gdata.youtube.com/schemas/2007#comments' href='http://gdata.youtube.com/feeds/api/videos/SzMi6-5I4jw/comments?v=1' countHint='0'/>
+      </gd:comments>
+      <yt:hd/>
+      <media:group>
+        <media:category label='People &amp; Blogs' scheme='http://gdata.youtube.com/schemas/2007/categories.cat'>People</media:category>
+        <media:content url='http://www.youtube.com/v/SzMi6-5I4jw?version=3&amp;f=videos&amp;app=youtube_gdata' type='application/x-shockwave-flash' medium='video' isDefault='true' expression='full' duration='24' yt:format='5'/>
+        <media:content url='rtsp://v7.cache1.c.youtube.com/CiILENy73wIaGQk84kju6yIzSxMYDSANFEgGUgZ2aWRlb3MM/0/0/0/video.3gp' type='video/3gpp' medium='video' expression='full' duration='24' yt:format='1'/>
+        <media:content url='rtsp://v1.cache5.c.youtube.com/CiILENy73wIaGQk84kju6yIzSxMYESARFEgGUgZ2aWRlb3MM/0/0/0/video.3gp' type='video/3gpp' medium='video' expression='full' duration='24' yt:format='6'/>
+        <media:description type='plain'>ボールを掴もうとする様子もなく手も使ってないし、来たボールは蹴りに行く（というかパスを返しにくる）ところは一応わかっている様子。</media:description>
+        <media:keywords>M4H04032</media:keywords>
+        <media:player url='http://www.youtube.com/watch?v=SzMi6-5I4jw&amp;feature=youtube_gdata_player'/>
+        <media:thumbnail url='http://i.ytimg.com/vi/SzMi6-5I4jw/0.jpg' height='360' width='480' time='00:00:12'/>
+        <media:thumbnail url='http://i.ytimg.com/vi/SzMi6-5I4jw/1.jpg' height='90' width='120' time='00:00:06'/>
+        <media:thumbnail url='http://i.ytimg.com/vi/SzMi6-5I4jw/2.jpg' height='90' width='120' time='00:00:12'/>
+        <media:thumbnail url='http://i.ytimg.com/vi/SzMi6-5I4jw/3.jpg' height='90' width='120' time='00:00:18'/>
+        <media:title type='plain'>football 15months old boy １歳３か月でサッカー</media:title>
+        <yt:duration seconds='24'/>
+      </media:group>
+    </item>
+    <item>
+      <guid isPermaLink='false'>http://gdata.youtube.com/feeds/api/videos/wEth17hK38g</guid>
+      <pubDate>Sat, 16 Jun 2012 15:09:39 +0000</pubDate>
+      <atom:updated>2012-06-16T15:09:39.000Z</atom:updated>
+      <category domain='http://schemas.google.com/g/2005#kind'>http://gdata.youtube.com/schemas/2007#video</category>
+      <category domain='http://gdata.youtube.com/schemas/2007/categories.cat'>Tech</category>
+      <category domain='http://gdata.youtube.com/schemas/2007/keywords.cat'>Football</category>
+      <category domain='http://gdata.youtube.com/schemas/2007/keywords.cat'>French</category>
+      <category domain='http://gdata.youtube.com/schemas/2007/keywords.cat'>Toast</category>
+      <category domain='http://gdata.youtube.com/schemas/2007/keywords.cat'>Thoughts</category>
+      <category domain='http://gdata.youtube.com/schemas/2007/keywords.cat'>on</category>
+      <category domain='http://gdata.youtube.com/schemas/2007/keywords.cat'>Facebook</category>
+      <category domain='http://gdata.youtube.com/schemas/2007/keywords.cat'>Birthdays</category>
+      <title>Football &amp; French Toast - Thoughts on Facebook Birthdays</title>
+      <description>How to use Text To Speech on iOS.</description>
+      <link>http://www.youtube.com/watch?v=wEth17hK38g&amp;feature=youtube_gdata</link>
+      <author>mikepahl</author>
+      <gd:comments>
+        <gd:feedLink rel='http://gdata.youtube.com/schemas/2007#comments' href='http://gdata.youtube.com/feeds/api/videos/wEth17hK38g/comments?v=1' countHint='0'/>
+      </gd:comments>
+      <media:group>
+        <media:category label='Science &amp; Technology' scheme='http://gdata.youtube.com/schemas/2007/categories.cat'>Tech</media:category>
+        <media:content url='http://www.youtube.com/v/wEth17hK38g?version=3&amp;f=videos&amp;app=youtube_gdata' type='application/x-shockwave-flash' medium='video' isDefault='true' expression='full' duration='601' yt:format='5'/>
+        <media:content url='rtsp://v7.cache3.c.youtube.com/CiILENy73wIaGQnI30q412FLwBMYDSANFEgGUgZ2aWRlb3MM/0/0/0/video.3gp' type='video/3gpp' medium='video' expression='full' duration='601' yt:format='1'/>
+        <media:content url='rtsp://v1.cache7.c.youtube.com/CiILENy73wIaGQnI30q412FLwBMYESARFEgGUgZ2aWRlb3MM/0/0/0/video.3gp' type='video/3gpp' medium='video' expression='full' duration='601' yt:format='6'/>
+        <media:description type='plain'>How to use Text To Speech on iOS.</media:description>
+        <media:keywords>Football, French, Toast, Thoughts, on, Facebook, Birthdays</media:keywords>
+        <media:player url='http://www.youtube.com/watch?v=wEth17hK38g&amp;feature=youtube_gdata_player'/>
+        <media:thumbnail url='http://i.ytimg.com/vi/wEth17hK38g/0.jpg' height='360' width='480' time='00:05:00.500'/>
+        <media:thumbnail url='http://i.ytimg.com/vi/wEth17hK38g/1.jpg' height='90' width='120' time='00:02:30.250'/>
+        <media:thumbnail url='http://i.ytimg.com/vi/wEth17hK38g/2.jpg' height='90' width='120' time='00:05:00.500'/>
+        <media:thumbnail url='http://i.ytimg.com/vi/wEth17hK38g/3.jpg' height='90' width='120' time='00:07:30.750'/>
+        <media:title type='plain'>Football &amp; French Toast - Thoughts on Facebook Birthdays</media:title>
+        <yt:duration seconds='601'/>
+      </media:group>
+      <yt:statistics favoriteCount='0' viewCount='1'/>
+    </item>
+    <item>
+      <guid isPermaLink='false'>http://gdata.youtube.com/feeds/api/videos/FhkzpPrarAo</guid>
+      <pubDate>Sat, 16 Jun 2012 15:10:27 +0000</pubDate>
+      <atom:updated>2012-06-16T15:10:27.000Z</atom:updated>
+      <category domain='http://schemas.google.com/g/2005#kind'>http://gdata.youtube.com/schemas/2007#video</category>
+      <category domain='http://gdata.youtube.com/schemas/2007/categories.cat'>People</category>
+      <category domain='http://gdata.youtube.com/schemas/2007/keywords.cat'>M4H04619</category>
+      <title>civil vs textl ....wining goal (by uthsaw vai)</title>
+      <description>aust intr dept football tournament</description>
+      <link>http://www.youtube.com/watch?v=FhkzpPrarAo&amp;feature=youtube_gdata</link>
+      <author>Tanvir Farhan</author>
+      <gd:comments>
+        <gd:feedLink rel='http://gdata.youtube.com/schemas/2007#comments' href='http://gdata.youtube.com/feeds/api/videos/FhkzpPrarAo/comments?v=1' countHint='0'/>
+      </gd:comments>
+      <yt:hd/>
+      <media:group>
+        <media:category label='People &amp; Blogs' scheme='http://gdata.youtube.com/schemas/2007/categories.cat'>People</media:category>
+        <media:content url='http://www.youtube.com/v/FhkzpPrarAo?version=3&amp;f=videos&amp;app=youtube_gdata' type='application/x-shockwave-flash' medium='video' isDefault='true' expression='full' duration='4' yt:format='5'/>
+        <media:content url='rtsp://v8.cache7.c.youtube.com/CiILENy73wIaGQkKrNr6pDMZFhMYDSANFEgGUgZ2aWRlb3MM/0/0/0/video.3gp' type='video/3gpp' medium='video' expression='full' duration='4' yt:format='1'/>
+        <media:content url='rtsp://v6.cache8.c.youtube.com/CiILENy73wIaGQkKrNr6pDMZFhMYESARFEgGUgZ2aWRlb3MM/0/0/0/video.3gp' type='video/3gpp' medium='video' expression='full' duration='4' yt:format='6'/>
+        <media:description type='plain'>aust intr dept football tournament</media:description>
+        <media:keywords>M4H04619</media:keywords>
+        <media:player url='http://www.youtube.com/watch?v=FhkzpPrarAo&amp;feature=youtube_gdata_player'/>
+        <media:thumbnail url='http://i.ytimg.com/vi/FhkzpPrarAo/0.jpg' height='360' width='480' time='00:00:02'/>
+        <media:thumbnail url='http://i.ytimg.com/vi/FhkzpPrarAo/1.jpg' height='90' width='120' time='00:00:01'/>
+        <media:thumbnail url='http://i.ytimg.com/vi/FhkzpPrarAo/2.jpg' height='90' width='120' time='00:00:02'/>
+        <media:thumbnail url='http://i.ytimg.com/vi/FhkzpPrarAo/3.jpg' height='90' width='120' time='00:00:03'/>
+        <media:title type='plain'>civil vs textl ....wining goal (by uthsaw vai)</media:title>
+        <yt:duration seconds='4'/>
+      </media:group>
+    </item>
+    <item>
+      <guid isPermaLink='false'>http://gdata.youtube.com/feeds/api/videos/phVIxbB41dg</guid>
+      <pubDate>Sat, 16 Jun 2012 15:05:21 +0000</pubDate>
+      <atom:updated>2012-06-16T15:05:21.000Z</atom:updated>
+      <category domain='http://schemas.google.com/g/2005#kind'>http://gdata.youtube.com/schemas/2007#video</category>
+      <category domain='http://gdata.youtube.com/schemas/2007/categories.cat'>Autos</category>
+      <category domain='http://gdata.youtube.com/schemas/2007/keywords.cat'>MGCC</category>
+      <category domain='http://gdata.youtube.com/schemas/2007/keywords.cat'>Funkhana</category>
+      <category domain='http://gdata.youtube.com/schemas/2007/keywords.cat'>2012</category>
+      <category domain='http://gdata.youtube.com/schemas/2007/keywords.cat'>MG</category>
+      <category domain='http://gdata.youtube.com/schemas/2007/keywords.cat'>Rallye</category>
+      <category domain='http://gdata.youtube.com/schemas/2007/keywords.cat'>Tour</category>
+      <category domain='http://gdata.youtube.com/schemas/2007/keywords.cat'>Peak</category>
+      <category domain='http://gdata.youtube.com/schemas/2007/keywords.cat'>To</category>
+      <category domain='http://gdata.youtube.com/schemas/2007/keywords.cat'>Miata</category>
+      <title>MGCC Funkhana 2012</title>
+      <description>The Funkhana is driving skill mixed with silly challenges. 2012: The 7 Wonders of Colorado Wonder #1: John Elway. Throw the little football through the uprights. Retrieve ball. Put back on cone. Wonder #2: Indian Gaming. Pick a card. Pray for the Ace for maximum benefit. (-5 seconds from time) Wonder #3: Crystal Springs Drive-In. Answer a movie trivia question, get -5 seconds from time. Wonder #4: Around the world. Make a 360 around the 3 cones. Wonder #5: Four corners. Stand in every state and hug. Wonder #6: Remember the first residents of Colorado by deciphering their message in the sand. Use only the brush to remove the sand. Wonder #7: Red Rocks. Wear guitar with strap over shoulder. Plug cord into amp and guitar. Strum. Time stops when guitar is strummed. Mort and I were in first place after Run #1 and improved our time for Run #2 to remain in first place. All right!</description>
+      <link>http://www.youtube.com/watch?v=phVIxbB41dg&amp;feature=youtube_gdata</link>
+      <author>vwcalypso</author>
+      <gd:comments>
+        <gd:feedLink rel='http://gdata.youtube.com/schemas/2007#comments' href='http://gdata.youtube.com/feeds/api/videos/phVIxbB41dg/comments?v=1' countHint='0'/>
+      </gd:comments>
+      <georss:where>
+        <gml:Point>
+          <gml:pos>39.55181121826172 -107.33341979980469</gml:pos>
+        </gml:Point>
+      </georss:where>
+      <yt:hd/>
+      <media:group>
+        <media:category label='Autos &amp; Vehicles' scheme='http://gdata.youtube.com/schemas/2007/categories.cat'>Autos</media:category>
+        <media:content url='http://www.youtube.com/v/phVIxbB41dg?version=3&amp;f=videos&amp;app=youtube_gdata' type='application/x-shockwave-flash' medium='video' isDefault='true' expression='full' duration='527' yt:format='5'/>
+        <media:content url='rtsp://v5.cache8.c.youtube.com/CiILENy73wIaGQnY1XiwxUgVphMYDSANFEgGUgZ2aWRlb3MM/0/0/0/video.3gp' type='video/3gpp' medium='video' expression='full' duration='527' yt:format='1'/>
+        <media:content url='rtsp://v7.cache6.c.youtube.com/CiILENy73wIaGQnY1XiwxUgVphMYESARFEgGUgZ2aWRlb3MM/0/0/0/video.3gp' type='video/3gpp' medium='video' expression='full' duration='527' yt:format='6'/>
+        <media:description type='plain'>The Funkhana is driving skill mixed with silly challenges. 2012: The 7 Wonders of Colorado Wonder #1: John Elway. Throw the little football through the uprights. Retrieve ball. Put back on cone. Wonder #2: Indian Gaming. Pick a card. Pray for the Ace for maximum benefit. (-5 seconds from time) Wonder #3: Crystal Springs Drive-In. Answer a movie trivia question, get -5 seconds from time. Wonder #4: Around the world. Make a 360 around the 3 cones. Wonder #5: Four corners. Stand in every state and hug. Wonder #6: Remember the first residents of Colorado by deciphering their message in the sand. Use only the brush to remove the sand. Wonder #7: Red Rocks. Wear guitar with strap over shoulder. Plug cord into amp and guitar. Strum. Time stops when guitar is strummed. Mort and I were in first place after Run #1 and improved our time for Run #2 to remain in first place. All right!</media:description>
+        <media:keywords>MGCC, Funkhana, 2012, MG, Rallye, Tour, Peak, To, Miata</media:keywords>
+        <media:player url='http://www.youtube.com/watch?v=phVIxbB41dg&amp;feature=youtube_gdata_player'/>
+        <media:thumbnail url='http://i.ytimg.com/vi/phVIxbB41dg/0.jpg' height='360' width='480' time='00:04:23.500'/>
+        <media:thumbnail url='http://i.ytimg.com/vi/phVIxbB41dg/1.jpg' height='90' width='120' time='00:02:11.750'/>
+        <media:thumbnail url='http://i.ytimg.com/vi/phVIxbB41dg/2.jpg' height='90' width='120' time='00:04:23.500'/>
+        <media:thumbnail url='http://i.ytimg.com/vi/phVIxbB41dg/3.jpg' height='90' width='120' time='00:06:35.250'/>
+        <media:title type='plain'>MGCC Funkhana 2012</media:title>
+        <yt:duration seconds='527'/>
+      </media:group>
+      <yt:recorded>2012-06-10</yt:recorded>
+    </item>
+    <item>
+      <guid isPermaLink='false'>http://gdata.youtube.com/feeds/api/videos/tbtOXACizKE</guid>
+      <pubDate>Sat, 16 Jun 2012 15:03:54 +0000</pubDate>
+      <atom:updated>2012-06-16T15:03:54.000Z</atom:updated>
+      <app:control>
+        <yt:state name='restricted' reasonCode='limitedSyndication'>Syndication of this video was restricted by its owner.</yt:state>
+      </app:control>
+      <category domain='http://schemas.google.com/g/2005#kind'>http://gdata.youtube.com/schemas/2007#video</category>
+      <category domain='http://gdata.youtube.com/schemas/2007/categories.cat'>Sports</category>
+      <category domain='http://gdata.youtube.com/schemas/2007/keywords.cat'>lacrosse</category>
+      <category domain='http://gdata.youtube.com/schemas/2007/keywords.cat'>gopro</category>
+      <category domain='http://gdata.youtube.com/schemas/2007/keywords.cat'>football</category>
+      <category domain='http://gdata.youtube.com/schemas/2007/keywords.cat'>siling</category>
+      <category domain='http://gdata.youtube.com/schemas/2007/keywords.cat'>go</category>
+      <category domain='http://gdata.youtube.com/schemas/2007/keywords.cat'>pro</category>
+      <category domain='http://gdata.youtube.com/schemas/2007/keywords.cat'>outside</category>
+      <category domain='http://gdata.youtube.com/schemas/2007/keywords.cat'>sports</category>
+      <category domain='http://gdata.youtube.com/schemas/2007/keywords.cat'>summer</category>
+      <category domain='http://gdata.youtube.com/schemas/2007/keywords.cat'>7on7</category>
+      <title>Go Pro lax</title>
+      <description>Now that summer is here I'll make some more. Im gonna start making sailing videos next and i might do football if coach lets me, if he does it'll probably 7 on 7.</description>
+      <link>http://www.youtube.com/watch?v=tbtOXACizKE&amp;feature=youtube_gdata</link>
+      <author>kingarnold30</author>
+      <gd:comments>
+        <gd:feedLink rel='http://gdata.youtube.com/schemas/2007#comments' href='http://gdata.youtube.com/feeds/api/videos/tbtOXACizKE/comments?v=1' countHint='0'/>
+      </gd:comments>
+      <yt:hd/>
+      <media:group>
+        <media:category label='Sports' scheme='http://gdata.youtube.com/schemas/2007/categories.cat'>Sports</media:category>
+        <media:content url='http://www.youtube.com/v/tbtOXACizKE?version=3&amp;f=videos&amp;app=youtube_gdata' type='application/x-shockwave-flash' medium='video' isDefault='true' expression='full' duration='202' yt:format='5'/>
+        <media:description type='plain'>Now that summer is here I'll make some more. Im gonna start making sailing videos next and i might do football if coach lets me, if he does it'll probably 7 on 7.</media:description>
+        <media:keywords>lacrosse, gopro, football, siling, go, pro, outside, sports, summer, 7on7</media:keywords>
+        <media:player url='http://www.youtube.com/watch?v=tbtOXACizKE&amp;feature=youtube_gdata_player'/>
+        <media:restriction type='country' relationship='deny'>DE</media:restriction>
+        <media:thumbnail url='http://i.ytimg.com/vi/tbtOXACizKE/0.jpg' height='360' width='480' time='00:01:41'/>
+        <media:thumbnail url='http://i.ytimg.com/vi/tbtOXACizKE/1.jpg' height='90' width='120' time='00:00:50.500'/>
+        <media:thumbnail url='http://i.ytimg.com/vi/tbtOXACizKE/2.jpg' height='90' width='120' time='00:01:41'/>
+        <media:thumbnail url='http://i.ytimg.com/vi/tbtOXACizKE/3.jpg' height='90' width='120' time='00:02:31.500'/>
+        <media:title type='plain'>Go Pro lax</media:title>
+        <yt:duration seconds='202'/>
+      </media:group>
+      <yt:recorded>2012-06-16</yt:recorded>
+      <yt:statistics favoriteCount='0' viewCount='4'/>
+    </item>
+  </channel>
+</rss>
