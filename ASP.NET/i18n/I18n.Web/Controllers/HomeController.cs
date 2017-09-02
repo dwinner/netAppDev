@@ -6,7 +6,7 @@ using I18n.Web.Models;
 
 namespace I18n.Web.Controllers
 {
-   public class HomeController : CookieBasedLocalizationController
+   public class HomeController : RouteBasedLocalizationController//CookieBasedLocalizationController
    {
       [HttpGet]
       public ActionResult Index()
