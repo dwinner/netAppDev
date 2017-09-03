@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "_01_LazyProducerConsumer", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "_02_EagerProducerSlowConsumer", "_02_EagerProducerSlowConsumer\_02_EagerProducerSlowConsumer.csproj", "{80A8DA10-59E4-46BD-B6DA-5013F2899F63}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "_03_ImageProcessorPipeline", "_03_ImageProcessorPipeline\_03_ImageProcessorPipeline.csproj", "{D98C9F64-626F-4C50-82C4-0872D48CE938}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{80A8DA10-59E4-46BD-B6DA-5013F2899F63}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{80A8DA10-59E4-46BD-B6DA-5013F2899F63}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{80A8DA10-59E4-46BD-B6DA-5013F2899F63}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D98C9F64-626F-4C50-82C4-0872D48CE938}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D98C9F64-626F-4C50-82C4-0872D48CE938}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D98C9F64-626F-4C50-82C4-0872D48CE938}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D98C9F64-626F-4C50-82C4-0872D48CE938}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

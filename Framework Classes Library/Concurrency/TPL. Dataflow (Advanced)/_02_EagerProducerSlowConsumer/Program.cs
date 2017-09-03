@@ -13,7 +13,7 @@ namespace _02_EagerProducerSlowConsumer
          {
             NameFormat = "Type:{0},Id:{1}",
             MaxDegreeOfParallelism = 2,
-            BoundedCapacity = 2
+            //BoundedCapacity = 2
          };
 
          var consumerBlock = new ActionBlock<int>(i => SlowConsumer(i), blockConfig);
