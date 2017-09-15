@@ -42,7 +42,8 @@ namespace _01_LazyProducerConsumer
 
       private static void PrintThreadPoolUsage(string label)
       {
-         GetAvailableThreads(out var cpu, out var io);
+         int cpu, io;
+         GetAvailableThreads(out cpu, out io);
          WriteLine("{0}:CPU:{1},IO:{2}", label, cpu, io);
       }
    }
