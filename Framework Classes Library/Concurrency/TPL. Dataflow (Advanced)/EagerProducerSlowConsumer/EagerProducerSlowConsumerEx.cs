@@ -5,7 +5,7 @@ using static System.Console;
 
 namespace _02_EagerProducerSlowConsumer
 {
-   internal static class Program
+   internal static class EagerProducerSlowConsumerEx
    {
       private static void Main()
       {

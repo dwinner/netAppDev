@@ -3,9 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "_01_LazyProducerConsumer", "_01_LazyProducerConsumer\_01_LazyProducerConsumer.csproj", "{CDD33960-9AF5-4603-B5D1-FC5ED87C2107}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LazyProducerConsumer", "LazyProducerConsumer\LazyProducerConsumer.csproj", "{CDD33960-9AF5-4603-B5D1-FC5ED87C2107}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "_02_EagerProducerSlowConsumer", "_02_EagerProducerSlowConsumer\_02_EagerProducerSlowConsumer.csproj", "{80A8DA10-59E4-46BD-B6DA-5013F2899F63}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EagerProducerSlowConsumer", "EagerProducerSlowConsumer\EagerProducerSlowConsumer.csproj", "{80A8DA10-59E4-46BD-B6DA-5013F2899F63}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ErrorHandling", "ErrorHandling", "{7FF0402E-42B9-42E4-8F72-1FE5BE63B9BB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnhandledException", "UnhandledException\UnhandledException.csproj", "{1C9AD62A-0B92-4B57-AAF1-B5D5347D4A09}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlockError.Lib", "BlockError.Lib\BlockError.Lib.csproj", "{6355C8B4-F852-47D1-B22C-D3E84883FA68}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,8 +27,20 @@ Global
 		{80A8DA10-59E4-46BD-B6DA-5013F2899F63}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{80A8DA10-59E4-46BD-B6DA-5013F2899F63}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{80A8DA10-59E4-46BD-B6DA-5013F2899F63}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1C9AD62A-0B92-4B57-AAF1-B5D5347D4A09}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1C9AD62A-0B92-4B57-AAF1-B5D5347D4A09}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1C9AD62A-0B92-4B57-AAF1-B5D5347D4A09}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1C9AD62A-0B92-4B57-AAF1-B5D5347D4A09}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6355C8B4-F852-47D1-B22C-D3E84883FA68}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6355C8B4-F852-47D1-B22C-D3E84883FA68}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6355C8B4-F852-47D1-B22C-D3E84883FA68}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6355C8B4-F852-47D1-B22C-D3E84883FA68}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{1C9AD62A-0B92-4B57-AAF1-B5D5347D4A09} = {7FF0402E-42B9-42E4-8F72-1FE5BE63B9BB}
+		{6355C8B4-F852-47D1-B22C-D3E84883FA68} = {7FF0402E-42B9-42E4-8F72-1FE5BE63B9BB}
 	EndGlobalSection
 EndGlobal

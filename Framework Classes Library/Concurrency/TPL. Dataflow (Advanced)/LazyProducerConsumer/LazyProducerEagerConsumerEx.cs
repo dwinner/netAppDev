@@ -10,7 +10,7 @@ using static System.Threading.ThreadPool;
 
 namespace _01_LazyProducerConsumer
 {
-   internal static class Program
+   internal static class LazyProducerEagerConsumerEx
    {
       private static void Main()
       {
@@ -42,8 +42,7 @@ namespace _01_LazyProducerConsumer
 
       private static void PrintThreadPoolUsage(string label)
       {
-         int cpu, io;
-         GetAvailableThreads(out cpu, out io);
+         GetAvailableThreads(out var cpu, out var io);
          WriteLine("{0}:CPU:{1},IO:{2}", label, cpu, io);
       }
    }

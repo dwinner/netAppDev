@@ -11,30 +11,10 @@ using System.Threading.Tasks.Dataflow;
 
 namespace ErrorHandling
 {
-    public static class BlockErrorExtensions
-    {
-        public static void BlockErrorHandler(this IDataflowBlock block, Action<Exception> errorHandler)
-        {
-            block.Completion.ContinueWith(b =>
-            {
-                foreach (Exception error in block.Completion.Exception.Flatten().InnerExceptions)
-                {
-                    errorHandler(error);
-                }
-            },TaskContinuationOptions.OnlyOnFaulted);
-        }
-
-        public static void ForwardError(this IDataflowBlock block, IDataflowBlock destinationBlock)
-        {
-            block.Completion.ContinueWith(b => destinationBlock.Fault(block.Completion.Exception), TaskContinuationOptions.OnlyOnFaulted);
-        }
-    }
     class Program
     {
         private static void Main(string[] args)
-        {
-            //UnhandledException();
-
+        {            
            // InternalExceptionHandling();
 
             //ExternallyExceptionHandling();
@@ -225,18 +205,6 @@ namespace ErrorHandling
             divideBlock.Post(Tuple.Create(10, 2));
 
             Console.ReadLine();
-        }
-
-        private static void UnhandledException()
-        {
-            var divideBlock =
-                new ActionBlock<Tuple<int, int>>(
-                    (Action<Tuple<int, int>>) (input => Console.WriteLine(input.Item1/input.Item2)));
-
-            divideBlock.Post(Tuple.Create(10, 5));
-            divideBlock.Post(Tuple.Create(20, 4));
-            divideBlock.Post(Tuple.Create(10, 0));
-            divideBlock.Post(Tuple.Create(10, 2));
         }
 
         private static void FirstAttempt()
