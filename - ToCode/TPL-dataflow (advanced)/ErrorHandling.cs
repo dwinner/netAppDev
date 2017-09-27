@@ -14,9 +14,7 @@ namespace ErrorHandling
     class Program
     {
         private static void Main(string[] args)
-        {            
-           // InternalExceptionHandling();
-
+        {
             //ExternallyExceptionHandling();
 
 
@@ -179,30 +177,6 @@ namespace ErrorHandling
                         }
                     },
                     TaskContinuationOptions.OnlyOnFaulted);
-
-            Console.ReadLine();
-        }
-
-        private static void InternalExceptionHandling()
-        {
-            var divideBlock =
-                new ActionBlock<Tuple<int, int>>(
-                    (Action<Tuple<int, int>>) delegate(Tuple<int, int> pair)
-                    {
-                        try
-                        {
-                            Console.WriteLine(pair.Item1/pair.Item2);
-                        }
-                        catch (DivideByZeroException)
-                        {
-                            Console.WriteLine("Dude, can't divide by zero");
-                        }
-                    });
-
-            divideBlock.Post(Tuple.Create(10, 5));
-            divideBlock.Post(Tuple.Create(20, 4));
-            divideBlock.Post(Tuple.Create(10, 0));
-            divideBlock.Post(Tuple.Create(10, 2));
 
             Console.ReadLine();
         }
