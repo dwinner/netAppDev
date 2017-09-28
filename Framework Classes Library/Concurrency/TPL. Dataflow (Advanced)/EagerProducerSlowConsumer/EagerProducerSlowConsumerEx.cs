@@ -1,9 +1,9 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Threading.Tasks.Dataflow;
-using static System.Console;
 
-namespace _02_EagerProducerSlowConsumer
+namespace EagerProducerSlowConsumer
 {
    internal static class EagerProducerSlowConsumerEx
    {
@@ -27,7 +27,7 @@ namespace _02_EagerProducerSlowConsumer
 
       private static void SlowConsumer(int val)
       {
-         WriteLine("{0}: Consuming {1}", Task.CurrentId, val);
+         Console.WriteLine("{0}: Consuming {1}", Task.CurrentId, val);
          Thread.Sleep(1000);
       }
    }

@@ -4,11 +4,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("InternalExceptionHandling")]
+[assembly: AssemblyTitle("ExternallyExceptionHandling")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("InternalExceptionHandling")]
+[assembly: AssemblyProduct("ExternallyExceptionHandling")]
 [assembly: AssemblyCopyright("Copyright ©  2017")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -19,7 +19,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("271d98cb-a52d-46f0-8abd-3d748bb9951c")]
+[assembly: Guid("e415e049-d061-4a47-8ce5-af2d8fcfef5b")]
 
 // Version information for an assembly consists of the following four values:
 //

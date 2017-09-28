@@ -2,13 +2,12 @@
  * Lazy producer consumer
  */
 
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Threading.Tasks.Dataflow;
-using static System.Console;
-using static System.Threading.ThreadPool;
 
-namespace _01_LazyProducerConsumer
+namespace LazyProducerConsumer
 {
    internal static class LazyProducerEagerConsumerEx
    {
@@ -34,7 +33,7 @@ namespace _01_LazyProducerConsumer
       private static void Consume(int val)
       {
          PrintThreadPoolUsage(nameof(Consume));
-         WriteLine("{0}:{1} is thread pool thread {2}",
+         Console.WriteLine("{0}:{1} is thread pool thread {2}",
             Task.CurrentId,
             val,
             Thread.CurrentThread.IsThreadPoolThread);
@@ -42,8 +41,8 @@ namespace _01_LazyProducerConsumer
 
       private static void PrintThreadPoolUsage(string label)
       {
-         GetAvailableThreads(out var cpu, out var io);
-         WriteLine("{0}:CPU:{1},IO:{2}", label, cpu, io);
+         ThreadPool.GetAvailableThreads(out var cpu, out var io);
+         Console.WriteLine("{0}:CPU:{1},IO:{2}", label, cpu, io);
       }
    }
 }
