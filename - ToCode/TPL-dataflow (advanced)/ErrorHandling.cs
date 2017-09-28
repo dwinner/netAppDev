@@ -1,38 +1,4 @@
-﻿private static void LinkedCancellation()
-{
-   var cts = new CancellationTokenSource();
-
-   var slowTransform = new TransformBlock<int,string>(
-      i =>
-      {
-          Console.WriteLine("{0}:Started", i);
-          cts.Token.WaitHandle.WaitOne(1000);
-          cts.Token.ThrowIfCancellationRequested();
-          Console.WriteLine("{0}:Done", i);
-          return i.ToString();
-      },
-      new ExecutionDataflowBlockOptions() { CancellationToken = cts.Token });
-
-   var printAction = new ActionBlock<string>((Action<string>) Console.WriteLine,
-       new ExecutionDataflowBlockOptions() { CancellationToken = cts.Token });
-
-   slowTransform.LinkTo(printAction,new DataflowLinkOptions(){PropagateCompletion = true});
-
-   slowTransform.Post(1);
-   slowTransform.Post(2);
-   slowTransform.Post(3);
-
-//    slowTransform.Complete();
-   Console.ReadLine();
-   cts.Cancel();
-
-   printAction.Completion.ContinueWith(pat => Console.WriteLine(pat.Status));
-
-   Console.ReadLine();
-
-}      
-
-private static void FirstAttempt()
+﻿private static void FirstAttempt()
 {
    CancellationTokenSource cts = new CancellationTokenSource();
 
