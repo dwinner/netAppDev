@@ -196,11 +196,11 @@ namespace Joining
     {
         static void Main(string[] args)
         {
-              //TheAtomicCafe();
+            // TheAtomicCafe();
 
-            //SimpleJoin();
+            // SimpleJoin();
 
-           // InPairs();
+            // InPairs();
 
             var host = new ServiceHost(typeof(NodeWorker));
             host.AddServiceEndpoint(typeof (IGridNode<WorkItem>), new NetTcpBinding(),"net.tcp://localhost:9000/Worker" );
