@@ -35,6 +35,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuantityBatcher", "Quantity
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlockError.Lib", "BlockError.Lib\BlockError.Lib.csproj", "{FA538E8A-FAA6-4FF1-9B71-C8AAE37177F3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DangerOfConditonalLinking", "DangerOfConditonalLinking\DangerOfConditonalLinking.csproj", "{9822F1FD-BDFB-4240-AAE0-FFEE24BBDE20}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TransformManySample", "TransformManySample\TransformManySample.csproj", "{EC236490-7AFC-4781-9D1C-1539D3AF11EC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -93,6 +97,14 @@ Global
 		{FA538E8A-FAA6-4FF1-9B71-C8AAE37177F3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FA538E8A-FAA6-4FF1-9B71-C8AAE37177F3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FA538E8A-FAA6-4FF1-9B71-C8AAE37177F3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9822F1FD-BDFB-4240-AAE0-FFEE24BBDE20}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9822F1FD-BDFB-4240-AAE0-FFEE24BBDE20}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9822F1FD-BDFB-4240-AAE0-FFEE24BBDE20}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9822F1FD-BDFB-4240-AAE0-FFEE24BBDE20}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EC236490-7AFC-4781-9D1C-1539D3AF11EC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EC236490-7AFC-4781-9D1C-1539D3AF11EC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EC236490-7AFC-4781-9D1C-1539D3AF11EC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EC236490-7AFC-4781-9D1C-1539D3AF11EC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

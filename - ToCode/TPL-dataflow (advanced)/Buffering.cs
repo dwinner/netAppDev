@@ -42,8 +42,6 @@ namespace Buffering
             Console.WriteLine("Processor {0}, starting : {1}",name,value);
             Thread.Sleep(1000);
             Console.WriteLine("Processor {0}, done : {1}",name,value);
-        }
-
-      
+        }      
     }
 }
