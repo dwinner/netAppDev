@@ -1,34 +1,9 @@
-public class Fork { }
-
-public class Chef
-{
-   private readonly Resteraunt resteraunt;
-
-   public Chef(Resteraunt resteraunt)
-   {
-      this.resteraunt = resteraunt;
-   }
-
-   public async Task MakeFoodAsync()
-   {
-      Console.WriteLine("Chef making food");
-      Knife knife= await resteraunt.Knife.ReceiveAsync();
-      for (int nFoodItem = 0; nFoodItem < 4; nFoodItem++)
-      {
-          this.resteraunt.Food.Post(new Food());
-      }
-      Console.WriteLine("Chef made food..");
-      resteraunt.Knife.Post(knife);
-   }
-}
-
-public class Knife { }
-
 public class Waiter
 {
    private readonly Resteraunt resteraunt;
    private JoinBlock<Tuple<Fork, Knife, Food>, Customer> joinBlock;
    private ActionBlock<Tuple<Tuple<Fork, Knife, Food>, Customer>> serveFoodBlock; 
+   
    public Waiter(Resteraunt resteraunt )
    {
       this.resteraunt = resteraunt;
@@ -110,8 +85,6 @@ public class Resteraunt
 
     public JoinBlock<Fork,Knife,Food> ReadyToGo { get; private set; }
 }
-
-public class Food { }
 
 namespace Joining
 {
