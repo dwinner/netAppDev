@@ -1,4 +1,4 @@
-﻿namespace Joining
+﻿namespace AtomicCafe
 {
    public class Food
    {
