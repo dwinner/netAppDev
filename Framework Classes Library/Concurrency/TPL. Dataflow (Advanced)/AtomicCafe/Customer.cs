@@ -1,15 +1,13 @@
 ﻿using System;
 using System.Threading.Tasks;
-using System.Threading.Tasks.Dataflow;
 
 namespace AtomicCafe
 {
    public class Customer
    {
-      private static Random _random = new Random();
       private readonly int _id;
-      private JoinBlock<Fork, Knife, Food> _dinningBlock;
-      private ActionBlock<Tuple<Fork, Knife, Food>> _eatingBlock;
+      //private JoinBlock<Fork, Knife, Food> _dinningBlock;
+      //private ActionBlock<Tuple<Fork, Knife, Food>> _eatingBlock;
 
       public Customer(int id)
       {
@@ -17,7 +15,9 @@ namespace AtomicCafe
          _id = id;
       }
 
+      // ReSharper disable UnusedParameter.Global
       public async Task EatAsync(Fork fork, Knife knife, Food food)
+         // ReSharper restore UnusedParameter.Global
       {
          Console.WriteLine("Yummy {0}", _id);
          await Task.Delay(TimeSpan.FromSeconds(2));

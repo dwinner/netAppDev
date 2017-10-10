@@ -6,20 +6,21 @@ namespace AtomicCafe
    public class Waiter
    {
       private readonly Restaurant _restaurant;
-      private JoinBlock<Tuple<Fork, Knife, Food>, Customer> _joinBlock;
-      private ActionBlock<Tuple<Tuple<Fork, Knife, Food>, Customer>> _serveFoodBlock;
-      
+
       public Waiter(Restaurant restaurant)
       {
          _restaurant = restaurant;
-         _joinBlock=new JoinBlock<Tuple<Fork, Knife, Food>, Customer>(new GroupingDataflowBlockOptions(){Greedy=false});
+         var joinBlock =
+            new JoinBlock<Tuple<Fork, Knife, Food>, Customer>(new GroupingDataflowBlockOptions {Greedy = false});
 
-         _restaurant.ReadyToGo.LinkTo(_joinBlock.Target1);
-         _restaurant.Customers.LinkTo(_joinBlock.Target2);
+         _restaurant.ReadyToGo.LinkTo(joinBlock.Target1);
+         _restaurant.Customers.LinkTo(joinBlock.Target2);
 
-         _serveFoodBlock=new ActionBlock<Tuple<Tuple<Fork, Knife, Food>, Customer>>(new Action<Tuple<Tuple<Fork, Knife, Food>, Customer>>(ServeFood));
+         var serveFoodBlock =
+            new ActionBlock<Tuple<Tuple<Fork, Knife, Food>, Customer>>(
+               new Action<Tuple<Tuple<Fork, Knife, Food>, Customer>>(ServeFood));
 
-         _joinBlock.LinkTo(_serveFoodBlock);
+         joinBlock.LinkTo(serveFoodBlock);
       }
 
       private void ServeFood(Tuple<Tuple<Fork, Knife, Food>, Customer> foodServiceTuple)
@@ -33,7 +34,7 @@ namespace AtomicCafe
          {
             _restaurant.Forks.Post(fork);
             _restaurant.Knifes.Post(knife);
-         });   // TODO: Replace with async/await pattern
-      }      
+         }); // TODO: Replace with async/await pattern
+      }
    }
 }

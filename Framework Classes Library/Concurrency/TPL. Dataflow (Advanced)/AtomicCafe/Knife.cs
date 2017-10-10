@@ -1,17 +1,21 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
+#pragma warning disable 1998
 
 namespace AtomicCafe
 {
    public class Knife
    {
-      public async Task<Knife> ReceiveAsync()
-      {
-         throw new System.NotImplementedException();
-      }
+      // ReSharper disable UnusedMember.Global
+      public async Task<Knife> ReceiveAsync() => throw new NotImplementedException();
+      // ReSharper restore UnusedMember.Global
 
+      // ReSharper disable UnusedMember.Global
+      // ReSharper disable UnusedParameter.Global
       public void Post(Knife aKnife)
+         // ReSharper restore UnusedParameter.Global
+         // ReSharper restore UnusedMember.Global
       {
-         throw new System.NotImplementedException();
       }
    }
 }
