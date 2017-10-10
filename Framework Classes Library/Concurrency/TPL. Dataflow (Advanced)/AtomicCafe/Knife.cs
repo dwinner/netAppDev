@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace Joining
+namespace AtomicCafe
 {
    public class Knife
    {

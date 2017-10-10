@@ -1,91 +1,3 @@
-public class Waiter
-{
-   private readonly Resteraunt resteraunt;
-   private JoinBlock<Tuple<Fork, Knife, Food>, Customer> joinBlock;
-   private ActionBlock<Tuple<Tuple<Fork, Knife, Food>, Customer>> serveFoodBlock; 
-   
-   public Waiter(Resteraunt resteraunt )
-   {
-      this.resteraunt = resteraunt;
-      joinBlock = new JoinBlock<Tuple<Fork, Knife, Food>, Customer>(new GroupingDataflowBlockOptions(){Greedy = false});
-
-      resteraunt.ReadyToGo.LinkTo(joinBlock.Target1);
-      resteraunt.Customers.LinkTo(joinBlock.Target2);
-
-      serveFoodBlock = new ActionBlock<Tuple<Tuple<Fork, Knife, Food>, Customer>>(
-          new Action<Tuple<Tuple<Fork,Knife,Food>,Customer>>(ServeFood));
-
-      joinBlock.LinkTo(serveFoodBlock);
-   }
-
-   private void ServeFood(Tuple<Tuple<Fork, Knife, Food>, Customer> foodServiceTuple)
-   {
-      Fork fork = foodServiceTuple.Item1.Item1;
-      Knife knife = foodServiceTuple.Item1.Item2;
-      Food food = foodServiceTuple.Item1.Item3;
-      Customer customer = foodServiceTuple.Item2;
-
-      customer.EatAsync(fork,knife,food)
-          .ContinueWith(eatingTask =>
-          {
-              resteraunt.Forks.Post(fork);
-              resteraunt.Knife.Post(knife);
-          });
-   }
-}
-
-public class Customer
-{
-   private readonly int id;
-
-   private static Random rnd = new Random();
-   private JoinBlock<Fork, Knife,Food> dinningBlock;
-   private ActionBlock<Tuple<Fork, Knife,Food>> eatingBlock;
-
-   public Customer(int id)
-   {
-      Console.WriteLine("New hungry customer {0}",id);
-      this.id = id;
-     
-   }
-
-   public async Task EatAsync(Fork fork, Knife knife, Food food)
-   {
-      Console.WriteLine("Yummy {0}",id);
-      await Task.Delay(2000);
-      Console.WriteLine("Burp {0}",id);
-   }
-}
-
-public class Resteraunt
-{
-    BufferBlock<Fork> forks = new BufferBlock<Fork>();
-    BufferBlock<Knife> knives = new BufferBlock<Knife>();
-    BufferBlock<Food> food = new BufferBlock<Food>();
-    public Resteraunt(int numberOfForkAndKnifePairs)
-    {
-        Customers = new BufferBlock<Customer>();
-        ReadyToGo = new JoinBlock<Fork, Knife, Food>( new GroupingDataflowBlockOptions(){Greedy = false});
-
-        Forks.LinkTo(ReadyToGo.Target1);
-        Knife.LinkTo(ReadyToGo.Target2);
-        Food.LinkTo(ReadyToGo.Target3);
-
-        for (int i = 0; i < numberOfForkAndKnifePairs; i++)
-        {
-            forks.Post(new Fork());
-            knives.Post(new Knife());
-        }
-    }
-
-    public BufferBlock<Fork> Forks { get { return forks; } }
-    public BufferBlock<Knife> Knife { get { return knives; } }
-    public BufferBlock<Food>  Food { get { return food; }}
-    public BufferBlock<Customer> Customers { get; private set; } 
-
-    public JoinBlock<Fork,Knife,Food> ReadyToGo { get; private set; }
-}
-
 namespace Joining
 {
     [ServiceContract]
@@ -168,11 +80,7 @@ namespace Joining
     class Program
     {
         static void Main(string[] args)
-        {
-            // TheAtomicCafe();
-
-            // SimpleJoin();
-
+        {            
             // InPairs();
 
             var host = new ServiceHost(typeof(NodeWorker));
@@ -239,53 +147,6 @@ namespace Joining
 
 
             Console.ReadLine();
-        }
-
-        private static void SimpleJoin()
-        {
-            var bufferOne = new BufferBlock<int>();
-            var bufferTwo = new BufferBlock<int>();
-
-            var firstJoinBlock = new JoinBlock<int, int>(new GroupingDataflowBlockOptions() {Greedy = false});
-
-            var consumer = new ActionBlock<Tuple<int, int>>(tuple => { Console.WriteLine(tuple); });
-
-            bufferOne.LinkTo(firstJoinBlock.Target1);
-            bufferTwo.LinkTo(firstJoinBlock.Target2);
-
-            firstJoinBlock.LinkTo(consumer);
-
-
-            bufferOne.Post(1);
-            bufferTwo.Post(1);
-
-            Console.ReadLine();
-        }
-
-        private static void TheAtomicCafe()
-        {
-            Resteraunt resteraunt = new Resteraunt(2);
-            
-            Waiter waiter = new Waiter(resteraunt);
-
-            
-
-            ConsoleKey key;
-            Chef chef = new Chef(resteraunt);
-            int id = 1;
-
-            while ((key = Console.ReadKey(true).Key) != ConsoleKey.Q)
-            {
-                if (key == ConsoleKey.C)
-                {
-                    chef.MakeFoodAsync();
-                }
-
-                if (key == ConsoleKey.N)
-                {
-                    resteraunt.Customers.Post(new Customer(id++));
-                }
-            }
         }
     }
 }

@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Threading.Tasks;
+using System.Threading.Tasks.Dataflow;
 
-namespace Joining
+namespace AtomicCafe
 {
    public class Chef
    {
@@ -13,12 +14,12 @@ namespace Joining
       public async Task MakeFoodAsync()
       {
          Console.WriteLine("Chef making food");
-         var knife = await _restaurant.Knife.ReceiveAsync().ConfigureAwait(false);
+         var knife = await _restaurant.Knifes.ReceiveAsync().ConfigureAwait(false);
          for (var nFoodItem = 0; nFoodItem < DefaultFoodItemCount; nFoodItem++)
             _restaurant.Food.Post(new Food());
 
          Console.WriteLine("Chef made food...");
-         _restaurant.Knife.Post(knife);
+         _restaurant.Knifes.Post(knife);
       }
    }
 }
