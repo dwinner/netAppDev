@@ -45,6 +45,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JoinInPairs", "JoinInPairs\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RemoteDispatcherViaJoiningBlocks", "RemoteDispatcherViaJoiningBlocks\RemoteDispatcherViaJoiningBlocks.csproj", "{CD9FB7B0-4ADC-47AA-9581-5405A7ABC221}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IfElseSwitchLinking", "IfElseSwitchLinking\IfElseSwitchLinking.csproj", "{27F35C7B-2C6E-46D0-A736-01A64273531D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RecursiveTplDataflowLinking", "RecursiveTplDataflowLinking\RecursiveTplDataflowLinking.csproj", "{A5FFC570-E727-4BD1-835C-5C145763736A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -123,6 +127,14 @@ Global
 		{CD9FB7B0-4ADC-47AA-9581-5405A7ABC221}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CD9FB7B0-4ADC-47AA-9581-5405A7ABC221}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CD9FB7B0-4ADC-47AA-9581-5405A7ABC221}.Release|Any CPU.Build.0 = Release|Any CPU
+		{27F35C7B-2C6E-46D0-A736-01A64273531D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{27F35C7B-2C6E-46D0-A736-01A64273531D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{27F35C7B-2C6E-46D0-A736-01A64273531D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{27F35C7B-2C6E-46D0-A736-01A64273531D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A5FFC570-E727-4BD1-835C-5C145763736A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A5FFC570-E727-4BD1-835C-5C145763736A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A5FFC570-E727-4BD1-835C-5C145763736A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A5FFC570-E727-4BD1-835C-5C145763736A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
