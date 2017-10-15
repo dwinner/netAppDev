@@ -67,6 +67,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StressSmallBusinessAsync", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProducerConsumerNonSleepyThreads", "ProducerConsumerNonSleepyThreads\ProducerConsumerNonSleepyThreads.csproj", "{0148E782-25C3-402F-A184-07BB7F856DFD}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CustomBlocks", "CustomBlocks\CustomBlocks.csproj", "{8ADE8C5A-1B03-4815-AE74-CBC3B9468B4E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SingleActionBlockLoadBalance", "SingleActionBlockLoadBalance\SingleActionBlockLoadBalance.csproj", "{924F3F3E-0AA2-4E76-912A-F83FD3C09E24}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -181,6 +185,14 @@ Global
 		{0148E782-25C3-402F-A184-07BB7F856DFD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0148E782-25C3-402F-A184-07BB7F856DFD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0148E782-25C3-402F-A184-07BB7F856DFD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8ADE8C5A-1B03-4815-AE74-CBC3B9468B4E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8ADE8C5A-1B03-4815-AE74-CBC3B9468B4E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8ADE8C5A-1B03-4815-AE74-CBC3B9468B4E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8ADE8C5A-1B03-4815-AE74-CBC3B9468B4E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{924F3F3E-0AA2-4E76-912A-F83FD3C09E24}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{924F3F3E-0AA2-4E76-912A-F83FD3C09E24}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{924F3F3E-0AA2-4E76-912A-F83FD3C09E24}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{924F3F3E-0AA2-4E76-912A-F83FD3C09E24}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
