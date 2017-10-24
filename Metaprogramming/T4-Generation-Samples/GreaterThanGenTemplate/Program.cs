@@ -1,15 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace GreaterThanGenTemplate
 {
-   class Program
-   {
-      static void Main(string[] args)
-      {
-      }
-   }
+	internal static class Program
+	{
+		private static void Main()
+		{
+			var of = Greater.Of(.7, .9);
+			Console.WriteLine(of);
+		}
+	}
 }
