@@ -1,33 +1,25 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Runtime.InteropServices;
 using Wrox.ProCSharp.Interop.Server;
 
-
-namespace Wrox.ProCSharp.Interop.Client
+namespace DotnetClient
 {
-  class Program
-  {
-    [STAThread]
-    static void Main(string[] args)
-    {
-      var obj = new COMDemo();
-      IWelcome welcome = obj;
-      Console.WriteLine(welcome.Greeting("Stephanie"));
+   internal static class Program
+   {
+      [STAThread]
+      private static void Main()
+      {
+         var obj = new COMDemo();
+         IWelcome welcome = obj;
+         Console.WriteLine(welcome.Greeting("Stephanie"));
 
-      obj.Completed += () => Console.WriteLine("Calculation completed");
+         obj.Completed += () => Console.WriteLine("Calculation completed");
 
+         var math = (IMath) welcome;
+         var x = math.Add(4, 5);
+         Console.WriteLine(x);
 
-      IMath math;
-      math = (IMath)welcome;
-      int x = math.Add(4, 5);
-      Console.WriteLine(x);
-
-      Marshal.ReleaseComObject(math);
-
-    }
-  }
+         Marshal.ReleaseComObject(math);
+      }
+   }
 }
