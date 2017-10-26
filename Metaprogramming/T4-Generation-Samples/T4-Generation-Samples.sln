@@ -7,6 +7,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GreaterThanGenTemplate", "G
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GenerateDataClassTemplate", "GenerateDataClassTemplate\GenerateDataClassTemplate.csproj", "{F90328E2-6211-4B65-A284-9B7DC081F2CA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BasicIndentationSample", "BasicIndentationSample\BasicIndentationSample.csproj", "{3AD05B33-ABAF-4276-96CC-5337C3086D60}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClassFeatureBlockSample", "ClassFeatureBlockSample\ClassFeatureBlockSample.csproj", "{CAC50DC0-C640-4E40-82B0-A7250FC4E1C3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +25,14 @@ Global
 		{F90328E2-6211-4B65-A284-9B7DC081F2CA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F90328E2-6211-4B65-A284-9B7DC081F2CA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F90328E2-6211-4B65-A284-9B7DC081F2CA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3AD05B33-ABAF-4276-96CC-5337C3086D60}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3AD05B33-ABAF-4276-96CC-5337C3086D60}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3AD05B33-ABAF-4276-96CC-5337C3086D60}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3AD05B33-ABAF-4276-96CC-5337C3086D60}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CAC50DC0-C640-4E40-82B0-A7250FC4E1C3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CAC50DC0-C640-4E40-82B0-A7250FC4E1C3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CAC50DC0-C640-4E40-82B0-A7250FC4E1C3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CAC50DC0-C640-4E40-82B0-A7250FC4E1C3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
