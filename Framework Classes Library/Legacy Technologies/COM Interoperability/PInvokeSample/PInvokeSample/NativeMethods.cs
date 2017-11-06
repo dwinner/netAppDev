@@ -10,8 +10,10 @@ namespace PInvokeSample
    [SecurityCritical]
    internal static class NativeMethods
    {
-      [DllImport("kernel32.dll", SetLastError = true,
-         EntryPoint = "CreateHardLinkW", CharSet = CharSet.Unicode)]
+      [DllImport("kernel32.dll",
+         SetLastError = true,
+         EntryPoint = "CreateHardLinkW",
+         CharSet = CharSet.Unicode)]
       [return: MarshalAs(UnmanagedType.Bool)]
       private static extern bool CreateHardLink(
          [In] [MarshalAs(UnmanagedType.LPWStr)] string newFileName,
@@ -32,8 +34,7 @@ namespace PInvokeSample
    public static class FileUtility
    {
       [FileIOPermission(SecurityAction.LinkDemand, Unrestricted = true)]
-      public static void CreateHardLink(string oldFileName,
-         string newFileName)
+      public static void CreateHardLink(string oldFileName, string newFileName)
       {
          NativeMethods.CreateHardLink(oldFileName, newFileName);
       }
