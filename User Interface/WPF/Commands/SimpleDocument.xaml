@@ -32,8 +32,8 @@
                 <Button Command="Paste">Paste</Button>
             </ToolBar>
         </ToolBarTray>
-        <TextBox Name="Txt" Margin="5" Grid.Row="2"
+        <TextBox Margin="5" Grid.Row="2"
                  TextWrapping="Wrap" AcceptsReturn="True"
-                 TextChanged="txt_TextChanged" />
+                 TextChanged="OnTextChanged" />
     </Grid>
 </Window>

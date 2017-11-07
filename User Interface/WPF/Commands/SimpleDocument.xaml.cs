@@ -43,7 +43,7 @@ namespace Commands
          _isDirty = false;
       }
 
-      private void txt_TextChanged(object sender, RoutedEventArgs e)
+      private void OnTextChanged(object sender, RoutedEventArgs e)
       {
          _isDirty = true;
       }
