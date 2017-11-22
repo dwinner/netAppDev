@@ -17,6 +17,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Singleton", "Singleton\Sing
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdaptFactory", "AdaptFactory\AdaptFactory.csproj", "{5DF59D51-4C06-446E-BA97-3D4764D710B2}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GenericFactory", "GenericFactory\GenericFactory.csproj", "{2C30BC14-D934-4BE9-A324-17D8A083D0AA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -99,6 +101,18 @@ Global
 		{5DF59D51-4C06-446E-BA97-3D4764D710B2}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{5DF59D51-4C06-446E-BA97-3D4764D710B2}.Release|x86.ActiveCfg = Release|Any CPU
 		{5DF59D51-4C06-446E-BA97-3D4764D710B2}.Release|x86.Build.0 = Release|Any CPU
+		{2C30BC14-D934-4BE9-A324-17D8A083D0AA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2C30BC14-D934-4BE9-A324-17D8A083D0AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2C30BC14-D934-4BE9-A324-17D8A083D0AA}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{2C30BC14-D934-4BE9-A324-17D8A083D0AA}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{2C30BC14-D934-4BE9-A324-17D8A083D0AA}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{2C30BC14-D934-4BE9-A324-17D8A083D0AA}.Debug|x86.Build.0 = Debug|Any CPU
+		{2C30BC14-D934-4BE9-A324-17D8A083D0AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2C30BC14-D934-4BE9-A324-17D8A083D0AA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2C30BC14-D934-4BE9-A324-17D8A083D0AA}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{2C30BC14-D934-4BE9-A324-17D8A083D0AA}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{2C30BC14-D934-4BE9-A324-17D8A083D0AA}.Release|x86.ActiveCfg = Release|Any CPU
+		{2C30BC14-D934-4BE9-A324-17D8A083D0AA}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

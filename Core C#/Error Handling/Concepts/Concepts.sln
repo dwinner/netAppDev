@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.27004.2009
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CallerInformation", "CallerInformation\CallerInformation.csproj", "{CB1D8602-FA80-4F4E-BB93-14541D7A622B}"
 EndProject
@@ -41,7 +41,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TryFinally", "TryFinally\Tr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TryFinallyFile", "TryFinallyFile\TryFinallyFile.csproj", "{FF1DF609-228C-4F50-AAA4-BDDB2AE5B801}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "ExceptionFilterSample", "ExceptionFilterSample\ExceptionFilterSample.xproj", "{4D9FD20C-6627-49A8-85CD-2D2C6BBB2DA5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExceptionFilterSample", "ExceptionFilterSample\ExceptionFilterSample.csproj", "{4D9FD20C-6627-49A8-85CD-2D2C6BBB2DA5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -258,5 +258,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {EE97B6F8-AF4A-4F1D-A6FE-A20C1A3C7345}
 	EndGlobalSection
 EndGlobal
