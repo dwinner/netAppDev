@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.27004.2009
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "LinqToXml", "LinqToXml", "{45FFB826-0366-48CC-A375-283D075C6CF1}"
 EndProject
@@ -35,7 +35,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XmlValidationDemo", "+ Xml.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XPathDemo", "+ Xml. How To\XPathDemo\XPathDemo.csproj", "{F9EA1716-B0F6-4364-A2AF-4924A453EDFB}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "JsonNetSample", "JsonNetSample\JsonNetSample.xproj", "{6FEBB3E7-D452-499C-BC8B-336492231815}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "JsonNetSample", "JsonNetSample\JsonNetSample.csproj", "{6FEBB3E7-D452-499C-BC8B-336492231815}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -122,5 +122,8 @@ Global
 		{8D476C09-A99A-4D26-A871-E96A4A27D7FD} = {21F5CB64-0147-4467-81B5-2596F8A1F8FD}
 		{BFC6F0AD-A2BA-415D-A8E4-8292698078AA} = {21F5CB64-0147-4467-81B5-2596F8A1F8FD}
 		{F9EA1716-B0F6-4364-A2AF-4924A453EDFB} = {21F5CB64-0147-4467-81B5-2596F8A1F8FD}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {18518DF7-926D-4167-A969-EC9279A5474C}
 	EndGlobalSection
 EndGlobal

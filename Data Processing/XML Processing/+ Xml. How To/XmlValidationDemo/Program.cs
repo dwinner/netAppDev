@@ -17,7 +17,7 @@ namespace XmlValidationDemo
    {
       // Этот XML-документ не пройдет проверку на соответствие,
       // потому что элементы Author и Title идут в неправильном порядке        
-      const string SOURCE_XML =
+      const string SourceXml =
           "<?xml version='1.0'?>" +
           "<Book PublishYear=\"2009\">" +
           "<Author>Billy Bob</Author>" +
@@ -31,7 +31,7 @@ namespace XmlValidationDemo
          var settings = new XmlReaderSettings { ValidationType = ValidationType.Schema, Schemas = schemaSet };
          settings.ValidationEventHandler += (o, e) => Console.WriteLine("Validation failed: {0}", e.Message);
 
-         using (var reader = new StringReader(SOURCE_XML))
+         using (var reader = new StringReader(SourceXml))
          using (XmlReader xmlReader = XmlReader.Create(reader, settings))
          {
             while (xmlReader.Read())

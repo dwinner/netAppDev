@@ -10,7 +10,7 @@ namespace XmlTextReaderDemo
 {
    class Program
    {
-      const string SOURCE_XML =
+      const string SourceXml =
           "<Book PublishYear=\"2009\">" +
           "<Title>Programming, art or engineering?</Title>" +
           "<Author>Billy Bob</Author>" +
@@ -22,7 +22,7 @@ namespace XmlTextReaderDemo
 
          try
          {
-            using (var reader = new StringReader(SOURCE_XML))
+            using (var reader = new StringReader(SourceXml))
             using (var xmlReader = new XmlTextReader(reader))
             {
                while (xmlReader.Read())
