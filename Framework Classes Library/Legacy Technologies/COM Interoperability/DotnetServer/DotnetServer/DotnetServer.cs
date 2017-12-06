@@ -34,20 +34,9 @@ namespace DotnetServer
    [ComVisible(true)]
    public class DotnetComponent : IWelcome, IMath
    {
-      public DotnetComponent()
-      {
-      }
-
-      public event Action CalculationCompleted;
-
-      public string Greeting(string name)
-      {
-         return "Hello " + name;
-      }
-
       public int Add(int val1, int val2)
       {
-         int result = val1 + val2;
+         var result = val1 + val2;
          if (CalculationCompleted != null)
             CalculationCompleted();
          return result;
@@ -55,11 +44,17 @@ namespace DotnetServer
 
       public int Sub(int val1, int val2)
       {
-         int result = val1 - val2;
+         var result = val1 - val2;
          if (CalculationCompleted != null)
             CalculationCompleted();
          return result;
       }
+
+      public string Greeting(string name)
+      {
+         return string.Format("Hello {0}", name);
+      }
+
+      public event Action CalculationCompleted;
    }
 }
-

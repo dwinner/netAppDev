@@ -3,65 +3,55 @@
 
 #include "stdafx.h"
 #include <iostream>
-#import "../DotNetServer/bin/debug/DotnetServer.tlb" named_guids
+#import "..\DotnetServer\bin\Debug\DotnetServer.tlb" named_guids
 
 using namespace std;
 using namespace DotnetServer;
 
-
-class CEventHandler: public IDispEventImpl<4, CEventHandler,
-	&DIID_IMathEvents, &LIBID_DotnetServer, 1, 0>
+class CEventHandler : public IDispEventImpl<4, CEventHandler, &DIID_IMathEvents, &LIBID_DotnetServer, 1, 0>
 {
 public:
-	BEGIN_SINK_MAP(CEventHandler)
-		SINK_ENTRY_EX(4, DIID_IMathEvents, 46200, OnCalcCompleted)
-	END_SINK_MAP()
+   virtual ~CEventHandler() = default;
+   BEGIN_SINK_MAP(CEventHandler)
+            SINK_ENTRY_EX(4, DIID_IMathEvents, 46200, OnCalcCompleted)
+   END_SINK_MAP()
 
-	HRESULT __stdcall OnCalcCompleted()
-	{
-		cout << "calculation completed" << endl;
-		return S_OK;
-	}
+   static HRESULT __stdcall OnCalcCompleted()
+   {
+      cout << "calculation completed" << endl;
+      return S_OK;
+   }
 };
-
 
 int _tmain(int argc, _TCHAR* argv[])
 {
-	HRESULT hr;
-	hr = CoInitialize(NULL);
+   auto hr = CoInitialize(nullptr);
 
-	try
-	{
-		IWelcomePtr spWelcome;
+   try
+   {
+      IWelcomePtr spWelcome;
 
-		// CoCreateInstance()
-		hr = spWelcome.CreateInstance("Wrox.DotnetComponent");
+      // CoCreateInstance()
+      hr = spWelcome.CreateInstance("Wrox.DotnetComponent");
+      const IUnknownPtr spUnknown = spWelcome;
 
-		IUnknownPtr spUnknown = spWelcome;
+      cout << spWelcome->Greeting("Bill") << endl;
+      auto eventHandler = new CEventHandler();
+      hr = eventHandler->DispEventAdvise(spUnknown);
 
-		cout << spWelcome->Greeting("Bill") << endl;
+      IMathPtr spMath = spWelcome; // QueryInterface()
+      const auto result = spMath->Add(4, 5);
+      cout << "result:" << result << endl;
 
-		CEventHandler* eventHandler = new CEventHandler();
-		hr = eventHandler->DispEventAdvise(spUnknown);
+      eventHandler->DispEventUnadvise(spWelcome.GetInterfacePtr());
+      delete eventHandler;
+   }
+   catch (_com_error& e)
+   {
+      cout << e.ErrorMessage() << endl;
+   }
 
-		IMathPtr spMath;
-		spMath = spWelcome;   // QueryInterface()
+   CoUninitialize();
 
-		long result = spMath->Add(4, 5);
-		cout << "result:" << result << endl;
-
-		eventHandler->DispEventUnadvise(spWelcome.GetInterfacePtr());
-		delete eventHandler;
-
-	}
-	catch (_com_error& e)
-	{
-		cout << e.ErrorMessage() << endl;
-	}
-
-	CoUninitialize();
-
-
-	return 0;
+   return 0;
 }
-

@@ -79,6 +79,9 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <RegisterOutput>true</RegisterOutput>
     </Link>
+    <PostBuildEvent>
+      <Command>tlbimp "$(OutputPath)\$(TargetFileName)" /out:"$(OutputPath)\Interop.COMServer.dll"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
