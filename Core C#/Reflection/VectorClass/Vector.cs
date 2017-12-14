@@ -3,43 +3,118 @@ using System.Collections;
 using System.Globalization;
 using System.Text;
 using WhatsNewAttributes;
+// ReSharper disable HeapView.ObjectAllocation.Evident
+// ReSharper disable UnthrowableException
 
 [assembly: SupportsWhatsNew]
 
 namespace VectorClass
 {
    [LastModified("14 Feb 2010", "IEnumerable interface implemented So Vector can now be treated as a collection")]
-   [LastModified("10 Feb 2010", "IFormattable interface implemented So Vector now responds to format specifiers N and VE")]
+   [LastModified("10 Feb 2010",
+      "IFormattable interface implemented So Vector now responds to format specifiers N and VE")]
    public class Vector : IFormattable, IEnumerable, IEquatable<Vector>
    {
+      public Vector(double x, double y, double z)
+      {
+         X = x;
+         Y = y;
+         Z = z;
+      }
+
+      public Vector(Vector rhs)
+      {
+         X = rhs.X;
+         Y = rhs.Y;
+         Z = rhs.Z;
+      }
+
+      public double this[uint i]
+      {
+         get
+         {
+            switch (i)
+            {
+               case 0: return X;
+               case 1: return Y;
+               case 2: return Z;
+               default: throw new IndexOutOfRangeException($"Attempt to retrieve Vector element{i}");
+            }
+         }
+         set
+         {
+            switch (i)
+            {
+               case 0:
+                  X = value;
+                  break;
+               case 1:
+                  Y = value;
+                  break;
+               case 2:
+                  Z = value;
+                  break;
+               default: throw new IndexOutOfRangeException($"Attempt to set Vector element{i}");
+            }
+         }
+      }
+
+      public double X { get; private set; }
+
+      public double Y { get; private set; }
+
+      public double Z { get; private set; }
+
+      [LastModified("14 Feb 2010", "Method added in order to provide collection support")]
+      public IEnumerator GetEnumerator() => new VectorEnumerator(this);
+
       public bool Equals(Vector other)
       {
          if (ReferenceEquals(null, other))
-         {
             return false;
-         }
 
          if (ReferenceEquals(this, other))
-         {
             return true;
-         }
 
          return X.Equals(other.X) && Y.Equals(other.Y) && Z.Equals(other.Z);
+      }
+
+      [LastModified("10 Feb 2010", "Method added in order to provide formatting support")]
+      public string ToString(string format, IFormatProvider formatProvider)
+      {
+         if (format == null)
+            return ToString();
+         var formatUpper = format.ToUpper();
+         switch (formatUpper)
+         {
+            case "N":
+               return $"|| {Norm()} ||";
+
+            case "VE":
+               return $"( {X:E}, {Y:E}, {Z:E} )";
+
+            case "IJK":
+               var sb = new StringBuilder(X.ToString(CultureInfo.InvariantCulture), 30);
+               sb.Append(" i + ");
+               sb.Append(Y.ToString(CultureInfo.InvariantCulture));
+               sb.Append(" j + ");
+               sb.Append(Z.ToString(CultureInfo.InvariantCulture));
+               sb.Append(" k");
+               return sb.ToString();
+            default:
+               return ToString();
+         }
       }
 
       public override bool Equals(object obj)
       {
          if (ReferenceEquals(null, obj))
-         {
             return false;
-         }
 
          if (ReferenceEquals(this, obj))
-         {
             return true;
-         }
 
-         return obj.GetType() == GetType() && Equals((Vector)obj);
+         return obj.GetType() == GetType() && Equals((Vector) obj);
       }
 
       public override int GetHashCode()
@@ -57,93 +132,13 @@ namespace VectorClass
          }
       }
 
-      public Vector(double x, double y, double z)
-      {
-         X = x;
-         Y = y;
-         Z = z;
-      }
+      public override string ToString() => $"( {X} , {Y} , {Z} )";
 
-      [LastModified("10 Feb 2010", "Method added in order to provide formatting support")]
-      public string ToString(string format, IFormatProvider formatProvider)
-      {
-         if (format == null)
-            return ToString();
-         string formatUpper = format.ToUpper();
-         switch (formatUpper)
-         {
-            case "N":
-               return string.Format("|| {0} ||", Norm());
+      public static bool operator ==(Vector lhs, Vector rhs) =>
+         rhs != null && lhs != null && Math.Abs(lhs.X - rhs.X) < double.Epsilon &&
+         Math.Abs(lhs.Y - rhs.Y) < double.Epsilon && Math.Abs(lhs.Z - rhs.Z) < double.Epsilon;
 
-            case "VE":
-               return string.Format("( {0:E}, {1:E}, {2:E} )", X, Y, Z);
-
-            case "IJK":
-               var sb = new StringBuilder(X.ToString(CultureInfo.InvariantCulture), 30);
-               sb.Append(" i + ");
-               sb.Append(Y.ToString(CultureInfo.InvariantCulture));
-               sb.Append(" j + ");
-               sb.Append(Z.ToString(CultureInfo.InvariantCulture));
-               sb.Append(" k");
-               return sb.ToString();
-            default:
-               return ToString();
-         }
-      }
-
-      public Vector(Vector rhs)
-      {
-         X = rhs.X;
-         Y = rhs.Y;
-         Z = rhs.Z;
-      }
-
-      [LastModified("14 Feb 2010", "Method added in order to provide collection support")]
-      public IEnumerator GetEnumerator()
-      {
-         return new VectorEnumerator(this);
-      }
-
-      public override string ToString()
-      {
-         return string.Format("( {0} , {1} , {2} )", X, Y, Z);
-      }
-
-      public double this[uint i]
-      {
-         get
-         {
-            switch (i)
-            {
-               case 0: return X;
-               case 1: return Y;
-               case 2: return Z;
-               default: throw new IndexOutOfRangeException(string.Format("Attempt to retrieve Vector element{0}", i));
-            }
-         }
-         set
-         {
-            switch (i)
-            {
-               case 0: X = value; break;
-               case 1: Y = value; break;
-               case 2: Z = value; break;
-               default: throw new IndexOutOfRangeException(string.Format("Attempt to set Vector element{0}", i));
-            }
-         }
-      }
-
-      public static bool operator ==(Vector lhs, Vector rhs)
-      {
-         return rhs != null && (lhs != null && (Math.Abs(lhs.X - rhs.X) < double.Epsilon &&
-                                                Math.Abs(lhs.Y - rhs.Y) < double.Epsilon &&
-                                                Math.Abs(lhs.Z - rhs.Z) < double.Epsilon));
-      }
-
-      public static bool operator !=(Vector lhs, Vector rhs)
-      {
-         return !(lhs == rhs);
-      }
+      public static bool operator !=(Vector lhs, Vector rhs) => !(lhs == rhs);
 
       public static Vector operator +(Vector lhs, Vector rhs)
       {
@@ -155,33 +150,21 @@ namespace VectorClass
          return result;
       }
 
-      public static Vector operator *(double lhs, Vector rhs)
-      {
-         return new Vector(lhs * rhs.X, lhs * rhs.Y, lhs * rhs.Z);
-      }
+      public static Vector operator *(double lhs, Vector rhs) => new Vector(lhs * rhs.X, lhs * rhs.Y, lhs * rhs.Z);
 
-      public static Vector operator *(Vector lhs, double rhs)
-      {
-         return rhs * lhs;
-      }
+      public static Vector operator *(Vector lhs, double rhs) => rhs * lhs;
 
-      public static double operator *(Vector lhs, Vector rhs)
-      {
-         return lhs.X * rhs.X + lhs.Y + rhs.Y + lhs.Z * rhs.Z;
-      }
+      public static double operator *(Vector lhs, Vector rhs) => lhs.X * rhs.X + lhs.Y + rhs.Y + lhs.Z * rhs.Z;
 
-      public double Norm()
-      {
-         return X * X + Y * Y + Z * Z;
-      }
+      public double Norm() => X * X + Y * Y + Z * Z;
 
       #region Enumerator class
 
       [LastModified("14 Feb 2010", "Class created as part of collection support for Vector")]
       private class VectorEnumerator : IEnumerator
       {
-         readonly Vector _theVector;
-         int _location;
+         private readonly Vector _theVector;
+         private int _location;
 
          public VectorEnumerator(Vector theVector)
          {
@@ -189,22 +172,17 @@ namespace VectorClass
             _location = -1;
          }
 
-         public bool MoveNext()
-         {
-            return ++_location <= 2;
-         }
+         public bool MoveNext() => ++_location <= 2;
 
          public object Current
          {
             get
             {
                if (_location < 0 || _location > 2)
-               {
                   throw new InvalidOperationException(
                      "The enumerator is either before the first element or after the last element of the Vector");
-               }
 
-               return _theVector[(uint)_location];
+               return _theVector[(uint) _location];
             }
          }
 
@@ -215,11 +193,5 @@ namespace VectorClass
       }
 
       #endregion
-
-      public double X { get; private set; }
-
-      public double Y { get; private set; }
-
-      public double Z { get; private set; }
    }
 }

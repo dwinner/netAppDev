@@ -12,7 +12,7 @@ namespace LookUpWhatsNew
 {
    internal static class Program
    {
-      private static readonly StringBuilder OutputText = new StringBuilder(0x400);
+      private static readonly StringBuilder _OutputText = new StringBuilder(0x400);
       private static DateTime _backDateTo = new DateTime(2010, 2, 1);
 
       private static void Main()
@@ -21,7 +21,7 @@ namespace LookUpWhatsNew
          Attribute supportAttribute = Attribute.GetCustomAttribute(theAssembly, typeof (SupportsWhatsNewAttribute));
          string assemblyName = theAssembly.FullName;
          
-         AddToMessage(string.Format("Assembly: {0}", assemblyName));
+         AddToMessage($"Assembly: {assemblyName}");
          if (supportAttribute == null)
          {
             AddToMessage("This assembly does not support WhatsNew attributes");
@@ -36,7 +36,7 @@ namespace LookUpWhatsNew
             DisplayTypeInfo(definedType);
          }
 
-         MessageBox.Show(OutputText.ToString(), string.Format("What\'s New since {0}", _backDateTo.ToLongDateString()));
+         MessageBox.Show(_OutputText.ToString(), $"What\'s New since {_backDateTo.ToLongDateString()}");
 
          Console.ReadLine();
       }
@@ -48,7 +48,7 @@ namespace LookUpWhatsNew
             return;
          }
 
-         AddToMessage(string.Format("\nClass {0}", type.Name));
+         AddToMessage($"\nClass {type.Name}");
 
          Attribute[] attributes = Attribute.GetCustomAttributes(type);
          if (attributes.Length == 0)
@@ -68,7 +68,7 @@ namespace LookUpWhatsNew
          foreach (var method in methods)
          {
             object[] customAttributes = method.GetCustomAttributes(typeof (LastModifiedAttribute), false);
-            AddToMessage(string.Format("{0} {1}()", method.ReturnType, method.Name));
+            AddToMessage($"{method.ReturnType} {method.Name}()");
             foreach (var attribute in customAttributes)
             {
                WriteAttributeInfo(attribute as Attribute);
@@ -78,8 +78,7 @@ namespace LookUpWhatsNew
 
       private static void WriteAttributeInfo(Attribute attribute)
       {
-         var lastModifiedAttribute = attribute as LastModifiedAttribute;
-         if (lastModifiedAttribute == null)
+         if (!(attribute is LastModifiedAttribute lastModifiedAttribute))
          {
             return;
          }
@@ -90,17 +89,17 @@ namespace LookUpWhatsNew
             return;
          }
 
-         AddToMessage(string.Format("  MODIFIED: {0}:", modifiedDate.ToLongDateString()));
-         AddToMessage(string.Format("    {0}", lastModifiedAttribute.Changes));
+         AddToMessage($"  MODIFIED: {modifiedDate.ToLongDateString()}:");
+         AddToMessage($"    {lastModifiedAttribute.Changes}");
          if (lastModifiedAttribute.Issues != null)
          {
-            AddToMessage(string.Format("    Outstanding issues: {0}", lastModifiedAttribute.Issues));
+            AddToMessage($"    Outstanding issues: {lastModifiedAttribute.Issues}");
          }
       }
 
       private static void AddToMessage(string message)
       {
-         OutputText.AppendFormat("\n{0}", message);
+         _OutputText.AppendFormat("\n{0}", message);
       }
    }
 }

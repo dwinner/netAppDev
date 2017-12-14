@@ -37,6 +37,7 @@ namespace Mp3MetadataReaderSample
                [2] = tracks[2],
                [3] = tracks[3] // NOTE: вбросит исключение ArgumentOutOfRangeException
             };
+            WriteLine(trackMap);
          }
          catch (ArgumentOutOfRangeException argOutEx) when (!Log(argOutEx))
          {

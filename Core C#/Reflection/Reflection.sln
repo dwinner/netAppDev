@@ -1,6 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
+# Visual Studio 15
+VisualStudioVersion = 15.0.27004.2010
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{EF34DDD1-2542-4770-8FFD-E76E596AD996}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "HowTo", "HowTo", "{A20F1B17-249C-442C-972A-C60F306C9342}"
@@ -55,16 +57,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LookUpWhatsNew", "LookUpWha
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamicAssemblyBuilder", "DynamicAssemblyBuilder\DynamicAssemblyBuilder.csproj", "{172F9C44-B997-4C0A-8040-4203175FC390}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{10830933-ECAF-468B-B776-7A71AA15CA26}"
-	ProjectSection(SolutionItems) = preProject
-		.nuget\NuGet.Config = .nuget\NuGet.Config
-		.nuget\NuGet.exe = .nuget\NuGet.exe
-		.nuget\NuGet.targets = .nuget\NuGet.targets
-	EndProjectSection
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AspectLogging", "AspectLogging\AspectLogging.csproj", "{93B2A558-A7A8-4D0F-97D3-2E4A984D98E8}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AspectsForTypes", "AspectsForTypes\AspectsForTypes.csproj", "{502B6C07-3229-4249-A51C-6B65B8BEA6AF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleILDisassemblerSample", "SimpleILDisassemblerSample\SimpleILDisassemblerSample.csproj", "{ACA4F5A1-7EBB-4F29-9708-9AD6514F4F77}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -346,6 +343,18 @@ Global
 		{502B6C07-3229-4249-A51C-6B65B8BEA6AF}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{502B6C07-3229-4249-A51C-6B65B8BEA6AF}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{502B6C07-3229-4249-A51C-6B65B8BEA6AF}.Release|x86.ActiveCfg = Release|Any CPU
+		{ACA4F5A1-7EBB-4F29-9708-9AD6514F4F77}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ACA4F5A1-7EBB-4F29-9708-9AD6514F4F77}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ACA4F5A1-7EBB-4F29-9708-9AD6514F4F77}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{ACA4F5A1-7EBB-4F29-9708-9AD6514F4F77}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{ACA4F5A1-7EBB-4F29-9708-9AD6514F4F77}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{ACA4F5A1-7EBB-4F29-9708-9AD6514F4F77}.Debug|x86.Build.0 = Debug|Any CPU
+		{ACA4F5A1-7EBB-4F29-9708-9AD6514F4F77}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ACA4F5A1-7EBB-4F29-9708-9AD6514F4F77}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ACA4F5A1-7EBB-4F29-9708-9AD6514F4F77}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{ACA4F5A1-7EBB-4F29-9708-9AD6514F4F77}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{ACA4F5A1-7EBB-4F29-9708-9AD6514F4F77}.Release|x86.ActiveCfg = Release|Any CPU
+		{ACA4F5A1-7EBB-4F29-9708-9AD6514F4F77}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -371,5 +380,8 @@ Global
 		{14903125-051A-4B47-A824-3CE69034FDF0} = {A20F1B17-249C-442C-972A-C60F306C9342}
 		{A834F769-36D3-4CE6-9DD3-BE0C29F6DE8A} = {A20F1B17-249C-442C-972A-C60F306C9342}
 		{6B52981A-ED90-4CBD-9306-1659EC50BB9B} = {A20F1B17-249C-442C-972A-C60F306C9342}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {627102D4-A4BE-423D-B43D-0116E7EEEBE7}
 	EndGlobalSection
 EndGlobal

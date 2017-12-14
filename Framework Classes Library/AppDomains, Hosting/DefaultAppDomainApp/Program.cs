@@ -4,50 +4,50 @@ using System.Linq;
 namespace DefaultAppDomainApp
 {
    // Домены приложений.
-   class Program
+   internal static class Program
    {
-      static void Main(string[] args)
+      private static void Main()
       {
          Console.WriteLine("***** Fun with the default app domain *****\n");
          SetupAssemblyLoadedHandler();
          DisplayDadStats();
-         ListAllAssembliesInAppDomain();         
+         ListAllAssembliesInAppDomain();
 
          Console.ReadKey(true);
       }
 
       /// <summary>
-      /// Информация о домене по умолчанию.
+      ///    Информация о домене по умолчанию.
       /// </summary>
       private static void DisplayDadStats()
       {
          // Получение доступа к домену приложения, используемому для
          // текущего потока по умолчанию.
-         AppDomain defaultAd = AppDomain.CurrentDomain;
+         var defaultAd = AppDomain.CurrentDomain;
 
          // Вывод в окно консоли статистических данных об этом домене.
          Console.WriteLine("Name of this domain: {0}",
-            defaultAd.FriendlyName);   // Читабельное имя
+            defaultAd.FriendlyName); // Читабельное имя
          Console.WriteLine("ID of domain in this process: {0}",
             defaultAd.Id); // Идентификатор
          Console.WriteLine("Is this the default domain?: {0}",
             defaultAd.IsDefaultAppDomain()); // Используется ли по умолчанию
          Console.WriteLine("Base directory of this domain: {0}",
-            defaultAd.BaseDirectory);  // Базовый каталог
+            defaultAd.BaseDirectory); // Базовый каталог
       }
 
       /// <summary>
-      /// Перечисление загружаемых сборок.
+      ///    Перечисление загружаемых сборок.
       /// </summary>
       private static void ListAllAssembliesInAppDomain()
       {
          // Доступ к домену приложения по умолчанию для текущего потока.
-         AppDomain defaultAd = AppDomain.CurrentDomain;
+         var defaultAd = AppDomain.CurrentDomain;
 
          // Извлечение списка всех сборок, загруженных в этот домен приложения.
          var loadedAssemblies = from assembly in defaultAd.GetAssemblies()
-                                orderby assembly.GetName().Name
-                                select assembly;
+            orderby assembly.GetName().Name
+            select assembly;
          // Assembly[] loadedAssemblies = defaultAd.GetAssemblies();
          Console.WriteLine("***** Here are the assemblies loaded in {0} *****\n",
             defaultAd.FriendlyName);
@@ -59,13 +59,13 @@ namespace DefaultAppDomainApp
       }
 
       /// <summary>
-      /// Получение уведомлений о загрузке сборок в домене по умолчанию.
+      ///    Получение уведомлений о загрузке сборок в домене по умолчанию.
       /// </summary>
       private static void SetupAssemblyLoadedHandler()
       {
-         AppDomain defaultDomain = AppDomain.CurrentDomain;
+         var defaultDomain = AppDomain.CurrentDomain;
          defaultDomain.AssemblyLoad += (sender, args) => Console.WriteLine("{0} has been loaded!",
-                                                                           args.LoadedAssembly.GetName().Name);
+            args.LoadedAssembly.GetName().Name);
       }
    }
 }

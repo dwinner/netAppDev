@@ -16,13 +16,19 @@ namespace AppDomainMonitoring
             for (var i = 0; i < 1000; i++) list.Add(new byte[10000]);
 
             // Выделено около 20 миллионов байтов, которые НЕ переживут сборку мусора
-            for (var i = 0; i < 2000; i++) new byte[10000].GetType();
+            for (var i = 0; i < 2000; i++)
+            {
+               var type = new byte[10000].GetType();
+               Console.WriteLine(type.Name);
+            }
 
             // Раскручиваем процессор около 5-ти секунд
             long stop = Environment.TickCount + 5000;
             while (Environment.TickCount < stop)
             {
             }
+
+            list.ForEach(Console.WriteLine);
          }
       }
    }

@@ -6,19 +6,16 @@ using static System.Console;
 
 namespace LocalFunctionsSample
 {
-   class Program
+   internal static class Program
    {
-      static void Main(string[] args)
+      private static void Main(string[] args)
       {
          void SayHi()
          {
             WriteLine("Hi");
          }
 
-         int ReturnInt()
-         {
-            return 1;
-         }                 
+         int ReturnInt() => 1;
 
          SayHi();
          WriteLine(ReturnInt());

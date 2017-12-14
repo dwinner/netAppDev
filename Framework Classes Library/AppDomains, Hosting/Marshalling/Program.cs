@@ -25,7 +25,7 @@ namespace Marshalling
          var newAppDomain = AppDomain.CreateDomain("AD #2", null, null);
          // Получаем ссылку на proxy
          var marshalObj =
-            (MarshalByRefType)newAppDomain.CreateInstanceAndUnwrap(exeAssembly, nameof(MarshalByRefType));
+            (MarshalByRefType) newAppDomain.CreateInstanceAndUnwrap(exeAssembly, nameof(MarshalByRefType));
          WriteLine("Type={0}", marshalObj.GetType()); // CRL неверно определит тип
          WriteLine("Is proxy={0}", IsTransparentProxy(marshalObj)); // Действительно: это ссылка на proxy
          marshalObj.SomeMethod();
@@ -48,7 +48,7 @@ namespace Marshalling
 
          WriteLine("{0}Demo #2", Environment.NewLine);
          newAppDomain = AppDomain.CreateDomain("AD #2", null, null);
-         marshalObj = (MarshalByRefType)newAppDomain.CreateInstanceAndUnwrap(exeAssembly, nameof(MarshalByRefType));
+         marshalObj = (MarshalByRefType) newAppDomain.CreateInstanceAndUnwrap(exeAssembly, nameof(MarshalByRefType));
          var byValType = marshalObj.MethodWithReturn(); // Метод возвращает копию объекта
          WriteLine("Is proxy={0}", IsTransparentProxy(byValType)); // Это уже не proxy
          WriteLine("Returned object created {0}", byValType);
@@ -71,8 +71,9 @@ namespace Marshalling
 
          WriteLine("{0}Demo #3", Environment.NewLine);
          newAppDomain = AppDomain.CreateDomain("AD #2", null, null);
-         marshalObj = (MarshalByRefType)newAppDomain.CreateInstanceAndUnwrap(exeAssembly, nameof(MarshalByRefType));
+         marshalObj = (MarshalByRefType) newAppDomain.CreateInstanceAndUnwrap(exeAssembly, nameof(MarshalByRefType));
          var failedCall = marshalObj.MethodArgAndReturn(callingDomainName); // Сгенерируется исключение
+         WriteLine(failedCall);
 
          #endregion
       }

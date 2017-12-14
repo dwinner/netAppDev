@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Globalization;
 
-namespace FormattingAndParsing
+namespace HowToCSharp.Ch05.FormattingAndParsing
 {
-   class PrintNumbers
+   internal static class PrintNumbers
    {
-      private static CultureInfo ci = CultureInfo.InvariantCulture;
+      private static readonly CultureInfo _Ci = CultureInfo.InvariantCulture;
 
       public static void Run()
       {
@@ -34,52 +34,52 @@ namespace FormattingAndParsing
          PrintCustomFormatStrings(12345.6789);
       }
 
-      static void PrintNumberFormatted(double number)
+      private static void PrintNumberFormatted(double number)
       {
-         Console.WriteLine("G: " + number.ToString("G", ci));
-         Console.WriteLine("G4: " + number.ToString("G4", ci));
-         Console.WriteLine("G5: " + number.ToString("G5", ci));
+         Console.WriteLine("G: " + number.ToString("G", _Ci));
+         Console.WriteLine("G4: " + number.ToString("G4", _Ci));
+         Console.WriteLine("G5: " + number.ToString("G5", _Ci));
 
-         Console.WriteLine("F: " + number.ToString("F", ci));
-         Console.WriteLine("F6: " + number.ToString("F6", ci));
+         Console.WriteLine("F: " + number.ToString("F", _Ci));
+         Console.WriteLine("F6: " + number.ToString("F6", _Ci));
 
-         Console.WriteLine("e: " + number.ToString("e", ci));
-         Console.WriteLine("E: " + number.ToString("E", ci));
-         Console.WriteLine("E3: " + number.ToString("E3", ci));
+         Console.WriteLine("e: " + number.ToString("e", _Ci));
+         Console.WriteLine("E: " + number.ToString("E", _Ci));
+         Console.WriteLine("E3: " + number.ToString("E3", _Ci));
 
-         Console.WriteLine("N: " + number.ToString("N", ci));
-         Console.WriteLine("N0: " + number.ToString("N0", ci));
-         Console.WriteLine("N5: " + number.ToString("N5", ci));
+         Console.WriteLine("N: " + number.ToString("N", _Ci));
+         Console.WriteLine("N0: " + number.ToString("N0", _Ci));
+         Console.WriteLine("N5: " + number.ToString("N5", _Ci));
 
-         Console.WriteLine("P: " + number.ToString("P", ci));
-         Console.WriteLine("P1: " + number.ToString("P1", ci));
+         Console.WriteLine("P: " + number.ToString("P", _Ci));
+         Console.WriteLine("P1: " + number.ToString("P1", _Ci));
 
          Console.WriteLine("C: " + number.ToString("C", CultureInfo.CreateSpecificCulture("en-US")));
          Console.WriteLine("C3: " + number.ToString("C3", CultureInfo.CreateSpecificCulture("en-GB")));
       }
 
-      static void PrintIntNumberFormatted(int number)
+      private static void PrintIntNumberFormatted(int number)
       {
-         Console.WriteLine("D: " + number.ToString("D", ci));
-         Console.WriteLine("D8: " + number.ToString("D8", ci));
+         Console.WriteLine("D: " + number.ToString("D", _Ci));
+         Console.WriteLine("D8: " + number.ToString("D8", _Ci));
 
-         Console.WriteLine("F: " + number.ToString("F", ci));
-         Console.WriteLine("F3: " + number.ToString("F3", ci));
+         Console.WriteLine("F: " + number.ToString("F", _Ci));
+         Console.WriteLine("F3: " + number.ToString("F3", _Ci));
 
-         Console.WriteLine("E: " + number.ToString("E", ci));
-         Console.WriteLine("E3: " + number.ToString("E3", ci));
+         Console.WriteLine("E: " + number.ToString("E", _Ci));
+         Console.WriteLine("E3: " + number.ToString("E3", _Ci));
 
-         Console.WriteLine("X: " + number.ToString("X", ci));
-         Console.WriteLine("X8: " + number.ToString("X8", ci));
+         Console.WriteLine("X: " + number.ToString("X", _Ci));
+         Console.WriteLine("X8: " + number.ToString("X8", _Ci));
       }
 
-      private static void PrintHex(Int32 number)
+      private static void PrintHex(int number)
       {
          Console.WriteLine("Hex: {0:X}", number);
          Console.WriteLine("Hex: 0x{0:X8}", number);
       }
 
-      private static void PrintCurrencies(Int32 number)
+      private static void PrintCurrencies(int number)
       {
          Console.WriteLine("en-US: " + number.ToString("C", CultureInfo.CreateSpecificCulture("en-US")));
          Console.WriteLine("en-GB: " + number.ToString("C", CultureInfo.CreateSpecificCulture("en-GB")));
@@ -88,20 +88,20 @@ namespace FormattingAndParsing
          Console.WriteLine("zh-HK: " + number.ToString("C", CultureInfo.CreateSpecificCulture("zh-HK")));
          Console.WriteLine("mn-MN: " + number.ToString("C", CultureInfo.CreateSpecificCulture("mn-MN")));
 
-         double val = 1234567.89;
+         var val = 1234567.89;
          Console.WriteLine(val.ToString("N", CultureInfo.CreateSpecificCulture("fr-FR")));
          Console.WriteLine(string.Format(CultureInfo.CreateSpecificCulture("hi-IN"), "{0:N}", val));
       }
 
       private static void PrintCustomFormatStrings(double number)
       {
-         Console.WriteLine(number.ToString("00000000.00", ci));
-         Console.WriteLine(number.ToString("00,000,000.00", ci));
+         Console.WriteLine(number.ToString("00000000.00", _Ci));
+         Console.WriteLine(number.ToString("00,000,000.00", _Ci));
          Console.WriteLine(number.ToString("00,000,000.00", CultureInfo.CreateSpecificCulture("hi-IN")));
-         double neg = number * -1;
-         Console.WriteLine(neg.ToString("00,000,000.00;(00000000.000)", ci));
-         double zero = 0.0;
-         Console.WriteLine(zero.ToString("00,000,000.00;(00000000.000);'nothing!'", ci));
+         var neg = number * -1;
+         Console.WriteLine(neg.ToString("00,000,000.00;(00000000.000)", _Ci));
+         var zero = 0.0;
+         Console.WriteLine(zero.ToString("00,000,000.00;(00000000.000);'nothing!'", _Ci));
       }
    }
 }

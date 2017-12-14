@@ -2,9 +2,9 @@
 
 namespace BasicConsoleIO
 {
-   class Program
+   internal static class Program
    {
-      static void Main(string[] args)
+      private static void Main()
       {
          Console.WriteLine("***** Basic Console I/O *****");
          GetUserData();
@@ -22,30 +22,33 @@ namespace BasicConsoleIO
       }
 
       #region Get some information about the user
-      static void GetUserData()
+
+      private static void GetUserData()
       {
          // Get name and age.
          Console.Write("Please enter your name: ");
-         string userName = Console.ReadLine();
+         var userName = Console.ReadLine();
          Console.Write("Please enter your age: ");
-         string userAge = Console.ReadLine();
+         var userAge = Console.ReadLine();
 
          // Change echo color, just for fun.
-         ConsoleColor prevColor = Console.ForegroundColor;
+         var prevColor = Console.ForegroundColor;
          Console.ForegroundColor = ConsoleColor.Yellow;
 
          // Echo to the console.
          Console.WriteLine("Hello {0}!  You are {1} years old.",
-           userName, userAge);
+            userName, userAge);
 
          // Restore previous color.
          Console.ForegroundColor = prevColor;
       }
+
       #endregion
 
       #region Format some numerical data
+
       // Now make use of some format tags.
-      static void FormatNumericalData()
+      private static void FormatNumericalData()
       {
          Console.WriteLine("The value 99999 in various formats:");
          Console.WriteLine("c format: {0:c}", 99999);
@@ -60,6 +63,7 @@ namespace BasicConsoleIO
          Console.WriteLine("X format: {0:X}", 99999);
          Console.WriteLine("x format: {0:x}", 99999);
       }
+
       #endregion
    }
 }

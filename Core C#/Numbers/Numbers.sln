@@ -1,6 +1,8 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27004.2010
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BaseConvert", "BaseConvert\BaseConvert.csproj", "{D7A4244B-DC61-4E9D-A02B-D3183BC35EC5}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Formatting and Parsing", "Formatting and Parsing\Formatting and Parsing.csproj", "{2FD175C2-0BD3-415B-A509-00EDD838106B}"
@@ -26,6 +28,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SnapToGrid", "SnapToGrid\SnapToGrid.csproj", "{DB6BA9D0-6C4C-4854-9478-80474EF5508D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IsPrime", "IsPrime\IsPrime.csproj", "{DE8071C5-95E8-4E4D-8D29-90C402DAB25A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NumericLiteralsSample", "NumericLiteralsSample\NumericLiteralsSample.csproj", "{9658EFB6-A8DA-47DB-9329-DF6887C60240}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -167,8 +171,23 @@ Global
 		{DE8071C5-95E8-4E4D-8D29-90C402DAB25A}.Release|Mixed Platforms.Build.0 = Release|x86
 		{DE8071C5-95E8-4E4D-8D29-90C402DAB25A}.Release|x86.ActiveCfg = Release|x86
 		{DE8071C5-95E8-4E4D-8D29-90C402DAB25A}.Release|x86.Build.0 = Release|x86
+		{9658EFB6-A8DA-47DB-9329-DF6887C60240}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9658EFB6-A8DA-47DB-9329-DF6887C60240}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9658EFB6-A8DA-47DB-9329-DF6887C60240}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{9658EFB6-A8DA-47DB-9329-DF6887C60240}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{9658EFB6-A8DA-47DB-9329-DF6887C60240}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{9658EFB6-A8DA-47DB-9329-DF6887C60240}.Debug|x86.Build.0 = Debug|Any CPU
+		{9658EFB6-A8DA-47DB-9329-DF6887C60240}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9658EFB6-A8DA-47DB-9329-DF6887C60240}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9658EFB6-A8DA-47DB-9329-DF6887C60240}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{9658EFB6-A8DA-47DB-9329-DF6887C60240}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{9658EFB6-A8DA-47DB-9329-DF6887C60240}.Release|x86.ActiveCfg = Release|Any CPU
+		{9658EFB6-A8DA-47DB-9329-DF6887C60240}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {A9B118C3-E0A0-45A6-916C-538074A2B3BC}
 	EndGlobalSection
 EndGlobal

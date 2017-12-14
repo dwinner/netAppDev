@@ -7,7 +7,7 @@ namespace VehicleDescriptionAttributeReader
 {
    internal static class Program
    {
-      private static void Main(string[] args)
+      private static void Main()
       {
          Console.WriteLine("***** Value of VehicleDescriptionAttribute *****\n");
          ReflectOnAttributesUsingEarlyBinding();

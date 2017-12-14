@@ -11,36 +11,36 @@ namespace TypeView
 {
    static class Program
    {
-      private static readonly StringBuilder OutputText = new StringBuilder();
+      private static readonly StringBuilder _OutputText = new StringBuilder();
 
       static void Main()
       {
          Type type = typeof(double);
          AnalyzeType(type);
-         MessageBox.Show(OutputText.ToString(), string.Format("Alalysis of type {0}", type.Name));
+         MessageBox.Show(_OutputText.ToString(), $"Alalysis of type {type.Name}");
 
          Console.ReadLine();
       }
 
       private static void AddToOutput(string text)
       {
-         OutputText.AppendFormat("\n{0}", text);
+         _OutputText.AppendFormat("\n{0}", text);
       }
 
       private static void AnalyzeType(Type type)
       {
-         AddToOutput(string.Format("Type Name: {0}", type.Name));
-         AddToOutput(string.Format("Full Name: {0}", type.FullName));
-         AddToOutput(string.Format("Namespace: {0}", type.Namespace));
+         AddToOutput($"Type Name: {type.Name}");
+         AddToOutput($"Full Name: {type.FullName}");
+         AddToOutput($"Namespace: {type.Namespace}");
          Type baseType = type.BaseType;
-         AddToOutput(baseType == null ? string.Empty : string.Format("Base Type: {0}", baseType.Name));
+         AddToOutput(baseType == null ? string.Empty : $"Base Type: {baseType.Name}");
          Type underlyingSystemType = type.UnderlyingSystemType;
          AddToOutput(underlyingSystemType.Name);
          AddToOutput("\nPUBLIC MEMBERS:");
          MemberInfo[] members = type.GetMembers();
          foreach (var memberInfo in members)
          {
-            AddToOutput(string.Format("{0} {1} {2}", memberInfo.DeclaringType, memberInfo.MemberType, memberInfo.Name));
+            AddToOutput($"{memberInfo.DeclaringType} {memberInfo.MemberType} {memberInfo.Name}");
          }
       }
    }

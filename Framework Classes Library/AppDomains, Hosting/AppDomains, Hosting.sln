@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.23107.0
+# Visual Studio 2013
+VisualStudioVersion = 12.0.40629.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CustomAppDomains", "CustomAppDomains\CustomAppDomains.csproj", "{5723974B-1C65-4C3D-96FE-E03655CEFFC4}"
 EndProject
@@ -14,6 +14,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MarshallingAndPerf", "MarshallingAndPerf\MarshallingAndPerf.csproj", "{15B64354-D156-49E6-BD07-3C67495AD891}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AppDomainMonitoring", "AppDomainMonitoring\AppDomainMonitoring.csproj", "{48E16FA1-E536-49CB-9074-F257051B1E5D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AppContextSample", "AppContextSample\AppContextSample.csproj", "{D3A31365-D4EF-4298-B3E5-4272E0EDE507}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,6 +47,10 @@ Global
 		{48E16FA1-E536-49CB-9074-F257051B1E5D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{48E16FA1-E536-49CB-9074-F257051B1E5D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{48E16FA1-E536-49CB-9074-F257051B1E5D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D3A31365-D4EF-4298-B3E5-4272E0EDE507}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D3A31365-D4EF-4298-B3E5-4272E0EDE507}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D3A31365-D4EF-4298-B3E5-4272E0EDE507}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D3A31365-D4EF-4298-B3E5-4272E0EDE507}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

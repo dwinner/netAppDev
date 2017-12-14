@@ -35,7 +35,7 @@ namespace MyExtendableApp
       private bool LoadExternalModule(string pathToAssembly)
       {
          bool foundSnapIn = false;
-         Assembly theSnapInAsm = null;
+         Assembly theSnapInAsm;
 
          try
          {
@@ -45,7 +45,7 @@ namespace MyExtendableApp
          catch (Exception ex)
          {
             MessageBox.Show(ex.Message);
-            return foundSnapIn;
+            return false;
          }
 
          // Получение информации обо всех совместимых с IAppFunctionality классах в сборке.
@@ -60,24 +60,24 @@ namespace MyExtendableApp
             IAppFunctionality itfApp =
                (IAppFunctionality) theSnapInAsm.CreateInstance(t.FullName, true);
             itfApp.DoIt();
-            snapInListBox.Items.Add(t.FullName);
+            snapInListBox.Items.Add(t.FullName ?? throw new InvalidOperationException());
             // Отображение информации о компании.
             DisplayCompanyData(t);
          }
          return foundSnapIn;
       }
 
-      private void DisplayCompanyData(Type t)
+      private void DisplayCompanyData(Type type)
       {
          // Получение данных из атрибута [CompanyInfo].
-         var compInfo = from ci in t.GetCustomAttributes(false)
-                        where (ci.GetType() == typeof(CompanyInfoAttribute))
-                        select ci;
+         var compInfo = from attr in type.GetCustomAttributes(false)
+                        where attr is CompanyInfoAttribute
+                        select attr;
          // Отображение этих данных.
          foreach (CompanyInfoAttribute c in compInfo)
          {
             MessageBox.Show(c.CompanyUrl,
-               string.Format("More info about {0} can be found at", c.CompanyName));
+               $"More info about {c.CompanyName} can be found at");
          }
       }
    }

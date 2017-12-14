@@ -1,6 +1,6 @@
-﻿using System.IO;
+﻿using Id3;
+using System.IO;
 using System.Threading.Tasks;
-using Id3;
 using static System.IO.FileMode;
 using static System.IO.FileAccess;
 

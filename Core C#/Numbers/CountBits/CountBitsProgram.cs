@@ -1,28 +1,27 @@
 ﻿/**
  * Подсчет битов в числе
  */
+
 using System;
 
 namespace HowToCSharp.Ch05.CountBits
 {
-   class CountBitsProgram
+   internal static class CountBitsProgram
    {
-      static void Main(string[] args)
+      private static void Main()
       {
-         for (int i = 0; i < 25; i++)
-         {
+         for (var i = 0; i < 25; i++)
             Console.WriteLine("{0} bits set in {1} ({2})", CountBits(i), i, Convert.ToString(i, 2));
-         }
          Console.ReadKey();
       }
 
-      static Int16 CountBits(Int32 number)
+      private static short CountBits(int number)
       {
-         int accum = number;
-         Int16 count = 0;
+         var accum = number;
+         short count = 0;
          while (accum > 0)
          {
-            accum &= (accum - 1);
+            accum &= accum - 1;
             count++;
          }
          return count;

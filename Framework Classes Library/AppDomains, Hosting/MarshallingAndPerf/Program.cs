@@ -3,6 +3,7 @@
 using System;
 using static System.Console;
 using static System.Diagnostics.Stopwatch;
+// ReSharper disable NotAccessedField.Local
 
 namespace MarshallingAndPerf
 {

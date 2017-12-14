@@ -9,16 +9,16 @@ using static System.Console;
 
 namespace PatternMatchingSample
 {
-   class Program
+   internal static class Program
    {
-      static void Main(string[] args)
+      private static void Main()
       {
          (int, double) FilterNumbers()
          {
-            object[] numbers = { "str", 0, 0, 1, 6, null, 0.0, 7.9, 5, 5 };
+            object[] numbers = {"str", 0, 0, 1, 6, null, 0.0, 7.9, 5, 5};
             var r =
-               (ints: numbers.Where(n => (n is int i)).Cast<int>().Sum(),
-                doubles: numbers.Where(d => (d is double dd)).Cast<double>().Sum());
+               (ints: numbers.Where(n => n is int i).Cast<int>().Sum(),
+               doubles: numbers.Where(d => d is double dd).Cast<double>().Sum());
 
             return r;
          }
@@ -27,10 +27,9 @@ namespace PatternMatchingSample
          WriteLine($"{t.Item1}, {t.Item2}");
 
          // Flexible switch
-         IEnumerable<object> list = new List<object>() { 1, 2, 3, 4, null, "str", Guid.Empty };
+         IEnumerable<object> list = new List<object> {1, 2, 3, 4, null, "str", Guid.Empty};
          var p = (s: 0, c: 0);
          foreach (var v in list)
-         {
             switch (v)
             {
                case int i:
@@ -44,11 +43,7 @@ namespace PatternMatchingSample
 
                case null:
                   break;
-
-               default:
-                  break;
             }
-         }
       }
    }
 }

@@ -1,31 +1,34 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+// ReSharper disable UnusedVariable
+#pragma warning disable 169
+#pragma warning disable 618
 
 namespace ApplyingAttributes
 {
-   class Program
+   internal static class Program
    {
-      static void Main(string[] args)
+      private static void Main()
       {
-         HorseAndBuggy mule = new HorseAndBuggy();
+         var mule = new HorseAndBuggy();
       }
    }
 
    [Serializable] // Этот класс может сохраняться на диске.
    public class Motorcycle
    {
-      [NonSerialized]   // Это поле сохраняться не будет.
-      float weightOfCurrentPassengers;
+      private bool _hasHeadSet;
+
       // Эти поля сериализованы.
-      bool hasRadioSystem;
-      bool hasHeadSet;
-      bool hasSissyBar;
+      private bool _hasRadioSystem;
+
+      private bool _hasSissyBar;
+
+      [NonSerialized] // Это поле сохраняться не будет.
+      private float _weightOfCurrentPassengers;
    }
 
-   [Serializable, Obsolete("Use another vehicle!")]
+   [Serializable]
+   [Obsolete("Use another vehicle!")]
    public class HorseAndBuggy
    {
    }
@@ -34,5 +37,5 @@ namespace ApplyingAttributes
    [Obsolete("Use another vehicle!")]
    public class HorseAndBuggy2
    {
-   }     
+   }
 }

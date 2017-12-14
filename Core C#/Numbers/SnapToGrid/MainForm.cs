@@ -12,7 +12,6 @@ namespace SnapToGrid
       public MainForm()
       {
          InitializeComponent();
-
          DoubleBuffered = true;
       }
 
@@ -45,11 +44,11 @@ namespace SnapToGrid
          base.OnPaint(e);
          if (!Capture)
             return;
-         Point topLeft = new Point(Math.Min(_firstPoint.X, _secondPoint.X), Math.Min(_firstPoint.Y, _secondPoint.Y));
-         Point bottomRight = new Point(Math.Max(_firstPoint.X, _secondPoint.X), Math.Max(_firstPoint.Y, _secondPoint.Y));
-         Size size = new Size(bottomRight.X - topLeft.X, bottomRight.Y - topLeft.Y);
-         Rectangle rect = new Rectangle(topLeft, size);
 
+         var topLeft = new Point(Math.Min(_firstPoint.X, _secondPoint.X), Math.Min(_firstPoint.Y, _secondPoint.Y));
+         var bottomRight = new Point(Math.Max(_firstPoint.X, _secondPoint.X), Math.Max(_firstPoint.Y, _secondPoint.Y));
+         var size = new Size(bottomRight.X - topLeft.X, bottomRight.Y - topLeft.Y);
+         var rect = new Rectangle(topLeft, size);
          e.Graphics.DrawRectangle(Pens.Black, rect);
       }
 
@@ -59,9 +58,6 @@ namespace SnapToGrid
          return new Point(SnapInput(point.X, gridSize), SnapInput(point.Y, gridSize));
       }
 
-      private static Int32 SnapInput(double input, Int32 multiple)
-      {
-         return (((Int32)(input + (multiple / 2.0))) / multiple) * multiple;
-      }
+      private static int SnapInput(double input, int multiple) => (int) (input + multiple / 2.0) / multiple * multiple;
    }
 }
