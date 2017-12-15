@@ -4,6 +4,8 @@ using System;
 using System.Runtime.Serialization;
 using static System.Guid;
 using static System.Math;
+// ReSharper disable UnusedMember.Local
+// ReSharper disable NotAccessedField.Local
 
 namespace ManagingSerialization
 {

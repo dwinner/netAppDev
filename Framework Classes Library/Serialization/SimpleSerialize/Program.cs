@@ -4,6 +4,7 @@ using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Runtime.Serialization.Formatters.Soap;
 using System.Xml.Serialization;
+// ReSharper disable UnusedMember.Local
 
 namespace SimpleSerialize
 {
@@ -149,11 +150,13 @@ namespace SimpleSerialize
 
       private static void SaveListOfCars()
       {
-         var myCars = new List<JamesBondCar>();
-         myCars.Add(new JamesBondCar(true, true));
-         myCars.Add(new JamesBondCar(true, false));
-         myCars.Add(new JamesBondCar(false, true));
-         myCars.Add(new JamesBondCar(false, false));
+         var myCars = new List<JamesBondCar>
+         {
+            new JamesBondCar(true, true),
+            new JamesBondCar(true, false),
+            new JamesBondCar(false, true),
+            new JamesBondCar(false, false)
+         };
 
          using (Stream fStream = new FileStream("CarCollection.xml",
             FileMode.Create, FileAccess.Write, FileShare.None))

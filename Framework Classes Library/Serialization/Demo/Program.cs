@@ -17,7 +17,6 @@ namespace Demo
 
          // Обнуляем все для данного примера
          stream.Position = 0;
-         objectGraph = null;
 
          // Десериализация объектов и проверка работоспособности
          objectGraph = (List<string>)DeserializeFromMemory(stream);

@@ -10,9 +10,9 @@ namespace SavingAppState
 {
    internal static class Program
    {
-      private static readonly List<Customer> Customers = new List<Customer>();
-      private static readonly List<Order> PendingOrders = new List<Order>();
-      private static readonly List<Order> ProcessedOrders = new List<Order>();
+      private static readonly List<Customer> _Customers = new List<Customer>();
+      private static readonly List<Order> _PendingOrders = new List<Order>();
+      private static readonly List<Order> _ProcessedOrders = new List<Order>();
 
       private static void Main()
       {
@@ -25,9 +25,9 @@ namespace SavingAppState
       private static void SaveApplicationState(Stream stream)
       {
          var formatter = new BinaryFormatter();
-         formatter.Serialize(stream, Customers);
-         formatter.Serialize(stream, PendingOrders);
-         formatter.Serialize(stream, ProcessedOrders);
+         formatter.Serialize(stream, _Customers);
+         formatter.Serialize(stream, _PendingOrders);
+         formatter.Serialize(stream, _ProcessedOrders);
       }
    }
 

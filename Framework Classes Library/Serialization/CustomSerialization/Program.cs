@@ -8,35 +8,37 @@ namespace CustomSerialization
    #region Типы для сериализации
 
    [Serializable]
-   class StringData : ISerializable
+   internal class StringData : ISerializable
    {
       private readonly string _dataItemOne = "First data block";
       private readonly string _dataItemTwo = "More data";
 
-      public StringData() { }  // Нужен для сериализации
+      public StringData()
+      {
+      } // Нужен для сериализации
 
       protected StringData(SerializationInfo si, StreamingContext ctx)
-      {   // Конструктор для десериализации            
+      { // Конструктор для десериализации            
          _dataItemOne = si.GetString("First_Item").ToLower();
          _dataItemTwo = si.GetString("dataItemTwo").ToLower();
       }
 
       void ISerializable.GetObjectData(SerializationInfo info, StreamingContext ctx)
-      {   // Сериализация            
+      { // Сериализация            
          info.AddValue("First_Item", _dataItemOne.ToUpper());
          info.AddValue("dataItemTwo", _dataItemTwo.ToUpper());
       }
    }
 
    [Serializable]
-   class MoreData
+   internal class MoreData
    {
       private string _dataItemOne = "First data block";
       private string _dataItemTwo = "More data";
 
       [OnSerializing]
       private void OnSerializing(StreamingContext context)
-      {   // Вызывается перед сериализацией объекта            
+      { // Вызывается перед сериализацией объекта            
          _dataItemOne = _dataItemOne.ToUpper();
          _dataItemTwo = _dataItemTwo.ToUpper();
       }
@@ -55,7 +57,7 @@ namespace CustomSerialization
 
       [OnDeserialized]
       private void OnDeserialized(StreamingContext context)
-      {   // Вызывается сразу после десериализации объекта            
+      { // Вызывается сразу после десериализации объекта            
          _dataItemOne = _dataItemOne.ToLower();
          _dataItemTwo = _dataItemTwo.ToLower();
       }
@@ -63,9 +65,9 @@ namespace CustomSerialization
 
    #endregion
 
-   class Program
+   internal static class Program
    {
-      static void Main()
+      private static void Main()
       {
          Console.WriteLine("***** Fun with Custom Serialization *****");
 
