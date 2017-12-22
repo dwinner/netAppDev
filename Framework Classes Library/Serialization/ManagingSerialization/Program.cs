@@ -21,7 +21,7 @@ namespace ManagingSerialization
    {
       private readonly double _radius;
       // NOTE: Если это новое поле, добавленное в класс, модуль форматирования не вбросит исключение SerializationException
-      [OptionalField]
+      [OptionalField(VersionAdded = 2)]
       private readonly Guid _serialVersionGuid = NewGuid();
 
       [NonSerialized]

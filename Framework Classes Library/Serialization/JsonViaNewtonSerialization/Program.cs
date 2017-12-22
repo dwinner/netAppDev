@@ -1,10 +1,10 @@
 ﻿// Альтернативный способ сериализации в формате JSON
 
-using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 using static System.String;
 
 namespace JsonViaNewtonSerialization
@@ -18,11 +18,11 @@ namespace JsonViaNewtonSerialization
             Email = "dwinner@inbox.ru",
             Active = true,
             CreatedDate = new DateTime(2013, 1, 20, 0, 0, 0, DateTimeKind.Utc),
-            Roles = new List<string> { "User", "Admin" }
+            Roles = new List<string> {"User", "Admin"}
          };
 
          var json = JsonConvert.SerializeObject(account, Formatting.Indented,
-            new JsonSerializerSettings { ContractResolver = new CamelCasePropertyNamesContractResolver() });
+            new JsonSerializerSettings {ContractResolver = new CamelCasePropertyNamesContractResolver()});
          Console.WriteLine(json);
 
          var o = JsonConvert.DeserializeObject<Account>(json);
@@ -44,10 +44,7 @@ namespace JsonViaNewtonSerialization
       [JsonProperty("claims")]
       public IList<string> Roles { get; set; }
 
-      public override string ToString()
-      {
-         return
-            $"Email: {Email}, Active: {Active}, CreatedDate: {CreatedDate}, Roles: {Roles?.Aggregate(Empty, (current, role) => $"{current}{(role + ", ")}")}";
-      }
+      public override string ToString() =>
+         $"Email: {Email}, Active: {Active}, CreatedDate: {CreatedDate}, Roles: {Roles?.Aggregate(Empty, (current, role) => $"{current}{role + ", "}")}";
    }
 }

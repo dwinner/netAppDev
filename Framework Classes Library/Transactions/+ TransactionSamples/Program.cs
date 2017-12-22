@@ -70,7 +70,6 @@ namespace Wrox.ProCSharp.Transactions
             }
             scope.Complete();
          }
-
       }
 
       static async Task TransactionScopeAsync()
@@ -97,7 +96,6 @@ namespace Wrox.ProCSharp.Transactions
                Console.WriteLine("transaction will be aborted");
 
          } // scope.Dispose()
-
       }
 
       static void OnTransactionCompleted(object sender, TransactionEventArgs e)
@@ -105,7 +103,6 @@ namespace Wrox.ProCSharp.Transactions
          TransactionUtilities.DisplayTransactionInformation("TX completed",
                e.Transaction.TransactionInformation);
       }
-
 
       static void DependentTransaction()
       {
@@ -132,7 +129,6 @@ namespace Wrox.ProCSharp.Transactions
 
          TransactionUtilities.DisplayTransactionInformation("TX finished",
                tx.TransactionInformation);
-
       }
 
       static void TxTask(object obj)
@@ -153,7 +149,6 @@ namespace Wrox.ProCSharp.Transactions
          TransactionUtilities.DisplayTransactionInformation("Dependent TX Complete",
             tx.TransactionInformation);
       }
-
 
       static async Task TransactionPromotionAsync()
       {
@@ -199,7 +194,6 @@ namespace Wrox.ProCSharp.Transactions
 
          TransactionUtilities.DisplayTransactionInformation("TX finished",
                tx.TransactionInformation);
-
       }
 
       static async Task CommittableTransactionAsync()
@@ -235,7 +229,6 @@ namespace Wrox.ProCSharp.Transactions
 
          TransactionUtilities.DisplayTransactionInformation("TX completed",
                tx.TransactionInformation);
-
       }
    }
 }

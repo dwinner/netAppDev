@@ -11,16 +11,20 @@ namespace JsonSerialization
    {
       private static void Main()
       {
-         var person = new Person { Name = "Denny", Age = 30 };
-         var stream = new MemoryStream();
-         var serializer = new DataContractJsonSerializer(typeof(Person));
-         serializer.WriteObject(stream, person);
-         stream.Position = 0;
-         var reader = new StreamReader(stream);
-         Console.WriteLine(reader.ReadToEnd());
+         var person = new Person {Name = "Denny", Age = 30};
+         Person o;
+         using (var stream = new MemoryStream())
+         {
+            var serializer = new DataContractJsonSerializer(typeof(Person));
+            serializer.WriteObject(stream, person);
+            stream.Position = 0;
+            var reader = new StreamReader(stream);
+            Console.WriteLine(reader.ReadToEnd());
 
-         stream.Position = 0;
-         var o = (Person)serializer.ReadObject(stream);
+            stream.Position = 0;
+            o = (Person) serializer.ReadObject(stream);
+         }
+
          Console.WriteLine(o);
       }
    }
@@ -34,9 +38,6 @@ namespace JsonSerialization
       [DataMember]
       public int Age { get; set; }
 
-      public override string ToString()
-      {
-         return $"Name: {Name}, Age: {Age}";
-      }
+      public override string ToString() => $"Name: {Name}, Age: {Age}";
    }
 }
