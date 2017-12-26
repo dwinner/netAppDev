@@ -17,6 +17,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QueueInheritance.Lib", "Que
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Queue.Test", "Queue.Test\Queue.Test.csproj", "{EC0BF6A6-86E9-4FE3-A400-7AB2195A030D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BinaryTree.Lib", "BinaryTree.Lib\BinaryTree.Lib.csproj", "{63EAAEDD-E696-4CA4-AD84-C541771A0BEC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BinaryTree.Test", "BinaryTree.Test\BinaryTree.Test.csproj", "{C73D6AA4-18A9-454A-A9FF-0A36A856C181}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -51,6 +55,14 @@ Global
 		{EC0BF6A6-86E9-4FE3-A400-7AB2195A030D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EC0BF6A6-86E9-4FE3-A400-7AB2195A030D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EC0BF6A6-86E9-4FE3-A400-7AB2195A030D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{63EAAEDD-E696-4CA4-AD84-C541771A0BEC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{63EAAEDD-E696-4CA4-AD84-C541771A0BEC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{63EAAEDD-E696-4CA4-AD84-C541771A0BEC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{63EAAEDD-E696-4CA4-AD84-C541771A0BEC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C73D6AA4-18A9-454A-A9FF-0A36A856C181}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C73D6AA4-18A9-454A-A9FF-0A36A856C181}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C73D6AA4-18A9-454A-A9FF-0A36A856C181}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C73D6AA4-18A9-454A-A9FF-0A36A856C181}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
