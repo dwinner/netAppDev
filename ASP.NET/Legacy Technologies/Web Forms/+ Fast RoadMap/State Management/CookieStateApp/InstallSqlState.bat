@@ -1,2 +1,0 @@
-aspnet_regsql.exe
-pause
