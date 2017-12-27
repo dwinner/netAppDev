@@ -28,9 +28,9 @@ namespace SimpleILDisassemblerSample
          _il = method.GetMethodBody()?.GetILAsByteArray();
       }
 
-      public static string Disassemble(MethodBase method) => new IlDisassembler(method).Dis();
+      public static string Disassemble(MethodBase method) => new IlDisassembler(method).Disassemble();
 
-      private string Dis()
+      private string Disassemble()
       {
          _output = new StringBuilder();
          while (_pos < _il.Length)

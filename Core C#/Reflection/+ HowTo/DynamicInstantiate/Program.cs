@@ -8,19 +8,19 @@ using System.Reflection;
 
 namespace DynamicInstantiate
 {
-   class Program
+   internal static class Program
    {
-      static void Main()
+      private static void Main()
       {
-         Assembly assembly = Assembly.LoadFrom("DynamicInstantiateLib.dll");
-         Type type = assembly.GetType("DynamicInstantiate.TestClass");
-         object obj = Activator.CreateInstance(type);
+         var assembly = Assembly.LoadFrom("DynamicInstantiateLib.dll");
+         var type = assembly.GetType("DynamicInstantiate.TestClass");
+         var obj = Activator.CreateInstance(type);
 
          // Вызов метода Add
-         int result =
+         var result =
             (int)
-               type.InvokeMember("Add", BindingFlags.Instance | BindingFlags.InvokeMethod | BindingFlags.Public, null,
-                  obj, new object[] { 1, 2 });
+            type.InvokeMember("Add", BindingFlags.Instance | BindingFlags.InvokeMethod | BindingFlags.Public, null,
+               obj, new object[] {1, 2});
          Console.WriteLine("result: {0}", result);
 
          // Вызов метода Add с помощью конструкции dynamic
@@ -29,9 +29,9 @@ namespace DynamicInstantiate
          Console.WriteLine("result: {0}", result);
 
          //invoke the generic CombineStrings<T> method using methodInfo
-         MethodInfo mi = type.GetMethod("CombineStrings");
-         MethodInfo genericMi = mi.MakeGenericMethod(typeof(double));
-         string combined = (string)genericMi.Invoke(obj, new object[] { 2.5, 5.5 });
+         var method = type.GetMethod("CombineStrings");
+         var genericMethod = method?.MakeGenericMethod(typeof(double));
+         var combined = (string) genericMethod?.Invoke(obj, new object[] {2.5, 5.5});
          Console.WriteLine("combined: {0}", combined);
 
          // Вызов CombineStrings<T> с помощью конструкции dynamic
