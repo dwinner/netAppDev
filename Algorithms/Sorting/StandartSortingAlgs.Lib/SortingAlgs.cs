@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 
 namespace StandartSortingAlgs.Lib
 {
@@ -62,5 +63,63 @@ namespace StandartSortingAlgs.Lib
          first = second;
          second = temp;
       }
+
+      #region Merge sorting
+
+      public static void MergeSort<T>(T[] values) where T : IComparable<T> => SortArray(values, 0, values.Length - 1);
+
+      /// <summary>
+      ///    Split array, sort subarrays and merge subarrays into sorted array
+      /// </summary>
+      /// <typeparam name="T">Comparable generic type</typeparam>
+      /// <param name="values">Array values</param>
+      /// <param name="low">Low index</param>
+      /// <param name="high">High index</param>
+      private static void SortArray<T>(T[] values, int low, int high)
+         where T : IComparable<T>
+      {
+         if (high - low >= 1)
+         {
+            var middle1 = (low + high) / 2; // calculate the middle of array
+            var middle2 = middle1 + 1; // calculate the next element over
+
+            // split array in half; sort each half (recursive calls)
+            SortArray(values, low, middle1); // first half of array
+            SortArray(values, middle2, high); // second half of array
+
+            // merge two sorted arrays after split calls return
+            Merge(values, low, middle1, middle2, high);
+         }
+      }
+
+      private static void Merge<T>(T[] values, int left, int middle1, int middle2, int right)
+         where T : IComparable<T>
+      {
+         var leftIndex = left; // index into left subarray
+         var rightIndex = middle2; // index into right subarray
+         var combinedIndex = left; // index into temporary working array
+         var combined = new T[values.Length];
+
+         // merge arrays until reaching end of either
+         while (leftIndex <= middle1 && rightIndex <= right)
+            // place smaller of two current elements into result and move to the next space in arrays
+            if (values[leftIndex].CompareTo(values[rightIndex]) <= 0)
+               combined[combinedIndex++] = values[leftIndex++];
+            else
+               combined[combinedIndex++] = values[rightIndex++];
+
+         // if left array is empty
+         if (leftIndex == middle2)
+            while (rightIndex <= right)
+               combined[combinedIndex++] = values[rightIndex++];
+         else // right array is empty
+            while (leftIndex <= middle1)
+               combined[combinedIndex++] = values[leftIndex++];
+
+         // copy values back into original array
+         for (var i = left; i <= right; ++i) values[i] = combined[i];
+      }
+
+      #endregion
    }
 }
