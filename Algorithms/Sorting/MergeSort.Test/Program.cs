@@ -22,6 +22,13 @@ namespace MergeSort.Test
          var elapsed = stopwatch.Elapsed;
          Console.WriteLine($"Elapsed: {elapsed}");
 
+         for (var i = 0; i < data.Length; ++i) data[i] = generator.Next(10, 100);
+
+         stopwatch.Restart();
+         SortingAlgs.MergeSort(data); // sort array
+         elapsed = stopwatch.Elapsed;
+         Console.WriteLine($"Elapsed: {elapsed}");
+
          Console.WriteLine("Sorted array:");
          Console.WriteLine(string.Join(" ", data) + Environment.NewLine); // display array
       }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace StandartSortingAlgs.Lib
@@ -75,7 +76,8 @@ namespace StandartSortingAlgs.Lib
       /// <param name="values">Array values</param>
       /// <param name="low">Low index</param>
       /// <param name="high">High index</param>
-      private static void SortArray<T>(T[] values, int low, int high)
+      /// <param name="isParallel">true, if you want to apply sorting in parallel mode</param>
+      private static void SortArray<T>(T[] values, int low, int high, bool isParallel = false)
          where T : IComparable<T>
       {
          if (high - low >= 1)
@@ -84,29 +86,37 @@ namespace StandartSortingAlgs.Lib
             var middle2 = middle1 + 1; // calculate the next element over
 
             // split array in half; sort each half (recursive calls)
-            SortArray(values, low, middle1); // first half of array
-            SortArray(values, middle2, high); // second half of array
+            if (isParallel)
+            {
+               var leftHalfArrayTask = Task.Run(() => SortArray(values, low, middle1));
+               var rigthHalfArrayTask = Task.Run(() => SortArray(values, middle2, high));
+               Task.WaitAll(leftHalfArrayTask, rigthHalfArrayTask);
+            }
+            else
+            {
+               SortArray(values, low, middle1); // first half of array
+               SortArray(values, middle2, high); // second half of array
+            }
 
             // merge two sorted arrays after split calls return
             Merge(values, low, middle1, middle2, high);
          }
       }
 
-      private static void Merge<T>(T[] values, int left, int middle1, int middle2, int right)
+      private static void Merge<T>(IList<T> values, int left, int middle1, int middle2, int right)
          where T : IComparable<T>
       {
          var leftIndex = left; // index into left subarray
          var rightIndex = middle2; // index into right subarray
          var combinedIndex = left; // index into temporary working array
-         var combined = new T[values.Length];
+         var combined = new T[values.Count];
 
          // merge arrays until reaching end of either
          while (leftIndex <= middle1 && rightIndex <= right)
             // place smaller of two current elements into result and move to the next space in arrays
-            if (values[leftIndex].CompareTo(values[rightIndex]) <= 0)
-               combined[combinedIndex++] = values[leftIndex++];
-            else
-               combined[combinedIndex++] = values[rightIndex++];
+            combined[combinedIndex++] = values[leftIndex].CompareTo(values[rightIndex]) <= 0
+               ? values[leftIndex++]
+               : values[rightIndex++];
 
          // if left array is empty
          if (leftIndex == middle2)
