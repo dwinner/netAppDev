@@ -5,15 +5,13 @@ using Android.OS;
 using Android.Util;
 using Android.Views;
 using Android.Widget;
-using JetBrains.Annotations;
 
 namespace SatelliteMovingApp
 {
    /// <summary>
    ///    Активность для экрана About
    /// </summary>
-   [Activity(Label = "About")]
-   [UsedImplicitly]
+   [Activity(Label = "About")]  
    public class AboutScreenActivity : Activity
    {
       public override bool OnCreateOptionsMenu(IMenu menu)

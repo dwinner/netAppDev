@@ -3,7 +3,6 @@ using Android.Content;
 using Android.OS;
 using Android.Views.Animations;
 using Android.Widget;
-using JetBrains.Annotations;
 
 namespace SatelliteMovingApp
 {
@@ -11,7 +10,6 @@ namespace SatelliteMovingApp
    ///    Активность для экрана заставки
    /// </summary>
    [Activity(Label = "Splash", MainLauncher = true, NoHistory = true)]
-   [UsedImplicitly]
    public class SplashScreenActivity : Activity
    {
       protected override void OnCreate(Bundle savedInstanceState)
