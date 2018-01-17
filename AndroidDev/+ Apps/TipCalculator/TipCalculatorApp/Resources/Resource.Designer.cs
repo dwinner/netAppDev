@@ -1646,10 +1646,10 @@ namespace AppDevUnited.TipCalculatorApp
 			public const int always = 2131427357;
 			
 			// aapt resource value: 0x7f0b0054
-			public const int amoutEditText = 2131427412;
+			public const int amountEditText = 2131427412;
 			
 			// aapt resource value: 0x7f0b0055
-			public const int amoutTextView = 2131427413;
+			public const int amountTextView = 2131427413;
 			
 			// aapt resource value: 0x7f0b001a
 			public const int beginning = 2131427354;
