@@ -1,5 +1,4 @@
-﻿using System;
-using Android.App;
+﻿using Android.App;
 using Android.Content.PM;
 using Android.OS;
 using Android.Support.V7.App;
@@ -8,6 +7,7 @@ using Android.Views;
 using Android.Widget;
 using Java.Lang;
 using Java.Text;
+using JavaObject = Java.Lang.Object;
 
 namespace AppDevUnited.TipCalculatorApp
 {
@@ -24,13 +24,10 @@ namespace AppDevUnited.TipCalculatorApp
    {
       private const double DefaultBillAmout = 0.0;
       private const double DefaultPercent = 0.15;
-      private readonly ITextWatcher _amountEditTextWatcher;
       private TextView _amountTextView; // Для отформатированной суммы счета
-
       private double _billAmount = DefaultBillAmout; // Сумма счета, введенная пользователем
       private double _percent = DefaultPercent; // Исходный процент чаевых
       private TextView _percentTextView; // Для вывода процента чаевых
-      private SeekBar.IOnSeekBarChangeListener _seekBarListener;
       private TextView _tipTextView; // Для вывода вычисленных чаевых
       private TextView _totalTextView; // Для вычисленной общей суммы
 
@@ -51,16 +48,15 @@ namespace AppDevUnited.TipCalculatorApp
 
          // Назначение слушателя TextWatcher для amountEditText
          var amountEditText = FindViewById<EditText>(Resource.Id.amountEditText);
-         amountEditText.AddTextChangedListener(_amountEditTextWatcher);
+         amountEditText.AddTextChangedListener(new AmountEditTextWatcher(this));
 
          // Назначение слушателя OnSeekBarChangeListener для percentSeekBar
          var percentSeekBar = FindViewById<SeekBar>(Resource.Id.percentSeekBar);
-         _seekBarListener=new SeekBarListenerImpl(this);
-         percentSeekBar.SetOnSeekBarChangeListener(_seekBarListener);
+         percentSeekBar.SetOnSeekBarChangeListener(new SeekBarListenerImpl(this));
       }
 
       /// <summary>
-      /// Вычисление, вывод чаевых и общей суммы
+      ///    Вычисление, вывод чаевых и общей суммы
       /// </summary>
       private void Calculate()
       {
@@ -68,8 +64,8 @@ namespace AppDevUnited.TipCalculatorApp
          _percentTextView.Text = _PercentFormat.Format(_percent);
 
          // Вычисление чаевых и общей суммы
-         double tip = _billAmount * _percent;
-         double total = _billAmount + tip;
+         var tip = _billAmount * _percent;
+         var total = _billAmount + tip;
 
          // Вывод чаевых и общей суммы в формате денежной величины
          _tipTextView.Text = _CurrencyFormat.Format(tip);
@@ -85,22 +81,16 @@ namespace AppDevUnited.TipCalculatorApp
 
       #region Внутренние классы-слушатели
 
-      private sealed class SeekBarListenerImpl : SeekBar.IOnSeekBarChangeListener
+      private sealed class SeekBarListenerImpl : JavaObject, SeekBar.IOnSeekBarChangeListener
       {
-         private MainActivity _mainActivity;
+         private readonly MainActivity _mainActivity;
 
          public SeekBarListenerImpl(MainActivity mainActivity) => _mainActivity = mainActivity;
-
-         public void Dispose()
-         {            
-         }
-
-         public IntPtr Handle { get; }
 
          public void OnProgressChanged(SeekBar seekBar, int progress, bool fromUser)
          {
             // Обновление процента чаевых
-            _mainActivity._percent=progress/100.0;
+            _mainActivity._percent = progress / 100.0;
             _mainActivity.Calculate();
          }
 
@@ -113,17 +103,11 @@ namespace AppDevUnited.TipCalculatorApp
          }
       }
 
-      private sealed class AmountEditTextWatcher : ITextWatcher
+      private sealed class AmountEditTextWatcher : JavaObject, ITextWatcher
       {
-         private MainActivity _mainActivity;
+         private readonly MainActivity _mainActivity;
 
          public AmountEditTextWatcher(MainActivity mainActivity) => _mainActivity = mainActivity;
-
-         public void Dispose()
-         {
-         }
-
-         public IntPtr Handle { get; }
 
          public void AfterTextChanged(IEditable s)
          {
@@ -137,18 +121,16 @@ namespace AppDevUnited.TipCalculatorApp
          {
             // Вызывается при изменении пользователем величины счета
             if (double.TryParse(s.ToString(), out var billAmount))
-            {
                _mainActivity._amountTextView.Text = _CurrencyFormat.Format(billAmount);
-            }
             else
             {
                _mainActivity._amountTextView.Text = string.Empty;
                _mainActivity._billAmount = default(double);
             }
-            
+
             _mainActivity.Calculate();
          }
-      }      
+      }
 
       #endregion
    }
