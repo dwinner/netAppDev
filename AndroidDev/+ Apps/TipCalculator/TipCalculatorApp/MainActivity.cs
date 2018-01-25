@@ -15,7 +15,7 @@ namespace AppDevUnited.TipCalculatorApp
    /// </summary>
    [Activity(
       Label = "TipCalculatorApp",
-      Name = "AppDevUnited.TipCalculatorApp.MainActivity",
+      //Name = "AppDevUnited.TipCalculatorApp.MainActivity",
       MainLauncher = true,
       WindowSoftInputMode = SoftInput.StateAlwaysVisible,
       ScreenOrientation = ScreenOrientation.Portrait)]
@@ -70,7 +70,10 @@ namespace AppDevUnited.TipCalculatorApp
 
          // Вызывается при изменении пользователем величины счета
          if (double.TryParse(changedText, out var billAmount))
+         {
             _amountTextView.Text = _CurrencyFormat.Format(billAmount);
+            _billAmount = billAmount;
+         }
          else
          {
             _amountTextView.Text = string.Empty;
