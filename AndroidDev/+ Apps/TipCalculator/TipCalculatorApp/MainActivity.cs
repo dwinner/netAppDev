@@ -1,13 +1,12 @@
-﻿using Android.App;
+﻿using System.Linq;
+using Android.App;
 using Android.Content.PM;
 using Android.OS;
 using Android.Support.V7.App;
 using Android.Text;
 using Android.Views;
 using Android.Widget;
-using Java.Lang;
 using Java.Text;
-using JavaObject = Java.Lang.Object;
 
 namespace AppDevUnited.TipCalculatorApp
 {
@@ -24,6 +23,10 @@ namespace AppDevUnited.TipCalculatorApp
    {
       private const double DefaultBillAmout = 0.0;
       private const double DefaultPercent = 0.15;
+
+      // Форматировщики денежных сумм и процентов
+      private static readonly NumberFormat _CurrencyFormat = NumberFormat.CurrencyInstance;
+      private static readonly NumberFormat _PercentFormat = NumberFormat.PercentInstance;
       private TextView _amountTextView; // Для отформатированной суммы счета
       private double _billAmount = DefaultBillAmout; // Сумма счета, введенная пользователем
       private double _percent = DefaultPercent; // Исходный процент чаевых
@@ -48,11 +51,33 @@ namespace AppDevUnited.TipCalculatorApp
 
          // Назначение слушателя TextWatcher для amountEditText
          var amountEditText = FindViewById<EditText>(Resource.Id.amountEditText);
-         amountEditText.AddTextChangedListener(new AmountEditTextWatcher(this));
+         amountEditText.TextChanged += OnAmountTextChanged;
 
          // Назначение слушателя OnSeekBarChangeListener для percentSeekBar
          var percentSeekBar = FindViewById<SeekBar>(Resource.Id.percentSeekBar);
-         percentSeekBar.SetOnSeekBarChangeListener(new SeekBarListenerImpl(this));
+         percentSeekBar.ProgressChanged += OnPercentProgressChanged;
+      }
+
+      private void OnPercentProgressChanged(object sender, SeekBar.ProgressChangedEventArgs e)
+      {
+         _percent = e.Progress / 100.0;
+         Calculate();
+      }
+
+      private void OnAmountTextChanged(object sender, TextChangedEventArgs e)
+      {
+         var changedText = e.Text.Aggregate(string.Empty, (current, @char) => current + @char);
+
+         // Вызывается при изменении пользователем величины счета
+         if (double.TryParse(changedText, out var billAmount))
+            _amountTextView.Text = _CurrencyFormat.Format(billAmount);
+         else
+         {
+            _amountTextView.Text = string.Empty;
+            _billAmount = default(double);
+         }
+
+         Calculate();
       }
 
       /// <summary>
@@ -71,67 +96,5 @@ namespace AppDevUnited.TipCalculatorApp
          _tipTextView.Text = _CurrencyFormat.Format(tip);
          _totalTextView.Text = _CurrencyFormat.Format(total);
       }
-
-      #region Форматировщики денежных сумм и процентов
-
-      private static readonly NumberFormat _CurrencyFormat = NumberFormat.CurrencyInstance;
-      private static readonly NumberFormat _PercentFormat = NumberFormat.PercentInstance;
-
-      #endregion
-
-      #region Внутренние классы-слушатели
-
-      private sealed class SeekBarListenerImpl : JavaObject, SeekBar.IOnSeekBarChangeListener
-      {
-         private readonly MainActivity _mainActivity;
-
-         public SeekBarListenerImpl(MainActivity mainActivity) => _mainActivity = mainActivity;
-
-         public void OnProgressChanged(SeekBar seekBar, int progress, bool fromUser)
-         {
-            // Обновление процента чаевых
-            _mainActivity._percent = progress / 100.0;
-            _mainActivity.Calculate();
-         }
-
-         public void OnStartTrackingTouch(SeekBar seekBar)
-         {
-         }
-
-         public void OnStopTrackingTouch(SeekBar seekBar)
-         {
-         }
-      }
-
-      private sealed class AmountEditTextWatcher : JavaObject, ITextWatcher
-      {
-         private readonly MainActivity _mainActivity;
-
-         public AmountEditTextWatcher(MainActivity mainActivity) => _mainActivity = mainActivity;
-
-         public void AfterTextChanged(IEditable s)
-         {
-         }
-
-         public void BeforeTextChanged(ICharSequence s, int start, int count, int after)
-         {
-         }
-
-         public void OnTextChanged(ICharSequence s, int start, int before, int count)
-         {
-            // Вызывается при изменении пользователем величины счета
-            if (double.TryParse(s.ToString(), out var billAmount))
-               _mainActivity._amountTextView.Text = _CurrencyFormat.Format(billAmount);
-            else
-            {
-               _mainActivity._amountTextView.Text = string.Empty;
-               _mainActivity._billAmount = default(double);
-            }
-
-            _mainActivity.Calculate();
-         }
-      }
-
-      #endregion
    }
 }
