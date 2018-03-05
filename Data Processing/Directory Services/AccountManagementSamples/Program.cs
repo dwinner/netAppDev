@@ -8,12 +8,12 @@ namespace AccountManagementSamples
       private static void Main()
       {
          DisplayCurrentUser();
-         // CreateUser();
-         // ResetPassword();
-         // CreateGroup();
-         // AddUserToGroup();
-         // FindUsers();
-         // FindUsers1();
+         CreateUser();
+         ResetPassword();
+         CreateGroup();
+         AddUserToGroup();
+         FindUsers();
+         FindUsers1();
       }
 
       private static void FindUsers1()
@@ -34,8 +34,11 @@ namespace AccountManagementSamples
          using (var group = GroupPrincipal.FindByIdentity(context, IdentityType.Name, "WroxAuthors"))
          using (var user = UserPrincipal.FindByIdentity(context, IdentityType.Name, "Verena Oslzly"))
          {
-            group.Members.Add(user);
-            group.Save();
+            if (user != null && group != null)
+            {
+               group.Members.Add(user);
+               group.Save();
+            }
          }
       }
 

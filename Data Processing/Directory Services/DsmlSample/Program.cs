@@ -20,11 +20,11 @@ namespace DsmlSample
 
          var dsmlConnection = new DsmlSoapHttpConnection(identifier, credentials);
 
-         string distinguishedName = null;
+         //string distinguishedName = null;
          const string ldapFilter = "(objectClass=user)";
-         string[] attributesToReturn = null; // return all attributes
+         //string[] attributesToReturn = null;
 
-         var searchRequest = new SearchRequest(distinguishedName, ldapFilter, SearchScope.Subtree, attributesToReturn);
+         var searchRequest = new SearchRequest(null, ldapFilter, SearchScope.Subtree, null/*return all attributes*/);
          var searchResponse = (SearchResponse) dsmlConnection.SendRequest(searchRequest);
 
          Console.WriteLine("\r\nSearch matched {0} entries:", searchResponse.Entries.Count);

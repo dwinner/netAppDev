@@ -82,7 +82,7 @@ namespace ActiveDirectory.UserSearch
       {
          _username = (textUsername.Text == "" ? null : textUsername.Text);
          _password = (textPassword.Password == "" ? null : textPassword.Password);
-         _hostname = textDC.Text;
+         _hostname = textDc.Text;
          if (_hostname != "")
          {
             _hostname += "/";

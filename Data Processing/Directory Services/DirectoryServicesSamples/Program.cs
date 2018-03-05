@@ -61,7 +61,7 @@ namespace DirectoryServicesSamples
          }
       }
 
-      public static void Children()
+      private static void Children()
       {
          using (var de = new DirectoryEntry())
          {
@@ -74,7 +74,7 @@ namespace DirectoryServicesSamples
          }
       }
 
-      public static void AddObject()
+      private static void AddObject()
       {
          var de = new DirectoryEntry
          {
@@ -130,10 +130,10 @@ namespace DirectoryServicesSamples
 
       private static void Main()
       {
-         // RootDSE();
-         // DirectoryEntry();
-         // Children();
-         // AddObject();
+         RootDse();
+         DirectoryEntry();
+         Children();
+         AddObject();
          Search();
       }
    }
