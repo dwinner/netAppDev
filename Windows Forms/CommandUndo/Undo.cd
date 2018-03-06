@@ -1,0 +1,57 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1" MembersFormat="FullSignature">
+  <Class Name="CommandUndo.CommandHistory">
+    <Position X="4.75" Y="0.5" Width="3.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAABAAAIAAAAAAAAAEAAAAAAAAAAAAAAAAAIBA=</HashCode>
+      <FileName>CommandHistory.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CommandUndo.CreateWidgetCommand" BaseTypeListCollapsed="true">
+    <Position X="0.5" Y="3.5" Width="3.25" />
+    <TypeIdentifier>
+      <HashCode>EAAAAAAAAAAABEQAAAAAAAQAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>CreateWidgetCommand.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="CommandUndo.DeleteAllWidgetsCommand" BaseTypeListCollapsed="true">
+    <Position X="0.5" Y="0.5" Width="4" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAABEQAAAIAAAQAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DeleteAllWidgetsCommand.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="CommandUndo.MoveCommand" BaseTypeListCollapsed="true">
+    <Position X="4.25" Y="3.5" Width="5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAABAABAQAACAAAAQAAAAAAAAAABAAAAAAAAA=</HashCode>
+      <FileName>MoveCommand.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="CommandUndo.Widget" BaseTypeListCollapsed="true">
+    <Position X="12.25" Y="3.25" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAABAgwAAAAIAAAAAACAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Widget.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Interface Name="CommandUndo.ICommand">
+    <Position X="9.75" Y="0.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAABAQAAAAAAAQAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ICommand.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="CommandUndo.IWidget">
+    <Position X="12.5" Y="0.5" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAABAggAAAAIAAAAAACAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>IWidget.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

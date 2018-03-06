@@ -1,0 +1,1 @@
+ilasm /exe HelloProgram.il /output=NewAssemply.exe
