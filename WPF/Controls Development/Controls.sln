@@ -29,6 +29,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExtendedButton", "ControlTe
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SampleView", "ControlTemplates\ExtendedButton\SampleView\SampleView.csproj", "{53E27404-405B-4C3E-95D5-75C97FF38057}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClipWithDoubleBufferingSample", "ClipWithDoubleBufferingSample\ClipWithDoubleBufferingSample.csproj", "{F28E25A3-FAA1-461C-9680-8ECCB3E9E99F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -75,6 +77,10 @@ Global
 		{53E27404-405B-4C3E-95D5-75C97FF38057}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{53E27404-405B-4C3E-95D5-75C97FF38057}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{53E27404-405B-4C3E-95D5-75C97FF38057}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F28E25A3-FAA1-461C-9680-8ECCB3E9E99F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F28E25A3-FAA1-461C-9680-8ECCB3E9E99F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F28E25A3-FAA1-461C-9680-8ECCB3E9E99F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F28E25A3-FAA1-461C-9680-8ECCB3E9E99F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
