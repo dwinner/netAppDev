@@ -1,6 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
+# Visual Studio 2013
+VisualStudioVersion = 12.0.40629.0
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HardwareInfo", "HardwareInfo\HardwareInfo.csproj", "{B741AEEA-7F31-423C-9D9C-46F25EC63A6B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OsVersions", "OsVersions\OsVersions.csproj", "{E47A78C9-F2C7-4821-A923-64C350B8D25F}"
@@ -19,6 +21,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{3F1BC2
 		.nuget\NuGet.exe = .nuget\NuGet.exe
 		.nuget\NuGet.targets = .nuget\NuGet.targets
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TerminalServiceQuerySample", "TerminalServiceQuerySample\TerminalServiceQuerySample.csproj", "{11089002-2986-4589-867E-9D9665D9368A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TSSessionSample", "TSSessionSample\TSSessionSample.csproj", "{6FE235D1-D8F4-4C59-98FF-72EB164EEB48}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -90,6 +96,26 @@ Global
 		{DB7D67A1-D7C1-471D-943F-4DF98291D596}.Release|Mixed Platforms.Build.0 = Release|x86
 		{DB7D67A1-D7C1-471D-943F-4DF98291D596}.Release|x86.ActiveCfg = Release|x86
 		{DB7D67A1-D7C1-471D-943F-4DF98291D596}.Release|x86.Build.0 = Release|x86
+		{11089002-2986-4589-867E-9D9665D9368A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{11089002-2986-4589-867E-9D9665D9368A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{11089002-2986-4589-867E-9D9665D9368A}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{11089002-2986-4589-867E-9D9665D9368A}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{11089002-2986-4589-867E-9D9665D9368A}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{11089002-2986-4589-867E-9D9665D9368A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{11089002-2986-4589-867E-9D9665D9368A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{11089002-2986-4589-867E-9D9665D9368A}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{11089002-2986-4589-867E-9D9665D9368A}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{11089002-2986-4589-867E-9D9665D9368A}.Release|x86.ActiveCfg = Release|Any CPU
+		{6FE235D1-D8F4-4C59-98FF-72EB164EEB48}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6FE235D1-D8F4-4C59-98FF-72EB164EEB48}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6FE235D1-D8F4-4C59-98FF-72EB164EEB48}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{6FE235D1-D8F4-4C59-98FF-72EB164EEB48}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{6FE235D1-D8F4-4C59-98FF-72EB164EEB48}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{6FE235D1-D8F4-4C59-98FF-72EB164EEB48}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6FE235D1-D8F4-4C59-98FF-72EB164EEB48}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6FE235D1-D8F4-4C59-98FF-72EB164EEB48}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{6FE235D1-D8F4-4C59-98FF-72EB164EEB48}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{6FE235D1-D8F4-4C59-98FF-72EB164EEB48}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
