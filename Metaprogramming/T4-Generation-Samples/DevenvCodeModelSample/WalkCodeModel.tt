@@ -34,7 +34,7 @@
 
 	// now walk recursively all namespaces and their children and create a 
 	// tree representing the code model of this solution.
-	WalkElementsRecursively(codeNamespaces.OfType<EnvDTE.CodeElement>(), 0);
+	WalkElementsRecursively(codeNamespaces.OfType<EnvDTE.CodeElement>(), 0);	
 #>
 
 <!-- this java script provides functionality to open and close sub sections of the tree view -->
