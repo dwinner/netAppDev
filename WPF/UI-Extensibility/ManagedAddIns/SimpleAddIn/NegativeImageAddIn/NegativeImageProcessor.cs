@@ -14,7 +14,7 @@ namespace NegativeImageAddIn
          const int byteThreshold = 0xFF;
 
          for (var i = 0; i < pixels.Length - 2; i++)
-         {            
+         {
             pixels[i] = (byte) (byteThreshold - pixels[i]);
             pixels[i + 1] = (byte) (byteThreshold - pixels[i + 1]);
             pixels[i + 2] = (byte) (byteThreshold - pixels[i + 2]);

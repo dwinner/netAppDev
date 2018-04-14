@@ -67,7 +67,7 @@ namespace RoslynSuccinctly
             // If emit fails,
             if (!result.Success)
             {
-               // Query the list of diagnistics in the source code
+               // Query the list of diagnostics in the source code
                var diagnostics =
                   result.Diagnostics.Where(
                      diagnostic => diagnostic.IsWarningAsError || diagnostic.Severity == DiagnosticSeverity.Error);

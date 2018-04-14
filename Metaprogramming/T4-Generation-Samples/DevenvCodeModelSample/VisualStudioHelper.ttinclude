@@ -32,7 +32,7 @@ public class AutomationHelper
 		this.Host = host as ITextTemplatingEngineHost;
 
 		// initialize the code model API
-		this.CodeModel = new VsCodeModel(this);
+		this.CodeModel = new VsCodeModel(this);	  
 	}
 	
 	private EnvDTE.DTE _DTE = null;
@@ -141,7 +141,7 @@ public class AutomationHelper
 	/// <summary>
 	/// Gets all project items from the current solution
 	/// </summary>
-	public IEnumerable<EnvDTE.ProjectItem>GetAllSolutionItems()
+	public IEnumerable<EnvDTE.ProjectItem> GetAllSolutionItems()
     {
 		var ret = new List<EnvDTE.ProjectItem>();
 
@@ -154,7 +154,7 @@ public class AutomationHelper
 	/// <summary>
 	/// Gets all project items from the current project
 	/// </summary>
-	public IEnumerable<EnvDTE.ProjectItem>GetAllProjectItems()
+	public IEnumerable<EnvDTE.ProjectItem> GetAllProjectItems()
     {
 		// get the project of the template file and reeturn all its items
 		var project = this.CurrentProject;
@@ -163,7 +163,7 @@ public class AutomationHelper
 	/// <summary>
 	/// Gets all Project items from a given project. 
 	/// </summary>
-	public IEnumerable<EnvDTE.ProjectItem>GetAllProjectItems(EnvDTE.Project project)
+	public IEnumerable<EnvDTE.ProjectItem> GetAllProjectItems(EnvDTE.Project project)
     {
 		return this.GetProjectItemsRecursively(project.ProjectItems);
     }
@@ -412,6 +412,7 @@ public class VsCodeModel
             return obj.FullName.GetHashCode();
         }
     }
+
 	private class CodeFunctionEqualityComparer : IEqualityComparer<EnvDTE.CodeFunction>
     {
 		public bool Equals(EnvDTE.CodeFunction x, EnvDTE.CodeFunction y)

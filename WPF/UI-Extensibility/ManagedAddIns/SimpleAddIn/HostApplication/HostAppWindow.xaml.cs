@@ -7,7 +7,7 @@ using System.Windows.Media.Imaging;
 using HostView;
 
 namespace HostApplication
-{   
+{
    public partial class HostAppWindow
    {
       public HostAppWindow()
