@@ -19,7 +19,7 @@ namespace SpringAopExample
 
 		public object Invoke(IMethodInvocation invocation)
 		{
-			if (PropertyInterceptor.IsPropertyMethod(invocation.Method))
+			if (IsPropertyMethod(invocation.Method))
 			{
 				Console.Out.WriteLine(
 					"Property {0} was invoked.",
