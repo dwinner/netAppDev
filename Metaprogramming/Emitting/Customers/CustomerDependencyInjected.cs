@@ -3,20 +3,13 @@ using Customers.Lib;
 
 namespace Customers
 {
-	public sealed class CustomerDependencyInjected
-		: Customer
-	{
-		public CustomerDependencyInjected(IToStringBuilder builder)
-			: base()
-		{
-			this.Builder = builder;
-		}
+   public sealed class CustomerDependencyInjected
+      : Customer
+   {
+      public CustomerDependencyInjected(IToStringBuilder builder) => Builder = builder;
 
-		public override string ToString()
-		{
-			return this.Builder.ToString(this);
-		}
+      private IToStringBuilder Builder { get; }
 
-		private IToStringBuilder Builder { get; set; }
-	}
+      public override string ToString() => Builder.ToString(this);
+   }
 }
