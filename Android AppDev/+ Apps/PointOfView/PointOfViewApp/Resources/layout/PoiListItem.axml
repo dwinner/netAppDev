@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout
+    xmlns:adr="http://schemas.android.com/apk/res/android"
+    adr:minWidth="25px"
+    adr:minHeight="25px"
+    adr:layout_width="match_parent"
+    adr:layout_height="wrap_content"
+    adr:id="@+id/poiListRelativeLayout"
+    adr:padding="5dp">
+    <ImageView
+        adr:src="@android:drawable/ic_menu_gallery"
+        adr:layout_width="65dp"
+        adr:layout_height="65dp"
+        adr:id="@+id/poiImageView"
+        adr:layout_centerVertical="true"
+        adr:layout_marginRight="5dp" />
+    <LinearLayout
+        adr:orientation="vertical"
+        adr:layout_width="wrap_content"
+        adr:layout_height="wrap_content"
+        adr:id="@+id/poiLinearLayout"
+        adr:layout_toRightOf="@id/poiImageView"
+        adr:layout_centerVertical="true">
+        <TextView
+            adr:layout_width="match_parent"
+            adr:layout_height="wrap_content"
+            adr:id="@+id/nameTextView"
+            adr:text="@string/poi_name_hint"
+            adr:textSize="20sp" />
+        <TextView
+            adr:layout_width="match_parent"
+            adr:layout_height="wrap_content"
+            adr:id="@+id/addrTextView"
+            adr:textSize="14sp"
+            adr:text="@string/address_hint" />
+    </LinearLayout>
+    <TextView
+        adr:text="@string/distance_hint"
+        adr:layout_width="wrap_content"
+        adr:layout_height="wrap_content"
+        adr:id="@+id/distanceTextView"
+        adr:textSize="14sp"
+        adr:layout_alignParentRight="true"
+        adr:layout_centerVertical="true" />
+</RelativeLayout>
