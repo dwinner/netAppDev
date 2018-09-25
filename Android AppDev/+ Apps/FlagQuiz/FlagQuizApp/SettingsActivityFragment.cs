@@ -10,10 +10,11 @@ using Android.Runtime;
 using Android.Util;
 using Android.Views;
 using Android.Widget;
+using FragmentV4 = Android.Support.V4.App.Fragment;
 
 namespace AppDevUnited.FlagQuizApp
 {
-   public class SettingsActivityFragment : Fragment
+   public class SettingsActivityFragment : FragmentV4
    {
       public override void OnCreate(Bundle savedInstanceState)
       {

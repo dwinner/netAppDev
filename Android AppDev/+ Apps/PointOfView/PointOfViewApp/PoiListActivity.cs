@@ -7,7 +7,7 @@ using Android.Widget;
 using PointOfViewApp.Adapters;
 using PointOfViewApp.Poco;
 using static PointOfViewApp.Resource;
-/* NOTE: Stopped at Consuming the web service - 118 */
+
 namespace PointOfViewApp
 {
    [Activity(Label = "@string/app_name", Theme = "@style/AppTheme", MainLauncher = true /*,Icon = "@drawable/icon"*/)]
