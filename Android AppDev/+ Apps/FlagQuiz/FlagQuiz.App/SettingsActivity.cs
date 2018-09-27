@@ -1,16 +1,25 @@
-﻿using Android.App;
+﻿/**
+ * Activity to display SettingsActivityFragment on a phone
+ */
+
+using Android.App;
 using Android.OS;
+using Android.Support.V7.App;
+using Android.Support.V7.Widget;
 
 namespace FlagQuiz.App
 {
-   [Activity(Label = "SettingsActivity")]
-   public class SettingsActivity : Activity
+   [Activity(Label = nameof(SettingsActivity))]
+   public class SettingsActivity : AppCompatActivity
    {
       protected override void OnCreate(Bundle savedInstanceState)
       {
          base.OnCreate(savedInstanceState);
 
-         // Create your application here
+         SetContentView(Resource.Layout.activity_settings);
+         var toolbar = FindViewById<Toolbar>(Resource.Id.toolbar);
+         SetSupportActionBar(toolbar);
+         SupportActionBar.SetDisplayHomeAsUpEnabled(true);
       }
    }
 }

@@ -67,8 +67,8 @@ namespace FlagQuiz.App
 
          if (_preferencesChanged)
          {
-            // После задания настроек по умолчанию инициализировать MainActivityFragment и запустить викторину            
-            var quizFragment = (MainActivityFragment)SupportFragmentManager.FindFragmentByTag(QuizFragmentTag);//BUG
+            // После задания настроек по умолчанию инициализировать MainActivityFragment и запустить викторину
+            var quizFragment = (MainActivityFragment)SupportFragmentManager.FindFragmentById(R.Id.quizFragment);            
             quizFragment.UpdateGuessRows(PreferenceManager.GetDefaultSharedPreferences(this));
             quizFragment.UpdateRegions(PreferenceManager.GetDefaultSharedPreferences(this));
             quizFragment.ResetQuiz();

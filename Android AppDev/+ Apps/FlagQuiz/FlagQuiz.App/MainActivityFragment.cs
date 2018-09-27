@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using Android.Animation;
+using Android.App;
 using Android.Content;
 using Android.Graphics.Drawables;
 using Android.OS;
@@ -10,6 +12,7 @@ using Android.Widget;
 using Java.IO;
 using Java.Security;
 using FragmentV4 =Android.Support.V4.App.Fragment;
+using DialogFragmentV4= Android.Support.V4.App.DialogFragment;
 using R = FlagQuiz.App.Resource;
 
 namespace FlagQuiz.App
@@ -61,7 +64,7 @@ namespace FlagQuiz.App
          _quizLinearLayout = view.FindViewById<LinearLayout>(R.Id.quizLinearLayout);
          _questionNumberTextView = view.FindViewById<TextView>(R.Id.questionNumberTextView);
          _flagImageView = view.FindViewById<ImageView>(R.Id.flagImageView);
-         _guessLinearLayouts=new LinearLayout[4]
+         _guessLinearLayouts=new[]
          {
             view.FindViewById<LinearLayout>(R.Id.row1LinearLayout),
             view.FindViewById<LinearLayout>(R.Id.row2LinearLayout),
@@ -79,7 +82,47 @@ namespace FlagQuiz.App
                {
                   button.Click += (sender, args) =>
                   {
-                     // TODO: Guess button listener
+                     var guess = button.Text.ToString();
+                     var answer = GetCountryName(_correctAnswer);
+                     ++_totalGuesses;  // Увеличение кол-ва попыток пользователя
+
+                     if (guess.Equals(answer, StringComparison.Ordinal))   // Если ответ правильный
+                     {
+                        _correctAnswers++;   // Увеличить кол-во правильных ответов
+
+                        // Правильный ответ выводится зелёным цветом
+                        _answerTextView.Text = $"{answer}!";
+                        _answerTextView.SetTextColor(Resources.GetColor(R.Color.correct_answer, Context.Theme));
+
+                        DisableButtons(); // Блокировка всех кнопок ответов
+
+                        // Если пользователь правильно угадал FLAGS_IN_QUIZ флагов
+                        if (_correctAnswers==FlagsInQuiz)
+                        {
+                           // Вывод статистики и перезапуск
+                           DialogFragmentV4 quizResults =new DialogFragmentImpl(this);
+
+                           // Использование FragmentManager для вывода DialogFragment
+                           quizResults.Cancelable = false;
+                           quizResults.Show(FragmentManager, "quiz results");
+                        }
+                        else
+                        {
+                           // Ответ правильный, но викторина не закончена
+                           // Загрузка следующего флага после 2-х секундной задержки
+                           _handler.PostDelayed(() => Animate(true), 2000);
+                        }
+                     }
+                     else
+                     {
+                        // Неправильный ответ
+                        _flagImageView.StartAnimation(_shakeAnimation); // Встряхивание
+
+                        // Сообщение "Incorrect!" выводится красным шрифтом
+                        _answerTextView.SetText(R.String.incorrect_answer);
+                        _answerTextView.SetTextColor(Resources.GetColor(R.Color.incorrect_answer, Context.Theme));
+                        button.Enabled = false; // Блокировка неправильного ответа
+                     }
                   };
                }
             }
@@ -89,6 +132,18 @@ namespace FlagQuiz.App
          _questionNumberTextView.Text = GetString(R.String.question, 1, FlagsInQuiz);
 
          return view;   // Представление фрагмента для вывода
+      }
+
+      private void DisableButtons()
+      {
+         for (int row = 0; row < _guessRows; row++)
+         {
+            var guessRow = _guessLinearLayouts[row];
+            for (int i = 0; i < guessRow.ChildCount; i++)
+            {
+               guessRow.GetChildAt(i).Enabled = false;
+            }
+         }
       }
 
       /// <summary>
@@ -234,13 +289,53 @@ namespace FlagQuiz.App
       }
 
       private string GetCountryName(string fileName)
+         => fileName.Substring(fileName.IndexOf('-') + 1).Replace('_', ' ');
+
+      private void Animate(bool animateOut)  // Весь макет quizLinearLayout появляется или исчезает с экрана
       {
-         throw new NotImplementedException();
+         // Предотвращение анимации интерфейса для первого флага
+         if (_correctAnswers ==0)
+         {
+            return;
+         }
+
+         // Вычисление координат центра
+         int centerX = (_quizLinearLayout.Left + _quizLinearLayout.Right) / 2;
+         int centerY = (_quizLinearLayout.Top + _quizLinearLayout.Bottom) / 2;
+
+         // Вычисление радиуса анимации
+         var radius = Math.Max(_quizLinearLayout.Width,_quizLinearLayout.Height);
+
+         Animator animator;
+
+         // Если изображение должно исчезать с экрана
+         if (animateOut)
+         {
+            // Создание круговой анимации
+            animator = ViewAnimationUtils.CreateCircularReveal(_quizLinearLayout, centerX, centerY, radius, 0);
+            animator.AnimationEnd += (sender, args) => LoadNextFlag();
+         }
+         else
+         {
+            // Если макет quizLinearLayout должен появиться
+            animator = ViewAnimationUtils.CreateCircularReveal(_quizLinearLayout, centerX, centerY, 0, radius);
+         }
+
+         animator.SetDuration(500); // Анимация продолжительностью 500 мс
+         animator.Start(); // Начало анимации
       }
 
-      private void Animate(bool shouldAnimate)
+      private sealed class DialogFragmentImpl : DialogFragmentV4
       {
-         throw new NotImplementedException();
+         private readonly MainActivityFragment _fragment;
+
+         public DialogFragmentImpl(MainActivityFragment fragment) => _fragment = fragment;
+
+         public override Dialog OnCreateDialog(Bundle savedInstanceState)
+            => new AlertDialog.Builder(Activity)
+            .SetMessage(GetString(R.String.results, _fragment._totalGuesses, 1000 / (double) _fragment._totalGuesses))
+            .SetPositiveButton(R.String.reset_quiz, (sender, args) => _fragment.ResetQuiz()) // Кнопка сброса "Reset Quiz"
+            .Create();
       }
    }
 }
