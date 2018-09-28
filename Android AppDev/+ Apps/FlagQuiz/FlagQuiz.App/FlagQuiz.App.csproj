@@ -111,12 +111,6 @@
     <AndroidResource Include="Resources\anim\incorrect_shake.xml" />
   </ItemGroup>
   <ItemGroup>
-    <AndroidResource Include="Resources\drawable\ic_launcher_web.png">
-      <Generator>MSBuild:UpdateGeneratedFiles</Generator>
-      <SubType>Designer</SubType>
-    </AndroidResource>
-  </ItemGroup>
-  <ItemGroup>
     <AndroidResource Include="Resources\color\button_text_color.xml" />
   </ItemGroup>
   <ItemGroup>

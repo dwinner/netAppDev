@@ -9,7 +9,11 @@ using Android.Support.V7.Widget;
 
 namespace FlagQuiz.App
 {
-   [Activity(Label = nameof(SettingsActivity))]
+   [Activity(
+      //Name = "FlagQuiz.App.SettingsActivity",
+      Label = "@string/title_activity_settings",
+      ParentActivity = typeof(MainActivity),
+      Theme = "@style/AppTheme.NoActionBar")]
    public class SettingsActivity : AppCompatActivity
    {
       protected override void OnCreate(Bundle savedInstanceState)

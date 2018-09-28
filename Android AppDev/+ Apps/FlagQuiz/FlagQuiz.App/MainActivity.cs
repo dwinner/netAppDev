@@ -10,19 +10,24 @@ using Android.Content.PM;
 using Android.Content.Res;
 using Android.OS;
 using Android.Preferences;
-using Android.Support.Design.Widget;
 using Android.Support.V7.App;
 using Android.Views;
 using Android.Widget;
+using static FlagQuiz.App.Resource;
 using JavaObj = Java.Lang.Object;
-using JavaCls = Java.Lang.Class;
 using Orientation = Android.Content.Res.Orientation;
 using Toolbar = Android.Support.V7.Widget.Toolbar;
-using R= FlagQuiz.App.Resource;
+
+// ReSharper disable BitwiseOperatorOnEnumWithoutFlags
 
 namespace FlagQuiz.App
 {
-   [Activity(Label = "@string/app_name", Theme = "@style/AppTheme.NoActionBar", MainLauncher = true)]
+   [Activity(
+      //Name = "FlagQuiz.App.MainActivity",
+      Label = "@string/app_name",
+      LaunchMode = LaunchMode.SingleTop,
+      Theme = "@style/AppTheme.NoActionBar",
+      MainLauncher = true)]
    public class MainActivity : AppCompatActivity
    {
       // Ключи для чтения данных из SharedPreferences
@@ -34,18 +39,19 @@ namespace FlagQuiz.App
       private bool _preferencesChanged = true; // Настройки изменились
 
       protected override void OnCreate(Bundle savedInstanceState)
-      {         
+      {
          base.OnCreate(savedInstanceState);
-         SetContentView(Resource.Layout.activity_main);
+         SetContentView(Layout.activity_main);
 
-         var toolbar = FindViewById<Toolbar>(Resource.Id.toolbar);
+         var toolbar = FindViewById<Toolbar>(Id.toolbar);
          SetSupportActionBar(toolbar);
 
          // Задание значений про умолчанию в файле SharedPreferences
-         PreferenceManager.SetDefaultValues(this, R.Xml.preferences, false);
+         PreferenceManager.SetDefaultValues(this, Xml.preferences, false);
 
          // Регистрация слушателя для изменений SharedPreferences
-         ISharedPreferencesOnSharedPreferenceChangeListener preferencesChangeListener = new DefaultSharedPreferenceChangeListener(this);
+         ISharedPreferencesOnSharedPreferenceChangeListener preferencesChangeListener =
+            new DefaultSharedPreferenceChangeListener(this);
          var sharedPreferences = PreferenceManager.GetDefaultSharedPreferences(this);
          sharedPreferences.RegisterOnSharedPreferenceChangeListener(preferencesChangeListener);
 
@@ -68,7 +74,7 @@ namespace FlagQuiz.App
          if (_preferencesChanged)
          {
             // После задания настроек по умолчанию инициализировать MainActivityFragment и запустить викторину
-            var quizFragment = (MainActivityFragment)SupportFragmentManager.FindFragmentById(R.Id.quizFragment);            
+            var quizFragment = (MainActivityFragment) SupportFragmentManager.FindFragmentById(Id.quizFragment);
             quizFragment.UpdateGuessRows(PreferenceManager.GetDefaultSharedPreferences(this));
             quizFragment.UpdateRegions(PreferenceManager.GetDefaultSharedPreferences(this));
             quizFragment.ResetQuiz();
@@ -84,7 +90,7 @@ namespace FlagQuiz.App
          // Отображение меню приложения только в портретной ориентации
          if (orientation == Orientation.Portrait)
          {
-            MenuInflater.Inflate(R.Menu.menu_main, menu);
+            MenuInflater.Inflate(Resource.Menu.menu_main, menu);
             return true;
          }
 
@@ -93,14 +99,15 @@ namespace FlagQuiz.App
 
       public override bool OnOptionsItemSelected(IMenuItem item)
       {
-         var preferencesIntent = new Intent(this, JavaCls.ForName(nameof(SettingsActivity)));
+         var preferencesIntent = new Intent(this, typeof(SettingsActivity));
          StartActivity(preferencesIntent);
 
          return base.OnOptionsItemSelected(item);
       }
 
-      #region Слушатель изменений конфигурации SharedPreferences приложения
-
+      /// <summary>
+      ///    Слушатель изменений конфигурации SharedPreferences приложения
+      /// </summary>
       private sealed class DefaultSharedPreferenceChangeListener
          : JavaObj, ISharedPreferencesOnSharedPreferenceChangeListener
       {
@@ -114,7 +121,7 @@ namespace FlagQuiz.App
             _activity._preferencesChanged = true; // Пользователь изменил настройки
 
             var quizFragment =
-               (MainActivityFragment)_activity.SupportFragmentManager.FindFragmentByTag(QuizFragmentTag);
+               (MainActivityFragment) _activity.SupportFragmentManager.FindFragmentByTag(QuizFragmentTag);
             if (key.Equals(Choices, StringComparison.Ordinal))
             {
                // Изменилось число вариантов
@@ -136,19 +143,17 @@ namespace FlagQuiz.App
                   {
                      // Хотя бы один регион - по умолчанию Северная Америка
                      var editor = sharedPreferences.Edit();
-                     regions.Add(_activity.GetString(R.String.default_region));
+                     regions.Add(_activity.GetString(Resource.String.default_region));
                      editor.PutStringSet(Regions, regions);
                      editor.Apply();
 
-                     Toast.MakeText(_activity, R.String.default_region_message, ToastLength.Short).Show();
+                     Toast.MakeText(_activity, Resource.String.default_region_message, ToastLength.Short).Show();
                   }
                }
             }
 
-            Toast.MakeText(_activity, R.String.restarting_quiz, ToastLength.Short).Show();
+            Toast.MakeText(_activity, Resource.String.restarting_quiz, ToastLength.Short).Show();
          }
       }
-
-      #endregion
    }
 }
