@@ -25,10 +25,10 @@ namespace PointOfViewApp
 
          _poiListView = FindViewById<ListView>(Id.poiListView);
          _poiProgressBar = FindViewById<ProgressBar>(Id.progressBar);
-         DownloadPoiListAsync();
+         DownloadPoiList();
       }
 
-      public async void DownloadPoiListAsync()
+      private void DownloadPoiList()
       {
          try
          {

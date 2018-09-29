@@ -1,0 +1,17 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "POIApp", "POIApp\POIApp.csproj", "{DDF26738-0614-4FEE-877D-918F1C114E3D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{DDF26738-0614-4FEE-877D-918F1C114E3D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DDF26738-0614-4FEE-877D-918F1C114E3D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DDF26738-0614-4FEE-877D-918F1C114E3D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DDF26738-0614-4FEE-877D-918F1C114E3D}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
