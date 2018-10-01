@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="US-ASCII">
+<title>Insert title here</title>
+</head>
+<h1>File Upload with Jersey</h1>
+<body>
+	<form action="http://127.0.0.1:8080/com.packt.poiapp/api/poi/upload"
+		method="post" enctype="multipart/form-data">
+		<p>
+			Select a file : <input type="file" name="file" size="45" />
+		</p>
+		Enter POI JSON
+		<textarea rows="4" name="poi" cols="50"></textarea>
+		<input type="submit" value="Upload" />
+	</form>
+</body>
+</html>
