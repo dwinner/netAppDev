@@ -18,9 +18,6 @@ namespace Doodlz.App
 
          var toolbar = FindViewById<Toolbar>(Resource.Id.toolbar);
          SetSupportActionBar(toolbar);
-
-         var fab = FindViewById<FloatingActionButton>(Resource.Id.fab);
-         fab.Click += FabOnClick;
       }
 
       public override bool OnCreateOptionsMenu(IMenu menu)
@@ -35,13 +32,6 @@ namespace Doodlz.App
          if (id == Resource.Id.action_settings) return true;
 
          return base.OnOptionsItemSelected(item);
-      }
-
-      private void FabOnClick(object sender, EventArgs eventArgs)
-      {
-         var view = (View) sender;
-         Snackbar.Make(view, "Replace with your own action", Snackbar.LengthLong)
-            .SetAction("Action", (View.IOnClickListener) null).Show();
       }
    }
 }
