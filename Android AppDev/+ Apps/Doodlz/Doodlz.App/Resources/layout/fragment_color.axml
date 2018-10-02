@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<GridLayout
+	xmlns:adr="http://schemas.android.com/apk/res/android"
+	adr:id="colorDialogGridLayout"
+	adr:columnCount="2"
+	adr:orientation="vertical"
+	adr:useDefaultMargins="true">
+	<TextView		
+		adr:text="Text"		
+		adr:id="@+id/alphaTextView" />
+	<SeekBar
+		adr:id="@+id/alphaSeekBar" />
+	<TextView
+		adr:text="Text"
+		adr:id="@+id/redTextView" />
+	<SeekBar
+		adr:id="@+id/redSeekBar" />
+	<TextView
+		adr:text="Text"		
+		adr:id="@+id/greenTextView" />
+	<SeekBar
+		adr:id="@+id/greenSeekBar" />
+	<TextView
+		adr:text="Text"		
+		adr:id="@+id/blueTextView" />
+	<SeekBar
+		adr:id="@+id/blueSeekBar" />
+	<View
+		adr:id="@+id/colorView"
+		adr:layout_width="wrap_content"
+	adr:layout_height="@dimen/color_view_height"
+	adr:layout_column="0"
+	adr:layout_columnSpan="2"
+	adr:layout_gravity="fill_horizontal"/>
+</GridLayout>
