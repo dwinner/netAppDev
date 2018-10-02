@@ -1,0 +1,85 @@
+﻿<UserControl x:Class="BooksDemo.UserControls.BookListUserControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:model="clr-namespace:BooksDemo.Data"
+             xmlns:utils="clr-namespace:BooksDemo.Utils"
+             mc:Ignorable="d"
+             d:DesignHeight="300" d:DesignWidth="300">
+    <UserControl.Resources>
+        <utils:StringArrayConverter x:Key="StringArrayConverter" />
+        <utils:BookTemplateSelector x:Key="BookTemplateSelector" />
+        <ObjectDataProvider x:Key="BookListProvider" ObjectType="model:BookFactory" MethodName="GetBooks" />
+
+        <DataTemplate x:Key="WroxTemplate" DataType="{x:Type model:Book}">
+            <Border Background="Red" Margin="10" Padding="10">
+                <StackPanel>
+                    <Label Content="{Binding Title}" />
+                    <Label Content="{Binding Publisher}" />
+                </StackPanel>
+            </Border>
+        </DataTemplate>
+
+        <DataTemplate x:Key="DummiesTemplate" DataType="{x:Type model:Book}">
+            <Border Background="Yellow" Margin="10" Padding="10">
+                <StackPanel>
+                    <Label Content="{Binding Title}" />
+                    <Label Content="{Binding Publisher}" />
+                </StackPanel>
+            </Border>
+        </DataTemplate>
+
+        <DataTemplate x:Key="BookTemplate" DataType="{x:Type model:Book}">
+            <Border Background="LightBlue" Margin="10" Padding="10">
+                <StackPanel>
+                    <Label Content="{Binding Title}" />
+                    <Label Content="{Binding Publisher}" />
+                </StackPanel>
+            </Border>
+        </DataTemplate>
+    </UserControl.Resources>
+
+    <DockPanel DataContext="{StaticResource BookListProvider}">
+        <StackPanel Orientation="Horizontal" DockPanel.Dock="Bottom" HorizontalAlignment="Center">
+            <Button Margin="5" Padding="4" Content="Add Book" Click="OnAddBook" />
+        </StackPanel>
+
+        <ListBox DockPanel.Dock="Left" ItemsSource="{Binding}" Margin="5" MinWidth="120"
+                 IsSynchronizedWithCurrentItem="True"
+                 ItemTemplateSelector="{StaticResource BookTemplateSelector}" />
+
+        <Grid d:DataContext="{d:DesignInstance model:Book}">
+            <Grid.Resources>
+                <Style x:Key="GridLabelStyle" TargetType="Label">
+                    <Setter Property="Margin" Value="10,0,5,0" />
+                    <Setter Property="HorizontalAlignment" Value="Left" />
+                    <Setter Property="VerticalAlignment" Value="Center" />
+                </Style>
+            </Grid.Resources>
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <Label Content="Title" Grid.Row="0" Grid.Column="0" Style="{StaticResource GridLabelStyle}" />
+            <TextBox Text="{Binding Title}" Grid.Row="0" Grid.Column="1" Margin="5" />
+
+            <Label Content="Publisher" Grid.Row="1" Grid.Column="0" Style="{StaticResource GridLabelStyle}" />
+            <TextBox Text="{Binding Publisher}" Grid.Row="1" Grid.Column="1" Margin="5" />
+
+            <Label Content="Isbn" Grid.Row="2" Grid.Column="0" Style="{StaticResource GridLabelStyle}" />
+            <TextBox Text="{Binding Isbn}" Grid.Row="2" Grid.Column="1" Margin="5" />
+
+            <Label Content="Authors" Grid.Row="3" Grid.Column="0" Style="{StaticResource GridLabelStyle}" />
+            <TextBlock Text="{Binding Authors, Converter={StaticResource StringArrayConverter}, ConverterParameter=', '}" Grid.Row="3"
+                       Grid.Column="1" Margin="5" VerticalAlignment="Center" TextWrapping="Wrap" />
+        </Grid>
+    </DockPanel>
+</UserControl>

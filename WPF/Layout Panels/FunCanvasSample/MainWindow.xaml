@@ -1,0 +1,21 @@
+﻿<Window x:Class="FunCanvasSample.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:l="clr-namespace:FunCanvasSample"
+        Title="Radial layer" Height="350" Width="525">
+    <l:FanCanvas Margin="100 20">
+        <l:PlayingCard Width="100" Height="140" Face="HA" />
+        <l:PlayingCard Width="100" Height="140" Face="H2" />
+        <l:PlayingCard Width="100" Height="140" Face="H3" />
+        <l:PlayingCard Width="100" Height="140" Face="H4" />
+        <l:PlayingCard Width="100" Height="140" Face="H5" />
+        <l:PlayingCard Width="100" Height="140" Face="H6" />
+        <l:PlayingCard Width="100" Height="140" Face="H7" />
+        <l:PlayingCard Width="100" Height="140" Face="H8" />
+        <l:PlayingCard Width="100" Height="140" Face="H9" />
+        <l:PlayingCard Width="100" Height="140" Face="H10" />
+        <l:PlayingCard Width="100" Height="140" Face="HJ" />
+        <l:PlayingCard Width="100" Height="140" Face="HQ" />
+        <l:PlayingCard Width="100" Height="140" Face="HK" />
+    </l:FanCanvas>
+</Window>

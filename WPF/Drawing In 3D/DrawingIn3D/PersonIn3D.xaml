@@ -1,0 +1,412 @@
+﻿<Window x:Class="DrawingIn3D.PersonIn3D"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="PersonIn3D" Height="551.2" Width="450.4">
+    <Window.Resources>
+        <ResourceDictionary Source="PersonResources.xaml" />
+    </Window.Resources>
+    <Window.Triggers>
+        <EventTrigger RoutedEvent="Window.Loaded">
+            <BeginStoryboard>
+                <Storyboard>
+                    <DoubleAnimation Storyboard.TargetName="Rotate" Storyboard.TargetProperty="Angle"
+                                     Duration="0:0:10" To="360" AutoReverse="True" RepeatBehavior="Forever" />
+                    <DoubleAnimation Storyboard.TargetName="ArmLlor36"
+                                     Storyboard.TargetProperty="Transform.Children[4].Rotation.Angle"
+                                     Duration="0:0:3" From="50" To="-50" AutoReverse="True" RepeatBehavior="Forever" />
+                </Storyboard>
+            </BeginStoryboard>
+        </EventTrigger>
+    </Window.Triggers>
+
+    <Grid>
+        <Viewport3D ClipToBounds="true" Width="600" Height="500"
+                    xmlns:d="http://schemas.microsoft.com/expression/interactivedesigner/2006"
+                    xmlns:c="http://schemas.openxmlformats.org/markup-compatibility/2006" c:Ignorable="d">
+
+            <Viewport3D.Camera>
+                <PerspectiveCamera FarPlaneDistance="70" LookDirection="0,0,-1" UpDirection="0,1,0"
+                                   NearPlaneDistance="0.1" Position="5,-13,39.0455" FieldOfView="60" />
+            </Viewport3D.Camera>
+
+            <ModelVisual3D>
+
+                <ModelVisual3D.Content>
+                    <Model3DGroup Transform="{DynamicResource SceneTR20}">
+                        <!-- Scene (XAML Path = ) -->
+                        <AmbientLight Color="#333333" />
+                        <DirectionalLight Color="#FFFFFF" Direction="-0.612372,-0.5,-0.612372" />
+                        <DirectionalLight Color="#FFFFFF" Direction="0.612372,-0.5,-0.612373" />
+                        <Model3DGroup
+                            Transform="{DynamicResource Group_of_1_ObjectsOR22TR21}">
+                            <!-- Group of 1 Objects (XAML Path = (Viewport3D.Children)[0].(ModelVisual3D.Content).(Model3DGroup.Children)[3]) -->
+                            <Model3DGroup Transform="{DynamicResource PelvisOR24TR23}">
+                                <!-- Pelvis (XAML Path = (Viewport3D.Children)[0].(ModelVisual3D.Content).(Model3DGroup.Children)[3].(Model3DGroup.Children)[0]) -->
+                                <Model3DGroup Transform="{DynamicResource BeltOR26TR25}">
+                                    <!-- Belt (XAML Path = (Viewport3D.Children)[0].(ModelVisual3D.Content).(Model3DGroup.Children)[3].(Model3DGroup.Children)[0].(Model3DGroup.Children)[0]) -->
+                                    <GeometryModel3D Geometry="{DynamicResource BeltOR26GR27}"
+                                                     Material="{DynamicResource ER_Vector___Flat_Orange___DarkMR10}"
+                                                     BackMaterial="{DynamicResource ER_Vector___Flat_Orange___DarkMR10}" />
+                                </Model3DGroup>
+                                <Model3DGroup Transform="{DynamicResource TorsoOR29TR28}">
+                                    <!-- Torso (XAML Path = (Viewport3D.Children)[0].(ModelVisual3D.Content).(Model3DGroup.Children)[3].(Model3DGroup.Children)[0].(Model3DGroup.Children)[1]) -->
+                                    <Model3DGroup Transform="{DynamicResource TubesOR31TR30}">
+                                        <!-- Tubes (XAML Path = (Viewport3D.Children)[0].(ModelVisual3D.Content).(Model3DGroup.Children)[3].(Model3DGroup.Children)[0].(Model3DGroup.Children)[1].(Model3DGroup.Children)[0]) -->
+                                        <GeometryModel3D
+                                            Geometry="{DynamicResource TubesOR31GR32}"
+                                            Material="{DynamicResource ER___Default_MaterialMR1}"
+                                            BackMaterial="{DynamicResource ER___Default_MaterialMR1}" />
+                                    </Model3DGroup>
+                                    <Model3DGroup Transform="{DynamicResource ArmULOR34TR33}">
+                                        <!-- ArmUL (XAML Path = (Viewport3D.Children)[0].(ModelVisual3D.Content).(Model3DGroup.Children)[3].(Model3DGroup.Children)[0].(Model3DGroup.Children)[1].(Model3DGroup.Children)[1]) -->
+                                        <Model3DGroup x:Name="ArmLlor36" Transform="{DynamicResource ArmLLOR36TR35}">
+                                            <!-- ArmLL (XAML Path = (Viewport3D.Children)[0].(ModelVisual3D.Content).(Model3DGroup.Children)[3].(Model3DGroup.Children)[0].(Model3DGroup.Children)[1].(Model3DGroup.Children)[1].(Model3DGroup.Children)[0]) -->
+                                            <Model3DGroup
+                                                Transform="{DynamicResource PalmLOR38TR37}">
+                                                <!-- PalmL (XAML Path = (Viewport3D.Children)[0].(ModelVisual3D.Content).(Model3DGroup.Children)[3].(Model3DGroup.Children)[0].(Model3DGroup.Children)[1].(Model3DGroup.Children)[1].(Model3DGroup.Children)[0].(Model3DGroup.Children)[0]) -->
+                                                <Model3DGroup
+                                                    Transform="{DynamicResource ThumbTOR40TR39}">
+                                                    <!-- ThumbT (XAML Path = (Viewport3D.Children)[0].(ModelVisual3D.Content).(Model3DGroup.Children)[3].(Model3DGroup.Children)[0].(Model3DGroup.Children)[1].(Model3DGroup.Children)[1].(Model3DGroup.Children)[0].(Model3DGroup.Children)[0].(Model3DGroup.Children)[0]) -->
+                                                    <Model3DGroup
+                                                        Transform="{DynamicResource ThumbBOR42TR41}">
+                                                        <!-- ThumbB (XAML Path = (Viewport3D.Children)[0].(ModelVisual3D.Content).(Model3DGroup.Children)[3].(Model3DGroup.Children)[0].(Model3DGroup.Children)[1].(Model3DGroup.Children)[1].(Model3DGroup.Children)[0].(Model3DGroup.Children)[0].(Model3DGroup.Children)[0].(Model3DGroup.Children)[0]) -->
+                                                        <GeometryModel3D
+                                                            Geometry="{DynamicResource ThumbBOR42GR43}"
+                                                            Material="{DynamicResource ER_Vector___Flat_Orange___DarkMR5}"
+                                                            BackMaterial="{DynamicResource ER_Vector___Flat_Orange___DarkMR5}" />
+                                                    </Model3DGroup>
+                                                    <GeometryModel3D
+                                                        Geometry="{DynamicResource ThumbTOR40GR41}"
+                                                        Material="{DynamicResource ER_Vector___Flat_Orange___DarkMR5}"
+                                                        BackMaterial="{DynamicResource ER_Vector___Flat_Orange___DarkMR5}" />
+                                                </Model3DGroup>
+                                                <Model3DGroup
+                                                    Transform="{DynamicResource IndexTOR46TR45}">
+                                                    <!-- IndexT (XAML Path = (Viewport3D.Children)[0].(ModelVisual3D.Content).(Model3DGroup.Children)[3].(Model3DGroup.Children)[0].(Model3DGroup.Children)[1].(Model3DGroup.Children)[1].(Model3DGroup.Children)[0].(Model3DGroup.Children)[0].(Model3DGroup.Children)[1]) -->
+                                                    <Model3DGroup
+                                                        Transform="{DynamicResource IndexBOR48TR47}">
+                                                        <!-- IndexB (XAML Path = (Viewport3D.Children)[0].(ModelVisual3D.Content).(Model3DGroup.Children)[3].(Model3DGroup.Children)[0].(Model3DGroup.Children)[1].(Model3DGroup.Children)[1].(Model3DGroup.Children)[0].(Model3DGroup.Children)[0].(Model3DGroup.Children)[1].(Model3DGroup.Children)[0]) -->
+                                                        <GeometryModel3D
+                                                            Geometry="{DynamicResource IndexBOR48GR49}"
+                                                            Material="{DynamicResource ER_Vector___Flat_Orange___DarkMR5}"
+                                                            BackMaterial="{DynamicResource ER_Vector___Flat_Orange___DarkMR5}" />
+                                                    </Model3DGroup>
+                                                    <GeometryModel3D
+                                                        Geometry="{DynamicResource IndexTOR46GR47}"
+                                                        Material="{DynamicResource ER_Vector___Flat_Orange___DarkMR5}"
+                                                        BackMaterial="{DynamicResource ER_Vector___Flat_Orange___DarkMR5}" />
+                                                </Model3DGroup>
+                                                <Model3DGroup
+                                                    Transform="{DynamicResource MidTOR52TR51}">
+                                                    <!-- MidT (XAML Path = (Viewport3D.Children)[0].(ModelVisual3D.Content).(Model3DGroup.Children)[3].(Model3DGroup.Children)[0].(Model3DGroup.Children)[1].(Model3DGroup.Children)[1].(Model3DGroup.Children)[0].(Model3DGroup.Children)[0].(Model3DGroup.Children)[2]) -->
+                                                    <Model3DGroup
+                                                        Transform="{DynamicResource MidBOR54TR53}">
+                                                        <!-- MidB (XAML Path = (Viewport3D.Children)[0].(ModelVisual3D.Content).(Model3DGroup.Children)[3].(Model3DGroup.Children)[0].(Model3DGroup.Children)[1].(Model3DGroup.Children)[1].(Model3DGroup.Children)[0].(Model3DGroup.Children)[0].(Model3DGroup.Children)[2].(Model3DGroup.Children)[0]) -->
+                                                        <GeometryModel3D
+                                                            Geometry="{DynamicResource MidBOR54GR55}"
+                                                            Material="{DynamicResource ER_Vector___Flat_Orange___DarkMR5}"
+                                                            BackMaterial="{DynamicResource ER_Vector___Flat_Orange___DarkMR5}" />
+                                                    </Model3DGroup>
+                                                    <GeometryModel3D
+                                                        Geometry="{DynamicResource MidTOR52GR53}"
+                                                        Material="{DynamicResource ER_Vector___Flat_Orange___DarkMR5}"
+                                                        BackMaterial="{DynamicResource ER_Vector___Flat_Orange___DarkMR5}" />
+                                                </Model3DGroup>
+                                                <Model3DGroup
+                                                    Transform="{DynamicResource PinkyTOR58TR57}">
+                                                    <!-- PinkyT (XAML Path = (Viewport3D.Children)[0].(ModelVisual3D.Content).(Model3DGroup.Children)[3].(Model3DGroup.Children)[0].(Model3DGroup.Children)[1].(Model3DGroup.Children)[1].(Model3DGroup.Children)[0].(Model3DGroup.Children)[0].(Model3DGroup.Children)[3]) -->
+                                                    <Model3DGroup
+                                                        Transform="{DynamicResource PinkyBOR60TR59}">
+                                                        <!-- PinkyB (XAML Path = (Viewport3D.Children)[0].(ModelVisual3D.Content).(Model3DGroup.Children)[3].(Model3DGroup.Children)[0].(Model3DGroup.Children)[1].(Model3DGroup.Children)[1].(Model3DGroup.Children)[0].(Model3DGroup.Children)[0].(Model3DGroup.Children)[3].(Model3DGroup.Children)[0]) -->
+                                                        <GeometryModel3D
+                                                            Geometry="{DynamicResource PinkyBOR60GR61}"
+                                                            Material="{DynamicResource ER_Vector___Flat_Orange___DarkMR5}"
+                                                            BackMaterial="{DynamicResource ER_Vector___Flat_Orange___DarkMR5}" />
+                                                    </Model3DGroup>
+                                                    <GeometryModel3D
+                                                        Geometry="{DynamicResource PinkyTOR58GR59}"
+                                                        Material="{DynamicResource ER_Vector___Flat_Orange___DarkMR5}"
+                                                        BackMaterial="{DynamicResource ER_Vector___Flat_Orange___DarkMR5}" />
+                                                </Model3DGroup>
+                                                <Model3DGroup
+                                                    Transform="{DynamicResource HammerOR64TR63}">
+                                                    <!-- Hammer (XAML Path = (Viewport3D.Children)[0].(ModelVisual3D.Content).(Model3DGroup.Children)[3].(Model3DGroup.Children)[0].(Model3DGroup.Children)[1].(Model3DGroup.Children)[1].(Model3DGroup.Children)[0].(Model3DGroup.Children)[0].(Model3DGroup.Children)[4]) -->
+                                                    <Model3DGroup
+                                                        Transform="{DynamicResource EndOR66TR65}">
+                                                        <!-- End (XAML Path = (Viewport3D.Children)[0].(ModelVisual3D.Content).(Model3DGroup.Children)[3].(Model3DGroup.Children)[0].(Model3DGroup.Children)[1].(Model3DGroup.Children)[1].(Model3DGroup.Children)[0].(Model3DGroup.Children)[0].(Model3DGroup.Children)[4].(Model3DGroup.Children)[0]) -->
+                                                        <GeometryModel3D
+                                                            Geometry="{DynamicResource EndOR66GR67}"
+                                                            Material="{DynamicResource ER_Vector___Flat_White__VectorMR8}"
+                                                            BackMaterial="{DynamicResource ER_Vector___Flat_White__VectorMR8}" />
+                                                    </Model3DGroup>
+                                                    <Model3DGroup
+                                                        Transform="{DynamicResource HeadOR69TR68}">
+                                                        <!-- Head (XAML Path = (Viewport3D.Children)[0].(ModelVisual3D.Content).(Model3DGroup.Children)[3].(Model3DGroup.Children)[0].(Model3DGroup.Children)[1].(Model3DGroup.Children)[1].(Model3DGroup.Children)[0].(Model3DGroup.Children)[0].(Model3DGroup.Children)[4].(Model3DGroup.Children)[1]) -->
+                                                        <GeometryModel3D
+                                                            Geometry="{DynamicResource HeadOR69GR70}"
+                                                            Material="{DynamicResource ER_Vector___Flat_Orange___DarkMR7}"
+                                                            BackMaterial="{DynamicResource ER_Vector___Flat_Orange___DarkMR7}" />
+                                                        <GeometryModel3D
+                                                            Geometry="{DynamicResource HeadOR69GR71}"
+                                                            Material="{DynamicResource ER_Vector___Flat_Orange___DarkMR9}"
+                                                            BackMaterial="{DynamicResource ER_Vector___Flat_Orange___DarkMR9}" />
+                                                        <GeometryModel3D
+                                                            Geometry="{DynamicResource HeadOR69GR72}"
+                                                            Material="{DynamicResource ER_Vector___Flat_Orange___DarkMR7}"
+                                                            BackMaterial="{DynamicResource ER_Vector___Flat_Orange___DarkMR7}" />
+                                                    </Model3DGroup>
+                                                    <Model3DGroup
+                                                        Transform="{DynamicResource Mesh01OR74TR73}">
+                                                        <!-- Mesh01 (XAML Path = (Viewport3D.Children)[0].(ModelVisual3D.Content).(Model3DGroup.Children)[3].(Model3DGroup.Children)[0].(Model3DGroup.Children)[1].(Model3DGroup.Children)[1].(Model3DGroup.Children)[0].(Model3DGroup.Children)[0].(Model3DGroup.Children)[4].(Model3DGroup.Children)[2]) -->
+                                                        <GeometryModel3D
+                                                            Geometry="{DynamicResource Mesh01OR74GR75}"
+                                                            Material="{DynamicResource ER___Default_MaterialMR1}"
+                                                            BackMaterial="{DynamicResource ER___Default_MaterialMR1}" />
+                                                        <GeometryModel3D
+                                                            Geometry="{DynamicResource Mesh01OR74GR76}"
+                                                            Material="{DynamicResource ER___Default_MaterialMR1}"
+                                                            BackMaterial="{DynamicResource ER___Default_MaterialMR1}" />
+                                                    </Model3DGroup>
+                                                    <GeometryModel3D
+                                                        Geometry="{DynamicResource HammerOR64GR65}"
+                                                        Material="{DynamicResource ER_Vector___Flat_BlackMR2}"
+                                                        BackMaterial="{DynamicResource ER_Vector___Flat_BlackMR2}" />
+                                                </Model3DGroup>
+                                                <GeometryModel3D
+                                                    Geometry="{DynamicResource PalmLOR38GR39}"
+                                                    Material="{DynamicResource ER_Vector___Flat_Orange___DarkMR5}"
+                                                    BackMaterial="{DynamicResource ER_Vector___Flat_Orange___DarkMR5}" />
+                                            </Model3DGroup>
+                                            <GeometryModel3D
+                                                Geometry="{DynamicResource ArmLLOR36GR37}"
+                                                Material="{DynamicResource ER_Vector___Flat_Orange___LightMR4}"
+                                                BackMaterial="{DynamicResource ER_Vector___Flat_Orange___LightMR4}" />
+                                        </Model3DGroup>
+                                        <GeometryModel3D
+                                            Geometry="{DynamicResource ArmULOR34GR35}"
+                                            Material="{DynamicResource ER_Vector___Flat_Orange___LightMR4}"
+                                            BackMaterial="{DynamicResource ER_Vector___Flat_Orange___LightMR4}" />
+                                    </Model3DGroup>
+                                    <Model3DGroup Transform="{DynamicResource ArmUROR82TR81}">
+                                        <!-- ArmUR (XAML Path = (Viewport3D.Children)[0].(ModelVisual3D.Content).(Model3DGroup.Children)[3].(Model3DGroup.Children)[0].(Model3DGroup.Children)[1].(Model3DGroup.Children)[2]) -->
+                                        <Model3DGroup Transform="{DynamicResource ArmLROR84TR83}">
+                                            <!-- ArmLR (XAML Path = (Viewport3D.Children)[0].(ModelVisual3D.Content).(Model3DGroup.Children)[3].(Model3DGroup.Children)[0].(Model3DGroup.Children)[1].(Model3DGroup.Children)[2].(Model3DGroup.Children)[0]) -->
+                                            <Model3DGroup
+                                                Transform="{DynamicResource PalmROR86TR85}">
+                                                <!-- PalmR (XAML Path = (Viewport3D.Children)[0].(ModelVisual3D.Content).(Model3DGroup.Children)[3].(Model3DGroup.Children)[0].(Model3DGroup.Children)[1].(Model3DGroup.Children)[2].(Model3DGroup.Children)[0].(Model3DGroup.Children)[0]) -->
+                                                <Model3DGroup
+                                                    Transform="{DynamicResource PinkyTOR88TR87}">
+                                                    <!-- PinkyT (XAML Path = (Viewport3D.Children)[0].(ModelVisual3D.Content).(Model3DGroup.Children)[3].(Model3DGroup.Children)[0].(Model3DGroup.Children)[1].(Model3DGroup.Children)[2].(Model3DGroup.Children)[0].(Model3DGroup.Children)[0].(Model3DGroup.Children)[0]) -->
+                                                    <Model3DGroup
+                                                        Transform="{DynamicResource PinkyBOR90TR89}">
+                                                        <!-- PinkyB (XAML Path = (Viewport3D.Children)[0].(ModelVisual3D.Content).(Model3DGroup.Children)[3].(Model3DGroup.Children)[0].(Model3DGroup.Children)[1].(Model3DGroup.Children)[2].(Model3DGroup.Children)[0].(Model3DGroup.Children)[0].(Model3DGroup.Children)[0].(Model3DGroup.Children)[0]) -->
+                                                        <GeometryModel3D
+                                                            Geometry="{DynamicResource PinkyBOR90GR91}"
+                                                            Material="{DynamicResource ER_Vector___Flat_Orange___DarkMR5}"
+                                                            BackMaterial="{DynamicResource ER_Vector___Flat_Orange___DarkMR5}" />
+                                                    </Model3DGroup>
+                                                    <GeometryModel3D
+                                                        Geometry="{DynamicResource PinkyTOR88GR89}"
+                                                        Material="{DynamicResource ER_Vector___Flat_Orange___DarkMR5}"
+                                                        BackMaterial="{DynamicResource ER_Vector___Flat_Orange___DarkMR5}" />
+                                                </Model3DGroup>
+                                                <Model3DGroup
+                                                    Transform="{DynamicResource ThumbTOR94TR93}">
+                                                    <!-- ThumbT (XAML Path = (Viewport3D.Children)[0].(ModelVisual3D.Content).(Model3DGroup.Children)[3].(Model3DGroup.Children)[0].(Model3DGroup.Children)[1].(Model3DGroup.Children)[2].(Model3DGroup.Children)[0].(Model3DGroup.Children)[0].(Model3DGroup.Children)[1]) -->
+                                                    <Model3DGroup
+                                                        Transform="{DynamicResource ThumbBOR96TR95}">
+                                                        <!-- ThumbB (XAML Path = (Viewport3D.Children)[0].(ModelVisual3D.Content).(Model3DGroup.Children)[3].(Model3DGroup.Children)[0].(Model3DGroup.Children)[1].(Model3DGroup.Children)[2].(Model3DGroup.Children)[0].(Model3DGroup.Children)[0].(Model3DGroup.Children)[1].(Model3DGroup.Children)[0]) -->
+                                                        <GeometryModel3D
+                                                            Geometry="{DynamicResource ThumbBOR96GR97}"
+                                                            Material="{DynamicResource ER_Vector___Flat_Orange___DarkMR5}"
+                                                            BackMaterial="{DynamicResource ER_Vector___Flat_Orange___DarkMR5}" />
+                                                    </Model3DGroup>
+                                                    <GeometryModel3D
+                                                        Geometry="{DynamicResource ThumbTOR94GR95}"
+                                                        Material="{DynamicResource ER_Vector___Flat_Orange___DarkMR5}"
+                                                        BackMaterial="{DynamicResource ER_Vector___Flat_Orange___DarkMR5}" />
+                                                </Model3DGroup>
+                                                <Model3DGroup
+                                                    Transform="{DynamicResource IndexTOR100TR99}">
+                                                    <!-- IndexT (XAML Path = (Viewport3D.Children)[0].(ModelVisual3D.Content).(Model3DGroup.Children)[3].(Model3DGroup.Children)[0].(Model3DGroup.Children)[1].(Model3DGroup.Children)[2].(Model3DGroup.Children)[0].(Model3DGroup.Children)[0].(Model3DGroup.Children)[2]) -->
+                                                    <Model3DGroup
+                                                        Transform="{DynamicResource IndexBOR102TR101}">
+                                                        <!-- IndexB (XAML Path = (Viewport3D.Children)[0].(ModelVisual3D.Content).(Model3DGroup.Children)[3].(Model3DGroup.Children)[0].(Model3DGroup.Children)[1].(Model3DGroup.Children)[2].(Model3DGroup.Children)[0].(Model3DGroup.Children)[0].(Model3DGroup.Children)[2].(Model3DGroup.Children)[0]) -->
+                                                        <GeometryModel3D
+                                                            Geometry="{DynamicResource IndexBOR102GR103}"
+                                                            Material="{DynamicResource ER_Vector___Flat_Orange___DarkMR5}"
+                                                            BackMaterial="{DynamicResource ER_Vector___Flat_Orange___DarkMR5}" />
+                                                    </Model3DGroup>
+                                                    <GeometryModel3D
+                                                        Geometry="{DynamicResource IndexTOR100GR101}"
+                                                        Material="{DynamicResource ER_Vector___Flat_Orange___DarkMR5}"
+                                                        BackMaterial="{DynamicResource ER_Vector___Flat_Orange___DarkMR5}" />
+                                                </Model3DGroup>
+                                                <Model3DGroup
+                                                    Transform="{DynamicResource MidTOR106TR105}">
+                                                    <!-- MidT (XAML Path = (Viewport3D.Children)[0].(ModelVisual3D.Content).(Model3DGroup.Children)[3].(Model3DGroup.Children)[0].(Model3DGroup.Children)[1].(Model3DGroup.Children)[2].(Model3DGroup.Children)[0].(Model3DGroup.Children)[0].(Model3DGroup.Children)[3]) -->
+                                                    <Model3DGroup
+                                                        Transform="{DynamicResource MidBOR108TR107}">
+                                                        <!-- MidB (XAML Path = (Viewport3D.Children)[0].(ModelVisual3D.Content).(Model3DGroup.Children)[3].(Model3DGroup.Children)[0].(Model3DGroup.Children)[1].(Model3DGroup.Children)[2].(Model3DGroup.Children)[0].(Model3DGroup.Children)[0].(Model3DGroup.Children)[3].(Model3DGroup.Children)[0]) -->
+                                                        <GeometryModel3D
+                                                            Geometry="{DynamicResource MidBOR108GR109}"
+                                                            Material="{DynamicResource ER_Vector___Flat_Orange___DarkMR5}"
+                                                            BackMaterial="{DynamicResource ER_Vector___Flat_Orange___DarkMR5}" />
+                                                    </Model3DGroup>
+                                                    <GeometryModel3D
+                                                        Geometry="{DynamicResource MidTOR106GR107}"
+                                                        Material="{DynamicResource ER_Vector___Flat_Orange___DarkMR5}"
+                                                        BackMaterial="{DynamicResource ER_Vector___Flat_Orange___DarkMR5}" />
+                                                </Model3DGroup>
+                                                <GeometryModel3D
+                                                    Geometry="{DynamicResource PalmROR86GR87}"
+                                                    Material="{DynamicResource ER_Vector___Flat_Orange___DarkMR5}"
+                                                    BackMaterial="{DynamicResource ER_Vector___Flat_Orange___DarkMR5}" />
+                                            </Model3DGroup>
+                                            <GeometryModel3D
+                                                Geometry="{DynamicResource ArmLROR84GR85}"
+                                                Material="{DynamicResource ER_Vector___Flat_Orange___LightMR4}"
+                                                BackMaterial="{DynamicResource ER_Vector___Flat_Orange___LightMR4}" />
+                                        </Model3DGroup>
+                                        <GeometryModel3D
+                                            Geometry="{DynamicResource ArmUROR82GR83}"
+                                            Material="{DynamicResource ER_Vector___Flat_Orange___LightMR4}"
+                                            BackMaterial="{DynamicResource ER_Vector___Flat_Orange___LightMR4}" />
+                                    </Model3DGroup>
+                                    <Model3DGroup Transform="{DynamicResource HeadOR115TR114}">
+                                        <!-- Head (XAML Path = (Viewport3D.Children)[0].(ModelVisual3D.Content).(Model3DGroup.Children)[3].(Model3DGroup.Children)[0].(Model3DGroup.Children)[1].(Model3DGroup.Children)[3]) -->
+                                        <Model3DGroup Transform="{DynamicResource EyeLOR117TR116}">
+                                            <!-- EyeL (XAML Path = (Viewport3D.Children)[0].(ModelVisual3D.Content).(Model3DGroup.Children)[3].(Model3DGroup.Children)[0].(Model3DGroup.Children)[1].(Model3DGroup.Children)[3].(Model3DGroup.Children)[0]) -->
+                                            <GeometryModel3D
+                                                Geometry="{DynamicResource EyeLOR117GR118}"
+                                                Material="{DynamicResource ER_Vector___Flat_White__VectorMR3}"
+                                                BackMaterial="{DynamicResource ER_Vector___Flat_White__VectorMR3}" />
+                                            <GeometryModel3D
+                                                Geometry="{DynamicResource EyeLOR117GR119}"
+                                                Material="{DynamicResource ER_Vector___Flat_BlackMR11}"
+                                                BackMaterial="{DynamicResource ER_Vector___Flat_BlackMR11}" />
+                                        </Model3DGroup>
+                                        <Model3DGroup Transform="{DynamicResource EyeROR121TR120}">
+                                            <!-- EyeR (XAML Path = (Viewport3D.Children)[0].(ModelVisual3D.Content).(Model3DGroup.Children)[3].(Model3DGroup.Children)[0].(Model3DGroup.Children)[1].(Model3DGroup.Children)[3].(Model3DGroup.Children)[1]) -->
+                                            <GeometryModel3D
+                                                Geometry="{DynamicResource EyeROR121GR122}"
+                                                Material="{DynamicResource ER_Vector___Flat_BlackMR11}"
+                                                BackMaterial="{DynamicResource ER_Vector___Flat_BlackMR11}" />
+                                            <GeometryModel3D
+                                                Geometry="{DynamicResource EyeROR121GR123}"
+                                                Material="{DynamicResource ER_Vector___Flat_White__VectorMR3}"
+                                                BackMaterial="{DynamicResource ER_Vector___Flat_White__VectorMR3}" />
+                                        </Model3DGroup>
+                                        <Model3DGroup
+                                            Transform="{DynamicResource GogglesOR125TR124}">
+                                            <!-- Goggles (XAML Path = (Viewport3D.Children)[0].(ModelVisual3D.Content).(Model3DGroup.Children)[3].(Model3DGroup.Children)[0].(Model3DGroup.Children)[1].(Model3DGroup.Children)[3].(Model3DGroup.Children)[2]) -->
+                                            <GeometryModel3D
+                                                Geometry="{DynamicResource GogglesOR125GR126}"
+                                                Material="{DynamicResource ER___Default_MaterialMR1}"
+                                                BackMaterial="{DynamicResource ER___Default_MaterialMR1}" />
+                                            <GeometryModel3D
+                                                Geometry="{DynamicResource GogglesOR125GR127}"
+                                                Material="{DynamicResource ER_Vector___Flat_BlackMR2}"
+                                                BackMaterial="{DynamicResource ER_Vector___Flat_BlackMR2}" />
+                                        </Model3DGroup>
+                                        <GeometryModel3D
+                                            Geometry="{DynamicResource HeadOR115GR116}"
+                                            Material="{DynamicResource ER_Vector___Flat_Orange___LightMR4}"
+                                            BackMaterial="{DynamicResource ER_Vector___Flat_Orange___LightMR4}" />
+                                    </Model3DGroup>
+                                    <GeometryModel3D Geometry="{DynamicResource TorsoOR29GR30}"
+                                                     Material="{DynamicResource ER_Vector___Flat_Red___MediumMR13}"
+                                                     BackMaterial="{DynamicResource ER_Vector___Flat_Red___MediumMR13}" />
+                                    <GeometryModel3D Geometry="{DynamicResource TorsoOR29GR31}"
+                                                     Material="{DynamicResource ER_Vector___Flat_Red___MediumMR14}"
+                                                     BackMaterial="{DynamicResource ER_Vector___Flat_Red___MediumMR14}" />
+                                    <GeometryModel3D Geometry="{DynamicResource TorsoOR29GR32}"
+                                                     Material="{DynamicResource ER_Vector___Flat_White__VectorMR3}"
+                                                     BackMaterial="{DynamicResource ER_Vector___Flat_White__VectorMR3}" />
+                                    <GeometryModel3D Geometry="{DynamicResource TorsoOR29GR33}"
+                                                     Material="{DynamicResource ER_Vector___Flat_Orange___DarkMR5}"
+                                                     BackMaterial="{DynamicResource ER_Vector___Flat_Orange___DarkMR5}" />
+                                </Model3DGroup>
+                                <Model3DGroup Transform="{DynamicResource LegUROR134TR133}">
+                                    <!-- LegUR (XAML Path = (Viewport3D.Children)[0].(ModelVisual3D.Content).(Model3DGroup.Children)[3].(Model3DGroup.Children)[0].(Model3DGroup.Children)[2]) -->
+                                    <Model3DGroup Transform="{DynamicResource LegLROR136TR135}">
+                                        <!-- LegLR (XAML Path = (Viewport3D.Children)[0].(ModelVisual3D.Content).(Model3DGroup.Children)[3].(Model3DGroup.Children)[0].(Model3DGroup.Children)[2].(Model3DGroup.Children)[0]) -->
+                                        <Model3DGroup Transform="{DynamicResource FootROR138TR137}">
+                                            <!-- FootR (XAML Path = (Viewport3D.Children)[0].(ModelVisual3D.Content).(Model3DGroup.Children)[3].(Model3DGroup.Children)[0].(Model3DGroup.Children)[2].(Model3DGroup.Children)[0].(Model3DGroup.Children)[0]) -->
+                                            <GeometryModel3D
+                                                Geometry="{DynamicResource FootROR138GR139}"
+                                                Material="{DynamicResource ER_Vector___Flat_BlackMR12}"
+                                                BackMaterial="{DynamicResource ER_Vector___Flat_BlackMR12}" />
+                                            <GeometryModel3D
+                                                Geometry="{DynamicResource FootROR138GR140}"
+                                                Material="{DynamicResource ER_Vector___Flat_White__VectorMR3}"
+                                                BackMaterial="{DynamicResource ER_Vector___Flat_White__VectorMR3}" />
+                                            <GeometryModel3D
+                                                Geometry="{DynamicResource FootROR138GR141}"
+                                                Material="{DynamicResource ER_Vector___Flat_BlackMR2}"
+                                                BackMaterial="{DynamicResource ER_Vector___Flat_BlackMR2}" />
+                                        </Model3DGroup>
+                                        <GeometryModel3D
+                                            Geometry="{DynamicResource LegLROR136GR137}"
+                                            Material="{DynamicResource ER_Vector___Flat_Blue___MediumMR6}"
+                                            BackMaterial="{DynamicResource ER_Vector___Flat_Blue___MediumMR6}" />
+                                    </Model3DGroup>
+                                    <GeometryModel3D
+                                        Geometry="{DynamicResource LegUROR134GR135}"
+                                        Material="{DynamicResource ER_Vector___Flat_Blue___MediumMR6}"
+                                        BackMaterial="{DynamicResource ER_Vector___Flat_Blue___MediumMR6}" />
+                                </Model3DGroup>
+                                <Model3DGroup Transform="{DynamicResource LegULOR145TR144}">
+                                    <!-- LegUL (XAML Path = (Viewport3D.Children)[0].(ModelVisual3D.Content).(Model3DGroup.Children)[3].(Model3DGroup.Children)[0].(Model3DGroup.Children)[3]) -->
+                                    <Model3DGroup Transform="{DynamicResource LegLLOR147TR146}">
+                                        <!-- LegLL (XAML Path = (Viewport3D.Children)[0].(ModelVisual3D.Content).(Model3DGroup.Children)[3].(Model3DGroup.Children)[0].(Model3DGroup.Children)[3].(Model3DGroup.Children)[0]) -->
+                                        <Model3DGroup Transform="{DynamicResource FootLOR149TR148}">
+                                            <!-- FootL (XAML Path = (Viewport3D.Children)[0].(ModelVisual3D.Content).(Model3DGroup.Children)[3].(Model3DGroup.Children)[0].(Model3DGroup.Children)[3].(Model3DGroup.Children)[0].(Model3DGroup.Children)[0]) -->
+                                            <GeometryModel3D
+                                                Geometry="{DynamicResource FootLOR149GR150}"
+                                                Material="{DynamicResource ER_Vector___Flat_BlackMR12}"
+                                                BackMaterial="{DynamicResource ER_Vector___Flat_BlackMR12}" />
+                                            <GeometryModel3D
+                                                Geometry="{DynamicResource FootLOR149GR151}"
+                                                Material="{DynamicResource ER_Vector___Flat_White__VectorMR3}"
+                                                BackMaterial="{DynamicResource ER_Vector___Flat_White__VectorMR3}" />
+                                            <GeometryModel3D
+                                                Geometry="{DynamicResource FootLOR149GR152}"
+                                                Material="{DynamicResource ER_Vector___Flat_BlackMR2}"
+                                                BackMaterial="{DynamicResource ER_Vector___Flat_BlackMR2}" />
+                                        </Model3DGroup>
+                                        <GeometryModel3D
+                                            Geometry="{DynamicResource LegLLOR147GR148}"
+                                            Material="{DynamicResource ER_Vector___Flat_Blue___MediumMR6}"
+                                            BackMaterial="{DynamicResource ER_Vector___Flat_Blue___MediumMR6}" />
+                                    </Model3DGroup>
+                                    <GeometryModel3D
+                                        Geometry="{DynamicResource LegULOR145GR146}"
+                                        Material="{DynamicResource ER_Vector___Flat_Blue___MediumMR6}"
+                                        BackMaterial="{DynamicResource ER_Vector___Flat_Blue___MediumMR6}" />
+                                </Model3DGroup>
+                                <GeometryModel3D Geometry="{DynamicResource PelvisOR24GR25}"
+                                                 Material="{DynamicResource ER_Vector___Flat_Blue___MediumMR6}"
+                                                 BackMaterial="{DynamicResource ER_Vector___Flat_Blue___MediumMR6}" />
+                            </Model3DGroup>
+                        </Model3DGroup>
+                    </Model3DGroup>
+                </ModelVisual3D.Content>
+
+                <ModelVisual3D.Transform>
+                    <RotateTransform3D
+                        CenterX="0.5" CenterY="0.5" CenterZ="0.5">
+                        <RotateTransform3D.Rotation>
+                            <AxisAngleRotation3D x:Name="Rotate"
+                                                 Axis="0 1 0" Angle="10" />
+                        </RotateTransform3D.Rotation>
+                    </RotateTransform3D>
+                </ModelVisual3D.Transform>
+            </ModelVisual3D>
+
+
+        </Viewport3D>
+
+
+    </Grid>
+</Window>

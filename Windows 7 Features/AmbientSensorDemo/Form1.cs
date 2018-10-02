@@ -7,7 +7,7 @@ namespace AmbientSensorDemo
 {
    public partial class Form1 : Form
    {
-      private Guid currentSensor;
+      private Guid _currentSensor;
 
       public Form1()
       {
@@ -15,18 +15,18 @@ namespace AmbientSensorDemo
          SensorManager.SensorsChanged += SensorManager_SensorsChanged;
       }
 
-      public void SensorManager_SensorsChanged(SensorsChangedEventArgs change)
+	   private void SensorManager_SensorsChanged(SensorsChangedEventArgs change)
       {
-         BeginInvoke(new MethodInvoker(delegate { PopulateData(); }));
+         BeginInvoke(new MethodInvoker(PopulateData));
       }
 
       private void PopulateData()
       {
          try
          {
-            var alsList = SensorManager.GetSensorsByTypeId<AmbientLightSensor>();
-            currentSensor = new Guid("b4133ea3-c284-4626-a6e3-10bfaf50299f");
-            var sensor = SensorManager.GetSensorBySensorId<AmbientLightSensor>(currentSensor);
+            SensorManager.GetSensorsByTypeId<AmbientLightSensor>();
+            _currentSensor = new Guid("b4133ea3-c284-4626-a6e3-10bfaf50299f");
+            var sensor = SensorManager.GetSensorBySensorId<AmbientLightSensor>(_currentSensor);
             lblSensor.Text = "SensorId = " + sensor.SensorId;
             var current = sensor.CurrentLuminousIntensity.Intensity;
             prgSensorProgress.Value = Math.Min((int)current, prgSensorProgress.Maximum);
@@ -40,14 +40,17 @@ namespace AmbientSensorDemo
          }
       }
 
-      public void DataReportChanged(Sensor sender, EventArgs e)
+	   private void DataReportChanged(Sensor sender, EventArgs e)
       {
-         var als = sender as AmbientLightSensor;
+         var ambientLightSensor = sender as AmbientLightSensor;
          BeginInvoke(new MethodInvoker(delegate
          {
             // report data (clamp value to progress bar maximum )
-            var current = als.CurrentLuminousIntensity.Intensity;
-            prgSensorProgress.Value = Math.Min((int)current, prgSensorProgress.Maximum);
+	         if (ambientLightSensor != null)
+	         {
+		         var current = ambientLightSensor.CurrentLuminousIntensity.Intensity;
+		         prgSensorProgress.Value = Math.Min((int)current, prgSensorProgress.Maximum);
+	         }
          }));
       }
 

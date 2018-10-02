@@ -2,23 +2,17 @@
 
 namespace SpringAopExample
 {
-	public class ClassWithData
-		: IClassWithData
-	{
-		public ClassWithData()
-			: base() { }
+   public class ClassWithData
+      : IClassWithData
+   {
+      public ClassWithData()
+      {
+      }
 
-		public ClassWithData(Guid data)
-			: base()
-		{
-			this.Data = data;
-		}
+      public ClassWithData(Guid data) => Data = data;
 
-		public Guid GetData()
-		{
-			return this.Data;
-		}
+      public Guid GetData() => Data;
 
-		public Guid Data { get; private set; }
-	}
+      public Guid Data { get; }
+   }
 }

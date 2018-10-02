@@ -1,0 +1,17 @@
+﻿<Window x:Class="WpfWindowsLibrary.SimpleWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        Title="Simple window" Height="300" Width="300">
+    <Window.Resources>
+        <Thickness x:Key="SharedMargin">5</Thickness>
+    </Window.Resources>
+    <StackPanel Margin="{StaticResource SharedMargin}">
+        <TextBlock Margin="{StaticResource SharedMargin}" Text="Sample WPF window" />
+        <TextBox Margin="{StaticResource SharedMargin}" Text="[type here]" />
+        <Button Margin="{StaticResource SharedMargin}" Click="OnClick" Content="Button" />
+        <Button Margin="{StaticResource SharedMargin}" Click="OnClick" Content="Button" />
+    </StackPanel>
+</Window>

@@ -1,1 +1,0 @@
-This sample demonstrates how to build Managed Setup with ManagedProject class.Execute corresponding .cmd file to build desired msi. Then execute the .msi to start the installation.
