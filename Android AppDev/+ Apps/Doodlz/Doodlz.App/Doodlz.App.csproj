@@ -56,7 +56,10 @@
     <Reference Include="Mono.Android" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ColorDialogFragment.cs" />
     <Compile Include="DoodleView.cs" />
+    <Compile Include="EraseImageDialogFragment.cs" />
+    <Compile Include="LineWidthDialogFragment.cs" />
     <Compile Include="MainActivity.cs" />
     <Compile Include="MainActivityFragment.cs" />
     <Compile Include="Resources\Resource.Designer.cs" />
@@ -147,6 +150,11 @@
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\layout\fragment_color.axml">
+      <SubType>Designer</SubType>
+    </AndroidResource>
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\layout\fragment_line_width.axml">
       <SubType>Designer</SubType>
     </AndroidResource>
   </ItemGroup>

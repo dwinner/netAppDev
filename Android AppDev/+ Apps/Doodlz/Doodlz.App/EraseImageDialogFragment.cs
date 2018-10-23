@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+
 using Android.App;
 using Android.Content;
 using Android.OS;
@@ -12,7 +13,7 @@ using Android.Widget;
 
 namespace Doodlz.App
 {
-   public class MainActivityFragment : Fragment
+   public class EraseImageDialogFragment : DialogFragment
    {
       public override void OnCreate(Bundle savedInstanceState)
       {
