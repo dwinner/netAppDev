@@ -30,5 +30,15 @@ namespace Doodlz.App
       private void Initialize()
       {
       }
+
+      public void PrintImage()
+      {
+         throw new NotImplementedException();
+      }
+
+      public void SaveImage()
+      {
+         throw new NotImplementedException();
+      }
    }
 }

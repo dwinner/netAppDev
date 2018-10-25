@@ -10,10 +10,11 @@ using Android.Runtime;
 using Android.Util;
 using Android.Views;
 using Android.Widget;
+using DialogFragmentV4=Android.Support.V4.App.DialogFragment;
 
 namespace Doodlz.App
 {
-   public class LineWidthDialogFragment : DialogFragment
+   public class LineWidthDialogFragment : DialogFragmentV4
    {
       public override void OnCreate(Bundle savedInstanceState)
       {
