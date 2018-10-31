@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Android.App;
 using Android.OS;
 using Android.Support.V7.App;
@@ -6,7 +7,8 @@ using Android.Views;
 using Android.Widget;
 using PointOfViewApp.Adapters;
 using PointOfViewApp.Poco;
-using static PointOfViewApp.Resource;
+using PointOfViewApp.Services;
+using R = PointOfViewApp.Resource;
 
 namespace PointOfViewApp
 {
@@ -21,38 +23,67 @@ namespace PointOfViewApp
       protected override void OnCreate(Bundle savedInstanceState)
       {
          base.OnCreate(savedInstanceState);
-         SetContentView(Layout.PoiList);
+         SetContentView(R.Layout.PoiList);
 
-         _poiListView = FindViewById<ListView>(Id.poiListView);
-         _poiProgressBar = FindViewById<ProgressBar>(Id.progressBar);
-         DownloadPoiList();
+         _poiListView = FindViewById<ListView>(R.Id.poiListView);
+         _poiListView.ItemClick += (sender, args) =>
+         {
+            // TODO: Fetching the object at user clicked position
+            var poi = _poiListData[(int) args.Id];
+            Console.WriteLine("POI Clicked: Name is {0}", poi.Name);
+         };
+
+         _poiProgressBar = FindViewById<ProgressBar>(R.Id.progressBar);
+         DownloadPoiListAsync();
       }
 
-      private void DownloadPoiList()
+      public override bool OnCreateOptionsMenu(IMenu menu)
+      {
+         MenuInflater.Inflate(R.Menu.poi_listview_menu, menu);
+         return base.OnCreateOptionsMenu(menu);
+      }
+
+      public override bool OnOptionsItemSelected(IMenuItem item)
+      {
+         switch (item.ItemId)
+         {
+            case R.Id.actionNew:
+               // TODO: Create new poi
+               return true;
+
+            case R.Id.actionRefresh:
+               DownloadPoiListAsync();
+               return true;
+
+            default:
+               return base.OnOptionsItemSelected(item);
+         }
+      }
+
+      private async void DownloadPoiListAsync()
       {
          try
          {
-            _poiProgressBar.Visibility = ViewStates.Visible;
-            _poiListData = GetPoisListTestData();
-            _poiListAdapter = new PoiListViewAdapter(this, _poiListData);
-            _poiListView.Adapter = _poiListAdapter;
+            var service = new PoiService();
+            if (!PoiService.IsConnected(this))
+            {
+               var toast = Toast.MakeText(this,
+                  "Not connected to internet. Please check your device network settings.",/* TODO: Move to resources */
+                  ToastLength.Short);
+               toast.Show();
+            }
+            else
+            {
+               _poiProgressBar.Visibility = ViewStates.Visible;
+               _poiListData = await service.GetPoiListAsync().ConfigureAwait(true);
+               _poiListAdapter = new PoiListViewAdapter(this, _poiListData);
+               _poiListView.Adapter = _poiListAdapter;
+            }
          }
          finally
          {
             _poiProgressBar.Visibility = ViewStates.Gone;
          }
-      }
-
-      private List<PointOfInterest> GetPoisListTestData()
-      {
-         var listData = new List<PointOfInterest>();
-         for (var i = 0; i < 20; i++)
-         {
-            var poiItem = new PointOfInterest {Id = i, Name = $"Name {i}", Address = $"Address {i}"};
-            listData.Add(poiItem);
-         }
-
-         return listData;
       }
    }
 }

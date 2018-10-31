@@ -2,6 +2,7 @@
 using Android.App;
 using Android.Views;
 using Android.Widget;
+using Koush;
 using PointOfViewApp.Poco;
 using static PointOfViewApp.Resource;
 
@@ -33,19 +34,17 @@ namespace PointOfViewApp.Adapters
          var poi = this[position];
          var nameTextView = view.FindViewById<TextView>(Id.nameTextView);
          var addressTextView = view.FindViewById<TextView>(Id.addrTextView);
-         //var poiImageView = view.FindViewById<ImageView>(Id.poiImageView);
+         var poiImageView = view.FindViewById<ImageView>(Id.poiImageView);
 
          // Fill the UI-controls
          nameTextView.Text = poi.Name;
          if (string.IsNullOrEmpty(poi.Address))
-         {            
             addressTextView.Visibility = ViewStates.Gone;
-         }
          else
          {
             addressTextView.Text = poi.Address;
-            //Koush.UrlImageViewHelper.SetUrlDrawable(poiImageView, poi.Image, Drawable.ic_placeholder);
-         }                  
+            UrlImageViewHelper.SetUrlDrawable(poiImageView, poi.Image, Drawable.ic_placeholder);
+         }
 
          return view;
       }
