@@ -26,7 +26,7 @@ namespace PointOfViewApp.Services
             var jsonResponse = JObject.Parse(content);
             var results = jsonResponse["pois"].ToList();
 
-            var poiListData = new List<PointOfInterest>();
+            var poiListData = new List<PointOfInterest>();  // NOTE: Had better use field instead of local variable
             results.ForEach(token => poiListData.Add(token.ToObject<PointOfInterest>()));
 
             return poiListData;
