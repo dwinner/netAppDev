@@ -20,7 +20,7 @@ namespace PointOfViewApp.Services
          httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
          var response = await httpClient.GetAsync(GetPois).ConfigureAwait(true);
 
-         if (response != null && response.IsSuccessStatusCode)
+         if (response?.IsSuccessStatusCode == true)
          {
             var content = await response.Content.ReadAsStringAsync().ConfigureAwait(true);
             var jsonResponse = JObject.Parse(content);
