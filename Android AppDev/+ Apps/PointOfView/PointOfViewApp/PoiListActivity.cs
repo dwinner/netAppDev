@@ -8,6 +8,7 @@ using Android.Widget;
 using PointOfViewApp.Adapters;
 using PointOfViewApp.Poco;
 using PointOfViewApp.Services;
+using static PointOfViewApp.Utils.ConnectionUtils;
 using R = PointOfViewApp.Resource;
 
 namespace PointOfViewApp
@@ -60,12 +61,13 @@ namespace PointOfViewApp
          }
       }
 
+      // ReSharper disable once AvoidAsyncVoid
       private async void DownloadPoiListAsync()
       {
          try
          {
             var service = new PoiService();
-            if (!PoiService.IsConnected(this))
+            if (!IsConnected(this))
             {
                var toast = Toast.MakeText(this,
                   "Not connected to internet. Please check your device network settings.",/* TODO: Move to resources */
