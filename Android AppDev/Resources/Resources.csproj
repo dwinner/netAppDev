@@ -111,13 +111,37 @@
     <AndroidResource Include="Resources\drawable\sample_image.png" />
   </ItemGroup>
   <ItemGroup>
-    <AndroidResource Include="Resources\layout\debug_activity_layout.xml" />
+    <Content Include="Resources\layout\debug_activity_layout.axml" />
   </ItemGroup>
   <ItemGroup>
-    <AndroidResource Include="Resources\layout\main.xml" />
+    <Content Include="Resources\layout\main.axml" />
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\menu\main_menu.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\test.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\raw\test.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\values\strings1.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\values-en\strings_en.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\values-en-port\strings_en_port.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\values-en-rUS\strings_en_us.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\values-port\strings_port.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\xml\test.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.

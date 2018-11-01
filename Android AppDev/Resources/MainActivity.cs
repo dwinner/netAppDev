@@ -25,16 +25,16 @@ namespace Resources
 
       public override bool OnCreateOptionsMenu(IMenu menu)
       {
-         MenuInflater.Inflate(Resource.Menu.menu_main, menu);
+         MenuInflater.Inflate(Resource.Menu.main_menu, menu);
          return true;
       }
 
       public override bool OnOptionsItemSelected(IMenuItem item)
       {
-         var id = item.ItemId;
-         if (id == Resource.Id.action_settings)
-            return true;
-
+         //var id = item.ItemId;
+         //if (id == Resource.Id.action_settings)
+         //   return true;
+         // NOTE: Implement me
          return base.OnOptionsItemSelected(item);
       }
 
