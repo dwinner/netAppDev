@@ -56,7 +56,13 @@
     <Reference Include="Mono.Android" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="HelloWorldActivity.cs" />
+    <Compile Include="Interfaces\IReportBack.cs" />
     <Compile Include="MainActivity.cs" />
+    <Compile Include="Misc\BaseTester.cs" />
+    <Compile Include="MonitoredActivity.cs" />
+    <Compile Include="Interfaces\MonitoredDebugActivity.cs" />
+    <Compile Include="ResApplication.cs" />
     <Compile Include="Resources\Resource.Designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -111,12 +117,6 @@
     <AndroidResource Include="Resources\drawable\sample_image.png" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Resources\layout\debug_activity_layout.axml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Resources\layout\main.axml" />
-  </ItemGroup>
-  <ItemGroup>
     <AndroidResource Include="Resources\menu\main_menu.xml" />
   </ItemGroup>
   <ItemGroup>
@@ -142,6 +142,16 @@
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\xml\test.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\layout\main.axml">
+      <SubType>Designer</SubType>
+    </AndroidResource>
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\layout\debug_activity_layout.axml">
+      <SubType>Designer</SubType>
+    </AndroidResource>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
