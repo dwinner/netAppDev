@@ -37,7 +37,7 @@ namespace Doodlz.App
       /// <summary>
       ///    Показывать ли диалог
       /// </summary>
-      public bool DialogOnScreen { get; set; } = false;
+      public bool DialogOnScreen { get; set; }
 
       public override View OnCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
       {
