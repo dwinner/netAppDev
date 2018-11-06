@@ -14,7 +14,7 @@ namespace PointOfViewApp.Services
          "http://private-e451d-poilist.apiary-mock.com/com.packt.poiapp/api/poi/pois";
 
       private const string PoiJsonArrayName = "pois";
-      private readonly List<PointOfInterest> _poiListAsync = new List<PointOfInterest>();
+      private readonly List<PointOfInterest> _poiList = new List<PointOfInterest>();
 
       public async Task<List<PointOfInterest>> GetPoiListAsync()
       {
@@ -27,11 +27,11 @@ namespace PointOfViewApp.Services
             var content = await response.Content.ReadAsStringAsync().ConfigureAwait(true);
             var jsonResponse = JObject.Parse(content);
             var results = jsonResponse[PoiJsonArrayName].ToList();
-            if (_poiListAsync.Count > 0)
-               _poiListAsync.Clear();
-            results.ForEach(token => _poiListAsync.Add(token.ToObject<PointOfInterest>()));
+            if (_poiList.Count > 0)
+               _poiList.Clear();
+            results.ForEach(token => _poiList.Add(token.ToObject<PointOfInterest>()));
 
-            return _poiListAsync;
+            return _poiList;
          }
 
          return null;

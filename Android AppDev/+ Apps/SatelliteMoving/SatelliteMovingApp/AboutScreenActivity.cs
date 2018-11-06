@@ -11,7 +11,7 @@ namespace SatelliteMovingApp
    /// <summary>
    ///    Активность для экрана About
    /// </summary>
-   [Activity(Label = "About")]  
+   [Activity(Label = "About")]
    public class AboutScreenActivity : Activity
    {
       public override bool OnCreateOptionsMenu(IMenu menu)
@@ -39,8 +39,8 @@ namespace SatelliteMovingApp
       protected override void OnCreate(Bundle savedInstanceState)
       {
          base.OnCreate(savedInstanceState);
-
          SetContentView(Resource.Layout.AboutScreen);
+
          try
          {
             var stream = Assets.Open("About.txt");
