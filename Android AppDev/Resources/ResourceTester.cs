@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using Java.IO;
 using Org.XmlPull.V1;
 using Android.App;
@@ -12,6 +13,7 @@ using ArrayResources=Resources.Resource.Array;
 using PluralResources=Resources.Resource.Plurals;
 using ColorResources=Resources.Resource.Color;
 using DimensionResources=Resources.Resource.Dimension;
+using StringReader = System.IO.StringReader;
 
 namespace Resources
 {
@@ -124,6 +126,17 @@ namespace Resources
 
       private void Report(int stringId) => ReportTo.ReportBack(Tag,Context.GetString(stringId));
 
+      private string GetStringFromAssetFile(Context activity)
+      {
+         var assetManager = activity.Assets;
+         using (var stream = assetManager.Open("test.txt"))
+         {
+            
+         }
+      }
 
+      private string ConvertStreamToString(Stream stream)
+      {
+      }
    }
 }
