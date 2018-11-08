@@ -43,9 +43,27 @@ namespace Doodlz.App
          _paintLine.SetStyle(Paint.Style.Stroke); // Сплошная линия
       }
 
-      protected override void OnSizeChanged(int w, int h, int oldw, int oldh)
+      /// <summary>
+      ///    Цвет рисуемой линии
+      /// </summary>
+      public Color DrawingColor
       {
-         _bitmap = Bitmap.CreateBitmap(w, h, Bitmap.Config.Argb8888); // NOTE: getWidth(), getHeight() ?!
+         get => _paintLine.Color;
+         set => _paintLine.Color = value;
+      }
+
+      /// <summary>
+      ///    Толщина рисуемой линии
+      /// </summary>
+      public int LineWidth
+      {
+         get => (int) _paintLine.StrokeWidth;
+         set => _paintLine.StrokeWidth = value;
+      }
+
+      protected override void OnSizeChanged(int newWidth, int newHeight, int oldWidth, int oldHeight)
+      {
+         _bitmap = Bitmap.CreateBitmap(newWidth, newHeight, Bitmap.Config.Argb8888); // NOTE: getWidth(), getHeight() ?!
          _bitmapCanvas = new Canvas(_bitmap);
          _bitmap.EraseColor(Color.White); // bitmap стирается белым цветом
       }
@@ -80,7 +98,7 @@ namespace Doodlz.App
       /// </summary>
       public void SaveImage()
       {
-         // Имя состоит из префикса Doodlz и текущего времени         
+         // Имя состоит из префикса Doodlz и текущего времени
          var name = $"Doodlz{JavaSystem.CurrentTimeMillis()}.jpg";
 
          // Сохранение изображения в галерее устойства
@@ -102,30 +120,6 @@ namespace Doodlz.App
          _bitmap.EraseColor(Color.White); // Очистка изображения
          Invalidate(); // Перерисовать изображение
       }
-
-      /// <summary>
-      ///    Назначение цвета рисуемой линии
-      /// </summary>
-      /// <param name="color">Цвет</param>
-      public void SetDrawingColor(Color color) => _paintLine.Color = color;
-
-      /// <summary>
-      ///    Получение цвета рисуемой линии
-      /// </summary>
-      /// <returns>Цвет</returns>
-      public Color GetDrawingColor() => _paintLine.Color;
-
-      /// <summary>
-      ///    Назначение толщины рисуемой линии
-      /// </summary>
-      /// <param name="width">Толщина</param>
-      public void SetLineWidth(int width) => _paintLine.StrokeWidth = width;
-
-      /// <summary>
-      ///    Получение толщины рисуемой линии
-      /// </summary>
-      /// <returns>Толщина</returns>
-      public int GetLineWidth() => (int) _paintLine.StrokeWidth;
 
       /// <inheritdoc />
       protected override void OnDraw(Canvas canvas) // Перерисовка при обновлении DoodleView на экране

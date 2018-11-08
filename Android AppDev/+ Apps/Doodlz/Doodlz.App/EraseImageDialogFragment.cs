@@ -1,34 +1,44 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿/**
+ * Allows user to erase image
+ */
 
 using Android.App;
 using Android.Content;
 using Android.OS;
-using Android.Runtime;
-using Android.Util;
-using Android.Views;
-using Android.Widget;
-using DialogFragmentV4=Android.Support.V4.App.DialogFragment;
+using DialogFragmentV4 = Android.Support.V4.App.DialogFragment;
+using StringRes = Doodlz.App.Resource.String;
+using IdRes = Doodlz.App.Resource.Id;
 
 namespace Doodlz.App
 {
+   /// <summary>
+   ///    Class for the Erase Image dialog
+   /// </summary>
    public class EraseImageDialogFragment : DialogFragmentV4
    {
-      public override void OnCreate(Bundle savedInstanceState)
-      {
-         base.OnCreate(savedInstanceState);
+      /// <summary>
+      ///    Gets a reference to the MainActivityFragment
+      /// </summary>
+      private MainActivityFragment DoodleFragment =>
+         (MainActivityFragment) FragmentManager.FindFragmentById(IdRes.doodleFragment);
 
-         // Create your fragment here
+      public override Dialog OnCreateDialog(Bundle savedInstanceState) // Create an AlertDialog and return it
+         => new AlertDialog.Builder(Activity)
+            .SetMessage(StringRes.message_erase)
+            .SetPositiveButton(StringRes.button_erase, (sender, args) => DoodleFragment.DoodleView.Clear())
+            .SetNegativeButton(Android.Resource.String.Cancel, (sender, args) => { })
+            .Create();
+
+      public override void OnAttach(Context context) // Tell MainActivityFragment that dialog is now displayed
+      {
+         base.OnAttach(context);
+         if (DoodleFragment != null) DoodleFragment.DialogOnScreen = true;
       }
 
-      public override View OnCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+      public override void OnDetach() // Tell MainActivityFragment that dialog is no longer displayed
       {
-         // Use this to return your custom view for this Fragment
-         // return inflater.Inflate(Resource.Layout.YourFragment, container, false);
-
-         return base.OnCreateView(inflater, container, savedInstanceState);
+         base.OnDetach();
+         if (DoodleFragment != null) DoodleFragment.DialogOnScreen = false;
       }
    }
 }

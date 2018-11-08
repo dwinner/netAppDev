@@ -1,8 +1,0 @@
-Model Validation: http://metanit.com/sharp/tutorial/22.1.php
-Quartz.NET: http://metanit.com/sharp/mvc5/24.1.php
-GIT - How To: https://githowto.com/ru
-MongoDB: http://metanit.com/nosql/mongodb/
-Redis: https://github.com/gandjustas/McvMusicStoreCache
-Windows Batch Scripting: http://steve-jansen.github.io/guides/windows-batch-scripting/index.html
-Pro ASP.NET MVC Core 1.0
-Pro WebAPI for Experts

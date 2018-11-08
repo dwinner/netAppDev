@@ -46,13 +46,13 @@ namespace Doodlz.App
 
          // Использование текущего цвета линии для инициализации
          var doodleView = GetDoodleFragment().DoodleView;
-         _color = doodleView.GetDrawingColor();
+         _color = doodleView.DrawingColor;
          _alphaSeekBar.Progress = Color.GetAlphaComponent(_color);
          _redSeekBar.Progress = Color.GetRedComponent(_color);
          _greenSeekBar.Progress = Color.GetGreenComponent(_color);
          _blueSeekBar.Progress = Color.GetBlueComponent(_color);
          builder.SetPositiveButton(StringRes.button_set_color,
-            (sender, args) => doodleView.SetDrawingColor(_color)); // Добавление кнопки назначения цвета
+            (sender, args) => doodleView.DrawingColor=_color); // Добавление кнопки назначения цвета
 
          return builder.Create(); // Возвращение диалогового окна
       }
