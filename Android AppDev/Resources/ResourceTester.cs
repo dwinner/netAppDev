@@ -1,19 +1,17 @@
 ﻿using System;
 using System.IO;
-using Java.IO;
-using Org.XmlPull.V1;
-using Android.App;
+using System.Text;
 using Android.Content;
-using Android.Content.Res;
-using Android.Text;
 using Resources.Interfaces;
 using Resources.Misc;
-using StringResources=Resources.Resource.String;
-using ArrayResources=Resources.Resource.Array;
-using PluralResources=Resources.Resource.Plurals;
-using ColorResources=Resources.Resource.Color;
-using DimensionResources=Resources.Resource.Dimension;
-using StringReader = System.IO.StringReader;
+using StringResources = Resources.Resource.String;
+using ArrayResources = Resources.Resource.Array;
+using PluralResources = Resources.Resource.Plurals;
+using ColorResources = Resources.Resource.Color;
+using DimensionResources = Resources.Resource.Dimension;
+using RawResources = Resources.Resource.Raw;
+using String = Java.Lang.String;
+using XmlResources = Resources.Resource.Xml;
 
 namespace Resources
 {
@@ -28,20 +26,20 @@ namespace Resources
 
       public void TestEnStrings()
       {
-         string msg = "available in all en/us/root/port/en_port: test_en_us";
+         var msg = "available in all en/us/root/port/en_port: test_en_us";
          ReportString(msg, StringResources.teststring_all);
 
          msg = "available in only root/en and port: t1_enport";
-         ReportString(msg,StringResources.t1_enport);
+         ReportString(msg, StringResources.t1_enport);
 
          msg = "available in only root/en/port: t1_en_port";
-         ReportString(msg,StringResources.t1_1_en_port);
+         ReportString(msg, StringResources.t1_1_en_port);
 
          msg = "available in only root: t2";
-         ReportString(msg,StringResources.t2);
+         ReportString(msg, StringResources.t2);
 
          msg = "available in only port/root: testport_port";
-         ReportString(msg,StringResources.testport_port);
+         ReportString(msg, StringResources.testport_port);
       }
 
       public void TestStringArray() => ReportArray(ArrayResources.test_array);
@@ -76,18 +74,18 @@ namespace Resources
          ReportString(simpleString);
 
          // Read a quoted string and set it in a text view
-         string quotedString = Context.GetString(StringResources.quoted_string);
+         var quotedString = Context.GetString(StringResources.quoted_string);
          ReportString(quotedString);
 
          // Read a double quoted string and set it in a text view
-         string doubleQuotedString = Context.GetString(StringResources.double_quoted_string);
+         var doubleQuotedString = Context.GetString(StringResources.double_quoted_string);
          ReportString(doubleQuotedString);
 
          // Read a Java format string
-         string javaFormatString = Context.GetString(StringResources.java_format_string);
+         var javaFormatString = Context.GetString(StringResources.java_format_string);
 
          // Convert the formatted string by passing in arguments
-         string substitutedString = Java.Lang.String.Format(javaFormatString, "Hello", "Android");
+         var substitutedString = String.Format(javaFormatString, "Hello", "Android");
 
          // set the output in a text view
          ReportString(substitutedString);
@@ -102,13 +100,19 @@ namespace Resources
          // this.GetTextView().setText(textSpan);
       }
 
-      private void ReportString(string str) => ReportTo.ReportBack(Tag,str);
+      public void TestAssets() => ReportString(GetStringFromAssetFile(Context));
+
+      public void TestRawFile() => ReportString(GetStringFromRawFile(Context));
+
+      public void TestXml() => ReportString(GetEventsFromXmlFile(Context));
+
+      private void ReportString(string str) => ReportTo.ReportBack(Tag, str);
 
       private void ReportPlurals(int pluralResource, int amount)
       {
          var resources = Context.Resources;
-         var quantityString = resources.GetQuantityString(pluralResource,amount);
-         ReportTo.ReportBack(Tag,quantityString);
+         var quantityString = resources.GetQuantityString(pluralResource, amount);
+         ReportTo.ReportBack(Tag, quantityString);
       }
 
       private void ReportArray(int arrayResource)
@@ -124,19 +128,34 @@ namespace Resources
          Report(stringResource);
       }
 
-      private void Report(int stringId) => ReportTo.ReportBack(Tag,Context.GetString(stringId));
+      private void Report(int stringId) => ReportTo.ReportBack(Tag, Context.GetString(stringId));
 
       private string GetStringFromAssetFile(Context activity)
       {
          var assetManager = activity.Assets;
-         using (var stream = assetManager.Open("test.txt"))
+         using (var streamReader = new StreamReader(assetManager.Open("test.txt")))
          {
-            
+            return streamReader.ReadToEnd();
          }
       }
 
-      private string ConvertStreamToString(Stream stream)
+      private string GetStringFromRawFile(Context activity)
       {
+         var resources = activity.Resources;
+         using (var reader = new StreamReader(resources.OpenRawResource(RawResources.test)))
+         {
+            return reader.ReadToEnd();
+         }
+      }
+
+      private string GetEventsFromXmlFile(Context activity)
+      {
+         var stringBuilder = new StringBuilder();
+         var resources = activity.Resources;
+         var reader = resources.GetXml(XmlResources.test);
+         // TODO: Read XML in .NET way
+
+         return string.Empty;
       }
    }
 }
