@@ -38,7 +38,7 @@ namespace Doodlz.App
 
          // Configure widthSeekBar
          var doodleView = DoodleFragment.DoodleView;
-         var widthSeekBar = lineWidthDialogView.FindViewById<SeekBar>(IdRes.widthImageView);
+         var widthSeekBar = lineWidthDialogView.FindViewById<SeekBar>(IdRes.widthSeekBar);
          widthSeekBar.ProgressChanged += OnSeekBarProgressChanged;
          widthSeekBar.Progress = doodleView.LineWidth;
 

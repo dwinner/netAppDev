@@ -1,8 +1,4 @@
-﻿/**
- * Главное представление приложения Doodlz
- */
-
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Android.Content;
 using Android.Graphics;
 using Android.Provider;
@@ -11,6 +7,9 @@ using Android.Util;
 using Android.Views;
 using Android.Widget;
 using Java.Lang;
+/**
+ * Главное представление приложения Doodlz
+ */
 using StringRes = Doodlz.App.Resource.String;
 
 namespace Doodlz.App
@@ -35,6 +34,16 @@ namespace Doodlz.App
       private readonly Dictionary<int, Point> _previousPointMap = new Dictionary<int, Point>();
       private Bitmap _bitmap; // Область рисования для вывода и сохранения
       private Canvas _bitmapCanvas; // Используется для рисования на Bitmap
+
+      public DoodleView()
+         : base(null, null)
+      {
+      }
+
+      public DoodleView(Context context, IAttributeSet attrs)
+         : base(context, attrs)
+      {
+      }
 
       public DoodleView(Context context, IAttributeSet attrs, Paint paintScreen)
          : base(context, attrs)

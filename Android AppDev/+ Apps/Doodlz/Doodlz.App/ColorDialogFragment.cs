@@ -19,7 +19,7 @@ namespace Doodlz.App
       private SeekBar _alphaSeekBar;
       private SeekBar _blueSeekBar;
       private Color _color;
-      private View _colorView;
+      private View _colorView;   // BUG: Не восстанавливает цвет в _colorView
       private SeekBar _greenSeekBar;
       private SeekBar _redSeekBar;
 

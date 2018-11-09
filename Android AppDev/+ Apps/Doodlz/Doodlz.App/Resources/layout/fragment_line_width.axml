@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<GridLayout xmlns:adr="http://schemas.adr.com/apk/res/adr"
+
+<GridLayout xmlns:adr="http://schemas.android.com/apk/res/android"
             adr:layout_width="match_parent"
             adr:layout_height="match_parent"
             adr:id="@+id/lineWidthDialogGridLayout"

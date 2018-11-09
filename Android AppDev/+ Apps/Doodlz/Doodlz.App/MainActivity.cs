@@ -4,6 +4,7 @@ using Android.Content.Res;
 using Android.OS;
 using Android.Support.V7.App;
 using Android.Support.V7.Widget;
+// ReSharper disable BitwiseOperatorOnEnumWithoutFlags
 
 namespace Doodlz.App
 {
@@ -21,7 +22,7 @@ namespace Doodlz.App
          var toolbar = FindViewById<Toolbar>(Resource.Id.toolbar);
          SetSupportActionBar(toolbar);
 
-         // Определение размера экрана
+         // BUG: Определение размера экрана
          var screenSize = Resources.Configuration.ScreenLayout & ScreenLayout.SizeMask;
          RequestedOrientation = screenSize == ScreenLayout.SizeXlarge
             ? ScreenOrientation.Landscape
