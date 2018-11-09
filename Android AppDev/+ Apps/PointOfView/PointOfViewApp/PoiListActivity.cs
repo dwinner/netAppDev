@@ -1,13 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Android.App;
+using Android.Content;
 using Android.OS;
 using Android.Support.V7.App;
 using Android.Views;
 using Android.Widget;
+using Newtonsoft.Json;
 using PointOfViewApp.Adapters;
 using PointOfViewApp.Poco;
 using PointOfViewApp.Services;
+using PointOfViewApp.Utils;
 using static PointOfViewApp.Utils.ConnectionUtils;
 using R = PointOfViewApp.Resource;
 
@@ -27,15 +29,19 @@ namespace PointOfViewApp
          SetContentView(R.Layout.PoiList);
 
          _poiListView = FindViewById<ListView>(R.Id.poiListView);
-         _poiListView.ItemClick += (sender, args) =>
-         {
-            // TODO: Fetching the object at user clicked position
-            var poi = _poiListData[(int) args.Id];
-            Console.WriteLine("POI Clicked: Name is {0}", poi.Name);
-         };
-
+         _poiListView.ItemClick += OnPoiListItemClicked;
          _poiProgressBar = FindViewById<ProgressBar>(R.Id.progressBar);
+
          DownloadPoiListAsync();
+      }
+
+      private void OnPoiListItemClicked(object sender, AdapterView.ItemClickEventArgs e)
+      {
+         var selectedPoi = _poiListData[(int) e.Id];
+         var poiDetailIntent = new Intent(this, typeof(PoiDetailActivity));
+         var poiJson = JsonConvert.SerializeObject(selectedPoi);
+         poiDetailIntent.PutExtra(IntentKeys.PoiDetailKey, poiJson);
+         StartActivity(poiDetailIntent);
       }
 
       public override bool OnCreateOptionsMenu(IMenu menu)
@@ -49,7 +55,7 @@ namespace PointOfViewApp
          switch (item.ItemId)
          {
             case R.Id.actionNew:
-               // TODO: Create new poi
+               StartActivity(typeof(PoiDetailActivity));
                return true;
 
             case R.Id.actionRefresh:
@@ -70,7 +76,7 @@ namespace PointOfViewApp
             if (!IsConnected(this))
             {
                var toast = Toast.MakeText(this,
-                  "Not connected to internet. Please check your device network settings.",/* TODO: Move to resources */
+                  "Not connected to internet. Please check your device network settings.", /* TODO: Move to resources */
                   ToastLength.Short);
                toast.Show();
             }

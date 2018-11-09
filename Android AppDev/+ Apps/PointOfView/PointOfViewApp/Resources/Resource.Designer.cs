@@ -2227,26 +2227,26 @@ namespace PointOfViewApp
 			// aapt resource value: 0x7f020053
 			public const int avd_hide_password = 2130837587;
 			
-			// aapt resource value: 0x7f02006f
-			public const int avd_hide_password_1 = 2130837615;
-			
-			// aapt resource value: 0x7f020070
-			public const int avd_hide_password_2 = 2130837616;
-			
 			// aapt resource value: 0x7f020071
-			public const int avd_hide_password_3 = 2130837617;
+			public const int avd_hide_password_1 = 2130837617;
+			
+			// aapt resource value: 0x7f020072
+			public const int avd_hide_password_2 = 2130837618;
+			
+			// aapt resource value: 0x7f020073
+			public const int avd_hide_password_3 = 2130837619;
 			
 			// aapt resource value: 0x7f020054
 			public const int avd_show_password = 2130837588;
 			
-			// aapt resource value: 0x7f020072
-			public const int avd_show_password_1 = 2130837618;
-			
-			// aapt resource value: 0x7f020073
-			public const int avd_show_password_2 = 2130837619;
-			
 			// aapt resource value: 0x7f020074
-			public const int avd_show_password_3 = 2130837620;
+			public const int avd_show_password_1 = 2130837620;
+			
+			// aapt resource value: 0x7f020075
+			public const int avd_show_password_2 = 2130837621;
+			
+			// aapt resource value: 0x7f020076
+			public const int avd_show_password_3 = 2130837622;
 			
 			// aapt resource value: 0x7f020055
 			public const int design_bottom_navigation_item_background = 2130837589;
@@ -2267,64 +2267,70 @@ namespace PointOfViewApp
 			public const int design_snackbar_background = 2130837594;
 			
 			// aapt resource value: 0x7f02005b
-			public const int ic_launcher = 2130837595;
+			public const int ic_delete = 2130837595;
 			
 			// aapt resource value: 0x7f02005c
-			public const int ic_new = 2130837596;
+			public const int ic_launcher = 2130837596;
 			
 			// aapt resource value: 0x7f02005d
-			public const int ic_placeholder = 2130837597;
+			public const int ic_new = 2130837597;
 			
 			// aapt resource value: 0x7f02005e
-			public const int ic_refresh = 2130837598;
+			public const int ic_placeholder = 2130837598;
 			
 			// aapt resource value: 0x7f02005f
-			public const int Icon = 2130837599;
+			public const int ic_refresh = 2130837599;
 			
 			// aapt resource value: 0x7f020060
-			public const int navigation_empty_icon = 2130837600;
+			public const int ic_save = 2130837600;
 			
 			// aapt resource value: 0x7f020061
-			public const int notification_action_background = 2130837601;
+			public const int Icon = 2130837601;
 			
 			// aapt resource value: 0x7f020062
-			public const int notification_bg = 2130837602;
+			public const int navigation_empty_icon = 2130837602;
 			
 			// aapt resource value: 0x7f020063
-			public const int notification_bg_low = 2130837603;
+			public const int notification_action_background = 2130837603;
 			
 			// aapt resource value: 0x7f020064
-			public const int notification_bg_low_normal = 2130837604;
+			public const int notification_bg = 2130837604;
 			
 			// aapt resource value: 0x7f020065
-			public const int notification_bg_low_pressed = 2130837605;
+			public const int notification_bg_low = 2130837605;
 			
 			// aapt resource value: 0x7f020066
-			public const int notification_bg_normal = 2130837606;
+			public const int notification_bg_low_normal = 2130837606;
 			
 			// aapt resource value: 0x7f020067
-			public const int notification_bg_normal_pressed = 2130837607;
+			public const int notification_bg_low_pressed = 2130837607;
 			
 			// aapt resource value: 0x7f020068
-			public const int notification_icon_background = 2130837608;
-			
-			// aapt resource value: 0x7f02006d
-			public const int notification_template_icon_bg = 2130837613;
-			
-			// aapt resource value: 0x7f02006e
-			public const int notification_template_icon_low_bg = 2130837614;
+			public const int notification_bg_normal = 2130837608;
 			
 			// aapt resource value: 0x7f020069
-			public const int notification_tile_bg = 2130837609;
+			public const int notification_bg_normal_pressed = 2130837609;
 			
 			// aapt resource value: 0x7f02006a
-			public const int notify_panel_notification_icon_bg = 2130837610;
+			public const int notification_icon_background = 2130837610;
+			
+			// aapt resource value: 0x7f02006f
+			public const int notification_template_icon_bg = 2130837615;
+			
+			// aapt resource value: 0x7f020070
+			public const int notification_template_icon_low_bg = 2130837616;
 			
 			// aapt resource value: 0x7f02006b
-			public const int tooltip_frame_dark = 2130837611;
+			public const int notification_tile_bg = 2130837611;
 			
 			// aapt resource value: 0x7f02006c
-			public const int tooltip_frame_light = 2130837612;
+			public const int notify_panel_notification_icon_bg = 2130837612;
+			
+			// aapt resource value: 0x7f02006d
+			public const int tooltip_frame_dark = 2130837613;
+			
+			// aapt resource value: 0x7f02006e
+			public const int tooltip_frame_light = 2130837614;
 			
 			static Drawable()
 			{
@@ -2360,11 +2366,17 @@ namespace PointOfViewApp
 			// aapt resource value: 0x7f08009c
 			public const int action0 = 2131230876;
 			
-			// aapt resource value: 0x7f0800b7
-			public const int actionNew = 2131230903;
+			// aapt resource value: 0x7f0800c6
+			public const int actionDelete = 2131230918;
 			
-			// aapt resource value: 0x7f0800b8
-			public const int actionRefresh = 2131230904;
+			// aapt resource value: 0x7f0800c7
+			public const int actionNew = 2131230919;
+			
+			// aapt resource value: 0x7f0800c8
+			public const int actionRefresh = 2131230920;
+			
+			// aapt resource value: 0x7f0800c5
+			public const int actionSave = 2131230917;
 			
 			// aapt resource value: 0x7f08007c
 			public const int action_bar = 2131230844;
@@ -2426,8 +2438,14 @@ namespace PointOfViewApp
 			// aapt resource value: 0x7f080027
 			public const int add = 2131230759;
 			
+			// aapt resource value: 0x7f0800c0
+			public const int addrTextView = 2131230912;
+			
+			// aapt resource value: 0x7f0800b3
+			public const int addressEditText = 2131230899;
+			
 			// aapt resource value: 0x7f0800b2
-			public const int addrTextView = 2131230898;
+			public const int addressTextView = 2131230898;
 			
 			// aapt resource value: 0x7f080070
 			public const int alertTitle = 2131230832;
@@ -2504,6 +2522,12 @@ namespace PointOfViewApp
 			// aapt resource value: 0x7f080060
 			public const int default_activity_button = 2131230816;
 			
+			// aapt resource value: 0x7f0800b1
+			public const int descriptionEditText = 2131230897;
+			
+			// aapt resource value: 0x7f0800b0
+			public const int descriptionTextView = 2131230896;
+			
 			// aapt resource value: 0x7f080090
 			public const int design_bottom_sheet = 2131230864;
 			
@@ -2522,8 +2546,8 @@ namespace PointOfViewApp
 			// aapt resource value: 0x7f080020
 			public const int disableHome = 2131230752;
 			
-			// aapt resource value: 0x7f0800b3
-			public const int distanceTextView = 2131230899;
+			// aapt resource value: 0x7f0800c1
+			public const int distanceTextView = 2131230913;
 			
 			// aapt resource value: 0x7f08007e
 			public const int edit_query = 2131230846;
@@ -2597,6 +2621,18 @@ namespace PointOfViewApp
 			// aapt resource value: 0x7f08008c
 			public const int largeLabel = 2131230860;
 			
+			// aapt resource value: 0x7f0800b8
+			public const int latEditTableRow = 2131230904;
+			
+			// aapt resource value: 0x7f0800b5
+			public const int latLegendTableRow = 2131230901;
+			
+			// aapt resource value: 0x7f0800b9
+			public const int latitudeEditText = 2131230905;
+			
+			// aapt resource value: 0x7f0800b6
+			public const int latitudeTextView = 2131230902;
+			
 			// aapt resource value: 0x7f080049
 			public const int left = 2131230793;
 			
@@ -2612,14 +2648,20 @@ namespace PointOfViewApp
 			// aapt resource value: 0x7f080061
 			public const int list_item = 2131230817;
 			
-			// aapt resource value: 0x7f0800b6
-			public const int masked = 2131230902;
+			// aapt resource value: 0x7f0800ba
+			public const int longitudeEditText = 2131230906;
+			
+			// aapt resource value: 0x7f0800b7
+			public const int longitudeTextView = 2131230903;
+			
+			// aapt resource value: 0x7f0800c4
+			public const int masked = 2131230916;
 			
 			// aapt resource value: 0x7f08009f
 			public const int media_actions = 2131230879;
 			
-			// aapt resource value: 0x7f0800b4
-			public const int message = 2131230900;
+			// aapt resource value: 0x7f0800c2
+			public const int message = 2131230914;
 			
 			// aapt resource value: 0x7f080031
 			public const int middle = 2131230769;
@@ -2630,8 +2672,11 @@ namespace PointOfViewApp
 			// aapt resource value: 0x7f080028
 			public const int multiply = 2131230760;
 			
-			// aapt resource value: 0x7f0800b1
-			public const int nameTextView = 2131230897;
+			// aapt resource value: 0x7f0800af
+			public const int nameEditText = 2131230895;
+			
+			// aapt resource value: 0x7f0800ae
+			public const int nameTextView = 2131230894;
 			
 			// aapt resource value: 0x7f080093
 			public const int navigation_header_container = 2131230867;
@@ -2666,20 +2711,29 @@ namespace PointOfViewApp
 			// aapt resource value: 0x7f08004d
 			public const int pin = 2131230797;
 			
-			// aapt resource value: 0x7f0800af
-			public const int poiImageView = 2131230895;
-			
-			// aapt resource value: 0x7f0800b0
-			public const int poiLinearLayout = 2131230896;
-			
-			// aapt resource value: 0x7f0800ae
-			public const int poiListRelativeLayout = 2131230894;
+			// aapt resource value: 0x7f0800ad
+			public const int poiDetailLinearLayout = 2131230893;
 			
 			// aapt resource value: 0x7f0800ac
-			public const int poiListView = 2131230892;
+			public const int poiDetailScrollView = 2131230892;
 			
-			// aapt resource value: 0x7f0800ad
-			public const int progressBar = 2131230893;
+			// aapt resource value: 0x7f0800b4
+			public const int poiDetailTableLayout = 2131230900;
+			
+			// aapt resource value: 0x7f0800be
+			public const int poiImageView = 2131230910;
+			
+			// aapt resource value: 0x7f0800bf
+			public const int poiLinearLayout = 2131230911;
+			
+			// aapt resource value: 0x7f0800bd
+			public const int poiListRelativeLayout = 2131230909;
+			
+			// aapt resource value: 0x7f0800bb
+			public const int poiListView = 2131230907;
+			
+			// aapt resource value: 0x7f0800bc
+			public const int progressBar = 2131230908;
 			
 			// aapt resource value: 0x7f080006
 			public const int progress_circular = 2131230726;
@@ -2885,8 +2939,8 @@ namespace PointOfViewApp
 			// aapt resource value: 0x7f080016
 			public const int view_offset_helper = 2131230742;
 			
-			// aapt resource value: 0x7f0800b5
-			public const int visible = 2131230901;
+			// aapt resource value: 0x7f0800c3
+			public const int visible = 2131230915;
 			
 			// aapt resource value: 0x7f08003c
 			public const int withText = 2131230780;
@@ -3116,25 +3170,28 @@ namespace PointOfViewApp
 			public const int notification_template_part_time = 2130968630;
 			
 			// aapt resource value: 0x7f040037
-			public const int PoiList = 2130968631;
+			public const int PoiDetail = 2130968631;
 			
 			// aapt resource value: 0x7f040038
-			public const int PoiListItem = 2130968632;
+			public const int PoiList = 2130968632;
 			
 			// aapt resource value: 0x7f040039
-			public const int select_dialog_item_material = 2130968633;
+			public const int PoiListItem = 2130968633;
 			
 			// aapt resource value: 0x7f04003a
-			public const int select_dialog_multichoice_material = 2130968634;
+			public const int select_dialog_item_material = 2130968634;
 			
 			// aapt resource value: 0x7f04003b
-			public const int select_dialog_singlechoice_material = 2130968635;
+			public const int select_dialog_multichoice_material = 2130968635;
 			
 			// aapt resource value: 0x7f04003c
-			public const int support_simple_spinner_dropdown_item = 2130968636;
+			public const int select_dialog_singlechoice_material = 2130968636;
 			
 			// aapt resource value: 0x7f04003d
-			public const int tooltip = 2130968637;
+			public const int support_simple_spinner_dropdown_item = 2130968637;
+			
+			// aapt resource value: 0x7f04003e
+			public const int tooltip = 2130968638;
 			
 			static Layout()
 			{
@@ -3150,7 +3207,10 @@ namespace PointOfViewApp
 		{
 			
 			// aapt resource value: 0x7f0e0000
-			public const int poi_listview_menu = 2131623936;
+			public const int poi_detail_menu = 2131623936;
+			
+			// aapt resource value: 0x7f0e0001
+			public const int poi_listview_menu = 2131623937;
 			
 			static Menu()
 			{
@@ -3166,13 +3226,31 @@ namespace PointOfViewApp
 		{
 			
 			// aapt resource value: 0x7f030000
-			public const int ic_launcher = 2130903040;
+			public const int ic_delete = 2130903040;
 			
 			// aapt resource value: 0x7f030001
-			public const int ic_launcher_foreground = 2130903041;
+			public const int ic_launcher = 2130903041;
 			
 			// aapt resource value: 0x7f030002
-			public const int ic_launcher_round = 2130903042;
+			public const int ic_launcher_foreground = 2130903042;
+			
+			// aapt resource value: 0x7f030003
+			public const int ic_launcher_round = 2130903043;
+			
+			// aapt resource value: 0x7f030004
+			public const int ic_new = 2130903044;
+			
+			// aapt resource value: 0x7f030005
+			public const int ic_placeholder = 2130903045;
+			
+			// aapt resource value: 0x7f030006
+			public const int ic_refresh = 2130903046;
+			
+			// aapt resource value: 0x7f030007
+			public const int ic_save = 2130903047;
+			
+			// aapt resource value: 0x7f030008
+			public const int Icon = 2130903048;
 			
 			static Mipmap()
 			{
