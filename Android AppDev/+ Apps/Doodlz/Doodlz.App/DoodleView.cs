@@ -72,7 +72,7 @@ namespace Doodlz.App
 
       protected override void OnSizeChanged(int newWidth, int newHeight, int oldWidth, int oldHeight)
       {
-         _bitmap = Bitmap.CreateBitmap(newWidth, newHeight, Bitmap.Config.Argb8888); // NOTE: getWidth(), getHeight() ?!
+         _bitmap = Bitmap.CreateBitmap(newWidth, newHeight, Bitmap.Config.Argb8888);
          _bitmapCanvas = new Canvas(_bitmap);
          _bitmap.EraseColor(Color.White); // bitmap стирается белым цветом
       }

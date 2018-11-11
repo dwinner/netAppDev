@@ -1,5 +1,5 @@
 ﻿/**
- * Allows user to erase image
+ * Фрагмент для стирания изображения
  */
 
 using Android.App;
@@ -12,30 +12,30 @@ using IdRes = Doodlz.App.Resource.Id;
 namespace Doodlz.App
 {
    /// <summary>
-   ///    Class for the Erase Image dialog
+   ///    Класс диалогового окна
    /// </summary>
    public class EraseImageDialogFragment : DialogFragmentV4
    {
       /// <summary>
-      ///    Gets a reference to the MainActivityFragment
+      ///    Получение ссылки на MainActivityFragment
       /// </summary>
       private MainActivityFragment DoodleFragment =>
          (MainActivityFragment) FragmentManager.FindFragmentById(IdRes.doodleFragment);
 
-      public override Dialog OnCreateDialog(Bundle savedInstanceState) // Create an AlertDialog and return it
+      public override Dialog OnCreateDialog(Bundle savedInstanceState) // Создание и возвращение объекта AlertDialog
          => new AlertDialog.Builder(Activity)
             .SetMessage(StringRes.message_erase)
             .SetPositiveButton(StringRes.button_erase, (sender, args) => DoodleFragment.DoodleView.Clear())
             .SetNegativeButton(Android.Resource.String.Cancel, (sender, args) => { })
             .Create();
 
-      public override void OnAttach(Context context) // Tell MainActivityFragment that dialog is now displayed
+      public override void OnAttach(Context context) // Сообщает MainActivityFragment, что диалог находится на экране
       {
          base.OnAttach(context);
          if (DoodleFragment != null) DoodleFragment.DialogOnScreen = true;
       }
 
-      public override void OnDetach() // Tell MainActivityFragment that dialog is no longer displayed
+      public override void OnDetach() // Сообщает MainActivityFragment, что окно не отображается
       {
          base.OnDetach();
          if (DoodleFragment != null) DoodleFragment.DialogOnScreen = false;

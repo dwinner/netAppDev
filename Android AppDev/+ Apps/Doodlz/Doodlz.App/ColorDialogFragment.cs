@@ -19,7 +19,7 @@ namespace Doodlz.App
       private SeekBar _alphaSeekBar;
       private SeekBar _blueSeekBar;
       private Color _color;
-      private View _colorView;   // BUG: Не восстанавливает цвет в _colorView
+      private View _colorView;
       private SeekBar _greenSeekBar;
       private SeekBar _redSeekBar;
 
@@ -51,8 +51,10 @@ namespace Doodlz.App
          _redSeekBar.Progress = Color.GetRedComponent(_color);
          _greenSeekBar.Progress = Color.GetGreenComponent(_color);
          _blueSeekBar.Progress = Color.GetBlueComponent(_color);
+         _colorView.SetBackgroundColor(
+            Color.Argb(_alphaSeekBar.Progress, _redSeekBar.Progress, _greenSeekBar.Progress, _blueSeekBar.Progress));
          builder.SetPositiveButton(StringRes.button_set_color,
-            (sender, args) => doodleView.DrawingColor=_color); // Добавление кнопки назначения цвета
+            (sender, args) => doodleView.DrawingColor = _color); // Добавление кнопки назначения цвета
 
          return builder.Create(); // Возвращение диалогового окна
       }

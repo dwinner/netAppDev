@@ -21,8 +21,7 @@ namespace Doodlz.App
 
          var toolbar = FindViewById<Toolbar>(Resource.Id.toolbar);
          SetSupportActionBar(toolbar);
-
-         // BUG: Определение размера экрана
+         
          var screenSize = Resources.Configuration.ScreenLayout & ScreenLayout.SizeMask;
          RequestedOrientation = screenSize == ScreenLayout.SizeXlarge
             ? ScreenOrientation.Landscape

@@ -16,12 +16,8 @@ namespace Doodlz.App
    /// </summary>
    public class MainActivityFragment : FragmentV4
    {
-      private const int AccelerationThreshold = 100000; // Используется для обнаружения встряхивания устройства
-
-      // TODO: Для гарантии уникальности при запросе разрешений, лучше использовать enum'ы
-      private const int
-         SaveImagePermissionRequestCode =
-            1; // Используется для идентификации запросов на использование внещнего хранилища; необходимо для работы функций сохранения      
+      private const int AccelerationThreshold = 100000; // Используется для обнаружения встряхивания устройства      
+      private const int SaveImagePermissionRequestCode = 1; // Используется для идентификации запросов на использование внещнего хранилища; необходимо для работы функций сохранения      
 
       private float _acceleration;
       private float _currentAcceleration;
@@ -80,12 +76,12 @@ namespace Doodlz.App
          {
             case R.Id.color:
                var colorDialog = new ColorDialogFragment();
-               colorDialog.Show(FragmentManager, "color dialog"); // TODO: Move To String resource
+               colorDialog.Show(FragmentManager, "color dialog"); // i18n: Move To String resource
                return true; // Событие меню обработано
 
             case R.Id.line_width:
                var widthDialog = new LineWidthDialogFragment();
-               widthDialog.Show(FragmentManager, "line width dialog"); // TODO: Move To String resource
+               widthDialog.Show(FragmentManager, "line width dialog"); // i18n: Move To String resource
                return true; // Событие меню обработано
 
             case R.Id.delete_drawing:
@@ -179,7 +175,7 @@ namespace Doodlz.App
       private void ConfirmErase() // Подтверждение стирания рисунка
       {
          var fragment = new EraseImageDialogFragment();
-         fragment.Show(FragmentManager, "Erase Dialog"); // TODO: Move To String resource
+         fragment.Show(FragmentManager, "Erase Dialog"); // i18n: Move To String resource
       }
 
       /// <summary>
