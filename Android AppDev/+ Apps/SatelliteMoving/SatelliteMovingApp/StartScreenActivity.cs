@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Android.App;
 using Android.Content;
@@ -6,8 +7,8 @@ using Android.OS;
 using Android.Util;
 using Android.Views;
 using Android.Widget;
-using Java.Lang;
 using SatelliteMovingApp.Code;
+using Exception = Java.Lang.Exception;
 
 namespace SatelliteMovingApp
 {
@@ -151,7 +152,25 @@ namespace SatelliteMovingApp
       private sealed class SatelliteDistanceComparer : IComparer<Satellite>
       {
          public int Compare(Satellite x, Satellite y)
-            => Float.FloatToIntBits(x.Distance) - Float.FloatToIntBits(y.Distance);
+         {
+            if (x == null)
+               throw new ArgumentNullException(nameof(x));
+            if (y == null)
+               throw new ArgumentNullException(nameof(y));
+
+            if (Math.Abs(x.Distance - y.Distance) > float.Epsilon)
+               return x.Distance.GetHashCode() - y.Distance.GetHashCode();
+
+            if (x.RoundingTime - y.RoundingTime != 0)
+               return (int) (x.RoundingTime - y.RoundingTime);
+
+            if (Math.Abs(x.Angle - y.Angle) > float.Epsilon)
+               return x.Angle.GetHashCode() - y.Angle.GetHashCode();
+
+            return 0;   // BUG: this must be an ubnormal case
+
+            // NOTE: Java approach would be: return Float.FloatToIntBits(x.Distance) - Float.FloatToIntBits(y.Distance);
+         }
       }
    }
 }

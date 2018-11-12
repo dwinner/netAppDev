@@ -8,18 +8,25 @@ namespace SatelliteMovingApp.Code
    {
       private const long DefaultRoundingTime = 0;
       private const float DefaultDistance = .0F;
+      private const float DefaultAngle = .0F;
 
-      public Satellite()
-         : this(DefaultRoundingTime, DefaultDistance)
-      {
-      }
-
-      public Satellite(long currentTime, float currentDistance)
+      private Satellite(long currentTime, float currentDistance, float angle)
       {
          RoundingTime = currentTime;
          Distance = currentDistance;
-         Angle = RandomAngle();
+         Angle = angle;
       }
+
+      public Satellite(long currentTime, float currentDistance)
+         : this(currentTime, currentDistance, RandomAngle())
+      {
+      }
+
+      public Satellite()
+         : this(DefaultRoundingTime, DefaultDistance, DefaultAngle)
+      {
+      }
+
 
       [JsonProperty]
       public long RoundingTime { get; }
@@ -30,16 +37,14 @@ namespace SatelliteMovingApp.Code
       [JsonProperty]
       public float Angle { get; }
 
-      public bool Equals(Satellite other) => !ReferenceEquals(null, other) &&
-                                             (ReferenceEquals(this, other) || RoundingTime == other.RoundingTime &&
-                                              Distance.Equals(other.Distance) &&
-                                              Angle.Equals(other.Angle));
+      public bool Equals(Satellite other)
+         => !ReferenceEquals(null, other) && (ReferenceEquals(this, other) || RoundingTime == other.RoundingTime &&
+                                              Distance.Equals(other.Distance) && Angle.Equals(other.Angle));
 
       private static float RandomAngle() => (float) (2 * Math.PI * new Random().NextDouble());
 
-      public override bool Equals(object obj) => !ReferenceEquals(null, obj) &&
-                                                 (ReferenceEquals(this, obj) ||
-                                                  obj is Satellite other && Equals(other));
+      public override bool Equals(object obj)
+         => !ReferenceEquals(null, obj) && (ReferenceEquals(this, obj) || obj is Satellite other && Equals(other));
 
       public override int GetHashCode()
       {

@@ -69,7 +69,7 @@ namespace PointOfViewApp
          base.OnPrepareOptionsMenu(menu);
 
          // Disable delete for a new POI
-         if (_poi.Id >= 0)
+         if (_poi.Id == 0)
          {
             var deleteItem = menu.FindItem(IdRes.actionDelete);
             deleteItem.SetEnabled(false);

@@ -11,7 +11,6 @@ namespace SatelliteMovingApp.Code
    public sealed class OrbitalLayout : ViewGroup
    {
       private List<Satellite> _satelliteList;
-
       private SortedDictionary<Satellite, View> _satelliteMap;
 
       /// <summary>
