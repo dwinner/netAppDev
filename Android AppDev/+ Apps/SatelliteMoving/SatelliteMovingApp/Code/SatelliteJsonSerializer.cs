@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using Android.App;
 using Android.Content;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
 
 namespace SatelliteMovingApp.Code
 {
@@ -11,12 +10,6 @@ namespace SatelliteMovingApp.Code
    {
       private const string SatellitePrefKey = nameof(SatellitePrefKey);
       private const string SharedPreferenceFileName = nameof(SatelliteJsonSerializer);
-
-      private static readonly JsonSerializerSettings _JsonSerializerSettings
-         = new JsonSerializerSettings
-         {
-            ContractResolver = new CamelCasePropertyNamesContractResolver()
-         };
 
       private readonly Activity _activity;
 
@@ -30,9 +23,7 @@ namespace SatelliteMovingApp.Code
          {
             var jsonSatellites = sharedPreferences.GetString(SatellitePrefKey, string.Empty);
             if (!string.IsNullOrEmpty(jsonSatellites))
-            {
                satellites = JsonConvert.DeserializeObject<Satellite[]>(jsonSatellites);
-            }
          }
 
          return satellites;
