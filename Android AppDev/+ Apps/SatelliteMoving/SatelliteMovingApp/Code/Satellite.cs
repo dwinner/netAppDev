@@ -27,15 +27,11 @@ namespace SatelliteMovingApp.Code
       {
       }
 
+      [JsonProperty] public long RoundingTime { get; set; }
 
-      [JsonProperty]
-      public long RoundingTime { get; }
+      [JsonProperty] public float Distance { get; set; }
 
-      [JsonProperty]
-      public float Distance { get; }
-
-      [JsonProperty]
-      public float Angle { get; }
+      [JsonProperty] public float Angle { get; set; }
 
       public bool Equals(Satellite other)
          => !ReferenceEquals(null, other) && (ReferenceEquals(this, other) || RoundingTime == other.RoundingTime &&
