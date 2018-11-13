@@ -12,12 +12,19 @@ using PointOfViewApp.Services;
 using PointOfViewApp.Utils;
 using static PointOfViewApp.Utils.ConnectionUtils;
 using R = PointOfViewApp.Resource;
+// ReSharper disable AvoidAsyncVoid
 
 namespace PointOfViewApp
 {
-   [Activity(Label = "@string/app_name", Theme = "@style/AppTheme", MainLauncher = true /*,Icon = "@drawable/icon"*/)]
+   [Activity(
+      Label = "@string/app_name",
+      Theme = "@style/AppTheme",
+      MainLauncher = true,
+      Icon = "@drawable/ic_launcher")]
    public class PoiListActivity : AppCompatActivity
    {
+      private const string PoiListScrollPositionBundleKey = "poi_list_scroll_position";
+      private int _scrollPosition;
       private PoiListViewAdapter _poiListAdapter;
       private List<PointOfInterest> _poiListData;
       private ListView _poiListView;
@@ -33,15 +40,6 @@ namespace PointOfViewApp
          _poiProgressBar = FindViewById<ProgressBar>(R.Id.progressBar);
 
          DownloadPoiListAsync();
-      }
-
-      private void OnPoiListItemClicked(object sender, AdapterView.ItemClickEventArgs e)
-      {
-         var selectedPoi = _poiListData[(int) e.Id];
-         var poiDetailIntent = new Intent(this, typeof(PoiDetailActivity));
-         var poiJson = JsonConvert.SerializeObject(selectedPoi);
-         poiDetailIntent.PutExtra(IntentKeys.PoiDetailKey, poiJson);
-         StartActivity(poiDetailIntent);
       }
 
       public override bool OnCreateOptionsMenu(IMenu menu)
@@ -67,7 +65,28 @@ namespace PointOfViewApp
          }
       }
 
-      // ReSharper disable once AvoidAsyncVoid
+      protected override void OnSaveInstanceState(Bundle outState)
+      {
+         base.OnSaveInstanceState(outState);
+         var currentPosition = _poiListView.FirstVisiblePosition;
+         outState.PutInt(PoiListScrollPositionBundleKey, currentPosition);
+      }
+
+      protected override void OnRestoreInstanceState(Bundle savedInstanceState)
+      {
+         base.OnRestoreInstanceState(savedInstanceState);
+         _scrollPosition = savedInstanceState.GetInt(PoiListScrollPositionBundleKey);
+      }
+
+      private void OnPoiListItemClicked(object sender, AdapterView.ItemClickEventArgs e)
+      {
+         var selectedPoi = _poiListData[(int)e.Id];
+         var poiDetailIntent = new Intent(this, typeof(PoiDetailActivity));
+         var poiJson = JsonConvert.SerializeObject(selectedPoi);
+         poiDetailIntent.PutExtra(IntentKeys.PoiDetailKey, poiJson);
+         StartActivity(poiDetailIntent);
+      }
+
       private async void DownloadPoiListAsync()
       {
          try
@@ -86,6 +105,9 @@ namespace PointOfViewApp
                _poiListData = await service.GetPoiListAsync().ConfigureAwait(true);
                _poiListAdapter = new PoiListViewAdapter(this, _poiListData);
                _poiListView.Adapter = _poiListAdapter;
+
+               // Restore the selection on the scroll position
+               _poiListView.Post(() => _poiListView.SetSelection(_scrollPosition));
             }
          }
          finally
