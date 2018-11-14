@@ -1,76 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<ScrollView xmlns:adr="http://schemas.android.com/apk/res/android"
-	adr:minWidth="25px"
-	adr:minHeight="25px"
-	adr:layout_width="match_parent"
-	adr:layout_height="match_parent"
-	adr:id="@+id/poiDetailScrollView">
-	<LinearLayout
-		adr:orientation="vertical"
-		adr:minWidth="25px"
-		adr:minHeight="25px"
-		adr:layout_width="fill_parent"
-		adr:layout_height="fill_parent"
-		adr:id="@+id/poiDetailLinearLayout"
-		adr:padding="5dp">
-		<TextView
-			adr:text="Name"
-			adr:layout_width="fill_parent"
-			adr:layout_height="wrap_content"
-			adr:id="@+id/nameTextView" /><!-- TODO: localize -->
-		<EditText
-			adr:layout_width="fill_parent"
-			adr:layout_height="wrap_content"
-			adr:inputType="textCapWords"
-			adr:id="@+id/nameEditText" />
-		<TextView
-			adr:text="Description"
-			adr:layout_width="fill_parent"
-			adr:layout_height="wrap_content"
-			adr:id="@+id/descriptionTextView" /><!-- TODO: localize -->
-		<EditText
-			adr:inputType="textMultiLine|textCapSentences"
-			adr:layout_width="fill_parent"
-			adr:layout_height="wrap_content"
-			adr:id="@+id/descriptionEditText" />
-		<TextView
-			adr:text="Address"
-			adr:layout_width="fill_parent"
-			adr:layout_height="wrap_content"
-			adr:id="@+id/addressTextView"/><!-- TODO: localize -->
-		<EditText
-			adr:inputType="textMultiLine"
-			adr:layout_width="fill_parent"
-			adr:layout_height="wrap_content"
-			adr:id="@+id/addressEditText" />
-		<TableLayout
-			adr:minWidth="25px"
-			adr:minHeight="25px"
-			adr:layout_width="fill_parent"
-			adr:layout_height="wrap_content"
-			adr:id="@+id/poiDetailTableLayout"
-			adr:stretchColumns="*">
-			<TableRow adr:id="@+id/latLegendTableRow">
-				<TextView
-					adr:text="Latitude"
-					adr:layout_column="0"
-					adr:id="@+id/latitudeTextView" /><!-- TODO: localize -->
-				<TextView
-					adr:text="Longitude"
-					adr:layout_column="1"
-					adr:id="@+id/longitudeTextView" /><!-- TODO: localize -->
-			</TableRow>
-			<TableRow adr:id="@+id/latEditTableRow">
-				<EditText
-					adr:inputType="numberDecimal|numberSigned"
-					adr:layout_column="0"
-					adr:id="@+id/latitudeEditText" />
-				<EditText
-					adr:inputType="numberDecimal|numberSigned"
-					adr:layout_column="1"
-					adr:id="@+id/longitudeEditText" />
-			</TableRow>
-		</TableLayout>
-	</LinearLayout>
-</ScrollView>
+<FrameLayout xmlns:adr="http://schemas.android.com/apk/res/android"
+    adr:minWidth="25px"
+    adr:minHeight="25px"
+    adr:layout_width="match_parent"
+    adr:layout_height="match_parent"
+    adr:id="@+id/poiDetailLayout" />
