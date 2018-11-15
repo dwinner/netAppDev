@@ -61,6 +61,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Adapters\PoiListViewAdapter.cs" />
+    <Compile Include="DeleteDialogFragment.cs" />
     <Compile Include="Poco\PointOfInterest.cs" />
     <Compile Include="PoiDetailActivity.cs" />
     <Compile Include="PoiDetailFragment.cs" />
@@ -186,6 +187,9 @@
     <AndroidResource Include="Resources\layout\PoiListFragment.axml">
       <SubType>Designer</SubType>
     </AndroidResource>
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\layout-sw600dp\PoiList.axml" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.

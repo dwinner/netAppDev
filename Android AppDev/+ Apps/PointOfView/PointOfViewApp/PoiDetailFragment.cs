@@ -1,5 +1,4 @@
-﻿using System;
-using Android.App;
+﻿using Android.App;
 using Android.Content;
 using Android.OS;
 using Android.Views;
@@ -12,8 +11,9 @@ using FragmentV4 = Android.Support.V4.App.Fragment;
 using ResLayout = PointOfViewApp.Resource.Layout;
 using IdRes = PointOfViewApp.Resource.Id;
 using MenuRes = PointOfViewApp.Resource.Menu;
-// ReSharper disable AvoidAsyncVoid
 
+// ReSharper disable AvoidAsyncVoid
+// BUG: The usage of Toast raises unhandled exception in JVM runtime
 namespace PointOfViewApp
 {
    public class PoiDetailFragment : FragmentV4
@@ -35,7 +35,9 @@ namespace PointOfViewApp
             _poi = JsonConvert.DeserializeObject<PointOfInterest>(poiJson);
          }
          else
+         {
             _poi = new PointOfInterest();
+         }
       }
 
       public override void OnAttach(Context context)
@@ -105,9 +107,7 @@ namespace PointOfViewApp
          _longitudeEditText.Text = _poi.Longitude.ToString();
       }
 
-      private void ConfirmDelete(object sender, EventArgs e) => DeletePoiAsync();
-
-      private async void DeletePoiAsync()
+      internal async void DeletePoiAsync()
       {
          var service = new PoiService();
          if (!ConnectionUtils.IsConnected(_activity))
@@ -147,7 +147,9 @@ namespace PointOfViewApp
             errors = true;
          }
          else
+         {
             _nameEditText.Error = null;
+         }
 
 
          double? tempLatitude = null;
@@ -161,7 +163,9 @@ namespace PointOfViewApp
                   errors = true;
                }
                else
+               {
                   _latitudeEditText.Error = null;
+               }
             }
             catch
             {
@@ -180,7 +184,9 @@ namespace PointOfViewApp
                   errors = true;
                }
                else
+               {
                   _longitudeEditText.Error = null;
+               }
             }
             catch
             {
@@ -226,14 +232,14 @@ namespace PointOfViewApp
          }
       }
 
-      // TODO: localize
-      private void DeletePoi() => new AlertDialog.Builder(_activity)
-         .SetTitle("Confirm delete")
-         .SetCancelable(false)
-         .SetPositiveButton("OK", ConfirmDelete)
-         .SetNegativeButton("Cancel", (sender, args) => { })
-         .SetMessage($"Are you sure you want to delete {_poi.Name}?")
-         .Create()
-         .Show();
+      private void DeletePoi()
+      {
+         var transaction = FragmentManager.BeginTransaction();
+         var bundle = new Bundle();
+         bundle.PutString("name", _poi.Name);
+         var dialogFragment = new DeleteDialogFragment {Arguments = bundle};
+         dialogFragment.SetTargetFragment(this, 0);
+         dialogFragment.Show(transaction, "dialog");
+      }
    }
 }

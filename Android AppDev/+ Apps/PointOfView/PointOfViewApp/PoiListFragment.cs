@@ -13,19 +13,29 @@ using ListFragmentV4 = Android.Support.V4.App.ListFragment;
 using LayoutRes = PointOfViewApp.Resource.Layout;
 using IdRes = PointOfViewApp.Resource.Id;
 using MenuRes = PointOfViewApp.Resource.Menu;
+
 // ReSharper disable AvoidAsyncVoid
 
 namespace PointOfViewApp
 {
    public class PoiListFragment : ListFragmentV4
    {
-      //private const string PoiListScrollPositionBundleKey = "poi_list_scroll_position";
-      //private int _scrollPosition;
+      private const string PoiListScrollPositionBundleKey = "poi_list_scroll_position";
+      private int _scrollPosition;
 
       private Activity _activity;
       private PoiListViewAdapter _poiListAdapter;
       private List<PointOfInterest> _poiListData;
       private ProgressBar _poiProgressBar;
+
+      public override void OnCreate(Bundle savedInstanceState)
+      {
+         base.OnCreate(savedInstanceState);
+         if (savedInstanceState != null)
+         {
+            _scrollPosition = savedInstanceState.GetInt(PoiListScrollPositionBundleKey);
+         }
+      }
 
       public override View OnCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
       {
@@ -59,8 +69,17 @@ namespace PointOfViewApp
          switch (item.ItemId)
          {
             case IdRes.actionNew:
-               var intent = new Intent(_activity, typeof(PoiDetailActivity));
-               StartActivity(intent);
+               if (PoiListActivity.IsDualMode)
+               {
+                  var detailFragment = new PoiDetailFragment();
+                  FragmentManager.BeginTransaction().Replace(IdRes.poiDetailLayout, detailFragment).Commit();
+               }
+               else
+               {
+                  var intent = new Intent(_activity, typeof(PoiDetailActivity));
+                  StartActivity(intent);
+               }
+
                return true;
 
             case IdRes.actionRefresh:
@@ -74,27 +93,27 @@ namespace PointOfViewApp
 
       public override void OnListItemClick(ListView l, View v, int position, long id)
       {
-         var selectedPoi = _poiListData[position];
-         var poiDetailIntent = new Intent(_activity, typeof(PoiDetailActivity));
-         var poiJson = JsonConvert.SerializeObject(selectedPoi);
-         poiDetailIntent.PutExtra(IntentKeys.PoiDetailKey, poiJson);
-         StartActivity(poiDetailIntent);
+         var interest = _poiListData[position];
+         if (PoiListActivity.IsDualMode)
+         {
+            var detailFragment = new PoiDetailFragment {Arguments = new Bundle()};
+            detailFragment.Arguments.PutString(IntentKeys.PoiDetailKey, JsonConvert.SerializeObject(interest));
+            FragmentManager.BeginTransaction().Replace(IdRes.poiDetailLayout, detailFragment).Commit();
+         }
+         else
+         {
+            var poiDetailIntent = new Intent(_activity, typeof(PoiDetailActivity));
+            poiDetailIntent.PutExtra(IntentKeys.PoiDetailKey, JsonConvert.SerializeObject(interest));
+            StartActivity(poiDetailIntent);
+         }
       }
 
-      /* BUG: The scrolling behavior is available from scratch?!
       public override void OnSaveInstanceState(Bundle outState)
       {
          base.OnSaveInstanceState(outState);
          var currentPosition = ListView.FirstVisiblePosition;
          outState.PutInt(PoiListScrollPositionBundleKey, currentPosition);
       }      
-
-      public override void OnViewStateRestored(Bundle savedInstanceState)
-      {
-         base.OnViewStateRestored(savedInstanceState);
-         _scrollPosition = savedInstanceState.GetInt(PoiListScrollPositionBundleKey);
-      }
-      */
 
       private async void DownloadPoiListAsync()
       {
@@ -114,11 +133,7 @@ namespace PointOfViewApp
                _poiListData = await service.GetPoiListAsync().ConfigureAwait(true);
                _poiListAdapter = new PoiListViewAdapter(_activity, _poiListData);
                ListAdapter = _poiListAdapter;
-
-               /*
-               _poiListView.Adapter = _poiListAdapter;               
-               _poiListView.Post(() => _poiListView.SetSelection(_scrollPosition)); // Restore the selection on the scroll position
-               */
+               ListView.Post(() => ListView.SetSelection(_scrollPosition)); // Restore the selection on the scroll position               
             }
          }
          finally
