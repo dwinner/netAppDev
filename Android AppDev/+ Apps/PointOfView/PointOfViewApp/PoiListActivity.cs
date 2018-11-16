@@ -3,6 +3,7 @@ using Android.OS;
 using Android.Support.V7.App;
 using Android.Views;
 using Android.Widget;
+using PointOfViewApp.Orm;
 using ResId = PointOfViewApp.Resource.Id;
 
 namespace PointOfViewApp
@@ -23,6 +24,8 @@ namespace PointOfViewApp
 
          var detailLayout = FindViewById<FrameLayout>(ResId.poiDetailLayout);
          IsDualMode = detailLayout?.Visibility == ViewStates.Visible;
+
+         SqLiteDbManager.Instance.CreateTable();
       }
    }
 }

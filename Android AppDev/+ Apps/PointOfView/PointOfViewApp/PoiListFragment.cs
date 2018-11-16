@@ -6,6 +6,7 @@ using Android.Views;
 using Android.Widget;
 using Newtonsoft.Json;
 using PointOfViewApp.Adapters;
+using PointOfViewApp.Orm;
 using PointOfViewApp.Poco;
 using PointOfViewApp.Services;
 using PointOfViewApp.Utils;
@@ -21,20 +22,17 @@ namespace PointOfViewApp
    public class PoiListFragment : ListFragmentV4
    {
       private const string PoiListScrollPositionBundleKey = "poi_list_scroll_position";
-      private int _scrollPosition;
 
       private Activity _activity;
       private PoiListViewAdapter _poiListAdapter;
       private List<PointOfInterest> _poiListData;
       private ProgressBar _poiProgressBar;
+      private int _scrollPosition;
 
       public override void OnCreate(Bundle savedInstanceState)
       {
          base.OnCreate(savedInstanceState);
-         if (savedInstanceState != null)
-         {
-            _scrollPosition = savedInstanceState.GetInt(PoiListScrollPositionBundleKey);
-         }
+         if (savedInstanceState != null) _scrollPosition = savedInstanceState.GetInt(PoiListScrollPositionBundleKey);
       }
 
       public override View OnCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -113,7 +111,7 @@ namespace PointOfViewApp
          base.OnSaveInstanceState(outState);
          var currentPosition = ListView.FirstVisiblePosition;
          outState.PutInt(PoiListScrollPositionBundleKey, currentPosition);
-      }      
+      }
 
       private async void DownloadPoiListAsync()
       {
@@ -126,14 +124,20 @@ namespace PointOfViewApp
                   "Not connected to internet. Please check your device network settings.", /* TODO: Move to resources */
                   ToastLength.Short);
                toast.Show();
+               _poiListData = SqLiteDbManager.Instance.Select();
             }
             else
             {
                _poiProgressBar.Visibility = ViewStates.Visible;
                _poiListData = await service.GetPoiListAsync().ConfigureAwait(true);
+
+               SqLiteDbManager.Instance.Delete(); // Clear cached data
+               SqLiteDbManager.Instance.Save(_poiListData); // Save updated interests
                _poiListAdapter = new PoiListViewAdapter(_activity, _poiListData);
                ListAdapter = _poiListAdapter;
-               ListView.Post(() => ListView.SetSelection(_scrollPosition)); // Restore the selection on the scroll position               
+               ListView.Post(() =>
+                  ListView.SetSelection(
+                     _scrollPosition)); // Restore the selection on the scroll position               
             }
          }
          finally

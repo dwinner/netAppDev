@@ -4,6 +4,7 @@ using Android.OS;
 using Android.Views;
 using Android.Widget;
 using Newtonsoft.Json;
+using PointOfViewApp.Orm;
 using PointOfViewApp.Poco;
 using PointOfViewApp.Services;
 using PointOfViewApp.Utils;
@@ -21,10 +22,10 @@ namespace PointOfViewApp
       private Activity _activity;
       private EditText _addressEditText;
       private EditText _descriptionEditText;
+      private PointOfInterest _interest;
       private EditText _latitudeEditText;
       private EditText _longitudeEditText;
       private EditText _nameEditText;
-      private PointOfInterest _poi;
 
       public override void OnCreate(Bundle savedInstanceState)
       {
@@ -32,12 +33,10 @@ namespace PointOfViewApp
          if (Arguments != null && Arguments.ContainsKey(IntentKeys.PoiDetailKey))
          {
             var poiJson = Arguments.GetString(IntentKeys.PoiDetailKey);
-            _poi = JsonConvert.DeserializeObject<PointOfInterest>(poiJson);
+            _interest = JsonConvert.DeserializeObject<PointOfInterest>(poiJson);
          }
          else
-         {
-            _poi = new PointOfInterest();
-         }
+            _interest = new PointOfInterest();
       }
 
       public override void OnAttach(Context context)
@@ -90,7 +89,7 @@ namespace PointOfViewApp
       {
          base.OnPrepareOptionsMenu(menu);
 
-         if (_poi.Id <= 0) // Disable delete for a new POI
+         if (_interest.Id <= 0) // Disable delete for a new POI
          {
             var deleteItem = menu.FindItem(IdRes.actionDelete);
             deleteItem.SetEnabled(false);
@@ -100,11 +99,11 @@ namespace PointOfViewApp
 
       private void UpdateUi() // Update set up UI
       {
-         _nameEditText.Text = _poi.Name;
-         _descriptionEditText.Text = _poi.Description;
-         _addressEditText.Text = _poi.Address;
-         _latitudeEditText.Text = _poi.Latitude.ToString();
-         _longitudeEditText.Text = _poi.Longitude.ToString();
+         _nameEditText.Text = _interest.Name;
+         _descriptionEditText.Text = _interest.Description;
+         _addressEditText.Text = _interest.Address;
+         _latitudeEditText.Text = _interest.Latitude.ToString();
+         _longitudeEditText.Text = _interest.Longitude.ToString();
       }
 
       internal async void DeletePoiAsync()
@@ -112,7 +111,6 @@ namespace PointOfViewApp
          var service = new PoiService();
          if (!ConnectionUtils.IsConnected(_activity))
          {
-            // TODO: localize
             var toast = Toast.MakeText(_activity,
                "Not connected to internet. Please check your device network settings.",
                ToastLength.Short);
@@ -120,17 +118,16 @@ namespace PointOfViewApp
             return;
          }
 
-         var response = await service.DeletePoiAsync(_poi.Id).ConfigureAwait(false);
+         var response = await service.DeletePoiAsync(_interest.Id).ConfigureAwait(false);
          if (!string.IsNullOrEmpty(response))
          {
-            // TODO: localize
-            var toast = Toast.MakeText(_activity, $"{_poi.Name} deleted", ToastLength.Short);
+            var toast = Toast.MakeText(_activity, $"{_interest.Name} deleted", ToastLength.Short);
             toast.Show();
-            _activity.Finish();
+            SqLiteDbManager.Instance.Delete(_interest.Id);
+            if (!PoiListActivity.IsDualMode) _activity.Finish();
          }
          else
          {
-            // TODO: localize
             var toast = Toast.MakeText(_activity, "Something went wrong!", ToastLength.Short);
             toast.Show();
          }
@@ -138,8 +135,6 @@ namespace PointOfViewApp
 
       private void SavePoi()
       {
-         // TODO: Use attributes for model validation
-         // TODO: Localaize strings
          var errors = false;
          if (string.IsNullOrEmpty(_nameEditText.Text))
          {
@@ -147,9 +142,7 @@ namespace PointOfViewApp
             errors = true;
          }
          else
-         {
             _nameEditText.Error = null;
-         }
 
 
          double? tempLatitude = null;
@@ -163,9 +156,7 @@ namespace PointOfViewApp
                   errors = true;
                }
                else
-               {
                   _latitudeEditText.Error = null;
-               }
             }
             catch
             {
@@ -184,9 +175,7 @@ namespace PointOfViewApp
                   errors = true;
                }
                else
-               {
                   _longitudeEditText.Error = null;
-               }
             }
             catch
             {
@@ -196,18 +185,17 @@ namespace PointOfViewApp
 
          if (errors) return;
 
-         _poi.Name = _nameEditText.Text;
-         _poi.Description = _descriptionEditText.Text;
-         _poi.Address = _addressEditText.Text;
-         _poi.Latitude = tempLatitude;
-         _poi.Longitude = tempLongitude;
+         _interest.Name = _nameEditText.Text;
+         _interest.Description = _descriptionEditText.Text;
+         _interest.Address = _addressEditText.Text;
+         _interest.Latitude = tempLatitude;
+         _interest.Longitude = tempLongitude;
 
          CreateOrUpdatePoiAsync();
       }
 
       private async void CreateOrUpdatePoiAsync()
       {
-         // TODO: localize
          var service = new PoiService();
          if (!ConnectionUtils.IsConnected(_activity))
          {
@@ -218,12 +206,13 @@ namespace PointOfViewApp
             return;
          }
 
-         var response = await service.CreateOrUpdateAsync(_poi).ConfigureAwait(false);
+         var response = await service.CreateOrUpdateAsync(_interest).ConfigureAwait(false);
          if (!string.IsNullOrEmpty(response))
          {
-            var toast = Toast.MakeText(_activity, $"{_poi.Name} saved.", ToastLength.Short);
+            var toast = Toast.MakeText(_activity, $"{_interest.Name} saved.", ToastLength.Short);
             toast.Show();
-            _activity.Finish();
+            SqLiteDbManager.Instance.Save(_interest);
+            if (!PoiListActivity.IsDualMode) _activity.Finish();
          }
          else
          {
@@ -236,7 +225,7 @@ namespace PointOfViewApp
       {
          var transaction = FragmentManager.BeginTransaction();
          var bundle = new Bundle();
-         bundle.PutString("name", _poi.Name);
+         bundle.PutString("name", _interest.Name);
          var dialogFragment = new DeleteDialogFragment {Arguments = bundle};
          dialogFragment.SetTargetFragment(this, 0);
          dialogFragment.Show(transaction, "dialog");
