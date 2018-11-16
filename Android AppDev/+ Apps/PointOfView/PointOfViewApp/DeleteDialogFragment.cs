@@ -1,5 +1,6 @@
 ﻿using Android.App;
 using Android.OS;
+using PointOfViewApp.Utils;
 using DialogFragment = Android.Support.V4.App.DialogFragment;
 
 namespace PointOfViewApp
@@ -9,7 +10,7 @@ namespace PointOfViewApp
       public override Dialog OnCreateDialog(Bundle savedInstanceState)
       {
          var targetFragment = (PoiDetailFragment) TargetFragment;
-         var poiName = Arguments.GetString("name");
+         var poiName = Arguments.GetString(IntentKeys.DeleteDialogTag);
          var dialog = new AlertDialog.Builder(Activity)
             .SetTitle("Confirm delete")
             .SetCancelable(false)
@@ -17,6 +18,7 @@ namespace PointOfViewApp
             .SetNegativeButton("Cancel", (sender, args) => { })
             .SetMessage($"Are you sure you want to delete {poiName}?")
             .Create();
+
          return dialog;
       }
    }

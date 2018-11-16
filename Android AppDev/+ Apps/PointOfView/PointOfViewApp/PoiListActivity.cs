@@ -6,6 +6,7 @@ using Android.Widget;
 using PointOfViewApp.Orm;
 using ResId = PointOfViewApp.Resource.Id;
 
+// TODO: Add Google API to enable location in emulator
 namespace PointOfViewApp
 {
    [Activity(

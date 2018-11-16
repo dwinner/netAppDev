@@ -72,5 +72,25 @@
 					adr:id="@+id/longitudeEditText" />
 			</TableRow>
 		</TableLayout>
+		<LinearLayout
+            adr:orientation="horizontal"
+            adr:layout_width="wrap_content"
+            adr:layout_height="wrap_content"
+            adr:layout_gravity="center_horizontal"
+            adr:minWidth="25px"
+            adr:minHeight="25px"
+            adr:layout_marginTop="10dp"
+            adr:layout_marginBottom="10dp">
+            <ImageButton
+                adr:src="@mipmap/ic_locate"
+                adr:layout_width="wrap_content"
+                adr:layout_height="wrap_content"
+                adr:id="@+id/locationImageButton" />
+            <ImageButton
+                adr:src="@mipmap/ic_map"
+                adr:layout_width="wrap_content"
+                adr:layout_height="wrap_content"
+                adr:id="@+id/mapImageButton" />
+        </LinearLayout>
 	</LinearLayout>
 </ScrollView>

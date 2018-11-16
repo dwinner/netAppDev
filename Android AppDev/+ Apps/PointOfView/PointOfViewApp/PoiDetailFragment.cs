@@ -1,5 +1,8 @@
-﻿using Android.App;
+﻿using System;
+using System.Globalization;
+using Android.App;
 using Android.Content;
+using Android.Locations;
 using Android.OS;
 using Android.Views;
 using Android.Widget;
@@ -8,28 +11,42 @@ using PointOfViewApp.Orm;
 using PointOfViewApp.Poco;
 using PointOfViewApp.Services;
 using PointOfViewApp.Utils;
+using Environment = System.Environment;
 using FragmentV4 = Android.Support.V4.App.Fragment;
 using ResLayout = PointOfViewApp.Resource.Layout;
 using IdRes = PointOfViewApp.Resource.Id;
 using MenuRes = PointOfViewApp.Resource.Menu;
+using JObj = Java.Lang.Object;
+using Uri = Android.Net.Uri;
 
 // ReSharper disable AvoidAsyncVoid
 // BUG: The usage of Toast raises unhandled exception in JVM runtime
+
 namespace PointOfViewApp
 {
    public class PoiDetailFragment : FragmentV4
    {
+      private const string ProgressDialogTag = "progress_dialog";
       private Activity _activity;
       private EditText _addressEditText;
       private EditText _descriptionEditText;
       private PointOfInterest _interest;
       private EditText _latitudeEditText;
+      private ImageButton _locationImageButton;
+      private ILocationListener _locationListener;
+      private LocationManager _locationManager;
       private EditText _longitudeEditText;
+      private ImageButton _mapImageButton;
       private EditText _nameEditText;
 
       public override void OnCreate(Bundle savedInstanceState)
       {
          base.OnCreate(savedInstanceState);
+         SetInterest();
+      }
+
+      private void SetInterest()
+      {
          if (Arguments != null && Arguments.ContainsKey(IntentKeys.PoiDetailKey))
          {
             var poiJson = Arguments.GetString(IntentKeys.PoiDetailKey);
@@ -48,6 +65,8 @@ namespace PointOfViewApp
       public override View OnCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
       {
          var view = inflater.Inflate(ResLayout.PoiDetailFragment, container, false);
+         _locationManager = (LocationManager) Activity.GetSystemService(Context.LocationService);
+         _locationListener = new LocationListenerImpl(this);
 
          // Initialize widgets
          _nameEditText = view.FindViewById<EditText>(IdRes.nameEditText);
@@ -55,11 +74,41 @@ namespace PointOfViewApp
          _addressEditText = view.FindViewById<EditText>(IdRes.addressEditText);
          _latitudeEditText = view.FindViewById<EditText>(IdRes.latitudeEditText);
          _longitudeEditText = view.FindViewById<EditText>(IdRes.longitudeEditText);
+         _locationImageButton = view.FindViewById<ImageButton>(IdRes.locationImageButton);
+         _locationImageButton.Click += OnGetLocation;
+         _mapImageButton = view.FindViewById<ImageButton>(IdRes.locationImageButton);
+         _mapImageButton.Click += OnGetMap;
 
-         UpdateUi();
          HasOptionsMenu = true;
+         SetInterest();
+         UpdateUi();
 
          return view;
+      }
+
+      private void OnGetMap(object sender, EventArgs e)
+      {
+         var geoUri = Uri.Parse(string.IsNullOrEmpty(_addressEditText.Text)
+            ? $"geo:{_interest.Latitude},{_interest.Longitude}"
+            : $"geo:0,0?q={_addressEditText.Text}");
+
+         var mapIntent = new Intent(Intent.ActionView, geoUri);
+
+         var packageManager = Activity.PackageManager;
+         var activities = packageManager.QueryIntentActivities(mapIntent, 0);
+         if (activities.Count == 0)
+            Toast.MakeText(_activity, "No map app available", ToastLength.Short).Show();
+         else
+            StartActivity(mapIntent);
+      }
+
+      private void OnGetLocation(object sender, EventArgs e)
+      {
+         var criteria = new Criteria {Accuracy = Accuracy.NoRequirement, PowerRequirement = Power.NoRequirement};
+         _locationManager.RequestSingleUpdate(criteria, _locationListener, null);
+         var transaction = FragmentManager.BeginTransaction();
+         var dialogFragment = new ProgressDialogFragment();
+         dialogFragment.Show(transaction, ProgressDialogTag);
       }
 
       public override void OnCreateOptionsMenu(IMenu menu, MenuInflater inflater)
@@ -124,7 +173,8 @@ namespace PointOfViewApp
             var toast = Toast.MakeText(_activity, $"{_interest.Name} deleted", ToastLength.Short);
             toast.Show();
             SqLiteDbManager.Instance.Delete(_interest.Id);
-            if (!PoiListActivity.IsDualMode) _activity.Finish();
+            if (!PoiListActivity.IsDualMode)
+               _activity.Finish();
          }
          else
          {
@@ -143,7 +193,6 @@ namespace PointOfViewApp
          }
          else
             _nameEditText.Error = null;
-
 
          double? tempLatitude = null;
          if (!string.IsNullOrEmpty(_latitudeEditText.Text))
@@ -212,7 +261,8 @@ namespace PointOfViewApp
             var toast = Toast.MakeText(_activity, $"{_interest.Name} saved.", ToastLength.Short);
             toast.Show();
             SqLiteDbManager.Instance.Save(_interest);
-            if (!PoiListActivity.IsDualMode) _activity.Finish();
+            if (!PoiListActivity.IsDualMode)
+               _activity.Finish();
          }
          else
          {
@@ -224,11 +274,67 @@ namespace PointOfViewApp
       private void DeletePoi()
       {
          var transaction = FragmentManager.BeginTransaction();
+
+         // Create and show the dialog
          var bundle = new Bundle();
-         bundle.PutString("name", _interest.Name);
+         bundle.PutString(IntentKeys.DeleteDialogTag, _interest.Name);
          var dialogFragment = new DeleteDialogFragment {Arguments = bundle};
          dialogFragment.SetTargetFragment(this, 0);
+
+         // Add fragment
          dialogFragment.Show(transaction, "dialog");
+      }
+
+      private sealed class LocationListenerImpl : JObj, ILocationListener
+      {
+         private readonly PoiDetailFragment _fragment;
+
+         public LocationListenerImpl(PoiDetailFragment fragment) => _fragment = fragment;
+
+         public void OnLocationChanged(Location location)
+         {
+            // Remove progress dialog fragment
+            var transaction = _fragment.FragmentManager.BeginTransaction();
+            var dialogFragment =
+               (ProgressDialogFragment) _fragment.FragmentManager.FindFragmentByTag(ProgressDialogTag);
+            if (dialogFragment != null)
+               transaction.Remove(dialogFragment).Commit();
+
+            _fragment._latitudeEditText.Text = location.Latitude.ToString(CultureInfo.CurrentCulture);
+            _fragment._longitudeEditText.Text = location.Longitude.ToString(CultureInfo.CurrentCulture);
+
+            var geocoder = new Geocoder(_fragment._activity);
+            var addresses = geocoder.GetFromLocation(location.Latitude, location.Longitude, 5);
+            if (addresses.Count > 0)
+               UpdateAddressFields(addresses[0]);
+         }
+
+         public void OnProviderDisabled(string provider)
+         {
+         }
+
+         public void OnProviderEnabled(string provider)
+         {
+         }
+
+         public void OnStatusChanged(string provider, Availability status, Bundle extras)
+         {
+         }
+
+         private void UpdateAddressFields(Address address)
+         {
+            if (string.IsNullOrEmpty(_fragment._nameEditText.Text))
+               _fragment._nameEditText.Text = address.FeatureName;
+
+            if (string.IsNullOrEmpty(_fragment._addressEditText.Text))
+               for (var addrLineIdx = 0; addrLineIdx < address.MaxAddressLineIndex; addrLineIdx++)
+               {
+                  if (!string.IsNullOrEmpty(_fragment._addressEditText.Text))
+                     _fragment._addressEditText.Text += Environment.NewLine;
+
+                  _fragment._addressEditText.Text += address.GetAddressLine(addrLineIdx);
+               }
+         }
       }
    }
 }

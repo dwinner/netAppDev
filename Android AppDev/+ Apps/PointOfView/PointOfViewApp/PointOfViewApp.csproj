@@ -68,6 +68,7 @@
     <Compile Include="PoiDetailFragment.cs" />
     <Compile Include="PoiListActivity.cs" />
     <Compile Include="PoiListFragment.cs" />
+    <Compile Include="ProgressDialogFragment.cs" />
     <Compile Include="Resources\Resource.Designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\PoiService.cs" />
@@ -194,6 +195,12 @@
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\layout-sw600dp\PoiList.axml" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\mipmap-mdpi\ic_locate.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\mipmap-mdpi\ic_map.png" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.

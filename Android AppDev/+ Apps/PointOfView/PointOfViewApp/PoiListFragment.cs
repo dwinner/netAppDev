@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Android.App;
 using Android.Content;
+using Android.Locations;
 using Android.OS;
 using Android.Views;
 using Android.Widget;
@@ -14,6 +15,7 @@ using ListFragmentV4 = Android.Support.V4.App.ListFragment;
 using LayoutRes = PointOfViewApp.Resource.Layout;
 using IdRes = PointOfViewApp.Resource.Id;
 using MenuRes = PointOfViewApp.Resource.Menu;
+using JavaObj = Java.Lang.Object;
 
 // ReSharper disable AvoidAsyncVoid
 
@@ -24,6 +26,8 @@ namespace PointOfViewApp
       private const string PoiListScrollPositionBundleKey = "poi_list_scroll_position";
 
       private Activity _activity;
+      private ILocationListener _locationListener;
+      private LocationManager _locationManager;
       private PoiListViewAdapter _poiListAdapter;
       private List<PointOfInterest> _poiListData;
       private ProgressBar _poiProgressBar;
@@ -40,6 +44,8 @@ namespace PointOfViewApp
          var view = inflater.Inflate(LayoutRes.PoiListFragment, container, false);
          _poiProgressBar = view.FindViewById<ProgressBar>(IdRes.progressBar);
          HasOptionsMenu = true;
+         _locationManager = (LocationManager) Activity.GetSystemService(Context.LocationService);
+         _locationListener = new LocationListenerImpl(this);
 
          return view;
       }
@@ -52,8 +58,22 @@ namespace PointOfViewApp
 
       public override void OnResume()
       {
-         DownloadPoiListAsync();
          base.OnResume();
+         DownloadPoiListAsync();
+
+         var criteria = new Criteria
+         {
+            Accuracy = Accuracy.NoRequirement,
+            PowerRequirement = Power.NoRequirement
+         };
+         var provider = _locationManager.GetBestProvider(criteria, true);
+         _locationManager.RequestLocationUpdates(provider, 2000, 100, _locationListener);
+      }
+
+      public override void OnPause()
+      {
+         base.OnPause();
+         _locationManager.RemoveUpdates(_locationListener);
       }
 
       public override void OnCreateOptionsMenu(IMenu menu, MenuInflater inflater)
@@ -121,7 +141,7 @@ namespace PointOfViewApp
             if (!ConnectionUtils.IsConnected(_activity))
             {
                var toast = Toast.MakeText(_activity,
-                  "Not connected to internet. Please check your device network settings.", /* TODO: Move to resources */
+                  "Not connected to internet. Please check your device network settings.",
                   ToastLength.Short);
                toast.Show();
                _poiListData = SqLiteDbManager.Instance.Select();
@@ -143,6 +163,34 @@ namespace PointOfViewApp
          finally
          {
             _poiProgressBar.Visibility = ViewStates.Gone;
+         }
+      }
+
+      private sealed class LocationListenerImpl : JavaObj, ILocationListener
+      {
+         private readonly PoiListFragment _fragment;
+
+         public LocationListenerImpl(PoiListFragment fragment) => _fragment = fragment;
+
+         public void OnLocationChanged(Location location)
+         {
+            if (_fragment.ListAdapter is PoiListViewAdapter adapter)
+            {
+               adapter.CurrentLocation = location;
+               _fragment.ListView.InvalidateViews();
+            }
+         }
+
+         public void OnProviderDisabled(string provider)
+         {
+         }
+
+         public void OnProviderEnabled(string provider)
+         {
+         }
+
+         public void OnStatusChanged(string provider, Availability status, Bundle extras)
+         {
          }
       }
    }

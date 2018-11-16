@@ -2366,17 +2366,17 @@ namespace PointOfViewApp
 			// aapt resource value: 0x7f08009c
 			public const int action0 = 2131230876;
 			
-			// aapt resource value: 0x7f0800c7
-			public const int actionDelete = 2131230919;
+			// aapt resource value: 0x7f0800c9
+			public const int actionDelete = 2131230921;
+			
+			// aapt resource value: 0x7f0800ca
+			public const int actionNew = 2131230922;
+			
+			// aapt resource value: 0x7f0800cb
+			public const int actionRefresh = 2131230923;
 			
 			// aapt resource value: 0x7f0800c8
-			public const int actionNew = 2131230920;
-			
-			// aapt resource value: 0x7f0800c9
-			public const int actionRefresh = 2131230921;
-			
-			// aapt resource value: 0x7f0800c6
-			public const int actionSave = 2131230918;
+			public const int actionSave = 2131230920;
 			
 			// aapt resource value: 0x7f08007c
 			public const int action_bar = 2131230844;
@@ -2438,8 +2438,8 @@ namespace PointOfViewApp
 			// aapt resource value: 0x7f080027
 			public const int add = 2131230759;
 			
-			// aapt resource value: 0x7f0800c1
-			public const int addrTextView = 2131230913;
+			// aapt resource value: 0x7f0800c3
+			public const int addrTextView = 2131230915;
 			
 			// aapt resource value: 0x7f0800b4
 			public const int addressEditText = 2131230900;
@@ -2546,8 +2546,8 @@ namespace PointOfViewApp
 			// aapt resource value: 0x7f080020
 			public const int disableHome = 2131230752;
 			
-			// aapt resource value: 0x7f0800c2
-			public const int distanceTextView = 2131230914;
+			// aapt resource value: 0x7f0800c4
+			public const int distanceTextView = 2131230916;
 			
 			// aapt resource value: 0x7f08007e
 			public const int edit_query = 2131230846;
@@ -2642,8 +2642,8 @@ namespace PointOfViewApp
 			// aapt resource value: 0x7f080018
 			public const int line3 = 2131230744;
 			
-			// aapt resource value: 0x7f0800bc
-			public const int listFragment = 2131230908;
+			// aapt resource value: 0x7f0800be
+			public const int listFragment = 2131230910;
 			
 			// aapt resource value: 0x7f08001d
 			public const int listMode = 2131230749;
@@ -2651,20 +2651,26 @@ namespace PointOfViewApp
 			// aapt resource value: 0x7f080061
 			public const int list_item = 2131230817;
 			
+			// aapt resource value: 0x7f0800bc
+			public const int locationImageButton = 2131230908;
+			
 			// aapt resource value: 0x7f0800bb
 			public const int longitudeEditText = 2131230907;
 			
 			// aapt resource value: 0x7f0800b8
 			public const int longitudeTextView = 2131230904;
 			
-			// aapt resource value: 0x7f0800c5
-			public const int masked = 2131230917;
+			// aapt resource value: 0x7f0800bd
+			public const int mapImageButton = 2131230909;
+			
+			// aapt resource value: 0x7f0800c7
+			public const int masked = 2131230919;
 			
 			// aapt resource value: 0x7f08009f
 			public const int media_actions = 2131230879;
 			
-			// aapt resource value: 0x7f0800c3
-			public const int message = 2131230915;
+			// aapt resource value: 0x7f0800c5
+			public const int message = 2131230917;
 			
 			// aapt resource value: 0x7f080031
 			public const int middle = 2131230769;
@@ -2726,17 +2732,17 @@ namespace PointOfViewApp
 			// aapt resource value: 0x7f0800b5
 			public const int poiDetailTableLayout = 2131230901;
 			
-			// aapt resource value: 0x7f0800bf
-			public const int poiImageView = 2131230911;
+			// aapt resource value: 0x7f0800c1
+			public const int poiImageView = 2131230913;
+			
+			// aapt resource value: 0x7f0800c2
+			public const int poiLinearLayout = 2131230914;
 			
 			// aapt resource value: 0x7f0800c0
-			public const int poiLinearLayout = 2131230912;
+			public const int poiListRelativeLayout = 2131230912;
 			
-			// aapt resource value: 0x7f0800be
-			public const int poiListRelativeLayout = 2131230910;
-			
-			// aapt resource value: 0x7f0800bd
-			public const int progressBar = 2131230909;
+			// aapt resource value: 0x7f0800bf
+			public const int progressBar = 2131230911;
 			
 			// aapt resource value: 0x7f080006
 			public const int progress_circular = 2131230726;
@@ -2942,8 +2948,8 @@ namespace PointOfViewApp
 			// aapt resource value: 0x7f080016
 			public const int view_offset_helper = 2131230742;
 			
-			// aapt resource value: 0x7f0800c4
-			public const int visible = 2131230916;
+			// aapt resource value: 0x7f0800c6
+			public const int visible = 2131230918;
 			
 			// aapt resource value: 0x7f08003c
 			public const int withText = 2131230780;
@@ -3247,19 +3253,25 @@ namespace PointOfViewApp
 			public const int ic_launcher_round = 2130903043;
 			
 			// aapt resource value: 0x7f030004
-			public const int ic_new = 2130903044;
+			public const int ic_locate = 2130903044;
 			
 			// aapt resource value: 0x7f030005
-			public const int ic_placeholder = 2130903045;
+			public const int ic_map = 2130903045;
 			
 			// aapt resource value: 0x7f030006
-			public const int ic_refresh = 2130903046;
+			public const int ic_new = 2130903046;
 			
 			// aapt resource value: 0x7f030007
-			public const int ic_save = 2130903047;
+			public const int ic_placeholder = 2130903047;
 			
 			// aapt resource value: 0x7f030008
-			public const int Icon = 2130903048;
+			public const int ic_refresh = 2130903048;
+			
+			// aapt resource value: 0x7f030009
+			public const int ic_save = 2130903049;
+			
+			// aapt resource value: 0x7f03000a
+			public const int Icon = 2130903050;
 			
 			static Mipmap()
 			{
