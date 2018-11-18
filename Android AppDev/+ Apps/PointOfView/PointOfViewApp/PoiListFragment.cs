@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
+using Android;
 using Android.App;
 using Android.Content;
+using Android.Content.PM;
 using Android.Locations;
 using Android.OS;
 using Android.Views;
@@ -24,6 +26,23 @@ namespace PointOfViewApp
    public class PoiListFragment : ListFragmentV4
    {
       private const string PoiListScrollPositionBundleKey = "poi_list_scroll_position";
+
+      private static readonly Dictionary<LocationRequestCode, (string permission, string alertMessage)>
+         _LocationPermissionMap = new Dictionary<LocationRequestCode, (string permission, string alertMessage)>
+         {
+            {
+               LocationRequestCode.CoarseLocation,
+               (Manifest.Permission.AccessCoarseLocation, "Need coarse location permission")
+            },
+            {
+               LocationRequestCode.FineLocation,
+               (Manifest.Permission.AccessFineLocation, "Need fine location permission")
+            },
+            {
+               LocationRequestCode.NetworkState,
+               (Manifest.Permission.AccessNetworkState, "Need network state permission")
+            }
+         };
 
       private Activity _activity;
       private ILocationListener _locationListener;
@@ -61,6 +80,31 @@ namespace PointOfViewApp
          base.OnResume();
          DownloadPoiListAsync();
 
+         // Request Geo location permissions
+         foreach (var (requestCode, (permission, alertMessage)) in _LocationPermissionMap)
+            RequestPermission(permission, alertMessage, requestCode);
+
+         SetupLocationProvider();
+
+         void RequestPermission(string permission, string alertMessage, LocationRequestCode locationRequestCode)
+         {
+            if (Context.CheckSelfPermission(permission) == Permission.Granted)
+               return;
+
+            if (ShouldShowRequestPermissionRationale(permission))
+               new AlertDialog.Builder(Activity)
+                  .SetMessage(alertMessage)
+                  .SetPositiveButton(Android.Resource.String.Ok,
+                     (sender, args) => RequestPermissions(new[] {permission}, (int) locationRequestCode))
+                  .Create()
+                  .Show();
+            else
+               RequestPermissions(new[] {permission}, (int) locationRequestCode);
+         }
+      }
+
+      private void SetupLocationProvider()
+      {
          var criteria = new Criteria
          {
             Accuracy = Accuracy.NoRequirement,
@@ -68,6 +112,21 @@ namespace PointOfViewApp
          };
          var provider = _locationManager.GetBestProvider(criteria, true);
          _locationManager.RequestLocationUpdates(provider, 2000, 100, _locationListener);
+      }
+
+      public override void OnRequestPermissionsResult(int requestCode, string[] permissions, Permission[] grantResults)
+      {
+         switch (requestCode)
+         {
+            case (int) LocationRequestCode.CoarseLocation:
+            case (int) LocationRequestCode.NetworkState:
+            case (int) LocationRequestCode.FineLocation:
+            {
+               if (grantResults.Length > 0 && grantResults[0] == Permission.Granted)
+                  SetupLocationProvider();
+               break;
+            }
+         }
       }
 
       public override void OnPause()
@@ -164,6 +223,13 @@ namespace PointOfViewApp
          {
             _poiProgressBar.Visibility = ViewStates.Gone;
          }
+      }
+
+      private enum LocationRequestCode : short
+      {
+         CoarseLocation = 1,
+         FineLocation = 2,
+         NetworkState = 3
       }
 
       private sealed class LocationListenerImpl : JavaObj, ILocationListener
