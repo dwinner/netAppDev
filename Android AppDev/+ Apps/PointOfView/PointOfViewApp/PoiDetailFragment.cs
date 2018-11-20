@@ -42,6 +42,9 @@ namespace PointOfViewApp
       public override void OnCreate(Bundle savedInstanceState)
       {
          base.OnCreate(savedInstanceState);
+
+         _locationManager = (LocationManager) Activity.GetSystemService(Context.LocationService);
+         _locationListener = new LocationListenerImpl(this);
          SetInterest();
       }
 
@@ -53,7 +56,9 @@ namespace PointOfViewApp
             _interest = JsonConvert.DeserializeObject<PointOfInterest>(poiJson);
          }
          else
+         {
             _interest = new PointOfInterest();
+         }
       }
 
       public override void OnAttach(Context context)
@@ -65,8 +70,6 @@ namespace PointOfViewApp
       public override View OnCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
       {
          var view = inflater.Inflate(ResLayout.PoiDetailFragment, container, false);
-         _locationManager = (LocationManager) Activity.GetSystemService(Context.LocationService);
-         _locationListener = new LocationListenerImpl(this);
 
          // Initialize widgets
          _nameEditText = view.FindViewById<EditText>(IdRes.nameEditText);
@@ -76,7 +79,7 @@ namespace PointOfViewApp
          _longitudeEditText = view.FindViewById<EditText>(IdRes.longitudeEditText);
          _locationImageButton = view.FindViewById<ImageButton>(IdRes.locationImageButton);
          _locationImageButton.Click += OnGetLocation;
-         _mapImageButton = view.FindViewById<ImageButton>(IdRes.locationImageButton);
+         _mapImageButton = view.FindViewById<ImageButton>(IdRes.mapImageButton);
          _mapImageButton.Click += OnGetMap;
 
          HasOptionsMenu = true;
@@ -192,7 +195,9 @@ namespace PointOfViewApp
             errors = true;
          }
          else
+         {
             _nameEditText.Error = null;
+         }
 
          double? tempLatitude = null;
          if (!string.IsNullOrEmpty(_latitudeEditText.Text))
@@ -205,7 +210,9 @@ namespace PointOfViewApp
                   errors = true;
                }
                else
+               {
                   _latitudeEditText.Error = null;
+               }
             }
             catch
             {
@@ -224,7 +231,9 @@ namespace PointOfViewApp
                   errors = true;
                }
                else
+               {
                   _longitudeEditText.Error = null;
+               }
             }
             catch
             {
@@ -293,7 +302,7 @@ namespace PointOfViewApp
 
          public void OnLocationChanged(Location location)
          {
-            // Remove progress dialog fragment
+            // Remove progress dialog fragment            
             var transaction = _fragment.FragmentManager.BeginTransaction();
             var dialogFragment =
                (ProgressDialogFragment) _fragment.FragmentManager.FindFragmentByTag(ProgressDialogTag);

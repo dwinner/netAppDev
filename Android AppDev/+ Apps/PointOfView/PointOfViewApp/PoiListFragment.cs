@@ -1,8 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Android;
 using Android.App;
 using Android.Content;
 using Android.Content.PM;
+using Android.Gms.Common;
 using Android.Locations;
 using Android.OS;
 using Android.Views;
@@ -26,6 +28,7 @@ namespace PointOfViewApp
    public class PoiListFragment : ListFragmentV4
    {
       private const string PoiListScrollPositionBundleKey = "poi_list_scroll_position";
+      private const int RequestError = 0;
 
       private static readonly Dictionary<LocationRequestCode, (string permission, string alertMessage)>
          _LocationPermissionMap = new Dictionary<LocationRequestCode, (string permission, string alertMessage)>
@@ -47,6 +50,8 @@ namespace PointOfViewApp
       private Activity _activity;
       private ILocationListener _locationListener;
       private LocationManager _locationManager;
+
+      private Action _onDownloadDataFinished;
       private PoiListViewAdapter _poiListAdapter;
       private List<PointOfInterest> _poiListData;
       private ProgressBar _poiProgressBar;
@@ -55,7 +60,8 @@ namespace PointOfViewApp
       public override void OnCreate(Bundle savedInstanceState)
       {
          base.OnCreate(savedInstanceState);
-         if (savedInstanceState != null) _scrollPosition = savedInstanceState.GetInt(PoiListScrollPositionBundleKey);
+         if (savedInstanceState != null)
+            _scrollPosition = savedInstanceState.GetInt(PoiListScrollPositionBundleKey);
       }
 
       public override View OnCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -64,7 +70,7 @@ namespace PointOfViewApp
          _poiProgressBar = view.FindViewById<ProgressBar>(IdRes.progressBar);
          HasOptionsMenu = true;
          _locationManager = (LocationManager) Activity.GetSystemService(Context.LocationService);
-         _locationListener = new LocationListenerImpl(this);
+         _locationListener = new LocationListenerImpl(this);         
 
          return view;
       }
@@ -78,29 +84,41 @@ namespace PointOfViewApp
       public override void OnResume()
       {
          base.OnResume();
-         DownloadPoiListAsync();
 
-         // Request Geo location permissions
-         foreach (var (requestCode, (permission, alertMessage)) in _LocationPermissionMap)
-            RequestPermission(permission, alertMessage, requestCode);
-
-         SetupLocationProvider();
-
-         void RequestPermission(string permission, string alertMessage, LocationRequestCode locationRequestCode)
+         _onDownloadDataFinished = () =>
          {
-            if (Context.CheckSelfPermission(permission) == Permission.Granted)
-               return;
+            // Google Play Services availability checking
+            var apiAvailability = GoogleApiAvailability.Instance;
+            var errorCode = apiAvailability.IsGooglePlayServicesAvailable(Context);
+            if (errorCode != ConnectionResult.Success)
+            {
+               IDialogInterfaceOnCancelListener cancelHandler = new CancelHandlerImpl(Activity);
+               var errorDialog = apiAvailability.GetErrorDialog(Activity, errorCode, RequestError, cancelHandler);
+               errorDialog.Show();
+            }
 
-            if (ShouldShowRequestPermissionRationale(permission))
-               new AlertDialog.Builder(Activity)
-                  .SetMessage(alertMessage)
-                  .SetPositiveButton(Android.Resource.String.Ok,
-                     (sender, args) => RequestPermissions(new[] {permission}, (int) locationRequestCode))
-                  .Create()
-                  .Show();
-            else
-               RequestPermissions(new[] {permission}, (int) locationRequestCode);
-         }
+            // Request Geo location permissions
+            foreach (var (requestCode, (permission, alertMessage)) in _LocationPermissionMap)
+               RequestPermission(permission, alertMessage, requestCode);
+
+            SetupLocationProvider();
+         };
+
+         DownloadPoiListAsync(_onDownloadDataFinished);
+      }
+
+      private void RequestPermission(string permission, string alertMessage, LocationRequestCode locationRequestCode)
+      {
+         if (Context.CheckSelfPermission(permission) == Permission.Granted) return;
+
+         if (ShouldShowRequestPermissionRationale(permission))
+            new AlertDialog.Builder(Activity).SetMessage(alertMessage)
+               .SetPositiveButton(Android.Resource.String.Ok,
+                  (sender, args) => RequestPermissions(new[] {permission}, (int) locationRequestCode))
+               .Create()
+               .Show();
+         else
+            RequestPermissions(new[] {permission}, (int) locationRequestCode);
       }
 
       private void SetupLocationProvider()
@@ -160,7 +178,7 @@ namespace PointOfViewApp
                return true;
 
             case IdRes.actionRefresh:
-               DownloadPoiListAsync();
+               DownloadPoiListAsync(_onDownloadDataFinished);
                return true;
 
             default:
@@ -192,7 +210,7 @@ namespace PointOfViewApp
          outState.PutInt(PoiListScrollPositionBundleKey, currentPosition);
       }
 
-      private async void DownloadPoiListAsync()
+      private async void DownloadPoiListAsync(Action onDownloadDataFinished)
       {
          try
          {
@@ -215,8 +233,8 @@ namespace PointOfViewApp
                _poiListAdapter = new PoiListViewAdapter(_activity, _poiListData);
                ListAdapter = _poiListAdapter;
                ListView.Post(() =>
-                  ListView.SetSelection(
-                     _scrollPosition)); // Restore the selection on the scroll position               
+                  ListView.SetSelection(_scrollPosition)); // Restore the selection on the scroll position
+               onDownloadDataFinished?.Invoke();
             }
          }
          finally
@@ -258,6 +276,15 @@ namespace PointOfViewApp
          public void OnStatusChanged(string provider, Availability status, Bundle extras)
          {
          }
+      }
+
+      private sealed class CancelHandlerImpl : JavaObj, IDialogInterfaceOnCancelListener
+      {
+         private readonly Activity _activity;
+
+         public CancelHandlerImpl(Activity activity) => _activity = activity;
+
+         public void OnCancel(IDialogInterface dialog) => _activity.Finish(); // Выйти, если сервис недоступен
       }
    }
 }
