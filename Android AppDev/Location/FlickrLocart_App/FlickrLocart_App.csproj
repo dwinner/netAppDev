@@ -60,6 +60,7 @@
     <Compile Include="LocatrFragment.cs" />
     <Compile Include="Middleware\FlickrFetchr.cs" />
     <Compile Include="Model\GalleryItem.cs" />
+    <Compile Include="Model\GalleryItemExtensions.cs" />
     <Compile Include="Resources\Resource.designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
