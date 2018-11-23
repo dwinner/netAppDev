@@ -87,6 +87,7 @@ namespace PointOfViewApp.Services
          var response = await httpClient.DeleteAsync(deleteEndPoint).ConfigureAwait(false);
          if (response?.IsSuccessStatusCode == true)
          {
+            poiId.DeleteImage();
             var content = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
             return content;
          }

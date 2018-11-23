@@ -14,6 +14,14 @@
 		adr:layout_height="fill_parent"
 		adr:id="@+id/poiDetailLinearLayout"
 		adr:padding="5dp">
+		<ImageView
+            adr:src="@drawable/ic_placeholder"
+            adr:layout_width="wrap_content"
+            adr:layout_height="200dp"
+            adr:id="@+id/poiImageView"
+            adr:layout_gravity="center_horizontal"
+            adr:scaleType="centerCrop"
+            adr:layout_marginBottom="10dp" />
 		<TextView
 			adr:text="Name"
 			adr:layout_width="fill_parent"
@@ -91,6 +99,11 @@
                 adr:layout_width="wrap_content"
                 adr:layout_height="wrap_content"
                 adr:id="@+id/mapImageButton" />
+			<ImageButton
+                adr:src="@drawable/ic_new_picture"
+                adr:layout_width="wrap_content"
+                adr:layout_height="wrap_content"
+                adr:id="@+id/photoImageButton" />
         </LinearLayout>
 	</LinearLayout>
 </ScrollView>

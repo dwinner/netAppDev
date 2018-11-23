@@ -4,8 +4,10 @@ using Android.App;
 using Android.Content;
 using Android.Locations;
 using Android.OS;
+using Android.Provider;
 using Android.Views;
 using Android.Widget;
+using Java.IO;
 using Newtonsoft.Json;
 using PointOfViewApp.Orm;
 using PointOfViewApp.Poco;
@@ -27,6 +29,8 @@ namespace PointOfViewApp
    public class PoiDetailFragment : FragmentV4
    {
       private const string ProgressDialogTag = "progress_dialog";
+      private const int CapturePhoto = 100; // TODO: Had better use enum instead
+
       private Activity _activity;
       private EditText _addressEditText;
       private EditText _descriptionEditText;
@@ -38,6 +42,8 @@ namespace PointOfViewApp
       private EditText _longitudeEditText;
       private ImageButton _mapImageButton;
       private EditText _nameEditText;
+      private ImageButton _poiImageButton;
+      private ImageView _poiImageView;
 
       public override void OnCreate(Bundle savedInstanceState)
       {
@@ -81,12 +87,41 @@ namespace PointOfViewApp
          _locationImageButton.Click += OnGetLocation;
          _mapImageButton = view.FindViewById<ImageButton>(IdRes.mapImageButton);
          _mapImageButton.Click += OnGetMap;
+         _poiImageView = view.FindViewById<ImageView>(IdRes.poiImageView);
+         _poiImageButton = view.FindViewById<ImageButton>(IdRes.photoImageButton);
+         _poiImageButton.Click += OnNewPhoto;
 
          HasOptionsMenu = true;
          SetInterest();
          UpdateUi();
 
          return view;
+      }
+
+      private void OnNewPhoto(object sender, EventArgs e)
+      {
+         if (_interest.Id <= 0)
+         {
+            Toast.MakeText(_activity, "You must save the POI before attaching a photo.", ToastLength.Short).Show();
+            return;
+         }
+
+         var cameraIntent = new Intent(MediaStore.ActionImageCapture);
+         var packageManager = Activity.PackageManager;
+         var activities = packageManager.QueryIntentActivities(cameraIntent, 0);
+         if (activities.Count == 0)
+         {
+            Toast.MakeText(_activity, "No camera app available.", ToastLength.Short).Show();
+         }
+         else
+         {
+            var path = _interest.GetFileName();
+            var imageFile = new File(path);
+            var imageUri = Uri.FromFile(imageFile);   // BUG: In API >= 24
+            cameraIntent.PutExtra(MediaStore.ExtraOutput, imageUri);
+            cameraIntent.PutExtra(MediaStore.ExtraSizeLimit, 0x100000);
+            StartActivityForResult(cameraIntent, CapturePhoto);
+         }
       }
 
       private void OnGetMap(object sender, EventArgs e)
@@ -146,6 +181,30 @@ namespace PointOfViewApp
             var deleteItem = menu.FindItem(IdRes.actionDelete);
             deleteItem.SetEnabled(false);
             deleteItem.SetVisible(false);
+         }
+      }
+
+      public override void OnActivityResult(int requestCode, int resultCode, Intent data)
+      {
+         switch (requestCode)
+         {
+            case CapturePhoto:
+               if (resultCode == (int) Result.Ok)
+               {
+                  var bitmap = _interest.GetImage();
+                  _poiImageView.SetImageBitmap(bitmap);
+                  bitmap?.Dispose();
+               }
+               else
+               {
+                  Toast.MakeText(Activity, "No picture captured.", ToastLength.Short).Show();
+               }
+
+               break;
+
+            default:
+               base.OnActivityResult(requestCode, resultCode, data);
+               break;
          }
       }
 
