@@ -5,6 +5,7 @@ using Android.Content;
 using Android.Locations;
 using Android.OS;
 using Android.Provider;
+using Android.Support.V4.Content;
 using Android.Views;
 using Android.Widget;
 using Java.IO;
@@ -13,7 +14,7 @@ using PointOfViewApp.Orm;
 using PointOfViewApp.Poco;
 using PointOfViewApp.Services;
 using PointOfViewApp.Utils;
-using Environment = System.Environment;
+using Env = System.Environment;
 using FragmentV4 = Android.Support.V4.App.Fragment;
 using ResLayout = PointOfViewApp.Resource.Layout;
 using IdRes = PointOfViewApp.Resource.Id;
@@ -30,6 +31,7 @@ namespace PointOfViewApp
    {
       private const string ProgressDialogTag = "progress_dialog";
       private const int CapturePhoto = 100; // TODO: Had better use enum instead
+      private const string ApplicationAuthority = "AppDevUnited.PoiApp.FileProvider";
 
       private Activity _activity;
       private EditText _addressEditText;
@@ -48,7 +50,6 @@ namespace PointOfViewApp
       public override void OnCreate(Bundle savedInstanceState)
       {
          base.OnCreate(savedInstanceState);
-
          _locationManager = (LocationManager) Activity.GetSystemService(Context.LocationService);
          _locationListener = new LocationListenerImpl(this);
          SetInterest();
@@ -117,8 +118,8 @@ namespace PointOfViewApp
          {
             var path = _interest.GetFileName();
             var imageFile = new File(path);
-            var imageUri = Uri.FromFile(imageFile);   // BUG: In API >= 24
-            cameraIntent.PutExtra(MediaStore.ExtraOutput, imageUri);
+            var photoUri = FileProvider.GetUriForFile(Context, ApplicationAuthority, imageFile);
+            cameraIntent.PutExtra(MediaStore.ExtraOutput, photoUri);
             cameraIntent.PutExtra(MediaStore.ExtraSizeLimit, 0x100000);
             StartActivityForResult(cameraIntent, CapturePhoto);
          }
@@ -398,7 +399,7 @@ namespace PointOfViewApp
                for (var addrLineIdx = 0; addrLineIdx < address.MaxAddressLineIndex; addrLineIdx++)
                {
                   if (!string.IsNullOrEmpty(_fragment._addressEditText.Text))
-                     _fragment._addressEditText.Text += Environment.NewLine;
+                     _fragment._addressEditText.Text += Env.NewLine;
 
                   _fragment._addressEditText.Text += address.GetAddressLine(addrLineIdx);
                }
