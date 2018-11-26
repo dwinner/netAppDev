@@ -31,7 +31,7 @@ namespace PointOfViewApp
    {
       private const string ProgressDialogTag = "progress_dialog";
       private const int CapturePhoto = 100; // TODO: Had better use enum instead
-      private const string ApplicationAuthority = "AppDevUnited.PoiApp.FileProvider";
+      private const string ApplicationAuthority = PointOfInterestExtensions.Authorities;
 
       private Activity _activity;
       private EditText _addressEditText;
