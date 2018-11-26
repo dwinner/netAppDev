@@ -12,7 +12,7 @@
 			android:name="android.support.v4.content.FileProvider"
 			android:authorities="AppDevUnited.PoiApp.FileProvider"
 			android:exported="false"
-			android:grantUriPermissions="true">
+			android:grantUriPermissions="true"><!-- Or LegacyCompatFileProvider -->
 			<meta-data
 				android:name="android.support.FILE_PROVIDER_PATHS"
 				android:resource="@xml/file_paths">

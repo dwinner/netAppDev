@@ -8,17 +8,16 @@ namespace PointOfViewApp.Poco
 {
    public static class PointOfInterestExtensions
    {
-      private const string AppName = "POIApp";
+      internal const string Authorities = "AppDevUnited.PoiApp.FileProvider";
+      private const string AppSpecificRoot = "poi_images";
       private const string ImageNamePrefix = "poiimage";
-      private const string PrivateAppPrefix = "poi_images";
 
       public static string GetFileName(this PointOfInterest interest) => interest.Id.GetFileName();
 
       public static string GetFileName(this int poiId)
       {
-         var storagePath = Path.Combine(Environment.ExternalStorageDirectory.Path, AppName);
-         var path = Path.Combine(storagePath,
-            $"{PrivateAppPrefix}{Path.DirectorySeparatorChar}{ImageNamePrefix}{poiId}.jpg");
+         var rootStoragePath = Path.Combine(Environment.ExternalStorageDirectory.Path, Authorities, AppSpecificRoot);
+         var path = Path.Combine(rootStoragePath, $"{ImageNamePrefix}{poiId}.jpg");
          return path;
       }
 
