@@ -106,7 +106,7 @@ namespace PointOfViewApp
             Toast.MakeText(_activity, "You must save the POI before attaching a photo.", ToastLength.Short).Show();
             return;
          }
-
+         
          var cameraIntent = new Intent(MediaStore.ActionImageCapture);
          var packageManager = Activity.PackageManager;
          var activities = packageManager.QueryIntentActivities(cameraIntent, 0);
