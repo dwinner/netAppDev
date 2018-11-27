@@ -31,7 +31,7 @@ namespace PointOfViewApp
       private const int RequestError = 0;
 
       private static readonly Dictionary<LocationRequestCode, (string permission, string alertMessage)>
-         _LocationPermissionMap = new Dictionary<LocationRequestCode, (string permission, string alertMessage)>
+         _locationPermissionMap = new Dictionary<LocationRequestCode, (string permission, string alertMessage)>
          {
             {
                LocationRequestCode.CoarseLocation,
@@ -61,7 +61,9 @@ namespace PointOfViewApp
       {
          base.OnCreate(savedInstanceState);
          if (savedInstanceState != null)
+         {
             _scrollPosition = savedInstanceState.GetInt(PoiListScrollPositionBundleKey);
+         }
       }
 
       public override View OnCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -70,7 +72,7 @@ namespace PointOfViewApp
          _poiProgressBar = view.FindViewById<ProgressBar>(IdRes.progressBar);
          HasOptionsMenu = true;
          _locationManager = (LocationManager) Activity.GetSystemService(Context.LocationService);
-         _locationListener = new LocationListenerImpl(this);         
+         _locationListener = new LocationListenerImpl(this);
 
          return view;
       }
@@ -98,7 +100,7 @@ namespace PointOfViewApp
             }
 
             // Request Geo location permissions
-            foreach (var (requestCode, (permission, alertMessage)) in _LocationPermissionMap)
+            foreach (var (requestCode, (permission, alertMessage)) in _locationPermissionMap)
                RequestPermission(permission, alertMessage, requestCode);
 
             SetupLocationProvider();
@@ -109,16 +111,23 @@ namespace PointOfViewApp
 
       private void RequestPermission(string permission, string alertMessage, LocationRequestCode locationRequestCode)
       {
-         if (Context.CheckSelfPermission(permission) == Permission.Granted) return;
+         if (Context.CheckSelfPermission(permission) == Permission.Granted)
+         {
+            return;
+         }
 
          if (ShouldShowRequestPermissionRationale(permission))
+         {
             new AlertDialog.Builder(Activity).SetMessage(alertMessage)
                .SetPositiveButton(Android.Resource.String.Ok,
                   (sender, args) => RequestPermissions(new[] {permission}, (int) locationRequestCode))
                .Create()
                .Show();
+         }
          else
+         {
             RequestPermissions(new[] {permission}, (int) locationRequestCode);
+         }
       }
 
       private void SetupLocationProvider()
@@ -141,7 +150,10 @@ namespace PointOfViewApp
             case (int) LocationRequestCode.FineLocation:
             {
                if (grantResults.Length > 0 && grantResults[0] == Permission.Granted)
+               {
                   SetupLocationProvider();
+               }
+
                break;
             }
          }

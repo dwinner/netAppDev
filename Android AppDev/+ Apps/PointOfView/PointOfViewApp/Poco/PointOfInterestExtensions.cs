@@ -1,31 +1,21 @@
 ﻿using System.IO;
 using Android.Graphics;
 using Android.OS;
+using Java.Text;
+using Java.Util;
 using JFile = Java.IO.File;
-using Path = System.IO.Path;
 
 namespace PointOfViewApp.Poco
 {
    public static class PointOfInterestExtensions
    {
       internal const string Authorities = "AppDevUnited.PoiApp.FileProvider";
-      private const string AppSpecificRoot = "poi_images";
-      private const string ImageNamePrefix = "poiimage";
-
-      public static string GetFileName(this PointOfInterest interest) => interest.Id.GetFileName();
-
-      public static string GetFileName(this int poiId)
-      {
-         var rootStoragePath = Path.Combine(Environment.ExternalStorageDirectory.Path, Authorities, AppSpecificRoot);
-         var path = Path.Combine(rootStoragePath, $"{ImageNamePrefix}{poiId}.jpg");
-         return path;
-      }
 
       public static Bitmap GetImage(this PointOfInterest interest) => interest.Id.GetImage();
 
-      public static Bitmap GetImage(this int poiId)
+      private static Bitmap GetImage(this int poiId)
       {
-         var fileName = poiId.GetFileName();
+         var fileName = poiId.GetPictureFile().AbsolutePath;
          if (File.Exists(fileName))
          {
             var imageFile = new JFile(fileName);
@@ -35,15 +25,23 @@ namespace PointOfViewApp.Poco
          return null;
       }
 
-      public static void DeleteImage(this PointOfInterest interest) => interest.Id.DeleteImage();
-
       public static void DeleteImage(this int poiId)
       {
-         var filePath = poiId.GetFileName();
+         var filePath = poiId.GetPictureFile().AbsolutePath;
          if (File.Exists(filePath))
          {
             File.Delete(filePath);
          }
+      }
+
+      public static JFile GetPictureFile(this int poiId)
+      {
+         var timeStamp = new SimpleDateFormat("yyyyMMddHHmmss").Format(new Date());
+         var pictureFile = $"ZOFTINO_{timeStamp}{poiId}";
+         var storageDir = Environment.GetExternalStoragePublicDirectory(Environment.DirectoryPictures);
+         var image = JFile.CreateTempFile(pictureFile, ".jpg", storageDir);
+
+         return image;
       }
    }
 }

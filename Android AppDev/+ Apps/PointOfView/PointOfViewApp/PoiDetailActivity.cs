@@ -1,5 +1,4 @@
 ﻿using Android.App;
-using Android.Content;
 using Android.OS;
 using Android.Support.V7.App;
 using PointOfViewApp.Utils;
@@ -27,11 +26,6 @@ namespace PointOfViewApp
          var fragmentTransaction = SupportFragmentManager.BeginTransaction();
          fragmentTransaction.Add(IdRes.poiDetailLayout, detailFragment);
          fragmentTransaction.Commit();
-      }
-
-      protected override void OnActivityResult(int requestCode, Result resultCode, Intent data)
-      {
-         base.OnActivityResult(requestCode, resultCode, data);
       }
    }
 }

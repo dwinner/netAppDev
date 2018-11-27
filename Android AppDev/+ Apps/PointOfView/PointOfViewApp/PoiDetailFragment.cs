@@ -108,20 +108,28 @@ namespace PointOfViewApp
          }
 
          var cameraIntent = new Intent(MediaStore.ActionImageCapture);
-         var packageManager = Activity.PackageManager;
-         var activities = packageManager.QueryIntentActivities(cameraIntent, 0);
-         if (activities.Count == 0)
+         if (cameraIntent.ResolveActivity(Activity.PackageManager) != null)
          {
-            Toast.MakeText(_activity, "No camera app available.", ToastLength.Short).Show();
-         }
-         else
-         {
-            var path = _interest.GetFileName();
-            var imageFile = new File(path);
-            var photoUri = FileProvider.GetUriForFile(Context, ApplicationAuthority, imageFile);
-            cameraIntent.PutExtra(MediaStore.ExtraOutput, photoUri);
-            cameraIntent.PutExtra(MediaStore.ExtraSizeLimit, 0x100000);
             StartActivityForResult(cameraIntent, CapturePhoto);
+
+            File pictureFile;
+            try
+            {
+               pictureFile = _interest.Id.GetPictureFile();
+            }
+            catch (IOException)
+            {
+               Toast.MakeText(Context, "Photo file cannot be created, please try again", ToastLength.Long).Show();
+               return;
+            }
+
+            if (pictureFile != null)
+            {
+               var photoUri = FileProvider.GetUriForFile(Context, ApplicationAuthority, pictureFile);
+               cameraIntent.PutExtra(MediaStore.ExtraOutput, photoUri);
+               cameraIntent.PutExtra(MediaStore.ExtraSizeLimit, 0x100000);
+               StartActivityForResult(cameraIntent, CapturePhoto);
+            }
          }
       }
 
@@ -136,9 +144,13 @@ namespace PointOfViewApp
          var packageManager = Activity.PackageManager;
          var activities = packageManager.QueryIntentActivities(mapIntent, 0);
          if (activities.Count == 0)
+         {
             Toast.MakeText(_activity, "No map app available", ToastLength.Short).Show();
+         }
          else
+         {
             StartActivity(mapIntent);
+         }
       }
 
       private void OnGetLocation(object sender, EventArgs e)
@@ -237,7 +249,9 @@ namespace PointOfViewApp
             toast.Show();
             SqLiteDbManager.Instance.Delete(_interest.Id);
             if (!PoiListActivity.IsDualMode)
+            {
                _activity.Finish();
+            }
          }
          else
          {
@@ -261,6 +275,7 @@ namespace PointOfViewApp
 
          double? tempLatitude = null;
          if (!string.IsNullOrEmpty(_latitudeEditText.Text))
+         {
             try
             {
                tempLatitude = double.Parse(_latitudeEditText.Text);
@@ -279,9 +294,11 @@ namespace PointOfViewApp
                _latitudeEditText.Error = "Latitude must be valid decimal number";
                errors = true;
             }
+         }
 
          double? tempLongitude = null;
          if (!string.IsNullOrEmpty(_longitudeEditText.Text))
+         {
             try
             {
                tempLongitude = double.Parse(_longitudeEditText.Text);
@@ -300,8 +317,12 @@ namespace PointOfViewApp
                _longitudeEditText.Error = "Longitude must be valid decimal number";
                errors = true;
             }
+         }
 
-         if (errors) return;
+         if (errors)
+         {
+            return;
+         }
 
          _interest.Name = _nameEditText.Text;
          _interest.Description = _descriptionEditText.Text;
@@ -331,7 +352,9 @@ namespace PointOfViewApp
             toast.Show();
             SqLiteDbManager.Instance.Save(_interest);
             if (!PoiListActivity.IsDualMode)
+            {
                _activity.Finish();
+            }
          }
          else
          {
@@ -367,7 +390,9 @@ namespace PointOfViewApp
             var dialogFragment =
                (ProgressDialogFragment) _fragment.FragmentManager.FindFragmentByTag(ProgressDialogTag);
             if (dialogFragment != null)
+            {
                transaction.Remove(dialogFragment).Commit();
+            }
 
             _fragment._latitudeEditText.Text = location.Latitude.ToString(CultureInfo.CurrentCulture);
             _fragment._longitudeEditText.Text = location.Longitude.ToString(CultureInfo.CurrentCulture);
@@ -375,7 +400,9 @@ namespace PointOfViewApp
             var geocoder = new Geocoder(_fragment._activity);
             var addresses = geocoder.GetFromLocation(location.Latitude, location.Longitude, 5);
             if (addresses.Count > 0)
+            {
                UpdateAddressFields(addresses[0]);
+            }
          }
 
          public void OnProviderDisabled(string provider)
@@ -393,16 +420,22 @@ namespace PointOfViewApp
          private void UpdateAddressFields(Address address)
          {
             if (string.IsNullOrEmpty(_fragment._nameEditText.Text))
+            {
                _fragment._nameEditText.Text = address.FeatureName;
+            }
 
             if (string.IsNullOrEmpty(_fragment._addressEditText.Text))
+            {
                for (var addrLineIdx = 0; addrLineIdx < address.MaxAddressLineIndex; addrLineIdx++)
                {
                   if (!string.IsNullOrEmpty(_fragment._addressEditText.Text))
+                  {
                      _fragment._addressEditText.Text += Env.NewLine;
+                  }
 
                   _fragment._addressEditText.Text += address.GetAddressLine(addrLineIdx);
                }
+            }
          }
       }
    }

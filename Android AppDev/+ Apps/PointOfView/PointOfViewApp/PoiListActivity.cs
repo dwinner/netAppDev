@@ -1,5 +1,4 @@
 ﻿using Android.App;
-using Android.Content;
 using Android.OS;
 using Android.Support.V7.App;
 using Android.Views;
@@ -28,11 +27,6 @@ namespace PointOfViewApp
          IsDualMode = detailLayout?.Visibility == ViewStates.Visible;
 
          SqLiteDbManager.Instance.CreateTable();
-      }
-
-      protected override void OnActivityResult(int requestCode, Result resultCode, Intent data)
-      {
-         base.OnActivityResult(requestCode, resultCode, data);
       }
    }
 }
