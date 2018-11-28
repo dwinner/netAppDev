@@ -31,7 +31,7 @@ namespace PointOfViewApp
       private const int RequestError = 0;
 
       private static readonly Dictionary<LocationRequestCode, (string permission, string alertMessage)>
-         _locationPermissionMap = new Dictionary<LocationRequestCode, (string permission, string alertMessage)>
+         _LocationPermissionMap = new Dictionary<LocationRequestCode, (string permission, string alertMessage)>
          {
             {
                LocationRequestCode.CoarseLocation,
@@ -100,7 +100,7 @@ namespace PointOfViewApp
             }
 
             // Request Geo location permissions
-            foreach (var (requestCode, (permission, alertMessage)) in _locationPermissionMap)
+            foreach (var (requestCode, (permission, alertMessage)) in _LocationPermissionMap)
                RequestPermission(permission, alertMessage, requestCode);
 
             SetupLocationProvider();
