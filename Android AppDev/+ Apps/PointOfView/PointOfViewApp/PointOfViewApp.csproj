@@ -65,7 +65,6 @@
     <Compile Include="Misc\LegacyCompatFileProvider.cs" />
     <Compile Include="Orm\SqLiteDbManager.cs" />
     <Compile Include="Poco\PointOfInterest.cs" />
-    <Compile Include="Poco\PointOfInterestExtensions.cs" />
     <Compile Include="PoiDetailActivity.cs" />
     <Compile Include="PoiDetailFragment.cs" />
     <Compile Include="PoiListActivity.cs" />
