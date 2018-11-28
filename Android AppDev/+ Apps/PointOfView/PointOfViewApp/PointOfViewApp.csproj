@@ -64,7 +64,6 @@
     <Compile Include="DeleteDialogFragment.cs" />
     <Compile Include="Orm\SqLiteDbManager.cs" />
     <Compile Include="Poco\PointOfInterest.cs" />
-    <Compile Include="Poco\PointOfInterestExtensions.cs" />
     <Compile Include="PoiDetailActivity.cs" />
     <Compile Include="PoiDetailFragment.cs" />
     <Compile Include="PoiListActivity.cs" />
@@ -77,7 +76,9 @@
     <Compile Include="Utils\IntentKeys.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Properties\AndroidManifest.xml" />
+    <None Include="Properties\AndroidManifest.xml">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\layout\PoiList.axml">

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -44,7 +45,10 @@ namespace PointOfViewApp.Services
             var jsonResponse = JObject.Parse(content);
             var results = jsonResponse[PoiJsonArrayName].ToList();
             if (_poiList.Count > 0)
+            {
                _poiList.Clear();
+            }
+
             results.ForEach(token => _poiList.Add(token.ToObject<PointOfInterest>()));
 
             return _poiList;
@@ -79,15 +83,20 @@ namespace PointOfViewApp.Services
       ///    Delete Point of interest object
       /// </summary>
       /// <param name="poiId">POI-id</param>
+      /// <param name="photoPath">Photo path</param>
       /// <returns>Updated content Or null, if nothing's been changed</returns>
-      public async Task<string> DeletePoiAsync(int poiId)
+      public async Task<string> DeletePoiAsync(int poiId, string photoPath)
       {
          var httpClient = new HttpClient();
          var deleteEndPoint = string.Format(DeletePoi, poiId);
          var response = await httpClient.DeleteAsync(deleteEndPoint).ConfigureAwait(false);
          if (response?.IsSuccessStatusCode == true)
          {
-            poiId.DeleteImage();
+            if (File.Exists(photoPath))
+            {
+               File.Delete(photoPath);
+            }
+
             var content = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
             return content;
          }
