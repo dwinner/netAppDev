@@ -114,7 +114,7 @@ namespace PointOfViewApp
             Toast.MakeText(_activity, "You must save the POI before attaching a photo.", ToastLength.Short).Show();
             return;
          }
-         
+
          var cameraIntent = new Intent(MediaStore.ActionImageCapture);
          if (cameraIntent.ResolveActivity(Activity.PackageManager) != null)
          {
@@ -354,7 +354,6 @@ namespace PointOfViewApp
 
       private async void CreateOrUpdatePoiAsync()
       {
-         var service = new PoiService();
          if (!ConnectionUtils.IsConnected(_activity))
          {
             var toast = Toast.MakeText(_activity,
@@ -364,7 +363,22 @@ namespace PointOfViewApp
             return;
          }
 
-         var response = await service.CreateOrUpdateAsync(_interest).ConfigureAwait(false);
+         var service = new PoiService();
+         Bitmap bitmap = null;
+         if (_interest.Id > 0)
+         {
+            var imageFile = new JFile(_currentPhotoPath);
+            using (var decodeFile = await BitmapFactory.DecodeFileAsync(imageFile.Path).ConfigureAwait(false))
+            {
+               bitmap = decodeFile;
+            }
+         }
+
+         var response = bitmap != null
+            ? await service.CreateOrUpdateAsync(_interest, bitmap).ConfigureAwait(false)
+            : await service.CreateOrUpdateAsync(_interest).ConfigureAwait(false);
+         bitmap?.Dispose();
+
          if (!string.IsNullOrEmpty(response))
          {
             var toast = Toast.MakeText(_activity, $"{_interest.Name} saved.", ToastLength.Short);

@@ -5,6 +5,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
+using Android.Graphics;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
@@ -25,6 +26,9 @@ namespace PointOfViewApp.Services
 
       private const string DeletePoi =
          "http://private-e451d-poilist.apiary-mock.com/com.packt.poiapp/api/poi/delete/{0}";
+
+      private const string UploadPoi =
+         "http://YOUR_IP:8080/com.packt.poiapp/api/poi/upload";
 
       private const string PoiJsonArrayName = "pois";
       private readonly List<PointOfInterest> _poiList = new List<PointOfInterest>();
@@ -73,6 +77,45 @@ namespace PointOfViewApp.Services
          if (response?.IsSuccessStatusCode == true)
          {
             var content = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+            return content;
+         }
+
+         return null;
+      }
+
+      public async Task<string> CreateOrUpdateAsync(PointOfInterest interest, Bitmap bitmap)
+      {
+         var settings = new JsonSerializerSettings {ContractResolver = new PoiContractResolver()};
+         var poiJson = JsonConvert.SerializeObject(interest, Formatting.None, settings);
+         var stringContent = new StringContent(poiJson);
+
+         // Convert the bitmap image to a byte array
+         byte[] bitmapData;
+         using (var stream = new MemoryStream())
+         {
+            await bitmap.CompressAsync(Bitmap.CompressFormat.Jpeg, 0, stream).ConfigureAwait(false);
+            bitmapData = stream.ToArray();
+         }
+
+         // Configure the headers
+         var fileContent = new ByteArrayContent(bitmapData);
+         fileContent.Headers.ContentType = MediaTypeHeaderValue.Parse("application/octet-stream");
+         fileContent.Headers.ContentDisposition = new ContentDispositionHeaderValue("form-data")
+         {
+            Name = "file",
+            FileName = $"poiimage{interest.Id}.jpg"
+         };
+         const string boundary = "---8d0f01e6b3b5daf";
+         var multipartContent = new MultipartFormDataContent(boundary)
+         {
+            fileContent, {stringContent, "poi"}
+         };
+
+         var httpClient = new HttpClient();
+         var response = await httpClient.PostAsync(UploadPoi, multipartContent).ConfigureAwait(true);
+         if (response?.IsSuccessStatusCode == true)
+         {
+            var content = await response.Content.ReadAsStringAsync().ConfigureAwait(true);
             return content;
          }
 
