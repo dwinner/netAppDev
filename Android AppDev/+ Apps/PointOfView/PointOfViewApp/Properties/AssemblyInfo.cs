@@ -1,5 +1,17 @@
 ﻿using System.Reflection;
 using System.Runtime.InteropServices;
+using Android.App;
+
+/**
+ * TODO: You must use java keytool for generating keystore file:
+ * keytool -genkey -v -keystore poi_app.keystore -alias android -validity 10000 -storetype pkcs12
+ */
+
+#if RELEASE
+[assembly: Application(Debuggable = false)]
+#else
+   [assembly: Application(Debuggable = true)]
+#endif
 
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
