@@ -27,7 +27,7 @@
     <AndroidSigningKeyStore>D:\GIT\AppDev.NET\Android AppDev\+ Apps\PointOfView\poi_app.keystore</AndroidSigningKeyStore>
     <AndroidSigningStorePass>bboytronik1985</AndroidSigningStorePass>
     <AndroidSigningKeyAlias>bboytronik1985</AndroidSigningKeyAlias>
-    <AndroidSigningKeyPass>bboytronik1985_INGATE2009</AndroidSigningKeyPass>
+    <AndroidSigningKeyPass>bboytronik1985</AndroidSigningKeyPass>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>True</DebugSymbols>
@@ -51,12 +51,13 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <AndroidManagedSymbols>true</AndroidManagedSymbols>
-    <AndroidUseSharedRuntime>False</AndroidUseSharedRuntime>
+    <AndroidUseSharedRuntime>false</AndroidUseSharedRuntime>
     <AndroidLinkMode>Full</AndroidLinkMode>
-    <EmbedAssembliesIntoApk>True</EmbedAssembliesIntoApk>
+    <EmbedAssembliesIntoApk>true</EmbedAssembliesIntoApk>
     <AndroidSupportedAbis />
     <AndroidEnableMultiDex>true</AndroidEnableMultiDex>
     <EnableProguard>false</EnableProguard>
+    <JavaMaximumHeapSize>1G</JavaMaximumHeapSize>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
