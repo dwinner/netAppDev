@@ -3,14 +3,14 @@ using System.Runtime.InteropServices;
 using Android.App;
 
 /**
- * TODO: You must use java keytool for generating keystore file:
+ * TODO: You might use java keytool for generating keystore file:
  * keytool -genkey -v -keystore poi_app.keystore -alias android -validity 10000 -storetype pkcs12
  */
 
 #if RELEASE
-[assembly: Application(Debuggable = false)]
+[assembly: Application(Debuggable = false /*, Icon = "@mipmap/ic_launcher"*/)]
 #else
-   [assembly: Application(Debuggable = true)]
+   [assembly: Application(Debuggable = true/*, Icon = "@mipmap/ic_launcher"*/)]
 #endif
 
 // General Information about an assembly is controlled through the following 
