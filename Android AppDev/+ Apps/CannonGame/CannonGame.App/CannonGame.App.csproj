@@ -10,8 +10,8 @@
     <TemplateGuid>{84dd83c5-0fe3-4294-9419-09e7c8ba324f}</TemplateGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>CannonGame.App</RootNamespace>
-    <AssemblyName>CannonGame.App</AssemblyName>
+    <RootNamespace>AppDevUnited.CannonGame.App</RootNamespace>
+    <AssemblyName>AppDevUnited.CannonGame.App</AssemblyName>
     <FileAlignment>512</FileAlignment>
     <AndroidApplication>True</AndroidApplication>
     <AndroidResgenFile>Resources\Resource.Designer.cs</AndroidResgenFile>
@@ -56,7 +56,10 @@
     <Reference Include="Mono.Android" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Based\GameElement.cs" />
+    <Compile Include="CannonView.cs" />
     <Compile Include="MainActivity.cs" />
+    <Compile Include="MainActivityFragment.cs" />
     <Compile Include="Resources\Resource.Designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

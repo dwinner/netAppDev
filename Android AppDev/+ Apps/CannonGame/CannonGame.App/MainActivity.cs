@@ -2,20 +2,23 @@
 using Android.Content.PM;
 using Android.OS;
 using Android.Support.V7.App;
+using Android.Views;
+using ResLayout = AppDevUnited.CannonGame.App.Resource.Layout;
 
-namespace CannonGame.App
+namespace AppDevUnited.CannonGame.App
 {
    [Activity(
       Label = "@string/app_name",
       Theme = "@style/AppTheme.NoActionBar",
       MainLauncher = true,
-      ScreenOrientation = ScreenOrientation.Landscape)]
+      ScreenOrientation = ScreenOrientation.Landscape,
+      WindowSoftInputMode = SoftInput.StateAlwaysVisible)]
    public class MainActivity : AppCompatActivity
    {
       protected override void OnCreate(Bundle savedInstanceState)
       {
          base.OnCreate(savedInstanceState);
-         SetContentView(Resource.Layout.ActivityMain);
+         SetContentView(ResLayout.ActivityMain);
       }
    }
 }
