@@ -60,12 +60,8 @@ namespace SatelliteMovingApp
          var controller = new LayoutAnimationController(spinIn) {Order = DelayOrder.Normal};
          var tableLayout = FindViewById<TableLayout>(Resource.Id.TableLayoutId);
          for (var i = 0; i < tableLayout.ChildCount; i++)
-         {
             if (tableLayout.GetChildAt(i) is TableRow rowView)
-            {
                rowView.LayoutAnimation = controller;
-            }            
-         }
       }
    }
 }

@@ -1,7 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Globalization;
-using System.IO;
-using System.Runtime.Serialization.Formatters.Binary;
 using Android.App;
 using Android.Content;
 using Android.OS;
@@ -10,8 +8,7 @@ using Android.Util;
 using Android.Views;
 using Android.Widget;
 using Java.Lang;
-using SatelliteMovingApp.Lib.Model;
-using SatelliteMovingApp.Lib.Utils;
+using SatelliteMovingApp.Code;
 using Exception = System.Exception;
 using Math = System.Math;
 
@@ -23,7 +20,6 @@ namespace SatelliteMovingApp
    [Activity(Label = "Settings")]
    public class SettingsScreenActivity : Activity
    {
-      internal const string SettingsFileName = "settings.xml";
       private const float MinimumDistanceBetween = 5F;
       private int _currentRecordId = -1;
       private List<Satellite> _motionParams;
@@ -59,7 +55,7 @@ namespace SatelliteMovingApp
          _motionParams = new List<Satellite>(0x40);
          _settingsTable = FindViewById<TableLayout>(Resource.Id.SatellitesInfoTableLayoutId);
          SetupHeaderRows();
-         RetrieveSettings(SettingsFileName);
+         RetrieveSettings();
          SetupAddButton();
          SetupDeleteButton();
          SetupSaveButton();
@@ -78,9 +74,8 @@ namespace SatelliteMovingApp
 
             // Сбор информации из текстовых полей ввода            
             for (var i = 0; i < _settingsTable.ChildCount; i++)
-            {            
-               var tableRow = _settingsTable.GetChildAt(i) as TableRow;
-               if (tableRow == null)
+            {
+               if (!(_settingsTable.GetChildAt(i) is TableRow tableRow))
                   continue;
 
                long currentTime = -1;
@@ -118,16 +113,18 @@ namespace SatelliteMovingApp
                         return;
                      }
                   }
-               }            
+               }
 
                _motionParams.Add(new Satellite(currentTime, currentDistance));
 
-            nextTableRow:
-               ;
+               nextTableRow: ;
             }
 
             if (VerifyDistances())
-               SaveSettings(SettingsFileName);
+            {
+               var serializer = new SatelliteJsonSerializer(this);
+               serializer.Save(_motionParams);
+            }
 
             StartActivity(new Intent(this, typeof(StartScreenActivity)));
          };
@@ -142,9 +139,7 @@ namespace SatelliteMovingApp
          deleteButton.Click += (sender, args) =>
          {
             if (_currentRecordId == -1)
-            {
                deleteButton.Enabled = false;
-            }
             else
             {
                _settingsTable.RemoveViewAt(_settingsTable.ChildCount - 1);
@@ -202,12 +197,12 @@ namespace SatelliteMovingApp
       /// <summary>
       ///    Получение текущих установок для спутников
       /// </summary>
-      /// <param name="settingsFileName">Файл настроек</param>
-      private void RetrieveSettings(string settingsFileName)
+      private void RetrieveSettings()
       {
          try
          {
-            var satellites = SatelliteSettings.Impl.Read(settingsFileName);
+            var serializer = new SatelliteJsonSerializer(this);
+            var satellites = serializer.Read();
             if (satellites == null || satellites.Count == 0)
                return;
 
@@ -294,18 +289,6 @@ namespace SatelliteMovingApp
             }
 
             _settingsTable.AddView(headerRow);
-         }
-      }
-
-      private void SaveSettings(string settingsFileName)
-      {
-         try
-         {
-            SatelliteSettings.Impl.Write(settingsFileName, _motionParams);            
-         }
-         catch (IOException ioEx)
-         {
-            Log.Error(GetType().Name, ioEx.Message, ioEx);
          }
       }
 

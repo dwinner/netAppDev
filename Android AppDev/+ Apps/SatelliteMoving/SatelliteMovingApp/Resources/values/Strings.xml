@@ -6,7 +6,7 @@
     <string name="AppDesc">Modeling the movement of the satellites around the planet</string>
     <string name="SplashTopTitle">Satellites</string>
     <string name="SplashBottomTitle">Motion</string>
-    <string name="AppVersionInfo">Version 1.0\nCopyright © 2012 Vinevcev D.I.</string>
+    <string name="AppVersionInfo">Version 1.0\nCopyright © 2012 AppDev United</string>
     <string name="SatelliteImagesDesc">A satellite image</string>
     <string name="MainMenuTitle">Main Menu</string>
     <string name="EarthImageDesc">The Earth image</string>

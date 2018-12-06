@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Android.App;
 using Android.Content;
@@ -6,10 +7,8 @@ using Android.OS;
 using Android.Util;
 using Android.Views;
 using Android.Widget;
-using Java.Lang;
-using SatelliteMovingApp.Lib.Model;
-using SatelliteMovingApp.Lib.Utils;
-using static SatelliteMovingApp.Lib.Factory.ViewAnimationFactory;
+using SatelliteMovingApp.Code;
+using Exception = Java.Lang.Exception;
 
 namespace SatelliteMovingApp
 {
@@ -24,11 +23,13 @@ namespace SatelliteMovingApp
       public override bool OnCreateOptionsMenu(IMenu menu)
       {
          base.OnCreateOptionsMenu(menu);
-
          MenuInflater.Inflate(Resource.Menu.NavigateOptions, menu);
-         menu.FindItem(Resource.Id.StartMenuItemId).SetIntent(new Intent(this, typeof(StartScreenActivity)));
-         menu.FindItem(Resource.Id.SettingsMenuItemId).SetIntent(new Intent(this, typeof(SettingsScreenActivity)));
-         menu.FindItem(Resource.Id.AboutMenuItemId).SetIntent(new Intent(this, typeof(AboutScreenActivity)));
+         menu.FindItem(Resource.Id.StartMenuItemId)
+            .SetIntent(new Intent(this, typeof(StartScreenActivity)));
+         menu.FindItem(Resource.Id.SettingsMenuItemId)
+            .SetIntent(new Intent(this, typeof(SettingsScreenActivity)));
+         menu.FindItem(Resource.Id.AboutMenuItemId)
+            .SetIntent(new Intent(this, typeof(AboutScreenActivity)));
 
          return true;
       }
@@ -43,8 +44,7 @@ namespace SatelliteMovingApp
       protected override void OnCreate(Bundle savedInstanceState)
       {
          base.OnCreate(savedInstanceState);
-
-         var satellites = RetrieveCurrentSettings(SettingsScreenActivity.SettingsFileName);
+         var satellites = RetrieveCurrentSettings();
          if (satellites.Count == 0)
          {
             SetContentView(Resource.Layout.StartScreen);
@@ -63,7 +63,7 @@ namespace SatelliteMovingApp
          for (var i = 1; i < satelliteCount; i++)
             _satelliteMap.Add(satellites[i - 1], views[i]);
 
-         ViewGroup orbitLayout = new OrbitLayout(_satelliteMap, this);
+         ViewGroup orbitLayout = new OrbitalLayout(_satelliteMap, this);
          orbitLayout.SetBackgroundResource(Resource.Drawable.background);
          SetContentView(orbitLayout);
          StartViewAnimation(_satelliteMap);
@@ -72,12 +72,10 @@ namespace SatelliteMovingApp
       protected override void OnPause()
       {
          base.OnPause();
-
          if (_satelliteMap == null || _satelliteMap.Count == 0)
             return;
 
-         var viewCollection = _satelliteMap.Values;
-         foreach (var view in viewCollection)
+         foreach (var view in _satelliteMap.Values)
             view.ClearAnimation();
       }
 
@@ -92,17 +90,14 @@ namespace SatelliteMovingApp
       ///    Старт анимаций представления
       /// </summary>
       /// <param name="satelliteMap">Карта параметров анимации и представлений</param>
-      private void StartViewAnimation(IDictionary<Satellite, View> satelliteMap)
+      private static void StartViewAnimation(IDictionary<Satellite, View> satelliteMap)
       {
          if (satelliteMap == null || satelliteMap.Count == 0)
             return;
 
-         foreach (var entryPair in satelliteMap.Skip(1))
-         {
-            var satellite = entryPair.Key;
-            var view = entryPair.Value;
-            view.StartAnimation(CreateOrbitalRotation(satellite.Distance, satellite.Angle, satellite.RoundingTime));
-         }
+         foreach (var (satellite, view) in satelliteMap.Skip(1))
+            view.StartAnimation(
+               ViewAnimationFactory.CreateOrbitalRotation(satellite.Distance, satellite.Angle, satellite.RoundingTime));
       }
 
       /// <summary>
@@ -130,17 +125,17 @@ namespace SatelliteMovingApp
       /// <summary>
       ///    Получение списка текущих параметров спутников
       /// </summary>
-      /// <param name="settingsFileName">Имя файла с текущими параметрами</param>
       /// <returns>Список объектов Satellite</returns>
-      private IList<Satellite> RetrieveCurrentSettings(string settingsFileName)
+      private IList<Satellite> RetrieveCurrentSettings()
       {
          try
          {
-            var satellites = SatelliteSettings.Impl.Read(settingsFileName);
+            var serializer = new SatelliteJsonSerializer(this);
+            var satellites = serializer.Read();
             if (satellites == null || satellites.Count == 0)
             {
-               var helpToast = Toast.MakeText(this, Resources.GetString(Resource.String.SatellitesHaveNot),
-                  ToastLength.Long);
+               var helpToast = Toast.MakeText(
+                  this, Resources.GetString(Resource.String.SatellitesHaveNot), ToastLength.Long);
                helpToast.SetGravity(GravityFlags.Center, 0, 0);
                helpToast.Show();
             }
@@ -156,11 +151,26 @@ namespace SatelliteMovingApp
 
       private sealed class SatelliteDistanceComparer : IComparer<Satellite>
       {
-         // ReSharper disable PossibleNullReferenceException
          public int Compare(Satellite x, Satellite y)
-            => Float.FloatToIntBits(x.Distance) - Float.FloatToIntBits(y.Distance);
+         {
+            if (x == null)
+               throw new ArgumentNullException(nameof(x));
+            if (y == null)
+               throw new ArgumentNullException(nameof(y));
 
-         // ReSharper restore PossibleNullReferenceException
+            if (Math.Abs(x.Distance - y.Distance) > float.Epsilon)
+               return x.Distance.GetHashCode() - y.Distance.GetHashCode();
+
+            if (x.RoundingTime - y.RoundingTime != 0)
+               return (int) (x.RoundingTime - y.RoundingTime);
+
+            if (Math.Abs(x.Angle - y.Angle) > float.Epsilon)
+               return x.Angle.GetHashCode() - y.Angle.GetHashCode();
+
+            return 0;   // BUG: this must be an ubnormal case
+
+            // NOTE: Java approach would be: return Float.FloatToIntBits(x.Distance) - Float.FloatToIntBits(y.Distance);
+         }
       }
    }
 }

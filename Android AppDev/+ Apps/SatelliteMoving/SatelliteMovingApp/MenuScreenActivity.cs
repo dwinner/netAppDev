@@ -16,16 +16,17 @@ namespace SatelliteMovingApp
       {
          base.OnCreate(savedInstanceState);
 
-         ListAdapter = new ArrayAdapter<string>(this, Resource.Layout.MainMenuItem, new[]
-         {
-            Resources.GetString(Resource.String.MenuItemStart),
-            Resources.GetString(Resource.String.MenuItemSettings),
-            Resources.GetString(Resource.String.MenuItemAbout)
-         });
+         ListAdapter = new ArrayAdapter<string>(this,
+            Resource.Layout.MainMenuItem,
+            new[]
+            {
+               Resources.GetString(Resource.String.MenuItemStart),
+               Resources.GetString(Resource.String.MenuItemSettings),
+               Resources.GetString(Resource.String.MenuItemAbout)
+            });
          ListView.ItemClick += (sender, args) =>
          {
-            var clickedTextView = args.View as TextView;
-            if (clickedTextView == null)
+            if (!(args.View is TextView clickedTextView))
                return;
 
             var text = clickedTextView.Text;
