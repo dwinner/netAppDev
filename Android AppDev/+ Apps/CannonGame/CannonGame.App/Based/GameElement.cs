@@ -2,37 +2,73 @@
 
 namespace AppDevUnited.CannonGame.App.Based
 {
-   public class GameElement
+   /// <summary>
+   ///    Прямоугольный игровой элемент
+   /// </summary>
+   public abstract class GameElement
    {
-      protected Paint _paint = new Paint();
-      protected internal Rect _shape;
-      private readonly int _soundId;
-      private float _velocityY;
-      protected CannonView _view;
+      private readonly int _soundId;   // Звук, связанный с GameElement
+      private float _velocityY;  // Вертикальная скорость GameElement
 
-      public GameElement(
-         CannonView view, Color color, int soundId, int x, int y, int width, int length, float velocityY)
+      /// <summary>
+      ///    Конструктор GameElement
+      /// </summary>
+      /// <param name="view">Представление логики игры</param>
+      /// <param name="color">Цвет</param>
+      /// <param name="soundId">Идентификатор звука</param>
+      /// <param name="x">Координата x левого верхнего элемента</param>
+      /// <param name="y">Координата y левого верхнего элемента</param>
+      /// <param name="width">Ширина GameElement</param>
+      /// <param name="height">Высота GameElement</param>
+      /// <param name="velocityY">Начальная вертикальная скорость GameElement</param>
+      protected GameElement(
+         CannonView view, Color color, int soundId, int x, int y, int width, int height, float velocityY)
       {
-         _view = view;
-         _paint.Color = color;
-         _shape = new Rect(x, y, x + width, y + length);
+         View = view;
+         Paint.Color = color;
+         Shape = new Rect(x, y, x + width, y + height); // Определение границ
          _soundId = soundId;
          _velocityY = velocityY;
       }
 
-      public virtual void Update(double interval)
-      {
-         _shape.Offset(0, (int) (_velocityY * interval));
+      /// <summary>
+      ///    Объект Paint для рисования
+      /// </summary>
+      protected Paint Paint { get; } = new Paint();
 
-         if (_shape.Top < 0 && _velocityY < 0
-             || _shape.Bottom > _view.Height && _velocityY > 0)
-         {
-            _velocityY *= -1;
-         }
+      /// <summary>
+      ///    Ограничивающий прямоугольник GameElement
+      /// </summary>
+      protected internal Rect Shape { get; }
+
+      /// <summary>
+      ///    Представление, содержащие GameElement
+      /// </summary>
+      protected CannonView View { get; }
+
+      /// <summary>
+      ///    Обновление позиции GameElement и проверка столкновений со стенами
+      /// </summary>
+      /// <param name="interval">Интервал перемещения по вертикали</param>
+      protected virtual void Update(double interval)
+      {
+         Shape.Offset(0, (int) (_velocityY * interval)); // Обновление вертикальной позиции
+
+         // Если GameElement сталкивается со стеной, изменить направление
+         if (Shape.Top < 0 && _velocityY < 0
+             || Shape.Bottom > View.Height && _velocityY > 0)
+            _velocityY *= -1; // Изменить скорость на противоположную
       }
 
-      public virtual void Draw(Canvas canvas) => canvas.DrawRect(_shape, _paint);
+      /// <summary>
+      ///    Прорисовка GameElement
+      /// </summary>
+      /// <param name="canvas">Объект Canvas</param>
+      public virtual void Draw(Canvas canvas) => canvas.DrawRect(Shape, Paint);
 
-      public void PlaySound() => _view.PlaySound(_soundId);
+      /// <summary>
+      ///    Воспроизведение звука, соответствующего типу GameElement
+      /// </summary>
+      public void PlaySound() => View.PlaySound(_soundId);
    }
 }
