@@ -15,28 +15,28 @@ namespace AppDevUnited.CannonGame.App.GameElements
          OnScreen = true;
       }
 
-      public int Radius => (_shape.Right - _shape.Left) / 2;
+      public int Radius => (Shape.Right - Shape.Left) / 2;
 
       public bool OnScreen { get; private set; }
 
-      public bool CollidesWith(GameElement element) => Rect.Intersects(_shape, element._shape) && _velocityX > 0;
+      public bool CollidesWith(GameElement element) => Rect.Intersects(Shape, element.Shape) && _velocityX > 0;
 
       public void ReverseVelocityX() => _velocityX *= -1;
 
-      public override void Update(double interval)
+      protected override void Update(double interval)
       {
          base.Update(interval);
-         _shape.Offset((int) (_velocityX * interval), 0);
+         Shape.Offset((int) (_velocityX * interval), 0);
 
-         if (_shape.Top < 0 || _shape.Left < 0
-                            || _shape.Bottom > _view.Height
-                            || _shape.Right > _view.Width)
+         if (Shape.Top < 0 || Shape.Left < 0
+                            || Shape.Bottom > View.Height
+                            || Shape.Right > View.Width)
          {
             OnScreen = false;
          }
       }
 
       public override void Draw(Canvas canvas) =>
-         canvas.DrawCircle(_shape.Left + Radius, _shape.Top + Radius, Radius, _paint);
+         canvas.DrawCircle(Shape.Left + Radius, Shape.Top + Radius, Radius, Paint);
    }
 }
