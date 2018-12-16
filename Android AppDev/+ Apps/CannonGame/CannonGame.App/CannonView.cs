@@ -7,6 +7,7 @@ namespace AppDevUnited.CannonGame.App
 {
    public class CannonView : SurfaceView
    {
+      // TODO: Эти элементы лучше сделать enum'ами
       public static int BlockerSoundId;
       public static int TargetSoundId;
 
