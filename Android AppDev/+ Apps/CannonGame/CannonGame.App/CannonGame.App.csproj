@@ -59,6 +59,7 @@
     <Compile Include="Based\GameElement.cs" />
     <Compile Include="CannonView.cs" />
     <Compile Include="GameElements\Blocker.cs" />
+    <Compile Include="GameElements\Cannon.cs" />
     <Compile Include="GameElements\CannonBall.cs" />
     <Compile Include="GameElements\Target.cs" />
     <Compile Include="MainActivity.cs" />

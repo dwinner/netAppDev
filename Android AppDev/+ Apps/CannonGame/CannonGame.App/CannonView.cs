@@ -10,11 +10,13 @@ namespace AppDevUnited.CannonGame.App
       // TODO: Эти элементы лучше сделать enum'ами
       public static int BlockerSoundId;
       public static int TargetSoundId;
+      public static int CannonBallSpeedPercent;
+      public static int CannonSoundId;
 
       public CannonView(Context context, IAttributeSet attrs)
          : base(context, attrs)
       {
-      }
+      }      
 
       public void StopGame()
       {
