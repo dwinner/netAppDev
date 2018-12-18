@@ -8,12 +8,12 @@ namespace AppDevUnited.CannonGame.App.GameElements
    /// </summary>
    public class Cannon
    {
-      private double _barrelAngle; // Угол наклона ствола
       private readonly Point _barrelEnd = new Point(); // Конечная точка ствола
       private readonly int _barrelLength; // Длина ствола
       private readonly int _baseRadius; // Радиус основания
       private readonly Paint _paint = new Paint(); // Объект Paint для рисования пушки
       private readonly CannonView _view; // Представление, в котором находится пушка
+      private double _barrelAngle; // Угол наклона ствола
 
       /// <summary>
       ///    Конструктор
@@ -63,8 +63,8 @@ namespace AppDevUnited.CannonGame.App.GameElements
          var radius = _view.Height * CannonView.CannonBallSpeedPercent;
 
          // Построение ядра и размещение его в стволе
-         CannonBall = new CannonBall(_view, Color.Black, CannonView.CannonSoundId, -radius, _view.Height / 2 - radius,
-            radius, velocityX, velocityY);
+         CannonBall = new CannonBall(_view, Color.Black, CannonView.CannonSoundId, (int) -radius,
+            (int) ((float) _view.Height / 2 - radius), (int) radius, velocityX, velocityY);
 
          CannonBall.PlaySound(); // Воспроизведение звука выстрела
       }
