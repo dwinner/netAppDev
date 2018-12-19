@@ -41,7 +41,7 @@ namespace AppDevUnited.CannonGame.App.GameElements
       ///    Задает направление ствола пушки
       /// </summary>
       /// <param name="barrelAngle">Угол наклона</param>
-      private void Align(double barrelAngle)
+      internal void Align(double barrelAngle)
       {
          _barrelAngle = barrelAngle;
          _barrelEnd.X = (int) (_barrelLength * Math.Sin(_barrelAngle));

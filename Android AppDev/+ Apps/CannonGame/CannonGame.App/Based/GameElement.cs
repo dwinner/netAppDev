@@ -50,7 +50,7 @@ namespace AppDevUnited.CannonGame.App.Based
       ///    Обновление позиции GameElement и проверка столкновений со стенами
       /// </summary>
       /// <param name="interval">Интервал перемещения по вертикали</param>
-      protected virtual void Update(double interval)
+      protected internal virtual void Update(double interval)
       {
          Shape.Offset(0, (int) (_velocityY * interval)); // Обновление вертикальной позиции
 

@@ -54,7 +54,7 @@ namespace AppDevUnited.CannonGame.App.GameElements
       public void ReverseVelocityX() => _velocityX *= -1;
 
       /// <inheritdoc />
-      protected override void Update(double interval)
+      protected internal override void Update(double interval)
       {
          base.Update(interval); // Обновление вертикальной позиции
 

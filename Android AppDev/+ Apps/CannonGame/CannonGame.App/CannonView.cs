@@ -4,13 +4,19 @@ using Android.App;
 using Android.Content;
 using Android.Graphics;
 using Android.Media;
+using Android.OS;
+using Android.Support.V7.App;
 using Android.Util;
 using Android.Views;
 using AppDevUnited.CannonGame.App.GameElements;
 using Java.Lang;
+using AlertDialog = Android.Support.V7.App.AlertDialog;
 using JavaObj = Java.Lang.Object;
 using RawRes = AppDevUnited.CannonGame.App.Resource.Raw;
 using ColorRes = AppDevUnited.CannonGame.App.Resource.Color;
+using DialogFragment = Android.Support.V4.App.DialogFragment;
+using Math = System.Math;
+using StringRes = AppDevUnited.CannonGame.App.Resource.String;
 
 namespace AppDevUnited.CannonGame.App
 {
@@ -58,7 +64,14 @@ namespace AppDevUnited.CannonGame.App
       public const int BlockerSoundId = 2;
       public const int TargetSoundId = 0;
       public const int CannonSoundId = 1;
-      private Activity _activity; // Для отображения окна в потоке GUI
+      private const string ResultsTag = "results";
+      private readonly SparseIntArray _soundMap; // Связь идентификаторов с SoundPool
+
+      private readonly SoundPool _soundPool; // Воспроизведение звуков
+
+      // Переменные Paint для рисования элементов на экране
+      private readonly Paint _textPaint; // Для вывода текста
+      private readonly AppCompatActivity _activity; // Для отображения окна в потоке GUI
       private Paint _backgroundPaint; // Для стирания области рисования
       private Blocker _blocker;
 
@@ -66,28 +79,22 @@ namespace AppDevUnited.CannonGame.App
       private Cannon _cannon;
 
       private CannonThread _cannonThread; // Управляет циклом игры
-      private bool _dialogIsDisplayed = false;
+      private bool _dialogIsDisplayed;
 
       // Переменные размеров
 
       // Переменные для игрового цикла и отслеживания состояния игры
       private bool _gameOver; // Игра закончена
       private int _shotsFired; // Кол-во сделанных выстрелов
-      private readonly SparseIntArray _soundMap; // Связь идентификаторов с SoundPool
-
-      private readonly SoundPool _soundPool; // Воспроизведение звуков
       private ISurfaceHolderCallback _surfaceHolderCallback;
       private List<Target> _targets;
-
-      // Переменные Paint для рисования элементов на экране
-      private readonly Paint _textPaint; // Для вывода текста
       private double _timeLeft; // Оставшееся время в секундах
       private double _totalElapsedTime; // Затраты времени в секундах
 
       public CannonView(Context context, IAttributeSet attrs)
          : base(context, attrs)
       {
-         _activity = (Activity) context; // Ссылка на MainActivity
+         _activity = (AppCompatActivity) context; // Ссылка на MainActivity
          Holder.AddCallback(new SurfaceHolderCallbackImpl(this)); // Регистрация слушателя         
 
          // Инициализация SoundPool для воспроизведения звука
@@ -216,6 +223,112 @@ namespace AppDevUnited.CannonGame.App
          throw new NotImplementedException();
       }
 
+      /// <summary>
+      ///    Многократно вызывается <see cref="CannonThread" /> для обновления элементов игры
+      /// </summary>
+      /// <param name="elapsedTimeMs">Частота обновления в мс</param>
+      private void UpdatePositions(double elapsedTimeMs)
+      {
+         var interval = elapsedTimeMs / 1000.0; // Преобразовать в секунды         
+         _cannon.CannonBall?.Update(interval); // Обновление позиции ядра
+         _blocker.Update(interval); // Обновление позиции блока
+         _targets.ForEach(target => target.Update(interval)); // Обновление позиции мишени
+         _timeLeft -= interval; // Уменьшение оставшегося времени
+
+         // Если счетчик достиг нуля
+         if (_timeLeft <= 0)
+         {
+            _timeLeft = 0.0;
+            _gameOver = true; // Игра закончена
+            _cannonThread.SetRunning(false); // Завершение потока
+            ShowGameOverDialog(StringRes.lose); // Сообщение о проигрыше
+         }
+
+         // Если все мишени поражены
+         if (_targets.Count == 0)
+         {
+            _cannonThread.SetRunning(false); // Завершение потока
+            ShowGameOverDialog(StringRes.win); // Сообщение о выигрыше
+            _gameOver = true;
+         }
+      }
+
+      /// <summary>
+      ///    Метод определяет угол наклона ствола и стреляет из пушки,
+      ///    если ядро не находится на экране
+      /// </summary>
+      /// <param name="motionEvent">Событие касания</param>
+      public void AlignAndFireCannonBall(MotionEvent motionEvent)
+      {
+         // Получение точки касания в этом представлении
+         var touchPoint = new Point((int) motionEvent.GetX(), (int) motionEvent.GetY());
+
+         // Вычисление расстояния точки касания от центра экрана по оси y
+         var centerMinusY = ScreenHeight / 2 - touchPoint.Y;
+         var angle = Math.Atan2(touchPoint.X, centerMinusY); // Вычислить угол ствола относительно горизонтали
+         _cannon.Align(angle); // Ствол наводится в точку касания
+
+         // Пушка стреляет, если ядро не находится на экране
+         if (_cannon.CannonBall == null || !_cannon.CannonBall.OnScreen)
+         {
+            _cannon.FireCannonBall();
+            ++_shotsFired;
+         }
+      }
+
+      /// <summary>
+      ///    Отображение окна AlertDialog при завершении игры
+      /// </summary>
+      /// <param name="stringResource">Строковый ресурс</param>
+      private void ShowGameOverDialog(int stringResource) // TODO: Лучше сразу передавать строку
+      {
+         DialogFragment gameResult = new GameOverDialogFragment(stringResource, this);
+
+         // В UI-потоке FragmentManager используется для вывода DialogFragment
+         _activity.RunOnUiThread(() =>
+         {
+            ShowSystemBars(); // Выход из режима погружения
+            _dialogIsDisplayed = true;
+            gameResult.Cancelable = false; // Модальное окно
+            gameResult.Show(_activity.SupportFragmentManager, ResultsTag);
+         });
+      }
+
+      private void ShowSystemBars()
+      {
+         throw new NotImplementedException();
+      }
+
+      /// <summary>
+      ///    DialogFragment для вывода статистики и начала новой игры
+      /// </summary>
+      private sealed class GameOverDialogFragment : DialogFragment
+      {
+         private readonly CannonView _cannonView;
+         private readonly int _messageId;
+
+         public GameOverDialogFragment(int messageId, CannonView cannonView)
+         {
+            _messageId = messageId;
+            _cannonView = cannonView;
+         }
+
+         public override Dialog OnCreateDialog(Bundle savedInstanceState) =>
+            new AlertDialog.Builder(_cannonView._activity)
+               .SetTitle(_cannonView._activity.Resources.GetString(_messageId))
+               // Вывод кол-ва выстрелов и затраченного времени
+               .SetMessage(
+                  _cannonView._activity.Resources.GetString(
+                     StringRes.results_format, _cannonView._shotsFired, _cannonView._totalElapsedTime))
+               .SetPositiveButton(StringRes.reset_game,
+                  (sender, args) =>
+                  {
+                     _cannonView._dialogIsDisplayed = false;
+                     _cannonView.NewGame(); // Создание и начало новой партии
+                  })
+               .Create();
+      }
+
       private sealed class SurfaceHolderCallbackImpl : JavaObj, ISurfaceHolderCallback
       {
          private readonly CannonView _cannonView;
@@ -241,6 +354,11 @@ namespace AppDevUnited.CannonGame.App
       private sealed class CannonThread : Thread
       {
          public CannonThread(ISurfaceHolder holder) => throw new NotImplementedException();
+
+         internal void SetRunning(bool isRunning)
+         {
+            throw new NotImplementedException();
+         }
       }
    }
 }
