@@ -10,6 +10,7 @@ using Android.Util;
 using Android.Views;
 using AppDevUnited.CannonGame.App.GameElements;
 using Java.Lang;
+using static Android.Views.SystemUiFlags;
 using AlertDialog = Android.Support.V7.App.AlertDialog;
 using JavaObj = Java.Lang.Object;
 using RawRes = AppDevUnited.CannonGame.App.Resource.Raw;
@@ -39,7 +40,6 @@ namespace AppDevUnited.CannonGame.App
       private const double CannonBarrelLengthPercent = 0.1D;
 
       // Константы для рисования ядра
-      private const double CannonballRadiusPercent = 0.0375D;
       internal const double CannonBallSpeedPercent = 1.5D;
 
       // Константы для рисования мишеней
@@ -65,28 +65,29 @@ namespace AppDevUnited.CannonGame.App
       public const int TargetSoundId = 0;
       public const int CannonSoundId = 1;
       private const string ResultsTag = "results";
+
+      private static readonly Func<bool> _MoreOrEqualThanKitKatFunc =
+         () => Build.VERSION.SdkInt >= BuildVersionCodes.Kitkat;
+
       private readonly AppCompatActivity _activity; // Для отображения окна в потоке GUI
+      private readonly Paint _backgroundPaint; // Для стирания области рисования
       private readonly SparseIntArray _soundMap; // Связь идентификаторов с SoundPool
 
       private readonly SoundPool _soundPool; // Воспроизведение звуков
 
       // Переменные Paint для рисования элементов на экране
       private readonly Paint _textPaint; // Для вывода текста
-      private readonly Paint _backgroundPaint; // Для стирания области рисования
       private Blocker _blocker;
 
       // Игровые объекты
       private Cannon _cannon;
 
       private CannonThread _cannonThread; // Управляет циклом игры
-      private bool _dialogIsDisplayed;
-
-      // Переменные размеров
+      private bool _dialogIsDisplayed;      
 
       // Переменные для игрового цикла и отслеживания состояния игры
       private bool _gameOver; // Игра закончена
       private int _shotsFired; // Кол-во сделанных выстрелов
-      private ISurfaceHolderCallback _surfaceHolderCallback;
       private List<Target> _targets;
       private double _timeLeft; // Оставшееся время в секундах
       private double _totalElapsedTime; // Затраты времени в секундах
@@ -122,12 +123,12 @@ namespace AppDevUnited.CannonGame.App
       /// <summary>
       ///    Получение ширины экрана
       /// </summary>
-      public int ScreenWidth { get; private set; }
+      private int ScreenWidth { get; set; }
 
       /// <summary>
       ///    Получение высоты экрана
       /// </summary>
-      public int ScreenHeight { get; private set; }
+      private int ScreenHeight { get; set; }
 
       protected override void OnSizeChanged(int w, int h, int oldw, int oldh)
       {
@@ -168,7 +169,7 @@ namespace AppDevUnited.CannonGame.App
       /// <summary>
       ///    Сброс всех экранных элементов
       /// </summary>
-      public void NewGame()
+      private void NewGame()
       {
          // Создание новой пушки
          _cannon = new Cannon(this,
@@ -223,16 +224,21 @@ namespace AppDevUnited.CannonGame.App
          if (_gameOver) // Начать новую игру после завершения предыдущей
          {
             _gameOver = false; // Игра не закончена
-            _cannonThread = new CannonThread(Holder); // Создать поток
+            _cannonThread = new CannonThread(Holder, this); // Создать поток
             _cannonThread.Start(); // Запуск потока игрового цикла
          }
 
          HideSystemBars();
       }
 
+      /// <summary>
+      ///    Сокрытие системных панелей и панели приложения
+      /// </summary>
       private void HideSystemBars()
       {
-         throw new NotImplementedException();
+         if (_MoreOrEqualThanKitKatFunc())
+            SystemUiVisibility = (StatusBarVisibility) (LayoutStable | HideNavigation | Fullscreen |
+                                                        LayoutHideNavigation | LayoutFullscreen | Immersive);
       }
 
       /// <summary>
@@ -270,7 +276,7 @@ namespace AppDevUnited.CannonGame.App
       ///    если ядро не находится на экране
       /// </summary>
       /// <param name="motionEvent">Событие касания</param>
-      public void AlignAndFireCannonBall(MotionEvent motionEvent)
+      private void AlignAndFireCannonBall(MotionEvent motionEvent)
       {
          // Получение точки касания в этом представлении
          var touchPoint = new Point((int) motionEvent.GetX(), (int) motionEvent.GetY());
@@ -310,7 +316,7 @@ namespace AppDevUnited.CannonGame.App
       ///    Рисование элементов игры
       /// </summary>
       /// <param name="canvas">Холст</param>
-      public void DrawGameElements(Canvas canvas)
+      private void DrawGameElements(Canvas canvas)
       {
          canvas.DrawRect(0, 0, canvas.Width, canvas.Height, _backgroundPaint); // Очистка фона         
          canvas.DrawText(Resources.GetString(StringRes.time_remaining_format, _timeLeft), 50, 100,
@@ -327,7 +333,7 @@ namespace AppDevUnited.CannonGame.App
       /// <summary>
       ///    Проверка столкновений с блоками или мишенями и обработка столкновений
       /// </summary>
-      public void TestForCollisions()
+      private void TestForCollisions()
       {
          if (_cannon?.CannonBall == null)
             return;
@@ -346,8 +352,10 @@ namespace AppDevUnited.CannonGame.App
                   --n; // Чтобы не пропустить проверку новой мишени
                   break; // NOTE: WAF?!
                }
-         else
-            _cannon?.RemoveCannonBall();
+               else
+               {
+                  _cannon?.RemoveCannonBall();
+               }
 
          // Проверка столкновения с блоком
          if (cannonBall.CollidesWith(_blocker))
@@ -358,9 +366,13 @@ namespace AppDevUnited.CannonGame.App
          }
       }
 
+      /// <summary>
+      ///    Вывести системные панели и панель приложения
+      /// </summary>
       private void ShowSystemBars()
       {
-         throw new NotImplementedException();
+         if (_MoreOrEqualThanKitKatFunc())
+            SystemUiVisibility = (StatusBarVisibility) (LayoutStable | LayoutHideNavigation | LayoutFullscreen);
       }
 
       /// <summary>
@@ -408,7 +420,7 @@ namespace AppDevUnited.CannonGame.App
             if (!_cannonView._dialogIsDisplayed)
             {
                _cannonView.NewGame(); // Создание новой игры
-               _cannonView._cannonThread = new CannonThread(holder); // Создание потока
+               _cannonView._cannonThread = new CannonThread(holder, _cannonView); // Создание потока
                _cannonView._cannonThread.SetRunning(true); // Запуск игры
                _cannonView._cannonThread.Start(); // Запуск потока игрового цикла
             }
@@ -432,13 +444,56 @@ namespace AppDevUnited.CannonGame.App
          }
       }
 
+      /// <summary>
+      ///    Управление циклом игры
+      /// </summary>
       private sealed class CannonThread : Thread
       {
-         public CannonThread(ISurfaceHolder holder) => throw new NotImplementedException();
+         private readonly CannonView _cannonView;
+         private readonly ISurfaceHolder _surfaceHolder; // Для работы с Canvas
+         private bool _threadIsRunning = true;
 
-         internal void SetRunning(bool isRunning)
+         internal CannonThread(ISurfaceHolder surfaceHolder, CannonView cannonView)
          {
-            throw new NotImplementedException();
+            _surfaceHolder = surfaceHolder;
+            _cannonView = cannonView;
+            Name = nameof(CannonThread);
+         }
+
+         /// <summary>
+         ///    Изменение состояния выполнения
+         /// </summary>
+         /// <param name="isRunning"></param>
+         internal void SetRunning(bool isRunning) => _threadIsRunning = isRunning;
+
+         public override void Run()
+         {
+            Canvas canvas = null; // Используется для рисования
+            var previousFrameTime = JavaSystem.CurrentTimeMillis();
+
+            while (_threadIsRunning)
+               try
+               {
+                  // Получение Canvas для монопольного рисования из этого потока
+                  canvas = _surfaceHolder.LockCanvas();
+
+                  // Блокировка surfaceHolder для рисования
+                  lock (_surfaceHolder)
+                  {
+                     var currentTime = JavaSystem.CurrentTimeMillis();
+                     var elapsedTimeMs = currentTime - previousFrameTime;
+                     _cannonView._totalElapsedTime += elapsedTimeMs / 1000.0;
+                     _cannonView.UpdatePositions(elapsedTimeMs); // Обновление состояния игры
+                     _cannonView.TestForCollisions(); // Проверка столкновений
+                     _cannonView.DrawGameElements(canvas); // Рисование на объекте canvas
+                     previousFrameTime = currentTime; // Обновление времени
+                  }
+               }
+               finally
+               {
+                  // Вывести содержимое canvas на CannonView и разрешить использовать Canvas другим потокам
+                  if (canvas != null) _surfaceHolder.UnlockCanvasAndPost(canvas);
+               }
          }
       }
    }
