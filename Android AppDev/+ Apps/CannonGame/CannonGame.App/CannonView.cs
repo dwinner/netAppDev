@@ -65,14 +65,14 @@ namespace AppDevUnited.CannonGame.App
       public const int TargetSoundId = 0;
       public const int CannonSoundId = 1;
       private const string ResultsTag = "results";
+      private readonly AppCompatActivity _activity; // Для отображения окна в потоке GUI
       private readonly SparseIntArray _soundMap; // Связь идентификаторов с SoundPool
 
       private readonly SoundPool _soundPool; // Воспроизведение звуков
 
       // Переменные Paint для рисования элементов на экране
       private readonly Paint _textPaint; // Для вывода текста
-      private readonly AppCompatActivity _activity; // Для отображения окна в потоке GUI
-      private Paint _backgroundPaint; // Для стирания области рисования
+      private readonly Paint _backgroundPaint; // Для стирания области рисования
       private Blocker _blocker;
 
       // Игровые объекты
@@ -141,15 +141,27 @@ namespace AppDevUnited.CannonGame.App
          _textPaint.AntiAlias = true; // Сглаживание текста
       }
 
-      public void StopGame()
+      public override bool OnTouchEvent(MotionEvent e)
       {
-         throw new NotImplementedException();
+         var action = e.Action;
+
+         // Пользователь коснулся экрана или провел пальцем по экрану
+         if (action == MotionEventActions.Down || action == MotionEventActions.Move)
+            AlignAndFireCannonBall(
+               e); // Выстрел в направлении точки касания NOTE: В метод можно передавать меньше информации
+
+         return true;
       }
 
-      public void ReleaseResources()
-      {
-         throw new NotImplementedException();
-      }
+      /// <summary>
+      ///    Остановка игры
+      /// </summary>
+      internal void StopGame() => _cannonThread?.SetRunning(false);
+
+      /// <summary>
+      ///    Освобождение ресурсов
+      /// </summary>
+      public void ReleaseResources() => _soundPool?.Release();
 
       public void PlaySound(int soundId) => _soundPool.Play(_soundMap.Get(soundId), 1, 1, 1, 0, 1F);
 
@@ -294,6 +306,58 @@ namespace AppDevUnited.CannonGame.App
          });
       }
 
+      /// <summary>
+      ///    Рисование элементов игры
+      /// </summary>
+      /// <param name="canvas">Холст</param>
+      public void DrawGameElements(Canvas canvas)
+      {
+         canvas.DrawRect(0, 0, canvas.Width, canvas.Height, _backgroundPaint); // Очистка фона         
+         canvas.DrawText(Resources.GetString(StringRes.time_remaining_format, _timeLeft), 50, 100,
+            _textPaint); // Вывод оставшегося времени
+         _cannon.Draw(canvas); // Рисование пушки
+
+         // Рисование игровых элементов
+         if (_cannon?.CannonBall?.OnScreen == true) _cannon.CannonBall.Draw(canvas);
+
+         _blocker.Draw(canvas); // Рисование блока         
+         _targets.ForEach(target => target.Draw(canvas)); // Рисование всех мишеней
+      }
+
+      /// <summary>
+      ///    Проверка столкновений с блоками или мишенями и обработка столкновений
+      /// </summary>
+      public void TestForCollisions()
+      {
+         if (_cannon?.CannonBall == null)
+            return;
+
+         var cannonBall = _cannon.CannonBall;
+
+         // Удаление мишеней, с которыми сталкивается ядро
+         if (cannonBall.OnScreen)
+            for (var n = 0; n < _targets.Count; n++)
+               if (cannonBall.CollidesWith(_targets[n]))
+               {
+                  _targets[n].PlaySound(); // Звук попадания в мишень
+                  _timeLeft += _targets[n].HitReward; // Прибавление награды к оставшемуся времени
+                  _cannon.RemoveCannonBall(); // Удаление ядра из игры
+                  _targets.RemoveAt(n); // Удаление пораженной мишени NOTE: Плохая коллекция для удаления элементов
+                  --n; // Чтобы не пропустить проверку новой мишени
+                  break; // NOTE: WAF?!
+               }
+         else
+            _cannon?.RemoveCannonBall();
+
+         // Проверка столкновения с блоком
+         if (cannonBall.CollidesWith(_blocker))
+         {
+            _blocker.PlaySound();
+            cannonBall.ReverseVelocityX(); // Изменение направления
+            _timeLeft -= _blocker.MissPenalty; // Уменьшение оставшегося времени на величину штрафа
+         }
+      }
+
       private void ShowSystemBars()
       {
          throw new NotImplementedException();
@@ -337,17 +401,34 @@ namespace AppDevUnited.CannonGame.App
 
          public void SurfaceChanged(ISurfaceHolder holder, Format format, int width, int height)
          {
-            throw new NotImplementedException();
          }
 
          public void SurfaceCreated(ISurfaceHolder holder)
          {
-            throw new NotImplementedException();
+            if (!_cannonView._dialogIsDisplayed)
+            {
+               _cannonView.NewGame(); // Создание новой игры
+               _cannonView._cannonThread = new CannonThread(holder); // Создание потока
+               _cannonView._cannonThread.SetRunning(true); // Запуск игры
+               _cannonView._cannonThread.Start(); // Запуск потока игрового цикла
+            }
          }
 
          public void SurfaceDestroyed(ISurfaceHolder holder)
          {
-            throw new NotImplementedException();
+            var retry = true; // Обеспечить корректную зависимость потока
+            _cannonView._cannonThread.SetRunning(false); // Завершение cannonThread
+
+            while (retry)
+               try
+               {
+                  _cannonView._cannonThread.Join(); // Ожидать завершения cannonThread
+                  retry = false;
+               }
+               catch (InterruptedException interruptedEx)
+               {
+                  Log.Error(ErrorTag, "Thread interrupted", interruptedEx);
+               }
          }
       }
 
