@@ -3268,9 +3268,6 @@ namespace AppDevUnited.CannonGame.App
 			// aapt resource value: 0x7f0a0020
 			public const int character_counter_pattern = 2131361824;
 			
-			// aapt resource value: 0x7f0a002d
-			public const int hello_blank_fragment = 2131361837;
-			
 			// aapt resource value: 0x7f0a002b
 			public const int lose = 2131361835;
 			

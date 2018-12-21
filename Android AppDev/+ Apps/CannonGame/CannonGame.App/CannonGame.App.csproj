@@ -58,6 +58,8 @@
   <ItemGroup>
     <Compile Include="Based\GameElement.cs" />
     <Compile Include="CannonView.cs" />
+    <Compile Include="CannonView.Constants.cs" />
+    <Compile Include="CannonView.Handlers.cs" />
     <Compile Include="GameElements\Blocker.cs" />
     <Compile Include="GameElements\Cannon.cs" />
     <Compile Include="GameElements\CannonBall.cs" />
