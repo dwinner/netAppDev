@@ -12,12 +12,12 @@ namespace RoadmapAnalyzer.Rules
    {
       internal const string Id = "S102";
       private const string Category = "Naming";
-      private static readonly LocalizableString Title = "Single statement bodies should be surrounded by culry braces.";
+      private static readonly LocalizableString _Title = "Single statement bodies should be surrounded by culry braces.";
 
-      private static readonly LocalizableString MessageFormat =
+      private static readonly LocalizableString _MessageFormat =
          "'{0}' should use curly braces around the statement body.";
 
-      private static readonly IDictionary<SyntaxKind, string> KindNames = new Dictionary<SyntaxKind, string>
+      private static readonly IDictionary<SyntaxKind, string> _KindNames = new Dictionary<SyntaxKind, string>
       {
          {SyntaxKind.IfStatement, "if statement"},
          {SyntaxKind.ElseClause, "else clause"},
@@ -26,10 +26,10 @@ namespace RoadmapAnalyzer.Rules
          {SyntaxKind.ForEachStatement, "foreach statement"}
       };
 
-      private static readonly DiagnosticDescriptor Rule =
-         new DiagnosticDescriptor(Id, Title, MessageFormat, Category, DiagnosticSeverity.Warning, true);
+      private static readonly DiagnosticDescriptor _Rule =
+         new DiagnosticDescriptor(Id, _Title, _MessageFormat, Category, DiagnosticSeverity.Warning, true);
 
-      public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => ImmutableArray.Create(Rule);
+      public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => ImmutableArray.Create(_Rule);
 
       public override void Initialize(AnalysisContext context)
       {
@@ -88,8 +88,8 @@ namespace RoadmapAnalyzer.Rules
             }
 
             var location = token.GetLocation();
-            var name = KindNames[context.Node.Kind()];
-            context.ReportDiagnostic(Diagnostic.Create(Rule, location, name));
+            var name = _KindNames[context.Node.Kind()];
+            context.ReportDiagnostic(Diagnostic.Create(_Rule, location, name));
          }
       }
    }

@@ -15,17 +15,18 @@ using static Microsoft.CodeAnalysis.RefKind;
 
 namespace RoadmapAnalyzer.Fixes
 {
-   [ExportCodeFixProvider(LanguageNames.CSharp, Name = nameof(MustInvokeBaseMethodCodeFix)), Shared]
+   [ExportCodeFixProvider(LanguageNames.CSharp, Name = nameof(MustInvokeBaseMethodCodeFix))]
+   [Shared]
    public sealed class MustInvokeBaseMethodCodeFix : CodeFixProvider
    {
       public const string CodeFixDescription = "Add base invocation";
 
-      public sealed override ImmutableArray<string> FixableDiagnosticIds
+      public override ImmutableArray<string> FixableDiagnosticIds
          => ImmutableArray.Create(MustInvokeBaseMethodAnalyzer.DiagnosticId);
 
-      public sealed override FixAllProvider GetFixAllProvider() => WellKnownFixAllProviders.BatchFixer;
+      public override FixAllProvider GetFixAllProvider() => WellKnownFixAllProviders.BatchFixer;
 
-      public sealed override async Task RegisterCodeFixesAsync(CodeFixContext context)
+      public override async Task RegisterCodeFixesAsync(CodeFixContext context)
       {
          var root = await context.Document.GetSyntaxRootAsync(context.CancellationToken).ConfigureAwait(false);
          context.CancellationToken.ThrowIfCancellationRequested();
@@ -54,12 +55,12 @@ namespace RoadmapAnalyzer.Fixes
          context.RegisterCodeFix(
             CodeAction.Create(CodeFixDescription, token => Task.FromResult(context.Document.WithSyntaxRoot(newRoot)),
                CodeFixDescription), diagnostic);
-      }      
+      }
 
       private static string CreateSafeLocalVariableName(SyntaxNode methodNode, ISymbol methodSymbol)
       {
          var localDeclarations = methodNode.DescendantNodes(_ => true).OfType<VariableDeclaratorSyntax>();
-         string returnValueName = $"{methodSymbol.Name.Substring(0, 1).ToLower()}{methodSymbol.Name.Substring(1)}Result";
+         var returnValueName = $"{methodSymbol.Name.Substring(0, 1).ToLower()}{methodSymbol.Name.Substring(1)}Result";
          var returnValueSafeName = returnValueName;
          var returnValueCount = 0;
 
@@ -72,7 +73,7 @@ namespace RoadmapAnalyzer.Fixes
          }
 
          return returnValueSafeName;
-      }      
+      }
 
       private static SyntaxNode CreateNewRoot(
          SyntaxNode root, BaseMethodDeclarationSyntax methodNode, StatementSyntax statement)
@@ -85,7 +86,7 @@ namespace RoadmapAnalyzer.Fixes
          var newRoot = root.ReplaceNode(body, newBody);
 
          return newRoot;
-      }      
+      }
 
       private static StatementSyntax CreateStatement(SyntaxNode methodNode, IMethodSymbol methodSymbol)
       {
@@ -119,7 +120,6 @@ namespace RoadmapAnalyzer.Fixes
          return ParseStatement(methodCall).WithAdditionalAnnotations(Formatter.Annotation);
       }
 
-      #region commented
 
       /*
       private static InvocationExpressionSyntax CreateInvocation(ISymbol methodSymbol)
@@ -184,8 +184,5 @@ namespace RoadmapAnalyzer.Fixes
          return invocation;
       }
       */
-
-      #endregion
-
    }
 }

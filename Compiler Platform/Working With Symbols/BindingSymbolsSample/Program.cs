@@ -72,9 +72,8 @@ class Foo
       public override void VisitInvocationExpression(InvocationExpressionSyntax node)
       {
          var member = node.Expression as MemberAccessExpressionSyntax;
-         var type = member?.Expression as IdentifierNameSyntax;
-         if (type != null && type.Identifier.Text == nameof(Console) &&
-             member.Name.Identifier.Text == nameof(Console.WriteLine) && node.ArgumentList.Arguments.Count == 1)
+         if (member?.Expression is IdentifierNameSyntax type && type.Identifier.Text == nameof(Console) &&
+             member.Name.Identifier.Text == nameof(WriteLine) && node.ArgumentList.Arguments.Count == 1)
          {
             var arg = node.ArgumentList.Arguments.Single().Expression;
             Arguments.Add(arg);

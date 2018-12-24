@@ -11,7 +11,7 @@ namespace DataFlowAnalysisSample
 {
    internal static class Program
    {
-      private static readonly SyntaxTree SourceTree = CSharpSyntaxTree.ParseText(@"
+      private static readonly SyntaxTree _SourceTree = CSharpSyntaxTree.ParseText(@"
 public class Sample
 {
    public void Foo()
@@ -29,9 +29,9 @@ public class Sample
       private static void Main()
       {
          var mscorlib = MetadataReference.CreateFromFile(typeof(object).Assembly.Location);
-         var compilation = CSharpCompilation.Create("MyCompilation", new[] { SourceTree }, new[] { mscorlib });
-         var model = compilation.GetSemanticModel(SourceTree);
-         var forStatement = SourceTree.GetRoot().DescendantNodes().OfType<ForStatementSyntax>().Single();
+         var compilation = CSharpCompilation.Create("MyCompilation", new[] { _SourceTree }, new[] { mscorlib });
+         var model = compilation.GetSemanticModel(_SourceTree);
+         var forStatement = _SourceTree.GetRoot().DescendantNodes().OfType<ForStatementSyntax>().Single();
          var result = model.AnalyzeDataFlow(forStatement);
 
          if (result.Succeeded)

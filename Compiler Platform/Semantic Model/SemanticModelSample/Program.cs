@@ -10,7 +10,7 @@ namespace SemanticModelSample
 {
    internal static class Program
    {
-      private static readonly SyntaxTree SourceTree = CSharpSyntaxTree.ParseText(@"
+      private static readonly SyntaxTree _SourceTree = CSharpSyntaxTree.ParseText(@"
 public class MyClass {
    int Method1() { return 0; }
 	void Method2()
@@ -24,11 +24,11 @@ public class MyClass {
       {
          // Получение семантической модели из объекта компиляции
          var mscorlib = MetadataReference.CreateFromFile(typeof(object).Assembly.Location);
-         var compilation = CSharpCompilation.Create("MyCompilation", new[] { SourceTree }, new[] { mscorlib });
-         var model = compilation.GetSemanticModel(SourceTree);
+         var compilation = CSharpCompilation.Create("MyCompilation", new[] { _SourceTree }, new[] { mscorlib });
+         var model = compilation.GetSemanticModel(_SourceTree);
 
          // Исследование объявленных символов модели
-         var methodSyntax = SourceTree.GetRoot().DescendantNodes().OfType<MethodDeclarationSyntax>().First();
+         var methodSyntax = _SourceTree.GetRoot().DescendantNodes().OfType<MethodDeclarationSyntax>().First();
          var methodSymbol = model.GetDeclaredSymbol(methodSyntax);
 
          Console.WriteLine(methodSymbol.ToString()); // MyClass.Method1()
@@ -36,7 +36,7 @@ public class MyClass {
          Console.WriteLine(methodSymbol.IsAbstract); // false
 
          // Исследование выражений в поисках символов модели
-         var invocationSyntax = SourceTree.GetRoot().DescendantNodes().OfType<InvocationExpressionSyntax>().First();
+         var invocationSyntax = _SourceTree.GetRoot().DescendantNodes().OfType<InvocationExpressionSyntax>().First();
          var invokedSymbol = model.GetSymbolInfo(invocationSyntax).Symbol;
 
          Console.WriteLine(invokedSymbol.ToString()); // MyClass.Method1()

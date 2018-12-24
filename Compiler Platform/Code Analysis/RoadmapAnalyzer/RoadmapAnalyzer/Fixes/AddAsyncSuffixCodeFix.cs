@@ -19,11 +19,11 @@ namespace RoadmapAnalyzer.Fixes
    {
       private const string DiagnosticId = AddAsyncSuffixAnalyzer.DiagnosticId;
 
-      public sealed override ImmutableArray<string> FixableDiagnosticIds => ImmutableArray.Create(DiagnosticId);
+      public override ImmutableArray<string> FixableDiagnosticIds => ImmutableArray.Create(DiagnosticId);
 
-      public sealed override FixAllProvider GetFixAllProvider() => WellKnownFixAllProviders.BatchFixer;
+      public override FixAllProvider GetFixAllProvider() => WellKnownFixAllProviders.BatchFixer;
 
-      public sealed override async Task RegisterCodeFixesAsync(CodeFixContext context)
+      public override async Task RegisterCodeFixesAsync(CodeFixContext context)
       {
          var root = await context.Document.GetSyntaxRootAsync(context.CancellationToken).ConfigureAwait(false);
          var diagnostic = context.Diagnostics.First();

@@ -15,12 +15,11 @@ namespace RoadmapAnalyzer.Refactoring
    [ExportCodeRefactoringProvider(LanguageNames.CSharp, Name = nameof(PublicFieldCodeRefactoringProvider)), Shared]
    internal sealed class PublicFieldCodeRefactoringProvider : CodeRefactoringProvider
    {
-      public sealed override async Task ComputeRefactoringsAsync(CodeRefactoringContext context)
+      public override async Task ComputeRefactoringsAsync(CodeRefactoringContext context)
       {
          var root = await context.Document.GetSyntaxRootAsync(context.CancellationToken).ConfigureAwait(false);
          var node = root.FindNode(context.Span);
-         var fieldDecl = node as FieldDeclarationSyntax;
-         if (fieldDecl != null &&
+         if (node is FieldDeclarationSyntax fieldDecl &&
              fieldDecl.Declaration.Variables.Any(i => char.IsLower(i.Identifier.ValueText.ToCharArray().First())))
          {
             var action = CodeAction.Create(

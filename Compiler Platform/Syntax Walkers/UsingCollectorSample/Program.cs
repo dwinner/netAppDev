@@ -50,7 +50,8 @@ namespace UsingCollectorSample
                usingDirectiveSyntaxies.Select(usingDirectiveSyntax => usingDirectiveSyntax.ToString())
                   .Distinct()
                   .Where(s => s.StartsWith("using static"))
-                  .OrderBy(s => s);
+                  .OrderBy(s => s)
+                  .ToArray();
             var orderedUsings =
                usingDirectiveSyntaxies.Select(usingDirectiveSyntax => usingDirectiveSyntax.ToString())
                   .Distinct()

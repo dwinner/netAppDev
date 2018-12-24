@@ -1,6 +1,6 @@
 using System.Linq;
-using Microsoft.CodeAnalysis;
 using static System.Console;
+using CSharpExtensions = Microsoft.CodeAnalysis.CSharp.CSharpExtensions;
 
 namespace CompilerApiMemberCount
 {

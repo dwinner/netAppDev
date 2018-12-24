@@ -1,8 +1,5 @@
-using System;
 using System.Threading.Tasks;
-using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Scripting;
-using Microsoft.CodeAnalysis.Scripting;
 using Nito.AsyncEx;
 using ScriptingContext;
 using static System.Console;
@@ -16,8 +13,9 @@ namespace ScriptingPlayground
          AsyncContext.Run(MainAsync);
       }
 
-      private static async Task MainAsync() => await ExecuteScriptsWithGlobalContextAsync().ConfigureAwait(false);
+      private static Task MainAsync() => ExecuteScriptsWithGlobalContextAsync();
 
+/*
       private static async Task EvaluateCodeAsync()
       {
          Out.WriteLine("Enter in your script:");
@@ -25,7 +23,9 @@ namespace ScriptingPlayground
          Out.WriteLine(
             await CSharpScript.EvaluateAsync(code).ConfigureAwait(false));
       }
+*/
 
+/*
       private static async Task EvaluateCodeWithContextAsync()
       {
          Out.WriteLine("Enter in your script:");
@@ -35,7 +35,9 @@ namespace ScriptingPlayground
                .AddReferences(typeof (Context).Assembly)
                .AddImports(typeof (Context).Namespace)).ConfigureAwait(false));
       }
+*/
 
+/*
       private static async Task EvaluateCodeWithGlobalContextAsync()
       {
          Out.WriteLine("Enter in your script:");
@@ -45,7 +47,9 @@ namespace ScriptingPlayground
                CSharpScript.EvaluateAsync(code, globals: new CustomContext(new Context(4), Out))
                   .ConfigureAwait(false));
       }
+*/
 
+/*
       private static async Task CompileScriptAsync()
       {
          Out.WriteLine("Enter in your script:");
@@ -84,7 +88,9 @@ namespace ScriptingPlayground
             Out.WriteLine((await script.RunAsync().ConfigureAwait(false)).ReturnValue);
          }
       }
+*/
 
+/*
       private static async Task ExecuteScriptsWithStateAsync()
       {
          Out.WriteLine("Enter in your script - type \"STOP\" to quit:");
@@ -117,6 +123,7 @@ namespace ScriptingPlayground
             }
          }
       }
+*/
 
       private static async Task ExecuteScriptsWithGlobalContextAsync()
       {
@@ -124,7 +131,7 @@ namespace ScriptingPlayground
          var session = new DictionaryContext();
          while (true)
          {
-            var code = In.ReadLine();
+            var code = await In.ReadLineAsync().ConfigureAwait(false);
             if (code == "STOP")
             {
                break;

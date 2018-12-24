@@ -15,4 +15,7 @@
     <Assets>
         <Asset Type="Microsoft.VisualStudio.VsPackage" d:Source="Project" d:ProjectName="%CurrentProject%" Path="|%CurrentProject%;PkgdefProjectOutputGroup|" />
     </Assets>
+    <Prerequisites>
+        <Prerequisite Id="Microsoft.Component.CodeAnalysis.SDK" Version="[15.0.27729.1,16.0)" DisplayName=".NET Compiler Platform SDK" />
+    </Prerequisites>
 </PackageManifest>

@@ -8,12 +8,12 @@ namespace FormattingSample
 {
    static class Program
    {
-      private static readonly Solution Solution =
+      private static readonly Solution _Solution =
          MSBuildWorkspace.Create().OpenSolutionAsync(@"..\..\..\Playground\Playground.sln").Result;
 
       static void Main()
       {
-         var project = Solution.Projects.Single(p => p.Name == "ConfigureAwaitTest");
+         var project = _Solution.Projects.Single(p => p.Name == "ConfigureAwaitTest");
          var quxCs = project.Documents.Single(d => d.Name == "Qux.cs");
 
          Console.WriteLine("Before:");

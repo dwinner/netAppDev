@@ -20,11 +20,11 @@ namespace RoadmapAnalyzer.Fixes
       private const string DiagnosticId = ConsiderDateTimeOffsetAnalyzer.DiagnosticId;
       private static readonly string _FixTitle = Resources.ConsiderDateTimeOffsetCodeFix_Title;
 
-      public sealed override ImmutableArray<string> FixableDiagnosticIds => ImmutableArray.Create(DiagnosticId);
+      public override ImmutableArray<string> FixableDiagnosticIds => ImmutableArray.Create(DiagnosticId);
 
-      public sealed override FixAllProvider GetFixAllProvider() => WellKnownFixAllProviders.BatchFixer;
+      public override FixAllProvider GetFixAllProvider() => WellKnownFixAllProviders.BatchFixer;
 
-      public sealed override async Task RegisterCodeFixesAsync(CodeFixContext context)
+      public override async Task RegisterCodeFixesAsync(CodeFixContext context)
       {
          // Get the root syntax node for the current document
          var root = await context.Document.GetSyntaxRootAsync(context.CancellationToken).ConfigureAwait(false);

@@ -10,7 +10,7 @@ namespace RoadmapAnalyzer.Refactoring
 {
    internal static class CodeGeneration
    {
-      private static readonly SyntaxAnnotation UpdatedPropertyAnnotation = new SyntaxAnnotation("UpdatedProperty");
+      private static readonly SyntaxAnnotation _UpdatedPropertyAnnotation = new SyntaxAnnotation("UpdatedProperty");
 
       internal static CompilationUnitSyntax ImplementFullProperty(CompilationUnitSyntax root, SemanticModel model,
          PropertyDeclarationSyntax propertyDecl, Workspace workspace)
@@ -38,7 +38,7 @@ namespace RoadmapAnalyzer.Refactoring
          string backingFieldName, Workspace workspace)
       {
          var property =
-            node.ChildNodes().FirstOrDefault(n => n.HasAnnotation(UpdatedPropertyAnnotation)) as
+            node.ChildNodes().FirstOrDefault(n => n.HasAnnotation(_UpdatedPropertyAnnotation)) as
                PropertyDeclarationSyntax;
          if (property == null)
          {
@@ -66,13 +66,9 @@ namespace RoadmapAnalyzer.Refactoring
          var classDecl =
             SyntaxFactory.ParseCompilationUnit($"class x {{{Environment.NewLine}{member}{Environment.NewLine}}}")
                .Members[0] as ClassDeclarationSyntax;
-         if (classDecl == null)
-         {
-            return null;
-         }
 
-         var decl = classDecl.Members[0];
-         return decl.WithAdditionalAnnotations(Formatter.Annotation);
+         var decl = classDecl?.Members[0];
+         return decl?.WithAdditionalAnnotations(Formatter.Annotation);
       }
 
       private static PropertyDeclarationSyntax ExpandProperty(BasePropertyDeclarationSyntax original,
@@ -94,7 +90,7 @@ namespace RoadmapAnalyzer.Refactoring
          updated =
             updated.WithAccessorList(SyntaxFactory.AccessorList(SyntaxFactory.List(new[] { getter, setter })))
                .WithAdditionalAnnotations(Formatter.Annotation)
-               .WithAdditionalAnnotations(UpdatedPropertyAnnotation);
+               .WithAdditionalAnnotations(_UpdatedPropertyAnnotation);
 
          return updated;
       }

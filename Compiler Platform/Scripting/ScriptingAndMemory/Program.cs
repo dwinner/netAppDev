@@ -1,9 +1,10 @@
 using System;
 using System.Diagnostics;
-using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis.CSharp.Scripting;
 using Nito.AsyncEx;
+
+// ReSharper disable FunctionNeverReturns
 
 namespace ScriptingAndMemory
 {
@@ -15,10 +16,7 @@ namespace ScriptingAndMemory
          AsyncContext.Run(MainAsync);
       }
 
-      private static async Task MainAsync()
-      {
-         await EvaluateRandomScriptAsync().ConfigureAwait(false);
-      }
+      private static Task MainAsync() => EvaluateRandomScriptAsync();
 
       private static async Task EvaluateRandomScriptAsync()
       {
@@ -41,9 +39,9 @@ namespace ScriptingAndMemory
                iterations = 0;
             }
          }
-         // ReSharper disable once FunctionNeverReturns
       }
 
+/*
       private static void EvaluateRandomExpressions()
       {
          var random = new Random();
@@ -76,5 +74,6 @@ namespace ScriptingAndMemory
          }
          // ReSharper disable once FunctionNeverReturns
       }
+*/
    }
 }

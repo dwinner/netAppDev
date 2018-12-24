@@ -9,7 +9,7 @@ namespace CustomWalkers
 {
    internal static class Program
    {
-      private static readonly SyntaxTree SourceTree = CSharpSyntaxTree.ParseText(@"
+      private static readonly SyntaxTree _SourceTree = CSharpSyntaxTree.ParseText(@"
 public class MyClass
 {
    public void MyMethod()
@@ -23,12 +23,12 @@ public class MyClass
       private static void Main()
       {
          CSharpSyntaxWalker customWalker = new CustomWalker();
-         customWalker.Visit(SourceTree.GetRoot());
+         customWalker.Visit(_SourceTree.GetRoot());
 
          Console.WriteLine("-----------------------------------");
 
          CSharpSyntaxWalker cmWalker = new ClassMethodWalker();
-         cmWalker.Visit(SourceTree.GetRoot());
+         cmWalker.Visit(_SourceTree.GetRoot());
       }
    }
 

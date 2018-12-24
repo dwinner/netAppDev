@@ -21,18 +21,17 @@ namespace RoadmapAnalyzer.Fixes
    {
       private const string DiagnosticId = WcfOneWayOperationAnalyzer.DiagnosticId;
 
-      public sealed override ImmutableArray<string> FixableDiagnosticIds => ImmutableArray.Create(DiagnosticId);
+      public override ImmutableArray<string> FixableDiagnosticIds => ImmutableArray.Create(DiagnosticId);
 
-      public sealed override FixAllProvider GetFixAllProvider() => WellKnownFixAllProviders.BatchFixer;
+      public override FixAllProvider GetFixAllProvider() => WellKnownFixAllProviders.BatchFixer;
 
-      public sealed override async Task RegisterCodeFixesAsync(CodeFixContext context)
+      public override async Task RegisterCodeFixesAsync(CodeFixContext context)
       {
          var root = await context.Document.GetSyntaxRootAsync(context.CancellationToken).ConfigureAwait(false);
          var diagnostic = context.Diagnostics.First();
          var diagnosticSpan = diagnostic.Location.SourceSpan;
          var syntaxNode = root.FindNode(diagnosticSpan);
-         var attributeSyntax = syntaxNode as AttributeSyntax;
-         if (attributeSyntax != null)
+         if (syntaxNode is AttributeSyntax attributeSyntax)
          {
             var ownerMethod = attributeSyntax.AncestorsAndSelf().OfType<MethodDeclarationSyntax>().FirstOrDefault();
             var attributeArguments = attributeSyntax.ArgumentList;
@@ -62,8 +61,7 @@ namespace RoadmapAnalyzer.Fixes
       {
          var oldRoot = await document.GetSyntaxRootAsync(cancellationToken).ConfigureAwait(false);
          var falseExpr = LiteralExpression(SyntaxKind.FalseLiteralExpression);
-         var trueExpr = oneWayAttrArg.Expression as LiteralExpressionSyntax;
-         if (trueExpr != null)
+         if (oneWayAttrArg.Expression is LiteralExpressionSyntax trueExpr)
          {
             var newRoot = oldRoot.ReplaceNode(trueExpr, falseExpr).WithAdditionalAnnotations(Formatter.Annotation);
             return document.WithSyntaxRoot(newRoot);

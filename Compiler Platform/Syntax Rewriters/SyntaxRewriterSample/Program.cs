@@ -9,7 +9,7 @@ namespace SyntaxRewriterSample
 {
    internal static class Program
    {
-      private static readonly SyntaxTree SourceTree = CSharpSyntaxTree.ParseText(@"
+      private static readonly SyntaxTree _SourceTree = CSharpSyntaxTree.ParseText(@"
 public class Sample
 {
    public void Foo()
@@ -25,7 +25,7 @@ public class Sample
       private static void Main()
       {
          CSharpSyntaxRewriter syntaxRewriter = new EmptyStatementRemoval();
-         var result = syntaxRewriter.Visit(SourceTree.GetRoot());
+         var result = syntaxRewriter.Visit(_SourceTree.GetRoot());
          Console.WriteLine(result.ToFullString());
       }
    }

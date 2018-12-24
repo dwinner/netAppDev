@@ -13,7 +13,7 @@ namespace DocumentEditingSample
 {
    internal static class Program
    {
-      private static readonly SourceText SourceText = SourceText.From(@"
+      private static readonly SourceText _SourceText = SourceText.From(@"
 class C
 {
     void M()
@@ -40,7 +40,7 @@ class C
          var versionStamp = VersionStamp.Create();
          var projectInfo = ProjectInfo.Create(projectId, versionStamp, "NewProject", "projName", LanguageNames.CSharp);
          var newProject = workspace.AddProject(projectInfo);
-         var document = workspace.AddDocument(newProject.Id, "NewFile.cs", SourceText);
+         var document = workspace.AddDocument(newProject.Id, "NewFile.cs", _SourceText);
          var syntaxRoot = document.GetSyntaxRootAsync().Result;
          var ifStatement = syntaxRoot.DescendantNodes().OfType<IfStatementSyntax>().Single();
 

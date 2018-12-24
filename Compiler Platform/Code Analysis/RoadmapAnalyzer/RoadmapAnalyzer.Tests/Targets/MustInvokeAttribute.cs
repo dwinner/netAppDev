@@ -1,4 +1,5 @@
 ﻿using System;
+// ReSharper disable RedundantOverriddenMember
 
 namespace RoadmapAnalyzer.Tests.Targets
 {

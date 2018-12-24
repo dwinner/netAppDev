@@ -6,6 +6,7 @@ using System.IO;
 using System.Reflection;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
+// ReSharper disable AssignNullToNotNullAttribute
 
 namespace CompileHelloWorld
 {
@@ -38,7 +39,7 @@ namespace HelloWorld
             /*var compileResult = */compilation.Emit(stream);
             var assembly = Assembly.Load(stream.GetBuffer());
             assembly.EntryPoint.Invoke(
-               null, BindingFlags.NonPublic | BindingFlags.Static, null, new object[] {null}, null);
+               null, BindingFlags.NonPublic | BindingFlags.Static, null, new object[1], null);
          }
       }
    }

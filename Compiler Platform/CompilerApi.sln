@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.168
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Symbols", "Symbols", "{A9BC5160-B2CD-4A63-B746-ED8ADA7BB0C5}"
 EndProject
@@ -14,6 +14,16 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Syntax Walkers", "Syntax Walkers", "{B0CC976A-818E-48F6-A2E7-32A37C54944C}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Code analysis", "Code analysis", "{E9C39834-3473-4D98-9D65-09557506B144}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Misc", "Misc", "{B39A2B70-CED8-4C47-BB7B-94218133E4E8}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Syntax Analysis", "Syntax Analysis", "{CA274E16-1E13-442A-97A9-940C1AED57E9}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Syntax Rewriters", "Syntax Rewriters", "{287498B4-331C-499F-A8B8-10A02DAD3149}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CommentRemover", "CommentRemover", "{78AE8C96-688E-4027-8DAD-CE970E91DDA6}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Scripting", "Scripting", "{55656654-18E8-4F42-895B-5E1DEDADAFC2}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AnalyzingSyntaxTreesViaLinq", "Code Analysis\AnalyzingSyntaxTreesViaLinq\AnalyzingSyntaxTreesViaLinq.csproj", "{FA43D648-D027-4F42-8AA2-252A8B3EB866}"
 EndProject
@@ -61,17 +71,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RunningDiagnostics", "Works
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimplificationSample", "Workspaces\SimplificationSample\SimplificationSample.csproj", "{737ED8C3-6AB3-40EF-BF12-34FEC7D9B4C5}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Misc", "Misc", "{B39A2B70-CED8-4C47-BB7B-94218133E4E8}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GuiSyntaxTree", "Misc\GuiSyntaxTree\GuiSyntaxTree.csproj", "{230A8F17-CC47-414E-BC3F-948D596CC348}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Syntax Analysis", "Syntax Analysis", "{CA274E16-1E13-442A-97A9-940C1AED57E9}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SyntaxAnalysis", "Syntax Analysis\SyntaxAnalysis.csproj", "{00841E91-E136-440A-B3CC-270FD29AE21C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CompilerApiMemberCount", "Misc\CompilerApiMemberCount\CompilerApiMemberCount.csproj", "{33D300FB-79A1-4002-941D-5C097BEED9D2}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Syntax Rewriters", "Syntax Rewriters", "{287498B4-331C-499F-A8B8-10A02DAD3149}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoPropertyRewriterSample", "Syntax Rewriters\AutoPropertyRewriterSample\AutoPropertyRewriterSample.csproj", "{342B0144-EAC5-483E-9BAB-86A6840076FB}"
 EndProject
@@ -90,8 +94,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WalkingTrees", "Syntax Walkers\WalkingTrees\WalkingTrees.csproj", "{F503614E-0397-4621-8DC2-30E1A8070E31}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RoadmapAnalyzer.Tests", "Code Analysis\RoadmapAnalyzer\RoadmapAnalyzer.Tests\RoadmapAnalyzer.Tests.csproj", "{0699840D-4666-44AF-9537-ED2835E87B60}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CommentRemover", "CommentRemover", "{78AE8C96-688E-4027-8DAD-CE970E91DDA6}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommentRemover", "Workspaces\CommentRemover\CommentRemover\CommentRemover.csproj", "{6105BD24-5755-43E8-AE33-069F659B13D2}"
 EndProject
@@ -119,8 +121,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RoslynStandAlone", "Workspa
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IteratingSolution", "Workspaces\IteratingSolution\IteratingSolution.csproj", "{FAC2A1DB-CD1D-4378-9B6B-27B3C21E5B8E}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Scripting", "Scripting", "{55656654-18E8-4F42-895B-5E1DEDADAFC2}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScriptingAndMemory", "Scripting\ScriptingAndMemory\ScriptingAndMemory.csproj", "{857C7ED4-5995-4FC6-A3E4-5D6519E1CA58}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScriptingContext", "Scripting\ScriptingContext\ScriptingContext.csproj", "{86B8ADCE-8FAA-49A1-9295-0D1AC680D787}"
@@ -128,6 +128,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScriptingPlayground", "Scripting\ScriptingPlayground\ScriptingPlayground.csproj", "{FF5E34CF-2C72-4EB0-8336-0EC14B2CCE50}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScriptsAndSecurity", "Scripting\ScriptsAndSecurity\ScriptsAndSecurity.csproj", "{C37E3D8C-D66A-4673-83D0-CEBFF76F1617}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RenamingSymbol", "Working With Symbols\RenamingSymbol\RenamingSymbol.csproj", "{5E60DEF2-8358-4902-BB1C-74C8D9A9BE7B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -491,11 +493,20 @@ Global
 		{C37E3D8C-D66A-4673-83D0-CEBFF76F1617}.Release|Any CPU.Build.0 = Release|Any CPU
 		{C37E3D8C-D66A-4673-83D0-CEBFF76F1617}.Release|x86.ActiveCfg = Release|Any CPU
 		{C37E3D8C-D66A-4673-83D0-CEBFF76F1617}.Release|x86.Build.0 = Release|Any CPU
+		{5E60DEF2-8358-4902-BB1C-74C8D9A9BE7B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5E60DEF2-8358-4902-BB1C-74C8D9A9BE7B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5E60DEF2-8358-4902-BB1C-74C8D9A9BE7B}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{5E60DEF2-8358-4902-BB1C-74C8D9A9BE7B}.Debug|x86.Build.0 = Debug|Any CPU
+		{5E60DEF2-8358-4902-BB1C-74C8D9A9BE7B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5E60DEF2-8358-4902-BB1C-74C8D9A9BE7B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5E60DEF2-8358-4902-BB1C-74C8D9A9BE7B}.Release|x86.ActiveCfg = Release|Any CPU
+		{5E60DEF2-8358-4902-BB1C-74C8D9A9BE7B}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
+		{78AE8C96-688E-4027-8DAD-CE970E91DDA6} = {A53A631B-73C5-41F8-B842-EC0C74F9EEFC}
 		{FA43D648-D027-4F42-8AA2-252A8B3EB866} = {E9C39834-3473-4D98-9D65-09557506B144}
 		{B61805D0-0C81-4185-B4BC-49349CFC854C} = {E9C39834-3473-4D98-9D65-09557506B144}
 		{F397521D-3DE6-4AEA-A8AE-FB0442A55DFF} = {E9C39834-3473-4D98-9D65-09557506B144}
@@ -531,7 +542,6 @@ Global
 		{723F1EDB-4D2B-47D2-9BB1-9719B55A4C72} = {A53A631B-73C5-41F8-B842-EC0C74F9EEFC}
 		{F503614E-0397-4621-8DC2-30E1A8070E31} = {B0CC976A-818E-48F6-A2E7-32A37C54944C}
 		{0699840D-4666-44AF-9537-ED2835E87B60} = {E9C39834-3473-4D98-9D65-09557506B144}
-		{78AE8C96-688E-4027-8DAD-CE970E91DDA6} = {A53A631B-73C5-41F8-B842-EC0C74F9EEFC}
 		{6105BD24-5755-43E8-AE33-069F659B13D2} = {78AE8C96-688E-4027-8DAD-CE970E91DDA6}
 		{72CF6D65-C723-499A-A95F-8CAD82967B65} = {78AE8C96-688E-4027-8DAD-CE970E91DDA6}
 		{E50CF672-628C-4768-8CCE-FA5FF2516656} = {78AE8C96-688E-4027-8DAD-CE970E91DDA6}
@@ -549,5 +559,9 @@ Global
 		{86B8ADCE-8FAA-49A1-9295-0D1AC680D787} = {55656654-18E8-4F42-895B-5E1DEDADAFC2}
 		{FF5E34CF-2C72-4EB0-8336-0EC14B2CCE50} = {55656654-18E8-4F42-895B-5E1DEDADAFC2}
 		{C37E3D8C-D66A-4673-83D0-CEBFF76F1617} = {55656654-18E8-4F42-895B-5E1DEDADAFC2}
+		{5E60DEF2-8358-4902-BB1C-74C8D9A9BE7B} = {A9BC5160-B2CD-4A63-B746-ED8ADA7BB0C5}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {D589C93E-C356-41DF-A2AB-9440CB8649F1}
 	EndGlobalSection
 EndGlobal

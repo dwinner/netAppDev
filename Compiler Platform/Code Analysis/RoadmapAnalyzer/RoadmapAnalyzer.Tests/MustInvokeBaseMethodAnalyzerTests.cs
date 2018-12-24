@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -30,17 +31,16 @@ namespace RoadmapAnalyzer.Tests
 
       [TestMethod]
       [Case("Case2")]
-      public async Task AnalyzeWhenBaseClassHasVirtualMethodWithoutMustInvokeAndIsOverridenWithBaseClassCallTestAsync()
+      public Task AnalyzeWhenBaseClassHasVirtualMethodWithoutMustInvokeAndIsOverridenWithBaseClassCallTestAsync()
          =>
-            await
-               TestHelpers.RunAnalysisAsync<MustInvokeBaseMethodAnalyzer>(
-                  $@"Targets\{nameof(MustInvokeBaseMethodAnalyzerTests)}\Case2.cs",
-                  new string[0]).ConfigureAwait(false);
+            TestHelpers.RunAnalysisAsync<MustInvokeBaseMethodAnalyzer>(
+               $@"Targets\{nameof(MustInvokeBaseMethodAnalyzerTests)}\Case2.cs",
+               Array.Empty<string>());
 
       [TestMethod]
       [Case("Case3")]
-      public async Task AnalyzeWhenBaseClassHasVirtualMethodWithoutMustInvokeAndIsNotOverridenWithBaseClassCall()
-         => await TestHelpers.RunAnalysisAsync<MustInvokeBaseMethodAnalyzer>(
+      public Task AnalyzeWhenBaseClassHasVirtualMethodWithoutMustInvokeAndIsNotOverridenWithBaseClassCall()
+         => TestHelpers.RunAnalysisAsync<MustInvokeBaseMethodAnalyzer>(
             $@"Targets\{nameof(MustInvokeBaseMethodAnalyzerTests)}\Case3.cs",
             new[] {MustInvokeBaseMethodAnalyzer.DiagnosticId}, diagnostics =>
             {

@@ -3,6 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:viewModels="clr-namespace:GuiSyntaxTree.ViewModels"
         mc:Ignorable="d"
         Title="Syntax Tree Sample" Height="480" Width="640">
     <Grid>
@@ -18,14 +19,14 @@
                     Grid.ColumnSpan="2">
             <Button Content="Load" Click="OnLoad" Margin="8" />
         </StackPanel>
-        <TreeView x:Name="NodeTreeView" ItemsSource="{Binding Nodes, Mode=OneTime}"
+        <TreeView ItemsSource="{Binding Nodes, Mode=OneTime}"
                   SelectedItemChanged="OnSelectSyntaxNode"
                   Grid.Row="1"
                   Grid.Column="0">
             <TreeView.ItemTemplate>
-                <HierarchicalDataTemplate ItemsSource="{Binding Children}">
+                <HierarchicalDataTemplate ItemsSource="{Binding Children, Mode=TwoWay}" DataType="viewModels:SyntaxNodeViewModel">
                     <StackPanel>
-                        <TextBlock Text="{Binding TypeName}" />
+                        <TextBlock Text="{Binding TypeName, Mode=TwoWay}" />
                     </StackPanel>
                 </HierarchicalDataTemplate>
             </TreeView.ItemTemplate>
@@ -51,15 +52,15 @@
                 </Style>
             </Grid.Resources>
             <TextBlock Text="Type Name" Grid.Row="0" Grid.Column="0" />
-            <TextBlock Text="{Binding SelectedNode.TypeName}" Grid.Row="0" Grid.Column="1" />
+            <TextBlock Text="{Binding SelectedNode.TypeName, Mode=TwoWay}" Grid.Row="0" Grid.Column="1" />
             <TextBlock Text="Span" Grid.Row="1" Grid.Column="0" />
-            <TextBlock Text="{Binding SelectedNode.SyntaxNode.Span}" Grid.Row="1" Grid.Column="1" />
+            <TextBlock Text="{Binding SelectedNode.SyntaxNode.Span, Mode=TwoWay}" Grid.Row="1" Grid.Column="1" />
             <TextBlock Text="Text" Grid.Row="3" Grid.Column="0" />
-            <TextBlock Text="{Binding SelectedNode.SyntaxNode}" Grid.Row="3" Grid.Column="1" />
+            <TextBlock Text="{Binding SelectedNode.SyntaxNode, Mode=TwoWay}" Grid.Row="3" Grid.Column="1" />
             <TextBlock Text="Tokens" Grid.Row="4" Grid.Column="0" />
-            <ListBox ItemsSource="{Binding SelectedNode.Tokens}" Grid.Row="4" Grid.Column="1" Margin="8" />
+            <ListBox ItemsSource="{Binding SelectedNode.Tokens, Mode=TwoWay}" Grid.Row="4" Grid.Column="1" Margin="8" />
             <TextBlock Text="Trivia" Grid.Row="5" Grid.Column="0" Margin="8" />
-            <ListBox ItemsSource="{Binding SelectedNode.Trivia}" Grid.Row="5" Grid.Column="1" Margin="8" />
+            <ListBox ItemsSource="{Binding SelectedNode.Trivia, Mode=TwoWay}" Grid.Row="5" Grid.Column="1" Margin="8" />
         </Grid>
     </Grid>
 </Window>

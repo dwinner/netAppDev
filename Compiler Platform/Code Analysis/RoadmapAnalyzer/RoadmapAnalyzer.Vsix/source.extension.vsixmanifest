@@ -15,4 +15,7 @@
         <Asset Type="Microsoft.VisualStudio.MefComponent" d:Source="Project" d:ProjectName="RoadmapAnalyzer" Path="|RoadmapAnalyzer|"/>
         <Asset Type="Microsoft.VisualStudio.Analyzer" d:Source="Project" d:ProjectName="RoadmapAnalyzer" Path="|RoadmapAnalyzer|"/>
     </Assets>
+    <Prerequisites>
+        <Prerequisite Id="Microsoft.Component.CodeAnalysis.SDK" Version="[15.0.27729.1,16.0)" DisplayName=".NET Compiler Platform SDK" />
+    </Prerequisites>
 </PackageManifest>

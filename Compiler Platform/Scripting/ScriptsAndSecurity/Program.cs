@@ -18,7 +18,7 @@ namespace ScriptsAndSecurity
       private static async Task MainAsync()
       {
          File.WriteAllLines("secrets.txt", new[] {"Secret password: 12345"});
-         Out.WriteLine("Enter in your script - type \"STOP\" to quit:");
+         await Out.WriteLineAsync("Enter in your script - type \"STOP\" to quit:").ConfigureAwait(false);
          var context = new ScriptingContext();
          var options = ScriptOptions.Default
             .AddImports(
@@ -28,7 +28,7 @@ namespace ScriptsAndSecurity
 
          while (true)
          {
-            var code = In.ReadLine();
+            var code = await In.ReadLineAsync().ConfigureAwait(false);
             if (code == "STOP")
             {
                break;
@@ -53,7 +53,7 @@ namespace ScriptsAndSecurity
 
                if (result.ReturnValue != null)
                {
-                  Out.WriteLine($"\t{result.ReturnValue}");
+                  await Out.WriteLineAsync($"\t{result.ReturnValue}").ConfigureAwait(false);
                }
             }
          }

@@ -9,12 +9,12 @@ namespace ClassifySample
 {
    static class Program
    {
-      private static readonly Solution Solution =
+      private static readonly Solution _Solution =
          MSBuildWorkspace.Create().OpenSolutionAsync(@"..\..\..\Playground\Playground.sln").Result;
 
       static void Main()
       {
-         var project = Solution.Projects.Single(p => p.Name == "ConfigureAwaitTest");
+         var project = _Solution.Projects.Single(p => p.Name == "ConfigureAwaitTest");
          var barCs = project.Documents.Single(d => d.Name == "Bar.cs");
 
          var tree = barCs.GetSyntaxTreeAsync().Result;
@@ -27,8 +27,7 @@ namespace ClassifySample
          var i = 0;
          foreach (var token in txt)
          {
-            ClassifiedSpan span;
-            if (spans.TryGetValue(i, out span))
+            if (spans.TryGetValue(i, out var span))
             {
                var color = ConsoleColor.Gray;
                switch (span.ClassificationType)

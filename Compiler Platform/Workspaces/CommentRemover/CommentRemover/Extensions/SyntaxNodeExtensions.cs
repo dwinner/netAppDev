@@ -11,12 +11,13 @@ namespace CommentRemover.Extensions
 {
    public static class SyntaxNodeExtensions
    {
-      private readonly static Func<Trivia, bool> _HasComments =
-         trivia => trivia.IsKind(SyntaxKind.SingleLineCommentTrivia) || trivia.IsKind(SyntaxKind.MultiLineCommentTrivia);
+      private static readonly Func<Trivia, bool> _HasComments =
+         trivia => trivia.IsKind(SyntaxKind.SingleLineCommentTrivia) ||
+                   trivia.IsKind(SyntaxKind.MultiLineCommentTrivia);
 
-      public static async Task<T> RemoveCommentsAsync<T>(this T @this)
+      public static Task<T> RemoveCommentsAsync<T>(this T @this)
          where T : SyntaxNode
-         => await Task.FromResult(@this.RemoveComments()).ConfigureAwait(false);
+         => Task.FromResult(@this.RemoveComments());
 
       public static T RemoveComments<T>(this T @this)
          where T : SyntaxNode
@@ -55,7 +56,7 @@ namespace CommentRemover.Extensions
          }
 
          return triviaToRemove.Count > 0
-            ? @this.ReplaceTrivia(triviaToRemove, (@old, @new) => new Trivia())
+            ? @this.ReplaceTrivia(triviaToRemove, (old, @new) => new Trivia())
                .WithAdditionalAnnotations(Formatter.Annotation)
             : @this;
       }

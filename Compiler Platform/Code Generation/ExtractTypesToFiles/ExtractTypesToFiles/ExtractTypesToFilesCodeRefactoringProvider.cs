@@ -20,7 +20,7 @@ namespace ExtractTypesToFiles
       private const string MoveByFolders = "Move types to files in folders";
       private const string MoveInCurrentFolder = "Move types to files in current folder";
 
-      public sealed override async Task ComputeRefactoringsAsync(CodeRefactoringContext context)
+      public override async Task ComputeRefactoringsAsync(CodeRefactoringContext context)
       {
          var document = context.Document;
          var documentFileNameWithoutExtension = Path.GetFileNameWithoutExtension(document.FilePath);
@@ -29,16 +29,10 @@ namespace ExtractTypesToFiles
          var typesToRemove = root.GetTypesToRemove(model, documentFileNameWithoutExtension);
          if (typesToRemove.Length > 1)
          {
-            context.RegisterRefactoring(CodeAction.Create(MoveByFolders,
-               async token =>
-                  await
-                     CreateFilesAsync(document, root, model, typesToRemove, _ => _.Replace(".", "\\"), token)
-                        .ConfigureAwait(false)));
-            context.RegisterRefactoring(CodeAction.Create(MoveInCurrentFolder,
-               async token =>
-                  await
-                     CreateFilesAsync(document, root, model, typesToRemove, _ => string.Empty, token)
-                        .ConfigureAwait(false)));
+            context.RegisterRefactoring(CodeAction.Create(MoveByFolders, token =>
+                  CreateFilesAsync(document, root, model, typesToRemove, _ => _.Replace(".", "\\"), token)));
+            context.RegisterRefactoring(CodeAction.Create(MoveInCurrentFolder, token =>
+                  CreateFilesAsync(document, root, model, typesToRemove, _ => string.Empty, token)));
          }
       }
 
