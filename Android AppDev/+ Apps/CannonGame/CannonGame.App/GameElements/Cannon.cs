@@ -1,12 +1,12 @@
-﻿using System;
-using Android.Graphics;
+﻿using Android.Graphics;
+using System;
 
 namespace AppDevUnited.CannonGame.App.GameElements
 {
    /// <summary>
    ///    Класс представляет пушку, стреляющую ядрами
    /// </summary>
-   public class Cannon
+   internal class Cannon
    {
       private readonly Point _barrelEnd = new Point(); // Конечная точка ствола
       private readonly int _barrelLength; // Длина ствола
@@ -22,7 +22,7 @@ namespace AppDevUnited.CannonGame.App.GameElements
       /// <param name="baseRadius">Радиус основания пушки</param>
       /// <param name="barrelLength">Длина ствола</param>
       /// <param name="barrelWidth">Толщина ствола</param>
-      public Cannon(CannonView view, int baseRadius, int barrelLength, int barrelWidth)
+      internal Cannon(CannonView view, int baseRadius, int barrelLength, int barrelWidth)
       {
          _view = view;
          _baseRadius = baseRadius;
@@ -35,7 +35,7 @@ namespace AppDevUnited.CannonGame.App.GameElements
       /// <summary>
       ///    Возвращает объект Cannonball, представляющий выпущенное ядро
       /// </summary>
-      public CannonBall CannonBall { get; private set; }
+      internal CannonBall CannonBall { get; private set; }
 
       /// <summary>
       ///    Задает направление ствола пушки
@@ -44,27 +44,33 @@ namespace AppDevUnited.CannonGame.App.GameElements
       internal void Align(double barrelAngle)
       {
          _barrelAngle = barrelAngle;
-         _barrelEnd.X = (int) (_barrelLength * Math.Sin(_barrelAngle));
-         _barrelEnd.Y = (int) (-_barrelLength * Math.Cos(_barrelAngle)) + _view.Height / 2;
+         _barrelEnd.X = (int)(_barrelLength * Math.Sin(_barrelAngle));
+         _barrelEnd.Y = (int)(-_barrelLength * Math.Cos(_barrelAngle)) + _view.Height / 2;
       }
 
       /// <summary>
       ///    Метод создает ядро и стреляет в направлении ствола
       /// </summary>
-      public void FireCannonBall()
+      internal void FireCannonBall()
       {
          // Вычисление горизонтальной состявляющей скорости ядра
-         var velocityX = (int) (CannonView.CannonBallSpeedPercent * _view.Width * Math.Sin(_barrelAngle));
+         var velocityX = (int)(CannonView.CannonBallSpeedPercent * _view.Width * Math.Sin(_barrelAngle));
 
          // Вычисление вертикальной составляющей скорости ядра
-         var velocityY = (int) (CannonView.CannonBallSpeedPercent * _view.Width * -Math.Cos(_barrelAngle));
+         var velocityY = (int)(CannonView.CannonBallSpeedPercent * _view.Width * -Math.Cos(_barrelAngle));
 
          // Вычисление радиуса ядра
-         var radius = _view.Height * CannonView.CannonBallSpeedPercent;
+         var radius = (int)(_view.Height * CannonView.CannonBallRadiusPercent);
 
          // Построение ядра и размещение его в стволе
-         CannonBall = new CannonBall(_view, Color.Black, CannonView.CannonSoundId, (int) -radius,
-            (int) ((float) _view.Height / 2 - radius), (int) radius, velocityX, velocityY);
+         CannonBall = new CannonBall(_view,
+            Color.Black,
+            CannonView.CannonSoundId,
+            -radius,
+            _view.Height / 2 - radius,
+            radius,
+            velocityX,
+            velocityY);
 
          CannonBall.PlaySound(); // Воспроизведение звука выстрела
       }
@@ -73,15 +79,15 @@ namespace AppDevUnited.CannonGame.App.GameElements
       ///    Рисование пушки на объекте Canvas
       /// </summary>
       /// <param name="canvas">Объект Canvas</param>
-      public void Draw(Canvas canvas)
+      internal void Draw(Canvas canvas)
       {
          // Рисование ствола пушки
-         canvas.DrawLine(0, (float) _view.Height / 2, _barrelEnd.X, _barrelEnd.Y, _paint);
+         canvas.DrawLine(0, (float)_view.Height / 2, _barrelEnd.X, _barrelEnd.Y, _paint);
 
          // Рисование основания пушки
-         canvas.DrawCircle(0, (float) _view.Height / 2, _baseRadius, _paint);
+         canvas.DrawCircle(0, (float)_view.Height / 2, _baseRadius, _paint);
       }
 
-      public void RemoveCannonBall() => CannonBall = null;
+      internal void RemoveCannonBall() => CannonBall = null;
    }
 }

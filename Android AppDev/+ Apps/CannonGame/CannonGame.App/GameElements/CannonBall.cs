@@ -6,7 +6,7 @@ namespace AppDevUnited.CannonGame.App.GameElements
    /// <summary>
    ///    Выпущенное ядро
    /// </summary>
-   public class CannonBall : GameElement
+   internal class CannonBall : GameElement
    {
       private float _velocityX;
 
@@ -21,8 +21,8 @@ namespace AppDevUnited.CannonGame.App.GameElements
       /// <param name="radius">Радиус ядра</param>
       /// <param name="velocotyX">Горизонтальная скорость</param>
       /// <param name="velocotyY">Вертикальная скорость</param>
-      public CannonBall(CannonView view, Color color, int soundId, int x, int y, int radius, float velocotyX,
-         float velocotyY)
+      internal CannonBall(
+         CannonView view, Color color, int soundId, int x, int y, int radius, float velocotyX, float velocotyY)
          : base(view, color, soundId, x, y, 2 * radius, 2 * radius, velocotyY)
       {
          _velocityX = velocotyX;
@@ -32,39 +32,35 @@ namespace AppDevUnited.CannonGame.App.GameElements
       /// <summary>
       ///    Радиус ядра
       /// </summary>
-      public int Radius => (Shape.Right - Shape.Left) / 2;
+      private int Radius => (Shape.Right - Shape.Left) / 2;
 
       /// <summary>
       ///    Факт присутствия ядра на экране
       /// </summary>
-      public bool OnScreen { get; private set; }
+      internal bool OnScreen { get; private set; }
 
       /// <summary>
       ///    Столкнулось ли ядро с объектом GameElement
       /// </summary>
       /// <param name="element">Объект GameElement</param>
       /// <returns>true, если столкнулось, false - в противном случае</returns>
-      public bool CollidesWith(GameElement element) =>
-         Rect.Intersects(Shape, element.Shape)
-         && _velocityX > 0 /* Ядро движется слева направо */;
+      internal bool CollidesWith(GameElement element) =>
+         Rect.Intersects(Shape, element.Shape) && _velocityX > 0 /* Ядро движется слева направо */;
 
       /// <summary>
       ///    Инвертирует горизонтальную скорость ядра
       /// </summary>
-      public void ReverseVelocityX() => _velocityX *= -1;
+      internal void ReverseVelocityX() => _velocityX *= -1;
 
       /// <inheritdoc />
       protected internal override void Update(double interval)
       {
          base.Update(interval); // Обновление вертикальной позиции
 
-         Shape.Offset((int) (_velocityX * interval), 0); // Обновление горизонтальной позиции
-
+         Shape.Offset((int)(_velocityX * interval), 0); // Обновление горизонтальной позиции
+         // BUG: Координаты Top, Left всегда отрицательны
          // Если ядро уходит за пределы экрана
-         if (Shape.Top < 0 || Shape.Left < 0
-                           || Shape.Bottom > View.Height
-                           || Shape.Right > View.Width)
-            OnScreen = false;
+         OnScreen = !(Shape.Top < 0 || Shape.Left < 0 || Shape.Bottom > View.Height || Shape.Right > View.Width);
       }
 
       /// <summary>

@@ -86,13 +86,11 @@ namespace AppDevUnited.CannonGame.App
 
          // Пользователь коснулся экрана или провел пальцем по экрану
          if (action == MotionEventActions.Down || action == MotionEventActions.Move)
-         {
             AlignAndFireCannonBall(
                (
                   (int) e.GetX(),
                   (int) e.GetY()
                ));
-         }
 
          return true;
       }
@@ -126,8 +124,8 @@ namespace AppDevUnited.CannonGame.App
 
          var random = new Random(); // Для случайных скоростей
          _targets.Clear(); // Построение нового списка мишеней
-         var targetX = (int) (TargetFirstXPercent * _screenWidth);   // Инициализация targetX для первой мишени слева
-         var targetY = (int) ((0.5 - TargetLengthPercent / 2) * _screenHeight);  // Вычисление координаты Y
+         var targetX = (int) (TargetFirstXPercent * _screenWidth); // Инициализация targetX для первой мишени слева
+         var targetY = (int) ((0.5 - TargetLengthPercent / 2) * _screenHeight); // Вычисление координаты Y
 
          // Добавление TargetPieces мишеней в список
          for (var n = 0; n < TargetPieces; n++)
@@ -180,10 +178,8 @@ namespace AppDevUnited.CannonGame.App
       private void HideSystemBars()
       {
          if (_MoreOrEqualThanKitKatFunc())
-         {
             SystemUiVisibility = (StatusBarVisibility)
                (LayoutStable | HideNavigation | Fullscreen | LayoutHideNavigation | LayoutFullscreen | Immersive);
-         }
       }
 
       /// <summary>
@@ -193,8 +189,9 @@ namespace AppDevUnited.CannonGame.App
       private void UpdatePositions(double elapsedTimeMs)
       {
          var interval = elapsedTimeMs / 1000.0; // Преобразовать в секунды
-         _cannon.CannonBall?.Update(interval); // Обновление позиции ядра
-         _blocker.Update(interval); // Обновление позиции блока
+         _cannon.CannonBall?.Update(interval);
+
+         _blocker.Update(interval); // Обновление позиции ядра
          _targets.ForEach(target => target.Update(interval)); // Обновление позиции мишени
          _timeLeft -= interval; // Уменьшение оставшегося времени
 
@@ -260,18 +257,14 @@ namespace AppDevUnited.CannonGame.App
       /// <param name="canvas">Холст</param>
       private void DrawGameElements(Canvas canvas)
       {
-         canvas.DrawRect(
-            0, 0, canvas.Width, canvas.Height, _backgroundPaint); // Очистка фона
+         canvas.DrawRect(0, 0, canvas.Width, canvas.Height, _backgroundPaint); // Очистка фона
          canvas.DrawText(
             Resources.GetString(StringRes.time_remaining_format, _timeLeft), 50, 100,
             _textPaint); // Вывод оставшегося времени
          _cannon.Draw(canvas); // Рисование пушки
 
          // Рисование игровых элементов
-         if (_cannon?.CannonBall?.OnScreen == true)
-         {
-            _cannon.CannonBall.Draw(canvas);
-         }
+         if (_cannon?.CannonBall?.OnScreen == true) _cannon.CannonBall.Draw(canvas);
 
          _blocker.Draw(canvas); // Рисование блока
          _targets.ForEach(target => target.Draw(canvas)); // Рисование всех мишеней
@@ -282,17 +275,11 @@ namespace AppDevUnited.CannonGame.App
       /// </summary>
       private void TestForCollisions()
       {
-         if (_cannon?.CannonBall == null)
-         {
-            return;
-         }
-
          var cannonBall = _cannon.CannonBall;
 
-         // Удаление мишеней, с которыми сталкивается ядро
-         if (cannonBall.OnScreen)
-         {
+         if (cannonBall?.OnScreen == true)
             for (var n = 0; n < _targets.Count; n++)
+               // Удаление мишеней, с которыми сталкивается ядро
                if (cannonBall.CollidesWith(_targets[n]))
                {
                   _targets[n].PlaySound(); // Звук попадания в мишень
@@ -302,14 +289,11 @@ namespace AppDevUnited.CannonGame.App
                   --n; // Чтобы не пропустить проверку новой мишени
                   break;
                }
-         }
          else
-         {
             _cannon.RemoveCannonBall();
-         }
 
          // Проверка столкновения с блоком
-         if (cannonBall.CollidesWith(_blocker))
+         if (cannonBall?.CollidesWith(_blocker) == true)
          {
             _blocker.PlaySound();
             cannonBall.ReverseVelocityX(); // Изменение направления
@@ -323,9 +307,7 @@ namespace AppDevUnited.CannonGame.App
       private void ShowSystemBars()
       {
          if (_MoreOrEqualThanKitKatFunc())
-         {
             SystemUiVisibility = (StatusBarVisibility) (LayoutStable | LayoutHideNavigation | LayoutFullscreen);
-         }
       }
    }
 }

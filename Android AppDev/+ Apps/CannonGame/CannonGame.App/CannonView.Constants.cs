@@ -18,6 +18,7 @@ namespace AppDevUnited.CannonGame.App
 
       // Константы для рисования ядра
       internal const double CannonBallSpeedPercent = 1.5D;
+      internal const double CannonBallRadiusPercent = 0.0375D;
 
       // Константы для рисования мишеней
       private const double TargetWidthPercent = 0.025D;
@@ -42,7 +43,7 @@ namespace AppDevUnited.CannonGame.App
       internal const int TargetSoundId = 0;
       internal const int CannonSoundId = 1;
       private const string ResultsTag = "results";
-      private const int CountDownSeconds = 20; // Обратный отсчет для игры
+      private const int CountDownSeconds = 1000; // Обратный отсчет для игры
 
       private static readonly Func<bool> _MoreOrEqualThanKitKatFunc =
          () => Build.VERSION.SdkInt >= BuildVersionCodes.Kitkat;
