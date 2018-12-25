@@ -1,10 +1,10 @@
 ﻿using Android.OS;
 using Android.Support.V7.App;
 using FragmentV4 = Android.Support.V4.App.Fragment;
-using ResId = FlickrLocart_App.Resource.Id;
-using ResLayout = FlickrLocart_App.Resource.Layout;
+using ResLayout=FlickrLocator.App.Resource.Layout;
+using ResId = FlickrLocator.App.Resource.Id;
 
-namespace FlickrLocart_App.Abstract
+namespace FlickrLocator.App.Abstract
 {
    public abstract class SingleFragmentActivity : AppCompatActivity
    {

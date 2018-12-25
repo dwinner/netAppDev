@@ -1,17 +1,18 @@
 ﻿using Android.App;
 using Android.Content;
 using Android.Gms.Common;
-using FlickrLocart_App.Abstract;
+using FlickrLocart_App;
+using FlickrLocator.App.Abstract;
 using Fragment = Android.Support.V4.App.Fragment;
 using JObj = Java.Lang.Object;
 
-namespace FlickrLocart_App
+namespace FlickrLocator.App
 {
    public class LocatrActivity : SingleFragmentActivity
    {
       private const int RequestError = 0;
 
-      protected override Fragment CreateFragment() => LocatrFragment.Instance;
+      protected override Fragment CreateFragment() => LocatorFragment.Instance;
 
       protected override void OnResume()
       {

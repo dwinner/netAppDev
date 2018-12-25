@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.28307.102
+VisualStudioVersion = 15.0.28307.168
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FlickrLocart_App", "FlickrLocart_App\FlickrLocart_App.csproj", "{3BC0AC7E-3B3B-4D3F-9CC0-B2BDECC460A6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FlickrLocator.App", "FlickrLocator.App\FlickrLocator.App.csproj", "{3BC0AC7E-3B3B-4D3F-9CC0-B2BDECC460A6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -22,6 +22,6 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {A7BD8B36-E980-4B8F-8C37-6BD947F73820}
+		SolutionGuid = {93085689-DF81-4011-B37C-7BD3DD1AA475}
 	EndGlobalSection
 EndGlobal

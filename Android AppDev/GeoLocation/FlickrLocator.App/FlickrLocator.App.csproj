@@ -10,15 +10,15 @@
     <TemplateGuid>{84dd83c5-0fe3-4294-9419-09e7c8ba324f}</TemplateGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>FlickrLocart_App</RootNamespace>
-    <AssemblyName>FlickrLocart_App</AssemblyName>
+    <RootNamespace>FlickrLocator.App</RootNamespace>
+    <AssemblyName>FlickrLocator.App</AssemblyName>
     <FileAlignment>512</FileAlignment>
     <AndroidApplication>True</AndroidApplication>
     <AndroidResgenFile>Resources\Resource.designer.cs</AndroidResgenFile>
     <AndroidResgenClass>Resource</AndroidResgenClass>
     <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
     <AndroidUseLatestPlatformSdk>false</AndroidUseLatestPlatformSdk>
-    <TargetFrameworkVersion>v9.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v8.1</TargetFrameworkVersion>
     <AndroidManifest>Properties\AndroidManifest.xml</AndroidManifest>
     <MonoAndroidResourcePrefix>Resources</MonoAndroidResourcePrefix>
     <MonoAndroidAssetsPrefix>Assets</MonoAndroidAssetsPrefix>
@@ -51,13 +51,15 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.Xml" />
     <Reference Include="System.Core" />
     <Reference Include="Mono.Android" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Abstract\SingleFragmentActivity.cs" />
-    <Compile Include="LocatrActivity.cs" />
-    <Compile Include="LocatrFragment.cs" />
+    <Compile Include="LocatorActivity.cs" />
+    <Compile Include="LocatorFragment.cs" />
+    <Compile Include="LocatorFragment_Handlers.cs" />
     <Compile Include="Middleware\FlickrFetchr.cs" />
     <Compile Include="Model\GalleryItem.cs" />
     <Compile Include="Model\GalleryItemExtensions.cs" />
@@ -65,15 +67,8 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Properties\AndroidManifest.xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\values\colors.xml" />
-    <AndroidResource Include="Resources\values\ic_launcher_background.xml" />
     <AndroidResource Include="Resources\values\strings.xml" />
     <AndroidResource Include="Resources\values\styles.xml" />
-    <AndroidResource Include="Resources\mipmap-anydpi-v26\ic_launcher.xml" />
-    <AndroidResource Include="Resources\mipmap-anydpi-v26\ic_launcher_round.xml" />
     <AndroidResource Include="Resources\mipmap-hdpi\ic_launcher.png" />
     <AndroidResource Include="Resources\mipmap-hdpi\ic_launcher_foreground.png" />
     <AndroidResource Include="Resources\mipmap-hdpi\ic_launcher_round.png" />
@@ -92,36 +87,26 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Xamarin.Android.Support.Design" Version="27.0.2.1" />
+    <PackageReference Include="Xamarin.GooglePlayServices.Location">
+      <Version>60.1142.1</Version>
+    </PackageReference>
     <PackageReference Include="Xamarin.GooglePlayServices.Maps">
       <Version>60.1142.1</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
-    <AndroidResource Include="Resources\layout\ActivityMaps.axml">
-      <SubType>Designer</SubType>
-    </AndroidResource>
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\menu\fragment_locatr.xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\values-w820dp\Dimensions.xml" />
-  </ItemGroup>
-  <ItemGroup>
+    <Content Include="Properties\AndroidManifest.xml" />
+    <AndroidResource Include="Resources\layout\ActivityFragment.axml" />
+    <AndroidResource Include="Resources\layout\ActivityMaps.axml" />
+    <AndroidResource Include="Resources\layout\FragmentLocatr.axml" />
+    <AndroidResource Include="Resources\menu\FragmentLocator.xml" />
+    <AndroidResource Include="Resources\values\Colors.xml" />
     <AndroidResource Include="Resources\values\Dimensions.xml" />
+    <AndroidResource Include="Resources\values-w820dp\Dimensions.xml" />
+    <AndroidResource Include="Resources\xml\GoogleMapsApi.xml" />
   </ItemGroup>
   <ItemGroup>
-    <AndroidResource Include="Resources\layout\ActivityFragment.axml">
-      <SubType>Designer</SubType>
-    </AndroidResource>
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\layout\FragmentLocatr.axml">
-      <SubType>Designer</SubType>
-    </AndroidResource>
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\xml\google_maps_api.xml" />
+    <Folder Include="Resources\mipmap-anydpi-v26\" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
