@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Text;
 using Android.App;
-using Android.Content;
 using Android.Content.PM;
 using Android.OS;
 using Android.Support.Design.Widget;
@@ -14,10 +13,9 @@ using Android.Widget;
 using Java.IO;
 using Java.Net;
 using Org.Json;
-using Console = System.Console;
 using JavaException = Java.Lang.Exception;
 using SupportToolbar = Android.Support.V7.Widget.Toolbar;
-using Ids=WeatherViewer.App.Resource.Id;
+using Ids = WeatherViewer.App.Resource.Id;
 using Strings = WeatherViewer.App.Resource.String;
 using JVoid = Java.Lang.Void;
 
@@ -29,22 +27,25 @@ namespace WeatherViewer.App
       ScreenOrientation = ScreenOrientation.Portrait)]
    public class MainActivity : AppCompatActivity
    {
-      private const string Tag = nameof(MainActivity);
-      private readonly List<Weather> _weatherList=new List<Weather>();  // Список объектов Weather, представляющих прогнох погоды
-      private WeatherArrayAdapter _weatherArrayAdapter;  // Связывает объекты Weather с элементами ListView
-      private ListView _weatherListView;  // Для вывода информации
+      private const string ErrorTag = nameof(MainActivity);
+
+      private readonly List<Weather>
+         _weatherList = new List<Weather>(); // Список объектов Weather, представляющих прогнох погоды
+
+      private WeatherArrayAdapter _weatherArrayAdapter; // Связывает объекты Weather с элементами ListView
+      private ListView _weatherListView; // Для вывода информации
 
       protected override void OnCreate(Bundle savedInstanceState)
       {
          base.OnCreate(savedInstanceState);
          SetContentView(Resource.Layout.ActivityMain);
 
-         var toolbar = FindViewById<SupportToolbar>(Resource.Id.toolbar);
+         var toolbar = FindViewById<SupportToolbar>(Ids.toolbar);
          SetSupportActionBar(toolbar);
 
          // ArrayAdapter для связывания weatherList с weatherListView
-         _weatherListView=FindViewById<ListView>(Ids.weatherListView);         
-         _weatherListView.Adapter= _weatherArrayAdapter=new WeatherArrayAdapter(this, _weatherList);
+         _weatherListView = FindViewById<ListView>(Ids.weatherListView);
+         _weatherListView.Adapter = _weatherArrayAdapter = new WeatherArrayAdapter(this, _weatherList);
 
          // FAB скрывает клавиатуру и выдает запрос к веб-сервису
          var fab = FindViewById<FloatingActionButton>(Ids.fab);
@@ -55,13 +56,13 @@ namespace WeatherViewer.App
       {
          // Получить текст из locationEditText и создать URL веб-сервисы
          var locationEditText = FindViewById<EditText>(Ids.locationEditText);
-         URL url = CreateUrl(locationEditText.Text);
+         var url = CreateUrl(locationEditText.Text);
 
          // Скрыть клавиатуру и запустить GetWeatherTask для получения погодных данных от OpenWeatherMap.org
          if (url != null)
          {
             DismissKeyboard(locationEditText);
-            GetWeatherTask getLocalWeatherTask=new GetWeatherTask(this);
+            var getLocalWeatherTask = new GetWeatherTask(this);
             getLocalWeatherTask.Execute(url);
          }
          else
@@ -73,17 +74,17 @@ namespace WeatherViewer.App
       }
 
       /// <summary>
-      /// Закрыть клавиатуру при нажатии на FloatingActionButton
+      ///    Закрыть клавиатуру при нажатии на FloatingActionButton
       /// </summary>
       /// <param name="view">Представление, инициирующее сокрытие</param>
       private void DismissKeyboard(View view)
       {
-         var inputMethodManager = (InputMethodManager)GetSystemService(Context.InputMethodService);
+         var inputMethodManager = (InputMethodManager) GetSystemService(InputMethodService);
          inputMethodManager.HideSoftInputFromWindow(view.WindowToken, 0);
       }
 
       /// <summary>
-      /// Создание URL веб-сервисы openweathermap.org для названия города
+      ///    Создание URL веб-сервисы openweathermap.org для названия города
       /// </summary>
       /// <param name="city">Название города</param>
       /// <returns>Нужный EndPoint URL</returns>
@@ -100,26 +101,54 @@ namespace WeatherViewer.App
          }
          catch (JavaException javaEx)
          {
-            Log.Error(Tag, javaEx, javaEx.Message);
+            Log.Error(ErrorTag, javaEx, javaEx.Message);
             return null;
          }
       }
 
+      /// <summary>
+      ///    Создание объектов Weather на базе JSONObject с прогнозом
+      /// </summary>
+      /// <param name="forecast">Информация о погоде</param>
       private void ConvertJsonToList(JSONObject forecast)
       {
+         _weatherList.Clear();
+
+         try
+         {
+            var list = forecast.GetJSONArray("list"); // Получение свойства "list" JSONArray
+
+            // Преобразовать каждый элемент списка в объект Weather
+            for (var i = 0; i < list.Length(); i++)
+            {
+               var day = list.GetJSONObject(i); // Данные за день
+               var temperatures = day.GetJSONObject("temp"); // Температуры дня
+               var weather = day.GetJSONArray("weather").GetJSONObject(0); // Описание и значок
+
+               // Добавить новый объект в список
+               _weatherList.Add(new Weather(
+                  day.GetLong("dt"), // Временная метка
+                  temperatures.GetDouble("min"), // Минимальная температура
+                  temperatures.GetDouble("max"), // Максимальная температура
+                  day.GetDouble("humidity"), // Процент влажности
+                  weather.GetString("description"), // Погодные условия
+                  weather.GetString("icon"))); // Имя значка
+            }
+         }
+         catch (JSONException jsonEx)
+         {
+            Log.Error(ErrorTag, jsonEx, jsonEx.Message);
+         }
       }
 
       /// <summary>
-      /// Обращение к REST-совместимому веб-сервису за погодными данными
+      ///    Обращение к REST-совместимому веб-сервису за погодными данными
       /// </summary>
-      private sealed class GetWeatherTask : AsyncTask<URL,JVoid,JSONObject>
+      private sealed class GetWeatherTask : AsyncTask<URL, JVoid, JSONObject>
       {
          private readonly MainActivity _context;
 
-         public GetWeatherTask(MainActivity context)
-         {
-            _context = context;
-         }
+         public GetWeatherTask(MainActivity context) => _context = context;
 
          protected override JSONObject RunInBackground(params URL[] @params)
          {
@@ -132,37 +161,35 @@ namespace WeatherViewer.App
                {
                   var response = connection.ResponseCode;
 
-                  if (response==HttpStatus.Ok)
+                  if (response == HttpStatus.Ok)
                   {
-                     StringBuilder builder=new StringBuilder();
+                     var builder = new StringBuilder();
 
                      try
                      {
                         using (var reader = new BufferedReader(new InputStreamReader(connection.InputStream)))
                         {
                            string line;
-                           while ((line=reader.ReadLine())!=null)
-                           {
+                           while ((line = reader.ReadLine()) != null)
                               builder.Append(line);
-                           }
                         }
                      }
                      catch (IOException ioEx)
-                     {                     
-                        Snackbar.Make(snackTarget, Strings.read_error,Snackbar.LengthLong).Show();
-                        Log.Error(Tag, ioEx, ioEx.Message);
+                     {
+                        Snackbar.Make(snackTarget, Strings.read_error, Snackbar.LengthLong).Show();
+                        Log.Error(ErrorTag, ioEx, ioEx.Message);
                      }
 
                      return new JSONObject(builder.ToString());
                   }
 
-                  Snackbar.Make(snackTarget,Strings.connect_error,Snackbar.LengthLong).Show();
+                  Snackbar.Make(snackTarget, Strings.connect_error, Snackbar.LengthLong).Show();
                }
             }
             catch (JavaException javaEx)
             {
-               Snackbar.Make(snackTarget,Strings.connect_error,Snackbar.LengthLong).Show();
-               Log.Error(Tag, javaEx, javaEx.Message);
+               Snackbar.Make(snackTarget, Strings.connect_error, Snackbar.LengthLong).Show();
+               Log.Error(ErrorTag, javaEx, javaEx.Message);
             }
 
             return null;
@@ -172,7 +199,7 @@ namespace WeatherViewer.App
          {
             _context.ConvertJsonToList(result); // Заполнение weatherList
             _context._weatherArrayAdapter.NotifyDataSetChanged(); // Обновить модель
-            _context._weatherListView.SmoothScrollToPosition(0);  // Прокрутить вверх
+            _context._weatherListView.SmoothScrollToPosition(0); // Прокрутить вверх
          }
       }
    }
