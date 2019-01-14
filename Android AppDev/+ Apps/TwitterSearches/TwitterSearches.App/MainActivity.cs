@@ -6,7 +6,6 @@ using Android.OS;
 using Android.Support.Design.Widget;
 using Android.Support.V7.App;
 using Android.Support.V7.Widget;
-using Android.Text;
 using Android.Views;
 using Android.Widget;
 using AppLayouts = AppDevUnited.TwitterSearches.App.Resource.Layout;
@@ -23,7 +22,7 @@ namespace AppDevUnited.TwitterSearches.App
       Theme = "@style/AppTheme.NoActionBar",
       MainLauncher = true,
       WindowSoftInputMode = SoftInput.StateAlwaysHidden)]
-   public class MainActivity : AppCompatActivity
+   public partial class MainActivity : AppCompatActivity
    {
       // Имя файла SharedPreferences с сохраненными запросами
       private const string Searches = nameof(Searches);
@@ -72,23 +71,16 @@ namespace AppDevUnited.TwitterSearches.App
 
          // Зарегистрировать обработчик для сохранения и редактирования
          _saveFloatingActionButton = FindViewById<FloatingActionButton>(AppIds.fab);
-         _saveFloatingActionButton.Click += OnFabClick;
+         _saveFloatingActionButton.SetOnClickListener(new SaveButtonClickListener(this));
          UpdateSaveFab(); // Скрыть кнопку, потому что поля EditText пусты
       }
 
       private void UpdateSaveFab()
       {
-         throw new NotImplementedException();
-      }
-
-      private void OnFabClick(object sender, EventArgs e)
-      {
-         throw new NotImplementedException();
-      }
-
-      private void OnTextChanged(object sender, TextChangedEventArgs e)
-      {
-         throw new NotImplementedException();
+         if (string.IsNullOrEmpty(_queryEditText.Text) || string.IsNullOrEmpty(_tagEditText.Text))
+            _saveFloatingActionButton.Hide();
+         else
+            _saveFloatingActionButton.Show();
       }
    }
 }
