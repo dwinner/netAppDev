@@ -63,6 +63,7 @@ namespace AppDevUnited.TwitterSearches.App
          recyclerView.SetLayoutManager(new LinearLayoutManager(this));
 
          // Создать RecyclerView.Adapter для связывания тэгов с RecyclerView
+         _itemClickListener = new SearchTagItemClickListener(this);
          _adapter = new SearchesAdapter(_tags, _itemClickListener, _itemLongClickListener);
          recyclerView.SetAdapter(_adapter);
 

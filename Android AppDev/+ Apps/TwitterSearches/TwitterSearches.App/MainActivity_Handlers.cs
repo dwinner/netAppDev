@@ -1,8 +1,12 @@
 ﻿using System;
+using Android.Content;
 using Android.Text;
 using Android.Views;
 using Android.Views.InputMethods;
+using Android.Widget;
 using JavaObj = Java.Lang.Object;
+using AppStrings = AppDevUnited.TwitterSearches.App.Resource.String;
+using Uri = Android.Net.Uri;
 
 namespace AppDevUnited.TwitterSearches.App
 {
@@ -55,6 +59,31 @@ namespace AppDevUnited.TwitterSearches.App
                _activity._tags.Sort(StringComparer.CurrentCultureIgnoreCase);
                _activity._adapter.NotifyDataSetChanged(); // Обновление тэгов в RecyclerView
             }
+         }
+      }
+
+      /// <summary>
+      ///    Запускает браузер для вывода результатов поиска
+      /// </summary>
+      private sealed class SearchTagItemClickListener : JavaObj, View.IOnClickListener
+      {
+         private readonly MainActivity _activity;
+
+         public SearchTagItemClickListener(MainActivity activity) => _activity = activity;
+
+         public void OnClick(View view)
+         {
+            // Получение строки запроса и создание URL для этого запроса
+            if (!(view is TextView textView))
+               return;
+
+            var tag = textView.Text;
+            var urlString =
+               $"{_activity.GetString(AppStrings.search_URL)}{Uri.Encode(_activity._savedSearches.GetString(tag, string.Empty), "UTF-8")}";
+
+            // Создание интента для запуска браузера
+            var webIntent = new Intent(Intent.ActionView, Uri.Parse(urlString));
+            _activity.StartActivity(webIntent); // Вывести результаты в браузер
          }
       }
    }
