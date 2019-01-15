@@ -1,9 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Android.Support.V7.Widget;
 using Android.Views;
 using Android.Widget;
 using AppIds = AppDevUnited.TwitterSearches.App.Resource.Id;
+using AppLayouts = AppDevUnited.TwitterSearches.App.Resource.Layout;
 
 namespace AppDevUnited.TwitterSearches.App
 {
@@ -13,11 +13,11 @@ namespace AppDevUnited.TwitterSearches.App
    public sealed class SearchesAdapter : RecyclerView.Adapter
    {
       // Слушатели главной активности, регистрируемые для каждого элемента списка
-      private View.IOnClickListener _itemClickListener;
-      private View.IOnLongClickListener _itemLongClickListener;
+      private readonly View.IOnClickListener _itemClickListener;
+      private readonly View.IOnLongClickListener _itemLongClickListener;
 
       // Список тэгов для хранения данных элементов RecyclerView
-      private List<string> _tags;
+      private readonly List<string> _tags;
 
       public SearchesAdapter(List<string> tags, View.IOnClickListener itemClickListener,
          View.IOnLongClickListener itemLongClickListener)
@@ -27,15 +27,36 @@ namespace AppDevUnited.TwitterSearches.App
          _itemLongClickListener = itemLongClickListener;
       }
 
-      public override int ItemCount { get; }
+      /// <summary>
+      ///    Возвращение кол-ва элементов, связываемых через адаптер
+      /// </summary>
+      public override int ItemCount => _tags.Count;
 
+      /// <summary>
+      ///    Назначение теста элемента списка для вывода тэга запроса
+      /// </summary>
+      /// <param name="holder"></param>
+      /// <param name="position"></param>
       public override void OnBindViewHolder(RecyclerView.ViewHolder holder, int position)
       {
-         throw new NotImplementedException();
+         if (holder is SearchViewHolder searchViewHolder)
+            searchViewHolder.TextView.Text = _tags[position];
       }
 
-      public override RecyclerView.ViewHolder OnCreateViewHolder(ViewGroup parent, int viewType) =>
-         throw new NotImplementedException();
+      /// <summary>
+      ///    Создает новый элемент списка и его объект ViewHolder
+      /// </summary>
+      /// <param name="parent"></param>
+      /// <param name="viewType"></param>
+      /// <returns></returns>
+      public override RecyclerView.ViewHolder OnCreateViewHolder(ViewGroup parent, int viewType)
+      {
+         // Заполнение макета list_item
+         var view = LayoutInflater.From(parent.Context).Inflate(AppLayouts.list_item, parent, false);
+
+         // Создание ViewHolder для текущего элемента
+         return new SearchViewHolder(view, _itemClickListener, _itemLongClickListener);
+      }
 
       /// <summary>
       ///    Вложенный класс, используемый для реализации пэттерна View-Holder в контексте
@@ -43,18 +64,19 @@ namespace AppDevUnited.TwitterSearches.App
       /// </summary>
       private sealed class SearchViewHolder : RecyclerView.ViewHolder
       {
-         private TextView _textView;
-
-         public SearchViewHolder(View itemView, View.IOnClickListener clickListener,
+         public SearchViewHolder(View itemView,
+            View.IOnClickListener clickListener,
             View.IOnLongClickListener longClickListener)
             : base(itemView)
          {
-            _textView = itemView.FindViewById<TextView>(AppIds.textView);
+            TextView = itemView.FindViewById<TextView>(AppIds.textView);
             // TODO: С тем же успехом можно было создать Callback-методы вместо интерфейсов
             // Связывание слушателей с itemView
             itemView.SetOnClickListener(clickListener);
             itemView.SetOnLongClickListener(longClickListener);
          }
+
+         public TextView TextView { get; }
       }
    }
 }
