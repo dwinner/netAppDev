@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Android.Support.V7.Widget;
 using Android.Views;
 using Android.Widget;
@@ -70,7 +71,7 @@ namespace AppDevUnited.TwitterSearches.App
             : base(itemView)
          {
             TextView = itemView.FindViewById<TextView>(AppIds.textView);
-            // TODO: С тем же успехом можно было создать Callback-методы вместо интерфейсов
+
             // Связывание слушателей с itemView
             itemView.SetOnClickListener(clickListener);
             itemView.SetOnLongClickListener(longClickListener);
