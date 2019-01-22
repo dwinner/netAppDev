@@ -47,7 +47,7 @@ namespace AppDevUnited.TwitterSearches.App
          _queryEditText = FindViewById<TextInputLayout>(AppIds.queryTextInputLayout).EditText;
          _queryEditText.TextChanged += OnTextChanged;
          _tagEditText = FindViewById<TextInputLayout>(AppIds.tagTextInputLayout).EditText;
-         _queryEditText.TextChanged += OnTextChanged;
+         _tagEditText.TextChanged += OnTextChanged;
 
          // Получить объект SharedPreferences с сохраненными запросами
          _savedSearches = GetSharedPreferences(Searches, FileCreationMode.Private);
