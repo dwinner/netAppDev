@@ -22,7 +22,7 @@
 			<EditText
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
-				android:id="@+id/editText"
+				android:id="@+id/nameEditText"
 				android:hint="@string/hint_name_required"
 				android:imeOptions="actionNext"
 				android:inputType="textCapWords|textPersonName"/>
@@ -37,7 +37,7 @@
 				<EditText
 					android:layout_width="match_parent"
 					android:layout_height="wrap_content"
-					android:id="@+id/editText2"
+					android:id="@+id/phoneEditText"
 					android:hint="@string/hint_phone"
 					android:imeOptions="actionNext"
 					android:inputType="phone"/>
@@ -52,7 +52,7 @@
 				<EditText
 					android:layout_width="match_parent"
 					android:layout_height="wrap_content"
-					android:id="@+id/editText3"
+					android:id="@+id/emailEditText"
 					android:hint="@string/hint_email"
 					android:imeOptions="actionNext"
 					android:inputType="textEmailAddress"/>
@@ -67,7 +67,7 @@
 				<EditText
 					android:layout_width="match_parent"
 					android:layout_height="wrap_content"
-					android:id="@+id/editText4"
+					android:id="@+id/streetEditText"
 					android:hint="@string/hint_street"
 					android:imeOptions="actionNext"
 					android:inputType="textCapWords|textPostalAddress"/>
@@ -82,7 +82,7 @@
 				<EditText
 					android:layout_width="match_parent"
 					android:layout_height="wrap_content"
-					android:id="@+id/editText5"
+					android:id="@+id/cityEditText"
 					android:hint="@string/hint_city"
 					android:imeOptions="actionNext"
 					android:inputType="textCapWords|textPostalAddress"/>
@@ -97,7 +97,7 @@
 				<EditText
 					android:layout_width="match_parent"
 					android:layout_height="wrap_content"
-					android:id="@+id/editText6"
+					android:id="@+id/stateEditText"
 					android:hint="@string/hint_state"
 					android:imeOptions="actionNext"
 					android:inputType="textPostalAddress|textCapCharacters"/>
@@ -112,7 +112,7 @@
 				<EditText
 					android:layout_width="match_parent"
 					android:layout_height="wrap_content"
-                    android:id="@+id/editText7"
+                    android:id="@+id/zipEditText"
                     android:hint="@string/hint_zip"
                     android:imeOptions="actionDone"
                     android:inputType="number"/>

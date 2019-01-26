@@ -18,7 +18,7 @@
 
 	<fragment
 		android:id="@+id/contactsFragment"
-		android:name="com.deitel.addressbook.ContactsFragment"
+		android:name="AppDevUnited.AddressBook.ContactsFragment"
 		android:layout_width="0dp"
 		android:layout_height="match_parent"
 		android:layout_marginEnd="@dimen/divider_margin"
