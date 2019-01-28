@@ -11,6 +11,7 @@ using Android.Util;
 using Android.Views;
 using FragmentV4=Android.Support.V4.App.Fragment;
 using Android.Widget;
+using Uri = Android.Net.Uri;
 
 namespace AppDevUnited.AddressBook.App
 {
@@ -29,6 +30,13 @@ namespace AppDevUnited.AddressBook.App
          // return inflater.Inflate(Resource.Layout.YourFragment, container, false);
 
          return base.OnCreateView(inflater, container, savedInstanceState);
+      }
+
+      public interface IContactsFragmentListener
+      {
+         void OnContactSelected(Uri contactsUri);
+
+         void OnAddContact();
       }
    }
 }

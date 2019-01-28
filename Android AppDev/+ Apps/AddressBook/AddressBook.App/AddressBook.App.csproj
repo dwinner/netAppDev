@@ -56,10 +56,12 @@
     <Reference Include="Mono.Android" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AddEditFragment.cs" />
     <Compile Include="ContactsFragment.cs" />
     <Compile Include="Data\AddressBookContentProvider.cs" />
     <Compile Include="Data\AddressBookDatabaseHelper.cs" />
     <Compile Include="Data\DatabaseDescription.cs" />
+    <Compile Include="DetailFragment.cs" />
     <Compile Include="MainActivity.cs" />
     <Compile Include="Resources\Resource.designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
