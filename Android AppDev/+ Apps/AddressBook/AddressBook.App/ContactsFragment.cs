@@ -38,5 +38,13 @@ namespace AppDevUnited.AddressBook.App
 
          void OnAddContact();
       }
+
+      /// <summary>
+      /// Обновление контактов
+      /// </summary>
+      public void UpdateContactList()
+      {
+         throw new NotImplementedException();
+      }
    }
 }

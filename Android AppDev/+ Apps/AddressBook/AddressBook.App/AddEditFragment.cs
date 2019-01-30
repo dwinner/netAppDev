@@ -7,7 +7,7 @@ namespace AppDevUnited.AddressBook.App
    {
       public interface IAddEditFragmentListener
       {
-         void OnAddEditCompleted(Uri uri);
+         void OnAddEditCompleted(Uri contactUri);
       }
    }
 }

@@ -9,7 +9,7 @@ namespace AppDevUnited.AddressBook.App
       {
          void OnContactDeleted();
 
-         void OnEditContact(Uri contactsUri);
+         void OnEditContact(Uri contactUri);
       }
    }
 }
