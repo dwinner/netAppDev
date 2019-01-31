@@ -45,18 +45,18 @@ namespace AppDevUnited.AddressBook.App
       /// <summary>
       ///    Отображение DetailFragment для выбранного контакта
       /// </summary>
-      /// <param name="contactsUri"></param>
-      public void OnContactSelected(Uri contactsUri)
+      /// <param name="contactUri">URI-контакта</param>
+      public void OnContactSelected(Uri contactUri)
       {
          if (FindViewById<FrameLayout>(PhoneFrameLayoutId) != null) // Телефон
          {
-            DisplayContact(contactsUri, PhoneFrameLayoutId);
+            DisplayContact(contactUri, PhoneFrameLayoutId);
          }
          else // Планшет
          {
             // Извлечение с вершины стэка возврата
             SupportFragmentManager.PopBackStack();
-            DisplayContact(contactsUri, TabletRightPaneContainer);
+            DisplayContact(contactUri, TabletRightPaneContainer);
          }
       }
 
