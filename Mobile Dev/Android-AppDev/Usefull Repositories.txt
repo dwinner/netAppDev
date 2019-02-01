@@ -1,2 +1,0 @@
-https://github.com/xamarin
-https://github.com/commonsguy/cw-omnibus.git
