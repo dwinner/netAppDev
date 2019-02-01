@@ -1,9 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
-<testedFilesList>
-    <testedFile>
-        <solutionFileName>Solution1.sln</solutionFileName>
-        <configName>Debug</configName>
-        <platform>Win32</platform>
-        <preprocessor>Clang</preprocessor>
-    </testedFile>
-</testedFilesList>

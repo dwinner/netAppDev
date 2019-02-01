@@ -1,7 +1,0 @@
-﻿<ResourceDictionary
-    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
-    <ResourceDictionary.MergedDictionaries>
-        <ResourceDictionary Source="/AppDev.Sapper.MinefieldControl;component/themes/minefield.xaml" />
-        <ResourceDictionary Source="/AppDev.Sapper.MinefieldControl;component/themes/minefieldListBox.xaml" />
-    </ResourceDictionary.MergedDictionaries>
-</ResourceDictionary>

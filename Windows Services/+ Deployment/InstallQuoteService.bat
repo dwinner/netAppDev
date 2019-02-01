@@ -1,2 +1,0 @@
-installutil QuoteService.exe
-pause
