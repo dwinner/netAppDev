@@ -1,9 +1,0 @@
-USE Northwind
-GO
-
-CREATE PROCEDURE RegionSelect
-AS
-	SET NOCOUNT OFF
-	SELECT *
-	FROM   Region
-GO
