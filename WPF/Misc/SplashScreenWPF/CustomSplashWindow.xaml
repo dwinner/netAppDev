@@ -1,6 +1,0 @@
-﻿<Window x:Class="SplashScreenWPF.CustomSplashWindow"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Splash Screen Demo - Main Window" Height="312" Width="388" WindowStartupLocation="CenterScreen">
-    <Grid />
-</Window>
