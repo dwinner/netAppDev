@@ -1,0 +1,14 @@
+﻿<Window x:Class="AttachedEventSample.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="MainWindow" Height="350" Width="525">
+    <StackPanel ButtonBase.Click="OnTopHandle">
+        <Button Name="Cmd1Button" Tag="Cmd1" Content="Command 1"/>
+        <Button Name="Cmd2Button" Tag="Cmd2" Content="Command 2"/>
+        <Button Name="Cmd3Button" Tag="Cmd3" Content="Command 3"/>
+        <Button Name="Cmd4Button" Tag="Cmd4" Content="Command 4"/>
+        <Button Name="Cmd5Button" Tag="Cmd5" Content="Command 5"/>
+        <Button Name="Cmd6Button" Tag="Cmd6" Content="Command 6"/>
+        <Button Name="Cmd7Button" Tag="Cmd7" Content="Command 7"/>
+    </StackPanel>
+</Window>

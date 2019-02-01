@@ -1,0 +1,58 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.40629.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CustomAppDomains", "CustomAppDomains\CustomAppDomains.csproj", "{5723974B-1C65-4C3D-96FE-E03655CEFFC4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DefaultAppDomainApp", "DefaultAppDomainApp\DefaultAppDomainApp.csproj", "{FFB2405D-F111-43FD-A752-36564EACC8B4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ObjectContextApp", "ObjectContextApp\ObjectContextApp.csproj", "{54493C17-6050-4C88-A52C-F8507535E189}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Marshalling", "Marshalling\Marshalling.csproj", "{1F91D29A-5256-437D-9ADD-26982E134383}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MarshallingAndPerf", "MarshallingAndPerf\MarshallingAndPerf.csproj", "{15B64354-D156-49E6-BD07-3C67495AD891}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AppDomainMonitoring", "AppDomainMonitoring\AppDomainMonitoring.csproj", "{48E16FA1-E536-49CB-9074-F257051B1E5D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AppContextSample", "AppContextSample\AppContextSample.csproj", "{D3A31365-D4EF-4298-B3E5-4272E0EDE507}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{5723974B-1C65-4C3D-96FE-E03655CEFFC4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5723974B-1C65-4C3D-96FE-E03655CEFFC4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5723974B-1C65-4C3D-96FE-E03655CEFFC4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5723974B-1C65-4C3D-96FE-E03655CEFFC4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FFB2405D-F111-43FD-A752-36564EACC8B4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FFB2405D-F111-43FD-A752-36564EACC8B4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FFB2405D-F111-43FD-A752-36564EACC8B4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FFB2405D-F111-43FD-A752-36564EACC8B4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{54493C17-6050-4C88-A52C-F8507535E189}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{54493C17-6050-4C88-A52C-F8507535E189}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{54493C17-6050-4C88-A52C-F8507535E189}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{54493C17-6050-4C88-A52C-F8507535E189}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1F91D29A-5256-437D-9ADD-26982E134383}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1F91D29A-5256-437D-9ADD-26982E134383}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1F91D29A-5256-437D-9ADD-26982E134383}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1F91D29A-5256-437D-9ADD-26982E134383}.Release|Any CPU.Build.0 = Release|Any CPU
+		{15B64354-D156-49E6-BD07-3C67495AD891}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{15B64354-D156-49E6-BD07-3C67495AD891}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{15B64354-D156-49E6-BD07-3C67495AD891}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{15B64354-D156-49E6-BD07-3C67495AD891}.Release|Any CPU.Build.0 = Release|Any CPU
+		{48E16FA1-E536-49CB-9074-F257051B1E5D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{48E16FA1-E536-49CB-9074-F257051B1E5D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{48E16FA1-E536-49CB-9074-F257051B1E5D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{48E16FA1-E536-49CB-9074-F257051B1E5D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D3A31365-D4EF-4298-B3E5-4272E0EDE507}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D3A31365-D4EF-4298-B3E5-4272E0EDE507}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D3A31365-D4EF-4298-B3E5-4272E0EDE507}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D3A31365-D4EF-4298-B3E5-4272E0EDE507}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

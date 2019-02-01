@@ -1,0 +1,1 @@
+peverify NewAssembly.exe

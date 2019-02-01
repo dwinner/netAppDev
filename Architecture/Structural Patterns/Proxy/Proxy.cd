@@ -1,0 +1,42 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1" MembersFormat="FullSignature">
+  <Class Name="Proxy.AddressBookImpl" BaseTypeListCollapsed="true">
+    <Position X="7.25" Y="0.5" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AAIAAIAAAAAAIAQIAAAAAAAAAAAAAAACAAAAAAAAAAA=</HashCode>
+      <FileName>AddressBookImpl.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Proxy.AddressBookProxy" BaseTypeListCollapsed="true">
+    <Position X="7.25" Y="4" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AAIAAIAAAAAAIAAIABAAAAAAAAAAAAACAAAAAAAAMAA=</HashCode>
+      <FileName>AddressBookProxy.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Proxy.AddressImpl" BaseTypeListCollapsed="true">
+    <Position X="0.75" Y="3.25" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAgAAAIAAAAAAAAAAAAAAADAQIABAAAAAA=</HashCode>
+      <FileName>AddressImpl.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Interface Name="Proxy.IAddress">
+    <Position X="0.75" Y="0.5" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAgAAAIAAAAAAAAAAAAAAADAQIABAAAAAA=</HashCode>
+      <FileName>IAddress.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Proxy.IAddressBook&lt;T&gt;">
+    <Position X="3.5" Y="2.75" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAIAAIAAAAAAIAAIAAAAAAAAAAAAAAACAAAAAAAAAAA=</HashCode>
+      <FileName>IAddressBook.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

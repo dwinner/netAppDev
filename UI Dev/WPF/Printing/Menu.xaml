@@ -1,0 +1,18 @@
+﻿<Window x:Class="Printing.Menu"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Menu" Height="321" Width="244">
+    <Grid>
+        <StackPanel Margin="5" Button.Click="ButtonClick">
+            <Button Content="PrintVisual" />
+            <Button Content="PrintScaledVisual" />
+            <Button Content="PrintFlowDocument" />
+            <Button Content="PrintFlowDocumentWithHeader" />
+            <Button Content="PrintCustomPage" />
+            <Button Content="PrintCustomPages" />
+            <Button Content="PrintWithoutUserIntervention" />
+            <Button Content="PrintQueues" />
+            <Button>Xps</Button>
+        </StackPanel>
+    </Grid>
+</Window>

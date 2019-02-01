@@ -1,0 +1,36 @@
+﻿<UserControl x:Class="FuelEconomy.FuelEconomy"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:fuelEconomy="clr-namespace:FuelEconomy"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300" d:DataContext="{fuelEconomy:FuelEconomyViewModel}">
+   <Grid>
+      <Grid.RowDefinitions>
+         <RowDefinition/>
+         <RowDefinition/>
+         <RowDefinition/>
+         <RowDefinition/>
+      </Grid.RowDefinitions>
+      <Grid.ColumnDefinitions>
+         <ColumnDefinition/>
+         <ColumnDefinition/>
+      </Grid.ColumnDefinitions>
+      <ComboBox Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Margin="5" ItemsSource="{Binding FuelEcoTypes}"
+                SelectedIndex="0" VerticalAlignment="Center" IsSynchronizedWithCurrentItem="True"
+                SelectedItem="{Binding SelectedFuelEcoType, Mode=OneWay}" />
+      <TextBlock Grid.Row="1" Grid.Column="0" x:Name="DistanceTextBlock" Margin="5"
+                 Text="{Binding Path=SelectedFuelEcoType.DistanceText}"/>
+      <TextBox Grid.Row="1" Grid.Column="1" x:Name="DistanceTextBox" Margin="5"
+               Text="{Binding Distance}"/>
+      <TextBlock Grid.Row="2" Grid.Column="0" Margin="5" x:Name="FuelTextBlock"
+                 Text="{Binding Path=SelectedFuelEcoType.FuelText}"/>
+      <TextBox Grid.Row="2" Grid.Column="1" Margin="5" x:Name="FuelTextBox"
+               Text="{Binding Fuel}"/>
+      <Button Grid.Row="3" Grid.Column="0" Margin="5" x:Name="CalculateButton" Content="Calculate"
+              Click="CalculateButton_OnClick" />
+      <TextBlock Grid.Row="3" Grid.Column="1" x:Name="ResulTextBlock" Margin="5"
+                 Text="{Binding Result}"/>
+   </Grid>
+</UserControl>

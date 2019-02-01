@@ -1,0 +1,112 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1" MembersFormat="FullSignature">
+  <Class Name="Flyweight.AudioComparerFactory">
+    <Position X="0.5" Y="3.25" Width="6" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>AudioComparerFactory.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Flyweight.AudioComparerFlyweight">
+    <Position X="0.5" Y="0.5" Width="5.5" />
+    <TypeIdentifier>
+      <HashCode>AAAEAAAAAAAAAAAACAAAAAgAAAAAAAAAQAAAAAAAAAA=</HashCode>
+      <FileName>AudioComparerFlyweight.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Flyweight.AudioEntity">
+    <Position X="0.5" Y="4.75" Width="3" />
+    <TypeIdentifier>
+      <HashCode>AAAAgEABBAACgAEEAAIAAAAAAAAAAAAAAAAACAAAAgA=</HashCode>
+      <FileName>AudioEntity.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Flyweight.AudioComparers.AlbumAudioComparer" BaseTypeListCollapsed="true">
+    <Position X="7" Y="2" Width="3" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAA=</HashCode>
+      <FileName>AudioComparers\AlbumAudioComparer.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Flyweight.AudioComparers.BitrateAudioComparer" BaseTypeListCollapsed="true">
+    <Position X="10.25" Y="0.5" Width="3" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAA=</HashCode>
+      <FileName>AudioComparers\BitrateAudioComparer.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Flyweight.AudioComparers.DurationAudioComparer" BaseTypeListCollapsed="true">
+    <Position X="7" Y="6.5" Width="3.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAA=</HashCode>
+      <FileName>AudioComparers\DurationAudioComparer.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Flyweight.AudioComparers.GenreAudioComparer" BaseTypeListCollapsed="true">
+    <Position X="10.5" Y="5" Width="3.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAA=</HashCode>
+      <FileName>AudioComparers\GenreAudioComparer.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Flyweight.AudioComparers.GroupAudioComparer" BaseTypeListCollapsed="true">
+    <Position X="10.5" Y="3.5" Width="3.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAA=</HashCode>
+      <FileName>AudioComparers\GroupAudioComparer.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Flyweight.AudioComparers.RecordFormatAudioComparer" BaseTypeListCollapsed="true">
+    <Position X="7" Y="0.5" Width="3" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAA=</HashCode>
+      <FileName>AudioComparers\RecordFormatAudioComparer.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Flyweight.AudioComparers.SizeAudioComparer" BaseTypeListCollapsed="true">
+    <Position X="7" Y="5" Width="3.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAA=</HashCode>
+      <FileName>AudioComparers\SizeAudioComparer.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Flyweight.AudioComparers.TrackNameAudioComparer" BaseTypeListCollapsed="true">
+    <Position X="7" Y="3.5" Width="3.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAA=</HashCode>
+      <FileName>AudioComparers\TrackNameAudioComparer.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Flyweight.AudioComparers.TrackUrlAudioComparer" BaseTypeListCollapsed="true">
+    <Position X="10.25" Y="2" Width="3" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAA=</HashCode>
+      <FileName>AudioComparers\TrackUrlAudioComparer.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Flyweight.AudioComparers.YearAudioComparer" BaseTypeListCollapsed="true">
+    <Position X="10.5" Y="6.5" Width="3.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAA=</HashCode>
+      <FileName>AudioComparers\YearAudioComparer.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Enum Name="Flyweight.AudioComparisonType">
+    <Position X="3.75" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAgEABBAACgAEAAAIAAAAAAAAAAAAAAAAACAAAAgA=</HashCode>
+      <FileName>AudioComparisonType.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

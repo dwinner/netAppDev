@@ -1,0 +1,20 @@
+﻿<Window x:Class="ListViewDnDSample.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="List view DnD" Height="350" Width="525">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition />
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+
+        <ListView x:Name="DragListView" Grid.Column="0"
+                  PreviewMouseLeftButtonDown="DragListView_OnPreviewMouseLeftButtonDown"
+                  PreviewMouseMove="DragListView_OnPreviewMouseMove"/>
+        
+        <ListView x:Name="DropListView" Grid.Column="1"
+                  Drop="DropListView_OnDrop"
+                  DragEnter="DropListView_OnDragEnter"
+                  AllowDrop="True"/>
+    </Grid>
+</Window>

@@ -1,0 +1,10 @@
+﻿CREATE TABLE [dbo].[LocMessages]
+(
+   [Id] INT NOT NULL PRIMARY KEY IDENTITY, 
+    [Key] VARCHAR(50) NOT NULL, 
+    [Default] NVARCHAR(255) NULL, 
+    [De] NVARCHAR(255) NULL, 
+    [Es] NVARCHAR(255) NULL, 
+    [Fr] NVARCHAR(255) NULL, 
+    [It] NVARCHAR(255) NULL
+)

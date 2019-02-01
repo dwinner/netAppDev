@@ -1,0 +1,2 @@
+csc HelloProgram.cs
+pause

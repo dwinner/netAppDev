@@ -1,0 +1,59 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1" MembersFormat="FullSignature">
+  <Class Name="Memento.AddressBook" BaseTypeListCollapsed="true">
+    <Position X="0.75" Y="3" Width="4" />
+    <Compartments>
+      <Compartment Name="Nested Types" Collapsed="false" />
+    </Compartments>
+    <NestedTypes>
+      <Class Name="Memento.AddressBook.AddressBookMemento">
+        <TypeIdentifier>
+          <NewMemberFileName>AddressBook.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>BAIAAAAAAAAgACAEAAAABAAAAAAAAAAAIAAAAAAAAAA=</HashCode>
+      <FileName>AddressBook.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Memento.AddressImpl" BaseTypeListCollapsed="true">
+    <Position X="8.75" Y="3" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAgAAAMAAAAAAAAAAAAAAABAQIABAAAAAA=</HashCode>
+      <FileName>AddressImpl.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Memento.ContactImpl" BaseTypeListCollapsed="true">
+    <Position X="5.5" Y="3" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAEAAAAAAAEAEgAAAAAAAAAAAAIACAAAAAAAAIig=</HashCode>
+      <FileName>ContactImpl.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Interface Name="Memento.IAddress">
+    <Position X="8.75" Y="0.5" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAgAAAIAAAAAAAAAAAAAAABAQIABAAAAAA=</HashCode>
+      <FileName>IAddress.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Memento.IAddressBook">
+    <Position X="0.75" Y="0.5" Width="4" />
+    <TypeIdentifier>
+      <HashCode>BAIAAAAAAAAgAAAAAAAABAAAAAAAAAAAIAAAAAAAAAA=</HashCode>
+      <FileName>IAddressBook.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Memento.IContact">
+    <Position X="5.5" Y="0.5" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAEAAAAAAAEAAAAAAAAAAAAAAAAACAAAAAAAAIAg=</HashCode>
+      <FileName>IContact.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

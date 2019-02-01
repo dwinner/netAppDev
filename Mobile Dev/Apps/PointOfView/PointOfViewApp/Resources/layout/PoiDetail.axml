@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<FrameLayout xmlns:adr="http://schemas.android.com/apk/res/android"
+    adr:minWidth="25px"
+    adr:minHeight="25px"
+    adr:layout_width="match_parent"
+    adr:layout_height="match_parent"
+    adr:id="@+id/poiDetailLayout" />

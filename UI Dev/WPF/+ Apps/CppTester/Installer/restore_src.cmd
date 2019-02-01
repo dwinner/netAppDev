@@ -1,0 +1,1 @@
+ROBOCOPY "%CD%\src_etalon" "%CD%\src" *.sln *.vcproj *.props *.vsprops /s /IS

@@ -1,0 +1,30 @@
+﻿<Window x:Class="DataBinding.ElementToElementBinding"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="ElementToElementBinding" Height="300" Width="300">
+    <StackPanel Margin="5">
+
+        <Slider Name="FontSizeSlider" Margin="3" Minimum="1" Maximum="40" Value="10" TickFrequency="1"
+                IsSnapToTickEnabled="True" TickPlacement="TopLeft" />
+
+        <TextBlock Margin="10" Name="SampleTextBlock"
+                   FontSize="{Binding ElementName=FontSizeSlider, Path=Value, Mode=TwoWay}"
+                   Text="Simple Text" />
+
+        <StackPanel Orientation="Horizontal">
+            <Button Margin="5" Padding="3" Click="OnSetSmallClick" Content="Set to Small"/>
+            <Button Margin="5" Padding="3" Click="OnSetNormalClick" Content="Set to Normal"/>
+            <Button Margin="5" Padding="3" Click="OnSetLargeClick" Content="Set to Large"/>
+        </StackPanel>
+
+        <StackPanel Orientation="Horizontal" Margin="5">
+            <TextBlock VerticalAlignment="Center" xml:space="preserve">Exact Size:  </TextBlock>
+            <TextBox Name="BoundTextBox"
+                     Text="{Binding ElementName=SampleTextBlock, Path=FontSize, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay, Delay=500}"
+                     Width="100" />
+        </StackPanel>
+
+        <Button Margin="5" Padding="3" HorizontalAlignment="Left" Click="OnGetBoundObject"
+                Content="Get Bound Object" />
+    </StackPanel>
+</Window>

@@ -1,0 +1,2 @@
+net stop QuoteService
+pause
