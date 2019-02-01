@@ -23,6 +23,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NotifyPropertyChangedGenera
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DevenvCodeModelSample", "DevenvCodeModelSample\DevenvCodeModelSample.csproj", "{436EA9CE-F477-4662-B711-E561D1AC865D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sandbox", "Sandbox\Sandbox.csproj", "{811CB3A6-71A9-47CF-8860-B4526A599772}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -69,6 +71,10 @@ Global
 		{436EA9CE-F477-4662-B711-E561D1AC865D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{436EA9CE-F477-4662-B711-E561D1AC865D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{436EA9CE-F477-4662-B711-E561D1AC865D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{811CB3A6-71A9-47CF-8860-B4526A599772}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{811CB3A6-71A9-47CF-8860-B4526A599772}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{811CB3A6-71A9-47CF-8860-B4526A599772}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{811CB3A6-71A9-47CF-8860-B4526A599772}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
