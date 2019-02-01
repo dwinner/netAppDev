@@ -1,1 +1,0 @@
-resgen Dwinner.Localization.Resources.txt Dwinner.Localization.Resources.resX
