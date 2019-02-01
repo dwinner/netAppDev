@@ -1,8 +1,0 @@
-{
-  "profiles": {
-    "SocketServer": {
-      "commandName": "SocketServer",
-      "commandLineArgs": "9200"
-    }
-  }
-}
