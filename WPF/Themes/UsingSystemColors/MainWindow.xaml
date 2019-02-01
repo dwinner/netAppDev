@@ -1,8 +1,0 @@
-﻿<Window x:Class="UsingSystemColors.MainWindow"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="System colors theme" Height="350" Width="525">
-    <StackPanel Orientation="Horizontal">
-        <ProgressBar Style="{StaticResource PieStyle}" Width="100" Height="100" Value="75"/>
-    </StackPanel>
-</Window>

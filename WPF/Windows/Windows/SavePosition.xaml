@@ -1,9 +1,0 @@
-﻿<Window x:Class="Windows.SavePosition"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="SavePosition" Height="300" Width="300">
-    <StackPanel Margin="10">
-        <Button Click="OnSave" Content="Save Position and Size" />
-        <Button Click="OnRestore" Content="Restore Position and Size" />
-    </StackPanel>
-</Window>
