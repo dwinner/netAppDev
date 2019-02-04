@@ -1,9 +1,11 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Build.Locator;
 using Microsoft.CodeAnalysis.MSBuild;
+using MoreLinq;
 
 namespace GatheringOverrides
 {
@@ -31,6 +33,11 @@ namespace GatheringOverrides
          {
             // Print message for WorkspaceFailed event to help diagnosing project load failures.
             workspace.WorkspaceFailed += (o, e) => Console.WriteLine(e.Diagnostic.Message);
+            if (args.Length == 0)
+            {
+               Console.WriteLine("Usage: Program Path_To_Solution");
+               return;
+            }
 
             var solutionPath = args[0];
             Console.WriteLine($"Loading solution '{solutionPath}'");
@@ -40,14 +47,16 @@ namespace GatheringOverrides
                .ConfigureAwait(false);
             Console.WriteLine($"Finished loading solution '{solutionPath}'");
 
-            // TODO: Do analysis on the projects in the loaded solution
+            // Gathering overrides of the desired type, i.e...
+            var projects = solution.Projects;
+            projects.ForEach(Console.WriteLine);
          }
       }
 
-      private static VisualStudioInstance SelectVisualStudioInstance(VisualStudioInstance[] visualStudioInstances)
+      private static VisualStudioInstance SelectVisualStudioInstance(IReadOnlyList<VisualStudioInstance> visualStudioInstances)
       {
          Console.WriteLine("Multiple installs of MSBuild detected please select one:");
-         for (var i = 0; i < visualStudioInstances.Length; i++)
+         for (var i = 0; i < visualStudioInstances.Count; i++)
          {
             Console.WriteLine($"Instance {i + 1}");
             Console.WriteLine($"    Name: {visualStudioInstances[i].Name}");
@@ -60,7 +69,7 @@ namespace GatheringOverrides
             var userResponse = Console.ReadLine();
             if (int.TryParse(userResponse, out var instanceNumber) &&
                 instanceNumber > 0 &&
-                instanceNumber <= visualStudioInstances.Length)
+                instanceNumber <= visualStudioInstances.Count)
             {
                return visualStudioInstances[instanceNumber - 1];
             }
