@@ -1,9 +1,13 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Build.Locator;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.MSBuild;
 using MoreLinq;
 
@@ -48,8 +52,52 @@ namespace GatheringOverrides
             Console.WriteLine($"Finished loading solution '{solutionPath}'");
 
             // Gathering overrides of the desired type, i.e...
-            var projects = solution.Projects;
-            projects.ForEach(Console.WriteLine);
+            var projectToFind = solution.Projects.FirstOrDefault(project => project.Name== "WpfApp");
+            var documentToFind = projectToFind?.Documents.FirstOrDefault(document => document.Name== "MainWindow.xaml.cs");
+            if (documentToFind != null)
+            {
+               var model = await documentToFind.GetSemanticModelAsync().ConfigureAwait(false);
+               var root = await documentToFind.GetSyntaxRootAsync().ConfigureAwait(false);
+               //var tree = await documentToFind.GetSyntaxTreeAsync().ConfigureAwait(false);
+               var classToFind = root.DescendantNodes(_ => true)
+                  .OfType<ClassDeclarationSyntax>()
+                  .FirstOrDefault(classDecl => classDecl.Identifier.ToString() == "MainWindow");
+               if (classToFind != null)
+               {
+                  var declTypeSymbol = model.GetDeclaredSymbol(classToFind);
+                  if (declTypeSymbol != null)
+                  {
+                     var baseTypesWithSelf = declTypeSymbol.GetBaseTypesAndSelf();
+                     foreach (var typeSymbol in baseTypesWithSelf)
+                     {
+                        var accesableMembers = typeSymbol.GetMembers();
+                        foreach (var memberSymbol in accesableMembers)
+                        {
+                           if (memberSymbol.IsVirtual || memberSymbol.IsOverride || memberSymbol.IsAbstract)
+                           {
+                              switch (memberSymbol)
+                              {
+                                 case IMethodSymbol methodSymbol:
+                                    //Console.WriteLine(methodSymbol);
+                                    //var documentationCommentXml = methodSymbol.GetDocumentationCommentXml(CultureInfo.CurrentCulture);
+                                    //Console.WriteLine(documentationCommentXml);
+                                    break;
+
+                                 case IPropertySymbol propertySymbol:
+                                    var getMethod = propertySymbol.GetMethod;
+                                    var setMethod = propertySymbol.SetMethod;
+                                    var propertyName = propertySymbol.Name;
+                                    var propertyType = propertySymbol.Type.Name;
+                                    var isReadOnly = propertySymbol.IsReadOnly;
+                                    var isWriteOnly = propertySymbol.IsWriteOnly;
+                                    break;
+                              }
+                           }
+                        }
+                     }
+                  }
+               }
+            }
          }
       }
 
@@ -78,7 +126,7 @@ namespace GatheringOverrides
          }
       }
 
-      private class ConsoleProgressReporter : IProgress<ProjectLoadProgress>
+      private sealed class ConsoleProgressReporter : IProgress<ProjectLoadProgress>
       {
          public void Report(ProjectLoadProgress loadProgress)
          {

@@ -6,5 +6,9 @@
       {
          InitializeComponent();
       }
+
+      public int MyProperty { get; set; }
+
+      protected override bool IsEnabledCore => base.IsEnabledCore;
    }
 }
