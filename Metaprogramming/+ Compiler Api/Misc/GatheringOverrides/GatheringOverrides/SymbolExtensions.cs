@@ -39,7 +39,7 @@ namespace GatheringOverrides
          }
 
          var typeSymbols = new HashSet<ITypeSymbol>(SymbolEqualityComparer.Default);
-         GatherTypeSymbols(typeSymbols, typeSymbol);
+         typeSymbol.GatherBaseTypes(typeSymbols);
 
          BaseTypeCache[typeName] = typeSymbols;
          if (!includeItself)
@@ -53,10 +53,10 @@ namespace GatheringOverrides
       /// <summary>
       ///    Recusrively visits all base types and saves them in <paramref name="typeSet" />
       /// </summary>
-      /// <param name="typeSet">Type symbols</param>
       /// <param name="typeSymbol">Type symbol</param>
-      private static void GatherTypeSymbols(ISet<ITypeSymbol> typeSet, ITypeSymbol typeSymbol)
-      { // TODO: Had better use return value instead of typeSet parameter
+      /// <param name="typeSet">Type symbols</param>
+      private static void GatherBaseTypes(this ITypeSymbol typeSymbol, ISet<ITypeSymbol> typeSet)
+      {
          while (true)
          {
             if (typeSymbol == null)
@@ -71,7 +71,7 @@ namespace GatheringOverrides
                   typeSet.Add(symbolInterface);
 
                foreach (var currentInterface in typeSymbol.Interfaces)
-                  GatherTypeSymbols(typeSet, currentInterface);
+                  currentInterface.GatherBaseTypes(typeSet);
             }
 
             typeSymbol = typeSymbol.BaseType;
