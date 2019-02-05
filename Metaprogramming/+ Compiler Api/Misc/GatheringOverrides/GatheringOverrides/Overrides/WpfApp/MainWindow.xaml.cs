@@ -7,8 +7,6 @@
          InitializeComponent();
       }
 
-      public int MyProperty { get; set; }
-
-      protected override bool IsEnabledCore => base.IsEnabledCore;
+      protected virtual int Own { get; set; }      
    }
 }

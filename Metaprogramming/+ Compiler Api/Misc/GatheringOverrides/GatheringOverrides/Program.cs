@@ -1,15 +1,12 @@
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Build.Locator;
-using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.MSBuild;
-using MoreLinq;
 
 namespace GatheringOverrides
 {
@@ -52,13 +49,13 @@ namespace GatheringOverrides
             Console.WriteLine($"Finished loading solution '{solutionPath}'");
 
             // Gathering overrides of the desired type, i.e...
-            var projectToFind = solution.Projects.FirstOrDefault(project => project.Name== "WpfApp");
-            var documentToFind = projectToFind?.Documents.FirstOrDefault(document => document.Name== "MainWindow.xaml.cs");
+            var projectToFind = solution.Projects.FirstOrDefault(project => project.Name == "WpfApp");
+            var documentToFind =
+               projectToFind?.Documents.FirstOrDefault(document => document.Name == "MainWindow.xaml.cs");
             if (documentToFind != null)
             {
                var model = await documentToFind.GetSemanticModelAsync().ConfigureAwait(false);
                var root = await documentToFind.GetSyntaxRootAsync().ConfigureAwait(false);
-               //var tree = await documentToFind.GetSyntaxTreeAsync().ConfigureAwait(false);
                var classToFind = root.DescendantNodes(_ => true)
                   .OfType<ClassDeclarationSyntax>()
                   .FirstOrDefault(classDecl => classDecl.Identifier.ToString() == "MainWindow");
@@ -67,33 +64,23 @@ namespace GatheringOverrides
                   var declTypeSymbol = model.GetDeclaredSymbol(classToFind);
                   if (declTypeSymbol != null)
                   {
-                     var baseTypesWithSelf = declTypeSymbol.GetBaseTypesAndSelf();
-                     foreach (var typeSymbol in baseTypesWithSelf)
-                     {
-                        var accesableMembers = typeSymbol.GetMembers();
-                        foreach (var memberSymbol in accesableMembers)
-                        {
-                           if (memberSymbol.IsVirtual || memberSymbol.IsOverride || memberSymbol.IsAbstract)
-                           {
-                              switch (memberSymbol)
-                              {
-                                 case IMethodSymbol methodSymbol:
-                                    //Console.WriteLine(methodSymbol);
-                                    //var documentationCommentXml = methodSymbol.GetDocumentationCommentXml(CultureInfo.CurrentCulture);
-                                    //Console.WriteLine(documentationCommentXml);
-                                    break;
+                     var baseTypes = declTypeSymbol.GetBaseTypes();
+                     var accesibleToOverride = SymbolExtensions.GetOverridableSymbols(baseTypes);
+                     var propertiesToOverride = SymbolExtensions.GetOverridableProperties(accesibleToOverride);
+                     var methodsToOverride = SymbolExtensions.GetOverridableMethods(accesibleToOverride);
 
-                                 case IPropertySymbol propertySymbol:
-                                    var getMethod = propertySymbol.GetMethod;
-                                    var setMethod = propertySymbol.SetMethod;
-                                    var propertyName = propertySymbol.Name;
-                                    var propertyType = propertySymbol.Type.Name;
-                                    var isReadOnly = propertySymbol.IsReadOnly;
-                                    var isWriteOnly = propertySymbol.IsWriteOnly;
-                                    break;
-                              }
-                           }
-                        }
+                     foreach (var propertySymbol in propertiesToOverride)
+                     {
+                        var signature = propertySymbol.ToSignature();
+                        Console.WriteLine(
+                           $"{signature}{Environment.NewLine}\t{propertySymbol.GetSummary()}{Environment.NewLine}");
+                     }
+
+                     foreach (var methodSymbol in methodsToOverride)
+                     {
+                        var signature = methodSymbol.ToSignature();
+                        Console.WriteLine(
+                           $"{signature}{Environment.NewLine}\t{methodSymbol.GetSummary()}{Environment.NewLine}");
                      }
                   }
                }
@@ -101,7 +88,8 @@ namespace GatheringOverrides
          }
       }
 
-      private static VisualStudioInstance SelectVisualStudioInstance(IReadOnlyList<VisualStudioInstance> visualStudioInstances)
+      private static VisualStudioInstance SelectVisualStudioInstance(
+         IReadOnlyList<VisualStudioInstance> visualStudioInstances)
       {
          Console.WriteLine("Multiple installs of MSBuild detected please select one:");
          for (var i = 0; i < visualStudioInstances.Count; i++)
