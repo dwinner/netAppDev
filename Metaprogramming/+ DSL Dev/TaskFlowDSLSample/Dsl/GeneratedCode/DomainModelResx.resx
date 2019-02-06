@@ -1,0 +1,883 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AppDevUnited.TaskFlowDSLSample.TaskFlowDSLSampleDomainModel.Description" xml:space="preserve">
+    <value>Description for AppDevUnited.TaskFlowDSLSample.TaskFlowDSLSample</value>
+    <comment>Description for DslLibrary &apos;TaskFlowDSLSample&apos;</comment>
+  </data>
+  <data name="AppDevUnited.TaskFlowDSLSample.TaskFlowDSLSampleDomainModel.DisplayName" xml:space="preserve">
+    <value>Task Flow</value>
+    <comment>DisplayName for DslLibrary &apos;TaskFlowDSLSample&apos;</comment>
+  </data>
+  <data name="AppDevUnited.TaskFlowDSLSample.NamedElement.Description" xml:space="preserve">
+    <value>Overall base class that provides every element with a Name property which acts as its MonikerKey for serialization.</value>
+    <comment>Description for DomainClass &apos;NamedElement&apos;</comment>
+  </data>
+  <data name="AppDevUnited.TaskFlowDSLSample.NamedElement.DisplayName" xml:space="preserve">
+    <value>Named Element</value>
+    <comment>DisplayName for DomainClass &apos;NamedElement&apos;</comment>
+  </data>
+  <data name="AppDevUnited.TaskFlowDSLSample.NamedElement/Name.Description" xml:space="preserve">
+    <value>Description for AppDevUnited.TaskFlowDSLSample.NamedElement.Name</value>
+    <comment>Description for DomainProperty &apos;Name&apos; on DomainClass &apos;NamedElement&apos;</comment>
+  </data>
+  <data name="AppDevUnited.TaskFlowDSLSample.NamedElement/Name.DisplayName" xml:space="preserve">
+    <value>Name</value>
+    <comment>DisplayName for DomainProperty &apos;Name&apos; on DomainClass &apos;NamedElement&apos;</comment>
+  </data>
+  <data name="AppDevUnited.TaskFlowDSLSample.FlowGraph.Description" xml:space="preserve">
+    <value>Root element in which others are embedded.</value>
+    <comment>Description for DomainClass &apos;FlowGraph&apos;</comment>
+  </data>
+  <data name="AppDevUnited.TaskFlowDSLSample.FlowGraph.DisplayName" xml:space="preserve">
+    <value>Flow Graph</value>
+    <comment>DisplayName for DomainClass &apos;FlowGraph&apos;</comment>
+  </data>
+  <data name="AppDevUnited.TaskFlowDSLSample.FlowElement.Description" xml:space="preserve">
+    <value>Elements that can be connected by Flow links.</value>
+    <comment>Description for DomainClass &apos;FlowElement&apos;</comment>
+  </data>
+  <data name="AppDevUnited.TaskFlowDSLSample.FlowElement.DisplayName" xml:space="preserve">
+    <value>Flow Element</value>
+    <comment>DisplayName for DomainClass &apos;FlowElement&apos;</comment>
+  </data>
+  <data name="AppDevUnited.TaskFlowDSLSample.FlowElement/Description.Description" xml:space="preserve">
+    <value></value>
+    <comment>Description for DomainProperty &apos;Description&apos; on DomainClass &apos;FlowElement&apos;</comment>
+  </data>
+  <data name="AppDevUnited.TaskFlowDSLSample.FlowElement/Description.DisplayName" xml:space="preserve">
+    <value>Description</value>
+    <comment>DisplayName for DomainProperty &apos;Description&apos; on DomainClass &apos;FlowElement&apos;</comment>
+  </data>
+  <data name="AppDevUnited.TaskFlowDSLSample.ObjectFlowElement.Description" xml:space="preserve">
+    <value>Elements that can be connected by ObjectFlow links.</value>
+    <comment>Description for DomainClass &apos;ObjectFlowElement&apos;</comment>
+  </data>
+  <data name="AppDevUnited.TaskFlowDSLSample.ObjectFlowElement.DisplayName" xml:space="preserve">
+    <value>Object Flow Element</value>
+    <comment>DisplayName for DomainClass &apos;ObjectFlowElement&apos;</comment>
+  </data>
+  <data name="AppDevUnited.TaskFlowDSLSample.Task.Description" xml:space="preserve">
+    <value></value>
+    <comment>Description for DomainClass &apos;Task&apos;</comment>
+  </data>
+  <data name="AppDevUnited.TaskFlowDSLSample.Task.DisplayName" xml:space="preserve">
+    <value>Task</value>
+    <comment>DisplayName for DomainClass &apos;Task&apos;</comment>
+  </data>
+  <data name="AppDevUnited.TaskFlowDSLSample.Task/NestedDiagram.Description" xml:space="preserve">
+    <value></value>
+    <comment>Description for DomainProperty &apos;NestedDiagram&apos; on DomainClass &apos;Task&apos;</comment>
+  </data>
+  <data name="AppDevUnited.TaskFlowDSLSample.Task/NestedDiagram.DisplayName" xml:space="preserve">
+    <value>Nested Diagram</value>
+    <comment>DisplayName for DomainProperty &apos;NestedDiagram&apos; on DomainClass &apos;Task&apos;</comment>
+  </data>
+  <data name="AppDevUnited.TaskFlowDSLSample.Task/Sort.Description" xml:space="preserve">
+    <value></value>
+    <comment>Description for DomainProperty &apos;Sort&apos; on DomainClass &apos;Task&apos;</comment>
+  </data>
+  <data name="AppDevUnited.TaskFlowDSLSample.Task/Sort.DisplayName" xml:space="preserve">
+    <value>Sort</value>
+    <comment>DisplayName for DomainProperty &apos;Sort&apos; on DomainClass &apos;Task&apos;</comment>
+  </data>
+  <data name="AppDevUnited.TaskFlowDSLSample.StartPoint.Description" xml:space="preserve">
+    <value></value>
+    <comment>Description for DomainClass &apos;StartPoint&apos;</comment>
+  </data>
+  <data name="AppDevUnited.TaskFlowDSLSample.StartPoint.DisplayName" xml:space="preserve">
+    <value>Start Point</value>
+    <comment>DisplayName for DomainClass &apos;StartPoint&apos;</comment>
+  </data>
+  <data name="AppDevUnited.TaskFlowDSLSample.Endpoint.Description" xml:space="preserve">
+    <value></value>
+    <comment>Description for DomainClass &apos;Endpoint&apos;</comment>
+  </data>
+  <data name="AppDevUnited.TaskFlowDSLSample.Endpoint.DisplayName" xml:space="preserve">
+    <value>Endpoint</value>
+    <comment>DisplayName for DomainClass &apos;Endpoint&apos;</comment>
+  </data>
+  <data name="AppDevUnited.TaskFlowDSLSample.MergeBranch.Description" xml:space="preserve">
+    <value></value>
+    <comment>Description for DomainClass &apos;MergeBranch&apos;</comment>
+  </data>
+  <data name="AppDevUnited.TaskFlowDSLSample.MergeBranch.DisplayName" xml:space="preserve">
+    <value>Merge Branch</value>
+    <comment>DisplayName for DomainClass &apos;MergeBranch&apos;</comment>
+  </data>
+  <data name="AppDevUnited.TaskFlowDSLSample.Synchronization.Description" xml:space="preserve">
+    <value></value>
+    <comment>Description for DomainClass &apos;Synchronization&apos;</comment>
+  </data>
+  <data name="AppDevUnited.TaskFlowDSLSample.Synchronization.DisplayName" xml:space="preserve">
+    <value>Synchronization</value>
+    <comment>DisplayName for DomainClass &apos;Synchronization&apos;</comment>
+  </data>
+  <data name="AppDevUnited.TaskFlowDSLSample.ObjectInState.Description" xml:space="preserve">
+    <value></value>
+    <comment>Description for DomainClass &apos;ObjectInState&apos;</comment>
+  </data>
+  <data name="AppDevUnited.TaskFlowDSLSample.ObjectInState.DisplayName" xml:space="preserve">
+    <value>Object In State</value>
+    <comment>DisplayName for DomainClass &apos;ObjectInState&apos;</comment>
+  </data>
+  <data name="AppDevUnited.TaskFlowDSLSample.ObjectInState/State.Description" xml:space="preserve">
+    <value></value>
+    <comment>Description for DomainProperty &apos;State&apos; on DomainClass &apos;ObjectInState&apos;</comment>
+  </data>
+  <data name="AppDevUnited.TaskFlowDSLSample.ObjectInState/State.DisplayName" xml:space="preserve">
+    <value>State</value>
+    <comment>DisplayName for DomainProperty &apos;State&apos; on DomainClass &apos;ObjectInState&apos;</comment>
+  </data>
+  <data name="AppDevUnited.TaskFlowDSLSample.Comment.Description" xml:space="preserve">
+    <value>Can be attached to any task flow element.</value>
+    <comment>Description for DomainClass &apos;Comment&apos;</comment>
+  </data>
+  <data name="AppDevUnited.TaskFlowDSLSample.Comment.DisplayName" xml:space="preserve">
+    <value>Comment</value>
+    <comment>DisplayName for DomainClass &apos;Comment&apos;</comment>
+  </data>
+  <data name="AppDevUnited.TaskFlowDSLSample.Comment/Text.Description" xml:space="preserve">
+    <value></value>
+    <comment>Description for DomainProperty &apos;Text&apos; on DomainClass &apos;Comment&apos;</comment>
+  </data>
+  <data name="AppDevUnited.TaskFlowDSLSample.Comment/Text.DisplayName" xml:space="preserve">
+    <value>Text</value>
+    <comment>DisplayName for DomainProperty &apos;Text&apos; on DomainClass &apos;Comment&apos;</comment>
+  </data>
+  <data name="AppDevUnited.TaskFlowDSLSample.Actor.Description" xml:space="preserve">
+    <value>Represented by a swim lane on the diagram.</value>
+    <comment>Description for DomainClass &apos;Actor&apos;</comment>
+  </data>
+  <data name="AppDevUnited.TaskFlowDSLSample.Actor.DisplayName" xml:space="preserve">
+    <value>Actor</value>
+    <comment>DisplayName for DomainClass &apos;Actor&apos;</comment>
+  </data>
+  <data name="AppDevUnited.TaskFlowDSLSample.Flow.Description" xml:space="preserve">
+    <value>Description for AppDevUnited.TaskFlowDSLSample.Flow</value>
+    <comment>Description for DomainClass &apos;Flow&apos;</comment>
+  </data>
+  <data name="AppDevUnited.TaskFlowDSLSample.Flow.DisplayName" xml:space="preserve">
+    <value>Flow</value>
+    <comment>DisplayName for DomainClass &apos;Flow&apos;</comment>
+  </data>
+  <data name="AppDevUnited.TaskFlowDSLSample.Flow/Guard.Description" xml:space="preserve">
+    <value></value>
+    <comment>Description for DomainProperty &apos;Guard&apos; on DomainClass &apos;Flow&apos;</comment>
+  </data>
+  <data name="AppDevUnited.TaskFlowDSLSample.Flow/Guard.DisplayName" xml:space="preserve">
+    <value>Guard</value>
+    <comment>DisplayName for DomainProperty &apos;Guard&apos; on DomainClass &apos;Flow&apos;</comment>
+  </data>
+  <data name="AppDevUnited.TaskFlowDSLSample.Flow/FlowFrom.Description" xml:space="preserve">
+    <value>Description for AppDevUnited.TaskFlowDSLSample.Flow.FlowFrom</value>
+    <comment>Description for DomainRole &apos;FlowFrom&apos; on DomainRelationship &apos;Flow&apos;</comment>
+  </data>
+  <data name="AppDevUnited.TaskFlowDSLSample.Flow/FlowFrom.DisplayName" xml:space="preserve">
+    <value>Flow From</value>
+    <comment>DisplayName for DomainRole &apos;FlowFrom&apos; on DomainRelationship &apos;Flow&apos;</comment>
+  </data>
+  <data name="AppDevUnited.TaskFlowDSLSample.Flow/FlowFrom.PropertyDisplayName" xml:space="preserve">
+    <value>Flow To</value>
+    <comment>PropertyDisplayName for DomainRole &apos;FlowFrom&apos; on DomainRelationship &apos;Flow&apos;</comment>
+  </data>
+  <data name="AppDevUnited.TaskFlowDSLSample.Flow/FlowTo.Description" xml:space="preserve">
+    <value>Description for AppDevUnited.TaskFlowDSLSample.Flow.FlowTo</value>
+    <comment>Description for DomainRole &apos;FlowTo&apos; on DomainRelationship &apos;Flow&apos;</comment>
+  </data>
+  <data name="AppDevUnited.TaskFlowDSLSample.Flow/FlowTo.DisplayName" xml:space="preserve">
+    <value>Flow To</value>
+    <comment>DisplayName for DomainRole &apos;FlowTo&apos; on DomainRelationship &apos;Flow&apos;</comment>
+  </data>
+  <data name="AppDevUnited.TaskFlowDSLSample.Flow/FlowTo.PropertyDisplayName" xml:space="preserve">
+    <value>Flow From</value>
+    <comment>PropertyDisplayName for DomainRole &apos;FlowTo&apos; on DomainRelationship &apos;Flow&apos;</comment>
+  </data>
+  <data name="AppDevUnited.TaskFlowDSLSample.FlowGraphHasComments.Description" xml:space="preserve">
+    <value>Description for AppDevUnited.TaskFlowDSLSample.FlowGraphHasComments</value>
+    <comment>Description for DomainClass &apos;FlowGraphHasComments&apos;</comment>
+  </data>
+  <data name="AppDevUnited.TaskFlowDSLSample.FlowGraphHasComments.DisplayName" xml:space="preserve">
+    <value>Flow Graph Has Comments</value>
+    <comment>DisplayName for DomainClass &apos;FlowGraphHasComments&apos;</comment>
+  </data>
+  <data name="AppDevUnited.TaskFlowDSLSample.FlowGraphHasComments/FlowGraph.Description" xml:space="preserve">
+    <value>Description for AppDevUnited.TaskFlowDSLSample.FlowGraphHasComments.FlowGraph</value>
+    <comment>Description for DomainRole &apos;FlowGraph&apos; on DomainRelationship &apos;FlowGraphHasComments&apos;</comment>
+  </data>
+  <data name="AppDevUnited.TaskFlowDSLSample.FlowGraphHasComments/FlowGraph.DisplayName" xml:space="preserve">
+    <value>Flow Graph</value>
+    <comment>DisplayName for DomainRole &apos;FlowGraph&apos; on DomainRelationship &apos;FlowGraphHasComments&apos;</comment>
+  </data>
+  <data name="AppDevUnited.TaskFlowDSLSample.FlowGraphHasComments/FlowGraph.PropertyDisplayName" xml:space="preserve">
+    <value>Comments</value>
+    <comment>PropertyDisplayName for DomainRole &apos;FlowGraph&apos; on DomainRelationship &apos;FlowGraphHasComments&apos;</comment>
+  </data>
+  <data name="AppDevUnited.TaskFlowDSLSample.FlowGraphHasComments/Comment.Description" xml:space="preserve">
+    <value>Description for AppDevUnited.TaskFlowDSLSample.FlowGraphHasComments.Comment</value>
+    <comment>Description for DomainRole &apos;Comment&apos; on DomainRelationship &apos;FlowGraphHasComments&apos;</comment>
+  </data>
+  <data name="AppDevUnited.TaskFlowDSLSample.FlowGraphHasComments/Comment.DisplayName" xml:space="preserve">
+    <value>Comment</value>
+    <comment>DisplayName for DomainRole &apos;Comment&apos; on DomainRelationship &apos;FlowGraphHasComments&apos;</comment>
+  </data>
+  <data name="AppDevUnited.TaskFlowDSLSample.FlowGraphHasComments/Comment.PropertyDisplayName" xml:space="preserve">
+    <value>Flow Graph</value>
+    <comment>PropertyDisplayName for DomainRole &apos;Comment&apos; on DomainRelationship &apos;FlowGraphHasComments&apos;</comment>
+  </data>
+  <data name="AppDevUnited.TaskFlowDSLSample.FlowGraphHasActors.Description" xml:space="preserve">
+    <value>The set of actors (represented by swim lanes) in the task flow.</value>
+    <comment>Description for DomainClass &apos;FlowGraphHasActors&apos;</comment>
+  </data>
+  <data name="AppDevUnited.TaskFlowDSLSample.FlowGraphHasActors.DisplayName" xml:space="preserve">
+    <value>Flow Graph Has Actors</value>
+    <comment>DisplayName for DomainClass &apos;FlowGraphHasActors&apos;</comment>
+  </data>
+  <data name="AppDevUnited.TaskFlowDSLSample.FlowGraphHasActors/FlowGraph.Description" xml:space="preserve">
+    <value>Description for AppDevUnited.TaskFlowDSLSample.FlowGraphHasActors.FlowGraph</value>
+    <comment>Description for DomainRole &apos;FlowGraph&apos; on DomainRelationship &apos;FlowGraphHasActors&apos;</comment>
+  </data>
+  <data name="AppDevUnited.TaskFlowDSLSample.FlowGraphHasActors/FlowGraph.DisplayName" xml:space="preserve">
+    <value>Flow Graph</value>
+    <comment>DisplayName for DomainRole &apos;FlowGraph&apos; on DomainRelationship &apos;FlowGraphHasActors&apos;</comment>
+  </data>
+  <data name="AppDevUnited.TaskFlowDSLSample.FlowGraphHasActors/FlowGraph.PropertyDisplayName" xml:space="preserve">
+    <value>Actors</value>
+    <comment>PropertyDisplayName for DomainRole &apos;FlowGraph&apos; on DomainRelationship &apos;FlowGraphHasActors&apos;</comment>
+  </data>
+  <data name="AppDevUnited.TaskFlowDSLSample.FlowGraphHasActors/Actor.Description" xml:space="preserve">
+    <value>Description for AppDevUnited.TaskFlowDSLSample.FlowGraphHasActors.Actor</value>
+    <comment>Description for DomainRole &apos;Actor&apos; on DomainRelationship &apos;FlowGraphHasActors&apos;</comment>
+  </data>
+  <data name="AppDevUnited.TaskFlowDSLSample.FlowGraphHasActors/Actor.DisplayName" xml:space="preserve">
+    <value>Actor</value>
+    <comment>DisplayName for DomainRole &apos;Actor&apos; on DomainRelationship &apos;FlowGraphHasActors&apos;</comment>
+  </data>
+  <data name="AppDevUnited.TaskFlowDSLSample.FlowGraphHasActors/Actor.PropertyDisplayName" xml:space="preserve">
+    <value>Flow Graph</value>
+    <comment>PropertyDisplayName for DomainRole &apos;Actor&apos; on DomainRelationship &apos;FlowGraphHasActors&apos;</comment>
+  </data>
+  <data name="AppDevUnited.TaskFlowDSLSample.CommentReferencesSubjects.Description" xml:space="preserve">
+    <value>Description for AppDevUnited.TaskFlowDSLSample.CommentReferencesSubjects</value>
+    <comment>Description for DomainClass &apos;CommentReferencesSubjects&apos;</comment>
+  </data>
+  <data name="AppDevUnited.TaskFlowDSLSample.CommentReferencesSubjects.DisplayName" xml:space="preserve">
+    <value>Comment References Subjects</value>
+    <comment>DisplayName for DomainClass &apos;CommentReferencesSubjects&apos;</comment>
+  </data>
+  <data name="AppDevUnited.TaskFlowDSLSample.CommentReferencesSubjects/Comment.Description" xml:space="preserve">
+    <value>Description for AppDevUnited.TaskFlowDSLSample.CommentReferencesSubjects.Comment</value>
+    <comment>Description for DomainRole &apos;Comment&apos; on DomainRelationship &apos;CommentReferencesSubjects&apos;</comment>
+  </data>
+  <data name="AppDevUnited.TaskFlowDSLSample.CommentReferencesSubjects/Comment.DisplayName" xml:space="preserve">
+    <value>Comment</value>
+    <comment>DisplayName for DomainRole &apos;Comment&apos; on DomainRelationship &apos;CommentReferencesSubjects&apos;</comment>
+  </data>
+  <data name="AppDevUnited.TaskFlowDSLSample.CommentReferencesSubjects/Comment.PropertyDisplayName" xml:space="preserve">
+    <value>Subjects</value>
+    <comment>PropertyDisplayName for DomainRole &apos;Comment&apos; on DomainRelationship &apos;CommentReferencesSubjects&apos;</comment>
+  </data>
+  <data name="AppDevUnited.TaskFlowDSLSample.CommentReferencesSubjects/Subject.Description" xml:space="preserve">
+    <value>Description for AppDevUnited.TaskFlowDSLSample.CommentReferencesSubjects.Subject</value>
+    <comment>Description for DomainRole &apos;Subject&apos; on DomainRelationship &apos;CommentReferencesSubjects&apos;</comment>
+  </data>
+  <data name="AppDevUnited.TaskFlowDSLSample.CommentReferencesSubjects/Subject.DisplayName" xml:space="preserve">
+    <value>Subject</value>
+    <comment>DisplayName for DomainRole &apos;Subject&apos; on DomainRelationship &apos;CommentReferencesSubjects&apos;</comment>
+  </data>
+  <data name="AppDevUnited.TaskFlowDSLSample.CommentReferencesSubjects/Subject.PropertyDisplayName" xml:space="preserve">
+    <value>Comments</value>
+    <comment>PropertyDisplayName for DomainRole &apos;Subject&apos; on DomainRelationship &apos;CommentReferencesSubjects&apos;</comment>
+  </data>
+  <data name="AppDevUnited.TaskFlowDSLSample.ObjectFlow.Description" xml:space="preserve">
+    <value>Relationship between Tasks and ObjectInStates.</value>
+    <comment>Description for DomainClass &apos;ObjectFlow&apos;</comment>
+  </data>
+  <data name="AppDevUnited.TaskFlowDSLSample.ObjectFlow.DisplayName" xml:space="preserve">
+    <value>Object Flow</value>
+    <comment>DisplayName for DomainClass &apos;ObjectFlow&apos;</comment>
+  </data>
+  <data name="AppDevUnited.TaskFlowDSLSample.ObjectFlow/ObjectFlowTo.Description" xml:space="preserve">
+    <value>Description for AppDevUnited.TaskFlowDSLSample.ObjectFlow.ObjectFlowTo</value>
+    <comment>Description for DomainRole &apos;ObjectFlowTo&apos; on DomainRelationship &apos;ObjectFlow&apos;</comment>
+  </data>
+  <data name="AppDevUnited.TaskFlowDSLSample.ObjectFlow/ObjectFlowTo.DisplayName" xml:space="preserve">
+    <value>Object Flow To</value>
+    <comment>DisplayName for DomainRole &apos;ObjectFlowTo&apos; on DomainRelationship &apos;ObjectFlow&apos;</comment>
+  </data>
+  <data name="AppDevUnited.TaskFlowDSLSample.ObjectFlow/ObjectFlowTo.PropertyDisplayName" xml:space="preserve">
+    <value>Object Flow From</value>
+    <comment>PropertyDisplayName for DomainRole &apos;ObjectFlowTo&apos; on DomainRelationship &apos;ObjectFlow&apos;</comment>
+  </data>
+  <data name="AppDevUnited.TaskFlowDSLSample.ObjectFlow/ObjectFlowFrom.Description" xml:space="preserve">
+    <value>Description for AppDevUnited.TaskFlowDSLSample.ObjectFlow.ObjectFlowFrom</value>
+    <comment>Description for DomainRole &apos;ObjectFlowFrom&apos; on DomainRelationship &apos;ObjectFlow&apos;</comment>
+  </data>
+  <data name="AppDevUnited.TaskFlowDSLSample.ObjectFlow/ObjectFlowFrom.DisplayName" xml:space="preserve">
+    <value>Object Flow From</value>
+    <comment>DisplayName for DomainRole &apos;ObjectFlowFrom&apos; on DomainRelationship &apos;ObjectFlow&apos;</comment>
+  </data>
+  <data name="AppDevUnited.TaskFlowDSLSample.ObjectFlow/ObjectFlowFrom.PropertyDisplayName" xml:space="preserve">
+    <value>Object Flow To</value>
+    <comment>PropertyDisplayName for DomainRole &apos;ObjectFlowFrom&apos; on DomainRelationship &apos;ObjectFlow&apos;</comment>
+  </data>
+  <data name="AppDevUnited.TaskFlowDSLSample.ActorHasFlowElements.Description" xml:space="preserve">
+    <value>Description for AppDevUnited.TaskFlowDSLSample.ActorHasFlowElements</value>
+    <comment>Description for DomainClass &apos;ActorHasFlowElements&apos;</comment>
+  </data>
+  <data name="AppDevUnited.TaskFlowDSLSample.ActorHasFlowElements.DisplayName" xml:space="preserve">
+    <value>Actor Has Flow Elements</value>
+    <comment>DisplayName for DomainClass &apos;ActorHasFlowElements&apos;</comment>
+  </data>
+  <data name="AppDevUnited.TaskFlowDSLSample.ActorHasFlowElements/Actor.Description" xml:space="preserve">
+    <value>Description for AppDevUnited.TaskFlowDSLSample.ActorHasFlowElements.Actor</value>
+    <comment>Description for DomainRole &apos;Actor&apos; on DomainRelationship &apos;ActorHasFlowElements&apos;</comment>
+  </data>
+  <data name="AppDevUnited.TaskFlowDSLSample.ActorHasFlowElements/Actor.DisplayName" xml:space="preserve">
+    <value>Actor</value>
+    <comment>DisplayName for DomainRole &apos;Actor&apos; on DomainRelationship &apos;ActorHasFlowElements&apos;</comment>
+  </data>
+  <data name="AppDevUnited.TaskFlowDSLSample.ActorHasFlowElements/Actor.PropertyDisplayName" xml:space="preserve">
+    <value>Flow Elements</value>
+    <comment>PropertyDisplayName for DomainRole &apos;Actor&apos; on DomainRelationship &apos;ActorHasFlowElements&apos;</comment>
+  </data>
+  <data name="AppDevUnited.TaskFlowDSLSample.ActorHasFlowElements/FlowElement.Description" xml:space="preserve">
+    <value>Description for AppDevUnited.TaskFlowDSLSample.ActorHasFlowElements.FlowElement</value>
+    <comment>Description for DomainRole &apos;FlowElement&apos; on DomainRelationship &apos;ActorHasFlowElements&apos;</comment>
+  </data>
+  <data name="AppDevUnited.TaskFlowDSLSample.ActorHasFlowElements/FlowElement.DisplayName" xml:space="preserve">
+    <value>Flow Element</value>
+    <comment>DisplayName for DomainRole &apos;FlowElement&apos; on DomainRelationship &apos;ActorHasFlowElements&apos;</comment>
+  </data>
+  <data name="AppDevUnited.TaskFlowDSLSample.ActorHasFlowElements/FlowElement.PropertyDisplayName" xml:space="preserve">
+    <value>Actor</value>
+    <comment>PropertyDisplayName for DomainRole &apos;FlowElement&apos; on DomainRelationship &apos;ActorHasFlowElements&apos;</comment>
+  </data>
+  <data name="AppDevUnited.TaskFlowDSLSample.TaskSort/Regular.DisplayName" xml:space="preserve">
+    <value>Regular</value>
+    <comment>Display name for EnumerationLiteral &apos;Regular&apos; on DomainEnumeration &apos;TaskSort&apos;</comment>
+  </data>
+  <data name="AppDevUnited.TaskFlowDSLSample.TaskSort/Regular.Description" xml:space="preserve">
+    <value>Description for AppDevUnited.TaskFlowDSLSample.TaskSort.Regular</value>
+    <comment>Description for EnumerationLiteral &apos;Regular&apos; on DomainEnumeration &apos;TaskSort&apos;</comment>
+  </data>
+  <data name="AppDevUnited.TaskFlowDSLSample.TaskSort/SuperTask.DisplayName" xml:space="preserve">
+    <value>SuperTask</value>
+    <comment>Display name for EnumerationLiteral &apos;SuperTask&apos; on DomainEnumeration &apos;TaskSort&apos;</comment>
+  </data>
+  <data name="AppDevUnited.TaskFlowDSLSample.TaskSort/SuperTask.Description" xml:space="preserve">
+    <value>Description for AppDevUnited.TaskFlowDSLSample.TaskSort.SuperTask</value>
+    <comment>Description for EnumerationLiteral &apos;SuperTask&apos; on DomainEnumeration &apos;TaskSort&apos;</comment>
+  </data>
+  <data name="AppDevUnited.TaskFlowDSLSample.TaskShape.Description" xml:space="preserve">
+    <value>Description for AppDevUnited.TaskFlowDSLSample.TaskShape</value>
+    <comment>Description for DomainClass &apos;TaskShape&apos;</comment>
+  </data>
+  <data name="AppDevUnited.TaskFlowDSLSample.TaskShape.DisplayName" xml:space="preserve">
+    <value>Task Shape</value>
+    <comment>DisplayName for DomainClass &apos;TaskShape&apos;</comment>
+  </data>
+  <data name="TaskShapeNameDefaultText" xml:space="preserve">
+    <value>Name</value>
+    <comment>Text decorator default text</comment>
+  </data>
+  <data name="AppDevUnited.TaskFlowDSLSample.CommentBoxShape.Description" xml:space="preserve">
+    <value>Description for AppDevUnited.TaskFlowDSLSample.CommentBoxShape</value>
+    <comment>Description for DomainClass &apos;CommentBoxShape&apos;</comment>
+  </data>
+  <data name="AppDevUnited.TaskFlowDSLSample.CommentBoxShape.DisplayName" xml:space="preserve">
+    <value>Comment Box Shape</value>
+    <comment>DisplayName for DomainClass &apos;CommentBoxShape&apos;</comment>
+  </data>
+  <data name="CommentBoxShapeCommentDefaultText" xml:space="preserve">
+    <value>Comment</value>
+    <comment>Text decorator default text</comment>
+  </data>
+  <data name="AppDevUnited.TaskFlowDSLSample.MergeBranchShape.Description" xml:space="preserve">
+    <value>Description for AppDevUnited.TaskFlowDSLSample.MergeBranchShape</value>
+    <comment>Description for DomainClass &apos;MergeBranchShape&apos;</comment>
+  </data>
+  <data name="AppDevUnited.TaskFlowDSLSample.MergeBranchShape.DisplayName" xml:space="preserve">
+    <value>Merge Branch Shape</value>
+    <comment>DisplayName for DomainClass &apos;MergeBranchShape&apos;</comment>
+  </data>
+  <data name="AppDevUnited.TaskFlowDSLSample.EndShape.Description" xml:space="preserve">
+    <value>Description for AppDevUnited.TaskFlowDSLSample.EndShape</value>
+    <comment>Description for DomainClass &apos;EndShape&apos;</comment>
+  </data>
+  <data name="AppDevUnited.TaskFlowDSLSample.EndShape.DisplayName" xml:space="preserve">
+    <value>End Shape</value>
+    <comment>DisplayName for DomainClass &apos;EndShape&apos;</comment>
+  </data>
+  <data name="AppDevUnited.TaskFlowDSLSample.StartShape.Description" xml:space="preserve">
+    <value>Description for AppDevUnited.TaskFlowDSLSample.StartShape</value>
+    <comment>Description for DomainClass &apos;StartShape&apos;</comment>
+  </data>
+  <data name="AppDevUnited.TaskFlowDSLSample.StartShape.DisplayName" xml:space="preserve">
+    <value>Start Shape</value>
+    <comment>DisplayName for DomainClass &apos;StartShape&apos;</comment>
+  </data>
+  <data name="AppDevUnited.TaskFlowDSLSample.SyncBarShape.Description" xml:space="preserve">
+    <value>Description for AppDevUnited.TaskFlowDSLSample.SyncBarShape</value>
+    <comment>Description for DomainClass &apos;SyncBarShape&apos;</comment>
+  </data>
+  <data name="AppDevUnited.TaskFlowDSLSample.SyncBarShape.DisplayName" xml:space="preserve">
+    <value>Sync Bar Shape</value>
+    <comment>DisplayName for DomainClass &apos;SyncBarShape&apos;</comment>
+  </data>
+  <data name="AppDevUnited.TaskFlowDSLSample.ObjectShape.Description" xml:space="preserve">
+    <value>Description for AppDevUnited.TaskFlowDSLSample.ObjectShape</value>
+    <comment>Description for DomainClass &apos;ObjectShape&apos;</comment>
+  </data>
+  <data name="AppDevUnited.TaskFlowDSLSample.ObjectShape.DisplayName" xml:space="preserve">
+    <value>Object Shape</value>
+    <comment>DisplayName for DomainClass &apos;ObjectShape&apos;</comment>
+  </data>
+  <data name="ObjectShapeNameDefaultText" xml:space="preserve">
+    <value>Name</value>
+    <comment>Text decorator default text</comment>
+  </data>
+  <data name="ObjectShapeStateDefaultText" xml:space="preserve">
+    <value>State</value>
+    <comment>Text decorator default text</comment>
+  </data>
+  <data name="AppDevUnited.TaskFlowDSLSample.ActorSwimLane.Description" xml:space="preserve">
+    <value>Description for AppDevUnited.TaskFlowDSLSample.ActorSwimLane</value>
+    <comment>Description for DomainClass &apos;ActorSwimLane&apos;</comment>
+  </data>
+  <data name="AppDevUnited.TaskFlowDSLSample.ActorSwimLane.DisplayName" xml:space="preserve">
+    <value>Actor Swim Lane</value>
+    <comment>DisplayName for DomainClass &apos;ActorSwimLane&apos;</comment>
+  </data>
+  <data name="ActorSwimLaneActorNameDefaultText" xml:space="preserve">
+    <value>ActorName</value>
+    <comment>Text decorator default text</comment>
+  </data>
+  <data name="AppDevUnited.TaskFlowDSLSample.CommentConnector.Description" xml:space="preserve">
+    <value>Description for AppDevUnited.TaskFlowDSLSample.CommentConnector</value>
+    <comment>Description for DomainClass &apos;CommentConnector&apos;</comment>
+  </data>
+  <data name="AppDevUnited.TaskFlowDSLSample.CommentConnector.DisplayName" xml:space="preserve">
+    <value>Comment Connector</value>
+    <comment>DisplayName for DomainClass &apos;CommentConnector&apos;</comment>
+  </data>
+  <data name="AppDevUnited.TaskFlowDSLSample.FlowConnector.Description" xml:space="preserve">
+    <value>Description for AppDevUnited.TaskFlowDSLSample.FlowConnector</value>
+    <comment>Description for DomainClass &apos;FlowConnector&apos;</comment>
+  </data>
+  <data name="AppDevUnited.TaskFlowDSLSample.FlowConnector.DisplayName" xml:space="preserve">
+    <value>Flow Connector</value>
+    <comment>DisplayName for DomainClass &apos;FlowConnector&apos;</comment>
+  </data>
+  <data name="FlowConnectorGuardDefaultText" xml:space="preserve">
+    <value>Guard</value>
+    <comment>Text decorator default text</comment>
+  </data>
+  <data name="AppDevUnited.TaskFlowDSLSample.ObjectFlowConnector.Description" xml:space="preserve">
+    <value>Description for AppDevUnited.TaskFlowDSLSample.ObjectFlowConnector</value>
+    <comment>Description for DomainClass &apos;ObjectFlowConnector&apos;</comment>
+  </data>
+  <data name="AppDevUnited.TaskFlowDSLSample.ObjectFlowConnector.DisplayName" xml:space="preserve">
+    <value>Object Flow Connector</value>
+    <comment>DisplayName for DomainClass &apos;ObjectFlowConnector&apos;</comment>
+  </data>
+  <data name="FormatList" xml:space="preserve">
+    <value>Task Flow (*.tf)|*.tf</value>
+    <comment>A list of file format specifiers for the Save dialog box</comment>
+  </data>
+  <data name="ModelExplorerTitle" xml:space="preserve">
+    <value>TaskFlowDSLSample Explorer</value>
+    <comment>Model Explorer Toolwindow title</comment>
+  </data>
+  <data name="AppDevUnited.TaskFlowDSLSample.TaskFlowDSLSampleDiagram.Description" xml:space="preserve">
+    <value>Description for AppDevUnited.TaskFlowDSLSample.TaskFlowDSLSampleDiagram</value>
+    <comment>Description for DomainClass &apos;TaskFlowDSLSampleDiagram&apos;</comment>
+  </data>
+  <data name="AppDevUnited.TaskFlowDSLSample.TaskFlowDSLSampleDiagram.DisplayName" xml:space="preserve">
+    <value>Flow Diagram</value>
+    <comment>DisplayName for DomainClass &apos;TaskFlowDSLSampleDiagram&apos;</comment>
+  </data>
+  <data name="TaskFlowDSLSampleToolboxTab" xml:space="preserve">
+    <value>TaskFlowDSLSample</value>
+    <comment>Toolbox item tab name</comment>
+  </data>
+  <data name="TaskToolboxItem" xml:space="preserve">
+    <value>Task</value>
+    <comment>Toolbox item name</comment>
+  </data>
+  <data name="TaskToolboxTooltip" xml:space="preserve">
+    <value>Create a Task</value>
+    <comment>Toolbox tooltip text</comment>
+  </data>
+  <data name="StartPointToolboxItem" xml:space="preserve">
+    <value>Start Point</value>
+    <comment>Toolbox item name</comment>
+  </data>
+  <data name="StartPointToolboxTooltip" xml:space="preserve">
+    <value>Create a Start Point</value>
+    <comment>Toolbox tooltip text</comment>
+  </data>
+  <data name="EndPointToolboxItem" xml:space="preserve">
+    <value>End Point</value>
+    <comment>Toolbox item name</comment>
+  </data>
+  <data name="EndPointToolboxTooltip" xml:space="preserve">
+    <value>End Point</value>
+    <comment>Toolbox tooltip text</comment>
+  </data>
+  <data name="MergeBranchToolboxItem" xml:space="preserve">
+    <value>Merge/Branch</value>
+    <comment>Toolbox item name</comment>
+  </data>
+  <data name="MergeBranchToolboxTooltip" xml:space="preserve">
+    <value>Create a Merge/Branch</value>
+    <comment>Toolbox tooltip text</comment>
+  </data>
+  <data name="SynchronizationToolboxItem" xml:space="preserve">
+    <value>Synchronization</value>
+    <comment>Toolbox item name</comment>
+  </data>
+  <data name="SynchronizationToolboxTooltip" xml:space="preserve">
+    <value>Create a Synchronization bar</value>
+    <comment>Toolbox tooltip text</comment>
+  </data>
+  <data name="FlowToolboxItem" xml:space="preserve">
+    <value>Flow</value>
+    <comment>Toolbox item name</comment>
+  </data>
+  <data name="FlowToolboxTooltip" xml:space="preserve">
+    <value>Drag between Tasks to create a Flow</value>
+    <comment>Toolbox tooltip text</comment>
+  </data>
+  <data name="ObjectInStateToolboxItem" xml:space="preserve">
+    <value>Object In State</value>
+    <comment>Toolbox item name</comment>
+  </data>
+  <data name="ObjectInStateToolboxTooltip" xml:space="preserve">
+    <value>Create an Object-In-State</value>
+    <comment>Toolbox tooltip text</comment>
+  </data>
+  <data name="CommentToolboxItem" xml:space="preserve">
+    <value>Comment</value>
+    <comment>Toolbox item name</comment>
+  </data>
+  <data name="CommentToolboxTooltip" xml:space="preserve">
+    <value>Create a Comment</value>
+    <comment>Toolbox tooltip text</comment>
+  </data>
+  <data name="CommentSubjectsToolboxItem" xml:space="preserve">
+    <value>Comment Connector</value>
+    <comment>Toolbox item name</comment>
+  </data>
+  <data name="CommentSubjectsToolboxTooltip" xml:space="preserve">
+    <value>Drag to link a Comment to its subjects</value>
+    <comment>Toolbox tooltip text</comment>
+  </data>
+  <data name="ActorToolboxItem" xml:space="preserve">
+    <value>Actor swim lane</value>
+    <comment>Toolbox item name</comment>
+  </data>
+  <data name="ActorToolboxTooltip" xml:space="preserve">
+    <value>Create an Actor Swim Lane</value>
+    <comment>Toolbox tooltip text</comment>
+  </data>
+  <data name="UnresolvedToolboxItem" xml:space="preserve">
+    <value>ToolboxItem {0} was not found</value>
+    <comment>Invalid toolId</comment>
+  </data>
+  <data name="UnsupportedToolboxFormat" xml:space="preserve">
+    <value>Unsupported toolbox format: {0}</value>
+    <comment>Unsupported format Id</comment>
+  </data>
+  <data name="UnrecognizedElementType" xml:space="preserve">
+    <value>ElementType {0} is not recognized as a type of domain class which belongs to this domain model.</value>
+    <comment>Incorrect ElementType passed in to Model.CreateElement method</comment>
+  </data>
+  <data name="UnrecognizedElementLinkType" xml:space="preserve">
+    <value>ElementLinkType {0} is not recognized as a type of domain relationship which belongs to this domain model.</value>
+    <comment>Incorrect ElementLinkType passed in to Model.CreateElementLink method</comment>
+  </data>
+  <data name="AmbiguousSchema" xml:space="preserve">
+    <value>More than one schema found for target namespace &apos;{0}&apos;, use the first one at &apos;{1}&apos;.</value>
+    <comment>Serialization Warning: AmbiguousSchema</comment>
+  </data>
+  <data name="ExpectingFullFormRelationship" xml:space="preserve">
+    <value>Element &apos;{0}&apos; is treated as the target role-player of a relationship &apos;{1}&apos; instance, which should be serialized in full-form.</value>
+    <comment>Serialization Warning: ExpectingFullFormRelationship</comment>
+  </data>
+  <data name="ExpectingShortFormRelationship" xml:space="preserve">
+    <value>Instances of relationship &apos;{0}&apos; should be serialized in short-form.</value>
+    <comment>Serialization Warning: ExpectingShortFormRelationship</comment>
+  </data>
+  <data name="IgnoredPropertyValue" xml:space="preserve">
+    <value>Invalid property value &apos;{0}&apos; for property &apos;{1}&apos; with type &apos;{2}&apos;, ignored.</value>
+    <comment>Serialization Warning: IgnoredPropertyValue</comment>
+  </data>
+  <data name="MissingId" xml:space="preserve">
+    <value>Missing &apos;Id&apos; attribute, a new Guid &apos;{0}&apos; is auto-generated.</value>
+    <comment>Serialization Warning: MissingId</comment>
+  </data>
+  <data name="MonikerResolvedToDuplicateLink" xml:space="preserve">
+    <value>Resolving moniker &apos;{0}&apos; causes a duplicate link to be created, so the link and the moniker are ignored.</value>
+    <comment>Serialization Warning: MonikerResolvedToDuplicateLink</comment>
+  </data>
+  <data name="NoSchema" xml:space="preserve">
+    <value>Cannot find a schema that defines target namespace &apos;{0}&apos;, schema validation skipped.</value>
+    <comment>Serialization Warning: NoSchema</comment>
+  </data>
+  <data name="UnexpectedXmlElement" xml:space="preserve">
+    <value>Unexpected XML element &apos;{0}&apos;, ignored.</value>
+    <comment>Serialization Warning: UnexpectedXmlElement</comment>
+  </data>
+  <data name="AmbiguousMoniker" xml:space="preserve">
+    <value>Ambiguous moniker &apos;{0}&apos; encountered. It is used for both &apos;{1}&apos; and &apos;{2}&apos;.</value>
+    <comment>Serialization Error: AmbiguousMoniker</comment>
+  </data>
+  <data name="CannotMonikerizeElement" xml:space="preserve">
+    <value>Instances of DomainClass &apos;{0}&apos; cannot be serialized as a moniker.
+A DomainClass can be serialized as a moniker only if 
+1) it has a defined/inherited DomainProperty marked as IsMonikerKey=true, or 
+2) it is marked/inherited with SerializeId=true.</value>
+    <comment>Serialization Error: CannotMonikerizeElement</comment>
+  </data>
+  <data name="CannotOpenDocument" xml:space="preserve">
+    <value>Error encountered, check Error List window for details.</value>
+    <comment>Serialization Error: CannotOpenDocument</comment>
+  </data>
+  <data name="CannotSaveDocument" xml:space="preserve">
+    <value>Error encountered, check Error List window for details.</value>
+    <comment>Serialization Error: CannotSaveDocument</comment>
+  </data>
+  <data name="DanglingRelationship" xml:space="preserve">
+    <value>Relationship &apos;{0}&apos; instance is missing target role-player.</value>
+    <comment>Serialization Error: DanglingRelationship</comment>
+  </data>
+  <data name="InvalidPropertyValue" xml:space="preserve">
+    <value>Invalid property value &apos;{0}&apos; for property &apos;{1}&apos; with type &apos;{2}&apos;.</value>
+    <comment>Serialization Error: InvalidPropertyValue</comment>
+  </data>
+  <data name="MissingMoniker" xml:space="preserve">
+    <value>Missing moniker. A moniker is expected in attribute &apos;{0}&apos;.</value>
+    <comment>Serialization Error: MissingMoniker</comment>
+  </data>
+  <data name="MissingTransaction" xml:space="preserve">
+    <value>This must be called within the context of an active transaction.</value>
+    <comment>Serialization Error: MissingTransaction</comment>
+  </data>
+  <data name="UnresolvedMoniker" xml:space="preserve">
+    <value>Cannot resolve moniker &apos;{0}&apos;.</value>
+    <comment>Serialization Error: UnresolvedMoniker</comment>
+  </data>
+  <data name="VersionMismatch" xml:space="preserve">
+    <value>Unsupported version &apos;{0}&apos;, can only support &apos;{1}&apos;.</value>
+    <comment>Serialization Error: VersionMismatch</comment>
+  </data>
+  <data name="CannotCloseExistingDiagramDocument" xml:space="preserve">
+    <value>Diagram file &apos;{0}&apos; cannot be closed.</value>
+    <comment>User cancel closing diagram file. Hence, the DSL model file cannot be opened</comment>
+  </data>
+  <data name="BindingErrorOccurred" xml:space="preserve">
+    <value>Extensions for this designer may not be found as a MEF binding error has occurred. The error that occurred was:
+{0}</value>
+    <comment>MEF binding error occurred - exception message being logged in the error window so the user is aware.</comment>
+  </data>
+  <data name="InvalidSaveRootElementType" xml:space="preserve">
+    <value>&apos;{0}&apos; is not a valid root element type.</value>
+    <comment>Exception message used if an invalid root element type is passed to IDomainModelSerializer.SaveModel / SaveModelAndDiagram</comment>
+  </data>
+  <data name="InvalidSaveDiagramType" xml:space="preserve">
+    <value>&apos;{0}&apos; is not a valid diagram type.</value>
+    <comment>Exception message used if an invalid diagram type is passed to IDomainModelSerializer.SaveModelAndDiagram</comment>
+  </data>
+  <data name="MinimumMultiplicityMissingLink" xml:space="preserve">
+    <value>{0} {1} has no {2}.</value>
+    <comment>Multiplicity underflow validation.</comment>
+  </data>
+  <data name="SaveOperationCancelled" xml:space="preserve">
+    <value>Save operation cancelled.</value>
+    <comment>Message when save is cancelled on validation errors</comment>
+  </data>
+  <data name="SaveValidationFailed" xml:space="preserve">
+    <value>There were validation errors, continue save?</value>
+    <comment>Message when validation errors are found on save</comment>
+  </data>
+  <data name="UnloadableSaveValidationFailed" xml:space="preserve">
+    <value>There were validation errors. Continuing to save may cause the file to become unloadable, do you want to continue?</value>
+    <comment>Message when validation errors are found on save that will cause file to become unloadable</comment>
+  </data>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="TaskShapeSubTaskDefaultImage" type="System.Resources.ResXFileRef, System.Windows.Forms" xml:space="preserve">
+    <value>..\resources\SubTaskIcon.bmp;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+    <comment>Icon decorator default image</comment>
+  </data>
+  <data name="MergeBranchShapeImage" type="System.Resources.ResXFileRef, System.Windows.Forms" xml:space="preserve">
+    <value>..\resources\decision.emf;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+    <comment>MergeBranchShape shape image</comment>
+  </data>
+  <data name="EndShapeImage" type="System.Resources.ResXFileRef, System.Windows.Forms" xml:space="preserve">
+    <value>..\Resources\Stop.emf;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+    <comment>EndShape shape image</comment>
+  </data>
+  <data name="StartShapeImage" type="System.Resources.ResXFileRef, System.Windows.Forms" xml:space="preserve">
+    <value>..\Resources\Start.emf;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+    <comment>StartShape shape image</comment>
+  </data>
+  <data name="TaskToolboxBitmap" type="System.Resources.ResXFileRef, System.Windows.Forms" xml:space="preserve">
+    <value>..\resources\TaskTool.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+    <comment>Toolbox item image</comment>
+  </data>
+  <data name="StartPointToolboxBitmap" type="System.Resources.ResXFileRef, System.Windows.Forms" xml:space="preserve">
+    <value>..\Resources\StartTool.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+    <comment>Toolbox item image</comment>
+  </data>
+  <data name="EndPointToolboxBitmap" type="System.Resources.ResXFileRef, System.Windows.Forms" xml:space="preserve">
+    <value>..\Resources\EndTool.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+    <comment>Toolbox item image</comment>
+  </data>
+  <data name="MergeBranchToolboxBitmap" type="System.Resources.ResXFileRef, System.Windows.Forms" xml:space="preserve">
+    <value>..\resources\MergeBranchTool.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+    <comment>Toolbox item image</comment>
+  </data>
+  <data name="SynchronizationToolboxBitmap" type="System.Resources.ResXFileRef, System.Windows.Forms" xml:space="preserve">
+    <value>..\resources\SyncBarTool.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+    <comment>Toolbox item image</comment>
+  </data>
+  <data name="FlowToolboxBitmap" type="System.Resources.ResXFileRef, System.Windows.Forms" xml:space="preserve">
+    <value>..\resources\FlowTool.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+    <comment>Toolbox item image</comment>
+  </data>
+  <data name="ObjectInStateToolboxBitmap" type="System.Resources.ResXFileRef, System.Windows.Forms" xml:space="preserve">
+    <value>..\resources\ObjectTool.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+    <comment>Toolbox item image</comment>
+  </data>
+  <data name="CommentToolboxBitmap" type="System.Resources.ResXFileRef, System.Windows.Forms" xml:space="preserve">
+    <value>..\resources\CommentTool.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+    <comment>Toolbox item image</comment>
+  </data>
+  <data name="CommentSubjectsToolboxBitmap" type="System.Resources.ResXFileRef, System.Windows.Forms" xml:space="preserve">
+    <value>..\resources\CommentConnectorTool.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+    <comment>Toolbox item image</comment>
+  </data>
+  <data name="ActorToolboxBitmap" type="System.Resources.ResXFileRef, System.Windows.Forms" xml:space="preserve">
+    <value>..\resources\SwimlaneTool.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+    <comment>Toolbox item image</comment>
+  </data>
+</root>
+
+
