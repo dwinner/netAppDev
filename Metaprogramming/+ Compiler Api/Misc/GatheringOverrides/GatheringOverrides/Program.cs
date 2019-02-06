@@ -85,13 +85,7 @@ namespace GatheringOverrides
                      }
 
                      /**
-                      * TODO: Try generate it via reusable approach
-                      * Property: protected override bool HandlesScrolling => base.HandlesScrolling;
-                      * Method:
-                      *    protected override GeometryHitTestResult HitTestCore(GeometryHitTestParameters hitTestParameters)
-                      *    {
-                      *       return base.HitTestCore(hitTestParameters);
-                      *    }
+                      * TODO: Try generate it via reusable approach                      
                       */
                   }
                }
