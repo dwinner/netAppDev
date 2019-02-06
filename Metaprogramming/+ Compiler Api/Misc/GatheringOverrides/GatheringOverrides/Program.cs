@@ -7,6 +7,7 @@ using Microsoft.Build.Locator;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.MSBuild;
+using static GatheringOverrides.SymbolExtensions;
 
 namespace GatheringOverrides
 {
@@ -65,9 +66,9 @@ namespace GatheringOverrides
                   if (declTypeSymbol != null)
                   {
                      var baseTypes = declTypeSymbol.GetBaseTypes();
-                     var accesibleToOverride = SymbolExtensions.GetOverridableSymbols(baseTypes);
-                     var propertiesToOverride = SymbolExtensions.GetOverridableProperties(accesibleToOverride);
-                     var methodsToOverride = SymbolExtensions.GetOverridableMethods(accesibleToOverride);
+                     var accesibleToOverride = GetOverridableSymbols(baseTypes);
+                     var propertiesToOverride = GetOverridableProperties(accesibleToOverride);
+                     var methodsToOverride = GetOverridableMethods(accesibleToOverride);
 
                      foreach (var propertySymbol in propertiesToOverride)
                      {
@@ -82,6 +83,16 @@ namespace GatheringOverrides
                         Console.WriteLine(
                            $"{signature}{Environment.NewLine}\t{methodSymbol.GetSummary()}{Environment.NewLine}");
                      }
+
+                     /**
+                      * TODO: Try generate it via reusable approach
+                      * Property: protected override bool HandlesScrolling => base.HandlesScrolling;
+                      * Method:
+                      *    protected override GeometryHitTestResult HitTestCore(GeometryHitTestParameters hitTestParameters)
+                      *    {
+                      *       return base.HitTestCore(hitTestParameters);
+                      *    }
+                      */
                   }
                }
             }

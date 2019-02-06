@@ -40,7 +40,6 @@ namespace GatheringOverrides
 
          var typeSymbols = new HashSet<ITypeSymbol>(SymbolEqualityComparer.Default);
          typeSymbol.GatherBaseTypes(typeSymbols);
-
          BaseTypeCache[typeName] = typeSymbols;
          if (!includeItself)
          {
@@ -125,47 +124,32 @@ namespace GatheringOverrides
          return accessModifiers;
       }
 
-      public static IEnumerable<IMethodSymbol> GetOverridableMethods(IEnumerable<ISymbol> accesibleSymbols)
-      {
-         // NOTE: Methods can be comparable only by signature, NOT by name!
-         var methodsToOverride = new HashSet<IMethodSymbol>(SymbolEqualityComparer.Default);
-         var methodSymbols = accesibleSymbols.OfType<IMethodSymbol>()
-            .Where(methodSymbol => methodSymbol.MethodKind == MethodKind.Ordinary);
-         foreach (var symbol in methodSymbols)
-            methodsToOverride.Add(symbol);
+      // FIXME: Methods can be comparable only by signature, NOT by name!
+      public static IEnumerable<IMethodSymbol> GetOverridableMethods(IEnumerable<ISymbol> accesibleSymbols) =>
+         new HashSet<IMethodSymbol>(
+            accesibleSymbols.OfType<IMethodSymbol>()
+               .Where(methodSymbol => methodSymbol.MethodKind == MethodKind.Ordinary), SymbolEqualityComparer.Default);
 
-         return methodsToOverride;
-      }
-
-      public static IEnumerable<IPropertySymbol> GetOverridableProperties(IEnumerable<ISymbol> accesibleSymbols)
-      {
-         var propertiesToOverride = new HashSet<IPropertySymbol>(SymbolEqualityComparer.Default);
-         var propertySymbols = accesibleSymbols.OfType<IPropertySymbol>();
-         foreach (var symbol in propertySymbols)
-            propertiesToOverride.Add(symbol);
-
-         return propertiesToOverride;
-      }
+      public static IEnumerable<IPropertySymbol> GetOverridableProperties(IEnumerable<ISymbol> accesibleSymbols) =>
+         new HashSet<IPropertySymbol>(accesibleSymbols.OfType<IPropertySymbol>(), SymbolEqualityComparer.Default);
 
       public static string ToSignature(this IPropertySymbol propertySymbol)
       {
+         const string setOnlySugar = "{ set; }";
+         const string setAndGetSugar = "{ get; set; }";
+         const string getOnlySugar = "{ get; }";
+
          var propertyName = propertySymbol.Name;
          var propertyTypeName = propertySymbol.Type.ToDisplayString();
          var accessModifiers = GetAccessModifiers(propertySymbol);
          var signature = new StringBuilder($"{accessModifiers} override ", 0x40);
          signature.Append($"{propertyTypeName} {propertyName} ");
-         if (propertySymbol.IsReadOnly)
-         {
-            signature.Append("{ get; }");
-         }
-         else if (propertySymbol.IsWriteOnly)
-         {
-            signature.Append("{ set; }");
-         }
-         else
-         {
-            signature.Append("{ get; set; }");
-         }
+         var propertySugar = !propertySymbol.IsReadOnly
+            ? propertySymbol.IsWriteOnly
+               ? setOnlySugar
+               : setAndGetSugar
+            : getOnlySugar;
+         signature.Append(propertySugar);
 
          return signature.ToString();
       }
@@ -211,6 +195,7 @@ namespace GatheringOverrides
          const string start = "<summary>";
          const string end = "</summary>";
          const string stripMisc = @"<(.|\n)*?>";
+         const string noSummary = "No description";
 
          var docCommentXml = symbol.GetDocumentationCommentXml(CultureInfo.CurrentCulture);
          var startPos = docCommentXml.IndexOf(start, StringComparison.Ordinal);
@@ -218,7 +203,7 @@ namespace GatheringOverrides
          var offset = startPos + start.Length;
          var summaryText = startPos != -1 && endPos != -1 && endPos > offset
             ? docCommentXml.Substring(offset, endPos - offset)
-            : "No description";
+            : noSummary;
          summaryText = Regex.Replace(summaryText, stripMisc, symbol.Name);
 
          return summaryText;
@@ -227,7 +212,9 @@ namespace GatheringOverrides
       private sealed class SymbolEqualityComparer : IEqualityComparer<ISymbol>
       {
          public static IEqualityComparer<ISymbol> Default { get; } = new SymbolEqualityComparer();
+
          public bool Equals(ISymbol x, ISymbol y) => x.Name.Equals(y.Name, StringComparison.CurrentCulture);
+
          public int GetHashCode(ISymbol obj) => obj.Name.GetHashCode();
       }
    }

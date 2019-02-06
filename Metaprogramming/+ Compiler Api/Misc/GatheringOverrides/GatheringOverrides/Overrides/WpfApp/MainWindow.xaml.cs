@@ -1,4 +1,6 @@
-﻿namespace WpfApp
+﻿using System.Windows.Media;
+
+namespace WpfApp
 {
    public partial class MainWindow
    {
