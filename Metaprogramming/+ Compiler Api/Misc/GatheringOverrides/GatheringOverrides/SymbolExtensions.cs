@@ -29,8 +29,10 @@ namespace GatheringOverrides
       /// </summary>
       /// <param name="typeSymbol">Type Symbol</param>
       /// <param name="includeItself">true, if you want to include <paramref name="typeSymbol" /> itself, false - no, by default</param>
+      /// <param name="onlySelf">truem if you need only type <paramref name="typeSymbol" /> itself</param>
       /// <returns>Base types</returns>
-      public static IEnumerable<ITypeSymbol> GetBaseTypes(this ITypeSymbol typeSymbol, bool includeItself = false)
+      public static IEnumerable<ITypeSymbol> GetBaseTypes(this ITypeSymbol typeSymbol, bool includeItself = false,
+         bool onlySelf = false)
       {
          var typeName = typeSymbol.Name;
          if (BaseTypeCache.ContainsKey(typeName))
@@ -41,9 +43,13 @@ namespace GatheringOverrides
          var typeSymbols = new HashSet<ITypeSymbol>(SymbolEqualityComparer.Default);
          typeSymbol.GatherBaseTypes(typeSymbols);
          BaseTypeCache[typeName] = typeSymbols;
+
          if (!includeItself)
          {
-            typeSymbols.RemoveWhere(symbol => symbol.Name.Equals(typeName, StringComparison.Ordinal));
+            var filterStrategy = onlySelf
+               ? (Func<ITypeSymbol, bool>) (symbol => !symbol.Name.Equals(typeName, StringComparison.Ordinal))
+               : symbol => symbol.Name.Equals(typeName, StringComparison.Ordinal);
+            typeSymbols.RemoveWhere(symbol => filterStrategy(symbol));
          }
 
          return typeSymbols;
@@ -157,21 +163,58 @@ namespace GatheringOverrides
       public static string ToSignature(this IMethodSymbol methodSymbol)
       {
          var methodName = methodSymbol.Name;
-         var returnTypeSymbol = methodSymbol.ReturnType;
-         var returnType = GetReturnTypeToDisplay(returnTypeSymbol);
-         var accessModifiers = GetAccessModifiers(methodSymbol);
+
+         if (methodSymbol.IsGenericMethod)
+         {
+            var typeParameterSymbols = methodSymbol.TypeParameters.ToArray();
+            var genericParameters = "<";
+            for (var i = 0; i < typeParameterSymbols.Length; i++)
+            {
+               var genericParameterSymbol = typeParameterSymbols[i];
+               genericParameters += genericParameterSymbol.Name;
+               if (i != typeParameterSymbols.Length - 1)
+               {
+                  genericParameters += ", ";
+               }
+            }
+
+            genericParameters += ">";
+            methodName += genericParameters;
+         }
+
+         #region Misc
+
+         var returnTypeModifiers = GetTypeModifiers(methodSymbol.RefKind);
+         var returnType = methodSymbol.ReturnType.GetReturnTypeToDisplay();
+         if (returnTypeModifiers.Length > 0)
+         {
+            returnType = $"{returnTypeModifiers} {returnType}";
+         }
+
+         #endregion
+
+         var accessModifiers = methodSymbol.GetAccessModifiers();
          var signature = new StringBuilder($"{accessModifiers} override ", 0x80);
+
          signature.Append($"{returnType} {methodName}");
          var parameters = methodSymbol.Parameters;
-
          var parameterList = new StringBuilder("(");
          if (parameters != null && parameters.Length > 0)
          {
             for (var i = 0; i < parameters.Length; i++)
             {
                var parameterSymbol = parameters[i];
+               var parameterRefKind = parameterSymbol.RefKind;
+               var parameterReturnTypeModifiers = GetTypeModifiers(parameterRefKind);
                var parameterName = parameterSymbol.Name;
-               parameterList.Append($"{GetReturnTypeToDisplay(parameterSymbol.Type)} {parameterName}");
+               var parameterType = parameterSymbol.Type;
+               var parameterDisplayType = parameterType.GetReturnTypeToDisplay(parameterSymbol);
+               if (!string.IsNullOrEmpty(parameterReturnTypeModifiers))
+               {
+                  parameterDisplayType = $"{parameterReturnTypeModifiers} {parameterDisplayType}";
+               }
+
+               parameterList.Append($"{parameterDisplayType} {parameterName}");
                if (i != parameters.Length - 1)
                {
                   parameterList.Append(", ");
@@ -185,10 +228,119 @@ namespace GatheringOverrides
          return signature.ToString();
       }
 
-      private static string GetReturnTypeToDisplay(ITypeSymbol returnTypeSymbol) =>
-         returnTypeSymbol.SpecialType == SpecialType.None
-            ? returnTypeSymbol.Name
-            : returnTypeSymbol.ToDisplayString();
+      private static string GetTypeModifiers(RefKind returnRefKind)
+      {
+         string typeModifiers;
+         switch (returnRefKind)
+         {
+            case RefKind.None:
+               typeModifiers = string.Empty;
+               break;
+
+            case RefKind.Ref:
+               typeModifiers = "ref";
+               break;
+
+            case RefKind.Out:
+               typeModifiers = "out";
+               break;
+
+            case RefKind.In:
+               typeModifiers = string.Empty;
+               break;
+
+            default:
+               throw new ArgumentOutOfRangeException(nameof(returnRefKind));
+         }
+
+         return typeModifiers;
+      }
+
+      private static string GetReturnTypeToDisplay(this ITypeSymbol @this,
+         IParameterSymbol parameterSymbol = null)
+      {
+         if (@this.SpecialType != SpecialType.None)
+         {
+            return @this.ToDisplayString();
+         }
+
+         string returnTypeName;
+         switch (@this.TypeKind)
+         {
+            case TypeKind.Unknown:
+            case TypeKind.Struct:
+            case TypeKind.TypeParameter:
+            case TypeKind.Class:
+            case TypeKind.Delegate:
+            case TypeKind.Dynamic:
+            case TypeKind.Enum:
+            case TypeKind.Error:
+            case TypeKind.Interface:
+            case TypeKind.Module:
+            case TypeKind.Submission:
+               returnTypeName = @this.Name;
+               break;
+
+            case TypeKind.Array:
+            {
+               var arrayTypeSymbol = (IArrayTypeSymbol) @this;
+               returnTypeName = ProcessArrayTypeKind(parameterSymbol, arrayTypeSymbol);
+            }
+               break;
+
+            case TypeKind.Pointer:
+            {
+               var pointerTypeSymbol = (IPointerTypeSymbol) @this;
+               returnTypeName = ProcessPointerTypeKind(pointerTypeSymbol);
+            }
+               break;
+
+            default:
+               throw new ArgumentOutOfRangeException();
+         }
+
+         return returnTypeName;
+
+      }
+
+      private static string ProcessPointerTypeKind(IPointerTypeSymbol pointerTypeSymbol)
+      {
+         var pointedAtType = pointerTypeSymbol.PointedAtType;
+         var pointedType = pointedAtType.NormalizeTypeSymbol();
+         var returnTypeName = $"{pointedType}*";
+         return returnTypeName;
+      }
+
+      private static string NormalizeTypeSymbol(this ITypeSymbol pointedAtType) =>
+         pointedAtType.SpecialType == SpecialType.None
+            ? pointedAtType.Name
+            : pointedAtType.ToDisplayString();
+
+      private static string ProcessArrayTypeKind(IParameterSymbol parameterSymbol, IArrayTypeSymbol arrayTypeSymbol)
+      {
+         string returnTypeName;
+         var arrayElementType = arrayTypeSymbol.ElementType;
+         var elementTypeDisplay = arrayElementType.NormalizeTypeSymbol();
+         if (parameterSymbol?.IsParams == true)
+         {
+            returnTypeName = $"params {elementTypeDisplay}[]";
+         }
+         else
+         {
+            var arrayRank = arrayTypeSymbol.Rank;
+            var arrayIndexSignature = "[";
+            if (arrayRank >= 2)
+            {
+               for (var i = 2; i <= arrayRank; i++)
+                  arrayIndexSignature += ",";
+            }
+
+            arrayIndexSignature += "]";
+            returnTypeName = $"{elementTypeDisplay}{arrayIndexSignature}";
+         }
+
+         return returnTypeName;
+      }
 
       public static string GetSummary(this ISymbol symbol)
       {
@@ -206,7 +358,7 @@ namespace GatheringOverrides
             : noSummary;
          summaryText = Regex.Replace(summaryText, stripMisc, symbol.Name);
 
-         return summaryText;
+         return summaryText.Trim();
       }
 
       private sealed class SymbolEqualityComparer : IEqualityComparer<ISymbol>

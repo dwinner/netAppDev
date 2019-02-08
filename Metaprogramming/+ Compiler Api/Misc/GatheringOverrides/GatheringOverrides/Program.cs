@@ -13,16 +13,16 @@ namespace GatheringOverrides
 {
    internal static class Program
    {
+      private static readonly string Nl = Environment.NewLine;
+
       // ReSharper disable once AsyncConverter.AsyncMethodNamingHighlighting
       private static async Task Main(string[] args)
       {
          // Attempt to set the version of MSBuild.
          var visualStudioInstances = MSBuildLocator.QueryVisualStudioInstances().ToArray();
          var instance = visualStudioInstances.Length == 1
-            // If there is only one instance of MSBuild on this machine, set that as the one to use.
-            ? visualStudioInstances[0]
-            // Handle selecting the version of MSBuild you want to use.
-            : SelectVisualStudioInstance(visualStudioInstances);
+            ? visualStudioInstances[0] // If there is only one instance of MSBuild on this machine, set that as the one to use.                                       
+            : SelectVisualStudioInstance(visualStudioInstances);  // Handle selecting the version of MSBuild you want to use.
 
          Console.WriteLine($"Using MSBuild at '{instance.MSBuildPath}' to load projects.");
 
@@ -49,7 +49,7 @@ namespace GatheringOverrides
                .ConfigureAwait(false);
             Console.WriteLine($"Finished loading solution '{solutionPath}'");
 
-            // Gathering overrides of the desired type, i.e...
+            // Gathering overrides of the desired type
             var projectToFind = solution.Projects.FirstOrDefault(project => project.Name == "WpfApp");
             var documentToFind =
                projectToFind?.Documents.FirstOrDefault(document => document.Name == "MainWindow.xaml.cs");
@@ -60,12 +60,14 @@ namespace GatheringOverrides
                var classToFind = root.DescendantNodes(_ => true)
                   .OfType<ClassDeclarationSyntax>()
                   .FirstOrDefault(classDecl => classDecl.Identifier.ToString() == "MainWindow");
+
                if (classToFind != null)
                {
                   var declTypeSymbol = model.GetDeclaredSymbol(classToFind);
+
                   if (declTypeSymbol != null)
                   {
-                     var baseTypes = declTypeSymbol.GetBaseTypes();
+                     var baseTypes = declTypeSymbol.GetBaseTypes(onlySelf: true);
                      var accesibleToOverride = GetOverridableSymbols(baseTypes);
                      var propertiesToOverride = GetOverridableProperties(accesibleToOverride);
                      var methodsToOverride = GetOverridableMethods(accesibleToOverride);
@@ -74,14 +76,14 @@ namespace GatheringOverrides
                      {
                         var signature = propertySymbol.ToSignature();
                         Console.WriteLine(
-                           $"{signature}{Environment.NewLine}\t{propertySymbol.GetSummary()}{Environment.NewLine}");
+                           $"{signature}{Nl}\t{propertySymbol.GetSummary()}{Nl}");
                      }
 
                      foreach (var methodSymbol in methodsToOverride)
                      {
                         var signature = methodSymbol.ToSignature();
                         Console.WriteLine(
-                           $"{signature}{Environment.NewLine}\t{methodSymbol.GetSummary()}{Environment.NewLine}");
+                           $"{signature}{Nl}\t{methodSymbol.GetSummary()}{Nl}");
                      }
 
                      /**
