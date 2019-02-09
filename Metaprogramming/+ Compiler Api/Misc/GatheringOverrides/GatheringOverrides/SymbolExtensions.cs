@@ -31,7 +31,8 @@ namespace GatheringOverrides
       /// <param name="includeItself">true, if you want to include <paramref name="typeSymbol" /> itself, false - no, by default</param>
       /// <param name="onlySelf">truem if you need only type <paramref name="typeSymbol" /> itself</param>
       /// <returns>Base types</returns>
-      public static IEnumerable<ITypeSymbol> GetBaseTypes(this ITypeSymbol typeSymbol, bool includeItself = false,
+      public static IEnumerable<ITypeSymbol> GetBaseTypes(this ITypeSymbol typeSymbol,
+      	 bool includeItself = false,
          bool onlySelf = false)
       {
          var typeName = typeSymbol.Name;
@@ -44,6 +45,7 @@ namespace GatheringOverrides
          typeSymbol.GatherBaseTypes(typeSymbols);
          BaseTypeCache[typeName] = typeSymbols;
 
+         // TODO: USE enums for choices between what function should be used for filtering
          if (!includeItself)
          {
             var filterStrategy = onlySelf
@@ -58,8 +60,8 @@ namespace GatheringOverrides
       /// <summary>
       ///    Recusrively visits all base types and saves them in <paramref name="typeSet" />
       /// </summary>
-      /// <param name="typeSymbol">Type symbol</param>
-      /// <param name="typeSet">Type symbols</param>
+      /// <param name="typeSymbol">Type symbol - the lowest in inheritance chain</param>
+      /// <param name="typeSet">Type symbols for being saved</param>
       private static void GatherBaseTypes(this ITypeSymbol typeSymbol, ISet<ITypeSymbol> typeSet)
       {
          while (true)
@@ -148,7 +150,7 @@ namespace GatheringOverrides
          var propertyName = propertySymbol.Name;
          var propertyTypeName = propertySymbol.Type.ToDisplayString();
          var accessModifiers = GetAccessModifiers(propertySymbol);
-         var signature = new StringBuilder($"{accessModifiers} override ", 0x40);
+         var signature = new StringBuilder($"{accessModifiers} override ", 0x40);	// TODO: Use shared threshold as const
          signature.Append($"{propertyTypeName} {propertyName} ");
          var propertySugar = !propertySymbol.IsReadOnly
             ? propertySymbol.IsWriteOnly
@@ -167,6 +169,8 @@ namespace GatheringOverrides
          if (methodSymbol.IsGenericMethod)
          {
             var typeParameterSymbols = methodSymbol.TypeParameters.ToArray();
+
+            // TODO: Use string.Join here
             var genericParameters = "<";
             for (var i = 0; i < typeParameterSymbols.Length; i++)
             {
@@ -182,16 +186,12 @@ namespace GatheringOverrides
             methodName += genericParameters;
          }
 
-         #region Misc
-
          var returnTypeModifiers = GetTypeModifiers(methodSymbol.RefKind);
          var returnType = methodSymbol.ReturnType.GetReturnTypeToDisplay();
          if (returnTypeModifiers.Length > 0)
          {
             returnType = $"{returnTypeModifiers} {returnType}";
-         }
-
-         #endregion
+         }         
 
          var accessModifiers = methodSymbol.GetAccessModifiers();
          var signature = new StringBuilder($"{accessModifiers} override ", 0x80);
@@ -201,6 +201,7 @@ namespace GatheringOverrides
          var parameterList = new StringBuilder("(");
          if (parameters != null && parameters.Length > 0)
          {
+         	// TODO: Use string.Join with Enumerable.Aggregate
             for (var i = 0; i < parameters.Length; i++)
             {
                var parameterSymbol = parameters[i];
@@ -321,13 +322,15 @@ namespace GatheringOverrides
          string returnTypeName;
          var arrayElementType = arrayTypeSymbol.ElementType;
          var elementTypeDisplay = arrayElementType.NormalizeTypeSymbol();
-         if (parameterSymbol?.IsParams == true)
+         if (parameterSymbol?.IsParams == true)	// FIXME: strange case with parameter usage here
          {
             returnTypeName = $"params {elementTypeDisplay}[]";
          }
          else
          {
             var arrayRank = arrayTypeSymbol.Rank;
+
+            // TODO: Use string.Join
             var arrayIndexSignature = "[";
             if (arrayRank >= 2)
             {
