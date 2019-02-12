@@ -7,6 +7,7 @@ using Microsoft.Build.Locator;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.MSBuild;
+using MoreLinq;
 using static GatheringOverrides.SymbolExtensions;
 
 namespace GatheringOverrides
@@ -67,12 +68,13 @@ namespace GatheringOverrides
 
                   if (declTypeSymbol != null)
                   {
-                     var baseTypes = declTypeSymbol.GetBaseTypes(onlySelf: true);
+                     var baseTypes = declTypeSymbol.GetBaseTypes(TypeHierarchyFilter.OnlyItself);
                      var accesibleToOverride = GetOverridableSymbols(baseTypes);
                      var propertiesToOverride = GetOverridableProperties(accesibleToOverride);
                      var methodsToOverride = GetOverridableMethods(accesibleToOverride);
 
-                     foreach (var propertySymbol in propertiesToOverride)
+                     // Output signatures
+                     /*foreach (var propertySymbol in propertiesToOverride)
                      {
                         var signature = propertySymbol.ToSignature();
                         Console.WriteLine(
@@ -84,11 +86,16 @@ namespace GatheringOverrides
                         var signature = methodSymbol.ToSignature();
                         Console.WriteLine(
                            $"{signature}{Nl}\t{methodSymbol.GetSummary()}{Nl}");
-                     }
+                     }*/
 
                      /**
                       * TODO: Try generate it via reusable approach                      
                       */
+                     foreach (var propertySymbol in propertiesToOverride)
+                     {
+                        var propertyDecl = CodeGeneration.BuildProperty(propertySymbol);
+                        Console.WriteLine(propertyDecl);
+                     }
                   }
                }
             }

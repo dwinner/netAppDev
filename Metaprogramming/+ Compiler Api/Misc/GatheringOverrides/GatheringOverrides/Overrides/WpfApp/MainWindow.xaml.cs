@@ -14,7 +14,11 @@ namespace WpfApp
       /// <summary>
       /// Own
       /// </summary>
-      protected virtual int Own { get; set; }
+      protected virtual int PvOwn { get; set; }
+
+      protected internal virtual double PiOwn { get; private set; }
+
+      public virtual object PubvOwn { protected get; set; }
 
       protected internal virtual ref int GetSomeRef(ref int a)
       {
@@ -84,10 +88,19 @@ namespace WpfApp
 
    class DerivedWindow : MainWindow
    {
-      public override unsafe void ProcessUnsafe(int* pInt)
+      protected override int PvOwn
       {
-         base.ProcessUnsafe(pInt);
-      }      
+         get => base.PvOwn;
+         set => base.PvOwn = value;
+      }
+
+      protected internal override double PiOwn => base.PiOwn;
+
+      public override object PubvOwn
+      {
+         protected get => base.PubvOwn;
+         set => base.PubvOwn = value;
+      }
    }
 
    public class Employee

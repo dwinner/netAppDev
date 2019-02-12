@@ -14,6 +14,8 @@ namespace GatheringOverrides
    /// </summary>
    public static class SymbolExtensions
    {
+      private const int InitialCapacity = 0x80;
+
       private static readonly Dictionary<string, ISet<ITypeSymbol>> BaseTypeCache =
          new Dictionary<string, ISet<ITypeSymbol>>();
 
@@ -28,12 +30,10 @@ namespace GatheringOverrides
       ///    Get base types for <paramref name="typeSymbol" />
       /// </summary>
       /// <param name="typeSymbol">Type Symbol</param>
-      /// <param name="includeItself">true, if you want to include <paramref name="typeSymbol" /> itself, false - no, by default</param>
-      /// <param name="onlySelf">truem if you need only type <paramref name="typeSymbol" /> itself</param>
+      /// <param name="hierarchyFilter">Type hierarchy filter</param>
       /// <returns>Base types</returns>
       public static IEnumerable<ITypeSymbol> GetBaseTypes(this ITypeSymbol typeSymbol,
-      	 bool includeItself = false,
-         bool onlySelf = false)
+         TypeHierarchyFilter hierarchyFilter = TypeHierarchyFilter.All)
       {
          var typeName = typeSymbol.Name;
          if (BaseTypeCache.ContainsKey(typeName))
@@ -44,17 +44,34 @@ namespace GatheringOverrides
          var typeSymbols = new HashSet<ITypeSymbol>(SymbolEqualityComparer.Default);
          typeSymbol.GatherBaseTypes(typeSymbols);
          BaseTypeCache[typeName] = typeSymbols;
-
-         // TODO: USE enums for choices between what function should be used for filtering
-         if (!includeItself)
-         {
-            var filterStrategy = onlySelf
-               ? (Func<ITypeSymbol, bool>) (symbol => !symbol.Name.Equals(typeName, StringComparison.Ordinal))
-               : symbol => symbol.Name.Equals(typeName, StringComparison.Ordinal);
-            typeSymbols.RemoveWhere(symbol => filterStrategy(symbol));
-         }
+         var filterBehavior = GetFilterBehavior(hierarchyFilter, typeName);
+         typeSymbols.RemoveWhere(symbol => filterBehavior(symbol));
 
          return typeSymbols;
+
+         Func<ITypeSymbol, bool> GetFilterBehavior(TypeHierarchyFilter filter, string typeSymbolName)
+         {
+            Func<ITypeSymbol, bool> func;
+            switch (filter)
+            {
+               case TypeHierarchyFilter.All:
+                  func = _ => false;
+                  break;
+
+               case TypeHierarchyFilter.ExcludeItselt:
+                  func = symbol => symbol.Name.Equals(typeSymbolName, StringComparison.CurrentCulture);
+                  break;
+
+               case TypeHierarchyFilter.OnlyItself:
+                  func = symbol => !symbol.Name.Equals(typeSymbolName, StringComparison.CurrentCulture);
+                  break;
+
+               default:
+                  throw new ArgumentOutOfRangeException(nameof(hierarchyFilter), hierarchyFilter, null);
+            }
+
+            return func;
+         }
       }
 
       /// <summary>
@@ -143,47 +160,71 @@ namespace GatheringOverrides
 
       public static string ToSignature(this IPropertySymbol propertySymbol)
       {
-         const string setOnlySugar = "{ set; }";
-         const string setAndGetSugar = "{ get; set; }";
-         const string getOnlySugar = "{ get; }";
-
          var propertyName = propertySymbol.Name;
-         var propertyTypeName = propertySymbol.Type.ToDisplayString();
-         var accessModifiers = GetAccessModifiers(propertySymbol);
-         var signature = new StringBuilder($"{accessModifiers} override ", 0x40);	// TODO: Use shared threshold as const
-         signature.Append($"{propertyTypeName} {propertyName} ");
-         var propertySugar = !propertySymbol.IsReadOnly
-            ? propertySymbol.IsWriteOnly
-               ? setOnlySugar
-               : setAndGetSugar
-            : getOnlySugar;
-         signature.Append(propertySugar);
+         var propertyTypeName = propertySymbol.Type.NormalizeTypeSymbol();
+         var accessModifiers = propertySymbol.GetAccessModifiers();
+         var propertySignature = new StringBuilder($"{accessModifiers} override ", InitialCapacity);
+         propertySignature.Append($"{propertyTypeName} {propertyName} ");
+         var propertySugar = GetPropertySugar();
+         propertySignature.Append(propertySugar);
+         return propertySignature.ToString();
 
-         return signature.ToString();
+         string GetPropertySugar()
+         {
+            var property = "{ ";
+            if (propertySymbol.IsReadOnly)
+            {
+               var getModifiers = propertySymbol.GetMethod.GetAccessModifiers();
+               if (!string.Equals(accessModifiers, getModifiers, StringComparison.Ordinal))
+               {
+                  property += $"{getModifiers} ";
+               }
+
+               property += "get; }";
+            }
+            else if (propertySymbol.IsWriteOnly)
+            {
+               property += "private get; ";
+               var setModifiers = propertySymbol.SetMethod.GetAccessModifiers();
+               if (!string.Equals(accessModifiers, setModifiers, StringComparison.Ordinal))
+               {
+                  property += $"{setModifiers} ";
+               }
+
+               property += "set; }";
+            }
+            else
+            {
+               var getModifiers = propertySymbol.GetMethod.GetAccessModifiers();
+               if (!string.Equals(accessModifiers, getModifiers, StringComparison.Ordinal))
+               {
+                  property += $"{getModifiers} ";
+               }
+
+               property += "get; ";
+               var setModifiers = propertySymbol.SetMethod.GetAccessModifiers();
+               if (!string.Equals(accessModifiers, setModifiers, StringComparison.Ordinal))
+               {
+                  property += $"{setModifiers} ";
+               }
+
+               property += "set; }";
+            }
+
+            return property;
+         }
       }
 
       public static string ToSignature(this IMethodSymbol methodSymbol)
       {
          var methodName = methodSymbol.Name;
+         const string separator = ", ";
 
          if (methodSymbol.IsGenericMethod)
          {
-            var typeParameterSymbols = methodSymbol.TypeParameters.ToArray();
-
-            // TODO: Use string.Join here
-            var genericParameters = "<";
-            for (var i = 0; i < typeParameterSymbols.Length; i++)
-            {
-               var genericParameterSymbol = typeParameterSymbols[i];
-               genericParameters += genericParameterSymbol.Name;
-               if (i != typeParameterSymbols.Length - 1)
-               {
-                  genericParameters += ", ";
-               }
-            }
-
-            genericParameters += ">";
-            methodName += genericParameters;
+            var typeParams = methodSymbol.TypeParameters;
+            var joinedString = Join("<", ">", separator, typeParams, symbol => symbol.Name);
+            methodName += joinedString;
          }
 
          var returnTypeModifiers = GetTypeModifiers(methodSymbol.RefKind);
@@ -191,39 +232,24 @@ namespace GatheringOverrides
          if (returnTypeModifiers.Length > 0)
          {
             returnType = $"{returnTypeModifiers} {returnType}";
-         }         
+         }
 
          var accessModifiers = methodSymbol.GetAccessModifiers();
-         var signature = new StringBuilder($"{accessModifiers} override ", 0x80);
+         var signature = new StringBuilder($"{accessModifiers} override ", InitialCapacity);
 
          signature.Append($"{returnType} {methodName}");
          var parameters = methodSymbol.Parameters;
-         var parameterList = new StringBuilder("(");
-         if (parameters != null && parameters.Length > 0)
+         var parameterList = Join("(", ")", separator, parameters, symbol =>
          {
-         	// TODO: Use string.Join with Enumerable.Aggregate
-            for (var i = 0; i < parameters.Length; i++)
+            var paramModifiers = GetTypeModifiers(symbol.RefKind);
+            var parameterDisplayType = symbol.Type.GetReturnTypeToDisplay(symbol);
+            if (!string.IsNullOrEmpty(paramModifiers))
             {
-               var parameterSymbol = parameters[i];
-               var parameterRefKind = parameterSymbol.RefKind;
-               var parameterReturnTypeModifiers = GetTypeModifiers(parameterRefKind);
-               var parameterName = parameterSymbol.Name;
-               var parameterType = parameterSymbol.Type;
-               var parameterDisplayType = parameterType.GetReturnTypeToDisplay(parameterSymbol);
-               if (!string.IsNullOrEmpty(parameterReturnTypeModifiers))
-               {
-                  parameterDisplayType = $"{parameterReturnTypeModifiers} {parameterDisplayType}";
-               }
-
-               parameterList.Append($"{parameterDisplayType} {parameterName}");
-               if (i != parameters.Length - 1)
-               {
-                  parameterList.Append(", ");
-               }
+               parameterDisplayType = $"{paramModifiers} {parameterDisplayType}";
             }
-         }
 
-         parameterList.Append(")");
+            return $"{parameterDisplayType} {symbol.Name}";
+         });
          signature.Append(parameterList);
 
          return signature.ToString();
@@ -301,7 +327,6 @@ namespace GatheringOverrides
          }
 
          return returnTypeName;
-
       }
 
       private static string ProcessPointerTypeKind(IPointerTypeSymbol pointerTypeSymbol)
@@ -312,7 +337,7 @@ namespace GatheringOverrides
          return returnTypeName;
       }
 
-      private static string NormalizeTypeSymbol(this ITypeSymbol pointedAtType) =>
+      public static string NormalizeTypeSymbol(this ITypeSymbol pointedAtType) =>
          pointedAtType.SpecialType == SpecialType.None
             ? pointedAtType.Name
             : pointedAtType.ToDisplayString();
@@ -322,15 +347,13 @@ namespace GatheringOverrides
          string returnTypeName;
          var arrayElementType = arrayTypeSymbol.ElementType;
          var elementTypeDisplay = arrayElementType.NormalizeTypeSymbol();
-         if (parameterSymbol?.IsParams == true)	// FIXME: strange case with parameter usage here
+         if (parameterSymbol?.IsParams == true) // FIXME: strange case with parameter usage here
          {
             returnTypeName = $"params {elementTypeDisplay}[]";
          }
          else
          {
             var arrayRank = arrayTypeSymbol.Rank;
-
-            // TODO: Use string.Join
             var arrayIndexSignature = "[";
             if (arrayRank >= 2)
             {
@@ -364,6 +387,21 @@ namespace GatheringOverrides
          return summaryText.Trim();
       }
 
+      private static string Join<T>(string start, string end, string separator,
+         IEnumerable<T> sequence,
+         Func<T, string> stringProducer)
+      {
+         var aggregator =
+            sequence.Aggregate(start, (current, element) => $"{current}{stringProducer(element)}{separator}");
+         if (aggregator.Length > start.Length + separator.Length)
+         {
+            aggregator = aggregator.Substring(0, aggregator.Length - separator.Length);
+         }
+
+         aggregator += end;
+         return aggregator;
+      }
+
       private sealed class SymbolEqualityComparer : IEqualityComparer<ISymbol>
       {
          public static IEqualityComparer<ISymbol> Default { get; } = new SymbolEqualityComparer();
@@ -372,5 +410,7 @@ namespace GatheringOverrides
 
          public int GetHashCode(ISymbol obj) => obj.Name.GetHashCode();
       }
+
+      
    }
 }
