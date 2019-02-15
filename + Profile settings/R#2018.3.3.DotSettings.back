@@ -1,26 +1,36 @@
 ﻿<wpf:ResourceDictionary xml:space="preserve" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns:ss="urn:shemas-jetbrains-com:settings-storage-xaml" xmlns:wpf="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+	<s:String x:Key="/Default/CodeEditing/GenerateMemberBody/AccessorImplementationKind/@EntryValue">Default</s:String>
 	<s:Boolean x:Key="/Default/CodeEditing/Intellisense/CodeCompletion/AutoCompleteBasicCompletion/@EntryValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/CodeEditing/Intellisense/CodeCompletion/AutoCompleteImportCompletion/@EntryValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/CodeEditing/Intellisense/CodeCompletion/ConfirmReferenceAdd/@EntryValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/CodeEditing/Intellisense/CodeCompletion/ExtensionMethodsInSmartCompletion/@EntryValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/CodeEditing/Intellisense/CodeCompletion/IntelliSenseCompletingCharacters/CSharpCompletingCharacters/UpgradedFromVSSettings/@EntryValue">True</s:Boolean>
-	<s:Boolean x:Key="/Default/CodeEditing/Intellisense/CodeCompletion/SmartCallChains/SmartCallChainsEnabled/@EntryValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/CodeEditing/Intellisense/LookupWindow/ShowSignatures/@EntryValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/CodeInspection/Browsers/Enable/@EntryValue">False</s:Boolean>
+	<s:Int64 x:Key="/Default/CodeInspection/CyclomaticComplexityAnalysis/Thresholds/=CLR_005FREGULAR_005FEXPRESSION/@EntryIndexedValue">20</s:Int64>
+	<s:Int64 x:Key="/Default/CodeInspection/CyclomaticComplexityAnalysis/Thresholds/=JAVA_005FSCRIPT/@EntryIndexedValue">20</s:Int64>
+	<s:Int64 x:Key="/Default/CodeInspection/CyclomaticComplexityAnalysis/Thresholds/=JSON/@EntryIndexedValue">20</s:Int64>
+	<s:Int64 x:Key="/Default/CodeInspection/CyclomaticComplexityAnalysis/Thresholds/=RESX/@EntryIndexedValue">20</s:Int64>
+	<s:Int64 x:Key="/Default/CodeInspection/CyclomaticComplexityAnalysis/Thresholds/=VBASIC/@EntryIndexedValue">20</s:Int64>
+	<s:Int64 x:Key="/Default/CodeInspection/CyclomaticComplexityAnalysis/Thresholds/=Web_002EConfig/@EntryIndexedValue">20</s:Int64>
+	<s:Int64 x:Key="/Default/CodeInspection/CyclomaticComplexityAnalysis/Thresholds/=XAML/@EntryIndexedValue">20</s:Int64>
 	<s:String x:Key="/Default/CodeInspection/Highlighting/AnalysisEnabled/@EntryValue">SOLUTION</s:String>
 	<s:Boolean x:Key="/Default/CodeInspection/Highlighting/IdentifierHighlightingEnabled/@EntryValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/CodeInspection/Highlighting/IncludeWarningsInSwea/@EntryValue">True</s:Boolean>
 	<s:String x:Key="/Default/CodeInspection/Highlighting/InspectionSeverities/=ArrangeMissingParentheses/@EntryIndexedValue">HINT</s:String>
 	<s:String x:Key="/Default/CodeInspection/Highlighting/InspectionSeverities/=CatchAllClause/@EntryIndexedValue">HINT</s:String>
+	<s:String x:Key="/Default/CodeInspection/Highlighting/InspectionSeverities/=CheckNamespace/@EntryIndexedValue">SUGGESTION</s:String>
+	<s:String x:Key="/Default/CodeInspection/Highlighting/InspectionSeverities/=CommentTypo/@EntryIndexedValue">DO_NOT_SHOW</s:String>
 	<s:String x:Key="/Default/CodeInspection/Highlighting/InspectionSeverities/=ComplexConditionExpression/@EntryIndexedValue">HINT</s:String>
 	<s:String x:Key="/Default/CodeInspection/Highlighting/InspectionSeverities/=CssNotResolved/@EntryIndexedValue">SUGGESTION</s:String>
-	<s:String x:Key="/Default/CodeInspection/Highlighting/InspectionSeverities/=CyclomaticComplexity/@EntryIndexedValue">SUGGESTION</s:String>
+	<s:String x:Key="/Default/CodeInspection/Highlighting/InspectionSeverities/=CyclomaticComplexity/@EntryIndexedValue">WARNING</s:String>
 	<s:String x:Key="/Default/CodeInspection/Highlighting/InspectionSeverities/=EventExceptionNotDocumented/@EntryIndexedValue">HINT</s:String>
 	<s:String x:Key="/Default/CodeInspection/Highlighting/InspectionSeverities/=ExceptionNotDocumented/@EntryIndexedValue">HINT</s:String>
 	<s:String x:Key="/Default/CodeInspection/Highlighting/InspectionSeverities/=ExplicitCallerInfoArgument/@EntryIndexedValue">HINT</s:String>
 	<s:String x:Key="/Default/CodeInspection/Highlighting/InspectionSeverities/=FlagArgument/@EntryIndexedValue">HINT</s:String>
 	<s:String x:Key="/Default/CodeInspection/Highlighting/InspectionSeverities/=FunctionComplexityOverflow/@EntryIndexedValue">SUGGESTION</s:String>
 	<s:String x:Key="/Default/CodeInspection/Highlighting/InspectionSeverities/=HollowTypeName/@EntryIndexedValue">HINT</s:String>
+	<s:String x:Key="/Default/CodeInspection/Highlighting/InspectionSeverities/=IdentifierTypo/@EntryIndexedValue">DO_NOT_SHOW</s:String>
 	<s:String x:Key="/Default/CodeInspection/Highlighting/InspectionSeverities/=InvalidValue/@EntryIndexedValue">SUGGESTION</s:String>
 	<s:String x:Key="/Default/CodeInspection/Highlighting/InspectionSeverities/=LocalizableElement/@EntryIndexedValue">HINT</s:String>
 	<s:String x:Key="/Default/CodeInspection/Highlighting/InspectionSeverities/=MethodNameNotMeaningful/@EntryIndexedValue">HINT</s:String>
@@ -31,13 +41,17 @@
 	<s:String x:Key="/Default/CodeInspection/Highlighting/InspectionSeverities/=PossibleNullReferenceException/@EntryIndexedValue">HINT</s:String>
 	<s:String x:Key="/Default/CodeInspection/Highlighting/InspectionSeverities/=RedundantNameQualifier/@EntryIndexedValue">SUGGESTION</s:String>
 	<s:String x:Key="/Default/CodeInspection/Highlighting/InspectionSeverities/=RedundantUsingDirective/@EntryIndexedValue">SUGGESTION</s:String>
+	<s:String x:Key="/Default/CodeInspection/Highlighting/InspectionSeverities/=RegionWithinTypeMemberBody/@EntryIndexedValue">HINT</s:String>
+	<s:String x:Key="/Default/CodeInspection/Highlighting/InspectionSeverities/=StringLiteralTypo/@EntryIndexedValue">DO_NOT_SHOW</s:String>
 	<s:String x:Key="/Default/CodeInspection/Highlighting/InspectionSeverities/=SuggestVarOrType_005FBuiltInTypes/@EntryIndexedValue">HINT</s:String>
 	<s:String x:Key="/Default/CodeInspection/Highlighting/InspectionSeverities/=SuggestVarOrType_005FSimpleTypes/@EntryIndexedValue">HINT</s:String>
+	<s:String x:Key="/Default/CodeInspection/Highlighting/InspectionSeverities/=ThrowExceptionInUnexpectedLocation/@EntryIndexedValue">SUGGESTION</s:String>
 	<s:String x:Key="/Default/CodeInspection/Highlighting/InspectionSeverities/=TooManyArguments/@EntryIndexedValue">HINT</s:String>
 	<s:String x:Key="/Default/CodeInspection/Highlighting/InspectionSeverities/=TooManyChainedReferences/@EntryIndexedValue">HINT</s:String>
 	<s:String x:Key="/Default/CodeInspection/Highlighting/InspectionSeverities/=TooManyDependencies/@EntryIndexedValue">HINT</s:String>
 	<s:String x:Key="/Default/CodeInspection/Highlighting/InspectionSeverities/=UnnecessaryWhitespace/@EntryIndexedValue">HINT</s:String>
 	<s:String x:Key="/Default/CodeInspection/Highlighting/InspectionSeverities/=UnusedAutoPropertyAccessor_002EGlobal/@EntryIndexedValue">HINT</s:String>
+	<s:String x:Key="/Default/CodeInspection/Highlighting/InspectionSeverities/=Xaml_002EInvalidMemberType/@EntryIndexedValue">WARNING</s:String>
 	<s:String x:Key="/Default/CodeInspection/Highlighting/CodeIssueFilter/IssueTypesToHide/=_003CConfigurableSeverity_0020Id_003D_0022AccessToDisposedClosure_0022_0020_002F_003E/@EntryIndexedValue">DoHide</s:String>
 	<s:String x:Key="/Default/CodeInspection/Highlighting/CodeIssueFilter/IssueTypesToHide/=_003CConfigurableSeverity_0020Id_003D_0022AccessToForEachVariableInClosure_0022_0020_002F_003E/@EntryIndexedValue">DoHide</s:String>
 	<s:String x:Key="/Default/CodeInspection/Highlighting/CodeIssueFilter/IssueTypesToHide/=_003CConfigurableSeverity_0020Id_003D_0022AccessToModifiedClosure_0022_0020_002F_003E/@EntryIndexedValue">DoHide</s:String>
@@ -1009,14 +1023,21 @@
 	<s:String x:Key="/Default/CodeInspection/Highlighting/CodeIssueFilter/IssueTypesToHide/=_003CStaticSeverity_0020Severity_003D_0022_002D1_0022_0020Title_003D_0022Structural_0020Search_0020Pattern_0022_0020GroupId_003D_0022StructuralSearch_0022_0020_002F_003E/@EntryIndexedValue">DoHide</s:String>
 	<s:String x:Key="/Default/CodeStyle/CodeCleanup/RecentlyUsedProfile/@EntryValue">Built-in: Full Cleanup</s:String>
 	<s:String x:Key="/Default/CodeStyle/CodeCleanup/SilentCleanupProfile/@EntryValue">Built-in: Full Cleanup</s:String>
+	<s:String x:Key="/Default/CodeStyle/CodeFormatting/CppFormatting/SIMPLE_CASE_STATEMENT_STYLE/@EntryValue">LINE_BREAK</s:String>
+	<s:String x:Key="/Default/CodeStyle/CodeFormatting/CppFormatting/SIMPLE_EMBEDDED_STATEMENT_STYLE/@EntryValue">LINE_BREAK</s:String>
+	<s:String x:Key="/Default/CodeStyle/CodeFormatting/CSharpCodeStyle/BRACES_FOR_FOR/@EntryValue">Required</s:String>
+	<s:String x:Key="/Default/CodeStyle/CodeFormatting/CSharpCodeStyle/BRACES_FOR_FOREACH/@EntryValue">Required</s:String>
 	<s:String x:Key="/Default/CodeStyle/CodeFormatting/CSharpCodeStyle/BRACES_FOR_IFELSE/@EntryValue">Required</s:String>
+	<s:String x:Key="/Default/CodeStyle/CodeFormatting/CSharpCodeStyle/BRACES_FOR_WHILE/@EntryValue">Required</s:String>
 	<s:String x:Key="/Default/CodeStyle/CodeFormatting/CSharpCodeStyle/CONSTRUCTOR_OR_DESTRUCTOR_BODY/@EntryValue">ExpressionBody</s:String>
 	<s:String x:Key="/Default/CodeStyle/CodeFormatting/CSharpCodeStyle/LOCAL_FUNCTION_BODY/@EntryValue">ExpressionBody</s:String>
 	<s:String x:Key="/Default/CodeStyle/CodeFormatting/CSharpCodeStyle/METHOD_OR_OPERATOR_BODY/@EntryValue">ExpressionBody</s:String>
 	<s:Boolean x:Key="/Default/CodeStyle/CodeFormatting/CSharpFormat/ALLOW_COMMENT_AFTER_LBRACE/@EntryValue">True</s:Boolean>
+	<s:String x:Key="/Default/CodeStyle/CodeFormatting/CSharpFormat/PLACE_ACCESSORHOLDER_ATTRIBUTE_ON_SAME_LINE_EX/@EntryValue">NEVER</s:String>
 	<s:Boolean x:Key="/Default/CodeStyle/CodeFormatting/JavaScriptCodeFormatting/SPACE_BEFORE_METHOD_CALL_PARENTHESES/@EntryValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/CodeStyle/CodeFormatting/JavaScriptCodeFormatting/SPACE_BEFORE_METHOD_PARENTHESES/@EntryValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/CodeStyle/CodeFormatting/JavaScriptCodeFormatting/SPACE_BEFORE_METHOD_PARENTHESES_ANONYMOUS/@EntryValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/CodeStyle/EncapsulateField/UpdateExternalUsagesOnly/@EntryValue">False</s:Boolean>
 	<s:Boolean x:Key="/Default/CodeStyle/Generate/=Constructor/@KeyIndexDefined">True</s:Boolean>
 	<s:String x:Key="/Default/CodeStyle/Generate/=Constructor/Options/=CheckForNull/@EntryIndexedValue">False</s:String>
 	<s:Boolean x:Key="/Default/CodeStyle/Generate/=CppDefinitions/@KeyIndexDefined">True</s:Boolean>
@@ -1026,11 +1047,22 @@
 	<s:String x:Key="/Default/CodeStyle/Generate/=EqualityMembers/Options/=ChangeGetHashCode/@EntryIndexedValue">Replace</s:String>
 	<s:String x:Key="/Default/CodeStyle/Generate/=EqualityMembers/Options/=EqualityOperators/@EntryIndexedValue">True</s:String>
 	<s:String x:Key="/Default/CodeStyle/Generate/=EqualityMembers/Options/=ImplementIEquatable/@EntryIndexedValue">True</s:String>
+	<s:Boolean x:Key="/Default/CodeStyle/Generate/=Formatting/@KeyIndexDefined">True</s:Boolean>
+	<s:String x:Key="/Default/CodeStyle/Generate/=Formatting/Options/=UseNameOf/@EntryIndexedValue">True</s:String>
+	<s:Boolean x:Key="/Default/CodeStyle/Generate/=Implementations/@KeyIndexDefined">True</s:Boolean>
+	<s:String x:Key="/Default/CodeStyle/Generate/=Implementations/Options/=Async/@EntryIndexedValue">False</s:String>
+	<s:String x:Key="/Default/CodeStyle/Generate/=Implementations/Options/=Mutable/@EntryIndexedValue">False</s:String>
+	<s:Boolean x:Key="/Default/CodeStyle/Generate/=RelationalMembers/@KeyIndexDefined">True</s:Boolean>
+	<s:String x:Key="/Default/CodeStyle/Generate/=RelationalMembers/Options/=ImplementIComparable/@EntryIndexedValue">False</s:String>
+	<s:String x:Key="/Default/CodeStyle/Generate/=RelationalMembers/Options/=RelationalOperators/@EntryIndexedValue">False</s:String>
+	<s:Boolean x:Key="/Default/CodeStyle/Naming/CSharpAutoNaming/IsNotificationDisabled/@EntryValue">True</s:Boolean>
 	<s:String x:Key="/Default/CodeStyle/Naming/CSharpNaming/PredefinedNamingRules/=PrivateInstanceFields/@EntryIndexedValue">&lt;Policy Inspect="True" Prefix="_" Suffix="" Style="aaBb" /&gt;</s:String>
-	<s:String x:Key="/Default/CodeStyle/Naming/CSharpNaming/PredefinedNamingRules/=PrivateStaticReadonly/@EntryIndexedValue">&lt;Policy Inspect="True" Prefix="_" Suffix="" Style="aaBb" /&gt;</s:String>
+	<s:String x:Key="/Default/CodeStyle/Naming/CSharpNaming/PredefinedNamingRules/=PrivateStaticReadonly/@EntryIndexedValue">&lt;Policy Inspect="True" Prefix="" Suffix="" Style="AaBb" /&gt;</s:String>
+	<s:String x:Key="/Default/CodeStyle/Naming/XamlNaming/UserRules/=NAMESPACE_005FALIAS/@EntryIndexedValue">&lt;Policy Inspect="True" Prefix="" Suffix="" Style="aaBb" /&gt;</s:String>
 	<s:String x:Key="/Default/CodeStyle/Naming/XamlNaming/UserRules/=XAML_005FFIELD/@EntryIndexedValue">&lt;Policy Inspect="True" Prefix="" Suffix="" Style="aaBb" /&gt;</s:String>
 	<s:String x:Key="/Default/CodeStyle/Naming/XamlNaming/UserRules/=XAML_005FRESOURCE/@EntryIndexedValue">&lt;Policy Inspect="True" Prefix="" Suffix="" Style="aaBb" /&gt;</s:String>
 	<s:String x:Key="/Default/Connection/XmlConnectionList/@EntryValue">&lt;Configurator&gt;&lt;ConnectList /&gt;&lt;/Configurator&gt;</s:String>
+	<s:Boolean x:Key="/Default/Environment/CppEnableRsCppOnExternalModuleFiles/IsEnabled/@EntryValue">True</s:Boolean>
 	<s:String x:Key="/Default/Environment/Editor/MatchingBraceHighlighting/Position/@EntryValue">BOTH_SIDES</s:String>
 	<s:Boolean x:Key="/Default/Environment/ExternalSources/FirstTimeFormShown/@EntryValue">True</s:Boolean>
 	<s:String x:Key="/Default/Environment/ExternalSources/NavigationMode/@EntryValue">ObjectBrowser</s:String>
@@ -1038,37 +1070,84 @@
 	<s:Boolean x:Key="/Default/Environment/ExternalSources/Decompiler/DecompilerLegalNoticeAccepted/@EntryValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/Environment/Feedback/ShouldPrompt/@EntryValue">False</s:Boolean>
 	<s:Int64 x:Key="/Default/Environment/General/WorkspaceHostInitializationTimeout/@EntryValue">2000</s:Int64>
-	<s:Boolean x:Key="/Default/Environment/Hierarchy/Build/SolBuilderDuo/RunBuildOnSolutionLoaded/@EntryValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/Environment/GenerateMru/GroupByType/=Overrides/@EntryIndexedValue">True</s:Boolean>
 	<s:String x:Key="/Default/Environment/Hierarchy/Build/SolBuilderDuo/UseMsbuildSolutionBuilder/@EntryValue">NewVersion</s:String>
+	<s:String x:Key="/Default/Environment/ManagedLanguageParameterNameHintsOptions/BlackList/@EntryValue">(begin*, end*)&#xD;
+(start*, end*)&#xD;
+(first*, last*)&#xD;
+(first*, second*)&#xD;
+(from*, to*)&#xD;
+(min*, max*)&#xD;
+(key, value)&#xD;
+System.Object.Equals&#xD;
+System.Object.ReferenceEquals&#xD;
+System.Collections.IEqualityComparer.Equals&#xD;
+System.Math.*&#xD;
+System.Text.StringBuilder.*&#xD;
+System.Linq.Enumerable.*&#xD;
+System.Linq.Queryable.*&#xD;
+Newtonsoft.Json.Linq.*&#xD;
+System.Xml.Linq.*
+System.Resources.ResourceManager.GetString</s:String>
 	<s:Boolean x:Key="/Default/Environment/MemoryUsageIndicator/IsVisible/@EntryValue">True</s:Boolean>
+	<s:String x:Key="/Default/Environment/PerformanceGuide/SwitchBehaviour/=AutoRecoverer/@EntryIndexedValue">LIVE_MONITOR</s:String>
+	<s:String x:Key="/Default/Environment/PerformanceGuide/SwitchBehaviour/=Format/@EntryIndexedValue">LIVE_MONITOR</s:String>
+	<s:String x:Key="/Default/Environment/PerformanceGuide/SwitchBehaviour/=Roslyn_002Dswea/@EntryIndexedValue">DO_NOTHING</s:String>
+	<s:String x:Key="/Default/Environment/PerformanceGuide/SwitchBehaviour/=ShowAnnotations/@EntryIndexedValue">LIVE_MONITOR</s:String>
+	<s:String x:Key="/Default/Environment/PerformanceGuide/SwitchBehaviour/=SolExp_002DTrack/@EntryIndexedValue">LIVE_MONITOR</s:String>
+	<s:String x:Key="/Default/Environment/PerformanceGuide/SwitchBehaviour/=StartPage_002DIsDownloadRefreshEnabled/@EntryIndexedValue">LIVE_MONITOR</s:String>
+	<s:String x:Key="/Default/Environment/PerformanceGuide/SwitchBehaviour/=StartPage_002DOnEnvironmentStatup/@EntryIndexedValue">LIVE_MONITOR</s:String>
+	<s:String x:Key="/Default/Environment/PerformanceGuide/SwitchBehaviour/=SyncSettings/@EntryIndexedValue">LIVE_MONITOR</s:String>
+	<s:String x:Key="/Default/Environment/PerformanceGuide/SwitchBehaviour/=TextEditor_002DCodeLens/@EntryIndexedValue">LIVE_MONITOR</s:String>
+	<s:String x:Key="/Default/Environment/PerformanceGuide/SwitchBehaviour/=TextEditor_002DTrackChanges_002D2/@EntryIndexedValue">LIVE_MONITOR</s:String>
+	<s:String x:Key="/Default/Environment/PerformanceGuide/SwitchBehaviour/=VCS/@EntryIndexedValue">DO_NOTHING</s:String>
+	<s:String x:Key="/Default/Environment/PerformanceGuide/SwitchBehaviour/=VsBulb/@EntryIndexedValue">DO_NOTHING</s:String>
+	<s:String x:Key="/Default/Environment/PerformanceGuide/SwitchBehaviour/=XAML_0020Designer/@EntryIndexedValue">LIVE_MONITOR</s:String>
+	<s:String x:Key="/Default/Environment/PerformanceGuide/SwitchConflictResolutionMode/=VCS/@EntryIndexedValue"></s:String>
+	<s:Boolean x:Key="/Default/Environment/PerformanceGuide/SwitchConflictResolutionMode/=VCS/@EntryIndexRemoved">True</s:Boolean>
 	<s:Boolean x:Key="/Default/Environment/SearchAndNavigation/AutoExpandResults/@EntryValue">True</s:Boolean>
+	<s:Int64 x:Key="/Default/Environment/SearchAndNavigation/DefaultOccurrencesGroupingIndices/=JetBrains_002EPsiFeatures_002EUIInteractive_002ERefactorings_002ECommonUI_002ERefactoringWindows_002EBulkRenameChangeDescriptor/@EntryIndexedValue">12</s:Int64>
+	<s:Int64 x:Key="/Default/Environment/SearchAndNavigation/DefaultOccurrencesGroupingIndices/=JetBrains_002EReSharper_002EFeature_002EServices_002ENavigation_002EDescriptors_002ESearchInheritorsDescriptor/@EntryIndexedValue">12</s:Int64>
+	<s:Int64 x:Key="/Default/Environment/SearchAndNavigation/DefaultOccurrencesGroupingIndices/=JetBrains_002EReSharper_002EFeature_002EServices_002ENavigation_002EDescriptors_002ESearchUsagesDescriptor/@EntryIndexedValue">12</s:Int64>
+	<s:Int64 x:Key="/Default/Environment/SearchAndNavigation/DefaultOccurrencesGroupingIndices/=JetBrains_002EReSharper_002EFeatures_002ENavigation_002EFeatures_002EUsages_002ESearchSpecialUsagesDescriptor/@EntryIndexedValue">12</s:Int64>
+	<s:Boolean x:Key="/Default/Environment/SearchAndNavigation/FileMasksToSkip/=_002A_002EDesigner_002Ecs/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/Environment/SearchAndNavigation/OpenPreviewTabForSelectedItemInFindResults/@EntryValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/Environment/SettingsMigration/IsMigratorApplied/=JetBrains_002EReSharper_002EPsi_002ECSharp_002ECodeStyle_002ECSharpAttributeForSingleLineMethodUpgrade/@EntryIndexedValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/Environment/SettingsMigration/IsMigratorApplied/=JetBrains_002EReSharper_002EPsi_002ECSharp_002ECodeStyle_002ECSharpKeepExistingMigration/@EntryIndexedValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/Environment/SettingsMigration/IsMigratorApplied/=JetBrains_002EReSharper_002EPsi_002ECSharp_002ECodeStyle_002ECSharpPlaceEmbeddedOnSameLineMigration/@EntryIndexedValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/Environment/SettingsMigration/IsMigratorApplied/=JetBrains_002EReSharper_002EPsi_002ECSharp_002ECodeStyle_002ECSharpRenamePlacementToArrangementMigration/@EntryIndexedValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/Environment/SettingsMigration/IsMigratorApplied/=JetBrains_002EReSharper_002EPsi_002ECSharp_002ECodeStyle_002ECSharpUseContinuousIndentInsideBracesMigration/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/Environment/SettingsMigration/IsMigratorApplied/=JetBrains_002EReSharper_002EPsi_002ECSharp_002ECodeStyle_002ESettingsUpgrade_002EAddAccessorOwnerDeclarationBracesMigration/@EntryIndexedValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/Environment/SettingsMigration/IsMigratorApplied/=JetBrains_002EReSharper_002EPsi_002ECSharp_002ECodeStyle_002ESettingsUpgrade_002ECSharpPlaceAttributeOnSameLineMigration/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/Environment/SettingsMigration/IsMigratorApplied/=JetBrains_002EReSharper_002EPsi_002ECSharp_002ECodeStyle_002ESettingsUpgrade_002EMigrateBlankLinesAroundFieldToBlankLinesAroundProperty/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/Environment/SettingsMigration/IsMigratorApplied/=JetBrains_002EReSharper_002EPsi_002ECSharp_002ECodeStyle_002ESettingsUpgrade_002EMigrateThisQualifierSettings/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/Environment/SettingsMigration/IsMigratorApplied/=JetBrains_002EReSharper_002EPsi_002EJavaScript_002ECodeStyle_002ESettingsUpgrade_002EJsParsFormattingSettingsUpgrader/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/Environment/SettingsMigration/IsMigratorApplied/=JetBrains_002EReSharper_002EPsi_002EJavaScript_002ECodeStyle_002ESettingsUpgrade_002EJsWrapperSettingsUpgrader/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/Environment/TextControl/HighlightCurrentLine/@EntryValue">True</s:Boolean>
-	<s:String x:Key="/Default/Environment/UpdatesManger/LastUpdateCheck/@EntryValue">10/10/2017 12:49:42</s:String>
+	<s:String x:Key="/Default/Environment/UpdatesManger/DismissedProductAndVersions/=ReSharper_005F2018_002E3/@EntryIndexedValue">ReSharper_2018.3</s:String>
+	<s:String x:Key="/Default/Environment/UpdatesManger/DismissedProductAndVersions/=ReSharperCpp_005F2018_002E3/@EntryIndexedValue">ReSharperCpp_2018.3</s:String>
+	<s:String x:Key="/Default/Environment/UpdatesManger/LastUpdateCheck/@EntryValue">02/15/2019 14:19:56</s:String>
 	<s:String x:Key="/Default/Environment/UserInterface/ShortcutSchemeName/@EntryValue">Idea</s:String>
 	<s:Int64 x:Key="/Default/Environment/UserInterface/InspectionResultView/GroupingIndex/@EntryValue">5</s:Int64>
 	<s:Int64 x:Key="/Default/Environment/UserInterface/QuickDoc/Width/@EntryValue">522</s:Int64>
+	<s:String x:Key="/Default/GlobalFilterSettingsManager/AppliedDefaultAttributeFilterString/@EntryValue">System.CodeDom.Compiler.GeneratedCodeAttribute</s:String>
 	<s:String x:Key="/Default/GlobalFilterSettingsManager/AttributeFilterXml/@EntryValue">&lt;data&gt;&lt;AttributeFilter ClassMask="System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverageAttribute" IsEnabled="True" /&gt;&lt;/data&gt;</s:String>
 	<s:String x:Key="/Default/Housekeeping/AssemblyExport/AssemblyExportHistory/History/@EntryValue">&lt;AssemblyExportHisory&gt;&#xD;
   &lt;ExportElement Assembly="131211786380000000|F:\DWIN\SANDBOX\REMOTEVIEW\BIN\REMOTEVIEW.EXE" Project="F:\dwin\Sandbox\RemoteView\RemoteView\RemoteView.csproj" /&gt;&#xD;
 &lt;/AssemblyExportHisory&gt;</s:String>
-	<s:Int64 x:Key="/Default/Housekeeping/ChangesView/HorizontalSplitter/@EntryValue">100</s:Int64>
 	<s:Boolean x:Key="/Default/Housekeeping/FeatureSuggestion/FeatureSuggestionManager/DisabledSuggesters/=AutoStackTraceExplorerExplainer/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/Housekeeping/FeatureSuggestion/FeatureSuggestionManager/DisabledSuggesters/=GotoSuggester/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/Housekeeping/FeatureSuggestion/FeatureSuggestionManager/DisabledSuggesters/=ReSharperBuildSuggester/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/Housekeeping/FeatureSuggestion/FeatureSuggestionManager/DisabledSuggesters/=TabNavigationExplainer/@EntryIndexedValue">True</s:Boolean>
+	<s:String x:Key="/Default/Housekeeping/FeedbackReport/SelectedUserIdentificator/@EntryValue">anonymous</s:String>
 	<s:Boolean x:Key="/Default/Housekeeping/GlobalSettingsUpgraded/IsUpgraded/@EntryValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/Housekeeping/IntellisenseHousekeeping/HintUsed/@EntryValue">True</s:Boolean>
 	<s:String x:Key="/Default/Housekeeping/Layout/DialogWindows/ExportToProjectDialog/DestinationFolder/@EntryValue">F:\dwin\Sandbox\RemoteView</s:String>
 	<s:String x:Key="/Default/Housekeeping/Layout/DialogWindows/ExportToProjectDialog/Position/@EntryValue">[72.5,28.5](445,357)</s:String>
-	<s:String x:Key="/Default/Housekeeping/Layout/DialogWindows/RefactoringWizardWindow/Location/@EntryValue">-37,-370</s:String>
+	<s:String x:Key="/Default/Housekeeping/Layout/DialogWindows/OptionsDialogView/Position/@EntryValue">[307,-51](1192,831)</s:String>
+	<s:String x:Key="/Default/Housekeeping/Layout/DialogWindows/RefactoringWizardWindow/Location/@EntryValue">-18,-393</s:String>
 	<s:Boolean x:Key="/Default/Housekeeping/LiveTemplatesHousekeeping/HotspotSessionHintIsShown/@EntryValue">True</s:Boolean>
-	<s:String x:Key="/Default/Housekeeping/OptionsDialog/SelectedPageId/@EntryValue">CSharpNamingStyle2</s:String>
+	<s:String x:Key="/Default/Housekeeping/OptionsDialog/SelectedPageId/@EntryValue">CSharpCodeStyle2</s:String>
 	<s:String x:Key="/Default/Housekeeping/ProjectModelSynchronizer/UseMsbuildStrategy/@EntryValue">AUTO</s:String>
 	<s:Boolean x:Key="/Default/Housekeeping/RefactoringsMru/UseInline/@EntryValue">False</s:Boolean>
 	<s:Boolean x:Key="/Default/Housekeeping/RefactoringsMru/RenameRefactoring/DoSearchForTextInStrings/@EntryValue">False</s:Boolean>
@@ -1076,6 +1155,13 @@
 	<s:Boolean x:Key="/Default/Housekeeping/Search/SearchForLateBound/@EntryValue">True</s:Boolean>
 	<s:Double x:Key="/Default/Housekeeping/TreeModelBrowserPanelPersistence/PreviewSplitterVerticalProportion/=UnitTestSessionDescriptor/@EntryIndexedValue">1.7655849701110322</s:Double>
 	<s:Boolean x:Key="/Default/Housekeeping/UpgradeFromExceptionReport/UpgradePerformed/@EntryValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/Todo/TodoFilter/DisabledFilters/=1bf08643_002D1c79_002D4956_002D9c7e_002Da059b55ffb54/@EntryIndexedValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/Todo/TodoFilter/DisabledFilters/=3fc33c5b_002Dcde4_002D4077_002D86a0_002D1fb1a77b0747/@EntryIndexedValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/Todo/TodoFilter/DisabledFilters/=704f80ff_002D53ba_002D447e_002D86c7_002D1f57efe4c628/@EntryIndexedValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/Todo/TodoFilter/DisabledFilters/=778b1f77_002Df1f9_002D4500_002D900d_002D5c53aef7a254/@EntryIndexedValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/Todo/TodoFilter/DisabledFilters/=ab8b3050_002Da4fd_002D4891_002Db3f8_002D3a8049735bfb/@EntryIndexedValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/Todo/TodoFilter/DisabledFilters/=ad64460a_002D51e1_002D49c3_002Db62f_002Db87d8470a5d9/@EntryIndexedValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/Todo/TodoFilter/DisabledFilters/=c3cbfa73_002Dc491_002D4be8_002Dbd13_002D07e016ba0c69/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/PatternsAndTemplates/Todo/TodoPatterns/=50308BABFDA49148B3F83A8049735BFB/@KeyIndexDefined">True</s:Boolean>
 	<s:String x:Key="/Default/PatternsAndTemplates/Todo/TodoPatterns/=50308BABFDA49148B3F83A8049735BFB/Color/@EntryValue">Blue</s:String>
 	<s:Boolean x:Key="/Default/PatternsAndTemplates/Todo/TodoPatterns/=50308BABFDA49148B3F83A8049735BFB/MatchComments/@EntryValue">True</s:Boolean>
@@ -1106,4 +1192,4 @@
 	<s:String x:Key="/Default/PatternsAndTemplates/Todo/TodoPatterns/=FF804F70BA537E4486C71F57EFE4C628/Name/@EntryValue">Performance-Note</s:String>
 	<s:String x:Key="/Default/PatternsAndTemplates/Todo/TodoPatterns/=FF804F70BA537E4486C71F57EFE4C628/Pattern/@EntryValue">(?&lt;=\W|^)(?&lt;TAG&gt;PERFORMANCE-NOTE)(\W|$)(.*)</s:String>
 	<s:String x:Key="/Default/PatternsAndTemplates/Todo/TodoPatterns/=FF804F70BA537E4486C71F57EFE4C628/TodoIconStyle/@EntryValue">Normal</s:String>
-	<s:String x:Key="/Default/SnapshotsStore/CurrentStore/@EntryValue">C:\Users\Venevtsev\AppData\Local\JetBrains\Shared\vAny\Sessions</s:String></wpf:ResourceDictionary>
+	<s:String x:Key="/Default/SnapshotsStore/CurrentStore/@EntryValue">C:\Users\vinevtsev\AppData\Local\JetBrains\Shared\vAny\Sessions</s:String></wpf:ResourceDictionary>
