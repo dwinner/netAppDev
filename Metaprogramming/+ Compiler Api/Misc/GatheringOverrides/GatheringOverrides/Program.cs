@@ -7,7 +7,6 @@ using Microsoft.Build.Locator;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.MSBuild;
-using MoreLinq;
 using static GatheringOverrides.SymbolExtensions;
 
 namespace GatheringOverrides
@@ -22,8 +21,10 @@ namespace GatheringOverrides
          // Attempt to set the version of MSBuild.
          var visualStudioInstances = MSBuildLocator.QueryVisualStudioInstances().ToArray();
          var instance = visualStudioInstances.Length == 1
-            ? visualStudioInstances[0] // If there is only one instance of MSBuild on this machine, set that as the one to use.                                       
-            : SelectVisualStudioInstance(visualStudioInstances);  // Handle selecting the version of MSBuild you want to use.
+            ? visualStudioInstances
+               [0] // If there is only one instance of MSBuild on this machine, set that as the one to use.                                       
+            : SelectVisualStudioInstance(
+               visualStudioInstances); // Handle selecting the version of MSBuild you want to use.
 
          Console.WriteLine($"Using MSBuild at '{instance.MSBuildPath}' to load projects.");
 
@@ -74,7 +75,7 @@ namespace GatheringOverrides
                      var methodsToOverride = GetOverridableMethods(accesibleToOverride);
 
                      // Output signatures
-                     /*foreach (var propertySymbol in propertiesToOverride)
+                     foreach (var propertySymbol in propertiesToOverride)
                      {
                         var signature = propertySymbol.ToSignature();
                         Console.WriteLine(
@@ -86,7 +87,7 @@ namespace GatheringOverrides
                         var signature = methodSymbol.ToSignature();
                         Console.WriteLine(
                            $"{signature}{Nl}\t{methodSymbol.GetSummary()}{Nl}");
-                     }*/
+                     }
 
                      /**
                       * TODO: Try generate it via reusable approach                      
