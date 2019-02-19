@@ -17,25 +17,25 @@ namespace GatheringOverrides
       {
          var propertyName = propertySymbol.Name;
          var propertyType = propertySymbol.Type.NormalizeTypeSymbol();
+         var propertyModifiers = propertySymbol.GetAccessModifiersWithOverride(indentation);
+         var accessorList = propertySymbol.GetAccessorList(indentation);
+
          var propertyDecl = PropertyDeclaration(
-            IdentifierName(
+               IdentifierName(
+                  Identifier(
+                     TriviaList(),
+                     propertyType,
+                     TriviaList(Space)
+                  )
+               ),
                Identifier(
                   TriviaList(),
-                  propertyType,
+                  propertyName,
                   TriviaList(Space)
                )
-            ),
-            Identifier(
-               TriviaList(),
-               propertyName,
-               TriviaList(Space)
             )
-         );
-
-         var propertyModifiers = propertySymbol.GetAccessModifiersWithOverride(indentation);
-         propertyDecl = propertyDecl.WithModifiers(propertyModifiers);
-         var accessorList = propertySymbol.GetAccessorList(indentation);
-         propertyDecl = propertyDecl.WithAccessorList(accessorList);
+            .WithModifiers(propertyModifiers)
+            .WithAccessorList(accessorList);
 
          return propertyDecl;
       }
@@ -44,13 +44,12 @@ namespace GatheringOverrides
       {
          var propertyName = propertySymbol.Name;
          AccessorListSyntax accessorList;
+         var propertyAccessors = propertySymbol.DeclaredAccessibility;
 
          if (propertySymbol.IsReadOnly)
          {
-            var getAccessModifiers = propertySymbol.GetMethod.GenerateAccessModifiers(indentation);
-
+            var getAccessModifiers = propertySymbol.GetMethod.GenerateAccessModifiers(propertyAccessors, indentation);
             var getAccessorDecl = GetWithBaseCallAccessorDeclaration(getAccessModifiers, propertyName);
-
             accessorList = AccessorList(
                List(
                   new[]
@@ -62,10 +61,8 @@ namespace GatheringOverrides
          }
          else if (propertySymbol.IsWriteOnly)
          {
-            var setAccessModifiers = propertySymbol.SetMethod.GenerateAccessModifiers(indentation);
-
+            var setAccessModifiers = propertySymbol.SetMethod.GenerateAccessModifiers(propertyAccessors, indentation);
             var setAccessorDecl = GetWithBaseCallAccessorDeclaration(indentation, setAccessModifiers, propertyName);
-
             accessorList = AccessorList(
                List(
                   new[]
@@ -77,14 +74,10 @@ namespace GatheringOverrides
          }
          else
          {
-            var getAccessModifiers = propertySymbol.GetMethod.GenerateAccessModifiers(indentation);
-
+            var getAccessModifiers = propertySymbol.GetMethod.GenerateAccessModifiers(propertyAccessors, indentation);
             var getAccessorDecl = GetWithBaseCallAccessorDeclaration(getAccessModifiers, propertyName);
-
-            var setAccessModifiers = propertySymbol.SetMethod.GenerateAccessModifiers(indentation);
-
-            var setAccessorDecl = GetWithBaseCallAccessorDeclaration(indentation, setAccessModifiers, propertyName);
-
+            var setAccessModifiers = propertySymbol.SetMethod.GenerateAccessModifiers(propertyAccessors, indentation);
+            var setAccessorDecl = GetWithBaseCallAccessorDeclaration(string.Empty, setAccessModifiers, propertyName);
             accessorList = AccessorList(
                List(
                   new[]
@@ -98,14 +91,14 @@ namespace GatheringOverrides
 
          return accessorList.WithOpenBraceToken(
                Token(
-                  TriviaList(Whitespace(indentation)),
+                  TriviaList(LineFeed),
                   SyntaxKind.OpenBraceToken,
                   TriviaList(LineFeed)
                )
             )
             .WithCloseBraceToken(
                Token(
-                  TriviaList(Whitespace(indentation)),
+                  TriviaList(),
                   SyntaxKind.CloseBraceToken,
                   TriviaList(LineFeed)
                )
@@ -123,7 +116,7 @@ namespace GatheringOverrides
                )
                .WithKeyword(
                   Token(
-                     TriviaList(Whitespace(string.Format("{0}{0}", indentation))),
+                     TriviaList(Whitespace($"{indentation}")),
                      SyntaxKind.SetKeyword,
                      TriviaList(Space)
                   )
@@ -209,86 +202,114 @@ namespace GatheringOverrides
                   )
                );
 
-      private static SyntaxTokenList GenerateAccessModifiers(this ISymbol methodSymbol, string indentation)
+      private static SyntaxTokenList GenerateAccessModifiers(this ISymbol methodSymbol,
+         Accessibility propertyAccessibility, string indentation)
       {
          SyntaxTokenList accessModifiers;
+         var leadingTrivia = Whitespace($"{indentation}");
+         var trailingTrivia = Space;
+         var emptyTokens = TokenList(
+            Token(
+               TriviaList(leadingTrivia),
+               SyntaxKind.None,
+               TriviaList(Whitespace(string.Empty))
+            ));
 
          switch (methodSymbol.DeclaredAccessibility)
          {
             case NotApplicable:
-               accessModifiers = new SyntaxTokenList(Array.Empty<SyntaxToken>());
+               accessModifiers = emptyTokens;
                break;
 
-            case Private:
+            case Private
+               when propertyAccessibility != Private:
+            {
                accessModifiers = TokenList(
                   Token(
-                     TriviaList(Whitespace(string.Format("{0}{0}", indentation))),
+                     TriviaList(leadingTrivia),
                      SyntaxKind.PrivateKeyword,
-                     TriviaList(Space)
+                     TriviaList(trailingTrivia)
                   )
                );
                break;
+            }
 
-            case ProtectedAndInternal:
+            case ProtectedAndInternal
+               when propertyAccessibility != ProtectedAndInternal:
+            {
                accessModifiers = TokenList(
                   Token(
-                     TriviaList(Whitespace(string.Format("{0}{0}", indentation))),
+                     TriviaList(leadingTrivia),
                      SyntaxKind.PrivateKeyword,
-                     TriviaList(Space)
+                     TriviaList(trailingTrivia)
                   ),
                   Token(
                      TriviaList(),
                      SyntaxKind.ProtectedKeyword,
-                     TriviaList(Space)
+                     TriviaList(trailingTrivia)
                   ));
+            }
                break;
 
-            case Protected:
+            case Protected
+               when propertyAccessibility != Protected:
+            {
                accessModifiers = TokenList(
                   Token(
-                     TriviaList(Whitespace(string.Format("{0}{0}", indentation))),
+                     TriviaList(leadingTrivia),
                      SyntaxKind.ProtectedKeyword,
-                     TriviaList(Space)
+                     TriviaList(trailingTrivia)
                   )
                );
+            }
                break;
 
-            case Internal:
+            case Internal
+               when propertyAccessibility != Internal:
+            {
                accessModifiers = TokenList(
                   Token(
-                     TriviaList(Whitespace(string.Format("{0}{0}", indentation))),
+                     TriviaList(leadingTrivia),
                      SyntaxKind.InternalKeyword,
-                     TriviaList(Space)
+                     TriviaList(trailingTrivia)
                   )
                );
+            }
                break;
 
-            case ProtectedOrInternal:
+            case ProtectedOrInternal
+               when propertyAccessibility != ProtectedOrInternal:
+            {
                accessModifiers = TokenList(
                   Token(
-                     TriviaList(Whitespace(string.Format("{0}{0}", indentation))),
+                     TriviaList(leadingTrivia),
                      SyntaxKind.ProtectedKeyword,
-                     TriviaList(Space)
+                     TriviaList(trailingTrivia)
                   ),
                   Token(
                      TriviaList(),
                      SyntaxKind.InternalKeyword,
-                     TriviaList(Space)
+                     TriviaList(trailingTrivia)
                   ));
+            }
                break;
 
-            case Public:
+            case Public
+               when propertyAccessibility != Public:
+            {
                accessModifiers = TokenList(
                   Token(
-                     TriviaList(Whitespace(string.Format("{0}{0}", indentation))),
+                     TriviaList(leadingTrivia),
                      SyntaxKind.PublicKeyword,
-                     TriviaList(Space)
+                     TriviaList(trailingTrivia)
                   )
                );
+            }
                break;
 
             default:
-               throw new ArgumentOutOfRangeException();
+               accessModifiers = emptyTokens;
+               break;
          }
 
          return accessModifiers;
@@ -298,6 +319,9 @@ namespace GatheringOverrides
       {
          var accessibility = symbol.DeclaredAccessibility;
          var tokens = new List<SyntaxToken>();
+         var leadingTrivia = LineFeed;
+         var trailingTrivia = Space;
+
          switch (accessibility)
          {
             case NotApplicable:
@@ -306,25 +330,25 @@ namespace GatheringOverrides
             case Private:
                tokens.Add(
                   Token(
-                     TriviaList(LineFeed, Whitespace(indentation)),
+                     TriviaList(leadingTrivia, Whitespace(indentation)),
                      SyntaxKind.PrivateKeyword,
-                     TriviaList(Space)
+                     TriviaList(trailingTrivia)
                   ));
                break;
 
             case ProtectedAndInternal:
                tokens.Add(
                   Token(
-                     TriviaList(LineFeed, Whitespace(indentation)),
+                     TriviaList(),
                      SyntaxKind.PrivateKeyword,
-                     TriviaList(Space)
+                     TriviaList(trailingTrivia)
                   )
                );
                tokens.Add(
                   Token(
-                     TriviaList(LineFeed, Whitespace(indentation)),
+                     TriviaList(leadingTrivia, Whitespace(indentation)),
                      SyntaxKind.ProtectedKeyword,
-                     TriviaList(Space)
+                     TriviaList(trailingTrivia)
                   )
                );
                break;
@@ -332,9 +356,9 @@ namespace GatheringOverrides
             case Protected:
                tokens.Add(
                   Token(
-                     TriviaList(LineFeed, Whitespace(indentation)),
+                     TriviaList(leadingTrivia, Whitespace(indentation)),
                      SyntaxKind.ProtectedKeyword,
-                     TriviaList(Space)
+                     TriviaList(trailingTrivia)
                   )
                );
                break;
@@ -342,9 +366,9 @@ namespace GatheringOverrides
             case Internal:
                tokens.Add(
                   Token(
-                     TriviaList(LineFeed, Whitespace(indentation)),
+                     TriviaList(leadingTrivia, Whitespace(indentation)),
                      SyntaxKind.InternalKeyword,
-                     TriviaList(Space)
+                     TriviaList(trailingTrivia)
                   )
                );
                break;
@@ -352,16 +376,16 @@ namespace GatheringOverrides
             case ProtectedOrInternal:
                tokens.Add(
                   Token(
-                     TriviaList(LineFeed, Whitespace(indentation)),
+                     TriviaList(leadingTrivia, Whitespace(indentation)),
                      SyntaxKind.ProtectedKeyword,
-                     TriviaList(Space)
+                     TriviaList(trailingTrivia)
                   )
                );
                tokens.Add(
                   Token(
-                     TriviaList(LineFeed, Whitespace(indentation)),
+                     TriviaList(),
                      SyntaxKind.InternalKeyword,
-                     TriviaList(Space)
+                     TriviaList(trailingTrivia)
                   )
                );
                break;
@@ -369,9 +393,9 @@ namespace GatheringOverrides
             case Public:
                tokens.Add(
                   Token(
-                     TriviaList(LineFeed, Whitespace(indentation)),
+                     TriviaList(leadingTrivia, Whitespace(indentation)),
                      SyntaxKind.PublicKeyword,
-                     TriviaList(Space)
+                     TriviaList(trailingTrivia)
                   )
                );
                break;
@@ -384,7 +408,7 @@ namespace GatheringOverrides
             Token(
                TriviaList(),
                SyntaxKind.OverrideKeyword,
-               TriviaList(Space)
+               TriviaList(trailingTrivia)
             )
          );
 

@@ -75,6 +75,7 @@ namespace GatheringOverrides
                      var methodsToOverride = GetOverridableMethods(accesibleToOverride);
 
                      // Output signatures
+                     /*
                      foreach (var propertySymbol in propertiesToOverride)
                      {
                         var signature = propertySymbol.ToSignature();
@@ -88,6 +89,7 @@ namespace GatheringOverrides
                         Console.WriteLine(
                            $"{signature}{Nl}\t{methodSymbol.GetSummary()}{Nl}");
                      }
+                     */
 
                      /**
                       * TODO: Try generate it via reusable approach                      
