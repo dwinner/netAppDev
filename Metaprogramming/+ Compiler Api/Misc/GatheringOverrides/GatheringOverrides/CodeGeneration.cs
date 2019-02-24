@@ -12,7 +12,7 @@ namespace GatheringOverrides
    {
       private const string DefaultIndentation = "    ";
 
-      public static PropertyDeclarationSyntax BuildProperty(IPropertySymbol propertySymbol,
+      public static PropertyDeclarationSyntax BuildOverridableProperty(IPropertySymbol propertySymbol,
          string indentation = DefaultIndentation)
       {
          var propertyName = propertySymbol.Name;
