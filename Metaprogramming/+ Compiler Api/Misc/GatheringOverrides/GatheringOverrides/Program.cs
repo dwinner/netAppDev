@@ -13,11 +13,11 @@ namespace GatheringOverrides
 {
    internal static class Program
    {
-      private static readonly string Nl = Environment.NewLine;
+      private static readonly string _Nl = Environment.NewLine;
 
       // ReSharper disable once AsyncConverter.AsyncMethodNamingHighlighting
       private static async Task Main(string[] args)
-      {
+      {         
          // Attempt to set the version of MSBuild.
          var visualStudioInstances = MSBuildLocator.QueryVisualStudioInstances().ToArray();
          var instance = visualStudioInstances.Length == 1
@@ -75,28 +75,27 @@ namespace GatheringOverrides
                      var methodsToOverride = GetOverridableMethods(accesibleToOverride);
 
                      // Output signatures
-                     /*
+                     
                      foreach (var propertySymbol in propertiesToOverride)
                      {
                         var signature = propertySymbol.ToSignature();
                         Console.WriteLine(
-                           $"{signature}{Nl}\t{propertySymbol.GetSummary()}{Nl}");
+                           $"{signature}{_Nl}\t{propertySymbol.GetSummary()}{_Nl}");
                      }
 
                      foreach (var methodSymbol in methodsToOverride)
                      {
                         var signature = methodSymbol.ToSignature();
                         Console.WriteLine(
-                           $"{signature}{Nl}\t{methodSymbol.GetSummary()}{Nl}");
-                     }
-                     */
+                           $"{signature}{_Nl}\t{methodSymbol.GetSummary()}{_Nl}");
+                     }                     
 
                      /**
                       * TODO: Try generate it via reusable approach                      
                       */
                      foreach (var propertySymbol in propertiesToOverride)
                      {
-                        var propertyDecl = CodeGeneration.BuildProperty(propertySymbol);
+                        var propertyDecl = CodeGeneration.BuildOverridableProperty(propertySymbol);
                         Console.WriteLine(propertyDecl);
                      }
                   }
