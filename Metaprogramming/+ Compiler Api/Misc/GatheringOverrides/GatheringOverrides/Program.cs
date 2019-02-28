@@ -14,10 +14,11 @@ namespace GatheringOverrides
    internal static class Program
    {
       private static readonly string _Nl = Environment.NewLine;
+      private const string Indentation = "    ";
 
       // ReSharper disable once AsyncConverter.AsyncMethodNamingHighlighting
       private static async Task Main(string[] args)
-      {         
+      {
          // Attempt to set the version of MSBuild.
          var visualStudioInstances = MSBuildLocator.QueryVisualStudioInstances().ToArray();
          var instance = visualStudioInstances.Length == 1
@@ -75,7 +76,7 @@ namespace GatheringOverrides
                      var methodsToOverride = GetOverridableMethods(accesibleToOverride);
 
                      // Output signatures
-                     
+
                      foreach (var propertySymbol in propertiesToOverride)
                      {
                         var signature = propertySymbol.ToSignature();
@@ -88,14 +89,14 @@ namespace GatheringOverrides
                         var signature = methodSymbol.ToSignature();
                         Console.WriteLine(
                            $"{signature}{_Nl}\t{methodSymbol.GetSummary()}{_Nl}");
-                     }                     
+                     }
 
                      /**
                       * TODO: Try generate it via reusable approach                      
                       */
                      foreach (var propertySymbol in propertiesToOverride)
                      {
-                        var propertyDecl = CodeGeneration.BuildOverridableProperty(propertySymbol);
+                        var propertyDecl = CodeGeneration.BuildOverridableProperty(propertySymbol, Indentation.Repeat(2));
                         Console.WriteLine(propertyDecl);
                      }
                   }

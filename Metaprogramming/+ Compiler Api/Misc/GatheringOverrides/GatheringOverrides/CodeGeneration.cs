@@ -89,16 +89,17 @@ namespace GatheringOverrides
             );
          }
 
+         var reduceIndentation = " ".Repeat(indentation.Length / 2);
          return accessorList.WithOpenBraceToken(
                Token(
-                  TriviaList(LineFeed),
+                  TriviaList(LineFeed, Whitespace(reduceIndentation)),
                   SyntaxKind.OpenBraceToken,
                   TriviaList(LineFeed)
                )
             )
             .WithCloseBraceToken(
                Token(
-                  TriviaList(),
+                  TriviaList(Whitespace(reduceIndentation)),
                   SyntaxKind.CloseBraceToken,
                   TriviaList(LineFeed)
                )
@@ -319,6 +320,7 @@ namespace GatheringOverrides
       {
          var accessibility = symbol.DeclaredAccessibility;
          var tokens = new List<SyntaxToken>();
+         var indentationTrivia = Whitespace(" ".Repeat(indentation.Length / 2));
          var leadingTrivia = LineFeed;
          var trailingTrivia = Space;
 
@@ -330,7 +332,7 @@ namespace GatheringOverrides
             case Private:
                tokens.Add(
                   Token(
-                     TriviaList(leadingTrivia, Whitespace(indentation)),
+                     TriviaList(indentationTrivia),
                      SyntaxKind.PrivateKeyword,
                      TriviaList(trailingTrivia)
                   ));
@@ -339,7 +341,7 @@ namespace GatheringOverrides
             case ProtectedAndInternal:
                tokens.Add(
                   Token(
-                     TriviaList(),
+                     TriviaList(indentationTrivia),
                      SyntaxKind.PrivateKeyword,
                      TriviaList(trailingTrivia)
                   )
@@ -356,7 +358,7 @@ namespace GatheringOverrides
             case Protected:
                tokens.Add(
                   Token(
-                     TriviaList(leadingTrivia, Whitespace(indentation)),
+                     TriviaList(indentationTrivia),
                      SyntaxKind.ProtectedKeyword,
                      TriviaList(trailingTrivia)
                   )
@@ -366,7 +368,7 @@ namespace GatheringOverrides
             case Internal:
                tokens.Add(
                   Token(
-                     TriviaList(leadingTrivia, Whitespace(indentation)),
+                     TriviaList(indentationTrivia),
                      SyntaxKind.InternalKeyword,
                      TriviaList(trailingTrivia)
                   )
@@ -376,7 +378,7 @@ namespace GatheringOverrides
             case ProtectedOrInternal:
                tokens.Add(
                   Token(
-                     TriviaList(leadingTrivia, Whitespace(indentation)),
+                     TriviaList(indentationTrivia),
                      SyntaxKind.ProtectedKeyword,
                      TriviaList(trailingTrivia)
                   )
@@ -393,7 +395,7 @@ namespace GatheringOverrides
             case Public:
                tokens.Add(
                   Token(
-                     TriviaList(leadingTrivia, Whitespace(indentation)),
+                     TriviaList(indentationTrivia),
                      SyntaxKind.PublicKeyword,
                      TriviaList(trailingTrivia)
                   )
@@ -412,7 +414,18 @@ namespace GatheringOverrides
             )
          );
 
-         var accessTokens = TokenList(tokens);
+         var tokenCount = tokens.Count;
+         var tokensWithIndentation = new SyntaxToken[tokenCount + 1];
+         tokensWithIndentation[0] = Token(
+            TriviaList(Whitespace(indentation)),
+            SyntaxKind.None,
+            TriviaList(LineFeed));
+         for (var i = 1; i < tokensWithIndentation.Length; i++)
+         {
+            tokensWithIndentation[i] = tokens[i - 1];
+         }
+
+         var accessTokens = TokenList(tokensWithIndentation);
 
          return accessTokens;
       }

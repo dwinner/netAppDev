@@ -173,6 +173,7 @@ namespace GatheringOverrides
          propertySignature.Append($"{propertyTypeName} {propertyName} ");
          var propertySugar = PropertySugar();
          propertySignature.Append(propertySugar);
+
          return propertySignature.ToString();
 
          string PropertySugar()
