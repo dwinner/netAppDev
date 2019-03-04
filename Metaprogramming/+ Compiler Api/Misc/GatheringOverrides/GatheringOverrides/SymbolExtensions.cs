@@ -91,11 +91,11 @@ namespace GatheringOverrides
             typeSet.Add(typeSymbol);
             if (typeSymbol.Interfaces != null)
             {
-               foreach (var symbolInterface in typeSymbol.Interfaces)
+               foreach (var @interface in typeSymbol.Interfaces)
                {
-                  typeSet.Add(symbolInterface);
+                  typeSet.Add(@interface);
                }
-
+               // TOREFACTOR: Why we need one more iteration here?!
                foreach (var currentInterface in typeSymbol.Interfaces)
                {
                   currentInterface.GatherBaseTypes(typeSet);

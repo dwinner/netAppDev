@@ -462,37 +462,61 @@ namespace GatheringOverrides
          var methodModifiers = methodSymbol.GetOverridableMethodModifiers(indentation);
          methodDecl = methodDecl.WithModifiers(methodModifiers);
 
+         if (methodSymbol.IsGenericMethod)
+         {
+            var typeParameters = methodSymbol.TypeParameters;
+
+            if (typeParameters.Length > 0)
+            {
+               var typeParameterList = new List<SyntaxNodeOrToken>(typeParameters.Length * 2);
+               for (var i = 0; i < typeParameters.Length; i++)
+               {
+                  var typeParameterSymbol = typeParameters[i];
+                  typeParameterList.Add(TypeParameter(Identifier(typeParameterSymbol.Name)));
+                  if (i != typeParameters.Length - 1)
+                  {
+                     typeParameterList.Add(Token(
+                        TriviaList(),
+                        SyntaxKind.CommaToken,
+                        TriviaList(Space))
+                     );
+                  }
+               }
+
+               var genericParametersSyntax = TypeParameterList(
+                  SeparatedList<TypeParameterSyntax>(typeParameterList)
+               );
+
+               methodDecl = methodDecl.WithTypeParameterList(genericParametersSyntax);
+            }
+         }
+
          return methodDecl;
       }
 
       private static SyntaxTokenList GetOverridableMethodModifiers(this IMethodSymbol methodSymbol, string indentation)
       {
          var accessibility = methodSymbol.DeclaredAccessibility;
-         SyntaxToken[] tokens;
+         var tokens = new List<SyntaxToken>();
+
          switch (accessibility)
          {
             case NotApplicable:
-               tokens = Array.Empty<SyntaxToken>();
                break;
 
             case Private:
-               tokens = new[]
+               tokens.AddRange(new[]
                {
                   Token(
                      TriviaList(Whitespace(indentation)),
                      SyntaxKind.PrivateKeyword,
                      TriviaList(Space)
-                  ),
-                  Token(
-                     TriviaList(),
-                     SyntaxKind.OverrideKeyword,
-                     TriviaList(Space)
                   )
-               };
+               });
                break;
 
             case ProtectedAndInternal:
-               tokens = new[]
+               tokens.AddRange(new[]
                {
                   Token(
                      TriviaList(Whitespace(indentation)),
@@ -503,49 +527,34 @@ namespace GatheringOverrides
                      TriviaList(),
                      SyntaxKind.ProtectedKeyword,
                      TriviaList(Space)
-                  ),
-                  Token(
-                     TriviaList(),
-                     SyntaxKind.OverrideKeyword,
-                     TriviaList(Space)
                   )
-               };
+               });
                break;
 
             case Protected:
-               tokens = new[]
+               tokens.AddRange(new[]
                {
                   Token(
                      TriviaList(Whitespace(indentation)),
                      SyntaxKind.ProtectedKeyword,
                      TriviaList(Space)
-                  ),
-                  Token(
-                     TriviaList(),
-                     SyntaxKind.OverrideKeyword,
-                     TriviaList(Space)
                   )
-               };
+               });
                break;
 
             case Internal:
-               tokens = new[]
+               tokens.AddRange(new[]
                {
                   Token(
                      TriviaList(Whitespace(indentation)),
                      SyntaxKind.InternalKeyword,
                      TriviaList(Space)
-                  ),
-                  Token(
-                     TriviaList(),
-                     SyntaxKind.OverrideKeyword,
-                     TriviaList(Space)
                   )
-               };
+               });
                break;
 
             case ProtectedOrInternal:
-               tokens = new[]
+               tokens.AddRange(new[]
                {
                   Token(
                      TriviaList(Whitespace(indentation)),
@@ -556,35 +565,30 @@ namespace GatheringOverrides
                      TriviaList(),
                      SyntaxKind.InternalKeyword,
                      TriviaList(Space)
-                  ),
-                  Token(
-                     TriviaList(),
-                     SyntaxKind.OverrideKeyword,
-                     TriviaList(Space)
                   )
-               };
+               });
                break;
 
             case Public:
-               tokens = new[]
+               tokens.AddRange(new[]
                {
                   Token(
                      TriviaList(Whitespace(indentation)),
                      SyntaxKind.PublicKeyword,
                      TriviaList(Space)
-                  ),
-                  Token(/* TODO: Remove copy paste for override keyword */
-                     TriviaList(),
-                     SyntaxKind.OverrideKeyword,
-                     TriviaList(Space)
                   )
-               };
+               });
                break;
 
             default:
                throw new ArgumentOutOfRangeException();
          }
 
+         tokens.Add(Token(
+            TriviaList(),
+            SyntaxKind.OverrideKeyword,
+            TriviaList(Space)
+         ));
 
          var tokenList = TokenList(tokens);
 
