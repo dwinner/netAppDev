@@ -290,7 +290,7 @@ namespace GatheringOverrides
          return typeModifiers;
       }
 
-      private static string GetReturnTypeToDisplay(this ITypeSymbol @this,
+      public static string GetReturnTypeToDisplay(this ITypeSymbol @this,
          IParameterSymbol parameterSymbol = null)
       {
          if (@this.SpecialType != SpecialType.None)

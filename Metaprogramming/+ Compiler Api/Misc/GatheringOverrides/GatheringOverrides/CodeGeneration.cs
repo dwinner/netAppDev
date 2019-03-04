@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -428,6 +429,252 @@ namespace GatheringOverrides
          var accessTokens = TokenList(tokensWithIndentation);
 
          return accessTokens;
+      }
+
+      public static MethodDeclarationSyntax BuildOverridableMethod(IMethodSymbol methodSymbol,
+         string indentation = DefaultIndentation)
+      {
+         var methodName = methodSymbol.Name;
+         var returnType = methodSymbol.ReturnType.GetReturnTypeToDisplay();
+
+         var returnsByRef = methodSymbol.ReturnsByRef;
+         var returnsByRefReadonly = methodSymbol.ReturnsByRefReadonly;
+
+         var returnTypeIdentifier = IdentifierName(
+            Identifier(
+               TriviaList(),
+               returnType,
+               TriviaList(Space)
+            )
+         );
+         var methodIdentifier = Identifier(methodName);
+         var methodDecl = !returnsByRefReadonly
+            ? returnsByRef
+               ? MethodDeclaration(RefType(returnTypeIdentifier)
+                  .WithRefKeyword(GetRefToken()), methodIdentifier)
+               : MethodDeclaration(returnTypeIdentifier, methodIdentifier)
+            : MethodDeclaration(
+               RefType(returnTypeIdentifier)
+                  .WithRefKeyword(GetRefToken())
+                  .WithReadOnlyKeyword(GetReadonlyToken()),
+               methodIdentifier);
+
+         var methodModifiers = methodSymbol.GetOverridableMethodModifiers(indentation);
+         methodDecl = methodDecl.WithModifiers(methodModifiers);
+
+         return methodDecl;
+      }
+
+      private static SyntaxTokenList GetOverridableMethodModifiers(this IMethodSymbol methodSymbol, string indentation)
+      {
+         var accessibility = methodSymbol.DeclaredAccessibility;
+         SyntaxToken[] tokens;
+         switch (accessibility)
+         {
+            case NotApplicable:
+               tokens = Array.Empty<SyntaxToken>();
+               break;
+
+            case Private:
+               tokens = new[]
+               {
+                  Token(
+                     TriviaList(Whitespace(indentation)),
+                     SyntaxKind.PrivateKeyword,
+                     TriviaList(Space)
+                  ),
+                  Token(
+                     TriviaList(),
+                     SyntaxKind.OverrideKeyword,
+                     TriviaList(Space)
+                  )
+               };
+               break;
+
+            case ProtectedAndInternal:
+               tokens = new[]
+               {
+                  Token(
+                     TriviaList(Whitespace(indentation)),
+                     SyntaxKind.PrivateKeyword,
+                     TriviaList(Space)
+                  ),
+                  Token(
+                     TriviaList(),
+                     SyntaxKind.ProtectedKeyword,
+                     TriviaList(Space)
+                  ),
+                  Token(
+                     TriviaList(),
+                     SyntaxKind.OverrideKeyword,
+                     TriviaList(Space)
+                  )
+               };
+               break;
+
+            case Protected:
+               tokens = new[]
+               {
+                  Token(
+                     TriviaList(Whitespace(indentation)),
+                     SyntaxKind.ProtectedKeyword,
+                     TriviaList(Space)
+                  ),
+                  Token(
+                     TriviaList(),
+                     SyntaxKind.OverrideKeyword,
+                     TriviaList(Space)
+                  )
+               };
+               break;
+
+            case Internal:
+               tokens = new[]
+               {
+                  Token(
+                     TriviaList(Whitespace(indentation)),
+                     SyntaxKind.InternalKeyword,
+                     TriviaList(Space)
+                  ),
+                  Token(
+                     TriviaList(),
+                     SyntaxKind.OverrideKeyword,
+                     TriviaList(Space)
+                  )
+               };
+               break;
+
+            case ProtectedOrInternal:
+               tokens = new[]
+               {
+                  Token(
+                     TriviaList(Whitespace(indentation)),
+                     SyntaxKind.ProtectedKeyword,
+                     TriviaList(Space)
+                  ),
+                  Token(
+                     TriviaList(),
+                     SyntaxKind.InternalKeyword,
+                     TriviaList(Space)
+                  ),
+                  Token(
+                     TriviaList(),
+                     SyntaxKind.OverrideKeyword,
+                     TriviaList(Space)
+                  )
+               };
+               break;
+
+            case Public:
+               tokens = new[]
+               {
+                  Token(
+                     TriviaList(Whitespace(indentation)),
+                     SyntaxKind.PublicKeyword,
+                     TriviaList(Space)
+                  ),
+                  Token(/* TODO: Remove copy paste for override keyword */
+                     TriviaList(),
+                     SyntaxKind.OverrideKeyword,
+                     TriviaList(Space)
+                  )
+               };
+               break;
+
+            default:
+               throw new ArgumentOutOfRangeException();
+         }
+
+
+         var tokenList = TokenList(tokens);
+
+         return tokenList;
+      }
+
+      public static SyntaxToken GenerateOpenBrace(string indentation) =>
+         Token(
+            TriviaList(Whitespace(indentation)),
+            SyntaxKind.OpenBraceToken,
+            TriviaList(LineFeed)
+         );
+
+      public static SyntaxToken GenerateCloseBrace(string indentation) =>
+         Token(
+            TriviaList(Whitespace(indentation)),
+            SyntaxKind.CloseBraceToken,
+            TriviaList(LineFeed)
+         );
+
+      public static SyntaxToken GenerateReturn(string indentation) =>
+         Token(
+            TriviaList(Whitespace(indentation)),
+            SyntaxKind.ReturnKeyword,
+            TriviaList(Space)
+         );
+
+      public static SyntaxToken GenerateSemicolon() =>
+         Token(
+            TriviaList(),
+            SyntaxKind.SemicolonToken,
+            TriviaList(LineFeed)
+         );
+
+      public static SyntaxToken GetRefToken() =>
+         Token(
+            TriviaList(),
+            SyntaxKind.RefKeyword,
+            TriviaList(Space)
+         );
+
+      public static SyntaxToken GetReadonlyToken() =>
+         Token(
+            TriviaList(),
+            SyntaxKind.ReadOnlyKeyword,
+            TriviaList(Space)
+         );
+
+      public static ArgumentListSyntax GenerateArgumentList(ImmutableArray<IParameterSymbol> parameters) =>
+         throw new NotImplementedException();
+
+      public static void GenerateParameterList(ImmutableArray<IParameterSymbol> parameters)
+      {
+         throw new NotImplementedException();
+      }
+
+      public static InvocationExpressionSyntax GenerateBaseInvocation(string identifier,
+         ImmutableArray<IParameterSymbol> parameters)
+      {
+         var invocationExpr = InvocationExpression(
+            MemberAccessExpression(
+               SyntaxKind.SimpleMemberAccessExpression,
+               BaseExpression(),
+               IdentifierName(identifier)
+            )
+         );
+         invocationExpr = invocationExpr.WithArgumentList(GenerateArgumentList(parameters));
+         return invocationExpr;
+      }
+
+      public static RefExpressionSyntax WrapWithRef(ExpressionSyntax expr)
+      {
+         var refExpr = RefExpression(expr).WithRefKeyword(GetRefToken());
+         return refExpr;
+      }
+
+      public static ReturnStatementSyntax WrapWithReturn(ExpressionSyntax expr, string indentation)
+      {
+         var returnStmt = ReturnStatement(expr)
+            .WithReturnKeyword(GenerateReturn(indentation))
+            .WithSemicolonToken(GenerateSemicolon());
+         return returnStmt;
+      }
+
+      public static BlockSyntax GenerateMethodBody(ReturnStatementSyntax returnStmt, string indentation)
+      {
+         var block = Block(SingletonList<StatementSyntax>(returnStmt))
+            .WithOpenBraceToken(GenerateOpenBrace(indentation))
+            .WithCloseBraceToken(GenerateCloseBrace(indentation));
+         return block;
       }
    }
 }

@@ -101,6 +101,51 @@ namespace WpfApp
          protected get => base.PubvOwn;
          set => base.PubvOwn = value;
       }
+
+      protected internal override ref int GetSomeRef(ref int a)
+      {
+         return ref base.GetSomeRef(ref a);
+      }
+
+      protected internal override ref readonly Manager GetSomeRefReadonly(out object param1, ref Manager manager)
+      {
+         return ref base.GetSomeRefReadonly(out param1, ref manager);
+      }
+
+      public override Employee GetEmployee(params Manager[] managers)
+      {
+         return base.GetEmployee(managers);
+      }
+
+      public override Employee GetEmployee2(Manager[,,,,] managers)
+      {
+         return base.GetEmployee2(managers);
+      }
+
+      public override void ProcessDynamic(dynamic dynamic)
+      {
+         base.ProcessDynamic((object) dynamic);
+      }
+
+      public override unsafe void ProcessUnsafe(int* pInt)
+      {
+         base.ProcessUnsafe(pInt);
+      }
+
+      public override dynamic GetDynamic()
+      {
+         return base.GetDynamic();
+      }
+
+      public override TOut Generic<TOut, TIn>(TIn inType)
+      {
+         return base.Generic<TOut, TIn>(inType);
+      }
+
+      public override Task GetSomeAsync()
+      {
+         return base.GetSomeAsync();
+      }
    }
 
    public class Employee

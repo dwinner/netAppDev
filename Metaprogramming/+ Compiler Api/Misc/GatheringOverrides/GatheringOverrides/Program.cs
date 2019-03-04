@@ -13,8 +13,8 @@ namespace GatheringOverrides
 {
    internal static class Program
    {
-      private static readonly string _Nl = Environment.NewLine;
       private const string Indentation = "    ";
+      private static readonly string _Nl = Environment.NewLine;
 
       // ReSharper disable once AsyncConverter.AsyncMethodNamingHighlighting
       private static async Task Main(string[] args)
@@ -77,7 +77,7 @@ namespace GatheringOverrides
 
                      // Output signatures
 
-                     foreach (var propertySymbol in propertiesToOverride)
+                     /*foreach (var propertySymbol in propertiesToOverride)
                      {
                         var signature = propertySymbol.ToSignature();
                         Console.WriteLine(
@@ -89,15 +89,20 @@ namespace GatheringOverrides
                         var signature = methodSymbol.ToSignature();
                         Console.WriteLine(
                            $"{signature}{_Nl}\t{methodSymbol.GetSummary()}{_Nl}");
-                     }
+                     }*/
 
-                     /**
-                      * TODO: Try generate it via reusable approach                      
-                      */
-                     foreach (var propertySymbol in propertiesToOverride)
+                     // Output generated code
+
+                     /*foreach (var propertySymbol in propertiesToOverride)
                      {
                         var propertyDecl = CodeGeneration.BuildOverridableProperty(propertySymbol, Indentation.Repeat(2));
                         Console.WriteLine(propertyDecl);
+                     }*/
+
+                     foreach (var methodSymbol in methodsToOverride)
+                     {
+                        var methodDecl = CodeGeneration.BuildOverridableMethod(methodSymbol, Indentation.Repeat(2));
+                        Console.WriteLine(methodDecl);
                      }
                   }
                }
