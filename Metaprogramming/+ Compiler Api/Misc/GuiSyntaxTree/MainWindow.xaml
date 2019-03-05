@@ -24,9 +24,10 @@
                   Grid.Row="1"
                   Grid.Column="0">
             <TreeView.ItemTemplate>
-                <HierarchicalDataTemplate ItemsSource="{Binding Children, Mode=TwoWay}" DataType="viewModels:SyntaxNodeViewModel">
+                <HierarchicalDataTemplate ItemsSource="{Binding Children, Mode=OneWay}"
+                                          DataType="viewModels:SyntaxNodeViewModel">
                     <StackPanel>
-                        <TextBlock Text="{Binding TypeName, Mode=TwoWay}" />
+                        <TextBlock Text="{Binding TypeName, Mode=OneWay}" />
                     </StackPanel>
                 </HierarchicalDataTemplate>
             </TreeView.ItemTemplate>
@@ -52,15 +53,15 @@
                 </Style>
             </Grid.Resources>
             <TextBlock Text="Type Name" Grid.Row="0" Grid.Column="0" />
-            <TextBlock Text="{Binding SelectedNode.TypeName, Mode=TwoWay}" Grid.Row="0" Grid.Column="1" />
+            <TextBlock Text="{Binding SelectedNode.TypeName, Mode=OneWay}" Grid.Row="0" Grid.Column="1" />
             <TextBlock Text="Span" Grid.Row="1" Grid.Column="0" />
-            <TextBlock Text="{Binding SelectedNode.SyntaxNode.Span, Mode=TwoWay}" Grid.Row="1" Grid.Column="1" />
+            <TextBlock Text="{Binding SelectedNode.SyntaxNode.Span, Mode=OneWay}" Grid.Row="1" Grid.Column="1" />
             <TextBlock Text="Text" Grid.Row="3" Grid.Column="0" />
-            <TextBlock Text="{Binding SelectedNode.SyntaxNode, Mode=TwoWay}" Grid.Row="3" Grid.Column="1" />
+            <TextBlock Text="{Binding SelectedNode.SyntaxNode, Mode=OneWay}" Grid.Row="3" Grid.Column="1" />
             <TextBlock Text="Tokens" Grid.Row="4" Grid.Column="0" />
-            <ListBox ItemsSource="{Binding SelectedNode.Tokens, Mode=TwoWay}" Grid.Row="4" Grid.Column="1" Margin="8" />
+            <ListBox ItemsSource="{Binding SelectedNode.Tokens, Mode=OneWay}" Grid.Row="4" Grid.Column="1" Margin="8" />
             <TextBlock Text="Trivia" Grid.Row="5" Grid.Column="0" Margin="8" />
-            <ListBox ItemsSource="{Binding SelectedNode.Trivia, Mode=TwoWay}" Grid.Row="5" Grid.Column="1" Margin="8" />
+            <ListBox ItemsSource="{Binding SelectedNode.Trivia, Mode=OneWay}" Grid.Row="5" Grid.Column="1" Margin="8" />
         </Grid>
     </Grid>
 </Window>

@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace WpfApp
 {
@@ -65,7 +67,7 @@ namespace WpfApp
       public virtual unsafe void ProcessUnsafe(int* pInt)
       {
          string sig = pInt->ToString();
-         System.Console.WriteLine(sig);
+         Console.WriteLine(sig);
       }
 
       public virtual dynamic GetDynamic()
@@ -80,9 +82,22 @@ namespace WpfApp
       
       public virtual async Task GetSomeAsync()
       {
-         System.Console.WriteLine();
-         await Task.Delay(System.TimeSpan.FromSeconds(2));
-         System.Console.WriteLine();
+         Console.WriteLine();
+         await Task.Delay(TimeSpan.FromSeconds(2));
+         Console.WriteLine();
+      }
+
+      public virtual void ProcessGenericList(IEnumerable<Manager[]> managerList, Dictionary<string, int[,,,]> map)
+      {
+         foreach (var man in managerList)
+         {
+            Console.WriteLine(man);            
+         }
+      }
+
+      /*private */protected virtual Employee ProcessTuple(Tuple<int, double, byte> tuple, IDictionary<string, Employee> empMap)
+      {
+         return null;
       }
    }   
 
@@ -145,6 +160,16 @@ namespace WpfApp
       public override Task GetSomeAsync()
       {
          return base.GetSomeAsync();
+      }
+
+      public override void ProcessGenericList(IEnumerable<Manager[]> managerList, Dictionary<string, int[,,,]> map)
+      {
+         base.ProcessGenericList(managerList, map);
+      }
+
+      /*private */protected override Employee ProcessTuple(Tuple<int, double, byte> tuple, IDictionary<string, Employee> empMap)
+      {
+         return base.ProcessTuple(tuple, empMap);
       }
    }
 

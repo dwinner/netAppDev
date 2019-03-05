@@ -235,7 +235,7 @@ namespace GatheringOverrides
          }
 
          var returnTypeModifiers = GetTypeModifiers(methodSymbol.RefKind);
-         var returnType = methodSymbol.ReturnType.GetReturnTypeToDisplay();
+         var returnType = methodSymbol.ReturnType.GetRepresentableReturnType();
          if (returnTypeModifiers.Length > 0)
          {
             returnType = $"{returnTypeModifiers} {returnType}";
@@ -249,7 +249,7 @@ namespace GatheringOverrides
          var parameterList = Join("(", ")", separator, parameters, symbol =>
          {
             var paramModifiers = GetTypeModifiers(symbol.RefKind);
-            var parameterDisplayType = symbol.Type.GetReturnTypeToDisplay(symbol);
+            var parameterDisplayType = symbol.Type.GetRepresentableReturnType(symbol);
             if (!string.IsNullOrEmpty(paramModifiers))
             {
                parameterDisplayType = $"{paramModifiers} {parameterDisplayType}";
@@ -290,7 +290,7 @@ namespace GatheringOverrides
          return typeModifiers;
       }
 
-      public static string GetReturnTypeToDisplay(this ITypeSymbol @this,
+      public static string GetRepresentableReturnType(this ITypeSymbol @this,
          IParameterSymbol parameterSymbol = null)
       {
          if (@this.SpecialType != SpecialType.None)
