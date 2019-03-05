@@ -487,16 +487,16 @@ namespace GatheringOverrides
       private static IEnumerable<SyntaxNodeOrToken> GetParameterNodes(ImmutableArray<IParameterSymbol> parameters)
       {
          var parameterNodes = new List<SyntaxNodeOrToken>(parameters.Length * 2);
-         for (var i = 0; i < parameters.Length; i++)
+         for (var paramIdx = 0; paramIdx < parameters.Length; paramIdx++)
          {
-            var parameterSymbol = parameters[i];
+            var parameterSymbol = parameters[paramIdx];
             var parameterName = parameterSymbol.Name;
             var parameterType = parameterSymbol.Type;
             var parameterSyntax = Parameter(Identifier(parameterName))
                .DecorateWithModifiers(parameterSymbol)
                .DecorateWithReturnType(parameterType, parameterSymbol);
             parameterNodes.Add(parameterSyntax);
-            if (i != parameters.Length - 1)
+            if (paramIdx != parameters.Length - 1)
             {
                parameterNodes.Add(GetCommaToken());
             }
