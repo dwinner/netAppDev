@@ -14,7 +14,7 @@ namespace GatheringOverrides
    internal static class Program
    {
       private const string Indentation = "    ";
-      private static readonly string _Nl = Environment.NewLine;
+      //private static readonly string _Nl = Environment.NewLine;
 
       // ReSharper disable once AsyncConverter.AsyncMethodNamingHighlighting
       private static async Task Main(string[] args)
@@ -93,11 +93,11 @@ namespace GatheringOverrides
 
                      // Output generated code
 
-                     /*foreach (var propertySymbol in propertiesToOverride)
+                     foreach (var propertySymbol in propertiesToOverride)
                      {
                         var propertyDecl = CodeGeneration.BuildOverridableProperty(propertySymbol, Indentation.Repeat(2));
                         Console.WriteLine(propertyDecl);
-                     }*/
+                     }
 
                      foreach (var methodSymbol in methodsToOverride)
                      {

@@ -5,7 +5,11 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+using static GatheringOverrides.TokenGeneration;
 using static Microsoft.CodeAnalysis.Accessibility;
+using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace GatheringOverrides
 {
@@ -15,7 +19,9 @@ namespace GatheringOverrides
    public static class SymbolExtensions
    {
       private const int InitialCapacity = 0x80;
+      private const string DefaultNoSummaryText = "No description";
 
+      // TOREFACTOR: Had better use circular memory for this - to avoid entropy
       private static readonly Dictionary<string, ISet<ITypeSymbol>> _BaseTypeCache =
          new Dictionary<string, ISet<ITypeSymbol>>();
 
@@ -91,10 +97,12 @@ namespace GatheringOverrides
             typeSet.Add(typeSymbol);
             if (typeSymbol.Interfaces != null)
             {
+               // TOREFACTOR: Had better gather them in parallel
                foreach (var @interface in typeSymbol.Interfaces)
                {
                   typeSet.Add(@interface);
                }
+
                // TOREFACTOR: Why we need one more iteration here?!
                foreach (var currentInterface in typeSymbol.Interfaces)
                {
@@ -119,7 +127,7 @@ namespace GatheringOverrides
          switch (accessibility)
          {
             case NotApplicable:
-               accessModifiers = string.Empty;
+               accessModifiers = String.Empty;
                break;
 
             case Private:
@@ -167,7 +175,7 @@ namespace GatheringOverrides
       public static string ToSignature(this IPropertySymbol propertySymbol)
       {
          var propertyName = propertySymbol.Name;
-         var propertyTypeName = propertySymbol.Type.NormalizeTypeSymbol();
+         var propertyTypeName = propertySymbol.Type.SimplifyTypeName();
          var accessModifiers = propertySymbol.GetAccessModifiers();
          var propertySignature = new StringBuilder($"{accessModifiers} override ", InitialCapacity);
          propertySignature.Append($"{propertyTypeName} {propertyName} ");
@@ -182,7 +190,7 @@ namespace GatheringOverrides
             if (propertySymbol.IsReadOnly)
             {
                var getModifiers = propertySymbol.GetMethod.GetAccessModifiers();
-               if (!string.Equals(accessModifiers, getModifiers, StringComparison.Ordinal))
+               if (!String.Equals(accessModifiers, getModifiers, StringComparison.Ordinal))
                {
                   property += $"{getModifiers} ";
                }
@@ -193,7 +201,7 @@ namespace GatheringOverrides
             {
                property += "private get; ";
                var setModifiers = propertySymbol.SetMethod.GetAccessModifiers();
-               if (!string.Equals(accessModifiers, setModifiers, StringComparison.Ordinal))
+               if (!String.Equals(accessModifiers, setModifiers, StringComparison.Ordinal))
                {
                   property += $"{setModifiers} ";
                }
@@ -203,14 +211,14 @@ namespace GatheringOverrides
             else
             {
                var getModifiers = propertySymbol.GetMethod.GetAccessModifiers();
-               if (!string.Equals(accessModifiers, getModifiers, StringComparison.Ordinal))
+               if (!String.Equals(accessModifiers, getModifiers, StringComparison.Ordinal))
                {
                   property += $"{getModifiers} ";
                }
 
                property += "get; ";
                var setModifiers = propertySymbol.SetMethod.GetAccessModifiers();
-               if (!string.Equals(accessModifiers, setModifiers, StringComparison.Ordinal))
+               if (!String.Equals(accessModifiers, setModifiers, StringComparison.Ordinal))
                {
                   property += $"{setModifiers} ";
                }
@@ -230,7 +238,7 @@ namespace GatheringOverrides
          if (methodSymbol.IsGenericMethod)
          {
             var typeParams = methodSymbol.TypeParameters;
-            var joinedString = Join("<", ">", separator, typeParams, symbol => symbol.Name);
+            var joinedString = Gather("<", ">", separator, typeParams, symbol => symbol.Name);
             methodName += joinedString;
          }
 
@@ -246,11 +254,11 @@ namespace GatheringOverrides
 
          signature.Append($"{returnType} {methodName}");
          var parameters = methodSymbol.Parameters;
-         var parameterList = Join("(", ")", separator, parameters, symbol =>
+         var parameterList = Gather("(", ")", separator, parameters, symbol =>
          {
             var paramModifiers = GetTypeModifiers(symbol.RefKind);
             var parameterDisplayType = symbol.Type.GetRepresentableReturnType(symbol);
-            if (!string.IsNullOrEmpty(paramModifiers))
+            if (!String.IsNullOrEmpty(paramModifiers))
             {
                parameterDisplayType = $"{paramModifiers} {parameterDisplayType}";
             }
@@ -268,7 +276,7 @@ namespace GatheringOverrides
          switch (returnRefKind)
          {
             case RefKind.None:
-               typeModifiers = string.Empty;
+               typeModifiers = String.Empty;
                break;
 
             case RefKind.Ref:
@@ -280,7 +288,7 @@ namespace GatheringOverrides
                break;
 
             case RefKind.In:
-               typeModifiers = string.Empty;
+               typeModifiers = String.Empty;
                break;
 
             default:
@@ -290,7 +298,7 @@ namespace GatheringOverrides
          return typeModifiers;
       }
 
-      public static string GetRepresentableReturnType(this ITypeSymbol @this,
+      private static string GetRepresentableReturnType(this ITypeSymbol @this,
          IParameterSymbol parameterSymbol = null)
       {
          if (@this.SpecialType != SpecialType.None)
@@ -318,14 +326,14 @@ namespace GatheringOverrides
             case TypeKind.Array:
             {
                var arrayTypeSymbol = (IArrayTypeSymbol) @this;
-               returnTypeName = ProcessArrayTypeKind(parameterSymbol, arrayTypeSymbol);
+               returnTypeName = arrayTypeSymbol.ToDisplay(parameterSymbol);
             }
                break;
 
             case TypeKind.Pointer:
             {
                var pointerTypeSymbol = (IPointerTypeSymbol) @this;
-               returnTypeName = ProcessPointerTypeKind(pointerTypeSymbol);
+               returnTypeName = pointerTypeSymbol.ToDisplay();
             }
                break;
 
@@ -336,31 +344,32 @@ namespace GatheringOverrides
          return returnTypeName;
       }
 
-      private static string ProcessPointerTypeKind(IPointerTypeSymbol pointerTypeSymbol)
+      private static string ToDisplay(this IPointerTypeSymbol @this)
       {
-         var pointedAtType = pointerTypeSymbol.PointedAtType;
-         var pointedType = pointedAtType.NormalizeTypeSymbol();
+         var pointedAtType = @this.PointedAtType;
+         var pointedType = pointedAtType.SimplifyTypeName();
          var returnTypeName = $"{pointedType}*";
          return returnTypeName;
       }
 
-      public static string NormalizeTypeSymbol(this ITypeSymbol pointedAtType) =>
-         pointedAtType.SpecialType == SpecialType.None
-            ? pointedAtType.Name
-            : pointedAtType.ToDisplayString();
+      public static string SimplifyTypeName(this ITypeSymbol @this) =>
+         @this.SpecialType == SpecialType.None
+            ? @this.Name
+            : @this.ToDisplayString();
 
-      private static string ProcessArrayTypeKind(IParameterSymbol parameterSymbol, IArrayTypeSymbol arrayTypeSymbol)
+      private static string ToDisplay(this IArrayTypeSymbol @this,
+         IParameterSymbol parameterSymbol)
       {
          string returnTypeName;
-         var arrayElementType = arrayTypeSymbol.ElementType;
-         var elementTypeDisplay = arrayElementType.NormalizeTypeSymbol();
-         if (parameterSymbol?.IsParams == true) // FIXME: strange case with parameter usage here
+         var arrayElementType = @this.ElementType;
+         var elementTypeDisplay = arrayElementType.SimplifyTypeName();
+         if (parameterSymbol?.IsParams == true)
          {
             returnTypeName = $"params {elementTypeDisplay}[]";
          }
          else
          {
-            var arrayRank = arrayTypeSymbol.Rank;
+            var arrayRank = @this.Rank;
             var arrayIndexSignature = "[";
             if (arrayRank >= 2)
             {
@@ -377,26 +386,25 @@ namespace GatheringOverrides
          return returnTypeName;
       }
 
-      public static string GetSummary(this ISymbol symbol)
+      public static string GetSummary(this ISymbol @this, string noSummaryText = DefaultNoSummaryText)
       {
          const string start = "<summary>";
          const string end = "</summary>";
          const string stripMisc = @"<(.|\n)*?>";
-         const string noSummary = "No description";
 
-         var docCommentXml = symbol.GetDocumentationCommentXml(CultureInfo.CurrentCulture);
+         var docCommentXml = @this.GetDocumentationCommentXml(CultureInfo.CurrentCulture);
          var startPos = docCommentXml.IndexOf(start, StringComparison.Ordinal);
          var endPos = docCommentXml.IndexOf(end, StringComparison.Ordinal);
          var offset = startPos + start.Length;
          var summaryText = startPos != -1 && endPos != -1 && endPos > offset
             ? docCommentXml.Substring(offset, endPos - offset)
-            : noSummary;
-         summaryText = Regex.Replace(summaryText, stripMisc, symbol.Name);
+            : noSummaryText;
+         summaryText = Regex.Replace(summaryText, stripMisc, @this.Name);
 
          return summaryText.Trim();
       }
 
-      private static string Join<T>(string start, string end, string separator,
+      private static string Gather<T>(string start, string end, string separator,
          IEnumerable<T> sequence,
          Func<T, string> stringProducer)
       {
@@ -411,13 +419,207 @@ namespace GatheringOverrides
          return aggregator;
       }
 
-      private sealed class SymbolEqualityComparer : IEqualityComparer<ISymbol>
+      public static SyntaxTokenList GetModifierTokens(this ISymbol @this, string indentation)
       {
-         public static IEqualityComparer<ISymbol> Default { get; } = new SymbolEqualityComparer();
-
-         public bool Equals(ISymbol x, ISymbol y) => x.Name.Equals(y.Name, StringComparison.CurrentCulture);
-
-         public int GetHashCode(ISymbol obj) => obj.Name.GetHashCode();
+         var tokens = @this.DeclaredAccessibility.GetModifierTokens(indentation);
+         tokens.Add(GetOverrideToken());
+         return TokenList(tokens);
       }
+
+      public static AccessorListSyntax GetAccessorList(this IPropertySymbol propertySymbol, string indentation)
+      {
+         var propertyName = propertySymbol.Name;
+         AccessorListSyntax accessorList;
+         var propertyAccessors = propertySymbol.DeclaredAccessibility;
+
+         if (propertySymbol.IsReadOnly)
+         {
+            var getAccessModifiers = propertySymbol.GetMethod.GenerateAccessModifiers(propertyAccessors, indentation);
+            var getAccessorDecl = CodeGeneration.GetWithBaseCallAccessorDeclaration(getAccessModifiers, propertyName);
+            accessorList = AccessorList(List<AccessorDeclarationSyntax>(new[] {getAccessorDecl}));
+         }
+         else if (propertySymbol.IsWriteOnly)
+         {
+            var setAccessModifiers = propertySymbol.SetMethod.GenerateAccessModifiers(propertyAccessors, indentation);
+            var setAccessorDecl = CodeGeneration.GetWithBaseCallAccessorDeclaration(indentation, setAccessModifiers, propertyName);
+            accessorList = AccessorList(List<AccessorDeclarationSyntax>(new[] {setAccessorDecl}));
+         }
+         else
+         {
+            var getAccessModifiers = propertySymbol.GetMethod.GenerateAccessModifiers(propertyAccessors, indentation);
+            var getAccessorDecl = CodeGeneration.GetWithBaseCallAccessorDeclaration(getAccessModifiers, propertyName);
+            var setAccessModifiers = propertySymbol.SetMethod.GenerateAccessModifiers(propertyAccessors, indentation);
+            var setAccessorDecl = CodeGeneration.GetWithBaseCallAccessorDeclaration(String.Empty, setAccessModifiers, propertyName);
+            accessorList = AccessorList(List<AccessorDeclarationSyntax>(new[] {getAccessorDecl, setAccessorDecl}));
+         }
+
+         var reducedIndentation = " ".Repeat(indentation.Length / 2);
+         return accessorList
+            .WithOpenBraceToken(GetOpenBraceToken(reducedIndentation))
+            .WithCloseBraceToken(GetCloseBraceToken(reducedIndentation));
+      }
+
+      private static SyntaxTokenList GenerateAccessModifiers(this ISymbol @this,
+         Accessibility propertyAccessibility, string indentation)
+      {
+         SyntaxTokenList accessModifiers;
+         var leadingTrivia = Whitespace($"{indentation}");
+         var trailingTrivia = Space;
+         var emptyTokens = TokenList(TokenGeneration.GetNoneToken(leadingTrivia));
+
+         switch (@this.DeclaredAccessibility)
+         {
+            case NotApplicable:
+               accessModifiers = emptyTokens;
+               break;
+
+            case Private
+               when propertyAccessibility != Private:
+            {
+               accessModifiers = TokenList(GetPrivateToken(leadingTrivia, trailingTrivia));
+               break;
+            }
+
+            case ProtectedAndInternal
+               when propertyAccessibility != ProtectedAndInternal:
+            {
+               accessModifiers = TokenList(GetPrivateToken(leadingTrivia, trailingTrivia),
+                  GetProtectedToken(trailingTrivia));
+            }
+               break;
+
+            case Protected
+               when propertyAccessibility != Protected:
+            {
+               accessModifiers = TokenList(GetProtectedTokens(leadingTrivia, trailingTrivia)
+               );
+            }
+               break;
+
+            case Internal
+               when propertyAccessibility != Internal:
+            {
+               accessModifiers = TokenList(GetInternalToken(leadingTrivia, trailingTrivia));
+            }
+               break;
+
+            case ProtectedOrInternal
+               when propertyAccessibility != ProtectedOrInternal:
+            {
+               accessModifiers = TokenList(
+                  GetProtectedToken(leadingTrivia, trailingTrivia),
+                  GetInternalToken(trailingTrivia));
+            }
+               break;
+
+            case Public
+               when propertyAccessibility != Public:
+            {
+               accessModifiers = TokenList(GetPublicToken(leadingTrivia, trailingTrivia));
+            }
+               break;
+
+            default:
+               accessModifiers = emptyTokens;
+               break;
+         }
+
+         return accessModifiers;
+      }
+
+      public static SyntaxTokenList GetAccessModifiersWithOverride(this ISymbol symbol, string indentation)
+      {
+         var accessibility = symbol.DeclaredAccessibility;
+         var tokens = new List<SyntaxToken>();
+         var indentationTrivia = Whitespace(" ".Repeat(indentation.Length / 2));
+         var leadingTrivia = LineFeed;
+         var trailingTrivia = Space;
+
+         switch (accessibility)
+         {
+            case NotApplicable:
+               break;
+
+            case Private:               
+               tokens.Add(GetPrivateToken(indentationTrivia, trailingTrivia));
+               break;
+
+            case ProtectedAndInternal:
+               tokens.Add(GetPrivateToken(indentationTrivia, trailingTrivia));
+               tokens.Add(GetProtectedToken(indentation, leadingTrivia, trailingTrivia)
+               );
+               break;
+
+            case Protected:
+               tokens.Add(
+                  Token(
+                     TriviaList(indentationTrivia),
+                     SyntaxKind.ProtectedKeyword,
+                     TriviaList(trailingTrivia)
+                  )
+               );
+               break;
+
+            case Internal:
+               tokens.Add(GetInternalToken(indentationTrivia, trailingTrivia));
+               break;
+
+            case ProtectedOrInternal:
+               tokens.AddRange(new []
+               {
+                  GetProtectedTokens(indentationTrivia, trailingTrivia),
+                  GetInternalToken(trailingTrivia)
+               });
+               break;
+
+            case Public:
+               tokens.Add(GetPublicToken(indentationTrivia, trailingTrivia));
+               break;
+
+            default:
+               throw new ArgumentOutOfRangeException(nameof(accessibility));
+         }
+
+         tokens.Add(GetOverrideToken(trailingTrivia));
+
+         var tokenCount = tokens.Count;
+         var tokensWithIndentation = new SyntaxToken[tokenCount + 1];
+         tokensWithIndentation[0] = GetNoneToken(indentation);
+         for (var i = 1; i < tokensWithIndentation.Length; i++)
+         {
+            tokensWithIndentation[i] = tokens[i - 1];
+         }
+
+         var accessTokens = TokenList(tokensWithIndentation);
+
+         return accessTokens;
+      }
+
+      private static SyntaxToken GetInternalToken(SyntaxTrivia indentationTrivia, SyntaxTrivia trailingTrivia) =>
+         Token(
+            TriviaList(indentationTrivia),
+            SyntaxKind.InternalKeyword,
+            TriviaList(trailingTrivia)
+         );
+
+      private static SyntaxToken GetNoneToken(string indentation) =>
+         Token(
+            TriviaList(Whitespace(indentation)),
+            SyntaxKind.None,
+            TriviaList(LineFeed));
+
+      private static SyntaxToken GetProtectedTokens(SyntaxTrivia indentationTrivia, SyntaxTrivia trailingTrivia) =>
+         Token(
+            TriviaList(indentationTrivia),
+            SyntaxKind.ProtectedKeyword,
+            TriviaList(trailingTrivia)
+         );
+
+      private static SyntaxToken GetInternalToken(SyntaxTrivia trailingTrivia) =>
+         Token(
+            TriviaList(),
+            SyntaxKind.InternalKeyword,
+            TriviaList(trailingTrivia)
+         );
    }
 }
