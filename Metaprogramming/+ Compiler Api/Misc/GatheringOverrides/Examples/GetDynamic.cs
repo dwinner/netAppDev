@@ -1,0 +1,111 @@
+/*
+    public override dynamic GetDynamic()
+    {
+        return base.GetDynamic();
+    }
+
+*/
+
+MethodDeclaration(
+    IdentifierName(
+        Identifier(
+            TriviaList(),
+            "dynamic",
+            TriviaList(
+                Space
+            )
+        )
+    ),
+    Identifier("GetDynamic")
+)
+.WithModifiers(
+    TokenList(
+        new []{
+            Token(
+                TriviaList(
+                    Whitespace("    ")
+                ),
+                SyntaxKind.PublicKeyword,
+                TriviaList(
+                    Space
+                )
+            ),
+            Token(
+                TriviaList(),
+                SyntaxKind.OverrideKeyword,
+                TriviaList(
+                    Space
+                )
+            )
+        }
+    )
+)
+.WithParameterList(
+    ParameterList()
+    .WithCloseParenToken(
+        Token(
+            TriviaList(),
+            SyntaxKind.CloseParenToken,
+            TriviaList(
+                LineFeed
+            )
+        )
+    )
+)
+.WithBody(
+    Block(
+        SingletonList<StatementSyntax>(
+            ReturnStatement(
+                InvocationExpression(
+                    MemberAccessExpression(
+                        SyntaxKind.SimpleMemberAccessExpression,
+                        BaseExpression(),
+                        IdentifierName("GetDynamic")
+                    )
+                )
+            )
+            .WithReturnKeyword(
+                Token(
+                    TriviaList(
+                        Whitespace("        ")
+                    ),
+                    SyntaxKind.ReturnKeyword,
+                    TriviaList(
+                        Space
+                    )
+                )
+            )
+            .WithSemicolonToken(
+                Token(
+                    TriviaList(),
+                    SyntaxKind.SemicolonToken,
+                    TriviaList(
+                        LineFeed
+                    )
+                )
+            )
+        )
+    )
+    .WithOpenBraceToken(
+        Token(
+            TriviaList(
+                Whitespace("    ")
+            ),
+            SyntaxKind.OpenBraceToken,
+            TriviaList(
+                LineFeed
+            )
+        )
+    )
+    .WithCloseBraceToken(
+        Token(
+            TriviaList(
+                Whitespace("    ")
+            ),
+            SyntaxKind.CloseBraceToken,
+            TriviaList(
+                LineFeed
+            )
+        )
+    )
+)

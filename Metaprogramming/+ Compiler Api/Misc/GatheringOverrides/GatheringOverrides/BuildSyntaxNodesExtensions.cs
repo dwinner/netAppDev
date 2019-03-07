@@ -4,7 +4,6 @@ using System.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using static GatheringOverrides.TokenGeneration;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace GatheringOverrides
@@ -28,7 +27,8 @@ namespace GatheringOverrides
       {
          if (parameterSymbol.IsParams)
          {
-            @this = @this.WithModifiers(TokenList(GetParamsToken()));
+            @this = @this.WithModifiers(
+               TokenList(SyntaxKind.ParamsKeyword.BuildToken(Array.Empty<SyntaxTrivia>(), new[] {Space})));
          }
          else
          {
@@ -39,11 +39,13 @@ namespace GatheringOverrides
                   break;
 
                case RefKind.Ref:
-                  @this = @this.WithModifiers(TokenList(GetRefToken()));
+                  @this = @this.WithModifiers(
+                     TokenList(SyntaxKind.RefKeyword.BuildToken(Array.Empty<SyntaxTrivia>(), new[] {Space})));
                   break;
 
                case RefKind.Out:
-                  @this = @this.WithModifiers(TokenList(GetOutToken()));
+                  @this = @this.WithModifiers(
+                     TokenList(SyntaxKind.OutKeyword.BuildToken(Array.Empty<SyntaxTrivia>(), new[] {Space})));
                   break;
 
                case RefKind.In:
@@ -71,7 +73,8 @@ namespace GatheringOverrides
                               OmittedArraySizeExpression()
                            )
                         )
-                        .WithCloseBracketToken(GetCloseBracketToken())
+                        .WithCloseBracketToken(
+                           SyntaxKind.CloseBracketToken.BuildToken(Array.Empty<SyntaxTrivia>(), new[] {Space}))
                   )
                )
          );
@@ -79,7 +82,7 @@ namespace GatheringOverrides
          return @this;
       }
 
-      public static ParameterSyntax DecorateWithGeneric(this ParameterSyntax @this,
+      private static ParameterSyntax DecorateWithGeneric(this ParameterSyntax @this,
          INamedTypeSymbol namedTypeSymbol, string returnType)
       {
          // TOREFACTOR: There must exist the common way to handle nested generic parameters,
@@ -143,7 +146,7 @@ namespace GatheringOverrides
 
             if (genArgIdx != typeArguments.Length - 1)
             {
-               genericParameterNodes.Add(GetCommaToken());
+               genericParameterNodes.Add(SyntaxKind.CommaToken.BuildToken(Array.Empty<SyntaxTrivia>(), new[] {Space}));
             }
          }
 
@@ -153,7 +156,8 @@ namespace GatheringOverrides
                   TypeArgumentList(
                         SeparatedList<TypeSyntax>(genericParameterNodes)
                      )
-                     .WithGreaterThanToken(GetGreaterThanToken())
+                     .WithGreaterThanToken(
+                        SyntaxKind.GreaterThanToken.BuildToken(Array.Empty<SyntaxTrivia>(), new[] {Space}))
                )
          );
 
@@ -184,7 +188,7 @@ namespace GatheringOverrides
          return rankTokens;
       }
 
-      public static ParameterSyntax DecorateWithQualifiers(this ParameterSyntax @this,
+      private static ParameterSyntax DecorateWithQualifiers(this ParameterSyntax @this,
          ITypeSymbol parameterType, IParameterSymbol parameterSymbol, string returnType)
       {
          var parameterTypeKind = parameterType.TypeKind;
@@ -231,7 +235,9 @@ namespace GatheringOverrides
                                           rankTokens
                                        )
                                     )
-                                    .WithCloseBracketToken(GetCloseBracketToken())
+                                    .WithCloseBracketToken(
+                                       SyntaxKind.CloseBracketToken.BuildToken(Array.Empty<SyntaxTrivia>(),
+                                          new[] {Space}))
                               )
                            )
                      );
@@ -251,7 +257,7 @@ namespace GatheringOverrides
                   PointerType(
                         IdentifierName(Identifier(pointedType))
                      )
-                     .WithAsteriskToken(GetAsteriskToken())
+                     .WithAsteriskToken(SyntaxKind.AsteriskToken.BuildToken(Array.Empty<SyntaxTrivia>(), new[] {Space}))
                );
                break;
 

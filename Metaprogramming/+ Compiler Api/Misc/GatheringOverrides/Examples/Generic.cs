@@ -1,0 +1,177 @@
+/*
+    public override TOut Generic<TOut, TIn>(TIn inType)
+    {
+        return base.Generic<TOut, TIn>(inType);
+    }
+
+*/
+
+MethodDeclaration(
+    IdentifierName(
+        Identifier(
+            TriviaList(),
+            "TOut",
+            TriviaList(
+                Space
+            )
+        )
+    ),
+    Identifier("Generic")
+)
+.WithModifiers(
+    TokenList(
+        new []{
+            Token(
+                TriviaList(
+                    Whitespace("    ")
+                ),
+                SyntaxKind.PublicKeyword,
+                TriviaList(
+                    Space
+                )
+            ),
+            Token(
+                TriviaList(),
+                SyntaxKind.OverrideKeyword,
+                TriviaList(
+                    Space
+                )
+            )
+        }
+    )
+)
+.WithTypeParameterList(
+    TypeParameterList(
+        SeparatedList<TypeParameterSyntax>(
+            new SyntaxNodeOrToken[]{
+                TypeParameter(
+                    Identifier("TOut")
+                ),
+                Token(
+                    TriviaList(),
+                    SyntaxKind.CommaToken,
+                    TriviaList(
+                        Space
+                    )
+                ),
+                TypeParameter(
+                    Identifier("TIn")
+                )
+            }
+        )
+    )
+)
+.WithParameterList(
+    ParameterList(
+        SingletonSeparatedList<ParameterSyntax>(
+            Parameter(
+                Identifier("inType")
+            )
+            .WithType(
+                IdentifierName(
+                    Identifier(
+                        TriviaList(),
+                        "TIn",
+                        TriviaList(
+                            Space
+                        )
+                    )
+                )
+            )
+        )
+    )
+    .WithCloseParenToken(
+        Token(
+            TriviaList(),
+            SyntaxKind.CloseParenToken,
+            TriviaList(
+                LineFeed
+            )
+        )
+    )
+)
+.WithBody(
+    Block(
+        SingletonList<StatementSyntax>(
+            ReturnStatement(
+                InvocationExpression(
+                    MemberAccessExpression(
+                        SyntaxKind.SimpleMemberAccessExpression,
+                        BaseExpression(),
+                        GenericName(
+                            Identifier("Generic")
+                        )
+                        .WithTypeArgumentList(
+                            TypeArgumentList(
+                                SeparatedList<TypeSyntax>(
+                                    new SyntaxNodeOrToken[]{
+                                        IdentifierName("TOut"),
+                                        Token(
+                                            TriviaList(),
+                                            SyntaxKind.CommaToken,
+                                            TriviaList(
+                                                Space
+                                            )
+                                        ),
+                                        IdentifierName("TIn")
+                                    }
+                                )
+                            )
+                        )
+                    )
+                )
+                .WithArgumentList(
+                    ArgumentList(
+                        SingletonSeparatedList<ArgumentSyntax>(
+                            Argument(
+                                IdentifierName("inType")
+                            )
+                        )
+                    )
+                )
+            )
+            .WithReturnKeyword(
+                Token(
+                    TriviaList(
+                        Whitespace("        ")
+                    ),
+                    SyntaxKind.ReturnKeyword,
+                    TriviaList(
+                        Space
+                    )
+                )
+            )
+            .WithSemicolonToken(
+                Token(
+                    TriviaList(),
+                    SyntaxKind.SemicolonToken,
+                    TriviaList(
+                        LineFeed
+                    )
+                )
+            )
+        )
+    )
+    .WithOpenBraceToken(
+        Token(
+            TriviaList(
+                Whitespace("    ")
+            ),
+            SyntaxKind.OpenBraceToken,
+            TriviaList(
+                LineFeed
+            )
+        )
+    )
+    .WithCloseBraceToken(
+        Token(
+            TriviaList(
+                Whitespace("    ")
+            ),
+            SyntaxKind.CloseBraceToken,
+            TriviaList(
+                LineFeed
+            )
+        )
+    )
+)

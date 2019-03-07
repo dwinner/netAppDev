@@ -4,9 +4,7 @@ using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using static GatheringOverrides.TokenGeneration;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
-using static Microsoft.CodeAnalysis.Accessibility;
 
 namespace GatheringOverrides
 {
@@ -144,16 +142,20 @@ namespace GatheringOverrides
                TriviaList(Space)
             )
          );
+
          var methodIdentifier = Identifier(methodName);
          var methodDecl = !returnsByRefReadonly
             ? returnsByRef
                ? MethodDeclaration(RefType(returnTypeIdentifier)
-                  .WithRefKeyword(GetRefToken()), methodIdentifier)
+                  .WithRefKeyword(
+                     SyntaxKind.RefKeyword.BuildToken(Array.Empty<SyntaxTrivia>(), new[] {Space})), methodIdentifier)
                : MethodDeclaration(returnTypeIdentifier, methodIdentifier)
             : MethodDeclaration(
                RefType(returnTypeIdentifier)
-                  .WithRefKeyword(GetRefToken())
-                  .WithReadOnlyKeyword(GetReadonlyToken()),
+                  .WithRefKeyword(
+                     SyntaxKind.RefKeyword.BuildToken(Array.Empty<SyntaxTrivia>(), new[] {Space}))
+                  .WithReadOnlyKeyword(
+                     SyntaxKind.ReadOnlyKeyword.BuildToken(Array.Empty<SyntaxTrivia>(), new[] {Space})),
                methodIdentifier);
 
          var methodModifiers = methodSymbol.GetModifierTokens(indentation);
@@ -175,12 +177,13 @@ namespace GatheringOverrides
             ? ParameterList(SeparatedList<ParameterSyntax>(GetParameterNodes(parameters)))
             : ParameterList();
 
-         parameterListSyntax = parameterListSyntax.WithCloseParenToken(GetCloseParenToken());
+         parameterListSyntax = parameterListSyntax
+            .WithCloseParenToken(SyntaxKind.CloseParenToken.BuildToken(Array.Empty<SyntaxTrivia>(), new[] {LineFeed}));
          methodDecl = methodDecl.WithParameterList(parameterListSyntax);
 
          #region Body
 
-         
+         // TODO: Generate method body
 
          #endregion
 
@@ -201,7 +204,7 @@ namespace GatheringOverrides
             parameterNodes.Add(parameterSyntax);
             if (paramIdx != parameters.Length - 1)
             {
-               parameterNodes.Add(GetCommaToken());
+               parameterNodes.Add(SyntaxKind.CommaToken.BuildToken(Array.Empty<SyntaxTrivia>(), new[] {Space}));
             }
          }
 
@@ -218,7 +221,7 @@ namespace GatheringOverrides
             typeParameterList.Add(TypeParameter(Identifier(typeParameterSymbol.Name)));
             if (paramIdx != typeParameters.Length - 1)
             {
-               typeParameterList.Add(GetCommaToken());
+               typeParameterList.Add(SyntaxKind.CommaToken.BuildToken(Array.Empty<SyntaxTrivia>(), new[] {Space}));
             }
          }
 

@@ -7,7 +7,6 @@ using System.Text.RegularExpressions;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using static GatheringOverrides.TokenGeneration;
 using static Microsoft.CodeAnalysis.Accessibility;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
@@ -127,7 +126,7 @@ namespace GatheringOverrides
          switch (accessibility)
          {
             case NotApplicable:
-               accessModifiers = String.Empty;
+               accessModifiers = string.Empty;
                break;
 
             case Private:
@@ -190,7 +189,7 @@ namespace GatheringOverrides
             if (propertySymbol.IsReadOnly)
             {
                var getModifiers = propertySymbol.GetMethod.GetAccessModifiers();
-               if (!String.Equals(accessModifiers, getModifiers, StringComparison.Ordinal))
+               if (!string.Equals(accessModifiers, getModifiers, StringComparison.Ordinal))
                {
                   property += $"{getModifiers} ";
                }
@@ -201,7 +200,7 @@ namespace GatheringOverrides
             {
                property += "private get; ";
                var setModifiers = propertySymbol.SetMethod.GetAccessModifiers();
-               if (!String.Equals(accessModifiers, setModifiers, StringComparison.Ordinal))
+               if (!string.Equals(accessModifiers, setModifiers, StringComparison.Ordinal))
                {
                   property += $"{setModifiers} ";
                }
@@ -211,14 +210,14 @@ namespace GatheringOverrides
             else
             {
                var getModifiers = propertySymbol.GetMethod.GetAccessModifiers();
-               if (!String.Equals(accessModifiers, getModifiers, StringComparison.Ordinal))
+               if (!string.Equals(accessModifiers, getModifiers, StringComparison.Ordinal))
                {
                   property += $"{getModifiers} ";
                }
 
                property += "get; ";
                var setModifiers = propertySymbol.SetMethod.GetAccessModifiers();
-               if (!String.Equals(accessModifiers, setModifiers, StringComparison.Ordinal))
+               if (!string.Equals(accessModifiers, setModifiers, StringComparison.Ordinal))
                {
                   property += $"{setModifiers} ";
                }
@@ -258,7 +257,7 @@ namespace GatheringOverrides
          {
             var paramModifiers = GetTypeModifiers(symbol.RefKind);
             var parameterDisplayType = symbol.Type.GetRepresentableReturnType(symbol);
-            if (!String.IsNullOrEmpty(paramModifiers))
+            if (!string.IsNullOrEmpty(paramModifiers))
             {
                parameterDisplayType = $"{paramModifiers} {parameterDisplayType}";
             }
@@ -276,7 +275,7 @@ namespace GatheringOverrides
          switch (returnRefKind)
          {
             case RefKind.None:
-               typeModifiers = String.Empty;
+               typeModifiers = string.Empty;
                break;
 
             case RefKind.Ref:
@@ -288,7 +287,7 @@ namespace GatheringOverrides
                break;
 
             case RefKind.In:
-               typeModifiers = String.Empty;
+               typeModifiers = string.Empty;
                break;
 
             default:
@@ -422,7 +421,7 @@ namespace GatheringOverrides
       public static SyntaxTokenList GetModifierTokens(this ISymbol @this, string indentation)
       {
          var tokens = @this.DeclaredAccessibility.GetModifierTokens(indentation);
-         tokens.Add(GetOverrideToken());
+         tokens.Add(SyntaxKind.OverrideKeyword.BuildToken(Array.Empty<SyntaxTrivia>(), new[] {Space}));
          return TokenList(tokens);
       }
 
@@ -436,27 +435,31 @@ namespace GatheringOverrides
          {
             var getAccessModifiers = propertySymbol.GetMethod.GenerateAccessModifiers(propertyAccessors, indentation);
             var getAccessorDecl = CodeGeneration.GetWithBaseCallAccessorDeclaration(getAccessModifiers, propertyName);
-            accessorList = AccessorList(List<AccessorDeclarationSyntax>(new[] {getAccessorDecl}));
+            accessorList = AccessorList(List(new[] {getAccessorDecl}));
          }
          else if (propertySymbol.IsWriteOnly)
          {
             var setAccessModifiers = propertySymbol.SetMethod.GenerateAccessModifiers(propertyAccessors, indentation);
-            var setAccessorDecl = CodeGeneration.GetWithBaseCallAccessorDeclaration(indentation, setAccessModifiers, propertyName);
-            accessorList = AccessorList(List<AccessorDeclarationSyntax>(new[] {setAccessorDecl}));
+            var setAccessorDecl =
+               CodeGeneration.GetWithBaseCallAccessorDeclaration(indentation, setAccessModifiers, propertyName);
+            accessorList = AccessorList(List(new[] {setAccessorDecl}));
          }
          else
          {
             var getAccessModifiers = propertySymbol.GetMethod.GenerateAccessModifiers(propertyAccessors, indentation);
             var getAccessorDecl = CodeGeneration.GetWithBaseCallAccessorDeclaration(getAccessModifiers, propertyName);
             var setAccessModifiers = propertySymbol.SetMethod.GenerateAccessModifiers(propertyAccessors, indentation);
-            var setAccessorDecl = CodeGeneration.GetWithBaseCallAccessorDeclaration(String.Empty, setAccessModifiers, propertyName);
-            accessorList = AccessorList(List<AccessorDeclarationSyntax>(new[] {getAccessorDecl, setAccessorDecl}));
+            var setAccessorDecl =
+               CodeGeneration.GetWithBaseCallAccessorDeclaration(string.Empty, setAccessModifiers, propertyName);
+            accessorList = AccessorList(List(new[] {getAccessorDecl, setAccessorDecl}));
          }
 
          var reducedIndentation = " ".Repeat(indentation.Length / 2);
          return accessorList
-            .WithOpenBraceToken(GetOpenBraceToken(reducedIndentation))
-            .WithCloseBraceToken(GetCloseBraceToken(reducedIndentation));
+            .WithOpenBraceToken(
+               SyntaxKind.OpenBraceToken.BuildToken(new[] {LineFeed, Whitespace(reducedIndentation)}, new[] {LineFeed}))
+            .WithCloseBraceToken(
+               SyntaxKind.CloseBraceToken.BuildToken(new[] {Whitespace(reducedIndentation)}, new[] {LineFeed}));
       }
 
       private static SyntaxTokenList GenerateAccessModifiers(this ISymbol @this,
@@ -465,7 +468,8 @@ namespace GatheringOverrides
          SyntaxTokenList accessModifiers;
          var leadingTrivia = Whitespace($"{indentation}");
          var trailingTrivia = Space;
-         var emptyTokens = TokenList(TokenGeneration.GetNoneToken(leadingTrivia));
+         var emptyTokens =
+            TokenList(SyntaxKind.None.BuildToken(new[] {leadingTrivia}, new[] {Whitespace(string.Empty)}));
 
          switch (@this.DeclaredAccessibility)
          {
@@ -476,30 +480,33 @@ namespace GatheringOverrides
             case Private
                when propertyAccessibility != Private:
             {
-               accessModifiers = TokenList(GetPrivateToken(leadingTrivia, trailingTrivia));
+               accessModifiers = TokenList(
+                  SyntaxKind.PrivateKeyword.BuildToken(new[] {leadingTrivia}, new[] {trailingTrivia}));
                break;
             }
 
             case ProtectedAndInternal
                when propertyAccessibility != ProtectedAndInternal:
             {
-               accessModifiers = TokenList(GetPrivateToken(leadingTrivia, trailingTrivia),
-                  GetProtectedToken(trailingTrivia));
+               accessModifiers = TokenList(
+                  SyntaxKind.PrivateKeyword.BuildToken(new[] {leadingTrivia}, new[] {trailingTrivia}),
+                  SyntaxKind.ProtectedKeyword.BuildToken(Array.Empty<SyntaxTrivia>(), new[] {trailingTrivia}));
             }
                break;
 
             case Protected
                when propertyAccessibility != Protected:
             {
-               accessModifiers = TokenList(GetProtectedTokens(leadingTrivia, trailingTrivia)
-               );
+               accessModifiers =
+                  TokenList(SyntaxKind.ProtectedKeyword.BuildToken(new[] {leadingTrivia}, new[] {trailingTrivia}));
             }
                break;
 
             case Internal
                when propertyAccessibility != Internal:
             {
-               accessModifiers = TokenList(GetInternalToken(leadingTrivia, trailingTrivia));
+               accessModifiers =
+                  TokenList(SyntaxKind.InternalKeyword.BuildToken(new[] {leadingTrivia}, new[] {trailingTrivia}));
             }
                break;
 
@@ -507,15 +514,16 @@ namespace GatheringOverrides
                when propertyAccessibility != ProtectedOrInternal:
             {
                accessModifiers = TokenList(
-                  GetProtectedToken(leadingTrivia, trailingTrivia),
-                  GetInternalToken(trailingTrivia));
+                  SyntaxKind.ProtectedKeyword.BuildToken(new[] {leadingTrivia}, new[] {trailingTrivia}),
+                  SyntaxKind.InternalKeyword.BuildToken(Array.Empty<SyntaxTrivia>(), new[] {trailingTrivia}));
             }
                break;
 
             case Public
                when propertyAccessibility != Public:
             {
-               accessModifiers = TokenList(GetPublicToken(leadingTrivia, trailingTrivia));
+               accessModifiers =
+                  TokenList(SyntaxKind.PublicKeyword.BuildToken(new[] {leadingTrivia}, new[] {trailingTrivia}));
             }
                break;
 
@@ -540,51 +548,44 @@ namespace GatheringOverrides
             case NotApplicable:
                break;
 
-            case Private:               
-               tokens.Add(GetPrivateToken(indentationTrivia, trailingTrivia));
+            case Private:
+               tokens.Add(SyntaxKind.PrivateKeyword.BuildToken(new[] {leadingTrivia}, new[] {trailingTrivia}));
                break;
 
             case ProtectedAndInternal:
-               tokens.Add(GetPrivateToken(indentationTrivia, trailingTrivia));
-               tokens.Add(GetProtectedToken(indentation, leadingTrivia, trailingTrivia)
-               );
+               tokens.Add(SyntaxKind.PrivateKeyword.BuildToken(new[] {leadingTrivia}, new[] {trailingTrivia}));
+               tokens.Add(SyntaxKind.ProtectedKeyword.BuildToken(
+                  new[] {leadingTrivia, Whitespace(indentation)}, new[] {trailingTrivia}));
                break;
 
             case Protected:
-               tokens.Add(
-                  Token(
-                     TriviaList(indentationTrivia),
-                     SyntaxKind.ProtectedKeyword,
-                     TriviaList(trailingTrivia)
-                  )
-               );
+               tokens.Add(SyntaxKind.ProtectedKeyword.BuildToken(new[] {indentationTrivia}, new[] {trailingTrivia}));
                break;
 
             case Internal:
-               tokens.Add(GetInternalToken(indentationTrivia, trailingTrivia));
+               tokens.Add(SyntaxKind.InternalKeyword.BuildToken(new[] {leadingTrivia}, new[] {trailingTrivia}));
                break;
 
             case ProtectedOrInternal:
-               tokens.AddRange(new []
+               tokens.AddRange(new[]
                {
-                  GetProtectedTokens(indentationTrivia, trailingTrivia),
-                  GetInternalToken(trailingTrivia)
+                  SyntaxKind.ProtectedKeyword.BuildToken(new[] {leadingTrivia}, new[] {trailingTrivia}),
+                  SyntaxKind.InternalKeyword.BuildToken(Array.Empty<SyntaxTrivia>(), new[] {trailingTrivia})
                });
                break;
 
             case Public:
-               tokens.Add(GetPublicToken(indentationTrivia, trailingTrivia));
+               tokens.Add(SyntaxKind.PublicKeyword.BuildToken(new[] {leadingTrivia}, new[] {trailingTrivia}));
                break;
 
             default:
                throw new ArgumentOutOfRangeException(nameof(accessibility));
          }
 
-         tokens.Add(GetOverrideToken(trailingTrivia));
-
+         tokens.Add(SyntaxKind.OverrideKeyword.BuildToken(Array.Empty<SyntaxTrivia>(), new[] {trailingTrivia}));
          var tokenCount = tokens.Count;
          var tokensWithIndentation = new SyntaxToken[tokenCount + 1];
-         tokensWithIndentation[0] = GetNoneToken(indentation);
+         tokensWithIndentation[0] = SyntaxKind.None.BuildToken(new[] {Whitespace(indentation)}, new[] {LineFeed});
          for (var i = 1; i < tokensWithIndentation.Length; i++)
          {
             tokensWithIndentation[i] = tokens[i - 1];
@@ -594,32 +595,5 @@ namespace GatheringOverrides
 
          return accessTokens;
       }
-
-      private static SyntaxToken GetInternalToken(SyntaxTrivia indentationTrivia, SyntaxTrivia trailingTrivia) =>
-         Token(
-            TriviaList(indentationTrivia),
-            SyntaxKind.InternalKeyword,
-            TriviaList(trailingTrivia)
-         );
-
-      private static SyntaxToken GetNoneToken(string indentation) =>
-         Token(
-            TriviaList(Whitespace(indentation)),
-            SyntaxKind.None,
-            TriviaList(LineFeed));
-
-      private static SyntaxToken GetProtectedTokens(SyntaxTrivia indentationTrivia, SyntaxTrivia trailingTrivia) =>
-         Token(
-            TriviaList(indentationTrivia),
-            SyntaxKind.ProtectedKeyword,
-            TriviaList(trailingTrivia)
-         );
-
-      private static SyntaxToken GetInternalToken(SyntaxTrivia trailingTrivia) =>
-         Token(
-            TriviaList(),
-            SyntaxKind.InternalKeyword,
-            TriviaList(trailingTrivia)
-         );
    }
 }

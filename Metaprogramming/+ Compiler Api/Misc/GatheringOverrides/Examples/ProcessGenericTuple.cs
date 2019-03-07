@@ -1,0 +1,235 @@
+/*
+    private protected override Employee ProcessTuple(Tuple<int, double, byte> tuple, IDictionary<string, Employee> empMap)
+    {
+        return base.ProcessTuple(tuple, empMap);
+    }
+
+*/
+
+MethodDeclaration(
+    IdentifierName(
+        Identifier(
+            TriviaList(),
+            "Employee",
+            TriviaList(
+                Space
+            )
+        )
+    ),
+    Identifier("ProcessTuple")
+)
+.WithModifiers(
+    TokenList(
+        new []{
+            Token(
+                TriviaList(
+                    Whitespace("    ")
+                ),
+                SyntaxKind.PrivateKeyword,
+                TriviaList(
+                    Space
+                )
+            ),
+            Token(
+                TriviaList(),
+                SyntaxKind.ProtectedKeyword,
+                TriviaList(
+                    Space
+                )
+            ),
+            Token(
+                TriviaList(),
+                SyntaxKind.OverrideKeyword,
+                TriviaList(
+                    Space
+                )
+            )
+        }
+    )
+)
+.WithParameterList(
+    ParameterList(
+        SeparatedList<ParameterSyntax>(
+            new SyntaxNodeOrToken[]{
+                Parameter(
+                    Identifier("tuple")
+                )
+                .WithType(
+                    GenericName(
+                        Identifier("Tuple")
+                    )
+                    .WithTypeArgumentList(
+                        TypeArgumentList(
+                            SeparatedList<TypeSyntax>(
+                                new SyntaxNodeOrToken[]{
+                                    PredefinedType(
+                                        Token(SyntaxKind.IntKeyword)
+                                    ),
+                                    Token(
+                                        TriviaList(),
+                                        SyntaxKind.CommaToken,
+                                        TriviaList(
+                                            Space
+                                        )
+                                    ),
+                                    PredefinedType(
+                                        Token(SyntaxKind.DoubleKeyword)
+                                    ),
+                                    Token(
+                                        TriviaList(),
+                                        SyntaxKind.CommaToken,
+                                        TriviaList(
+                                            Space
+                                        )
+                                    ),
+                                    PredefinedType(
+                                        Token(SyntaxKind.ByteKeyword)
+                                    )
+                                }
+                            )
+                        )
+                        .WithGreaterThanToken(
+                            Token(
+                                TriviaList(),
+                                SyntaxKind.GreaterThanToken,
+                                TriviaList(
+                                    Space
+                                )
+                            )
+                        )
+                    )
+                ),
+                Token(
+                    TriviaList(),
+                    SyntaxKind.CommaToken,
+                    TriviaList(
+                        Space
+                    )
+                ),
+                Parameter(
+                    Identifier("empMap")
+                )
+                .WithType(
+                    GenericName(
+                        Identifier("IDictionary")
+                    )
+                    .WithTypeArgumentList(
+                        TypeArgumentList(
+                            SeparatedList<TypeSyntax>(
+                                new SyntaxNodeOrToken[]{
+                                    PredefinedType(
+                                        Token(SyntaxKind.StringKeyword)
+                                    ),
+                                    Token(
+                                        TriviaList(),
+                                        SyntaxKind.CommaToken,
+                                        TriviaList(
+                                            Space
+                                        )
+                                    ),
+                                    IdentifierName("Employee")
+                                }
+                            )
+                        )
+                        .WithGreaterThanToken(
+                            Token(
+                                TriviaList(),
+                                SyntaxKind.GreaterThanToken,
+                                TriviaList(
+                                    Space
+                                )
+                            )
+                        )
+                    )
+                )
+            }
+        )
+    )
+    .WithCloseParenToken(
+        Token(
+            TriviaList(),
+            SyntaxKind.CloseParenToken,
+            TriviaList(
+                LineFeed
+            )
+        )
+    )
+)
+.WithBody(
+    Block(
+        SingletonList<StatementSyntax>(
+            ReturnStatement(
+                InvocationExpression(
+                    MemberAccessExpression(
+                        SyntaxKind.SimpleMemberAccessExpression,
+                        BaseExpression(),
+                        IdentifierName("ProcessTuple")
+                    )
+                )
+                .WithArgumentList(
+                    ArgumentList(
+                        SeparatedList<ArgumentSyntax>(
+                            new SyntaxNodeOrToken[]{
+                                Argument(
+                                    IdentifierName("tuple")
+                                ),
+                                Token(
+                                    TriviaList(),
+                                    SyntaxKind.CommaToken,
+                                    TriviaList(
+                                        Space
+                                    )
+                                ),
+                                Argument(
+                                    IdentifierName("empMap")
+                                )
+                            }
+                        )
+                    )
+                )
+            )
+            .WithReturnKeyword(
+                Token(
+                    TriviaList(
+                        Whitespace("        ")
+                    ),
+                    SyntaxKind.ReturnKeyword,
+                    TriviaList(
+                        Space
+                    )
+                )
+            )
+            .WithSemicolonToken(
+                Token(
+                    TriviaList(),
+                    SyntaxKind.SemicolonToken,
+                    TriviaList(
+                        LineFeed
+                    )
+                )
+            )
+        )
+    )
+    .WithOpenBraceToken(
+        Token(
+            TriviaList(
+                Whitespace("    ")
+            ),
+            SyntaxKind.OpenBraceToken,
+            TriviaList(
+                LineFeed
+            )
+        )
+    )
+    .WithCloseBraceToken(
+        Token(
+            TriviaList(
+                Whitespace("    ")
+            ),
+            SyntaxKind.CloseBraceToken,
+            TriviaList(
+                LineFeed
+            )
+        )
+    )
+)

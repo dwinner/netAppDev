@@ -1,0 +1,149 @@
+/*
+    public override void ProcessDynamic(dynamic dynamic)
+    {
+        base.ProcessDynamic((object) dynamic);
+    }
+
+*/
+
+MethodDeclaration(
+    PredefinedType(
+        Token(
+            TriviaList(),
+            SyntaxKind.VoidKeyword,
+            TriviaList(
+                Space
+            )
+        )
+    ),
+    Identifier("ProcessDynamic")
+)
+.WithModifiers(
+    TokenList(
+        new []{
+            Token(
+                TriviaList(
+                    Whitespace("    ")
+                ),
+                SyntaxKind.PublicKeyword,
+                TriviaList(
+                    Space
+                )
+            ),
+            Token(
+                TriviaList(),
+                SyntaxKind.OverrideKeyword,
+                TriviaList(
+                    Space
+                )
+            )
+        }
+    )
+)
+.WithParameterList(
+    ParameterList(
+        SingletonSeparatedList<ParameterSyntax>(
+            Parameter(
+                Identifier("dynamic")
+            )
+            .WithType(
+                IdentifierName(
+                    Identifier(
+                        TriviaList(),
+                        "dynamic",
+                        TriviaList(
+                            Space
+                        )
+                    )
+                )
+            )
+        )
+    )
+    .WithCloseParenToken(
+        Token(
+            TriviaList(),
+            SyntaxKind.CloseParenToken,
+            TriviaList(
+                LineFeed
+            )
+        )
+    )
+)
+.WithBody(
+    Block(
+        SingletonList<StatementSyntax>(
+            ExpressionStatement(
+                InvocationExpression(
+                    MemberAccessExpression(
+                        SyntaxKind.SimpleMemberAccessExpression,
+                        BaseExpression()
+                        .WithToken(
+                            Token(
+                                TriviaList(
+                                    Whitespace("        ")
+                                ),
+                                SyntaxKind.BaseKeyword,
+                                TriviaList()
+                            )
+                        ),
+                        IdentifierName("ProcessDynamic")
+                    )
+                )
+                .WithArgumentList(
+                    ArgumentList(
+                        SingletonSeparatedList<ArgumentSyntax>(
+                            Argument(
+                                CastExpression(
+                                    PredefinedType(
+                                        Token(SyntaxKind.ObjectKeyword)
+                                    ),
+                                    IdentifierName("dynamic")
+                                )
+                                .WithCloseParenToken(
+                                    Token(
+                                        TriviaList(),
+                                        SyntaxKind.CloseParenToken,
+                                        TriviaList(
+                                            Space
+                                        )
+                                    )
+                                )
+                            )
+                        )
+                    )
+                )
+            )
+            .WithSemicolonToken(
+                Token(
+                    TriviaList(),
+                    SyntaxKind.SemicolonToken,
+                    TriviaList(
+                        LineFeed
+                    )
+                )
+            )
+        )
+    )
+    .WithOpenBraceToken(
+        Token(
+            TriviaList(
+                Whitespace("    ")
+            ),
+            SyntaxKind.OpenBraceToken,
+            TriviaList(
+                LineFeed
+            )
+        )
+    )
+    .WithCloseBraceToken(
+        Token(
+            TriviaList(
+                Whitespace("    ")
+            ),
+            SyntaxKind.CloseBraceToken,
+            TriviaList(
+                LineFeed
+            )
+        )
+    )
+)

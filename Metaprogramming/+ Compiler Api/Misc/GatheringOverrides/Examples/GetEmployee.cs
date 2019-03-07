@@ -1,0 +1,160 @@
+/*
+    public override Employee GetEmployee(params Manager[] managers)
+    {
+        return base.GetEmployee(managers);
+    }
+
+*/
+
+MethodDeclaration(
+    IdentifierName(
+        Identifier(
+            TriviaList(),
+            "Employee",
+            TriviaList(
+                Space
+            )
+        )
+    ),
+    Identifier("GetEmployee")
+)
+.WithModifiers(
+    TokenList(
+        new []{
+            Token(
+                TriviaList(
+                    Whitespace("    ")
+                ),
+                SyntaxKind.PublicKeyword,
+                TriviaList(
+                    Space
+                )
+            ),
+            Token(
+                TriviaList(),
+                SyntaxKind.OverrideKeyword,
+                TriviaList(
+                    Space
+                )
+            )
+        }
+    )
+)
+.WithParameterList(
+    ParameterList(
+        SingletonSeparatedList<ParameterSyntax>(
+            Parameter(
+                Identifier("managers")
+            )
+            .WithModifiers(
+                TokenList(
+                    Token(
+                        TriviaList(),
+                        SyntaxKind.ParamsKeyword,
+                        TriviaList(
+                            Space
+                        )
+                    )
+                )
+            )
+            .WithType(
+                ArrayType(
+                    IdentifierName("Manager")
+                )
+                .WithRankSpecifiers(
+                    SingletonList<ArrayRankSpecifierSyntax>(
+                        ArrayRankSpecifier(
+                            SingletonSeparatedList<ExpressionSyntax>(
+                                OmittedArraySizeExpression()
+                            )
+                        )
+                        .WithCloseBracketToken(
+                            Token(
+                                TriviaList(),
+                                SyntaxKind.CloseBracketToken,
+                                TriviaList(
+                                    Space
+                                )
+                            )
+                        )
+                    )
+                )
+            )
+        )
+    )
+    .WithCloseParenToken(
+        Token(
+            TriviaList(),
+            SyntaxKind.CloseParenToken,
+            TriviaList(
+                LineFeed
+            )
+        )
+    )
+)
+.WithBody(
+    Block(
+        SingletonList<StatementSyntax>(
+            ReturnStatement(
+                InvocationExpression(
+                    MemberAccessExpression(
+                        SyntaxKind.SimpleMemberAccessExpression,
+                        BaseExpression(),
+                        IdentifierName("GetEmployee")
+                    )
+                )
+                .WithArgumentList(
+                    ArgumentList(
+                        SingletonSeparatedList<ArgumentSyntax>(
+                            Argument(
+                                IdentifierName("managers")
+                            )
+                        )
+                    )
+                )
+            )
+            .WithReturnKeyword(
+                Token(
+                    TriviaList(
+                        Whitespace("        ")
+                    ),
+                    SyntaxKind.ReturnKeyword,
+                    TriviaList(
+                        Space
+                    )
+                )
+            )
+            .WithSemicolonToken(
+                Token(
+                    TriviaList(),
+                    SyntaxKind.SemicolonToken,
+                    TriviaList(
+                        LineFeed
+                    )
+                )
+            )
+        )
+    )
+    .WithOpenBraceToken(
+        Token(
+            TriviaList(
+                Whitespace("    ")
+            ),
+            SyntaxKind.OpenBraceToken,
+            TriviaList(
+                LineFeed
+            )
+        )
+    )
+    .WithCloseBraceToken(
+        Token(
+            TriviaList(
+                Whitespace("    ")
+            ),
+            SyntaxKind.CloseBraceToken,
+            TriviaList(
+                LineFeed
+            )
+        )
+    )
+)

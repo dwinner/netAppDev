@@ -1,0 +1,186 @@
+/*
+    protected internal override ref int GetSomeRef(ref int a)
+    {
+        return ref base.GetSomeRef(ref a);
+    }
+
+*/
+
+MethodDeclaration(
+    RefType(
+        PredefinedType(
+            Token(
+                TriviaList(),
+                SyntaxKind.IntKeyword,
+                TriviaList(
+                    Space
+                )
+            )
+        )
+    )
+    .WithRefKeyword(
+        Token(
+            TriviaList(),
+            SyntaxKind.RefKeyword,
+            TriviaList(
+                Space
+            )
+        )
+    ),
+    Identifier("GetSomeRef")
+)
+.WithModifiers(
+    TokenList(
+        new []{
+            Token(
+                TriviaList(
+                    Whitespace("    ")
+                ),
+                SyntaxKind.ProtectedKeyword,
+                TriviaList(
+                    Space
+                )
+            ),
+            Token(
+                TriviaList(),
+                SyntaxKind.InternalKeyword,
+                TriviaList(
+                    Space
+                )
+            ),
+            Token(
+                TriviaList(),
+                SyntaxKind.OverrideKeyword,
+                TriviaList(
+                    Space
+                )
+            )
+        }
+    )
+)
+.WithParameterList(
+    ParameterList(
+        SingletonSeparatedList<ParameterSyntax>(
+            Parameter(
+                Identifier("a")
+            )
+            .WithModifiers(
+                TokenList(
+                    Token(
+                        TriviaList(),
+                        SyntaxKind.RefKeyword,
+                        TriviaList(
+                            Space
+                        )
+                    )
+                )
+            )
+            .WithType(
+                PredefinedType(
+                    Token(
+                        TriviaList(),
+                        SyntaxKind.IntKeyword,
+                        TriviaList(
+                            Space
+                        )
+                    )
+                )
+            )
+        )
+    )
+    .WithCloseParenToken(
+        Token(
+            TriviaList(),
+            SyntaxKind.CloseParenToken,
+            TriviaList(
+                LineFeed
+            )
+        )
+    )
+)
+.WithBody(
+    Block(
+        SingletonList<StatementSyntax>(
+            ReturnStatement(
+                RefExpression(
+                    InvocationExpression(
+                        MemberAccessExpression(
+                            SyntaxKind.SimpleMemberAccessExpression,
+                            BaseExpression(),
+                            IdentifierName("GetSomeRef")
+                        )
+                    )
+                    .WithArgumentList(
+                        ArgumentList(
+                            SingletonSeparatedList<ArgumentSyntax>(
+                                Argument(
+                                    IdentifierName("a")
+                                )
+                                .WithRefKindKeyword(
+                                    Token(
+                                        TriviaList(),
+                                        SyntaxKind.RefKeyword,
+                                        TriviaList(
+                                            Space
+                                        )
+                                    )
+                                )
+                            )
+                        )
+                    )
+                )
+                .WithRefKeyword(
+                    Token(
+                        TriviaList(),
+                        SyntaxKind.RefKeyword,
+                        TriviaList(
+                            Space
+                        )
+                    )
+                )
+            )
+            .WithReturnKeyword(
+                Token(
+                    TriviaList(
+                        Whitespace("        ")
+                    ),
+                    SyntaxKind.ReturnKeyword,
+                    TriviaList(
+                        Space
+                    )
+                )
+            )
+            .WithSemicolonToken(
+                Token(
+                    TriviaList(),
+                    SyntaxKind.SemicolonToken,
+                    TriviaList(
+                        LineFeed
+                    )
+                )
+            )
+        )
+    )
+    .WithOpenBraceToken(
+        Token(
+            TriviaList(
+                Whitespace("    ")
+            ),
+            SyntaxKind.OpenBraceToken,
+            TriviaList(
+                LineFeed
+            )
+        )
+    )
+    .WithCloseBraceToken(
+        Token(
+            TriviaList(
+                Whitespace("    ")
+            ),
+            SyntaxKind.CloseBraceToken,
+            TriviaList(
+                LineFeed
+            )
+        )
+    )
+)
