@@ -4,17 +4,15 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Build.Locator;
-using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.MSBuild;
-using static GatheringOverrides.SymbolExtensions;
+using MoreLinq;
 
 namespace GatheringOverrides
 {
    internal static class Program
    {
       private const string Indentation = "    ";
-      //private static readonly string _Nl = Environment.NewLine;
 
       // ReSharper disable once AsyncConverter.AsyncMethodNamingHighlighting
       private static async Task Main(string[] args)
@@ -66,45 +64,11 @@ namespace GatheringOverrides
 
                if (classToFind != null)
                {
-                  var declTypeSymbol = model.GetDeclaredSymbol(classToFind);
-
-                  if (declTypeSymbol != null)
-                  {
-                     var baseTypes = declTypeSymbol.GetBaseTypes(TypeHierarchyFilter.OnlyItself);
-                     var accesibleToOverride = GetOverridableSymbols(baseTypes);
-                     var propertiesToOverride = GetOverridableProperties(accesibleToOverride);
-                     var methodsToOverride = GetOverridableMethods(accesibleToOverride);
-
-                     // Output signatures
-
-                     /*foreach (var propertySymbol in propertiesToOverride)
-                     {
-                        var signature = propertySymbol.ToSignature();
-                        Console.WriteLine(
-                           $"{signature}{_Nl}\t{propertySymbol.GetSummary()}{_Nl}");
-                     }
-
-                     foreach (var methodSymbol in methodsToOverride)
-                     {
-                        var signature = methodSymbol.ToSignature();
-                        Console.WriteLine(
-                           $"{signature}{_Nl}\t{methodSymbol.GetSummary()}{_Nl}");
-                     }*/
-
-                     // Output generated code
-
-                     foreach (var propertySymbol in propertiesToOverride)
-                     {
-                        var propertyDecl = CodeGeneration.BuildOverridableProperty(propertySymbol, Indentation.Repeat(2));
-                        Console.WriteLine(propertyDecl);
-                     }
-
-                     foreach (var methodSymbol in methodsToOverride)
-                     {
-                        var methodDecl = CodeGeneration.BuildOverridableMethod(methodSymbol, Indentation.Repeat(2));
-                        Console.WriteLine(methodDecl);
-                     }
-                  }
+                  IOverridableCollector collector = new DefaultOverridableCollector(classToFind, model);
+                  var methods = collector.GatherMethods(TypeHierarchyFilter.All, Indentation.Repeat(2));
+                  var properties = collector.GatherProperties(TypeHierarchyFilter.All, Indentation.Repeat(2));
+                  methods.ForEach(entry => Console.WriteLine(entry));
+                  properties.ForEach(entry => Console.WriteLine(entry));                  
                }
             }
          }

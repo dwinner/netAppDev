@@ -4,13 +4,14 @@ using System.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using static GatheringOverrides.CodeGeneration;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace GatheringOverrides
 {
-   public static class BuildSyntaxNodesExtensions
+   internal static class BuildSyntaxNodesExtensions
    {
-      public static ParameterSyntax DecorateWithReturnType(this ParameterSyntax parameterSyntax,
+      internal static ParameterSyntax DecorateWithReturnType(this ParameterSyntax parameterSyntax,
          ITypeSymbol parameterType, IParameterSymbol parameterSymbol)
       {
          var parameterReturnType = parameterType.SimplifyTypeName();
@@ -22,7 +23,7 @@ namespace GatheringOverrides
          return parameterSyntax;
       }
 
-      public static ParameterSyntax DecorateWithModifiers(this ParameterSyntax @this,
+      internal static ParameterSyntax DecorateWithModifiers(this ParameterSyntax @this,
          IParameterSymbol parameterSymbol)
       {
          if (parameterSymbol.IsParams)
@@ -85,68 +86,20 @@ namespace GatheringOverrides
       private static ParameterSyntax DecorateWithGeneric(this ParameterSyntax @this,
          INamedTypeSymbol namedTypeSymbol, string returnType)
       {
-         // TOREFACTOR: There must exist the common way to handle nested generic parameters,
-         // like Tuple<int, Tuple<int, int>> etc...
+         /* TOREFACTOR: There must be developed the common recursice way to handle
+          nested generic parameters, like Tuple<int, Tuple<int, int>> etc... */
 
          var typeArguments = namedTypeSymbol.TypeArguments;
          var genericParameterNodes = new List<SyntaxNodeOrToken>(typeArguments.Length * 2);
          for (var genArgIdx = 0; genArgIdx < typeArguments.Length; genArgIdx++)
          {
             var typeArg = typeArguments[genArgIdx];
-            var normalizedTypeArg = typeArg.SimplifyTypeName();
-            switch (typeArg.TypeKind)
-            {
-               case TypeKind.Unknown:
-               case TypeKind.Class:
-               case TypeKind.Delegate:
-               case TypeKind.Dynamic:
-               case TypeKind.Enum:
-               case TypeKind.Error:
-               case TypeKind.Interface:
-               case TypeKind.Module:
-               case TypeKind.Struct:
-               case TypeKind.TypeParameter:
-               case TypeKind.Submission:
-                  genericParameterNodes.Add(IdentifierName(normalizedTypeArg));
-                  break;
-
-               case TypeKind.Array:
-                  var arrayTypeSymbol = (IArrayTypeSymbol) typeArg;
-                  var arrayType = arrayTypeSymbol.ElementType.SimplifyTypeName();
-                  var rank = arrayTypeSymbol.Rank;
-
-                  var arrayTypeSyntax = ArrayType(IdentifierName(arrayType));
-                  arrayTypeSyntax = rank >= 2
-                     ? arrayTypeSyntax.WithRankSpecifiers(
-                        SingletonList(
-                           ArrayRankSpecifier(
-                              SeparatedList<ExpressionSyntax>(GetRankTokens(rank))
-                           )
-                        )
-                     )
-                     : arrayTypeSyntax.WithRankSpecifiers(
-                        SingletonList(
-                           ArrayRankSpecifier(
-                              SingletonSeparatedList<ExpressionSyntax>(
-                                 OmittedArraySizeExpression()
-                              )
-                           )
-                        )
-                     );
-
-                  genericParameterNodes.Add(arrayTypeSyntax);
-                  break;
-
-               case TypeKind.Pointer:
-                  throw new InvalidOperationException("Pointer type cannot be used as type parameter");
-
-               default:
-                  throw new ArgumentOutOfRangeException(nameof(typeArg));
-            }
-
+            var qualifiedByTypeNode = typeArg.GetQualifiedByTypeNode();
+            genericParameterNodes.Add(qualifiedByTypeNode);
             if (genArgIdx != typeArguments.Length - 1)
             {
-               genericParameterNodes.Add(SyntaxKind.CommaToken.BuildToken(Array.Empty<SyntaxTrivia>(), new[] {Space}));
+               genericParameterNodes.Add(
+                  SyntaxKind.CommaToken.BuildToken(Array.Empty<SyntaxTrivia>(), new[] {Space}));
             }
          }
 
@@ -164,7 +117,7 @@ namespace GatheringOverrides
          return @this;
       }
 
-      private static IEnumerable<SyntaxNodeOrToken> GetRankTokens(int rank)
+      internal static IEnumerable<SyntaxNodeOrToken> GetRankTokens(int rank)
       {
          if (rank < 2)
          {
@@ -205,10 +158,7 @@ namespace GatheringOverrides
             case TypeKind.Struct:
             case TypeKind.TypeParameter:
             case TypeKind.Submission:
-               @this = @this.WithType(
-                  IdentifierName(
-                     Identifier(TriviaList(), returnType, TriviaList(Space)))
-               );
+               @this = @this.WithType(IdentifierName(returnType.ToIdentifier()));
                break;
 
             case TypeKind.Array:
@@ -266,6 +216,88 @@ namespace GatheringOverrides
          }
 
          return @this;
+      }
+
+      internal static ArgumentSyntax DecorateWithModifiers(this ArgumentSyntax @this,
+         IParameterSymbol parameterSymbol)
+      {
+         switch (parameterSymbol.RefKind)
+         {
+            case RefKind.None:
+               break;
+
+            case RefKind.Ref:
+               @this =
+                  @this.WithRefKindKeyword(
+                     SyntaxKind.RefKeyword.BuildToken(Array.Empty<SyntaxTrivia>(), new[] {Space}));
+               break;
+
+            case RefKind.Out:
+               @this =
+                  @this.WithRefKindKeyword(
+                     SyntaxKind.OutKeyword.BuildToken(Array.Empty<SyntaxTrivia>(), new[] {Space}));
+               break;
+
+            case RefKind.In:
+               break;
+
+            default:
+               throw new ArgumentOutOfRangeException();
+         }
+
+         return @this;
+      }
+
+      internal static BaseExpressionSyntax BuildBaseExpr(this IMethodSymbol @this, string indentation)
+      {
+         var baseExpression = BaseExpression();
+         if (@this.ReturnsVoid)
+         {
+            baseExpression = baseExpression
+               .WithToken(SyntaxKind.BaseKeyword.BuildToken(new[] {Whitespace(indentation)},
+                  Array.Empty<SyntaxTrivia>()));
+         }
+
+         return baseExpression;
+      }
+
+      internal static InvocationExpressionSyntax BuildBaseInvocationExpr(this IMethodSymbol @this,
+         BaseExpressionSyntax baseExpr, string methodName)
+      {
+         InvocationExpressionSyntax invocationExpr;
+         if (@this.IsGenericMethod)
+         {
+            var typeParameters = @this.TypeParameters;
+            if (typeParameters.Length > 0)
+            {
+               var typeParameterList = BuildGeneric(typeParameters, IdentifierName);
+               var typeArgumentList = TypeArgumentList(SeparatedList<TypeSyntax>(typeParameterList));
+               invocationExpr = InvocationExpression(
+                  MemberAccessExpression(
+                     SyntaxKind.SimpleMemberAccessExpression,
+                     baseExpr,
+                     GenericName(Identifier(methodName))
+                        .WithTypeArgumentList(typeArgumentList)));
+            }
+            else
+            {
+               invocationExpr = InvocationExpression(
+                  MemberAccessExpression(
+                     SyntaxKind.SimpleMemberAccessExpression,
+                     baseExpr,
+                     GenericName(Identifier(methodName))));
+            }
+         }
+         else
+         {
+            invocationExpr = InvocationExpression(
+               MemberAccessExpression(
+                  SyntaxKind.SimpleMemberAccessExpression,
+                  baseExpr,
+                  IdentifierName(methodName)));
+         }
+
+         return invocationExpr;
       }
    }
 }

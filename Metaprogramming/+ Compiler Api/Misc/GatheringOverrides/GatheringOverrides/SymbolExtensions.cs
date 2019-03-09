@@ -7,6 +7,7 @@ using System.Text.RegularExpressions;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using static GatheringOverrides.CodeGeneration;
 using static Microsoft.CodeAnalysis.Accessibility;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
@@ -15,12 +16,12 @@ namespace GatheringOverrides
    /// <summary>
    ///    Symbol extensions
    /// </summary>
-   public static class SymbolExtensions
+   internal static class SymbolExtensions
    {
       private const int InitialCapacity = 0x80;
       private const string DefaultNoSummaryText = "No description";
 
-      // TOREFACTOR: Had better use circular memory for this - to avoid entropy
+      // TOREFACTOR: Had better use circular memory for this - to avoid memory entropy
       private static readonly Dictionary<string, ISet<ITypeSymbol>> _BaseTypeCache =
          new Dictionary<string, ISet<ITypeSymbol>>();
 
@@ -37,7 +38,7 @@ namespace GatheringOverrides
       /// <param name="typeSymbol">Type Symbol</param>
       /// <param name="hierarchyFilter">Type hierarchy filter</param>
       /// <returns>Base types</returns>
-      public static IEnumerable<ITypeSymbol> GetBaseTypes(this ITypeSymbol typeSymbol,
+      internal static IEnumerable<ITypeSymbol> GetBaseTypes(this ITypeSymbol typeSymbol,
          TypeHierarchyFilter hierarchyFilter = TypeHierarchyFilter.All)
       {
          var typeName = typeSymbol.Name;
@@ -96,16 +97,10 @@ namespace GatheringOverrides
             typeSet.Add(typeSymbol);
             if (typeSymbol.Interfaces != null)
             {
-               // TOREFACTOR: Had better gather them in parallel
                foreach (var @interface in typeSymbol.Interfaces)
                {
                   typeSet.Add(@interface);
-               }
-
-               // TOREFACTOR: Why we need one more iteration here?!
-               foreach (var currentInterface in typeSymbol.Interfaces)
-               {
-                  currentInterface.GatherBaseTypes(typeSet);
+                  @interface.GatherBaseTypes(typeSet);
                }
             }
 
@@ -113,7 +108,7 @@ namespace GatheringOverrides
          }
       }
 
-      public static IList<ISymbol> GetOverridableSymbols(IEnumerable<ITypeSymbol> baseTypes) =>
+      internal static IEnumerable<ISymbol> GetOverridableSymbols(IEnumerable<ITypeSymbol> baseTypes) =>
          baseTypes
             .SelectMany(typeSymbol => typeSymbol.GetMembers())
             .Where(_IsAccessableToOverride)
@@ -161,17 +156,17 @@ namespace GatheringOverrides
       }
 
       // FIXME: Methods can be comparable only by signature, NOT by name!
-      public static IEnumerable<IMethodSymbol> GetOverridableMethods(IEnumerable<ISymbol> accesibleSymbols) =>
+      internal static IEnumerable<IMethodSymbol> GetOverridableMethods(IEnumerable<ISymbol> accesibleSymbols) =>
          new HashSet<IMethodSymbol>(
             accesibleSymbols
                .OfType<IMethodSymbol>()
                .Where(methodSymbol => methodSymbol.MethodKind == MethodKind.Ordinary),
             SymbolEqualityComparer.Default);
 
-      public static IEnumerable<IPropertySymbol> GetOverridableProperties(IEnumerable<ISymbol> accesibleSymbols) =>
+      internal static IEnumerable<IPropertySymbol> GetOverridableProperties(IEnumerable<ISymbol> accesibleSymbols) =>
          new HashSet<IPropertySymbol>(accesibleSymbols.OfType<IPropertySymbol>(), SymbolEqualityComparer.Default);
 
-      public static string ToSignature(this IPropertySymbol propertySymbol)
+      internal static string ToSignature(this IPropertySymbol propertySymbol)
       {
          var propertyName = propertySymbol.Name;
          var propertyTypeName = propertySymbol.Type.SimplifyTypeName();
@@ -229,7 +224,7 @@ namespace GatheringOverrides
          }
       }
 
-      public static string ToSignature(this IMethodSymbol methodSymbol)
+      internal static string ToSignature(this IMethodSymbol methodSymbol)
       {
          var methodName = methodSymbol.Name;
          const string separator = ", ";
@@ -351,7 +346,7 @@ namespace GatheringOverrides
          return returnTypeName;
       }
 
-      public static string SimplifyTypeName(this ITypeSymbol @this) =>
+      internal static string SimplifyTypeName(this ITypeSymbol @this) =>
          @this.SpecialType == SpecialType.None
             ? @this.Name
             : @this.ToDisplayString();
@@ -385,7 +380,7 @@ namespace GatheringOverrides
          return returnTypeName;
       }
 
-      public static string GetSummary(this ISymbol @this, string noSummaryText = DefaultNoSummaryText)
+      internal static string GetSummary(this ISymbol @this, string noSummaryText = DefaultNoSummaryText)
       {
          const string start = "<summary>";
          const string end = "</summary>";
@@ -418,39 +413,32 @@ namespace GatheringOverrides
          return aggregator;
       }
 
-      public static SyntaxTokenList GetModifierTokens(this ISymbol @this, string indentation)
+      internal static AccessorListSyntax GetAccessorList(this IPropertySymbol @this, string indentation)
       {
-         var tokens = @this.DeclaredAccessibility.GetModifierTokens(indentation);
-         tokens.Add(SyntaxKind.OverrideKeyword.BuildToken(Array.Empty<SyntaxTrivia>(), new[] {Space}));
-         return TokenList(tokens);
-      }
-
-      public static AccessorListSyntax GetAccessorList(this IPropertySymbol propertySymbol, string indentation)
-      {
-         var propertyName = propertySymbol.Name;
+         var propertyName = @this.Name;
          AccessorListSyntax accessorList;
-         var propertyAccessors = propertySymbol.DeclaredAccessibility;
+         var propertyAccessors = @this.DeclaredAccessibility;
 
-         if (propertySymbol.IsReadOnly)
+         if (@this.IsReadOnly)
          {
-            var getAccessModifiers = propertySymbol.GetMethod.GenerateAccessModifiers(propertyAccessors, indentation);
-            var getAccessorDecl = CodeGeneration.GetWithBaseCallAccessorDeclaration(getAccessModifiers, propertyName);
+            var getAccessModifiers = @this.GetMethod.GenerateAccessModifiers(propertyAccessors, indentation);
+            var getAccessorDecl = GetWithBaseCallAccessorDeclaration(getAccessModifiers, propertyName);
             accessorList = AccessorList(List(new[] {getAccessorDecl}));
          }
-         else if (propertySymbol.IsWriteOnly)
+         else if (@this.IsWriteOnly)
          {
-            var setAccessModifiers = propertySymbol.SetMethod.GenerateAccessModifiers(propertyAccessors, indentation);
+            var setAccessModifiers = @this.SetMethod.GenerateAccessModifiers(propertyAccessors, indentation);
             var setAccessorDecl =
-               CodeGeneration.GetWithBaseCallAccessorDeclaration(indentation, setAccessModifiers, propertyName);
+               GetWithBaseCallAccessorDeclaration(indentation, setAccessModifiers, propertyName);
             accessorList = AccessorList(List(new[] {setAccessorDecl}));
          }
          else
          {
-            var getAccessModifiers = propertySymbol.GetMethod.GenerateAccessModifiers(propertyAccessors, indentation);
-            var getAccessorDecl = CodeGeneration.GetWithBaseCallAccessorDeclaration(getAccessModifiers, propertyName);
-            var setAccessModifiers = propertySymbol.SetMethod.GenerateAccessModifiers(propertyAccessors, indentation);
+            var getAccessModifiers = @this.GetMethod.GenerateAccessModifiers(propertyAccessors, indentation);
+            var getAccessorDecl = GetWithBaseCallAccessorDeclaration(getAccessModifiers, propertyName);
+            var setAccessModifiers = @this.SetMethod.GenerateAccessModifiers(propertyAccessors, indentation);
             var setAccessorDecl =
-               CodeGeneration.GetWithBaseCallAccessorDeclaration(string.Empty, setAccessModifiers, propertyName);
+               GetWithBaseCallAccessorDeclaration(string.Empty, setAccessModifiers, propertyName);
             accessorList = AccessorList(List(new[] {getAccessorDecl, setAccessorDecl}));
          }
 
@@ -535,7 +523,7 @@ namespace GatheringOverrides
          return accessModifiers;
       }
 
-      public static SyntaxTokenList GetAccessModifiersWithOverride(this ISymbol symbol, string indentation)
+      internal static SyntaxTokenList GetAccessModifiersWithOverride(this ISymbol symbol, string indentation)
       {
          var accessibility = symbol.DeclaredAccessibility;
          var tokens = new List<SyntaxToken>();
@@ -549,11 +537,11 @@ namespace GatheringOverrides
                break;
 
             case Private:
-               tokens.Add(SyntaxKind.PrivateKeyword.BuildToken(new[] {leadingTrivia}, new[] {trailingTrivia}));
+               tokens.Add(SyntaxKind.PrivateKeyword.BuildToken(new[] {indentationTrivia}, new[] {trailingTrivia}));
                break;
 
             case ProtectedAndInternal:
-               tokens.Add(SyntaxKind.PrivateKeyword.BuildToken(new[] {leadingTrivia}, new[] {trailingTrivia}));
+               tokens.Add(SyntaxKind.PrivateKeyword.BuildToken(new[] {indentationTrivia}, new[] {trailingTrivia}));
                tokens.Add(SyntaxKind.ProtectedKeyword.BuildToken(
                   new[] {leadingTrivia, Whitespace(indentation)}, new[] {trailingTrivia}));
                break;
@@ -563,19 +551,19 @@ namespace GatheringOverrides
                break;
 
             case Internal:
-               tokens.Add(SyntaxKind.InternalKeyword.BuildToken(new[] {leadingTrivia}, new[] {trailingTrivia}));
+               tokens.Add(SyntaxKind.InternalKeyword.BuildToken(new[] {indentationTrivia}, new[] {trailingTrivia}));
                break;
 
             case ProtectedOrInternal:
                tokens.AddRange(new[]
                {
-                  SyntaxKind.ProtectedKeyword.BuildToken(new[] {leadingTrivia}, new[] {trailingTrivia}),
+                  SyntaxKind.ProtectedKeyword.BuildToken(new[] {indentationTrivia}, new[] {trailingTrivia}),
                   SyntaxKind.InternalKeyword.BuildToken(Array.Empty<SyntaxTrivia>(), new[] {trailingTrivia})
                });
                break;
 
             case Public:
-               tokens.Add(SyntaxKind.PublicKeyword.BuildToken(new[] {leadingTrivia}, new[] {trailingTrivia}));
+               tokens.Add(SyntaxKind.PublicKeyword.BuildToken(new[] {indentationTrivia}, new[] {trailingTrivia}));
                break;
 
             default:
@@ -594,6 +582,62 @@ namespace GatheringOverrides
          var accessTokens = TokenList(tokensWithIndentation);
 
          return accessTokens;
+      }
+
+      internal static SyntaxNodeOrToken GetQualifiedByTypeNode(this ITypeSymbol typeArg)
+      {
+         SyntaxNodeOrToken qualifiedByTypeNode;
+         switch (typeArg.TypeKind)
+         {
+            case TypeKind.Unknown:
+            case TypeKind.Class:
+            case TypeKind.Delegate:
+            case TypeKind.Dynamic:
+            case TypeKind.Enum:
+            case TypeKind.Error:
+            case TypeKind.Interface:
+            case TypeKind.Module:
+            case TypeKind.Struct:
+            case TypeKind.TypeParameter:
+            case TypeKind.Submission:
+               qualifiedByTypeNode = IdentifierName(typeArg.SimplifyTypeName());
+               break;
+
+            case TypeKind.Array:
+               var arrayTypeSymbol = (IArrayTypeSymbol) typeArg;
+               var arrayType = arrayTypeSymbol.ElementType.SimplifyTypeName();
+               var rank = arrayTypeSymbol.Rank;
+
+               var arrayTypeSyntax = ArrayType(IdentifierName(arrayType));
+               arrayTypeSyntax = rank >= 2
+                  ? arrayTypeSyntax.WithRankSpecifiers(
+                     SingletonList(
+                        ArrayRankSpecifier(
+                           SeparatedList<ExpressionSyntax>(BuildSyntaxNodesExtensions.GetRankTokens(rank))
+                        )
+                     )
+                  )
+                  : arrayTypeSyntax.WithRankSpecifiers(
+                     SingletonList(
+                        ArrayRankSpecifier(
+                           SingletonSeparatedList<ExpressionSyntax>(
+                              OmittedArraySizeExpression()
+                           )
+                        )
+                     )
+                  );
+
+               qualifiedByTypeNode = arrayTypeSyntax;
+               break;
+
+            case TypeKind.Pointer:
+               throw new InvalidOperationException("Pointer type cannot be used as type parameter");
+
+            default:
+               throw new ArgumentOutOfRangeException(nameof(typeArg));
+         }
+
+         return qualifiedByTypeNode;
       }
    }
 }

@@ -1,18 +1,18 @@
-﻿using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace GatheringOverrides
 {
-   public static class CodeGeneration
+   internal static class CodeGeneration
    {
       private const string DefaultIndentation = "    ";
 
-      public static PropertyDeclarationSyntax BuildOverridableProperty(IPropertySymbol propertySymbol,
+      internal static PropertyDeclarationSyntax BuildOverridableProperty(IPropertySymbol propertySymbol,
          string indentation = DefaultIndentation)
       {
          var propertyName = propertySymbol.Name;
@@ -29,7 +29,7 @@ namespace GatheringOverrides
          return propertyDecl;
       }
 
-      public static AccessorDeclarationSyntax GetWithBaseCallAccessorDeclaration(string indentation,
+      internal static AccessorDeclarationSyntax GetWithBaseCallAccessorDeclaration(string indentation,
          SyntaxTokenList setAccessModifiers, string propertyName)
          =>
             AccessorDeclaration(
@@ -39,11 +39,7 @@ namespace GatheringOverrides
                   setAccessModifiers
                )
                .WithKeyword(
-                  Token(
-                     TriviaList(Whitespace($"{indentation}")),
-                     SyntaxKind.SetKeyword,// TODO: Replace by wrapping trivia
-                     TriviaList(Space)
-                  )
+                  SyntaxKind.SetKeyword.BuildToken(new[] {Whitespace(indentation)}, new[] {Space})
                )
                .WithExpressionBody(
                   ArrowExpressionClause(
@@ -52,41 +48,23 @@ namespace GatheringOverrides
                               MemberAccessExpression(
                                  SyntaxKind.SimpleMemberAccessExpression,
                                  BaseExpression(),
-                                 IdentifierName(
-                                    Identifier(
-                                       TriviaList(),
-                                       propertyName,// TODO: Replace by wrapping trivia
-                                       TriviaList(Space)
-                                    )
-                                 )
+                                 IdentifierName(propertyName.ToIdentifier())
                               ),
                               IdentifierName("value")
                            )
                            .WithOperatorToken(
-                              Token(
-                                 TriviaList(),
-                                 SyntaxKind.EqualsToken,// TODO: Replace by wrapping trivia
-                                 TriviaList(Space)
-                              )
+                              SyntaxKind.EqualsToken.BuildToken(Array.Empty<SyntaxTrivia>(), new[] {Space})
                            )
                      )
                      .WithArrowToken(
-                        Token(
-                           TriviaList(),
-                           SyntaxKind.EqualsGreaterThanToken,// TODO: Replace by wrapping trivia
-                           TriviaList(Space)
-                        )
+                        SyntaxKind.EqualsGreaterThanToken.BuildToken(Array.Empty<SyntaxTrivia>(), new[] {Space})
                      )
                )
                .WithSemicolonToken(
-                  Token(
-                     TriviaList(),
-                     SyntaxKind.SemicolonToken,// TODO: Replace by wrapping trivia
-                     TriviaList(LineFeed)
-                  )
+                  SyntaxKind.SemicolonToken.BuildToken(Array.Empty<SyntaxTrivia>(), new[] {LineFeed})
                );
 
-      public static AccessorDeclarationSyntax GetWithBaseCallAccessorDeclaration(SyntaxTokenList getAccessModifiers,
+      internal static AccessorDeclarationSyntax GetWithBaseCallAccessorDeclaration(SyntaxTokenList getAccessModifiers,
          string propertyName)
          =>
             AccessorDeclaration(
@@ -96,11 +74,7 @@ namespace GatheringOverrides
                   getAccessModifiers
                )
                .WithKeyword(
-                  Token(
-                     TriviaList(),
-                     SyntaxKind.GetKeyword,// TODO: Replace by wrapping trivia
-                     TriviaList(Space)
-                  )
+                  SyntaxKind.GetKeyword.BuildToken(Array.Empty<SyntaxTrivia>(), new[] {Space})
                )
                .WithExpressionBody(
                   ArrowExpressionClause(
@@ -111,22 +85,14 @@ namespace GatheringOverrides
                         )
                      )
                      .WithArrowToken(
-                        Token(
-                           TriviaList(),
-                           SyntaxKind.EqualsGreaterThanToken,// TODO: Replace by wrapping trivia
-                           TriviaList(Space)
-                        )
+                        SyntaxKind.EqualsGreaterThanToken.BuildToken(Array.Empty<SyntaxTrivia>(), new[] {Space})
                      )
                )
                .WithSemicolonToken(
-                  Token(
-                     TriviaList(),
-                     SyntaxKind.SemicolonToken,// TODO: Replace by wrapping trivia
-                     TriviaList(LineFeed)
-                  )
+                  SyntaxKind.SemicolonToken.BuildToken(Array.Empty<SyntaxTrivia>(), new[] {LineFeed})
                );
 
-      public static MethodDeclarationSyntax BuildOverridableMethod(IMethodSymbol methodSymbol,
+      internal static MethodDeclarationSyntax BuildOverridableMethod(IMethodSymbol methodSymbol,
          string indentation = DefaultIndentation)
       {
          var methodName = methodSymbol.Name;
@@ -135,171 +101,65 @@ namespace GatheringOverrides
          var returnsByRef = methodSymbol.ReturnsByRef;
          var returnsByRefReadonly = methodSymbol.ReturnsByRefReadonly;
 
-         var returnTypeIdentifier = IdentifierName(
-            Identifier(
-               TriviaList(),
-               returnType,// TODO: Replace by wrapping trivia
-               TriviaList(Space)
-            )
-         );
-
+         // Build method declaration
+         var returnTypeIdentifier = IdentifierName(returnType.ToIdentifier());
          var methodIdentifier = Identifier(methodName);
          var methodDecl = !returnsByRefReadonly
             ? returnsByRef
-               ? MethodDeclaration(RefType(returnTypeIdentifier)
-                  .WithRefKeyword(
-                     SyntaxKind.RefKeyword.BuildToken(
-                        Array.Empty<SyntaxTrivia>(), new[] { Space })), methodIdentifier)
+               ? MethodDeclaration(
+                  RefType(returnTypeIdentifier)
+                     .WithRefKeyword(
+                        SyntaxKind.RefKeyword.BuildToken(
+                           Array.Empty<SyntaxTrivia>(), new[] {Space})), methodIdentifier)
                : MethodDeclaration(returnTypeIdentifier, methodIdentifier)
             : MethodDeclaration(
                RefType(returnTypeIdentifier)
                   .WithRefKeyword(
-                     SyntaxKind.RefKeyword.BuildToken(Array.Empty<SyntaxTrivia>(), new[] { Space }))
+                     SyntaxKind.RefKeyword.BuildToken(Array.Empty<SyntaxTrivia>(), new[] {Space}))
                   .WithReadOnlyKeyword(
-                     SyntaxKind.ReadOnlyKeyword.BuildToken(Array.Empty<SyntaxTrivia>(), new[] { Space })),
+                     SyntaxKind.ReadOnlyKeyword.BuildToken(Array.Empty<SyntaxTrivia>(), new[] {Space})),
                methodIdentifier);
 
-         var methodModifiers = methodSymbol.GetModifierTokens(indentation);
+         var methodModifiers =
+            methodSymbol.GetAccessModifiersWithOverride(indentation);
          methodDecl = methodDecl.WithModifiers(methodModifiers);
 
+         // Add type parameters if present
          if (methodSymbol.IsGenericMethod)
          {
             var typeParameters = methodSymbol.TypeParameters;
             if (typeParameters.Length > 0)
             {
-               Func<string, CSharpSyntaxNode> genericParamFunc = genericName => TypeParameter(Identifier(genericName));
-               var typeParameterList = BuildGenericParameters(typeParameters, genericParamFunc);
+               var typeParameterList =
+                  BuildGeneric(typeParameters, genericName => TypeParameter(Identifier(genericName)));
                var genericParametersSyntax = TypeParameterList(SeparatedList<TypeParameterSyntax>(typeParameterList));
                methodDecl = methodDecl.WithTypeParameterList(genericParametersSyntax);
             }
          }
 
+         // Build method parameters if present
          var parameters = methodSymbol.Parameters;
          var parameterListSyntax = parameters.Length > 0
             ? ParameterList(SeparatedList<ParameterSyntax>(GetParameterNodes(parameters)))
             : ParameterList();
-
          parameterListSyntax = parameterListSyntax
             .WithCloseParenToken(SyntaxKind.CloseParenToken.BuildToken(
-               Array.Empty<SyntaxTrivia>(), new[] { LineFeed }));
+               Array.Empty<SyntaxTrivia>(), new[] {LineFeed}));
          methodDecl = methodDecl.WithParameterList(parameterListSyntax);
 
-         #region Build method body         
-
-         var baseExpr = BaseExpression();
-         if (methodSymbol.ReturnsVoid)
-         {
-            baseExpr = baseExpr
-               .WithToken(SyntaxKind.BaseKeyword.BuildToken(new[] {Whitespace(indentation)},
-                  Array.Empty<SyntaxTrivia>()));
-         }
-
-         InvocationExpressionSyntax invocationExpr = null;         
-
-         if (methodSymbol.IsGenericMethod)
-         {
-            var typeParameters = methodSymbol.TypeParameters;
-            if (typeParameters.Length > 0)
-            {               
-               Func<string, CSharpSyntaxNode> genericArgFunc = IdentifierName;
-               var typeParameterList = BuildGenericParameters(typeParameters, genericArgFunc);
-               var typeArgumentList = TypeArgumentList(SeparatedList<TypeSyntax>(typeParameterList));
-               invocationExpr = InvocationExpression(
-                  MemberAccessExpression(
-                     SyntaxKind.SimpleMemberAccessExpression,
-                     baseExpr,
-                     GenericName(Identifier(methodName))
-                        .WithTypeArgumentList(typeArgumentList)));
-            }
-            else
-            {
-               invocationExpr = InvocationExpression(
-                  MemberAccessExpression(
-                     SyntaxKind.SimpleMemberAccessExpression,
-                     baseExpr,
-                     GenericName(Identifier(methodName))));
-            }
-         }
-         else
-         {
-            invocationExpr = InvocationExpression(
-               MemberAccessExpression(
-                  SyntaxKind.SimpleMemberAccessExpression,
-                  baseExpr,
-                  IdentifierName(methodName)));
-         }
-
+         // Build method body         
+         var invocationExpr =
+            methodSymbol.BuildBaseInvocationExpr(methodSymbol.BuildBaseExpr(indentation), methodName);
          if (parameters.Length > 0)
          {
-            var argumentNodes = new List<SyntaxNodeOrToken>(parameters.Length * 2);
-            for (int argIndex = 0; argIndex < parameters.Length; argIndex++)
-            {
-               var parameterSymbol = parameters[argIndex];
-               var argumentName = parameterSymbol.Name;
-               var argumentSyntax = Argument(IdentifierName(argumentName));
-
-               switch (parameterSymbol.RefKind)
-               {
-                  case RefKind.None:
-                     break;
-
-                  case RefKind.Ref:
-                     argumentSyntax =
-                        argumentSyntax.WithRefKindKeyword(
-                           SyntaxKind.RefKeyword.BuildToken(Array.Empty<SyntaxTrivia>(), new[] { Space }));
-                     break;
-
-                  case RefKind.Out:
-                     argumentSyntax =
-                        argumentSyntax.WithRefKindKeyword(
-                           SyntaxKind.OutKeyword.BuildToken(Array.Empty<SyntaxTrivia>(), new[] { Space }));
-                     break;
-
-                  case RefKind.In:
-                     break;
-
-                  default:
-                     throw new ArgumentOutOfRangeException();
-               }
-
-               argumentNodes.Add(argumentSyntax);
-               if (argIndex != parameters.Length - 1)
-               {
-                  argumentNodes.Add(SyntaxKind.CommaToken.BuildToken(Array.Empty<SyntaxTrivia>(), new[] { Space }));
-               }
-            }
-
+            var argumentNodes = GetArgumentNodes(parameters);
             invocationExpr =
                invocationExpr.WithArgumentList(ArgumentList(SeparatedList<ArgumentSyntax>(argumentNodes)));
          }
 
-         StatementSyntax singleStatement;
-         if (methodSymbol.ReturnsVoid)
-         {
-            ExpressionStatementSyntax exprStmt = ExpressionStatement(invocationExpr);
-            exprStmt = exprStmt.WithSemicolonToken(
-               SyntaxKind.SemicolonToken.BuildToken(Array.Empty<SyntaxTrivia>(), new[] { LineFeed }));
-
-            singleStatement = exprStmt;
-         }
-         else
-         {
-            ReturnStatementSyntax returnStmt = returnsByRefReadonly || returnsByRef
-               ? ReturnStatement(RefExpression(invocationExpr)
-                  .WithRefKeyword(SyntaxKind.RefKeyword.BuildToken(Array.Empty<SyntaxTrivia>(), new[] {Space})))
-               : ReturnStatement(invocationExpr);
-
-            returnStmt = returnStmt
-               .WithReturnKeyword(
-                  SyntaxKind.ReturnKeyword.BuildToken(new[] { Whitespace(indentation) }, new[] { Space }));
-            returnStmt = returnStmt
-               .WithSemicolonToken(
-                  SyntaxKind.SemicolonToken.BuildToken(Array.Empty<SyntaxTrivia>(), new[] { LineFeed }));
-
-            singleStatement = returnStmt;
-         }
-
-         var block = Block(SingletonList<StatementSyntax>(singleStatement));
+         var singleStatement =
+            GetOverridableStmt(methodSymbol, indentation, invocationExpr, returnsByRefReadonly, returnsByRef);
+         var block = Block(SingletonList(singleStatement));
          var reducedIndentation = " ".Repeat(indentation.Length / 2);
          block = block.WithOpenBraceToken(
             SyntaxKind.OpenBraceToken.BuildToken(new[] {Whitespace(reducedIndentation)},
@@ -309,9 +169,57 @@ namespace GatheringOverrides
 
          methodDecl = methodDecl.WithBody(block);
 
-         #endregion
-
          return methodDecl;
+      }
+
+      private static StatementSyntax GetOverridableStmt(IMethodSymbol methodSymbol,
+         string indentation,
+         ExpressionSyntax invocationExpr, bool returnsByRefReadonly, bool returnsByRef)
+      {
+         StatementSyntax singleStatement;
+         if (methodSymbol.ReturnsVoid)
+         {
+            var exprStmt = ExpressionStatement(invocationExpr);
+            exprStmt = exprStmt.WithSemicolonToken(
+               SyntaxKind.SemicolonToken.BuildToken(Array.Empty<SyntaxTrivia>(), new[] {LineFeed}));
+            singleStatement = exprStmt;
+         }
+         else
+         {
+            var returnStmt = returnsByRefReadonly || returnsByRef
+               ? ReturnStatement(RefExpression(invocationExpr)
+                  .WithRefKeyword(SyntaxKind.RefKeyword.BuildToken(Array.Empty<SyntaxTrivia>(), new[] {Space})))
+               : ReturnStatement(invocationExpr);
+
+            returnStmt = returnStmt
+               .WithReturnKeyword(
+                  SyntaxKind.ReturnKeyword.BuildToken(new[] {Whitespace(indentation)}, new[] {Space}));
+            returnStmt = returnStmt
+               .WithSemicolonToken(
+                  SyntaxKind.SemicolonToken.BuildToken(Array.Empty<SyntaxTrivia>(), new[] {LineFeed}));
+
+            singleStatement = returnStmt;
+         }
+
+         return singleStatement;
+      }
+
+      private static IEnumerable<SyntaxNodeOrToken> GetArgumentNodes(ImmutableArray<IParameterSymbol> parameters)
+      {
+         var argumentNodes = new List<SyntaxNodeOrToken>(parameters.Length * 2);
+         for (var argIndex = 0; argIndex < parameters.Length; argIndex++)
+         {
+            var parameterSymbol = parameters[argIndex];
+            var argumentName = parameterSymbol.Name;
+            var argumentSyntax = Argument(IdentifierName(argumentName)).DecorateWithModifiers(parameterSymbol);
+            argumentNodes.Add(argumentSyntax);
+            if (argIndex != parameters.Length - 1)
+            {
+               argumentNodes.Add(SyntaxKind.CommaToken.BuildToken(Array.Empty<SyntaxTrivia>(), new[] {Space}));
+            }
+         }
+
+         return argumentNodes;
       }
 
       private static IEnumerable<SyntaxNodeOrToken> GetParameterNodes(ImmutableArray<IParameterSymbol> parameters)
@@ -329,14 +237,14 @@ namespace GatheringOverrides
             if (paramIdx != parameters.Length - 1)
             {
                parameterNodes.Add(
-                  SyntaxKind.CommaToken.BuildToken(Array.Empty<SyntaxTrivia>(), new[] { Space }));
+                  SyntaxKind.CommaToken.BuildToken(Array.Empty<SyntaxTrivia>(), new[] {Space}));
             }
          }
 
          return parameterNodes;
       }
 
-      private static IEnumerable<SyntaxNodeOrToken> BuildGenericParameters(ImmutableArray<ITypeParameterSymbol> typeParameters,
+      internal static IEnumerable<SyntaxNodeOrToken> BuildGeneric(ImmutableArray<ITypeParameterSymbol> typeParameters,
          Func<string, CSharpSyntaxNode> buildBehavior)
       {
          var typeParameterList = new List<SyntaxNodeOrToken>(typeParameters.Length * 2);
@@ -347,11 +255,11 @@ namespace GatheringOverrides
             if (paramIdx != typeParameters.Length - 1)
             {
                typeParameterList.Add(
-                  SyntaxKind.CommaToken.BuildToken(Array.Empty<SyntaxTrivia>(), new[] { Space }));
+                  SyntaxKind.CommaToken.BuildToken(Array.Empty<SyntaxTrivia>(), new[] {Space}));
             }
          }
 
          return typeParameterList;
-      }      
+      }
    }
 }
