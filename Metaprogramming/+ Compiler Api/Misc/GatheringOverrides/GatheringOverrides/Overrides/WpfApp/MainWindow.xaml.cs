@@ -177,7 +177,7 @@ namespace WpfApp
    {
       public string FirstName { get; set; }
 
-      public string SecondName { get; set; }
+      public string SecondName { get; set; }        
    }
 
    public struct Manager
