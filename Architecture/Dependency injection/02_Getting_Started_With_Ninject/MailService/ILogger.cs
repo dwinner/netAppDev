@@ -1,7 +1,7 @@
 namespace Samples.MailService
 {
-    interface ILogger
-    {
-        void Log(string message);
-    }
+   internal interface ILogger
+   {
+      void Log(string message);
+   }
 }

@@ -1,44 +1,43 @@
 using System.Net;
 using System.Net.Mail;
-using System.Security.Cryptography.X509Certificates;
 
 namespace Samples.MailService
 {
-    class MailService
-    {
-        private ILogger logger;
-        private SmtpClient client;
-        private string sender;
+   internal class MailService
+   {
+      private readonly ILogger _logger;
+      private readonly string _sender;
+      private SmtpClient _client;
 
-        public MailService(MailServerConfig config, ILogger logger)
-        {
-            this.logger = logger;
-            InitializeClient(config);
-            sender = config.SenderEmail;
-        }
+      public MailService(MailServerConfig config, ILogger logger)
+      {
+         _logger = logger;
+         InitializeClient(config);
+         _sender = config.SenderEmail;
+      }
 
-        public void SendMail(string address, string subject, string body)
-        {
-            logger.Log("Initializing...");
-            var mail = new MailMessage(sender, address);
-            mail.Subject = subject;
-            mail.Body = body;
-            logger.Log("Sending message...");
-            client.Send(mail);
-            logger.Log("Message sent successfully.");
-        }
+      public void SendMail(string address, string subject, string body)
+      {
+         _logger.Log("Initializing...");
+         var mail = new MailMessage(_sender, address)
+         {
+            Subject = subject,
+            Body = body
+         };
+         _logger.Log("Sending message...");
+         _client.Send(mail);
+         _logger.Log("Message sent successfully.");
+      }
 
-        private void InitializeClient(MailServerConfig config)
-        {
-            client = new SmtpClient();
-            client.Host = config.SmtpServer;
-            client.Port = config.SmtpPort;
-            client.EnableSsl = true;
-            var credentials = new NetworkCredential();
-            credentials.UserName = config.SenderEmail;
-            credentials.Password = config.SenderPassword;
-            client.Credentials = credentials;
-        }
-    }
-
+      private void InitializeClient(MailServerConfig config)
+      {
+         _client = new SmtpClient
+         {
+            Host = config.SmtpServer,
+            Port = config.SmtpPort,
+            EnableSsl = true,
+            Credentials = new NetworkCredential {UserName = config.SenderEmail, Password = config.SenderPassword}
+         };
+      }
+   }
 }

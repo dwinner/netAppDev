@@ -1,7 +1,7 @@
 namespace Samples.Encryption
 {
-    public interface IEncryptor
-    {
-        string Encrypt(string str);
-    }
+   public interface IEncryptor
+   {
+      string Encrypt(string str);
+   }
 }
