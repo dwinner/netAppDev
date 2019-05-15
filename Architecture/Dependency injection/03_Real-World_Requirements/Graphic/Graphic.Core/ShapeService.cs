@@ -1,31 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace Graphic.Core
+﻿namespace Graphic.Core
 {
-public class ShapeService
-{
-    private readonly IShapeFactory factory;
+   public class ShapeService
+   {
+      private readonly IShapeFactory _factory;
 
-    public ShapeService(IShapeFactory factory)
-    {
-        this.factory = factory;
-    }
+      public ShapeService(IShapeFactory factory) => _factory = factory;
 
-    public void AddShapes(int circles, int squares, ICanvas canvas)
-    {
-        for (int i = 0; i < circles; i++)
-        {
-            ICircle circle = factory.CreateCircle();
+      public void AddShapes(int circles, int squares, ICanvas canvas)
+      {
+         for (var i = 0; i < circles; i++)
+         {
+            var circle = _factory.CreateCircle();
             canvas.AddShape(circle);
-        }
-        for (int i = 0; i < squares; i++)
-        {
-            ISquare square = factory.CreateSquare();
+         }
+
+         for (var i = 0; i < squares; i++)
+         {
+            var square = _factory.CreateSquare();
             canvas.AddShape(square);
-        }
-    }
-}
+         }
+      }
+   }
 }

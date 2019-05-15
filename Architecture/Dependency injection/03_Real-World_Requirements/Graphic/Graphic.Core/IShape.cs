@@ -1,6 +1,6 @@
 namespace Graphic.Core
 {
-    public interface IShape
-    {
-    }
+   public interface IShape
+   {
+   }
 }
