@@ -1,31 +1,20 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Telecom.Business.Model;
+﻿using Telecom.Business.Model;
 
 namespace Telecom.Business
 {
-    public class SwitchService
-    {
-        private readonly IStatusCollectorFactory factory;
+   public class SwitchService
+   {
+      private readonly IStatusCollectorFactory _factory;
 
-        public SwitchService(IStatusCollectorFactory factory)
-        {
-            this.factory = factory;
-        }
+      public SwitchService(IStatusCollectorFactory factory) => _factory = factory;
 
-        public string GetStatus(Switch @switch)
-        {
-            IStatusCollector collector;
-            if (@switch.SupportsTcpIp)
-            {
-                collector = factory.GetTcpStatusCollector();
-            }
-            else
-            {
-                collector = factory.GetFileStatusCollector();
-            }
-            return collector.GetStatus(@switch);
-        }
-    }
+      public string GetStatus(Switch @switch)
+      {
+         var collector = @switch.SupportsTcpIp
+            ? _factory.GetTcpStatusCollector()
+            : _factory.GetFileStatusCollector();
+
+         return collector.GetStatus(@switch);
+      }
+   }
 }

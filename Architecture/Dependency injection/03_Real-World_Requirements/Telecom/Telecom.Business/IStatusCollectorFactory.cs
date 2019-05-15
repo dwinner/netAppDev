@@ -1,9 +1,9 @@
 namespace Telecom.Business
 {
-    public interface IStatusCollectorFactory
-    {
-        IStatusCollector GetTcpStatusCollector();
+   public interface IStatusCollectorFactory
+   {
+      IStatusCollector GetTcpStatusCollector();
 
-        IStatusCollector GetFileStatusCollector();
-    }
+      IStatusCollector GetFileStatusCollector();
+   }
 }

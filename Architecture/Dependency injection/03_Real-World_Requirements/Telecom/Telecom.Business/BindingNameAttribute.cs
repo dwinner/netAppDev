@@ -2,13 +2,10 @@ using System;
 
 namespace Telecom.Business
 {
-    public class BindingNameAttribute : Attribute
-    {
-        public BindingNameAttribute(string name)
-        {
-            this.Name = name;
-        }
+   public class BindingNameAttribute : Attribute
+   {
+      public BindingNameAttribute(string name) => Name = name;
 
-        public string Name { get; set; }
-    }
+      public string Name { get; set; }
+   }
 }
