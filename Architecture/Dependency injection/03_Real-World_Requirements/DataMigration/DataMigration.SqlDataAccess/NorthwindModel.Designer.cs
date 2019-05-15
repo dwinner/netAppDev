@@ -126,7 +126,7 @@ namespace DataMigration.SqlDataAccess
 
         #endregion
 
-        #region Primitive Properties
+        #region Simple Properties
     
         /// <summary>
         /// No Metadata Documentation available.
@@ -145,7 +145,7 @@ namespace DataMigration.SqlDataAccess
                 {
                     OnShipper_IDChanging(value);
                     ReportPropertyChanging("Shipper_ID");
-                    _Shipper_ID = StructuralObject.SetValidValue(value);
+                    _Shipper_ID = StructuralObject.SetValidValue(value, "Shipper_ID");
                     ReportPropertyChanged("Shipper_ID");
                     OnShipper_IDChanged();
                 }
@@ -170,7 +170,7 @@ namespace DataMigration.SqlDataAccess
             {
                 OnCompany_NameChanging(value);
                 ReportPropertyChanging("Company_Name");
-                _Company_Name = StructuralObject.SetValidValue(value, false);
+                _Company_Name = StructuralObject.SetValidValue(value, false, "Company_Name");
                 ReportPropertyChanged("Company_Name");
                 OnCompany_NameChanged();
             }
@@ -181,10 +181,8 @@ namespace DataMigration.SqlDataAccess
 
         #endregion
 
-    
     }
 
     #endregion
 
-    
 }

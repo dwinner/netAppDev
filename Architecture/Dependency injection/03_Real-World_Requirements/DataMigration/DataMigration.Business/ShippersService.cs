@@ -1,31 +1,31 @@
-﻿using DataMigration.Business.Model;
-
-namespace DataMigration.Business
+﻿namespace DataMigration.Business
 {
-    public class ShippersService
-    {
-        private readonly IShippersRepository sourceRepository;
-        private readonly IShippersRepository targetRepository;
+   public class ShippersService
+   {
+      private readonly IShippersRepository _sourceRepository;
+      private readonly IShippersRepository _targetRepository;
 
-public ShippersService([Source]IShippersRepository sourceRepository, [Target]IShippersRepository targetRepository)
-        {
-            this.sourceRepository = sourceRepository;
-            this.targetRepository = targetRepository;
-        }
+      public ShippersService(
+         [Source] IShippersRepository sourceRepository,
+         [Target] IShippersRepository targetRepository)
+      {
+         _sourceRepository = sourceRepository;
+         _targetRepository = targetRepository;
+      }
 
-        //public ShippersService(IShippersRepository sourceRepository, IShippersRepository targetRepository)
-        //{
-        //    this.sourceRepository = sourceRepository;
-        //    this.targetRepository = targetRepository;
-        //}
+      // NOTE: commented to avoid service locator
+      //public ShippersService(IShippersRepository sourceRepository, IShippersRepository targetRepository)
+      //{
+      //    this.sourceRepository = sourceRepository;
+      //    this.targetRepository = targetRepository;
+      //}
 
-        public void MigrateShippers()
-        {
-
-            foreach (Shipper shipper in sourceRepository.GetShippers())
-            {
-                targetRepository.AddShipper(shipper);
-            }
-        }
-    }
+      public void MigrateShippers()
+      {
+         foreach (var shipper in _sourceRepository.GetShippers())
+         {
+            _targetRepository.AddShipper(shipper);
+         }
+      }
+   }
 }

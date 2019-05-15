@@ -2,12 +2,12 @@
 
 namespace Player.Core
 {
-    public interface ICodec
-    {
-        string Name { get; }
+   public interface ICodec
+   {
+      string Name { get; }
 
-        bool CanDecode(string extension);
+      bool CanDecode(string extension);
 
-        Stream Decode(Stream inStream);
-    }
+      Stream Decode(Stream inStream);
+   }
 }

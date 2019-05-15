@@ -3,23 +3,12 @@ using System.IO;
 
 namespace Player.Core.InternalCodecs
 {
-    public class WmaCodec : ICodec
-    {
-        public string Name
-        {
-            get { return "Windows Media Auido"; }
-        }
+   public class WmaCodec : ICodec
+   {
+      public string Name => "Windows Media Auido";
 
-        public bool CanDecode(string extension)
-        {
-            return extension == ".wma";
-        }
+      public bool CanDecode(string extension) => extension == ".wma";
 
-        public Stream Decode(Stream inStream)
-        {
-            // Codec implementation ...
-            throw new NotImplementedException();
-        }
-
-    }
+      public Stream Decode(Stream inStream) => throw new NotImplementedException();
+   }
 }

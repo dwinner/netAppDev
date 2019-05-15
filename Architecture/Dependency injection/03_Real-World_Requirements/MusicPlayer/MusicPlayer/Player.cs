@@ -1,44 +1,40 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace Player.Core
 {
-    public class Player
-    {
-        private readonly IEnumerable<ICodec> codecs;
+   public class Player
+   {
+      private readonly IEnumerable<ICodec> _codecs;
 
-        public Player(IEnumerable<ICodec> codecs)
-        {
-            this.codecs = codecs;
-        }
+      public Player(IEnumerable<ICodec> codecs) => _codecs = codecs;
 
-        public void Play(FileInfo fileInfo)
-        {
-            ICodec supportingCodec = FindCodec(fileInfo.Extension);
+      public void Play(FileInfo fileInfo)
+      {
+         var supportingCodec = FindCodec(fileInfo.Extension);
 
-            using (var rawStream = fileInfo.OpenRead())
-            {
-                var decodedStream = supportingCodec.Decode(rawStream);
-                PlayStream(decodedStream);
-            }
-        }
+         using (var rawStream = fileInfo.OpenRead())
+         {
+            var decodedStream = supportingCodec.Decode(rawStream);
+            PlayStream(decodedStream);
+         }
+      }
 
-        private ICodec FindCodec(string extension)
-        {
-            foreach (ICodec codec in codecs)
-            {
-                if (codec.CanDecode(extension))
-                {
-                    return codec;
-                }
-            }
-            throw new Exception("File type not supported.");
-        }
+      private ICodec FindCodec(string extension)
+      {
+         var foundCodec = _codecs.FirstOrDefault(codec => codec.CanDecode(extension));
+         if (foundCodec != null)
+         {
+            return foundCodec;
+         }
 
-        private void PlayStream(Stream stream)
-        {
-            // Playing decoded stream
-        }
-    }
+         throw new CodecNotFoundException("Codec not found");
+      }
+
+      private void PlayStream(Stream stream)
+      {
+         // Playing decoded stream
+      }
+   }
 }
