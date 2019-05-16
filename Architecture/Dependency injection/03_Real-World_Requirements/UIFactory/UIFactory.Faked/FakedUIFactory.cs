@@ -2,16 +2,10 @@
 
 namespace UIFactory.Faked
 {
-    public class FakedUIFactory : IUIFactory
-    {
-        public ButtonBase GetButton()
-        {
-            return new FakedButton();
-        }
+   public class FakedUiFactory : IUiFactory
+   {
+      public ButtonBase GetButton() => new FakedButton();
 
-        public CheckBoxBase GetCheckBox()
-        {
-            return new FakedCheckBox();
-        }
-    }
+      public CheckBoxBase GetCheckBox() => new FakedCheckBox();
+   }
 }

@@ -1,12 +1,15 @@
+using System.Windows.Forms;
+using UIFactory.Core;
+
 namespace UIFactory.Real
 {
-    public class RealCheckBox : Core.CheckBoxBase
-    {
-        public RealCheckBox()
-        {
-            var checkBox = new System.Windows.Forms.CheckBox();
-            Controls.Add(new System.Windows.Forms.CheckBox());
-            Size = checkBox.Size;
-        }
-    }
+   public class RealCheckBox : CheckBoxBase
+   {
+      public RealCheckBox()
+      {
+         var checkBox = new CheckBox();
+         Controls.Add(new CheckBox());
+         Size = checkBox.Size;
+      }
+   }
 }

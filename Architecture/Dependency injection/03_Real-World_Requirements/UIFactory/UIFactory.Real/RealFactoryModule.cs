@@ -1,18 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Ninject.Modules;
+﻿using Ninject.Modules;
+using UIFactory.Core;
 
 namespace UIFactory.Real
 {
-    public class RealFactoryModule : NinjectModule
-    {
-        public override void Load()
-        {
-            Bind<Core.IUIFactory>().To<RealUIFactory>();
-            Bind<Core.ButtonBase>().To<RealButton>();
-            Bind<Core.CheckBoxBase>().To<RealCheckBox>();
-        }
-    }
+   public class RealFactoryModule : NinjectModule
+   {
+      public override void Load()
+      {
+         Bind<IUiFactory>().To<RealUiFactory>();
+         Bind<ButtonBase>().To<RealButton>();
+         Bind<CheckBoxBase>().To<RealCheckBox>();
+      }
+   }
 }
