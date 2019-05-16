@@ -5,35 +5,35 @@ using log4net.Core;
 
 namespace Northwind.Mvc
 {
-public class LogFilter : IActionFilter
-{
-    private readonly ILog log;
-    private readonly Level logLevel;
+   public class LogFilter : IActionFilter
+   {
+      private readonly ILog _log;
+      private readonly Level _logLevel;
 
-    public LogFilter(ILog log, string logLevel)
-    {
-        this.log = log;
-        this.logLevel = log.Logger.Repository.LevelMap[logLevel];
-    }
+      public LogFilter(ILog log, string logLevel)
+      {
+         _log = log;
+         _logLevel = log.Logger.Repository.LevelMap[logLevel];
+      }
 
-    public void OnActionExecuting(ActionExecutingContext filterContext)
-    {
-        var message = string.Format(
+      public void OnActionExecuting(ActionExecutingContext filterContext)
+      {
+         var message = string.Format(
             CultureInfo.InvariantCulture,
             "Executing action {0}.{1}",
             filterContext.ActionDescriptor.ControllerDescriptor.ControllerName,
             filterContext.ActionDescriptor.ActionName);
-        this.log.Logger.Log(typeof(LogFilter), this.logLevel, message, null);
-    }
+         _log.Logger.Log(typeof(LogFilter), _logLevel, message, null);
+      }
 
-    public void OnActionExecuted(ActionExecutedContext filterContext)
-    {
-        var message = string.Format(
+      public void OnActionExecuted(ActionExecutedContext filterContext)
+      {
+         var message = string.Format(
             CultureInfo.InvariantCulture,
             "Executed action {0}.{1}",
             filterContext.ActionDescriptor.ControllerDescriptor.ControllerName,
             filterContext.ActionDescriptor.ActionName);
-        this.log.Logger.Log(typeof(LogFilter), this.logLevel, message, null);
-    }
-}
+         _log.Logger.Log(typeof(LogFilter), _logLevel, message, null);
+      }
+   }
 }

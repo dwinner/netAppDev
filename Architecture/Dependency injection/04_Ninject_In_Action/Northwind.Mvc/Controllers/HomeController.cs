@@ -1,54 +1,37 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 using Northwind.Core;
-using Northwind.Mvc.Models;
-
 
 namespace Northwind.Mvc.Controllers
 {
-    public class HomeController : Controller
-    {
-        private readonly ICustomerRepository repository;
+   public class HomeController : Controller
+   {
+      private readonly ICustomerRepository _repository;
 
-        public HomeController(ICustomerRepository repository)
-        {
-            if (repository == null)
-            {
-                throw new ArgumentNullException("repository");
-            }
+      public HomeController(ICustomerRepository repository) =>
+         _repository = repository ?? throw new ArgumentNullException(nameof(repository));
 
-            this.repository = repository;
-        }
+      [Log(LogLevel = "Info")]
+      public ActionResult Index()
+      {
+         var customers = _repository.GetAll();
+         return View(customers);
+      }
 
-        [Log(LogLevel = "Info")]
-        public ActionResult Index()
-        {
-            var customers = repository.GetAll();
-            return View(customers);
-        }
+      public ActionResult Create() => View();
 
-        public ActionResult Create()
-        {
-            return View();
-        }
+      [HttpPost]
+      public ActionResult Create(Customer customer)
+      {
+         if (ModelState.IsValid)
+         {
+            _repository.Add(customer);
+            return RedirectToAction("Index");
+         }
 
-        [HttpPost]
-        public ActionResult Create(Customer customer)
-        {
-            if (ModelState.IsValid)
-            {
-                repository.Add(customer);
-                return RedirectToAction("Index");
-            }
-            return View();
-        }
+         return View();
+      }
 
-        public ActionResult About()
-        {
-            return View();
-        }
-    }
+      public ActionResult About() => View();
+   }
 }

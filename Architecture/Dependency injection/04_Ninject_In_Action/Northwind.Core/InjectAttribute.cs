@@ -2,7 +2,7 @@
 
 namespace Northwind.Core
 {
-    public class InjectAttribute : Attribute
-    {
-    }
+   public class InjectAttribute : Attribute
+   {
+   }
 }

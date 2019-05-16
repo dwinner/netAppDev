@@ -12,7 +12,7 @@
 (function ($) {
     var $jQval = $.validator,
         adapters,
-        data_validation = "unobtrusiveValidation";
+        dataValidation = "unobtrusiveValidation";
 
     function setValidationValues(options, ruleName, value) {
         options.rules[ruleName] = value;
@@ -82,7 +82,7 @@
 
     function validationInfo(form) {
         var $form = $(form),
-            result = $form.data(data_validation);
+            result = $form.data(dataValidation);
 
         if (!result) {
             result = {
@@ -103,7 +103,7 @@
                     return $form.valid();
                 }
             };
-            $form.data(data_validation, result);
+            $form.data(dataValidation, result);
         }
 
         return result;
