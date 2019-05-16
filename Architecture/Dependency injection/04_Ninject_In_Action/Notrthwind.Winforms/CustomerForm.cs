@@ -1,36 +1,25 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 using Northwind.Core;
 
 namespace Notrthwind.Winforms
 {
-    public partial class CustomerForm : Form
-    {
-        private readonly ICustomerRepository repository;
+   public partial class CustomerForm : Form
+   {
+      private readonly ICustomerRepository _repository;
 
-        public CustomerForm(ICustomerRepository repository)
-        {
-            if (repository == null)
-            {
-                throw new ArgumentNullException("repository");
-            }
-            this.repository = repository;
-            InitializeComponent();
+      public CustomerForm(ICustomerRepository repository)
+      {
+         _repository = repository ?? throw new ArgumentNullException(nameof(repository));
+         InitializeComponent();
+         customerBindingSource.Add(new Customer());
+      }
 
-            customerBindingSource.Add(new Customer());
-        }
-
-        private void saveButton_Click(object sender, EventArgs e)
-        {
-            customerBindingSource.EndEdit();
-            var customer = customerBindingSource.Current as Customer;
-            repository.Add(customer);
-        }
-    }
+      private void OnSave(object sender, EventArgs e)
+      {
+         customerBindingSource.EndEdit();
+         var customer = customerBindingSource.Current as Customer;
+         _repository.Add(customer);
+      }
+   }
 }

@@ -64,7 +64,7 @@ namespace Notrthwind.Winforms
             this.createButton.Name = "createButton";
             this.createButton.Size = new System.Drawing.Size(45, 22);
             this.createButton.Text = "&Create";
-            this.createButton.Click += new System.EventHandler(this.createButton_Click);
+            this.createButton.Click += new System.EventHandler(this.OnCreate);
             // 
             // customersDataGrid
             // 
