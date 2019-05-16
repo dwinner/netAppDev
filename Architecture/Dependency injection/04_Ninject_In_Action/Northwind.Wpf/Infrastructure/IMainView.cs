@@ -1,7 +1,6 @@
 ﻿namespace Northwind.Wpf.Infrastructure
 {
-    public interface IMainView : IView
-    {
-
-    }
+   public interface IMainView : IView
+   {
+   }
 }

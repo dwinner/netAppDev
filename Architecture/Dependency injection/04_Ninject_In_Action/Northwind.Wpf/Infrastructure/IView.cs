@@ -1,18 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace Northwind.Wpf.Infrastructure
+﻿namespace Northwind.Wpf.Infrastructure
 {
-    public interface IView
-    {
-        bool? ShowDialog();
+   public interface IView
+   {
+      bool? DialogResult { get; set; }
 
-        void Show();
+      bool? ShowDialog();
 
-        void Close();
+      void Show();
 
-        bool? DialogResult { get; set; }
-    }
+      void Close();
+   }
 }

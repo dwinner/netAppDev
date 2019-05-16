@@ -1,40 +1,26 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Windows.Input;
 
 namespace Northwind.Wpf.Infrastructure
 {
-    public class ActionCommand : ICommand
-    {
-        private readonly Action<object> action;
-        private readonly Func<object, bool> canExecute = p => true;
+   public class ActionCommand : ICommand
+   {
+      private readonly Action<object> _action;
+      private readonly Func<object, bool> _canExecute = p => true;
 
-        public ActionCommand(Action<object> action, Func<object, bool> canExecute = null)
-        {
-            if (action == null)
-            {
-                throw new ArgumentNullException("action");
-            }
-            this.action = action;
+      public ActionCommand(Action<object> action, Func<object, bool> canExecute = null)
+      {
+         _action = action ?? throw new ArgumentNullException(nameof(action));
+         if (canExecute != null)
+         {
+            _canExecute = canExecute;
+         }
+      }
 
-            if (canExecute != null)
-            {
-                this.canExecute = canExecute;
-            }
-        }
+      public void Execute(object parameter) => _action(parameter);
 
-        public void Execute(object parameter)
-        {
-            action(parameter);
-        }
+      public bool CanExecute(object parameter) => _canExecute(parameter);
 
-        public bool CanExecute(object parameter)
-        {
-            return canExecute(parameter);
-        }
-
-        public event EventHandler CanExecuteChanged;
-    }
+      public event EventHandler CanExecuteChanged;
+   }
 }

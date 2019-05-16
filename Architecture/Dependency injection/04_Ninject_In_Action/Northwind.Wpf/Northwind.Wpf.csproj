@@ -83,6 +83,7 @@
     <Compile Include="Infrastructure\ICustomerView.cs" />
     <Compile Include="Infrastructure\IMainView.cs" />
     <Compile Include="Infrastructure\ViewModel.cs" />
+    <Compile Include="Properties\Annotations.cs" />
     <Compile Include="ViewModels\CustomerViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="Views\CustomerWindow.xaml.cs">

@@ -1,21 +1,15 @@
 ﻿using System.ComponentModel;
+using System.Runtime.CompilerServices;
+using Northwind.Wpf.Annotations;
 
 namespace Northwind.Wpf.Infrastructure
 {
-    public abstract class ViewModel : INotifyPropertyChanged
-    {
+   public abstract class ViewModel : INotifyPropertyChanged
+   {
+      public event PropertyChangedEventHandler PropertyChanged;
 
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        protected virtual void OnPropertyChanged(string propertyName)
-        {
-            PropertyChangedEventHandler handler = PropertyChanged;
-            if (handler != null)
-            {
-                handler(this, new PropertyChangedEventArgs(propertyName));
-            }
-        }
-
-       
-    }
+      [NotifyPropertyChangedInvocator]
+      protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null) =>
+         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+   }
 }
