@@ -1,41 +1,29 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.Serialization;
-using System.ServiceModel;
-using System.Text;
 using Northwind.Core;
 
 namespace Northwind.Wcf
 {
-public class CustomerService : ICustomerService
-{
-    private readonly ICustomerRepository repository;
-    private readonly IMapper mapper;
+   public class CustomerService : ICustomerService
+   {
+      private readonly IMapper _mapper;
+      private readonly ICustomerRepository _repository;
 
-    public CustomerService(ICustomerRepository repository, IMapper mapper)
-    {
-        if (repository == null)
-        {
-            throw new ArgumentNullException("repository");
-        }
-        if (mapper == null)
-        {
-            throw new ArgumentNullException("mapper");
-        }
-        this.repository = repository;
-        this.mapper = mapper;
-    }
+      public CustomerService(ICustomerRepository repository, IMapper mapper)
+      {
+         _repository = repository ?? throw new ArgumentNullException(nameof(repository));
+         _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+      }
 
-    public IEnumerable<CustomerContract> GetAllCustomers()
-    {
-        var customers = repository.GetAll();
-        return mapper.Map(customers);
-    }
+      public IEnumerable<CustomerContract> GetAllCustomers()
+      {
+         var customers = _repository.GetAll();
+         return _mapper.Map(customers);
+      }
 
-    public void AddCustomer(CustomerContract customer)
-    {
-        repository.Add(mapper.Map(customer));
-    }
-}
+      public void AddCustomer(CustomerContract customer)
+      {
+         _repository.Add(_mapper.Map(customer));
+      }
+   }
 }
