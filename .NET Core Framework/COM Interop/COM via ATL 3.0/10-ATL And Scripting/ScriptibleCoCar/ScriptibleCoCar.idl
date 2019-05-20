@@ -1,0 +1,94 @@
+// ScriptibleCoCar.idl : IDL source for ScriptibleCoCar.dll
+//
+
+// This file will be processed by the MIDL tool to
+// produce the type library (ScriptibleCoCar.tlb) and marshalling code.
+
+import "oaidl.idl";
+import "ocidl.idl";
+	[
+		object,
+		uuid(938EA507-5802-11D3-B926-0020781238D4),
+		dual,
+		helpstring("IDualCoCar Interface"),
+		pointer_default(unique)
+	]
+	interface IDualCoCar : IDispatch
+	{
+		[id(1)] HRESULT SetPetName([in] BSTR petName);
+		[id(2)] HRESULT SetMaxSpeed([in] int maxSp);
+		[id(3)] HRESULT DisplayStats();
+		[id(4)] HRESULT GetPetName([out, retval] BSTR* petName);
+		[id(5)] HRESULT SpeedUp();
+		[id(6)] HRESULT GetMaxSpeed([out, retval] int* maxSpeed);
+		[id(7)] HRESULT GetCurSpeed([out, retval] int* curSpeed);
+		[propget, id(8)] HRESULT Name([out, retval] BSTR *pVal);
+		[propput, id(8)] HRESULT Name([in] BSTR newVal);
+		[propget, id(9)] HRESULT Address([out, retval] BSTR *pVal);
+		[propput, id(9)] HRESULT Address([in] BSTR newVal);
+
+	};
+	
+	[
+		object,
+		uuid(CDBDECB9-331E-11D3-B904-0020781238D4),
+		oleautomation,
+		helpstring("ICreateCar Interface"),
+		pointer_default(unique)
+	]
+	interface ICreateCar : IUnknown
+	{
+		[helpstring("method SetPetName")] HRESULT SetPetName([in] BSTR petName);
+		[helpstring("method SetMaxSpeed")] HRESULT SetMaxSpeed([in] int maxSp);
+	};
+
+
+	[object, uuid(A533DA31-D372-11d2-B8CF-0020781238D4),oleautomation,
+	 helpstring("Get info about this car")]
+	interface IStats : IUnknown
+	{
+		[helpstring("method DisplayStats")] HRESULT DisplayStats();
+		[helpstring("method GetPetName")] HRESULT GetPetName([out, retval] BSTR* petName);
+	};
+
+	[object, uuid(A533DA30-D372-11d2-B8CF-0020781238D4),oleautomation,
+	 helpstring("Rev your car & slow it down")]
+	interface IEngine : IUnknown
+	{
+		[helpstring("method SpeedUp")] HRESULT SpeedUp();
+		[helpstring("method GetMaxSpeed")] HRESULT GetMaxSpeed([out, retval] int* maxSpeed);
+		[helpstring("method GetCurSpeed")] HRESULT GetCurSpeed([out, retval] int* curSpeed);
+	};
+
+	[object, uuid(530D7320-333E-11d3-B904-0020781238D4),oleautomation,
+	 helpstring("Information about the owner of this car")]
+	interface IOwnerInfo : IUnknown
+	{
+		[propget, helpstring("property Name")] HRESULT Name([out, retval] BSTR *pVal);
+		[propput, helpstring("property Name")] HRESULT Name([in] BSTR newVal);
+		[propget, helpstring("property Address")] HRESULT Address([out, retval] BSTR *pVal);
+		[propput, helpstring("property Address")] HRESULT Address([in] BSTR newVal);
+	};
+[
+	uuid(938EA4FB-5802-11D3-B926-0020781238D4),
+	version(1.0),
+	helpstring("ScriptibleCoCar 1.0 Type Library")
+]
+library SCRIPTIBLECOCARLib
+{
+	importlib("stdole32.tlb");
+	importlib("stdole2.tlb");
+
+	[
+		uuid(938EA508-5802-11D3-B926-0020781238D4),
+		helpstring("DualCoCar Class")
+	]
+	coclass DualCoCar
+	{
+		[default] interface IDualCoCar;
+		interface IStats;
+		interface IOwnerInfo;
+		interface IEngine;
+		interface ICreateCar;
+	};
+};

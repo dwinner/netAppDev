@@ -1,0 +1,13 @@
+REGEDIT
+; This .REG file may be used by your SETUP program.
+;   If a SETUP program is not available, the entries below will be
+;   registered in your InitInstance automatically with a call to
+;   CWinApp::RegisterShellFileTypes and COleObjectFactory::UpdateRegistryAll.
+
+
+HKEY_CLASSES_ROOT\MFCClient.Document = MFCCli Document
+HKEY_CLASSES_ROOT\MFCClient.Document\CLSID = {FDC4218F-7837-11D3-A7DE-0000E885A202}
+
+HKEY_CLASSES_ROOT\CLSID\{FDC4218F-7837-11D3-A7DE-0000E885A202} = MFCCli Document
+HKEY_CLASSES_ROOT\CLSID\{FDC4218F-7837-11D3-A7DE-0000E885A202}\ProgId = MFCClient.Document
+HKEY_CLASSES_ROOT\CLSID\{FDC4218F-7837-11D3-A7DE-0000E885A202}\LocalServer32 = MFC CLIENT.EXE

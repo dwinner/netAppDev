@@ -1,0 +1,26 @@
+HKCR
+{
+	BetterSquiggleCollection.SquiggleCollection2.1 = s 'SquiggleCollection2 Class'
+	{
+		CLSID = s '{DA0B729E-5E2B-11D3-B927-0020781238D4}'
+	}
+	BetterSquiggleCollection.SquiggleCollection2 = s 'SquiggleCollection2 Class'
+	{
+		CLSID = s '{DA0B729E-5E2B-11D3-B927-0020781238D4}'
+		CurVer = s 'BetterSquiggleCollection.SquiggleCollection2.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {DA0B729E-5E2B-11D3-B927-0020781238D4} = s 'SquiggleCollection2 Class'
+		{
+			ProgID = s 'BetterSquiggleCollection.SquiggleCollection2.1'
+			VersionIndependentProgID = s 'BetterSquiggleCollection.SquiggleCollection2'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{DA0B7291-5E2B-11D3-B927-0020781238D4}'
+		}
+	}
+}

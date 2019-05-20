@@ -1,0 +1,23 @@
+HKCR
+{
+	ATLWindowExample.CoWindow.1 = s 'CoWindow Class'
+	{
+		CLSID = s '{1DF4E5DF-9509-11D2-AAD0-00A0C9312D57}'
+	}
+	ATLWindowExample.CoWindow = s 'CoWindow Class'
+	{
+		CLSID = s '{1DF4E5DF-9509-11D2-AAD0-00A0C9312D57}'
+		CurVer = s 'ATLWindowExample.CoWindow.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {1DF4E5DF-9509-11D2-AAD0-00A0C9312D57} = s 'CoWindow Class'
+		{
+			ProgID = s 'ATLWindowExample.CoWindow.1'
+			VersionIndependentProgID = s 'ATLWindowExample.CoWindow'
+			LocalServer32 = s '%MODULE%'
+			val AppID = s '{1DF4E5C2-9509-11D2-AAD0-00A0C9312D57}'
+			'TypeLib' = s '{1DF4E5C1-9509-11D2-AAD0-00A0C9312D57}'
+		}
+	}
+}

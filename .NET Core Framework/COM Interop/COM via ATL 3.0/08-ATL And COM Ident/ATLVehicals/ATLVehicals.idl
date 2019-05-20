@@ -1,0 +1,88 @@
+// ATLVehicals.idl : IDL source for ATLVehicals.dll
+//
+
+// This file will be processed by the MIDL tool to
+// produce the type library (ATLVehicals.tlb) and marshalling code.
+
+import "oaidl.idl";
+import "ocidl.idl";
+import "ATLTearOff.idl";
+
+
+	// IDragRace ///////////////////////////////////////
+	[
+		object,
+		uuid(DDF18627-24F6-11D3-B8F9-0020781238D4),
+		oleautomation,
+		helpstring("IDragRace Interface"),
+		pointer_default(unique)
+	]
+	interface IDragRace : IUnknown
+	{
+		[helpstring("method DragRace")] HRESULT DragRace();
+	};
+
+	// ICreateMiniVan ///////////////////////////////////////
+	[
+		object,
+		uuid(E8A4D620-3E44-11d3-B910-0020781238D4),
+		oleautomation,
+		helpstring("ICreateMiniVan Interface"),
+		pointer_default(unique)
+	]
+	interface ICreateMiniVan : IUnknown
+	{
+		[helpstring("Create this fine family automobile")] 
+		HRESULT CreateMiniVan([in] BSTR petName, [in] int maxSpeed, [in] BSTR ownerName, [in] BSTR ownerAddress, [in] int numberOfDoors);
+		[propget, helpstring("property NumberOfDoors")] 
+		HRESULT NumberOfDoors([out, retval] short *pVal);
+	};
+
+[
+	uuid(DDF18619-24F6-11D3-B8F9-0020781238D4),
+	version(1.0),
+	helpstring("ATLVehicals 1.0 Type Library")
+]
+library ATLVEHICALSLib
+{
+		
+	importlib("stdole32.tlb");
+	importlib("stdole2.tlb");
+	
+	[
+		uuid(DDF18626-24F6-11D3-B8F9-0020781238D4),
+		helpstring("CoMiniVan Class")
+	]
+	coclass CoMiniVan
+	{
+		[default] interface ICreateMiniVan;
+		interface IDragRace;
+		interface IStats;
+		interface IEngine;
+	};
+
+	[
+		uuid(DDF18628-24F6-11D3-B8F9-0020781238D4),
+		helpstring("CoHotRod Class")
+	]
+	coclass CoHotRod
+	{
+		[default] interface ICreateCar;
+		interface IDragRace;
+		interface IStats;
+		interface IEngine;
+		interface IOwnerInfo;
+	};
+	[
+		uuid(6CE19AE7-34D8-11D3-B904-0020781238D4),
+		helpstring("CoJeep Class")
+	]
+	coclass CoJeep
+	{
+		[default] interface ICreate;
+		interface IStats;
+		interface IDragRace;
+		interface IEngine;
+		interface IOwnerInfo;
+	};
+};

@@ -1,0 +1,11 @@
+HKCR
+{
+	NoRemove AppID
+	{
+		{B2C94BBD-A582-11D2-AAD9-00A0C9312D57} = s 'ATLEvents'
+		'ATLEvents.EXE'
+		{
+			val AppID = s {B2C94BBD-A582-11D2-AAD9-00A0C9312D57}
+		}
+	}
+}

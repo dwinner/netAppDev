@@ -1,0 +1,84 @@
+// ATLEnumServer.idl : IDL source for ATLEnumServer.dll
+//
+
+// This file will be processed by the MIDL tool to
+// produce the type library (ATLEnumServer.tlb) and marshalling code.
+
+import "oaidl.idl";
+import "ocidl.idl";
+	[
+		object,
+		uuid(FE41A71F-53E5-11D3-AB20-00A0C9312D57),
+	
+		helpstring("IPerson Interface"),
+		pointer_default(unique)
+	]
+	interface IPerson : IUnknown
+	{
+		[propget, helpstring("property Name")] HRESULT Name([out, retval] BSTR *pVal);
+		[propput, helpstring("property Name")] HRESULT Name([in] BSTR newVal);
+		[propget, helpstring("property ID")] HRESULT ID([out, retval] short *pVal);
+		[propput, helpstring("property ID")] HRESULT ID([in] short newVal);
+	};
+
+
+	// My custom enumerator interface.
+	[
+		object,
+		uuid(B5F10D50-53F1-11d3-AB20-00A0C9312D57),
+		pointer_default(unique)
+	]
+
+	interface IEnumPerson : IUnknown
+	{
+
+		HRESULT Next([in] ULONG celt,
+					 [out, size_is(celt), length_is(*pCeltFetched)] IPerson** rgVar,
+					 [out] ULONG * pCeltFetched);
+
+		HRESULT Skip([in] ULONG celt);
+		HRESULT Reset();
+		HRESULT Clone([out] IEnumPerson ** ppEnum);
+	}
+
+
+	[
+		object,
+		uuid(FE41A722-53E5-11D3-AB20-00A0C9312D57),
+	
+		helpstring("IPeopleHolder Interface"),
+		pointer_default(unique)
+	]
+	interface IPeopleHolder : IUnknown
+	{
+		[helpstring("method GetPersonEnum")] 
+		HRESULT GetPersonEnum([out] IEnumPerson** ppEnumPerson);
+	};
+
+[
+	uuid(FE41A713-53E5-11D3-AB20-00A0C9312D57),
+	version(1.0),
+	helpstring("ATLEnumServer 1.0 Type Library")
+]
+library ATLENUMSERVERLib
+{
+	importlib("stdole32.tlb");
+	importlib("stdole2.tlb");
+
+	[
+		uuid(FE41A720-53E5-11D3-AB20-00A0C9312D57),
+		helpstring("Person Class")
+	]
+	coclass Person
+	{
+		[default] interface IPerson;
+	};
+	[
+		uuid(FE41A723-53E5-11D3-AB20-00A0C9312D57),
+		helpstring("PeopleHolder Class")
+	]
+	coclass PeopleHolder
+	{
+		[default] interface IPeopleHolder;
+	};
+};

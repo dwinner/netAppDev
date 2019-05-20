@@ -1,0 +1,42 @@
+// MFC Client.odl : type library source for MFC Client.exe
+
+// This file will be processed by the MIDL compiler to produce the
+// type library (MFC Client.tlb).
+
+[ uuid(FDC42190-7837-11D3-A7DE-0000E885A202), version(1.0) ]
+library MFCClient
+{
+	importlib("stdole32.tlb");
+	importlib("stdole2.tlb");
+
+
+	//  Primary dispatch interface for CMFCClientDoc
+	
+	[ uuid(FDC42191-7837-11D3-A7DE-0000E885A202) ]
+	dispinterface IMFCClient
+	{
+		properties:
+			// NOTE - ClassWizard will maintain property information here.
+			//    Use extreme caution when editing this section.
+			//{{AFX_ODL_PROP(CMFCClientDoc)
+			//}}AFX_ODL_PROP
+			
+		methods:
+			// NOTE - ClassWizard will maintain method information here.
+			//    Use extreme caution when editing this section.
+			//{{AFX_ODL_METHOD(CMFCClientDoc)
+			//}}AFX_ODL_METHOD
+
+	};
+
+	//  Class information for CMFCClientDoc
+	
+	[ uuid(FDC4218F-7837-11D3-A7DE-0000E885A202) ]
+	coclass Document
+	{
+		[default] dispinterface IMFCClient;
+	};
+
+	//{{AFX_APPEND_ODL}}
+	//}}AFX_APPEND_ODL}}
+};

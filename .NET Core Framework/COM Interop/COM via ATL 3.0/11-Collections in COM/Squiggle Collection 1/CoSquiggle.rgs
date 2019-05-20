@@ -1,0 +1,26 @@
+HKCR
+{
+	SquiggleCollection.CoSquiggle.1 = s 'CoSquiggle Class'
+	{
+		CLSID = s '{9FB9E737-59BA-11D3-B926-0020781238D4}'
+	}
+	SquiggleCollection.CoSquiggle = s 'CoSquiggle Class'
+	{
+		CLSID = s '{9FB9E737-59BA-11D3-B926-0020781238D4}'
+		CurVer = s 'SquiggleCollection.CoSquiggle.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {9FB9E737-59BA-11D3-B926-0020781238D4} = s 'CoSquiggle Class'
+		{
+			ProgID = s 'SquiggleCollection.CoSquiggle.1'
+			VersionIndependentProgID = s 'SquiggleCollection.CoSquiggle'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{9FB9E728-59BA-11D3-B926-0020781238D4}'
+		}
+	}
+}

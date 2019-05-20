@@ -1,0 +1,11 @@
+REGEDIT
+
+; This is the ProgID
+HKEY_CLASSES_ROOT\DualObject.CoDualSquiggle\CLSID = {BDFD41A2-580A-11d3-B926-0020781238D4}
+
+; A CLSID entry typically has these two lines
+HKEY_CLASSES_ROOT\CLSID\{BDFD41A2-580A-11d3-B926-0020781238D4} = DualObject.CoDualSquiggle
+HKEY_CLASSES_ROOT\CLSID\{BDFD41A2-580A-11d3-B926-0020781238D4}\InprocServer32 = C:\ATL\Labs\Chapter 10\DualObject\Debug\DualObject.dll
+
+
+

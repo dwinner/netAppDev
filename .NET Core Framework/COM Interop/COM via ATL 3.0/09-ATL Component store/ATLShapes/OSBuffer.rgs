@@ -1,0 +1,25 @@
+HKCR
+{
+	ATLShapes.OSBuffer.1 = s 'OSBuffer Class'
+	{
+		CLSID = s '{00D7BA3B-20FF-11D3-B8F7-0020781238D4}'
+	}
+	ATLShapes.OSBuffer = s 'OSBuffer Class'
+	{
+		CLSID = s '{00D7BA3B-20FF-11D3-B8F7-0020781238D4}'
+		CurVer = s 'ATLShapes.OSBuffer.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {00D7BA3B-20FF-11D3-B8F7-0020781238D4} = s 'OSBuffer Class'
+		{
+			ProgID = s 'ATLShapes.OSBuffer.1'
+			VersionIndependentProgID = s 'ATLShapes.OSBuffer'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{00D7BA2C-20FF-11D3-B8F7-0020781238D4}'
+		}
+	}
+}

@@ -1,0 +1,87 @@
+// ATLShapesServer.idl : IDL source for ATLShapesServer.dll
+//
+
+// This file will be processed by the MIDL tool to
+// produce the type library (ATLShapesServer.tlb) and marshalling code.
+
+import "oaidl.idl";
+import "ocidl.idl";
+
+typedef  
+[uuid(442F32E0-E7EE-11d2-B8D2-0020781238D4), v1_enum]
+enum FILLTYPE
+{
+	HATCH 		= 0, 
+	SOLID 		= 1, 
+	POLKADOT 	= 2
+} FILLTYPE;
+
+	[
+		object,
+		uuid(FF730D01-6705-11D3-B929-0020781238D4),
+		oleautomation,
+		helpstring("IDraw Interface"),
+		pointer_default(unique)
+	]
+	interface IDraw : IUnknown
+	{
+		[helpstring("method Draw")] HRESULT Draw();
+	};
+	[
+		object,
+		uuid(3ABAE610-670A-11d3-B929-0020781238D4),
+		oleautomation,	
+		helpstring("IErase Interface"),
+		pointer_default(unique)
+	]
+	interface IErase : IUnknown
+	{
+		[helpstring("method Erase")] HRESULT Erase();
+	};
+	[
+		object,
+		uuid(520BD370-670C-11d3-B929-0020781238D4),
+		oleautomation,	
+		helpstring("IShapeID Interface"),
+		pointer_default(unique)
+	]
+	interface IShapeID : IUnknown
+	{
+		[propget, helpstring("property Name")] HRESULT Name([out, retval] BSTR *pVal);
+		[propput, helpstring("property Name")] HRESULT Name([in] BSTR newVal);
+	};
+	[
+		object,
+		uuid(34579870-6708-11d3-B929-0020781238D4),
+		oleautomation,	
+		helpstring("IShapeEdit Interface"),
+		pointer_default(unique)
+	]
+	interface IShapeEdit : IUnknown
+	{
+		[helpstring("method Inverse")] HRESULT Inverse();
+		[helpstring("method Stretch")] HRESULT Stretch([in] int factor);
+		[helpstring("method Fill")] HRESULT Fill([in] FILLTYPE fType);
+	};
+[
+	uuid(52282333-6663-11D3-B929-0020781238D4),
+	version(1.0),
+	helpstring("ATLShapesServer 1.0 Type Library")
+]
+library ATLSHAPESSERVERLib
+{
+	importlib("stdole32.tlb");
+	importlib("stdole2.tlb");
+
+	[
+		uuid(DDF18644-24F6-11D3-B8F9-0020781238D4),
+		helpstring("CoHexagon Class")
+	]
+	coclass CoHexagon
+	{
+		[default] interface IDraw;
+		interface IShapeEdit;
+		interface IErase;
+		interface IShapeID;
+	};
+};

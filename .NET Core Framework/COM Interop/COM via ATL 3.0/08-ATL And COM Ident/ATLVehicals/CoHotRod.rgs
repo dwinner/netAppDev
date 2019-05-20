@@ -1,0 +1,25 @@
+HKCR
+{
+	ATLVehicals.CoHotRod.1 = s 'CoHotRod Class'
+	{
+		CLSID = s '{DDF18628-24F6-11D3-B8F9-0020781238D4}'
+	}
+	ATLVehicals.CoHotRod = s 'CoHotRod Class'
+	{
+		CLSID = s '{DDF18628-24F6-11D3-B8F9-0020781238D4}'
+		CurVer = s 'ATLVehicals.CoHotRod.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {DDF18628-24F6-11D3-B8F9-0020781238D4} = s 'CoHotRod Class'
+		{
+			ProgID = s 'ATLVehicals.CoHotRod.1'
+			VersionIndependentProgID = s 'ATLVehicals.CoHotRod'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{DDF18619-24F6-11D3-B8F9-0020781238D4}'
+		}
+	}
+}

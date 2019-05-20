@@ -1,0 +1,35 @@
+HKCR
+{
+	AXShapesServer.ShapesControl.1 = s 'ShapesControl Class'
+	{
+		CLSID = s '{03FBA320-71D1-11D3-B92D-0020781238D4}'
+		'Insertable'
+	}
+	AXShapesServer.ShapesControl = s 'ShapesControl Class'
+	{
+		CLSID = s '{03FBA320-71D1-11D3-B92D-0020781238D4}'
+		CurVer = s 'AXShapesServer.ShapesControl.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {03FBA320-71D1-11D3-B92D-0020781238D4} = s 'ShapesControl Class'
+		{
+			ProgID = s 'AXShapesServer.ShapesControl.1'
+			VersionIndependentProgID = s 'AXShapesServer.ShapesControl'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			ForceRemove 'Control'
+			ForceRemove 'Insertable'
+			ForceRemove 'ToolboxBitmap32' = s '%MODULE%, 101'
+			'MiscStatus' = s '0'
+			{
+			    '1' = s '131473'
+			}
+			'TypeLib' = s '{03FBA313-71D1-11D3-B92D-0020781238D4}'
+			'Version' = s '1.0'
+		}
+	}
+}

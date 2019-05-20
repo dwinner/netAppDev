@@ -1,0 +1,51 @@
+<HTML>
+<HEAD>
+<META NAME="GENERATOR" Content="Microsoft Visual Studio 6.0">
+<TITLE></TITLE>
+</HEAD>
+<BODY bgColor=thistle>
+<P style="FONT-SIZE: larger; FONT-WEIGHT: bold">Fill the relevent stats and create your car.</P>
+<P>Enter pet name of your car:&nbsp;&nbsp;&nbsp;&nbsp; <INPUT id=petName 
+name=petName value=XXX></P>
+<P>Enter max speed of your car:&nbsp;&nbsp;<INPUT id=maxSpeed name=maxSpeed value=10></P>
+<P>Enter your 
+name:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+<INPUT id=ownerName name=ownerName value=XXX></P>
+<P>Enter your 
+address:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+<INPUT id=ownerAddress name=ownerAddress value=XXX></P>
+<P><INPUT id=btnCreateCar name=btnCreateCar type=button value="Create the Car"></P>
+<P style="BACKGROUND-COLOR: thistle"><INPUT id=btnSpeedUp name=btnSpeedUp type=button value="Speed Up" style="HEIGHT: 24px; WIDTH: 122px">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<INPUT 
+id=txtSpeed name=txtSpeed style="HEIGHT: 22px; WIDTH: 78px"></P>
+
+<SCRIPT language = VBScript>
+dim o 
+	
+Sub btnCreateCar_onClick
+	set o = CreateObject("ScriptibleCoCar.DualCoCar")
+	o.SetPetName (petName.value)
+	o.Address = ownerAddress.value 
+	o.SetMaxSpeed (maxSpeed.value) 
+	o.Name = ownerName.value 
+	txtSpeed.value = o.GetCurSpeed 
+End Sub
+
+Sub btnSpeedUp_onClick
+	if o.GetCurSpeed < o.GetMaxSpeed then
+		o.SpeedUp  
+		txtSpeed.value = o.GetCurSpeed 
+	else 
+		msgbox o.GetPetName() & " is Destroyed!",,"Lead Foot!"
+	end if
+End Sub
+
+Sub btnGetStats_onClick
+	o.DisplayStats 
+	msgbox o.Name,,"Your name is:"
+	msgbox o.Address ,,"You live here:"
+End Sub
+</SCRIPT>
+
+<P><INPUT id=btnGetStats name=btnStats type=button value="Get The Stats"></P>
+</BODY>
+</HTML>

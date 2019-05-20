@@ -1,0 +1,94 @@
+// AXCarServer.idl : IDL source for AXCarServer.dll
+//
+
+// This file will be processed by the MIDL tool to
+// produce the type library (AXCarServer.tlb) and marshalling code.
+
+import "oaidl.idl";
+import "ocidl.idl";
+#include "olectl.h"
+
+// Custom enum.
+[uuid(8FB31CF0-7490-11d3-B92E-0020781238D4), v1_enum]
+typedef enum AnimVal
+{
+	[helpstring("Animate")]			Yes	= 1,
+	[helpstring("Don't Animate")]	No = 0
+} AnimVal;
+
+[object, uuid(65A0EEBF-745F-11D3-B92E-0020781238D4), dual,
+ helpstring("IAxCar Interface"),pointer_default(unique) ]
+interface IAxCar : IDispatch
+{
+	[id(1), helpstring("Add 10 to current speed")] 
+	HRESULT SpeedUp();
+		
+	[id(2), helpstring("Set the name and max speed of the car")] 
+	HRESULT CreateCar([in] BSTR petName, [in] short maxSp);
+		
+	[propget, id(3), helpstring("Should I animate?"), bindable, requestedit] 
+	HRESULT Animate([out, retval] AnimVal *newVal);
+	[propput, id(3), helpstring("Should I animate?"), bindable, requestedit] 
+	HRESULT Animate([in] AnimVal newVal);
+	
+	[propget, id(4), helpstring("The max speed"), bindable, requestedit] 
+	HRESULT MaxSpeed([out, retval] short *pVal);
+	[propput, id(4), helpstring("The max speed"), bindable, requestedit] 
+	HRESULT MaxSpeed([in] short newVal);
+		
+	[propget, id(5), helpstring("Car's pet name"), bindable, requestedit] 
+	HRESULT PetName([out, retval] BSTR *pVal);
+	[propput, id(5), helpstring("Car's pet name"), bindable, requestedit] 
+	HRESULT PetName([in] BSTR newVal);
+
+	[propget, id(6), helpstring("Current speed"), bindable, requestedit] 
+	HRESULT Speed([out, retval] short *pVal);
+	[propput, id(6), helpstring("Current speed"), bindable, requestedit] 
+	HRESULT Speed([in] short newVal);
+		
+	[id(DISPID_ABOUTBOX), helpstring("About AxCars")] 
+	HRESULT AboutBox();
+};
+
+
+[
+	uuid(65A0EEB3-745F-11D3-B92E-0020781238D4),
+	version(1.0),
+	helpstring("AXCarServer 1.0 Type Library")
+]
+library AXCARSERVERLib
+{
+	importlib("stdole32.tlb");
+	importlib("stdole2.tlb");
+
+	[
+		uuid(65A0EEC1-745F-11D3-B92E-0020781238D4),
+		helpstring("_IAxCarEvents Interface")
+	]
+	dispinterface _IAxCarEvents
+	{
+		properties:
+		methods:
+		[id(1), helpstring("method BlewUp")] HRESULT BlewUp();
+		[id(2), helpstring("method AboutToBlow")] HRESULT AboutToBlow();
+	};
+
+	[
+		uuid(65A0EEC0-745F-11D3-B92E-0020781238D4),
+		helpstring("AxCar Class")
+	]
+	coclass AxCar
+	{
+		[default] interface IAxCar;
+		[default, source] dispinterface _IAxCarEvents;
+	};
+
+	[
+		uuid(5D9514E6-7482-11D3-B92E-0020781238D4),
+		helpstring("ConfigureCar Class")
+	]
+	coclass ConfigureCar
+	{
+		interface IUnknown;
+	};
+};

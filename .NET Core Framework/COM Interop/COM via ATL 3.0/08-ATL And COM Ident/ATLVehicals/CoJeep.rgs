@@ -1,0 +1,25 @@
+HKCR
+{
+	ATLVehicals.CoJeep.1 = s 'CoJeep Class'
+	{
+		CLSID = s '{6CE19AE7-34D8-11D3-B904-0020781238D4}'
+	}
+	ATLVehicals.CoJeep = s 'CoJeep Class'
+	{
+		CLSID = s '{6CE19AE7-34D8-11D3-B904-0020781238D4}'
+		CurVer = s 'ATLVehicals.CoJeep.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {6CE19AE7-34D8-11D3-B904-0020781238D4} = s 'CoJeep Class'
+		{
+			ProgID = s 'ATLVehicals.CoJeep.1'
+			VersionIndependentProgID = s 'ATLVehicals.CoJeep'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{DDF18619-24F6-11D3-B8F9-0020781238D4}'
+		}
+	}
+}

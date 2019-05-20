@@ -1,0 +1,87 @@
+// ATLShapes.idl : IDL source for ATLShapes.dll
+//
+
+// This file will be processed by the MIDL tool to
+// produce the type library (ATLShapes.tlb) and marshalling code.
+
+import "oaidl.idl";
+import "ocidl.idl";
+
+// Forward declarations.
+interface IOSBuffer;
+
+	[
+		object,
+		uuid(00D7BA39-20FF-11D3-B8F7-0020781238D4),
+		oleautomation,
+		helpstring("IDraw Interface"),
+		pointer_default(unique)
+	]
+	interface IDraw : IUnknown
+	{
+		[helpstring("method Draw")] HRESULT Draw();
+		[helpstring("method GetOSBuffer")] HRESULT GetOSBuffer([out, retval] IOSBuffer** pBuffer);
+	};
+
+	[
+		object,
+		uuid(88A294F0-2127-11d3-B8F7-0020781238D4),
+		oleautomation,
+		helpstring("IShapeID Interface"),
+		pointer_default(unique)
+	]
+	interface IShapeID : IUnknown
+	{
+		[propget, helpstring("property ShapeName")] HRESULT ShapeName([out, retval] BSTR *pVal);
+		[propput, helpstring("property ShapeName")] HRESULT ShapeName([in] BSTR newVal);
+	};
+	[
+		object,
+		uuid(00D7BA3A-20FF-11D3-B8F7-0020781238D4),
+		oleautomation,
+		helpstring("IOSBuffer Interface"),
+		pointer_default(unique)
+	]
+	interface IOSBuffer : IUnknown
+	{
+		[helpstring("method RenderToMemory")] HRESULT RenderToMemory();
+	};
+
+[
+	uuid(00D7BA2C-20FF-11D3-B8F7-0020781238D4),
+	version(1.0),
+	helpstring("ATLShapes 1.0 Type Library")
+]
+library ATLSHAPESLib
+{
+	importlib("stdole32.tlb");
+	importlib("stdole2.tlb");
+
+	[
+		uuid(00D7BA27-20FF-11D3-B8F7-0020781238D4),
+		helpstring("CoHexagon Class")
+	]
+	coclass CoHexagon
+	{
+		[default] interface IDraw;
+		interface IShapeID;
+	};
+	[
+		uuid(00D7BA29-20FF-11D3-B8F7-0020781238D4),
+		helpstring("CoLine Class")
+	]
+	coclass CoLine
+	{
+		[default] interface IDraw;
+		interface IShapeID;
+	};
+	[
+		uuid(00D7BA3B-20FF-11D3-B8F7-0020781238D4),
+		noncreatable,
+		helpstring("OSBuffer Class")
+	]
+	coclass OSBuffer
+	{
+		[default] interface IOSBuffer;
+	};
+};

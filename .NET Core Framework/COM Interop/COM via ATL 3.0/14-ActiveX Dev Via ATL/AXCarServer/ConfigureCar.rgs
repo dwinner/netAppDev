@@ -1,0 +1,23 @@
+HKCR
+{
+	AXCarServer.ConfigureCar.1 = s 'ConfigureCar Class'
+	{
+		CLSID = s '{5D9514E6-7482-11D3-B92E-0020781238D4}'
+	}
+	AXCarServer.ConfigureCar = s 'ConfigureCar Class'
+	{
+		CLSID = s '{5D9514E6-7482-11D3-B92E-0020781238D4}'
+		CurVer = s 'AXCarServer.ConfigureCar.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {5D9514E6-7482-11D3-B92E-0020781238D4} = s 'ConfigureCar Class'
+		{
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+		}
+	}
+}

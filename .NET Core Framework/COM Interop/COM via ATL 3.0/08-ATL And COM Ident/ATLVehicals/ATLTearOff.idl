@@ -1,0 +1,86 @@
+// ATLTearOff.idl : IDL source for ATLTearOff.dll
+//
+
+// This file will be processed by the MIDL tool to
+// produce the type library (ATLTearOff.tlb) and marshalling code.
+
+import "oaidl.idl";
+import "ocidl.idl";
+	[
+		object,
+		uuid(CDBDECB9-331E-11D3-B904-0020781238D4),
+	
+		helpstring("ICreateCar Interface"),
+		pointer_default(unique)
+	]
+	interface ICreateCar : IUnknown
+	{
+		[helpstring("method SetPetName")] HRESULT SetPetName([in] BSTR petName);
+		[helpstring("method SetMaxSpeed")] HRESULT SetMaxSpeed([in] int maxSp);
+	};
+
+
+	[
+		object,
+		uuid(1FB21BF0-3CCE-11d3-B910-0020781238D4),
+	
+		helpstring("ICreate Interface"),
+		pointer_default(unique)
+	]
+	interface ICreate: IUnknown
+	{
+		[helpstring("The is the NEW Create")] HRESULT Create([in] BSTR ownerName, [in] BSTR ownerAddress, [in] BSTR petName, [in] int maxSp);
+	};
+
+
+	[object, uuid(A533DA31-D372-11d2-B8CF-0020781238D4),
+	 helpstring("Get info about this car")]
+	interface IStats : IUnknown
+	{
+		[helpstring("method DisplayStats")] HRESULT DisplayStats();
+		[helpstring("method GetPetName")] HRESULT GetPetName([out, retval] BSTR* petName);
+	};
+
+	[object, uuid(A533DA30-D372-11d2-B8CF-0020781238D4),
+	 helpstring("Rev your car & slow it down")]
+	interface IEngine : IUnknown
+	{
+		[helpstring("method SpeedUp")] HRESULT SpeedUp();
+		[helpstring("method GetMaxSpeed")] HRESULT GetMaxSpeed([out, retval] int* maxSpeed);
+		[helpstring("method GetCurSpeed")] HRESULT GetCurSpeed([out, retval] int* curSpeed);
+	};
+
+	[object, uuid(530D7320-333E-11d3-B904-0020781238D4),
+	 helpstring("Information about the owner of this car")]
+	interface IOwnerInfo : IUnknown
+	{
+		[propget, helpstring("property Name")] HRESULT Name([out, retval] BSTR *pVal);
+		[propput, helpstring("property Name")] HRESULT Name([in] BSTR newVal);
+		[propget, helpstring("property Address")] HRESULT Address([out, retval] BSTR *pVal);
+		[propput, helpstring("property Address")] HRESULT Address([in] BSTR newVal);
+	};
+[
+	uuid(D3DF9700-3676-11D3-B905-0020781238D4),
+	version(1.0),
+	helpstring("ATLTearOff 1.0 Type Library")
+]
+library ATLTEAROFFLib
+{
+	importlib("stdole32.tlb");
+	importlib("stdole2.tlb");
+
+	// This is the same coclass as the Ch.6 ATLCarServer.
+	// the clsid has been changed however, to avoid registry classes.
+	[
+		uuid(E58B9C70-367D-11d3-B905-0020781238D4),
+		helpstring("ATLCoCar Class")
+	]
+	coclass ATLCoCar
+	{
+		[default] interface ICreate;
+		interface ICreateCar;
+		interface IStats;
+		interface IEngine;
+		interface IOwnerInfo;
+	};
+};

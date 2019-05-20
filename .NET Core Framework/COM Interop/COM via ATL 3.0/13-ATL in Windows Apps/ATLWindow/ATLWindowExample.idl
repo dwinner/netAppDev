@@ -1,0 +1,48 @@
+// ATLWindowExample.idl : IDL source for ATLWindowExample.dll
+//
+
+// This file will be processed by the MIDL tool to
+// produce the type library (ATLWindowExample.tlb) and marshalling code.
+
+import "oaidl.idl";
+import "ocidl.idl";
+	[
+		object,
+		uuid(1DF4E5EC-9509-11D2-AAD0-00A0C9312D57),
+		dual,
+		helpstring("ICreateWindow Interface"),
+		pointer_default(unique)
+	]
+	interface ICoWindow : IDispatch
+	{	
+		[id(1), helpstring("method CreateWindow")] 
+		HRESULT CreateMyWindow();
+		[id(2), helpstring("method KillWindow")] 
+		HRESULT KillMyWindow();
+		[id(3), helpstring("method DrawCircle")] 
+		HRESULT DrawCircle([in] int top, [in] int left, [in] int bottom, [in] int right);
+		[id(4), helpstring("method ChangeColor")] 
+		HRESULT ChangeTheColor([in] OLE_COLOR newColor);
+		[id(5), helpstring("method ChangeWindowText")] 
+		HRESULT ChangeWindowText([in] BSTR newText);
+	};
+
+[
+	uuid(1DF4E5C1-9509-11D2-AAD0-00A0C9312D57),
+	version(1.0),
+	helpstring("ATLWindowExample 1.0 Type Library")
+]
+library ATLWINDOWEXAMPLELib
+{
+	importlib("stdole32.tlb");
+	importlib("stdole2.tlb");
+
+	[
+		uuid(1DF4E5DF-9509-11D2-AAD0-00A0C9312D57),
+		helpstring("CoWindow Class")
+	]
+	coclass CoWindow
+	{
+		[default] interface ICoWindow;
+	};
+};

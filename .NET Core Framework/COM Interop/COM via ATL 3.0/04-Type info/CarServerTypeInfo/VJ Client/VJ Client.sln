@@ -1,0 +1,13 @@
+Microsoft Visual Studio Solution File, Format Version 1.00
+Project("{66355F20-A65B-11D0-BFB5-00A0C91EBFA0}") = "VJ Client", "VJ Client.vjp", "{0C73BF80-EF82-11D2-B8DF-0020781238D4}"
+EndProject
+Global
+	GlobalSection(LocalDeployment) = postSolution
+		StartupProject = {0C73BF80-EF82-11D2-B8DF-0020781238D4}
+	EndGlobalSection
+	GlobalSection(BuildOrder) = postSolution
+		0 = {0C73BF80-EF82-11D2-B8DF-0020781238D4}
+	EndGlobalSection
+	GlobalSection(DeploymentRoot) = postSolution
+	EndGlobalSection
+EndGlobal

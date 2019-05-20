@@ -1,0 +1,47 @@
+<html>
+<body>
+<pre>
+<h1>Build Log</h1>
+<h3>
+--------------------Configuration: ScriptibleCoCar - Win32 Debug--------------------
+</h3>
+<h3>Command Lines</h3>
+Creating temporary file "c:\windows\TEMP\RSP3220.TMP" with contents
+[
+/nologo /MTd /W3 /Gm /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /FR"Debug/" /Fp"Debug/ScriptibleCoCar.pch" /Yu"stdafx.h" /Fo"Debug/" /Fd"Debug/" /FD /GZ /c 
+"C:\ATL\Labs\Chapter 10\ScriptibleCoCar\ScriptibleCoCar.cpp"
+]
+Creating command line "cl.exe @c:\windows\TEMP\RSP3220.TMP" 
+Creating temporary file "c:\windows\TEMP\RSP3221.TMP" with contents
+[
+kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /dll /incremental:yes /pdb:"Debug/ScriptibleCoCar.pdb" /debug /machine:I386 /def:".\ScriptibleCoCar.def" /out:"Debug/ScriptibleCoCar.dll" /implib:"Debug/ScriptibleCoCar.lib" /pdbtype:sept 
+".\Debug\DualCoCar.obj"
+".\Debug\ScriptibleCoCar.obj"
+".\Debug\StdAfx.obj"
+".\Debug\ScriptibleCoCar.res"
+]
+Creating command line "link.exe @c:\windows\TEMP\RSP3221.TMP"
+Creating temporary file "c:\windows\TEMP\RSP3222.BAT" with contents
+[
+@echo off
+regsvr32 /s /c ".\Debug\ScriptibleCoCar.dll"
+echo regsvr32 exec. time > ".\Debug\regsvr32.trg"
+]
+Creating command line "c:\windows\TEMP\RSP3222.BAT"
+Compiling...
+ScriptibleCoCar.cpp
+Linking...
+   Creating library Debug/ScriptibleCoCar.lib and object Debug/ScriptibleCoCar.exp
+<h3>Output Window</h3>
+Performing registration
+Creating command line "bscmake.exe /nologo /o"Debug/ScriptibleCoCar.bsc"  ".\Debug\StdAfx.sbr" ".\Debug\DualCoCar.sbr" ".\Debug\ScriptibleCoCar.sbr""
+Creating browse info file...
+<h3>Output Window</h3>
+
+
+
+<h3>Results</h3>
+ScriptibleCoCar.dll - 0 error(s), 0 warning(s)
+</pre>
+</body>
+</html>
