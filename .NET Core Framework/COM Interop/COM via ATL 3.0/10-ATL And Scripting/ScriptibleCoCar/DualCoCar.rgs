@@ -1,0 +1,26 @@
+HKCR
+{
+	ScriptibleCoCar.DualCoCar.1 = s 'DualCoCar Class'
+	{
+		CLSID = s '{938EA508-5802-11D3-B926-0020781238D4}'
+	}
+	ScriptibleCoCar.DualCoCar = s 'DualCoCar Class'
+	{
+		CLSID = s '{938EA508-5802-11D3-B926-0020781238D4}'
+		CurVer = s 'ScriptibleCoCar.DualCoCar.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {938EA508-5802-11D3-B926-0020781238D4} = s 'DualCoCar Class'
+		{
+			ProgID = s 'ScriptibleCoCar.DualCoCar.1'
+			VersionIndependentProgID = s 'ScriptibleCoCar.DualCoCar'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{938EA4FB-5802-11D3-B926-0020781238D4}'
+		}
+	}
+}

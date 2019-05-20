@@ -1,0 +1,34 @@
+
+// Bring in core IDL files.
+import "oaidl.idl";	
+
+// IDraw
+[object, uuid(A533DA31-D372-11d2-B8CF-0020781238D4)]
+interface IDraw : IUnknown
+{
+	HRESULT Draw();
+};
+
+// IShapeID
+[object, uuid(DD900363-2C02-11d3-B901-0020781238D4)]
+interface IShapeID : IUnknown
+{
+	[helpstring("method ID"), propput] HRESULT ID([in] int ShapeId);
+	[helpstring("method ID"), propget] HRESULT ID([out, retval] int* ShapeId);
+};
+
+[uuid(AD454EA3-2C15-11d3-B901-0020781238D4), version(1.0),
+ helpstring("CoHexagon nesting others")]
+library RawNested
+{
+
+	importlib("stdole32.tlb");
+
+	[uuid(AD454EA0-2C15-11d3-B901-0020781238D4)]
+	coclass CoHexagon
+	{
+		[default] interface IDraw;
+		interface IShapeID;
+	};
+
+};

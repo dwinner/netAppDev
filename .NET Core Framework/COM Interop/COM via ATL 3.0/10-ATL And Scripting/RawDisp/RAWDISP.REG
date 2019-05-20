@@ -1,0 +1,11 @@
+REGEDIT
+
+; This is the ProgID
+HKEY_CLASSES_ROOT\RawDisp.CoSquiggle\CLSID = {F43C0966-577B-11d3-B926-0020781238D4}
+
+; A CLSID entry typically has these two lines
+HKEY_CLASSES_ROOT\CLSID\{F43C0966-577B-11d3-B926-0020781238D4} = RawDisp.CoSquiggle
+HKEY_CLASSES_ROOT\CLSID\{F43C0966-577B-11d3-B926-0020781238D4}\InprocServer32 = C:\ATL\Labs\Chapter 10\RawDisp\Debug\RawDisp.dll
+
+
+

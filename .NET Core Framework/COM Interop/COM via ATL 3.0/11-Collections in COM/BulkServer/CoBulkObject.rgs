@@ -1,0 +1,26 @@
+HKCR
+{
+	BulkServer.CoBulkObject.1 = s 'CoBulkObject Class'
+	{
+		CLSID = s '{FA5877CE-7E58-11D3-A7DE-0000E885A202}'
+	}
+	BulkServer.CoBulkObject = s 'CoBulkObject Class'
+	{
+		CLSID = s '{FA5877CE-7E58-11D3-A7DE-0000E885A202}'
+		CurVer = s 'BulkServer.CoBulkObject.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {FA5877CE-7E58-11D3-A7DE-0000E885A202} = s 'CoBulkObject Class'
+		{
+			ProgID = s 'BulkServer.CoBulkObject.1'
+			VersionIndependentProgID = s 'BulkServer.CoBulkObject'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{FA5877C1-7E58-11D3-A7DE-0000E885A202}'
+		}
+	}
+}

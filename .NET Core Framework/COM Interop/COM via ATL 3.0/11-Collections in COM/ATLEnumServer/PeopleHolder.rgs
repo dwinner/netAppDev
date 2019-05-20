@@ -1,0 +1,25 @@
+HKCR
+{
+	ATLEnumServer.PeopleHolder.1 = s 'PeopleHolder Class'
+	{
+		CLSID = s '{FE41A723-53E5-11D3-AB20-00A0C9312D57}'
+	}
+	ATLEnumServer.PeopleHolder = s 'PeopleHolder Class'
+	{
+		CLSID = s '{FE41A723-53E5-11D3-AB20-00A0C9312D57}'
+		CurVer = s 'ATLEnumServer.PeopleHolder.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {FE41A723-53E5-11D3-AB20-00A0C9312D57} = s 'PeopleHolder Class'
+		{
+			ProgID = s 'ATLEnumServer.PeopleHolder.1'
+			VersionIndependentProgID = s 'ATLEnumServer.PeopleHolder'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{FE41A713-53E5-11D3-AB20-00A0C9312D57}'
+		}
+	}
+}

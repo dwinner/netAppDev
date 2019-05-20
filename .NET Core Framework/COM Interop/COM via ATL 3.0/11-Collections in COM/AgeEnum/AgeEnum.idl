@@ -1,0 +1,45 @@
+// All the IDL for the raw enum server...
+//
+
+import "oaidl.idl";
+import "ocidl.idl";
+
+	// My custom enumerator interface.
+	[
+		object,
+		uuid(ED5DCBD5-61B5-11d3-B929-0020781238D4),
+		pointer_default(unique)
+	]
+
+	interface IEnumAge : IUnknown
+	{
+
+		HRESULT Next([in] ULONG celt,
+					 [out, size_is(celt), length_is(*pCeltFetched)] ULONG* rgVar,
+					 [out] ULONG* pCeltFetched);
+
+		HRESULT Skip([in] ULONG celt);
+		HRESULT Reset();
+		HRESULT Clone([out] IEnumAge ** ppEnum);
+	};
+
+
+[
+	uuid(ED5DCBD2-61B5-11d3-B929-0020781238D4),
+	version(1.0),
+	helpstring("AgeEnumServer 1.0 Type Library")
+]
+library RAWAgeLib
+{
+	importlib("stdole32.tlb");
+	importlib("stdole2.tlb");
+
+	[
+		uuid(ED5DCBD4-61B5-11d3-B929-0020781238D4),
+		helpstring("CoRawAgeHolder Class")
+	]
+	coclass CoRawAgeHolder
+	{
+		[default] interface IEnumAge;
+	};
+};

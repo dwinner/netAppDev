@@ -1,0 +1,31 @@
+
+// Bring in core IDL files.
+import "oaidl.idl";	
+
+// IDraw
+[object, uuid(24FBC683-8D95-11d3-A7DE-0000E885A202)]
+interface IDraw : IUnknown
+{
+	HRESULT Draw();
+};
+
+// I3DRender
+[object, uuid(24FBC686-8D95-11d3-A7DE-0000E885A202)]
+interface I3DRender : IUnknown
+{
+	HRESULT Draw();
+};
+
+[uuid(957C78D0-3C9A-11d3-B910-0020781238D4), version(1.0),
+ helpstring("Raw Name Clashes...")]
+library RawNameClash
+{
+	importlib("stdole32.tlb");
+
+	[uuid(4443F080-3C9A-11d3-B910-0020781238D4)]
+	coclass Co3DHexagon
+	{
+		[default] interface IDraw;
+		interface I3DRender;
+	};
+};

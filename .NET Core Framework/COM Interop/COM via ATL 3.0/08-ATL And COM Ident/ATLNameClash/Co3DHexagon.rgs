@@ -1,0 +1,25 @@
+HKCR
+{
+	ATLNameClash.Co3DHexagon.1 = s 'Co3DHexagon Class'
+	{
+		CLSID = s '{8945C9C8-2C00-11D3-B901-0020781238D4}'
+	}
+	ATLNameClash.Co3DHexagon = s 'Co3DHexagon Class'
+	{
+		CLSID = s '{8945C9C8-2C00-11D3-B901-0020781238D4}'
+		CurVer = s 'ATLNameClash.Co3DHexagon.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {8945C9C8-2C00-11D3-B901-0020781238D4} = s 'Co3DHexagon Class'
+		{
+			ProgID = s 'ATLNameClash.Co3DHexagon.1'
+			VersionIndependentProgID = s 'ATLNameClash.Co3DHexagon'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{8945C9BB-2C00-11D3-B901-0020781238D4}'
+		}
+	}
+}

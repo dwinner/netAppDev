@@ -1,0 +1,70 @@
+// BetterSquiggleCollection.idl : IDL source for BetterSquiggleCollection.dll
+//
+
+// This file will be processed by the MIDL tool to
+// produce the type library (BetterSquiggleCollection.tlb) and marshalling code.
+
+import "oaidl.idl";
+import "ocidl.idl";
+	[
+		object,
+		uuid(DA0B729D-5E2B-11D3-B927-0020781238D4),
+		dual,
+		helpstring("ISquiggleCollection2 Interface"),
+		pointer_default(unique)
+	]
+	interface ISquiggleCollection2 : IDispatch
+	{
+		[id(DISPID_VALUE), helpstring("method Item")] 
+		HRESULT Item([in] VARIANT index, [out, retval] VARIANT* pItem);
+		
+		[propget, id(1), helpstring("property Count")] 
+		HRESULT Count([out, retval] long *pVal);
+		[id(2), helpstring("method Add")] HRESULT Add([in] IDispatch *pnewSquiggle);
+		[id(3), helpstring("method Remove")] HRESULT Remove([in] long index);
+		
+		[propget, restricted, id(DISPID_NEWENUM)]
+		HRESULT _NewEnum([out, retval] LPUNKNOWN *pVal);
+
+	};
+	[
+		object,
+		uuid(DA0B72A1-5E2B-11D3-B927-0020781238D4),
+		dual,
+		helpstring("ICoSquiggle Interface"),
+		pointer_default(unique)
+	]
+	interface ICoSquiggle : IDispatch
+	{
+		[propget, id(1), helpstring("property Name")] HRESULT Name([out, retval] BSTR *pVal);
+		[propput, id(1), helpstring("property Name")] HRESULT Name([in] BSTR newVal);
+		[id(2), helpstring("method Draw")] HRESULT Draw();
+	};
+
+[
+	uuid(DA0B7291-5E2B-11D3-B927-0020781238D4),
+	version(1.0),
+	helpstring("BetterSquiggleCollection 1.0 Type Library")
+]
+library BETTERSQUIGGLECOLLECTIONLib
+{
+	importlib("stdole32.tlb");
+	importlib("stdole2.tlb");
+
+	[
+		uuid(DA0B729E-5E2B-11D3-B927-0020781238D4),
+		helpstring("SquiggleCollection2 Class")
+	]
+	coclass SquiggleCollection2
+	{
+		[default] interface ISquiggleCollection2;
+	};
+	[
+		uuid(DA0B72A2-5E2B-11D3-B927-0020781238D4),
+		helpstring("CoSquiggle Class")
+	]
+	coclass CoSquiggle
+	{
+		[default] interface ICoSquiggle;
+	};
+};

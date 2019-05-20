@@ -1,0 +1,83 @@
+// BulkServer.idl : IDL source for BulkServer.dll
+//
+
+// This file will be processed by the MIDL tool to
+// produce the type library (BulkServer.tlb) and marshalling code.
+
+import "oaidl.idl";
+import "ocidl.idl";
+
+	// A custom enumeration which specifies a type of pet.
+	//
+	typedef enum PET_TYPE
+	{
+		petDog = 0,
+		petCat = 1,
+		petTick = 2
+	} PET_TYPE;
+
+	// A structure describing the pet.
+	//
+	typedef struct MyPet
+	{
+		short Age;
+		BSTR Name;
+		PET_TYPE Type;
+	}MyPet;
+	
+	[
+		object,
+		uuid(01AB5141-8D6E-11D3-A7DE-0000E885A202),
+	
+		helpstring("ICoSub Interface"),
+		pointer_default(unique)
+	]
+	interface ICoSub : IUnknown
+	{
+		[propget, helpstring("property DatumOne")] HRESULT DatumOne([out, retval] short *pVal);
+		[propput, helpstring("property DatumOne")] HRESULT DatumOne([in] short newVal);
+	};
+
+	[
+		object,
+		uuid(FA5877CD-7E58-11D3-A7DE-0000E885A202),
+		helpstring("ICoBulkObject Interface"),
+		pointer_default(unique)
+	]
+	interface ICoBulkObject : IUnknown
+	{
+		HRESULT UseTheseStrings([in] short size, [in, out, size_is(size)] BSTR strings[]);
+		HRESULT UseThisSafeArrayOfStrings([in] VARIANT strings);
+		HRESULT GiveMeASafeArrayOfString([out, retval] VARIANT* pStrings);
+		HRESULT WorkWithAPet( [in, out] MyPet* p);
+		HRESULT GetSubObject([out, retval] ICoSub** ppv);
+	};
+
+
+[
+	uuid(FA5877C1-7E58-11D3-A7DE-0000E885A202),
+	version(1.0),
+	helpstring("BulkServer 1.0 Type Library")
+]
+library BULKSERVERLib
+{
+	importlib("stdole32.tlb");
+	importlib("stdole2.tlb");
+
+	[
+		uuid(FA5877CE-7E58-11D3-A7DE-0000E885A202),
+		helpstring("CoBulkObject Class")
+	]
+	coclass CoBulkObject
+	{
+		[default] interface ICoBulkObject;
+	};
+	[
+		uuid(01AB5142-8D6E-11D3-A7DE-0000E885A202),noncreatable,
+		helpstring("CoSub Class")
+	]
+	coclass CoSub
+	{
+		[default] interface ICoSub;
+	};
+};

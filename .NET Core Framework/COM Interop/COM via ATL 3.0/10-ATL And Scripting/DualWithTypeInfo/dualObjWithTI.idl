@@ -1,0 +1,23 @@
+import "oaidl.idl";
+
+// A dual interface
+[uuid(99E314A7-58C2-11d3-B926-0020781238D4), object, dual]
+interface ISquiggleTI : IDispatch
+{
+	[id(1)] HRESULT DrawASquiggle();
+	[id(2)] HRESULT FlipASquiggle();
+	[id(3)] HRESULT EraseASquiggle();
+	[id(4)] HRESULT Explode();
+};
+
+[uuid(674BF6F3-5E73-11d3-B927-0020781238D4), version(1.0)]
+library DualWithTypeInfo
+{
+	importlib("STDOLE2.TLB");
+
+	[uuid(99E314AB-58C2-11d3-B926-0020781238D4)]
+	coclass CoDualSquiggleTI
+	{
+		[default] interface ISquiggleTI;
+	};
+};

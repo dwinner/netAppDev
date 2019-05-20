@@ -1,0 +1,15 @@
+<HTML>
+<HEAD>
+<TITLE>ATL 3.0 test page for object ShapesControl</TITLE>
+</HEAD>
+<BODY>
+<OBJECT ID="ShapesControl" CLASSID="CLSID:03FBA320-71D1-11D3-B92D-0020781238D4">
+	<PARAM NAME = "ShapeType" VALUE ="1">
+	<PARAM NAME = "Caption" VALUE = "We Love COM">
+</OBJECT>
+<script LANGUAGE = "VBScript" FOR = "ShapesControl" 
+		EVENT = "ClickedControl(xPos, yPos)">
+	MsgBox "X= " & xPos & " Y= " & yPos
+</script>
+</BODY>
+</HTML>

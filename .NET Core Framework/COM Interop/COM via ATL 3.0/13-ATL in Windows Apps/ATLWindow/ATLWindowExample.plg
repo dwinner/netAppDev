@@ -1,0 +1,27 @@
+<html>
+<body>
+<pre>
+<h1>Build Log</h1>
+<h3>
+--------------------Configuration: ATLWindowExample - Win32 Debug--------------------
+</h3>
+<h3>Command Lines</h3>
+Creating temporary file "c:\windows\TEMP\RSP9225.BAT" with contents
+[
+@echo off
+".\Debug\ATLWindowExample.exe" /RegServer
+echo regsvr32 exec. time > ".\Debug\regsvr32.trg"
+echo Server registration done!
+]
+Creating command line "c:\windows\TEMP\RSP9225.BAT"
+<h3>Output Window</h3>
+Performing registration
+Server registration done!
+
+
+
+<h3>Results</h3>
+ATLWindowExample.exe - 0 error(s), 0 warning(s)
+</pre>
+</body>
+</html>

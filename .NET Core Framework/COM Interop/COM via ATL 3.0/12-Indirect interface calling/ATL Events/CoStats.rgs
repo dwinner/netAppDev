@@ -1,0 +1,24 @@
+HKCR
+{
+	ATLEvents.CoStats.1 = s 'CoStats Class'
+	{
+		CLSID = s '{B2C94BC9-A582-11D2-AAD9-00A0C9312D57}'
+	}
+	ATLEvents.CoStats = s 'CoStats Class'
+	{
+		CLSID = s '{B2C94BC9-A582-11D2-AAD9-00A0C9312D57}'
+		CurVer = s 'ATLEvents.CoStats.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {B2C94BC9-A582-11D2-AAD9-00A0C9312D57} = s 'CoStats Class'
+		{
+			ProgID = s 'ATLEvents.CoStats.1'
+			VersionIndependentProgID = s 'ATLEvents.CoStats'
+			ForceRemove 'Programmable'
+			LocalServer32 = s '%MODULE%'
+			val AppID = s '{B2C94BBD-A582-11D2-AAD9-00A0C9312D57}'
+			'TypeLib' = s '{B2C94BBC-A582-11D2-AAD9-00A0C9312D57}'
+		}
+	}
+}

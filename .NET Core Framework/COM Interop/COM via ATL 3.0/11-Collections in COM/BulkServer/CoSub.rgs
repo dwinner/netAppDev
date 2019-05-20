@@ -1,0 +1,25 @@
+HKCR
+{
+	BulkServer.CoSub.1 = s 'CoSub Class'
+	{
+		CLSID = s '{01AB5142-8D6E-11D3-A7DE-0000E885A202}'
+	}
+	BulkServer.CoSub = s 'CoSub Class'
+	{
+		CLSID = s '{01AB5142-8D6E-11D3-A7DE-0000E885A202}'
+		CurVer = s 'BulkServer.CoSub.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {01AB5142-8D6E-11D3-A7DE-0000E885A202} = s 'CoSub Class'
+		{
+			ProgID = s 'BulkServer.CoSub.1'
+			VersionIndependentProgID = s 'BulkServer.CoSub'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{FA5877C1-7E58-11D3-A7DE-0000E885A202}'
+		}
+	}
+}

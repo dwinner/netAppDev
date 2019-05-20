@@ -1,0 +1,54 @@
+/*
+
+This IDL file describes all the COM-isms
+contained in the CarServer Library
+
+*/
+
+// Bring in core IDL files.
+import "oaidl.idl";	
+
+// IStats
+[object, uuid(A533DA31-D372-11d2-B8CF-0020781238D4),
+ oleautomation, helpstring("Get info about this car")]
+interface IStats : IUnknown
+{
+	HRESULT DisplayStats();
+	HRESULT GetPetName([out, retval] BSTR* petName);
+};
+
+// IEngine
+[object, uuid(A533DA30-D372-11d2-B8CF-0020781238D4),
+ oleautomation, helpstring("Rev your car & slow it down")]
+interface IEngine : IUnknown
+{
+	HRESULT SpeedUp();
+	HRESULT GetMaxSpeed ([out, retval] int* maxSpeed);
+	HRESULT GetCurSpeed ([out, retval] int* curSpeed);
+};
+
+
+// ICreateCar
+[object, uuid(A533DA32-D372-11d2-B8CF-0020781238D4),
+ oleautomation, helpstring("This lets you create a car")]
+interface ICreateCar : IUnknown
+{
+	HRESULT SetPetName([in]BSTR petName);
+	HRESULT SetMaxSpeed([in]int maxSp);
+};
+
+
+[uuid(C8376C01-F1FA-11d2-B8E0-0020781238D4), version(1.0),
+ helpstring("CoCar Local Server TypeLib")]
+library CarServer
+{
+	importlib("stdole32.tlb");
+
+	[uuid(C8376C06-F1FA-11d2-B8E0-0020781238D4)]
+	coclass CoCar
+	{
+		[default] interface ICreateCar;
+		interface IStats;
+		interface IEngine;
+	};
+};

@@ -1,0 +1,55 @@
+// ATLEvents.idl : IDL source for ATLEvents.dll
+//
+
+// This file will be processed by the MIDL tool to
+// produce the type library (ATLEvents.tlb) and marshalling code.
+
+import "oaidl.idl";
+import "ocidl.idl";
+	[
+		object,
+		uuid(B2C94BC8-A582-11D2-AAD9-00A0C9312D57),
+		dual,
+		helpstring("IChildStats Interface"),
+		pointer_default(unique)
+	]
+	interface IChild : IDispatch
+	{
+		[propget, id(1), helpstring("property Name")] HRESULT Name([out, retval] BSTR *pVal);
+		[propput, id(1), helpstring("property Name")] HRESULT Name([in] BSTR newVal);
+		[propget, id(2), helpstring("property Age")] HRESULT Age([out, retval] short *pVal);
+		[propput, id(2), helpstring("property Age")] HRESULT Age([in] short newVal);
+		[id(3), helpstring("method AskChildQuestion")] HRESULT AskChildQuestion();
+	};
+
+[
+	uuid(B2C94BBC-A582-11D2-AAD9-00A0C9312D57),
+	version(1.0),
+	helpstring("ATLEvents 1.0 Type Library")
+]
+library ATLEVENTSLib
+{
+	importlib("stdole32.tlb");
+	importlib("stdole2.tlb");
+
+	[
+		uuid(B2C94BCA-A582-11D2-AAD9-00A0C9312D57),
+		helpstring("_IChildEvents Interface")
+	]
+	dispinterface _IChildEvents
+	{
+		properties:
+		methods:
+		[id(1), helpstring("method ChildSays")] HRESULT ChildSays([in] BSTR msg);
+	};
+
+	[
+		uuid(B2C94BC9-A582-11D2-AAD9-00A0C9312D57),
+		helpstring("CoStats Class")
+	]
+	coclass CoChild
+	{
+		[default] interface IChild;
+		[default, source] dispinterface _IChildEvents;
+	};
+};

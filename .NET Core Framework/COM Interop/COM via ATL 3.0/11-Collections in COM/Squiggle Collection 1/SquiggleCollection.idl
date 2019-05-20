@@ -1,0 +1,70 @@
+// SquiggleCollection.idl : IDL source for SquiggleCollection.dll
+//
+
+// This file will be processed by the MIDL tool to
+// produce the type library (SquiggleCollection.tlb) and marshalling code.
+
+import "oaidl.idl";
+import "ocidl.idl";
+	[
+		object,
+		uuid(9FB9E734-59BA-11D3-B926-0020781238D4),
+		dual,
+		helpstring("ICoSquiggles Interface"),
+		pointer_default(unique)
+	]
+	interface ICoSquiggles : IDispatch
+	{
+		[id(DISPID_VALUE), helpstring("method Item")] 
+		HRESULT Item([in] VARIANT index, [out, retval] VARIANT* pItem);
+		
+		[propget, id(1), helpstring("property Count")] 
+		HRESULT Count([out, retval] long *pVal);
+		
+		[propget, restricted, id(DISPID_NEWENUM)]
+		HRESULT _NewEnum([out, retval] LPUNKNOWN *pVal);
+	};
+	[
+		object,
+		uuid(9FB9E736-59BA-11D3-B926-0020781238D4),
+		dual,
+		helpstring("ICoSquiggle Interface"),
+		pointer_default(unique)
+	]
+	interface ICoSquiggle : IDispatch
+	{
+		[id(1), helpstring("method Draw")] 
+		HRESULT Draw();
+		[propget, id(2), helpstring("property Name")] 
+		HRESULT Name([out, retval] BSTR *pVal);
+		[propput, id(2), helpstring("property Name")] 
+		HRESULT Name([in] BSTR newVal);
+	};
+
+[
+	uuid(9FB9E728-59BA-11D3-B926-0020781238D4),
+	version(1.0),
+	helpstring("SquiggleCollection 1.0 Type Library")
+]
+library SQUIGGLECOLLECTIONLib
+{
+	importlib("stdole32.tlb");
+	importlib("stdole2.tlb");
+
+	[
+		uuid(9FB9E735-59BA-11D3-B926-0020781238D4),
+		helpstring("CoSquiggles Class")
+	]
+	coclass CoSquiggles
+	{
+		[default] interface ICoSquiggles;
+	};
+	[
+		uuid(9FB9E737-59BA-11D3-B926-0020781238D4),
+		helpstring("CoSquiggle Class")
+	]
+	coclass CoSquiggle
+	{
+		[default] interface ICoSquiggle;
+	};
+};

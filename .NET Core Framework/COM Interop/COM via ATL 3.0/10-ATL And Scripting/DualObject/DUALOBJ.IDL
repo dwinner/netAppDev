@@ -1,0 +1,24 @@
+// The IDL file for your dual CoSquiggle.
+
+import "oaidl.idl";
+
+// A dual interface
+[uuid(BDFD41A0-580A-11d3-B926-0020781238D4), object, dual]
+interface ISquiggle : IDispatch
+{
+	[id(1)]  HRESULT DrawASquiggle();
+	[id(2)] HRESULT FlipASquiggle();
+	[id(3)] HRESULT EraseASquiggle();
+};
+
+[uuid(BDFD41A1-580A-11d3-B926-0020781238D4), version(1.0)]
+library DualObject
+{
+	importlib("STDOLE2.TLB");
+
+	[uuid(BDFD41A2-580A-11d3-B926-0020781238D4)]
+	coclass CoDualSquiggle
+	{
+		[default] interface ISquiggle;
+	};
+};

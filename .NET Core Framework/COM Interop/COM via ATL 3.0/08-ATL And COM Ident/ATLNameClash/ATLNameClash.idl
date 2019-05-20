@@ -1,0 +1,48 @@
+// ATLNameClash.idl : IDL source for ATLNameClash.dll
+//
+
+// This file will be processed by the MIDL tool to
+// produce the type library (ATLNameClash.tlb) and marshalling code.
+
+import "oaidl.idl";
+import "ocidl.idl";
+	[
+		object,
+		uuid(8945C9C7-2C00-11D3-B901-0020781238D4),
+	
+		helpstring("IDraw Interface"),
+		pointer_default(unique)
+	]
+	interface IDraw : IUnknown
+	{
+		[helpstring("Draw in 2D")] HRESULT Draw();
+		[helpstring("method AnotherIDraw")] HRESULT AnotherIDraw();
+	};
+
+	[object, uuid(DD900360-2C02-11d3-B901-0020781238D4)]
+	interface I3DRender : IUnknown
+	{
+		[helpstring("Draw in 3D")] HRESULT Draw();
+		[helpstring("method Another3dRender")] HRESULT Another3dRender();
+	};
+
+[
+	uuid(8945C9BB-2C00-11D3-B901-0020781238D4),
+	version(1.0),
+	helpstring("ATLNameClash 1.0 Type Library")
+]
+library ATLNAMECLASHLib
+{
+	importlib("stdole32.tlb");
+	importlib("stdole2.tlb");
+
+	[
+		uuid(8945C9C8-2C00-11D3-B901-0020781238D4),
+		helpstring("Co3DHexagon Class")
+	]
+	coclass Co3DHexagon
+	{
+		[default] interface IDraw;
+		interface I3DRender;
+	};
+};

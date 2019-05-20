@@ -1,0 +1,25 @@
+HKCR
+{
+	ATLTearOff.ATLCoCar.1 = s 'ATLCoCar Class'
+	{
+		CLSID = s '{E58B9C70-367D-11d3-B905-0020781238D4}'
+	}
+	ATLTearOff.ATLCoCar = s 'ATLCoCar Class'
+	{
+		CLSID = s '{E58B9C70-367D-11d3-B905-0020781238D4}'
+		CurVer = s 'ATLTearOff.ATLCoCar.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {E58B9C70-367D-11d3-B905-0020781238D4} = s 'ATLCoCar Class'
+		{
+			ProgID = s 'ATLTearOff.ATLCoCar.1'
+			VersionIndependentProgID = s 'ATLTearOff.ATLCoCar'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{D3DF9700-3676-11D3-B905-0020781238D4}'
+		}
+	}
+}

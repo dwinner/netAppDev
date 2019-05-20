@@ -1,0 +1,96 @@
+// AXShapesServer.idl : IDL source for AXShapesServer.dll
+//
+
+// This file will be processed by the MIDL tool to
+// produce the type library (AXShapesServer.tlb) and marshalling code.
+
+import "oaidl.idl";
+import "ocidl.idl";
+#include "olectl.h"
+
+[uuid(6019BEB1-7307-11d3-B92D-0020781238D4), v1_enum]
+typedef enum CURRENTSHAPE
+{
+	[helpstring("The Circle")] shapeCIRCLE	= 0,
+	[helpstring("The Square")] shapeSQUARE		= 1,
+	[helpstring("The Rect")]   shapeRECTANGLE	= 2
+} CURRENTSHAPE;
+
+	[
+		object,
+		uuid(03FBA31F-71D1-11D3-B92D-0020781238D4),
+		dual,
+		helpstring("IShapesControl Interface"),
+		pointer_default(unique)
+	]
+	interface IShapesControl : IDispatch
+	{
+		[propput, id(DISPID_BACKCOLOR), bindable, requestedit]
+		HRESULT BackColor([in]OLE_COLOR clr);
+		[propget, id(DISPID_BACKCOLOR), bindable, requestedit]
+		HRESULT BackColor([out,retval]OLE_COLOR* pclr);
+		
+		[propputref, id(DISPID_FONT), bindable, requestedit]
+		HRESULT Font([in]IFontDisp* pFont);
+		[propput, id(DISPID_FONT), bindable, requestedit]
+		HRESULT Font([in]IFontDisp* pFont);
+		[propget, id(DISPID_FONT), bindable, requestedit]
+		HRESULT Font([out, retval]IFontDisp** ppFont);
+		
+		[propput, id(DISPID_CAPTION), bindable, requestedit]
+		HRESULT Caption([in]BSTR strCaption);
+		[propget, id(DISPID_CAPTION), bindable, requestedit]
+		HRESULT Caption([out,retval]BSTR* pstrCaption);
+
+		[propget, id(1), helpstring("property ShapeType"),
+		 bindable, requestedit] 
+		HRESULT ShapeType([out, retval] CURRENTSHAPE *pVal);	
+		[propput, id(1), helpstring("property ShapeType"),
+		 bindable, requestedit] 
+		HRESULT ShapeType([in] CURRENTSHAPE newVal);
+
+		[id(DISPID_ABOUTBOX), helpstring("method AboutBox")] 
+		HRESULT AboutBox();
+	};
+
+[
+	uuid(03FBA313-71D1-11D3-B92D-0020781238D4),
+	version(1.0),
+	helpstring("AXShapesServer 1.0 Type Library")
+]
+library AXSHAPESSERVERLib
+{
+	importlib("stdole32.tlb");
+	importlib("stdole2.tlb");
+
+	[
+		uuid(03FBA321-71D1-11D3-B92D-0020781238D4),
+		helpstring("_IShapesControlEvents Interface")
+	]
+	dispinterface _IShapesControlEvents
+	{
+		properties:
+		methods:
+		[id(1), helpstring("method ClickedControl")] 
+		HRESULT ClickedControl([in] short X, [in] short Y);
+	};
+
+	[
+		uuid(03FBA320-71D1-11D3-B92D-0020781238D4),
+		helpstring("ShapesControl Class")
+	]
+	coclass ShapesControl
+	{
+		[default] interface IShapesControl;
+		[default, source] dispinterface _IShapesControlEvents;
+	};
+
+	[
+		uuid(C489E472-7391-11D3-B92E-0020781238D4),
+		helpstring("CoCusomPage Class")
+	]
+	coclass CoCusomPage
+	{
+		interface IUnknown;
+	};
+};

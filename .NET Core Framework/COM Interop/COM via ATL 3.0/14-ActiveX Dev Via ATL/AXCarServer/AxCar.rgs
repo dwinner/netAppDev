@@ -1,0 +1,35 @@
+HKCR
+{
+	AXCarServer.AxCar.1 = s 'AxCar Class'
+	{
+		CLSID = s '{65A0EEC0-745F-11D3-B92E-0020781238D4}'
+		'Insertable'
+	}
+	AXCarServer.AxCar = s 'AxCar Class'
+	{
+		CLSID = s '{65A0EEC0-745F-11D3-B92E-0020781238D4}'
+		CurVer = s 'AXCarServer.AxCar.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {65A0EEC0-745F-11D3-B92E-0020781238D4} = s 'AxCar Class'
+		{
+			ProgID = s 'AXCarServer.AxCar.1'
+			VersionIndependentProgID = s 'AXCarServer.AxCar'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			ForceRemove 'Control'
+			ForceRemove 'Insertable'
+			ForceRemove 'ToolboxBitmap32' = s '%MODULE%, 101'
+			'MiscStatus' = s '0'
+			{
+			    '1' = s '131473'
+			}
+			'TypeLib' = s '{65A0EEB3-745F-11D3-B92E-0020781238D4}'
+			'Version' = s '1.0'
+		}
+	}
+}

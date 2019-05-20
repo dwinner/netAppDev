@@ -1,0 +1,11 @@
+HKCR
+{
+	NoRemove AppID
+	{
+		{1DF4E5C2-9509-11D2-AAD0-00A0C9312D57} = s 'ATLWindowExample'
+		'ATLWindowExample.EXE'
+		{
+			val AppID = s {1DF4E5C2-9509-11D2-AAD0-00A0C9312D57}
+		}
+	}
+}
