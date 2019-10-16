@@ -33,3 +33,16 @@ The set of demos and samples which can be usefull as building blocks
 ### Web/Client side development ###
 
 * [Deck slides](https://github.com/imakewebthings/deck.js)
+* [JQuery theme roller](http://themeroller.jquerymobile.com/)
+* [PhoneGap](http://phonegap.com/)
+* [Bootstrap](http://getbootstrap.com/)
+* [Image placeholders](http://lorempixel.com/)
+* [Less](http://lesscss.org/)
+* [Online image editor](https://pixlr.com/editor/)
+* [Dynamic drive](http://www.dynamicdrive.com/)
+* [Png To Ico](http://www.convertico.com/)
+* [W3 Schools](http://www.w3schools.com/)
+* [XPath tester](http://www.xpathtester.com/xpath)
+* [Markdown](https://github.com/sandino/Markdown-Cheatsheet)
+* [Mobile emulator](http://transmog.net/iphone-simulator/)
+* [Facebook post messages](http://www.overpie.com/aspnet/articles/csharp-post-message-to-facebook)
