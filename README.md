@@ -46,3 +46,26 @@ The set of demos and samples which can be usefull as building blocks
 * [Markdown](https://github.com/sandino/Markdown-Cheatsheet)
 * [Mobile emulator](http://transmog.net/iphone-simulator/)
 * [Facebook post messages](http://www.overpie.com/aspnet/articles/csharp-post-message-to-facebook)
+* [Zone domain files](http://csa.ee/databases-zone-files/)
+
+### WPF ###
+
+* [Tutorial](http://www.wpf-tutorial.com/)
+* [2000 WPF things](https://wpf.2000things.com/)
+* [Yet another tutorial](https://www.wpftutorial.net/)
+
+### Compiler services ###
+
+* [Learn Roslyn](https://joshvarty.wordpress.com/learn-roslyn-now/)
+* [Vsix development](https://archive.codeplex.com/?p=learnvsxnow)
+* [Extensibility tools](https://marketplace.visualstudio.com/items?itemName=MadsKristensen.ExtensibilityTools)
+* [Roslyn quoter](http://roslynquoter.azurewebsites.net/)
+
+### Reactive extensions ###
+
+* [RxJS Marbles](http://rxmarbles.com/)
+* [101 Rx Samples](http://rxwiki.wikidot.com/101samples)
+* [Exposing reactive extensions](http://rehansaeed.com/reactive-extensions-part1-replacing-events/)
+* [Reactive-UI Manual](https://reactiveui.net/docs/)
+* [MVVM Pattern with ReactiveUI and Xamarin.Forms](https://doumer.me/mvvm-with-reactiveui/)
+* [Reactive collections based on Rx.Net](https://github.com/rolandpheasant/dynamicdata)
