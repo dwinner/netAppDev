@@ -10,7 +10,7 @@ The set of demos and samples which can be usefull as building blocks
 * [Professorweb](http://professorweb.ru/)
 * [Humanizer](https://github.com/Humanizr/Humanizer)
 * [Pro C#](https://github.com/ProfessionalCSharp/ProfessionalCSharp7)
-* [MSBuild signing] https://github.com/RichardSlater/MSBuildSignFile
+* [MSBuild signing](https://github.com/RichardSlater/MSBuildSignFile)
 * [Newton json](http://www.newtonsoft.com/json)
 * [P/Invoke](http://www.pinvoke.net/)
 * [NLog](http://nlog-project.org/)
@@ -22,13 +22,13 @@ The set of demos and samples which can be usefull as building blocks
 
 ### Extending Visual Studio ###
 
-* https://github.com/Microsoft/VSSDK-Extensibility-Samples
-* https://github.com/SergeyTeplyakov/ExceptionAnalyzer
-* https://github.com/code-cracker/code-cracker
-* https://github.com/neris/sonaranalyzer-csharp
-* https://github.com/mre/awesome-static-analysis#c
-* https://github.com/madskristensen
-* https://github.com/Fody/NullGuard#readme
+* [Extensibility](https://github.com/Microsoft/VSSDK-Extensibility-Samples)
+* [Error analyzer](https://github.com/SergeyTeplyakov/ExceptionAnalyzer)
+* [Code cracker](https://github.com/code-cracker/code-cracker)
+* [Sonal analyzer](https://github.com/neris/sonaranalyzer-csharp)
+* [Static analysis tool](https://github.com/mre/awesome-static-analysis#c)
+* [Web Developer extension](https://github.com/madskristensen)
+* [Weaving via Fody guard](https://github.com/Fody/NullGuard#readme)
 
 ### Web/Client side development ###
 
