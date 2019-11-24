@@ -60,4 +60,25 @@ namespace Async_streams
          }
       }
    }
+
+   /*internal class AsyncEnumerableRepo<T> : IAsyncEnumerator<T>
+   {
+      private readonly T[] _streamData;
+      private int _currentIndex;
+
+      public AsyncEnumerableRepo(T[] streamData) => _streamData = streamData;
+
+      public ValueTask DisposeAsync()
+      {
+         _currentIndex = 0; // rewind the current index
+         return new ValueTask(Task.FromResult(true));
+      }
+
+      public ValueTask<bool> MoveNextAsync() =>
+         _currentIndex < _streamData.Length
+            ? new ValueTask<bool>(true)
+            : new ValueTask<bool>(false);
+
+      public T Current => _streamData[_currentIndex];
+   }*/
 }
