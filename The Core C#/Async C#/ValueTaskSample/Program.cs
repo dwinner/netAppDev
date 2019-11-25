@@ -7,6 +7,7 @@ namespace ValueTaskSample
 {
    internal static class Program
    {
+      private const string Value = "--------------------------------";
       private static readonly Dictionary<string, string> Names = new Dictionary<string, string>();
       private static DateTime _Retrieved;
       private static IEnumerable<string> _CachedData;
@@ -17,7 +18,7 @@ namespace ValueTaskSample
          var greetingValueTask2 = GreetingValueTask2("Katharina");
          Console.WriteLine(greetingValueTask2.Result);
 
-         Console.WriteLine("--------------------------------");
+         Console.WriteLine(Value);
 
          for (var i = 0; i < 20; i++)
          {
