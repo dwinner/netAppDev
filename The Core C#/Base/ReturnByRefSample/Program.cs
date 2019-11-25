@@ -21,7 +21,10 @@ namespace ReturnByRefSample
       private static ref int Find(int[] list, Func<int, bool> pred)
       {
          int i;
-         for (i = 0; !pred(list[i]); i++) ;
+         for (i = 0; !pred(list[i]); i++)
+         {
+         }
+
          return ref list[i];
       }
    }
