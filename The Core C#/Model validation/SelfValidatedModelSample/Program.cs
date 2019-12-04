@@ -6,7 +6,7 @@ namespace SelfValidatedModelSample
 {
    internal static class Program
    {
-      private static void Main(string[] args)
+      private static void Main()
       {
          var user = new User {Id = "", Name = "Tom", Age = -22};
          var results = new List<ValidationResult>();
