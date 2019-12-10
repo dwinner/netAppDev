@@ -2,26 +2,14 @@
 
 namespace AutoProps
 {
-   class Car
+   internal class Car
    {
       // Automatic properties!
-      public string PetName
-      {
-         get;
-         set;
-      }
+      public string PetName { get; set; }
 
-      public int Speed
-      {
-         get;
-         protected internal set;
-      }
+      public int Speed { get; protected internal set; }
 
-      public string Color
-      {
-         get;
-         protected internal set;
-      }
+      public string Color { get; protected internal set; }
 
       public void DisplayStats()
       {

@@ -50,10 +50,8 @@ namespace SpanSamples
 
          if (!span1.TryCopyTo(span4))
          {
-            Console.WriteLine("Couldn't copy span1 to span4 because span4 is " +
-                              "too small");
-            Console.WriteLine($"length of span4: {span4.Length}, length of " +
-                              $"span1: {span1.Length}");
+            Console.WriteLine("Couldn't copy span1 to span4 because span4 is too small");
+            Console.WriteLine($"length of span4: {span4.Length}, length of span1: {span1.Length}");
          }
       }
 

@@ -6,9 +6,9 @@ using System;
 
 namespace WeakReference
 {
-   static class Program
+   internal static class Program
    {
-      static void Main()
+      private static void Main()
       {
          // Создать слабую ссылку на объект MathTest
          var weakReference = new System.WeakReference(new MathTest());
@@ -21,8 +21,9 @@ namespace WeakReference
          }
          else
          {
-            Console.WriteLine("Reference is not available");   // Ссылка стала недоступна
+            Console.WriteLine("Reference is not available"); // Ссылка стала недоступна
          }
+
          GC.Collect();
          if (weakReference.IsAlive)
          {
@@ -42,9 +43,6 @@ namespace WeakReference
    {
       public int Value { get; set; }
 
-      public int GetSquare(int i)
-      {
-         return (int)Math.Pow(i, 2);
-      }
+      public int GetSquare(int i) => (int) Math.Pow(i, 2);
    }
 }

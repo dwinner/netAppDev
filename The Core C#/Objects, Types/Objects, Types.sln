@@ -1,6 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29519.181
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoProps", "AutoProps\AutoProps.csproj", "{FB5C9593-0332-4BF0-803A-CD7A5CBE0F83}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConstData", "ConstData\ConstData.csproj", "{EBCE86EE-5A62-4601-82C7-66E720C2B4AE}"
@@ -14,6 +16,10 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VertexDemo", "VertexDemo\VertexDemo.csproj", "{39B2E02F-CC9A-45CE-BD5D-FEE2C237EBFA}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WeakReference", "WeakReference\WeakReference.csproj", "{4B1CCF56-8AE2-4E1E-9A09-36CF21AC7DF2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReadonlyStructSample", "ReadonlyStructSample\ReadonlyStructSample.csproj", "{130A24D0-0F31-4035-A0AF-D5926222F45E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RefStructSample", "RefStructSample\RefStructSample.csproj", "{6994DC3F-AB3F-4641-B5AB-6789D14087B9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -95,8 +101,35 @@ Global
 		{4B1CCF56-8AE2-4E1E-9A09-36CF21AC7DF2}.Release|Mixed Platforms.Build.0 = Release|x86
 		{4B1CCF56-8AE2-4E1E-9A09-36CF21AC7DF2}.Release|x86.ActiveCfg = Release|x86
 		{4B1CCF56-8AE2-4E1E-9A09-36CF21AC7DF2}.Release|x86.Build.0 = Release|x86
+		{130A24D0-0F31-4035-A0AF-D5926222F45E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{130A24D0-0F31-4035-A0AF-D5926222F45E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{130A24D0-0F31-4035-A0AF-D5926222F45E}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{130A24D0-0F31-4035-A0AF-D5926222F45E}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{130A24D0-0F31-4035-A0AF-D5926222F45E}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{130A24D0-0F31-4035-A0AF-D5926222F45E}.Debug|x86.Build.0 = Debug|Any CPU
+		{130A24D0-0F31-4035-A0AF-D5926222F45E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{130A24D0-0F31-4035-A0AF-D5926222F45E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{130A24D0-0F31-4035-A0AF-D5926222F45E}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{130A24D0-0F31-4035-A0AF-D5926222F45E}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{130A24D0-0F31-4035-A0AF-D5926222F45E}.Release|x86.ActiveCfg = Release|Any CPU
+		{130A24D0-0F31-4035-A0AF-D5926222F45E}.Release|x86.Build.0 = Release|Any CPU
+		{6994DC3F-AB3F-4641-B5AB-6789D14087B9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6994DC3F-AB3F-4641-B5AB-6789D14087B9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6994DC3F-AB3F-4641-B5AB-6789D14087B9}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{6994DC3F-AB3F-4641-B5AB-6789D14087B9}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{6994DC3F-AB3F-4641-B5AB-6789D14087B9}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{6994DC3F-AB3F-4641-B5AB-6789D14087B9}.Debug|x86.Build.0 = Debug|Any CPU
+		{6994DC3F-AB3F-4641-B5AB-6789D14087B9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6994DC3F-AB3F-4641-B5AB-6789D14087B9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6994DC3F-AB3F-4641-B5AB-6789D14087B9}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{6994DC3F-AB3F-4641-B5AB-6789D14087B9}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{6994DC3F-AB3F-4641-B5AB-6789D14087B9}.Release|x86.ActiveCfg = Release|Any CPU
+		{6994DC3F-AB3F-4641-B5AB-6789D14087B9}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {268EE85F-F5CB-4D8F-9F47-B4F70CB79EDB}
 	EndGlobalSection
 EndGlobal

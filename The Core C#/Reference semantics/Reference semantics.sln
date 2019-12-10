@@ -9,6 +9,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpanSamples", "SpanSamples\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArrayPoolSample", "ArrayPoolSample\ArrayPoolSample.csproj", "{4B32E436-D942-4506-9A4F-7FDA288D3599}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpanWithStrings", "SpanWithStrings\SpanWithStrings.csproj", "{F9F648D5-6071-4007-A341-1862CEFF57DA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpanBehaviors", "SpanBehaviors\SpanBehaviors.csproj", "{C2E3C1AC-FC6A-4E55-B2D9-F7B781AEECED}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +31,14 @@ Global
 		{4B32E436-D942-4506-9A4F-7FDA288D3599}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4B32E436-D942-4506-9A4F-7FDA288D3599}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4B32E436-D942-4506-9A4F-7FDA288D3599}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F9F648D5-6071-4007-A341-1862CEFF57DA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F9F648D5-6071-4007-A341-1862CEFF57DA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F9F648D5-6071-4007-A341-1862CEFF57DA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F9F648D5-6071-4007-A341-1862CEFF57DA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C2E3C1AC-FC6A-4E55-B2D9-F7B781AEECED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C2E3C1AC-FC6A-4E55-B2D9-F7B781AEECED}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C2E3C1AC-FC6A-4E55-B2D9-F7B781AEECED}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C2E3C1AC-FC6A-4E55-B2D9-F7B781AEECED}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

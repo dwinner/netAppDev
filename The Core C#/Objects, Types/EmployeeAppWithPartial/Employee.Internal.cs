@@ -2,14 +2,18 @@
 
 namespace EmployeeAppWithPartial
 {
-   partial class Employee
+   internal partial class Employee
    {
       #region Constructors
 
-      public Employee() { }
+      public Employee()
+      {
+      }
 
       public Employee(string name, int id, float pay)
-         : this(name, 0, id, pay, "") { }
+         : this(name, 0, id, pay, "")
+      {
+      }
 
       public Employee(string name, int age, int id, float pay, string ssn)
       {
@@ -22,57 +26,38 @@ namespace EmployeeAppWithPartial
          SocialSecurityNumber = ssn;
       }
 
-      static Employee()
-      {
-         companyName = "Intertech Training";
-      }
+      static Employee() => Company = "Intertech Training";
 
       #endregion
 
       #region Properties
 
-      public static string Company
-      {
-         get { return companyName; }
-         set { companyName = value; }
-      }
+      public static string Company { get; set; }
 
       public string Name
       {
-         get { return empName; }
+         get => empName;
          set
          {
             // Here, value is really a string.
             if (value.Length > 15)
+            {
                Console.WriteLine("Error!  Name must be less than 15 characters!");
+            }
             else
+            {
                empName = value;
+            }
          }
       }
 
-      public int ID
-      {
-         get { return empID; }
-         set { empID = value; }
-      }
+      public int ID { get; set; }
 
-      public float Pay
-      {
-         get { return currPay; }
-         set { currPay = value; }
-      }
+      public float Pay { get; set; }
 
-      public int Age
-      {
-         get { return empAge; }
-         set { empAge = value; }
-      }
+      public int Age { get; set; }
 
-      public string SocialSecurityNumber
-      {
-         get { return empSSN; }
-         set { empSSN = value; }
-      }
+      public string SocialSecurityNumber { get; set; }
 
       #endregion
    }

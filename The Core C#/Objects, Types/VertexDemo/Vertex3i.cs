@@ -4,7 +4,7 @@ using System.Text;
 
 namespace HowToCSharp.Ch02.VertexDemo
 {
-   struct Vertex3I
+   internal struct Vertex3I
    {
       public int Id { get; set; }
 
@@ -23,15 +23,14 @@ namespace HowToCSharp.Ch02.VertexDemo
          Id = 0;
       }
 
-      public override string ToString()
-      {
-         return ToString("G", null);
-      }
+      public override string ToString() => ToString("G", null);
 
       public string ToString(string format, IFormatProvider formatProvider)
       {
          if (format == null)
+         {
             format = "G";
+         }
 
          if (formatProvider != null)
          {
@@ -48,7 +47,7 @@ namespace HowToCSharp.Ch02.VertexDemo
          }
 
          var stringBuilder = new StringBuilder();
-         int sourceIndex = 0;
+         var sourceIndex = 0;
 
          while (sourceIndex < format.Length)
          {
@@ -67,14 +66,13 @@ namespace HowToCSharp.Ch02.VertexDemo
                   stringBuilder.Append(format[sourceIndex]);
                   break;
             }
+
             sourceIndex++;
          }
+
          return stringBuilder.ToString();
       }
 
-      public static implicit operator Vertex3D(Vertex3I vertex)
-      {
-         return new Vertex3D(vertex.X, vertex.Y, vertex.Z);
-      }
+      public static implicit operator Vertex3D(Vertex3I vertex) => new Vertex3D(vertex.X, vertex.Y, vertex.Z);
    }
 }

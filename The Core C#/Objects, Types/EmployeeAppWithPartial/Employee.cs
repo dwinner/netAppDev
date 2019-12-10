@@ -2,17 +2,13 @@
 
 namespace EmployeeAppWithPartial
 {
-   partial class Employee
+   internal partial class Employee
    {
       // Field data.
       private string empName;
-      private int empID;
-      private float currPay;
-      private int empAge;
-      private string empSSN;
-      private static string companyName;
 
       #region Methods
+
       public void GiveBonus(float amount)
       {
          Pay += amount;
@@ -40,7 +36,5 @@ namespace EmployeeAppWithPartial
       //}
 
       #endregion
-
-
    }
 }

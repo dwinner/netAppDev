@@ -4,7 +4,7 @@ using System.Text;
 
 namespace HowToCSharp.Ch02.VertexDemo
 {
-   struct Vertex3D : IFormattable, IEquatable<Vertex3D>, IComparable<Vertex3D>
+   internal struct Vertex3D : IFormattable, IEquatable<Vertex3D>, IComparable<Vertex3D>
    {
       private const double Epsilon = 10E-6;
       public int? Id { get; set; }
@@ -31,9 +31,15 @@ namespace HowToCSharp.Ch02.VertexDemo
          {
             switch (index)
             {
-               case 0: X = value; break;
-               case 1: Y = value; break;
-               case 2: Z = value; break;
+               case 0:
+                  X = value;
+                  break;
+               case 1:
+                  Y = value;
+                  break;
+               case 2:
+                  Z = value;
+                  break;
                default: throw new ArgumentOutOfRangeException("index", "Only indexes 0-2 valid!");
             }
          }
@@ -44,9 +50,9 @@ namespace HowToCSharp.Ch02.VertexDemo
          get
          {
             switch (dimension.ToUpper())
-            {               
-               case "X": return X;               
-               case "Y": return Y;               
+            {
+               case "X": return X;
+               case "Y": return Y;
                case "Z": return Z;
                default: throw new ArgumentOutOfRangeException("dimension", "Only dimensions X, Y, and Z are valid!");
             }
@@ -54,10 +60,16 @@ namespace HowToCSharp.Ch02.VertexDemo
          set
          {
             switch (dimension.ToUpper())
-            {               
-               case "X": X = value; break;               
-               case "Y": Y = value; break;               
-               case "Z": Z = value; break;
+            {
+               case "X":
+                  X = value;
+                  break;
+               case "Y":
+                  Y = value;
+                  break;
+               case "Z":
+                  Z = value;
+                  break;
                default: throw new ArgumentOutOfRangeException("dimension", "Only dimensions X, Y, and Z are valid!");
             }
          }
@@ -74,20 +86,19 @@ namespace HowToCSharp.Ch02.VertexDemo
          Id = 0;
       }
 
-      public override string ToString()
-      {
-         return ToString("G", null);
-      }
+      public override string ToString() => ToString("G", null);
 
       public string ToString(string format, IFormatProvider formatProvider)
       {
          if (format == null)
+         {
             format = "G";
+         }
 
          if (formatProvider != null)
          {
-            var formatter = formatProvider.GetFormat(this.GetType())
-                as ICustomFormatter;
+            var formatter = formatProvider.GetFormat(GetType())
+               as ICustomFormatter;
             if (formatter != null)
             {
                return formatter.Format(format, this, formatProvider);
@@ -100,7 +111,7 @@ namespace HowToCSharp.Ch02.VertexDemo
          }
 
          var stringBuilder = new StringBuilder();
-         int sourceIndex = 0;
+         var sourceIndex = 0;
 
          while (sourceIndex < format.Length)
          {
@@ -119,71 +130,51 @@ namespace HowToCSharp.Ch02.VertexDemo
                   stringBuilder.Append(format[sourceIndex]);
                   break;
             }
+
             sourceIndex++;
          }
+
          return stringBuilder.ToString();
       }
 
       public override bool Equals(object obj)
       {
          if (obj == null)
+         {
             return false;
+         }
+
          if (obj.GetType() != GetType())
+         {
             return false;
-         return Equals((Vertex3D)obj);
+         }
+
+         return Equals((Vertex3D) obj);
       }
 
-      public bool Equals(Vertex3D other)
-      {
-         /* Если бы Vertex3d был бы ссылочным типом, нам также понадобилось бы:
-          * 
-          * if ((object)other == null)
-          *  return false;
-          *  
-          * if (!base.Equals(other))
-          *  return false;
-          */
+      public bool Equals(Vertex3D other) =>
+         Math.Abs(X - other.X) < Epsilon
+         && Math.Abs(Y - other.Y) < Epsilon
+         && Math.Abs(Z - other.Z) < Epsilon;
 
-         return Math.Abs(X - other.X) < Epsilon
-             && Math.Abs(Y - other.Y) < Epsilon
-             && Math.Abs(Z - other.Z) < Epsilon;
-      }
+      public override int GetHashCode() =>
+         (((int) X ^ (int) Z) << 16) |
+         (((int) Y ^ (int) Z) & 0x0000FFFF);
 
-      public override int GetHashCode()
-      {
-         return (((int)X ^ (int)Z) << 16) |
-                (((int)Y ^ (int)Z) & 0x0000FFFF);
-      }
-
-      public int CompareTo(Vertex3D other)
-      {
-         return Id < other.Id
+      public int CompareTo(Vertex3D other) =>
+         Id < other.Id
             ? -1
-            : (Id == other.Id ? 0 : 1);         
-         /* 
-          * Также можно сделать так:
-          * return _id.CompareTo(other._id);          
-          */
-      }
+            : Id == other.Id
+               ? 0
+               : 1;
 
-      public static Vertex3D operator +(Vertex3D a, Vertex3D b)
-      {
-         return new Vertex3D(a.X + b.X, a.Y + b.Y, a.Z + b.Z);
-      }
+      public static Vertex3D operator +(Vertex3D a, Vertex3D b) => new Vertex3D(a.X + b.X, a.Y + b.Y, a.Z + b.Z);
 
-      public static bool operator ==(Vertex3D a, Vertex3D b)
-      {
-         return a.Equals(b);
-      }
+      public static bool operator ==(Vertex3D a, Vertex3D b) => a.Equals(b);
 
-      public static bool operator !=(Vertex3D a, Vertex3D b)
-      {
-         return !a.Equals(b);
-      }
+      public static bool operator !=(Vertex3D a, Vertex3D b) => !a.Equals(b);
 
-      public static explicit operator Vertex3I(Vertex3D vertex)
-      {
-         return new Vertex3I((Int32)vertex.X, (Int32)vertex.Y, (Int32)vertex.Z);
-      }
+      public static explicit operator Vertex3I(Vertex3D vertex) =>
+         new Vertex3I((int) vertex.X, (int) vertex.Y, (int) vertex.Z);
    }
 }
