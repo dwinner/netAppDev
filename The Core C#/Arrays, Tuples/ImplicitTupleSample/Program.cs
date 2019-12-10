@@ -2,25 +2,19 @@
 
 namespace ImplicitTupleSample
 {
-   class Program
+   internal static class Program
    {
-      static void Main(string[] args)
+      private static void Main()
       {
-         (int, int) Tally()
-         {
-            return (0, 0);
-         }
+         (int, int) Tally() => (0, 0);
 
-         var implTuple = Tally();
-         WriteLine($"{implTuple.Item1}, {implTuple.Item2}");
+         var (item1, item2) = Tally();
+         WriteLine($"{item1}, {item2}");
 
-         (int sum, int count) NamedTally()
-         {
-            return (0, 0);
-         }
+         (int sum, int count) NamedTally() => (0, 0);
 
-         var namedImplTuple = NamedTally();
-         WriteLine($"Sum = {namedImplTuple.sum}, Count = {namedImplTuple.count}");
+         var (sum, count) = NamedTally();
+         WriteLine($"Sum = {sum}, Count = {count}");
       }
    }
 }
