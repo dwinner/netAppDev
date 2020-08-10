@@ -48,8 +48,9 @@ namespace SimpleGC
          // Как часто сборщик мусора чистил все доступные поколения объектов
          for (int i = 0; i <= GC.MaxGeneration; i++)
          {
-            Console.WriteLine("Gen {0} has been swept {0} times",
-               i, GC.CollectionCount(i));
+            Console.WriteLine("Gen {0} has been swept {1} times",
+               i,
+               GC.CollectionCount(i));
          }
 
          Console.ReadLine();
