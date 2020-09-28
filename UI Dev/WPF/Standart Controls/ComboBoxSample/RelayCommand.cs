@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Input;
 
-namespace MvvmPrimer.Commands
+namespace ComboBoxSample
 {
    public sealed class RelayCommand : ICommand
    {

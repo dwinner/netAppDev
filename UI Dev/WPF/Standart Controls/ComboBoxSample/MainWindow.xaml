@@ -3,26 +3,40 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+        xmlns:local="clr-namespace:ComboBoxSample"
         mc:Ignorable="d"
-        Title="MainWindow" Height="480" Width="640">
-    <ComboBox Height="30" VerticalAlignment="Top"
-              x:Name="comboBox"
-              SelectionChanged="OnSelectionChanged"
-              DropDownClosed="OnDropDownClosed">
-        <ComboBoxItem IsSelected="True">
-            <TextBlock Text="LG Nexus 5X" />
-        </ComboBoxItem>
-        <ComboBoxItem>
-            <TextBlock Text="Huawai Nexus 6P" />
-        </ComboBoxItem>
-        <ComboBoxItem>
-            <TextBlock Text="iPhone 6S" />
-        </ComboBoxItem>
-        <ComboBoxItem>
-            <TextBlock Text="iPhone 6S Plus" />
-        </ComboBoxItem>
-        <ComboBoxItem>
-            <TextBlock Text="Microsoft Lumia 950" />
-        </ComboBoxItem>
-    </ComboBox>
+        Title="MainWindow" Height="480" Width="640" d:DataContext="{d:DesignInstance local:MainWindow}">
+    <StackPanel>
+        <ComboBox Height="30" VerticalAlignment="Top"
+                  x:Name="comboBox"
+                  SelectionChanged="OnSelectionChanged"
+                  DropDownClosed="OnDropDownClosed">
+            <ComboBoxItem IsSelected="True">
+                <TextBlock Text="LG Nexus 5X" />
+            </ComboBoxItem>
+            <ComboBoxItem>
+                <TextBlock Text="Huawai Nexus 6P" />
+            </ComboBoxItem>
+            <ComboBoxItem>
+                <TextBlock Text="iPhone 6S" />
+            </ComboBoxItem>
+            <ComboBoxItem>
+                <TextBlock Text="iPhone 6S Plus" />
+            </ComboBoxItem>
+            <ComboBoxItem>
+                <TextBlock Text="Microsoft Lumia 950" />
+            </ComboBoxItem>
+        </ComboBox>
+        <ComboBox>
+            <i:Interaction.Behaviors>
+                <local:InvokeIfSameElementSelectedBehavior
+                    Command="{Binding SelectionChangedCommand, Mode=OneWay}" />
+            </i:Interaction.Behaviors>
+            <ComboBoxItem>First</ComboBoxItem>
+            <ComboBoxItem>Second</ComboBoxItem>
+            <ComboBoxItem>Third</ComboBoxItem>
+            <ComboBoxItem>Fourth</ComboBoxItem>
+        </ComboBox>
+    </StackPanel>
 </Window>

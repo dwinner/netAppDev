@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 
 namespace ComboBoxSample
 {
@@ -8,9 +10,15 @@ namespace ComboBoxSample
    {
       private bool _handled = true;
 
+      public ICommand SelectionChangedCommand { get; } = new RelayCommand(o =>
+      {
+         Debug.WriteLine(o?.ToString() ?? "None");
+      });
+
       public MainWindow()
       {
          InitializeComponent();
+         DataContext = this;
       }
 
       private void OnSelectionChanged(object sender, SelectionChangedEventArgs e)
