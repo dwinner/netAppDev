@@ -6,7 +6,9 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="480" Width="640">
     <ComboBox Height="30" VerticalAlignment="Top"
-              SelectionChanged="OnSelectionChanged">
+              x:Name="comboBox"
+              SelectionChanged="OnSelectionChanged"
+              DropDownClosed="OnDropDownClosed">
         <ComboBoxItem IsSelected="True">
             <TextBlock Text="LG Nexus 5X" />
         </ComboBoxItem>
