@@ -61,7 +61,9 @@ namespace AuthPostRequest.Sample
          var webResponse = request.GetResponse() as HttpWebResponse;
          var httpResponseStream = webResponse?.GetResponseStream();
          if (httpResponseStream == null)
+         {
             return Empty;
+         }
 
          using (TextReader reader = new StreamReader(httpResponseStream))
          {
@@ -88,10 +90,12 @@ namespace AuthPostRequest.Sample
             responseStream.Write(postBytes, 0, postData.Length);
          }
 
-         var webResponse = (await request.GetResponseAsync()) as HttpWebResponse;
+         var webResponse = await request.GetResponseAsync() as HttpWebResponse;
          var httpResponseStream = webResponse?.GetResponseStream();
          if (httpResponseStream == null)
+         {
             return Empty;
+         }
 
          using (TextReader reader = new StreamReader(httpResponseStream))
          {
@@ -105,7 +109,9 @@ namespace AuthPostRequest.Sample
       {
          var request = WebRequest.Create(_domain) as HttpWebRequest;
          if (request == null)
+         {
             throw new ArgumentException("request");
+         }
 
          if (_proxy != null)
          {

@@ -21,7 +21,8 @@ namespace DnsLookupSample
 
             OnLookupAsync(hostName).Wait();
             WriteLine();
-         } while (true);
+         }
+         while (true);
       }
 
       private static async Task OnLookupAsync(string aHostName)

@@ -21,13 +21,13 @@ namespace WpfAppTcpClient
       }
 
       private static string[] DefaultCommands { get; } =
-         {
-            CommandHelo,
-            CommandBye,
-            CommandSet,
-            CommandGet,
-            CommandEcho,
-            CommandRev
-         };
+      {
+         CommandHelo,
+         CommandBye,
+         CommandSet,
+         CommandGet,
+         CommandEcho,
+         CommandRev
+      };
    }
 }

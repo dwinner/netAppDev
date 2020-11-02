@@ -116,49 +116,43 @@ namespace WpfAppTcpClient
 
       public string RemoteHost
       {
-         get { return _remoteHost; }
-         set { SetProperty(ref _remoteHost, value, nameof(RemoteHost)); }
+         get => _remoteHost;
+         set => SetProperty(ref _remoteHost, value, nameof(RemoteHost));
       }
 
       private int _serverPort = 8800;
 
       public int ServerPort
       {
-         get { return _serverPort; }
-         set { SetProperty(ref _serverPort, value); }
+         get => _serverPort;
+         set => SetProperty(ref _serverPort, value);
       }
 
       private string _sessionId;
 
       public string SessionId
       {
-         get { return _sessionId; }
-         set { SetProperty(ref _sessionId, value); }
+         get => _sessionId;
+         set => SetProperty(ref _sessionId, value);
       }
 
       private CustomProtocolCommand _activeCommand;
 
       public CustomProtocolCommand ActiveCommand
       {
-         get { return _activeCommand; }
-         set { SetProperty(ref _activeCommand, value); }
+         get => _activeCommand;
+         set => SetProperty(ref _activeCommand, value);
       }
 
       private string _log;
 
       public string Log
       {
-         get { return _log; }
-         set { SetProperty(ref _log, value); }
+         get => _log;
+         set => SetProperty(ref _log, value);
       }
 
-      private string _status;
-
-      public string Status
-      {
-         get { return _status; }
-         set { _status = value; }
-      }
+      public string Status { get; set; }
 
       #endregion
 

@@ -13,10 +13,7 @@ namespace HttpClientSample
    {
       private readonly string _displayMessage;
 
-      public SampleMessageHandler(string displayMessage)
-      {
-         _displayMessage = displayMessage;
-      }
+      public SampleMessageHandler(string displayMessage) => _displayMessage = displayMessage;
 
       protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request,
          CancellationToken cancellationToken)

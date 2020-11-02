@@ -37,7 +37,8 @@ namespace TcpConsoleClientSample
                   await writer.WriteLineAsync(line).ConfigureAwait(false);
                   var result = await reader.ReadLineAsync().ConfigureAwait(false);
                   WriteLine($"Received {result} from server");
-               } while (line != "bye");
+               }
+               while (line != "bye");
 
                WriteLine("So long, and thanks for all the fish");
             }

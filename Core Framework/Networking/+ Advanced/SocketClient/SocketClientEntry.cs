@@ -62,7 +62,7 @@ namespace SocketClient
                   var tSender = SendAsync(stream, tokenSource);
                   var tReceiver = ReceiveAsync(stream, tokenSource.Token);
                   await Task.WhenAll(tSender, tReceiver).ConfigureAwait(false);
-               }               
+               }
             }
          }
          catch (SocketException ex)

@@ -48,7 +48,8 @@ namespace UdpReceiverSample
                {
                   completed = true;
                }
-            } while (!completed);
+            }
+            while (!completed);
 
             WriteLine("Receiver closing");
 
@@ -62,7 +63,8 @@ namespace UdpReceiverSample
       private static string GetValueForKey(IReadOnlyList<string> args, string key)
       {
          var nextIndex =
-            args.Select((arg, index) => new {Arg = arg, Index = index}).SingleOrDefault(a => a.Arg == key)?.Index + 1;
+            args.Select((arg, index) => new {Arg = arg, Index = index}).SingleOrDefault(a => a.Arg == key)?.Index +
+            1;
          return !nextIndex.HasValue ? null : args[nextIndex.Value];
       }
 

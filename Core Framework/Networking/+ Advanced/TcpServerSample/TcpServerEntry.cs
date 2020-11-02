@@ -71,7 +71,8 @@ namespace TcpServerSample
                      {
                         const int bufferCount = 0x400;
                         var readBuffer = new byte[bufferCount];
-                        var read = await stream.ReadAsync(readBuffer, 0, readBuffer.Length).ConfigureAwait(false);
+                        var read = await stream.ReadAsync(readBuffer, 0, readBuffer.Length)
+                           .ConfigureAwait(false);
                         var request = Encoding.ASCII.GetString(readBuffer, 0, read);
                         WriteLine($"Received {request}");
 
@@ -89,6 +90,7 @@ namespace TcpServerSample
                                  response =
                                     $"{StatusOk}{Separator}{SessionId}{Separator}{sessionId}{Separator}{content}";
                               }
+
                               break;
 
                            case ParseResponse.Close:
@@ -112,7 +114,8 @@ namespace TcpServerSample
                         await stream.WriteAsync(writeBuffer, 0, writeBuffer.Length).ConfigureAwait(false);
                         await stream.FlushAsync().ConfigureAwait(false);
                         WriteLine($"Returned {Encoding.ASCII.GetString(writeBuffer, 0, writeBuffer.Length)}");
-                     } while (!completed);
+                     }
+                     while (!completed);
                   }
                }
             }
@@ -152,6 +155,7 @@ namespace TcpServerSample
                {
                   response = ProcessRequest(requestColl);
                }
+
                break;
 
             default:

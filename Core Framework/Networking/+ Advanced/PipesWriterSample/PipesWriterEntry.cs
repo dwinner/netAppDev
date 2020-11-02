@@ -7,15 +7,14 @@ using System.IO;
 using System.IO.Pipes;
 using System.Threading.Tasks;
 using static System.Console;
-using static Pipes.Lib.PipesCommon;
 
 namespace PipesWriterSample
 {
    public class PipesWriterEntry
-   {      
+   {
       public static void Main(string[] args)
       {
-         var pipeName = args.Length >= 1 ? args[0] : DefaultPipesName;
+         var pipeName = args.Length >= 1 ? args[0] : "MyPipe";
          if (pipeName == "anon")
          {
             AnonymousWriterAsync().Wait();
@@ -30,7 +29,7 @@ namespace PipesWriterSample
       {
          try
          {
-            using (var pipeWriter = new NamedPipeClientStream(DefaultServerName, pipeName, PipeDirection.Out))
+            using (var pipeWriter = new NamedPipeClientStream("localhost", pipeName, PipeDirection.Out))
             using (var writer = new StreamWriter(pipeWriter))
             {
                await pipeWriter.ConnectAsync().ConfigureAwait(false);

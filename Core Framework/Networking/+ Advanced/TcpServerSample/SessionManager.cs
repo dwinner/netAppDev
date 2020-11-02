@@ -69,7 +69,7 @@ namespace TcpServerSample
          Dictionary<string, string> data;
          string value;
          return _sessionData.TryGetValue(sessionId, out data)
-            ? (data.TryGetValue(key, out value) ? value : StatusNotFound)
+            ? data.TryGetValue(key, out value) ? value : StatusNotFound
             : StatusNotFound;
       }
 

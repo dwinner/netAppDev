@@ -169,6 +169,7 @@ namespace HttpClientSample
             string.Join(" ", header.Value);
             WriteLine($"Header: {header.Key} Value: {header.Value}");
          }
+
          WriteLine();
       }
 

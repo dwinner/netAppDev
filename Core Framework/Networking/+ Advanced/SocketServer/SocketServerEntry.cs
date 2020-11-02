@@ -105,8 +105,10 @@ namespace SocketServer
                      var writeBuffer = Encoding.UTF8.GetBytes($"echo {fromClient}");
                      var send = socket.Send(writeBuffer);
                      WriteLine($"sent {send} bytes");
-                  } while (!completed);
+                  }
+                  while (!completed);
                }
+
                WriteLine("closed stream and client socket");
             }
             catch (SocketException ex)
@@ -140,8 +142,10 @@ namespace SocketServer
 
                   var writeBuffer = Encoding.UTF8.GetBytes($"echo {fromClient}");
                   await stream.WriteAsync(writeBuffer, 0, writeBuffer.Length).ConfigureAwait(false);
-               } while (!completed);
+               }
+               while (!completed);
             }
+
             WriteLine("closed stream and client socket");
          }
          catch (Exception ex)
@@ -169,8 +173,10 @@ namespace SocketServer
                   }
 
                   await writer.WriteLineAsync($"echo {fromClient}").ConfigureAwait(false);
-               } while (!completed);
+               }
+               while (!completed);
             }
+
             WriteLine("closed stream and client socket");
          }
          catch (Exception ex)

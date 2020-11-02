@@ -41,7 +41,7 @@ namespace UriSample
 
       private static void UriBuilderTest()
       {
-         var uri = new UriBuilder { Host = "www.cinnovation.com", Port = 80, Path = "training/MVC" }.Uri;
+         var uri = new UriBuilder {Host = "www.cinnovation.com", Port = 80, Path = "training/MVC"}.Uri;
          WriteLine(uri);
       }
    }

@@ -8,7 +8,6 @@ using System.IO.Pipes;
 using System.Text;
 using System.Threading.Tasks;
 using static System.Console;
-using static Pipes.Lib.PipesCommon;
 
 namespace PipesReaderSample
 {
@@ -16,7 +15,7 @@ namespace PipesReaderSample
    {
       public static void Main(string[] args)
       {
-         var pipeName = args.Length == 1 ? args[0] : DefaultPipesName;
+         var pipeName = args.Length == 1 ? args[0] : "MyPipe";
          if (pipeName == "anon")
          {
             AnonymousReaderAsync().Wait();

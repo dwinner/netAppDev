@@ -100,7 +100,8 @@ namespace UdpSenderSample
                   var datagram = Encoding.UTF8.GetBytes($"{input} from {localhost}");
                   /*var sent = */
                   await client.SendAsync(datagram, datagram.Length, endPoint).ConfigureAwait(false);
-               } while (!completed);
+               }
+               while (!completed);
 
                if (groupAddress != null)
                {
@@ -173,7 +174,8 @@ namespace UdpSenderSample
       private static string GetValueForKey(IReadOnlyList<string> args, string key)
       {
          var nextIndex =
-            args.Select((arg, index) => new {Arg = arg, Index = index}).SingleOrDefault(a => a.Arg == key)?.Index + 1;
+            args.Select((arg, index) => new {Arg = arg, Index = index}).SingleOrDefault(a => a.Arg == key)?.Index +
+            1;
          return !nextIndex.HasValue ? null : args[nextIndex.Value];
       }
    }

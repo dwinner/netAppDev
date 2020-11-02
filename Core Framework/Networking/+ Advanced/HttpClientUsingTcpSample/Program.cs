@@ -54,7 +54,8 @@ namespace HttpClientUsingTcpSample
                         read = await stream.ReadAsync(buffer, 0, ReadBufferSize).ConfigureAwait(false);
                         await responseStream.WriteAsync(buffer, 0, buffer.Length).ConfigureAwait(false);
                         Array.Clear(buffer, 0, buffer.Length);
-                     } while (read > 0);
+                     }
+                     while (read > 0);
 
                      responseStream.Seek(0, SeekOrigin.Begin);
                      using (var reader = new StreamReader(responseStream))

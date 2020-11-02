@@ -55,7 +55,8 @@ namespace SimpleHttpServerSample
                   var buffer = GetHtmlContent(context.Request);
                   await context.Response.Body.WriteAsync(buffer, 0, buffer.Length).ConfigureAwait(false);
                }
-            } while (true);
+            }
+            while (true);
          }
          catch (Exception ex)
          {
@@ -75,7 +76,7 @@ namespace SimpleHttpServerSample
                .Append(string.Join(" ", GetHeaderInfo(request.Headers)))
                .Append("<h2>Request Object Information</h2>")
                .Append(string.Join(" ", GetRequestInfo(request)));
-         var html = string.Format(HtmlFormat, title, builder.ToString());
+         var html = string.Format(HtmlFormat, title, builder);
 
          return Encoding.UTF8.GetBytes(html);
       }
