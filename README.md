@@ -69,3 +69,10 @@ The set of demos and samples which can be usefull as building blocks
 * [Reactive-UI Manual](https://reactiveui.net/docs/)
 * [MVVM Pattern with ReactiveUI and Xamarin.Forms](https://doumer.me/mvvm-with-reactiveui/)
 * [Reactive collections based on Rx.Net](https://github.com/rolandpheasant/dynamicdata)
+
+### ASP.NET ###
+* [Pro ASP.NET Core MVC 2](http://github.com/Apress/pro-asp.net-core-mvc-2)
+* [Pro EF Core for ASP.NET Core](http://github.com/Apress/pro-ef-core-2-for-asp.net-core-mvc)
+* [Angular for ASP.NET Core MVC 3](http://github.com/Apress/esntl-angular-for-asp.net-core-mvc-3)
+* [Angular 6](http://github.com/Apress/pro-angular-6)
+* [EF Core](https://metanit.com/sharp/entityframeworkcore/1.2.php)
