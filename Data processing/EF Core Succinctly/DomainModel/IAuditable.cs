@@ -1,6 +1,6 @@
 ﻿namespace DomainModel
 {
-    public interface IAuditable
-    {
-    }
+   public interface IAuditable
+   {
+   }
 }

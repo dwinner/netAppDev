@@ -1,9 +1,9 @@
 ﻿namespace DomainModel
 {
-    public enum Role
-    {
-        ProjectManager,
-        Developer,
-        Tester
-    }
+   public enum Role
+   {
+      ProjectManager,
+      Developer,
+      Tester
+   }
 }
