@@ -5,9 +5,15 @@ VisualStudioVersion = 15.0.28307.1500
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IPv6Multicast", "IPv6Multicast\IPv6Multicast.csproj", "{02CD3BF5-2676-444B-B193-EA25EEF1D6BF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleMulticastSender", "SimpleMulticastSender\SimpleMulticastSender.csproj", "{6417FEEC-94E2-42D0-BDD3-A994DF43B68B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleMulticastSender", "SimpleMulticastSender\SimpleMulticastSender.csproj", "{6417FEEC-94E2-42D0-BDD3-A994DF43B68B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleMulticastReceiver", "SimpleMulticastReceiver\SimpleMulticastReceiver.csproj", "{7FDF2659-E9F5-404A-A764-7B613BD99C96}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleMulticastReceiver", "SimpleMulticastReceiver\SimpleMulticastReceiver.csproj", "{7FDF2659-E9F5-404A-A764-7B613BD99C96}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdvancedMulticastSender", "AdvancedMulticastSender\AdvancedMulticastSender.csproj", "{5BD5877A-7351-4B34-B6A1-7A3C54786343}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MulticastNetworkUtils", "MulticastNetworkUtils\MulticastNetworkUtils.csproj", "{6FCF3415-4A78-4DCD-B5E4-18CB0AF84916}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdvancedMulticastReceiver", "AdvancedMulticastReceiver\AdvancedMulticastReceiver.csproj", "{886AD51C-DD7D-410F-8CCB-6DA140171251}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +45,30 @@ Global
 		{7FDF2659-E9F5-404A-A764-7B613BD99C96}.Release|Any CPU.Build.0 = Release|Any CPU
 		{7FDF2659-E9F5-404A-A764-7B613BD99C96}.Release|x86.ActiveCfg = Release|Any CPU
 		{7FDF2659-E9F5-404A-A764-7B613BD99C96}.Release|x86.Build.0 = Release|Any CPU
+		{5BD5877A-7351-4B34-B6A1-7A3C54786343}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5BD5877A-7351-4B34-B6A1-7A3C54786343}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5BD5877A-7351-4B34-B6A1-7A3C54786343}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{5BD5877A-7351-4B34-B6A1-7A3C54786343}.Debug|x86.Build.0 = Debug|Any CPU
+		{5BD5877A-7351-4B34-B6A1-7A3C54786343}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5BD5877A-7351-4B34-B6A1-7A3C54786343}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5BD5877A-7351-4B34-B6A1-7A3C54786343}.Release|x86.ActiveCfg = Release|Any CPU
+		{5BD5877A-7351-4B34-B6A1-7A3C54786343}.Release|x86.Build.0 = Release|Any CPU
+		{6FCF3415-4A78-4DCD-B5E4-18CB0AF84916}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6FCF3415-4A78-4DCD-B5E4-18CB0AF84916}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6FCF3415-4A78-4DCD-B5E4-18CB0AF84916}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{6FCF3415-4A78-4DCD-B5E4-18CB0AF84916}.Debug|x86.Build.0 = Debug|Any CPU
+		{6FCF3415-4A78-4DCD-B5E4-18CB0AF84916}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6FCF3415-4A78-4DCD-B5E4-18CB0AF84916}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6FCF3415-4A78-4DCD-B5E4-18CB0AF84916}.Release|x86.ActiveCfg = Release|Any CPU
+		{6FCF3415-4A78-4DCD-B5E4-18CB0AF84916}.Release|x86.Build.0 = Release|Any CPU
+		{886AD51C-DD7D-410F-8CCB-6DA140171251}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{886AD51C-DD7D-410F-8CCB-6DA140171251}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{886AD51C-DD7D-410F-8CCB-6DA140171251}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{886AD51C-DD7D-410F-8CCB-6DA140171251}.Debug|x86.Build.0 = Debug|Any CPU
+		{886AD51C-DD7D-410F-8CCB-6DA140171251}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{886AD51C-DD7D-410F-8CCB-6DA140171251}.Release|Any CPU.Build.0 = Release|Any CPU
+		{886AD51C-DD7D-410F-8CCB-6DA140171251}.Release|x86.ActiveCfg = Release|Any CPU
+		{886AD51C-DD7D-410F-8CCB-6DA140171251}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

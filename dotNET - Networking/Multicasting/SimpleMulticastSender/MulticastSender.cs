@@ -8,12 +8,10 @@ namespace SimpleMulticastSender
    {
       public void Send(string mcastGroup, string port, string ttlValue, string rep)
       {
-         IPAddress ipAddr;
-
          try
          {
             Console.WriteLine("MCAST Send on Group: {0} Port: {1} TTL: {2}", mcastGroup, port, ttlValue);
-            ipAddr = IPAddress.Parse(mcastGroup);
+            var ipAddr = IPAddress.Parse(mcastGroup);
 
             var s = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
             s.SetSocketOption(SocketOptionLevel.IP, SocketOptionName.AddMembership, new MulticastOption(ipAddr));
