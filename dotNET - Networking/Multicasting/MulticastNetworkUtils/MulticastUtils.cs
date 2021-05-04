@@ -101,6 +101,47 @@ namespace MulticastNetworkUtils
          }
       }
 
+      public static Socket CreateIPv4MCastClientSocket(string mcastIpAddr, uint udpPort)
+      {
+         var mcastSocket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
+         var receiveIp = new IPEndPoint(IPAddress.Any, (int) udpPort);
+         mcastSocket.Bind(receiveIp);
+
+         // Join to the group
+         var inputIp = IPAddress.Parse(mcastIpAddr);
+         mcastSocket.SetSocketOption(SocketOptionLevel.IP, SocketOptionName.AddMembership,
+            new MulticastOption(inputIp, IPAddress.Any));
+
+         return mcastSocket;
+      }
+
+      public static Socket CreateIPv6MCastClientSocket(string mcastIpAddr, int udpPort)
+      {
+         var mcastSocket = new Socket(AddressFamily.InterNetworkV6, SocketType.Dgram, ProtocolType.Udp);
+         var receiveIp = new IPEndPoint(IPAddress.IPv6Any, udpPort);
+         mcastSocket.Bind(receiveIp);
+
+         var inputIp = IPAddress.Parse(mcastIpAddr);
+         mcastSocket.SetSocketOption(SocketOptionLevel.IPv6, SocketOptionName.AddMembership,
+            new IPv6MulticastOption(inputIp));
+
+         return mcastSocket;
+      }
+
+      public static Socket CreateIPv6MCastServerSocket(string ipv6Address, int udpPort, out IPEndPoint ipEndPoint)
+      {
+         var mcastSocket = new Socket(AddressFamily.InterNetworkV6, SocketType.Dgram, ProtocolType.Udp);
+         var ipv6Addr = IPAddress.Parse(ipv6Address);
+         mcastSocket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
+         //var bindEndPoint = new IPEndPoint(IPAddress.IPv6Any, udpPort);
+         //mcastSocket.Bind(bindEndPoint);
+         mcastSocket.SetSocketOption(SocketOptionLevel.IPv6, SocketOptionName.AddMembership,
+            new IPv6MulticastOption(ipv6Addr));
+         ipEndPoint = new IPEndPoint(ipv6Addr, udpPort);
+
+         return mcastSocket;
+      }
+
       public static Socket CreateIPv4MCastServerSocket(string mcastIpAddr, uint udpPort, out IPEndPoint ipEndPoint)
       {
          // Create IPv4 socket and adapt it for multicasting
@@ -114,23 +155,7 @@ namespace MulticastNetworkUtils
             SocketOptionLevel.IP,
             SocketOptionName.MulticastTimeToLive,
             2);
-         ipEndPoint = new IPEndPoint(ipv4Addr, (int) udpPort);
-
-         return mcastSocket;
-      }
-
-      public static Socket CreateIPv4MCastClientSocket(string mcastIpAddr, uint udpPort)
-      {
-         var mcastSocket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
-         var receiveIp = new IPEndPoint(IPAddress.Any, (int) udpPort);
-         mcastSocket.Bind(receiveIp);
-
-         // Join to the group
-         var inputIp = IPAddress.Parse(mcastIpAddr);
-         mcastSocket.SetSocketOption(
-            SocketOptionLevel.IP,
-            SocketOptionName.AddMembership,
-            new MulticastOption(inputIp, IPAddress.Any));
+         ipEndPoint = new IPEndPoint(ipv4Addr, (int)udpPort);
 
          return mcastSocket;
       }

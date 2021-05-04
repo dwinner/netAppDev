@@ -38,7 +38,8 @@ namespace AdvancedMulticastSender
             return;
          }
 
-         var mcastSocket = CreateIPv4MCastServerSocket(mcastIpAddr, udpPort, out var ipEndPoint);
+         //var mcastSocket = CreateIPv4MCastServerSocket(mcastIpAddr, udpPort, out var ipEndPoint);
+         var mcastSocket = CreateIPv6MCastServerSocket(mcastIpAddr, (int) udpPort, out var ipEndPoint);
          mcastSocket.Connect(ipEndPoint); // Connect the socket
 
          // Transfer some data to the group

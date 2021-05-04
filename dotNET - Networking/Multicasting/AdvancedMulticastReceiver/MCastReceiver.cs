@@ -31,7 +31,8 @@ namespace AdvancedMulticastReceiver
             return;
          }
 
-         var mcastSocket = CreateIPv4MCastClientSocket(mcastIpAddr, udpPort);
+         //var mcastSocket = CreateIPv4MCastClientSocket(mcastIpAddr, udpPort);
+         var mcastSocket = CreateIPv6MCastClientSocket(mcastIpAddr, (int) udpPort);
          Task.Run(() =>
          {
             const char nullTerminate = '\0';
@@ -48,7 +49,6 @@ namespace AdvancedMulticastReceiver
          });
 
          Console.ReadKey();
-
          _stop = true;
       }
    }
