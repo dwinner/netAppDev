@@ -1,21 +1,27 @@
-﻿/* Advanced multicast sender */
+﻿/**
+ * Advanced multicast sender.
+ * Usage: dotnet AdvancedMulticastSender.dll mcast_ip=ip_address udp_port=port
+ *        i.e. dotnet AdvancedMulticastSender.dll mcast_ip=224.5.6.7 udp_port=4567
+ */
 
 using System;
-using System.Net;
 using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
-using MulticastNetworkUtils;
+using static MulticastNetworkUtils.MulticastUtils;
 
 namespace AdvancedMulticastSender
 {
-   internal static class Program
+   internal static class MCastSender
    {
       private static volatile bool _stop;
 
-      private static void Main( /*string[] args*/)
+      private static void Main(string[] args)
       {
-         var tcpIpv6StackEnabled = MulticastUtils.IsTcpIpv6StackEnabled();
+         var (mcastIpAddr, udpPort) = ParseArguments(args);
+
+         // Check IPv6 stack
+         var tcpIpv6StackEnabled = IsTcpIpv6StackEnabled();
          if (!tcpIpv6StackEnabled)
          {
             Console.Error.WriteLine(
@@ -25,23 +31,15 @@ namespace AdvancedMulticastSender
             return;
          }
 
-         var isMcastEnabled = MulticastUtils.IsRouterMulticastEnabled();
+         var isMcastEnabled = IsRouterMulticastEnabled();
          if (!isMcastEnabled)
          {
             Console.WriteLine("Your router doesn't support multicast packets");
             return;
          }
 
-         // Create IPv4 socket and adapt it for multicasting
-         var mcastSocket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
-         var ipv4Addr = IPAddress.Parse("224.5.6.7");
-         mcastSocket.SetSocketOption(SocketOptionLevel.IP, SocketOptionName.AddMembership,
-            new MulticastOption(ipv4Addr));
-         mcastSocket.SetSocketOption(SocketOptionLevel.IP, SocketOptionName.MulticastTimeToLive, 2);
-
-         // Connect the socket
-         var ipEndPoint = new IPEndPoint(ipv4Addr, 4567);
-         mcastSocket.Connect(ipEndPoint);
+         var mcastSocket = CreateIPv4MCastServerSocket(mcastIpAddr, udpPort, out var ipEndPoint);
+         mcastSocket.Connect(ipEndPoint); // Connect the socket
 
          // Transfer some data to the group
          var someData = new byte[10];
@@ -61,7 +59,6 @@ namespace AdvancedMulticastSender
          });
 
          Console.ReadKey();
-
          _stop = true;
       }
    }

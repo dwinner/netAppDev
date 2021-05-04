@@ -1,4 +1,7 @@
-﻿using System.Net.NetworkInformation;
+﻿using System;
+using System.Net;
+using System.Net.NetworkInformation;
+using System.Net.Sockets;
 using System.Runtime.InteropServices;
 using Microsoft.Win32;
 
@@ -48,6 +51,88 @@ namespace MulticastNetworkUtils
             ?.GetValue("DisabledComponents");
 
          return int.TryParse(disableComp?.ToString(), out var ipv6Value) && ipv6Value == 0x20;
+      }
+
+      public static (string mcastIpAddr, uint udpPort) ParseArguments(string[] args)
+      {
+         const string mcastKey = "mcast_ip";
+         const string udpPortKey = "udp_port";
+         const char splitChar = '=';
+         var usage = $"Usage: dotnet 'entry_dll' {mcastKey}=ip_address {udpPortKey}=port";
+
+         // Parse arguments
+         if (args.Length == 2)
+         {
+            var rawIp = args[0];
+            var rawPort = args[1];
+
+            var rawIpArray = rawIp.Split(splitChar, StringSplitOptions.RemoveEmptyEntries);
+            var rawPortArray = rawPort.Split(splitChar, StringSplitOptions.RemoveEmptyEntries);
+
+            string mcastIp;
+            if (rawIpArray.Length == 2
+                && rawIpArray[0].Equals(mcastKey, StringComparison.CurrentCultureIgnoreCase)
+                && rawIpArray[1].Length > 0)
+            {
+               mcastIp = rawIpArray[1].Trim();
+            }
+            else
+            {
+               return ExitWithUsage();
+            }
+
+            if (rawPortArray.Length != 2 ||
+                !rawPortArray[0].Equals(udpPortKey, StringComparison.CurrentCultureIgnoreCase) ||
+                !uint.TryParse(rawPortArray[1], out var udpPort))
+            {
+               return ExitWithUsage();
+            }
+
+            return (mcastIp, udpPort);
+         }
+
+         return ExitWithUsage();
+
+         (string mcastIpAddr, uint udpPort) ExitWithUsage()
+         {
+            Console.WriteLine(usage);
+            Environment.Exit(1);
+            return (string.Empty, 0);
+         }
+      }
+
+      public static Socket CreateIPv4MCastServerSocket(string mcastIpAddr, uint udpPort, out IPEndPoint ipEndPoint)
+      {
+         // Create IPv4 socket and adapt it for multicasting
+         var mcastSocket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
+         var ipv4Addr = IPAddress.Parse(mcastIpAddr);
+         mcastSocket.SetSocketOption(
+            SocketOptionLevel.IP,
+            SocketOptionName.AddMembership,
+            new MulticastOption(ipv4Addr));
+         mcastSocket.SetSocketOption(
+            SocketOptionLevel.IP,
+            SocketOptionName.MulticastTimeToLive,
+            2);
+         ipEndPoint = new IPEndPoint(ipv4Addr, (int) udpPort);
+
+         return mcastSocket;
+      }
+
+      public static Socket CreateIPv4MCastClientSocket(string mcastIpAddr, uint udpPort)
+      {
+         var mcastSocket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
+         var receiveIp = new IPEndPoint(IPAddress.Any, (int) udpPort);
+         mcastSocket.Bind(receiveIp);
+
+         // Join to the group
+         var inputIp = IPAddress.Parse(mcastIpAddr);
+         mcastSocket.SetSocketOption(
+            SocketOptionLevel.IP,
+            SocketOptionName.AddMembership,
+            new MulticastOption(inputIp, IPAddress.Any));
+
+         return mcastSocket;
       }
    }
 }

@@ -1,20 +1,20 @@
 ﻿using System;
-using System.Net;
-using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using MulticastNetworkUtils;
+using static MulticastNetworkUtils.MulticastUtils;
 
 namespace AdvancedMulticastReceiver
 {
-   internal static class Program
+   internal static class MCastReceiver
    {
       private static volatile bool _stop;
 
-      private static void Main( /*string[] args*/)
+      private static void Main(string[] args)
       {
-         var tcpIpv6StackEnabled = MulticastUtils.IsTcpIpv6StackEnabled();
+         var (mcastIpAddr, udpPort) = ParseArguments(args);
+         var tcpIpv6StackEnabled = IsTcpIpv6StackEnabled();
+
          if (!tcpIpv6StackEnabled)
          {
             Console.Error.WriteLine(
@@ -24,31 +24,25 @@ namespace AdvancedMulticastReceiver
             return;
          }
 
-         var isMcastEnabled = MulticastUtils.IsRouterMulticastEnabled();
+         var isMcastEnabled = IsRouterMulticastEnabled();
          if (!isMcastEnabled)
          {
             Console.WriteLine("Your router doesn't support multicast packets");
             return;
          }
 
-         var mcastSocket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
-         var receiveIp = new IPEndPoint(IPAddress.Any, 4567);
-         mcastSocket.Bind(receiveIp);
-
-         // Join to the group
-         var inputIp = IPAddress.Parse("224.5.6.7");
-         mcastSocket.SetSocketOption(
-            SocketOptionLevel.IP, SocketOptionName.AddMembership, new MulticastOption(inputIp, IPAddress.Any));
-
+         var mcastSocket = CreateIPv4MCastClientSocket(mcastIpAddr, udpPort);
          Task.Run(() =>
          {
+            const char nullTerminate = '\0';
+
             // Receive the data
             while (!_stop)
             {
                var rcvData = new byte[0x400];
                mcastSocket.Receive(rcvData);
                var rcvStr = Encoding.UTF8.GetString(rcvData, 0, rcvData.Length);
-               Console.WriteLine(rcvStr.Trim());
+               Console.WriteLine(rcvStr.Trim(nullTerminate));
                Thread.Sleep(TimeSpan.FromSeconds(1.0));
             }
          });
