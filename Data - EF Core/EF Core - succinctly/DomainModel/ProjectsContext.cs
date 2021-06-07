@@ -6,14 +6,16 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DomainModel
 {
-   public class ProjectsContext : DbContext
+   public sealed class ProjectsContext : DbContext
    {
       public ProjectsContext(string connectionString) : base(GetOptions(connectionString))
       {
+         Database.EnsureCreated();
       }
 
       public ProjectsContext(DbContextOptions<ProjectsContext> options) : base(options)
       {
+         Database.EnsureCreated();
       }
 
       public Func<string> UserProvider { get; set; } = () => WindowsIdentity.GetCurrent().Name;
