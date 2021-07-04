@@ -1,0 +1,5 @@
+Code editor events then auto formatting in in action:
+
+1. Then hit ';', than the current line is formatted;
+2. Then hit Ctrl + K, D, than the whole document is formatted;
+3. Then hit Ctrl + K, F, than the current selection is formatted;
