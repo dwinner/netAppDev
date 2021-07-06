@@ -1,12 +1,11 @@
 ﻿using System;
+using _04_MenusWithDataAnnotations;
 
-namespace _04_MenusWithDataAnnotations
+CreateDatabase();
+
+static void CreateDatabase()
 {
-   class Program
-   {
-      static void Main(string[] args)
-      {
-         Console.WriteLine("Hello World!");
-      }
-   }
+   using var context = new MenusContext();
+   var created = context.Database.EnsureCreated();
+   Console.WriteLine(created);
 }
