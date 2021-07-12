@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "CSharp9Features": {
+      "commandName": "Project",
+      "commandLineArgs": "\"arg1\" \"arg2\" \"arg3\""
+    }
+  }
+}
