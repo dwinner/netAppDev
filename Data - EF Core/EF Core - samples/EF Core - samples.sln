@@ -11,7 +11,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "03-MenuSamples", "03-MenuSa
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "04-MenusWithDataAnnotations", "04-MenusWithDataAnnotations\04-MenusWithDataAnnotations.csproj", "{5EB95E7B-C2E3-4921-944A-B2F093344F56}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "05-ScaffoldSample", "05-ScaffoldSample\05-ScaffoldSample.csproj", "{489312BF-FEAB-4D6B-9688-262A45E440FE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "05-ScaffoldSample", "05-ScaffoldSample\05-ScaffoldSample.csproj", "{489312BF-FEAB-4D6B-9688-262A45E440FE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "06-BooksSample", "06-BooksSample\06-BooksSample.csproj", "{C144B6AD-6AF6-478A-9619-AB57396A8242}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +41,10 @@ Global
 		{489312BF-FEAB-4D6B-9688-262A45E440FE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{489312BF-FEAB-4D6B-9688-262A45E440FE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{489312BF-FEAB-4D6B-9688-262A45E440FE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C144B6AD-6AF6-478A-9619-AB57396A8242}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C144B6AD-6AF6-478A-9619-AB57396A8242}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C144B6AD-6AF6-478A-9619-AB57396A8242}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C144B6AD-6AF6-478A-9619-AB57396A8242}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
