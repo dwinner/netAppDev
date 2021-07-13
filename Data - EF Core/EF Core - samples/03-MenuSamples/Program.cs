@@ -1,22 +1,23 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading.Tasks;
 using _03_MenuSamples;
 using Microsoft.EntityFrameworkCore;
 
-CreateDatabase();
-AddRecords();
-ObjectTracking();
-UpdateRecords();
-ChangeUntracked();
-AddHundredRecords();
-DeleteDatabase();
+await CreateDatabase().ConfigureAwait(false);
+await AddRecords().ConfigureAwait(false);
+await ObjectTracking().ConfigureAwait(false);
+await UpdateRecords().ConfigureAwait(false);
+await ChangeUntracked().ConfigureAwait(false);
+await AddHundredRecords().ConfigureAwait(false);
+await DeleteDatabase().ConfigureAwait(false);
 
-static void AddHundredRecords()
+static async Task AddHundredRecords()
 {
    Console.WriteLine(nameof(AddHundredRecords));
-   using var context = new MenusContext();
-   var card = context.MenuCards.FirstOrDefault();
+   await using var context = new MenusContext();
+   var card = await context.MenuCards.FirstOrDefaultAsync().ConfigureAwait(false);
    if (card != null)
    {
       var menus = Enumerable.Range(1, 100).Select(x => new Menu
@@ -25,9 +26,10 @@ static void AddHundredRecords()
          Text = $"menu {x}",
          Price = 9.9m
       });
-      context.Menus.AddRange(menus);
+
+      await context.Menus.AddRangeAsync(menus).ConfigureAwait(false);
       var stopwatch = Stopwatch.StartNew();
-      var records = context.SaveChanges();
+      var records = await context.SaveChangesAsync().ConfigureAwait(false);
       stopwatch.Stop();
       Console.WriteLine($"{records} records added after {stopwatch.ElapsedMilliseconds} milliseconds");
    }
@@ -35,12 +37,12 @@ static void AddHundredRecords()
    Console.WriteLine();
 }
 
-static void AddRecords()
+static async Task AddRecords()
 {
    Console.WriteLine(nameof(AddRecords));
    try
    {
-      using var context = new MenusContext();
+      await using var context = new MenusContext();
       var soupCard = new MenuCard();
       Menu[] soups =
       {
@@ -66,12 +68,11 @@ static void AddRecords()
 
       soupCard.Title = "Soups";
       soupCard.Menus.AddRange(soups);
-
       context.MenuCards.Add(soupCard);
 
       ShowState(context);
 
-      var records = context.SaveChanges();
+      var records = await context.SaveChangesAsync().ConfigureAwait(false);
       Console.WriteLine($"{records} added");
       Console.WriteLine();
    }
@@ -92,16 +93,19 @@ static void ShowState(DbContext context)
    }
 }
 
-static void ObjectTracking()
+static async Task ObjectTracking()
 {
    Console.WriteLine(nameof(ObjectTracking));
-   using var context = new MenusContext();
-   var m1 = (from m in context.Menus
-      where m.Text.StartsWith("Con")
-      select m).FirstOrDefault();
-   var m2 = (from m in context.Menus
-      where m.Text.Contains("(")
-      select m).FirstOrDefault();
+   await using var context = new MenusContext();
+   var m1 = await
+      (from m in context.Menus
+         where m.Text.StartsWith("Con")
+         select m).FirstOrDefaultAsync().ConfigureAwait(false);
+   var m2 = await
+      (from m in context.Menus
+         where m.Text.Contains("(")
+         select m).FirstOrDefaultAsync().ConfigureAwait(false);
+
    Console.WriteLine(ReferenceEquals(m1, m2) ? "the same object" : "not the same");
 
    ShowState(context);
@@ -109,37 +113,42 @@ static void ObjectTracking()
    Console.WriteLine();
 }
 
-static void UpdateRecords()
+static async Task UpdateRecords()
 {
    Console.WriteLine(nameof(UpdateRecords));
-   using var context = new MenusContext();
-   var menu = context.Menus
+   await using var context = new MenusContext();
+   var menu = await context.Menus
       .Skip(1)
-      .FirstOrDefault();
+      .FirstOrDefaultAsync().ConfigureAwait(false);
+
    ShowState(context);
+
    menu.Price += 0.2m;
+
    ShowState(context);
-   var records = context.SaveChanges();
+
+   var records = await context.SaveChangesAsync().ConfigureAwait(false);
    Console.WriteLine($"{records} updated");
    ShowState(context);
 
    Console.WriteLine();
 }
 
-static void ChangeUntracked()
+static async Task ChangeUntracked()
 {
    Console.WriteLine(nameof(ChangeUntracked));
 
-   static Menu GetMenu()
+   static async Task<Menu> GetMenu()
    {
-      using var context = new MenusContext();
-      var menu = context.Menus
+      await using var context = new MenusContext();
+      var menu = await context.Menus
          .Skip(2)
-         .FirstOrDefault();
+         .FirstOrDefaultAsync().ConfigureAwait(false);
+
       return menu;
    }
 
-   var m = GetMenu();
+   var m = await GetMenu().ConfigureAwait(false);
    m.Price += 0.7m;
    UpdateUntracked(m);
 }
@@ -155,21 +164,21 @@ static void UpdateUntracked(Menu m)
    context.SaveChanges();
 }
 
-static void CreateDatabase()
+static async Task CreateDatabase()
 {
-   using var context = new MenusContext();
-   var created = context.Database.EnsureCreated();
+   await using var context = new MenusContext();
+   var created = await context.Database.EnsureCreatedAsync().ConfigureAwait(false);
    Console.WriteLine(created);
 }
 
-static void DeleteDatabase()
+static async Task DeleteDatabase()
 {
    Console.Write("Delete the database? ");
    var input = Console.ReadLine();
    if (input?.ToLower() == "y")
    {
-      using var context = new MenusContext();
-      var deleted = context.Database.EnsureDeleted();
+      await using var context = new MenusContext();
+      var deleted = await context.Database.EnsureDeletedAsync().ConfigureAwait(false);
       Console.WriteLine(deleted);
    }
 }

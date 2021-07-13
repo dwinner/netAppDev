@@ -32,14 +32,18 @@ namespace _02_UsingDependencyInjection
             Title = "Web Design with HTML and CSS",
             Publisher = "For Dummies"
          };
-         _booksContext.AddRange(b1, b2, b3, b4);
-         var records = await _booksContext.SaveChangesAsync();
+
+         await _booksContext.AddRangeAsync(b1, b2, b3, b4).ConfigureAwait(false);
+         var records = await _booksContext.SaveChangesAsync()
+            .ConfigureAwait(false);
+
          Console.WriteLine($"{records} records added");
       }
 
       public async Task ReadBooksAsync()
       {
-         var books = await _booksContext.Books.ToListAsync();
+         var books = await _booksContext.Books.ToListAsync()
+            .ConfigureAwait(false);
          foreach (var b in books)
          {
             Console.WriteLine($"{b.Title} {b.Publisher}");

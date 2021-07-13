@@ -2,7 +2,7 @@
 
 namespace _02_UsingDependencyInjection
 {
-   [Table("Books")]
+   [Table(nameof(BooksContext.Books))]
    public class Book
    {
       public int BookId { get; set; }
