@@ -35,12 +35,12 @@ namespace _06_BooksSample
          Console.WriteLine();
       }
 
-      public static async Task QueryBookByKeyAsync(int id)
+      public static async Task QueryBookByKeyAsync(int aBookId)
       {
          Console.WriteLine(nameof(QueryBookByKeyAsync));
 
          await using var context = new BooksContext();
-         var book = await context.Books.FindAsync(id).ConfigureAwait(false);
+         var book = await context.Books.FindAsync(aBookId).ConfigureAwait(false);
          if (book != null)
          {
             Console.WriteLine($"found book {book}");
@@ -73,10 +73,7 @@ namespace _06_BooksSample
             await using var context = new BooksContext();
             var book = await context.Books.FirstOrDefaultAsync(b => b.Title == title)
                .ConfigureAwait(false);
-            if (book != null)
-            {
-               Console.WriteLine($"found book {book}");
-            }
+            Console.WriteLine(book != null ? $"found book {book}" : "not found");
          }
          catch (InvalidOperationException ex) when (ex.HResult == -2146233079) // more than 1 element
          {
@@ -103,13 +100,13 @@ namespace _06_BooksSample
          Console.WriteLine();
       }
 
-      public static void ClientAndServerEvaluation()
+      public static async Task ClientAndServerEvaluationAsync()
       {
-         Console.WriteLine(nameof(ClientAndServerEvaluation));
+         Console.WriteLine(nameof(ClientAndServerEvaluationAsync));
 
          try
          {
-            using var context = new BooksContext();
+            await using var context = new BooksContext();
             var books = context.Books.Where(b => b.Title.StartsWith("Pro"))
                .OrderBy(b => b.Title)
                .Select(b => new
@@ -138,7 +135,7 @@ namespace _06_BooksSample
          Console.WriteLine(nameof(RawSqlQueryAsync));
 
          await using var context = new BooksContext();
-         IList<Book> books = await context.Books.FromSqlRaw($"SELECT * FROM Books WHERE Publisher = {publisher}")
+         IList<Book> books = await context.Books.FromSqlRaw($"SELECT * FROM Books WHERE Publisher = '{publisher}'")
             .ToListAsync().ConfigureAwait(false);
 
          foreach (var b in books)
@@ -156,7 +153,9 @@ namespace _06_BooksSample
          await using var context = new BooksContext();
          var likeExpression = $"%{titleSegment}%";
 
-         IList<Book> books = await context.Books.Where(b => EF.Functions.Like(b.Title, likeExpression)).ToListAsync()
+         IList<Book> books = await context.Books
+            .Where(b => EF.Functions.Like(b.Title, likeExpression))
+            .ToListAsync()
             .ConfigureAwait(false);
          foreach (var b in books)
          {
