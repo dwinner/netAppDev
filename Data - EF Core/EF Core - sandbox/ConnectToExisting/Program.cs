@@ -16,7 +16,7 @@ namespace ConnectToExisting
       {
          using var db = new UsersContext();
 
-         // Get onjects and output
+         // Get objects and output
          var users = db.Users.ToList();
          Console.WriteLine("Object list:");
          foreach (var u in users)
