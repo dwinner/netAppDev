@@ -1,4 +1,4 @@
-﻿/**
+﻿/*
  * Simple example for EF Core
  */
 

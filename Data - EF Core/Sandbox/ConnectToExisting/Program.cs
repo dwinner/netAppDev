@@ -1,4 +1,4 @@
-﻿/**
+﻿/*
  * Reverse Engineering for exixting database:
  * 1. Tools –> NuGet Package Manager –> Package Manager Console
  * 2. Scaffold-DbContext "Server=(localdb)\mssqllocaldb;Database=helloappdb;Trusted_Connection=True;" Microsoft.EntityFrameworkCore.SqlServer
