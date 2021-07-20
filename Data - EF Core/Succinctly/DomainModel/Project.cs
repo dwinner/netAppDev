@@ -13,6 +13,7 @@ namespace DomainModel
       public string Name { get; set; }
 
       public string Description { get; set; }
+
       public DateTime? End { get; set; }
 
       [Required]
@@ -24,13 +25,16 @@ namespace DomainModel
       public Customer Customer { get; set; }
 
       public ICollection<ProjectResource> ProjectResources { get; } = new HashSet<ProjectResource>();
+
       public IEnumerable<ProjectResource> Testers => ProjectResources.Where(x => x.Role == Role.Tester);
+
       public IEnumerable<ProjectResource> Developers => ProjectResources.Where(x => x.Role == Role.Developer);
+
       public ProjectResource ProjectManager => ProjectResources.SingleOrDefault(x => x.Role == Role.ProjectManager);
 
       public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
       {
-         if (End != null && End < Start)
+         if (End < Start)
          {
             yield return new ValidationResult("End date is prior to Start date", new[] {"End"});
          }

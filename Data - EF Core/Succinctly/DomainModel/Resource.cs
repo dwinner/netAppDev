@@ -15,7 +15,9 @@ namespace DomainModel
       public ContactInformation Contact { get; set; }
 
       public ICollection<ProjectResource> ProjectResources { get; } = new HashSet<ProjectResource>();
+
       public ICollection<Technology> Technologies { get; } = new HashSet<Technology>();
+
       public override string ToString() => Name;
    }
 }

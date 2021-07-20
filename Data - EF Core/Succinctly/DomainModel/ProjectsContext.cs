@@ -8,23 +8,30 @@ namespace DomainModel
 {
    public sealed class ProjectsContext : DbContext
    {
-      public ProjectsContext(string connectionString) : base(GetOptions(connectionString))
+      public ProjectsContext(string connectionString)
+         : base(GetOptions(connectionString))
       {
          Database.EnsureCreated();
       }
 
-      public ProjectsContext(DbContextOptions<ProjectsContext> options) : base(options)
+      public ProjectsContext(DbContextOptions<ProjectsContext> options)
+         : base(options)
       {
          Database.EnsureCreated();
       }
 
-      public Func<string> UserProvider { get; set; } = () => WindowsIdentity.GetCurrent().Name;
-      public Func<DateTime> TimestampProvider { get; set; } = () => DateTime.UtcNow;
+      public Func<string> UserProviderFunc { get; } = () => WindowsIdentity.GetCurrent().Name;
+
+      public Func<DateTime> TimestampProviderFunc { get; } = () => DateTime.UtcNow;
 
       //public DbSet<Tool> Tools { get; private set; }
+
       public DbSet<Resource> Resources { get; private set; }
+
       public DbSet<Project> Projects { get; private set; }
+
       public DbSet<Customer> Customers { get; private set; }
+
       public DbSet<Technology> Technologies { get; private set; }
 
       [DbFunction]
@@ -38,7 +45,8 @@ namespace DomainModel
       private static DbContextOptions GetOptions(string connectionString)
       {
          var builder = new DbContextOptionsBuilder();
-         return builder.UseSqlServer(connectionString, b => b.MigrationsAssembly("UnitTests")).Options;
+         return builder.UseSqlServer(connectionString,
+            b => b.MigrationsAssembly("UnitTests")).Options;
       }
 
       protected override void OnModelCreating(ModelBuilder builder)
@@ -84,7 +92,6 @@ namespace DomainModel
          base.OnModelCreating(builder);
       }
 
-
       public override int SaveChanges()
       {
          foreach (var entry in ChangeTracker.Entries()
@@ -94,13 +101,13 @@ namespace DomainModel
             {
                if (entry.State == EntityState.Added)
                {
-                  entry.Property("CreatedBy").CurrentValue = UserProvider();
-                  entry.Property("CreatedAt").CurrentValue = TimestampProvider();
+                  entry.Property("CreatedBy").CurrentValue = UserProviderFunc();
+                  entry.Property("CreatedAt").CurrentValue = TimestampProviderFunc();
                }
                else
                {
-                  entry.Property("UpdatedBy").CurrentValue = UserProvider();
-                  entry.Property("UpdatedAt").CurrentValue = TimestampProvider();
+                  entry.Property("UpdatedBy").CurrentValue = UserProviderFunc();
+                  entry.Property("UpdatedAt").CurrentValue = TimestampProviderFunc();
                }
             }
 

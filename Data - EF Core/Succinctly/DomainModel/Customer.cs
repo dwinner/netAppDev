@@ -14,6 +14,7 @@ namespace DomainModel
       public ContactInformation Contact { get; set; }
 
       public ICollection<Project> Projects { get; } = new HashSet<Project>();
+
       public override string ToString() => Name;
    }
 }
