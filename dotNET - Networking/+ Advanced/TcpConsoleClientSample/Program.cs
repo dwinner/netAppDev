@@ -9,7 +9,7 @@ namespace TcpConsoleClientSample
    public class Program
    {
       private const string Host = "localhost";
-      private const int Port = 8000;
+      private const int Port = 8800;
 
       public static void Main()
       {

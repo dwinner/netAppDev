@@ -18,12 +18,10 @@ namespace HttpClientUsingTcpSample
 
       private static void Main(string[] args)
       {
-         if (args.Length != 2)
-         {
-            ShowUsage();
-         }
-
-         var htmlTask = RequestHtmlAsync(args[0], int.Parse(args[1]));
+         var hostPort = args.Length != 2
+            ? Tuple.Create("yandex.ru", DefaultHttpPort)
+            : Tuple.Create(args[0], int.Parse(args[1]));
+         var htmlTask = RequestHtmlAsync(hostPort.Item1, hostPort.Item2);
          WriteLine(htmlTask.Result);
          ReadLine();
       }
@@ -72,8 +70,5 @@ namespace HttpClientUsingTcpSample
             return string.Empty;
          }
       }
-
-      private static void ShowUsage()
-         => WriteLine("Usage: HttpClientUsingTcpSample hostname port");
    }
 }

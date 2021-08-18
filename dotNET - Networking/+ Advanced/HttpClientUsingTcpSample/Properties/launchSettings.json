@@ -1,8 +1,7 @@
 {
   "profiles": {
     "HttpClientUsingTcpSample": {
-      "commandName": "Project",
-      "commandLineArgs": "localhost 40401"
+      "commandName": "Project"
     }
   }
 }
