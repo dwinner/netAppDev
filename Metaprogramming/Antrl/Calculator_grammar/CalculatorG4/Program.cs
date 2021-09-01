@@ -4,61 +4,51 @@
 
 using System;
 using Antlr4.Runtime;
+using CalculatorG4;
 
-namespace CalculatorG4
+try
 {
-   internal class Program
-   {
-      private static void Main(string[] args)
-      {
-         var program = new Program();
+   var input = GetInput();
+   var result = EvaluateInput(input);
 
-         try
-         {
-            var input = program.GetInput();
-            var result = program.EvaluateInput(input);
+   DisplayResult(result);
+}
+catch (Exception ex)
+{
+   DisplayError(ex);
+}
 
-            program.DisplayResult(result);
-         }
-         catch (Exception ex)
-         {
-            program.DisplayError(ex);
-         }
+Console.Write($"{Environment.NewLine}Press ENTER to exit: ");
+Console.ReadKey();
 
-         Console.Write($"{Environment.NewLine}Press ENTER to exit: ");
-         Console.ReadKey();
-      }
+static string GetInput()
+{
+   Console.Write("Enter a value to evaluate: ");
+   return Console.ReadLine();
+}
 
-      private string GetInput()
-      {
-         Console.Write("Enter a value to evaluate: ");
-         return Console.ReadLine();
-      }
+static int EvaluateInput(string input)
+{
+   var lexer = new CalculatorLexer(new AntlrInputStream(input));
 
-      private int EvaluateInput(string input)
-      {
-         var lexer = new CalculatorLexer(new AntlrInputStream(input));
+   lexer.RemoveErrorListeners();
+   lexer.AddErrorListener(new ThrowingErrorListener<int>());
 
-         lexer.RemoveErrorListeners();
-         lexer.AddErrorListener(new ThrowingErrorListener<int>());
+   var parser = new CalculatorParser(new CommonTokenStream(lexer));
 
-         var parser = new CalculatorParser(new CommonTokenStream(lexer));
+   parser.RemoveErrorListeners();
+   parser.AddErrorListener(new ThrowingErrorListener<IToken>());
 
-         parser.RemoveErrorListeners();
-         parser.AddErrorListener(new ThrowingErrorListener<IToken>());
+   return new CalculatorVisitor().Visit(parser.expression());
+}
 
-         return new CalculatorVisitor().Visit(parser.expression());
-      }
+static void DisplayResult(int result)
+{
+   Console.WriteLine($"Result: {result}");
+}
 
-      private void DisplayResult(int result)
-      {
-         Console.WriteLine($"Result: {result}");
-      }
-
-      private void DisplayError(Exception ex)
-      {
-         Console.WriteLine("Something didn't go as expected:");
-         Console.WriteLine(ex.Message);
-      }
-   }
+static void DisplayError(Exception ex)
+{
+   Console.WriteLine("Something didn't go as expected:");
+   Console.WriteLine(ex.Message);
 }
