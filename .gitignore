@@ -200,3 +200,6 @@ sysinfo.txt
 *.apk
 *.unitypackage
 *.bin
+
+# Java
+*.class
