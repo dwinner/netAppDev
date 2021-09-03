@@ -2,10 +2,14 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "Debug Current Grammar",
             "type": "antlr-debug",
             "request": "launch",
-            "name": "Debug Current Grammar",
             "input": "input.txt",
+            "grammar": "grammars/Example.g4",
+            "actionFile": "grammars/exampleActions.js",
+            "startRule": "start",
+            "printParseTree": true,
             "visualParseTree": true
         },
         {
