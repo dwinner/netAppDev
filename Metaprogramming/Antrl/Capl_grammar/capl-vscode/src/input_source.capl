@@ -28,7 +28,7 @@ on message CAN1.*
    message CAN2.* msg;
    if(this.dir != rx) return; //important!
    msg = this;
- output(msg);
+   output(msg);
 }
 
 on message CAN2.*
@@ -40,5 +40,5 @@ on message CAN2.*
    }    
    
    msg = this;
- output(msg);
+   output(msg);
 }

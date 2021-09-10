@@ -1,8 +1,8 @@
 /** 
- * CAPL grammar based on C programming language spec.
+ * C programming language grammar.
  */
 
-grammar Capl;
+grammar Cpl;
 
 
 primaryExpression

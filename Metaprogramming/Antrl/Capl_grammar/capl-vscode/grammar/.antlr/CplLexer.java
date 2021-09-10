@@ -1,4 +1,4 @@
-// Generated from d:\Projects\dotNET\appDev-NET\Metaprogramming\Antrl\Capl_grammar\CaplGrammar.Sandbox\grammars\Capl.g4 by ANTLR 4.8
+// Generated from d:\Projects\dotNET\appDev-NET\Metaprogramming\Antrl\Capl_grammar\capl-vscode\grammar\Cpl.g4 by ANTLR 4.8
 import org.antlr.v4.runtime.Lexer;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.Token;
@@ -9,7 +9,7 @@ import org.antlr.v4.runtime.dfa.DFA;
 import org.antlr.v4.runtime.misc.*;
 
 @SuppressWarnings({"all", "warnings", "unchecked", "unused", "cast"})
-public class CaplLexer extends Lexer {
+public class CplLexer extends Lexer {
 	static { RuntimeMetaData.checkVersion("4.8", RuntimeMetaData.VERSION); }
 
 	protected static final DFA[] _decisionToDFA;
@@ -154,13 +154,13 @@ public class CaplLexer extends Lexer {
 	}
 
 
-	public CaplLexer(CharStream input) {
+	public CplLexer(CharStream input) {
 		super(input);
 		_interp = new LexerATNSimulator(this,_ATN,_decisionToDFA,_sharedContextCache);
 	}
 
 	@Override
-	public String getGrammarFileName() { return "Capl.g4"; }
+	public String getGrammarFileName() { return "Cpl.g4"; }
 
 	@Override
 	public String[] getRuleNames() { return ruleNames; }

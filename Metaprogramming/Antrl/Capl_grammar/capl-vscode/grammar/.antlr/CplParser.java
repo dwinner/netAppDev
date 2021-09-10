@@ -1,4 +1,4 @@
-// Generated from d:\Projects\dotNET\appDev-NET\Metaprogramming\Antrl\Capl_grammar\CaplGrammar.Sandbox\grammars\Capl.g4 by ANTLR 4.8
+// Generated from d:\Projects\dotNET\appDev-NET\Metaprogramming\Antrl\Capl_grammar\capl-vscode\grammar\Cpl.g4 by ANTLR 4.8
 import org.antlr.v4.runtime.atn.*;
 import org.antlr.v4.runtime.dfa.DFA;
 import org.antlr.v4.runtime.*;
@@ -9,7 +9,7 @@ import java.util.Iterator;
 import java.util.ArrayList;
 
 @SuppressWarnings({"all", "warnings", "unchecked", "unused", "cast"})
-public class CaplParser extends Parser {
+public class CplParser extends Parser {
 	static { RuntimeMetaData.checkVersion("4.8", RuntimeMetaData.VERSION); }
 
 	protected static final DFA[] _decisionToDFA;
@@ -172,7 +172,7 @@ public class CaplParser extends Parser {
 	}
 
 	@Override
-	public String getGrammarFileName() { return "Capl.g4"; }
+	public String getGrammarFileName() { return "Cpl.g4"; }
 
 	@Override
 	public String[] getRuleNames() { return ruleNames; }
@@ -183,23 +183,23 @@ public class CaplParser extends Parser {
 	@Override
 	public ATN getATN() { return _ATN; }
 
-	public CaplParser(TokenStream input) {
+	public CplParser(TokenStream input) {
 		super(input);
 		_interp = new ParserATNSimulator(this,_ATN,_decisionToDFA,_sharedContextCache);
 	}
 
 	public static class PrimaryExpressionContext extends ParserRuleContext {
-		public TerminalNode Identifier() { return getToken(CaplParser.Identifier, 0); }
-		public TerminalNode Constant() { return getToken(CaplParser.Constant, 0); }
-		public List<TerminalNode> StringLiteral() { return getTokens(CaplParser.StringLiteral); }
+		public TerminalNode Identifier() { return getToken(CplParser.Identifier, 0); }
+		public TerminalNode Constant() { return getToken(CplParser.Constant, 0); }
+		public List<TerminalNode> StringLiteral() { return getTokens(CplParser.StringLiteral); }
 		public TerminalNode StringLiteral(int i) {
-			return getToken(CaplParser.StringLiteral, i);
+			return getToken(CplParser.StringLiteral, i);
 		}
-		public TerminalNode LeftParen() { return getToken(CaplParser.LeftParen, 0); }
+		public TerminalNode LeftParen() { return getToken(CplParser.LeftParen, 0); }
 		public ExpressionContext expression() {
 			return getRuleContext(ExpressionContext.class,0);
 		}
-		public TerminalNode RightParen() { return getToken(CaplParser.RightParen, 0); }
+		public TerminalNode RightParen() { return getToken(CplParser.RightParen, 0); }
 		public GenericSelectionContext genericSelection() {
 			return getRuleContext(GenericSelectionContext.class,0);
 		}
@@ -209,7 +209,7 @@ public class CaplParser extends Parser {
 		public UnaryExpressionContext unaryExpression() {
 			return getRuleContext(UnaryExpressionContext.class,0);
 		}
-		public TerminalNode Comma() { return getToken(CaplParser.Comma, 0); }
+		public TerminalNode Comma() { return getToken(CplParser.Comma, 0); }
 		public TypeNameContext typeName() {
 			return getRuleContext(TypeNameContext.class,0);
 		}
@@ -347,16 +347,16 @@ public class CaplParser extends Parser {
 	}
 
 	public static class GenericSelectionContext extends ParserRuleContext {
-		public TerminalNode Generic() { return getToken(CaplParser.Generic, 0); }
-		public TerminalNode LeftParen() { return getToken(CaplParser.LeftParen, 0); }
+		public TerminalNode Generic() { return getToken(CplParser.Generic, 0); }
+		public TerminalNode LeftParen() { return getToken(CplParser.LeftParen, 0); }
 		public AssignmentExpressionContext assignmentExpression() {
 			return getRuleContext(AssignmentExpressionContext.class,0);
 		}
-		public TerminalNode Comma() { return getToken(CaplParser.Comma, 0); }
+		public TerminalNode Comma() { return getToken(CplParser.Comma, 0); }
 		public GenericAssocListContext genericAssocList() {
 			return getRuleContext(GenericAssocListContext.class,0);
 		}
-		public TerminalNode RightParen() { return getToken(CaplParser.RightParen, 0); }
+		public TerminalNode RightParen() { return getToken(CplParser.RightParen, 0); }
 		public GenericSelectionContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -401,9 +401,9 @@ public class CaplParser extends Parser {
 		public GenericAssociationContext genericAssociation(int i) {
 			return getRuleContext(GenericAssociationContext.class,i);
 		}
-		public List<TerminalNode> Comma() { return getTokens(CaplParser.Comma); }
+		public List<TerminalNode> Comma() { return getTokens(CplParser.Comma); }
 		public TerminalNode Comma(int i) {
-			return getToken(CaplParser.Comma, i);
+			return getToken(CplParser.Comma, i);
 		}
 		public GenericAssocListContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -450,14 +450,14 @@ public class CaplParser extends Parser {
 	}
 
 	public static class GenericAssociationContext extends ParserRuleContext {
-		public TerminalNode Colon() { return getToken(CaplParser.Colon, 0); }
+		public TerminalNode Colon() { return getToken(CplParser.Colon, 0); }
 		public AssignmentExpressionContext assignmentExpression() {
 			return getRuleContext(AssignmentExpressionContext.class,0);
 		}
 		public TypeNameContext typeName() {
 			return getRuleContext(TypeNameContext.class,0);
 		}
-		public TerminalNode Default() { return getToken(CaplParser.Default, 0); }
+		public TerminalNode Default() { return getToken(CplParser.Default, 0); }
 		public GenericAssociationContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -532,25 +532,25 @@ public class CaplParser extends Parser {
 		public PrimaryExpressionContext primaryExpression() {
 			return getRuleContext(PrimaryExpressionContext.class,0);
 		}
-		public List<TerminalNode> LeftParen() { return getTokens(CaplParser.LeftParen); }
+		public List<TerminalNode> LeftParen() { return getTokens(CplParser.LeftParen); }
 		public TerminalNode LeftParen(int i) {
-			return getToken(CaplParser.LeftParen, i);
+			return getToken(CplParser.LeftParen, i);
 		}
 		public TypeNameContext typeName() {
 			return getRuleContext(TypeNameContext.class,0);
 		}
-		public List<TerminalNode> RightParen() { return getTokens(CaplParser.RightParen); }
+		public List<TerminalNode> RightParen() { return getTokens(CplParser.RightParen); }
 		public TerminalNode RightParen(int i) {
-			return getToken(CaplParser.RightParen, i);
+			return getToken(CplParser.RightParen, i);
 		}
-		public TerminalNode LeftBrace() { return getToken(CaplParser.LeftBrace, 0); }
+		public TerminalNode LeftBrace() { return getToken(CplParser.LeftBrace, 0); }
 		public InitializerListContext initializerList() {
 			return getRuleContext(InitializerListContext.class,0);
 		}
-		public TerminalNode RightBrace() { return getToken(CaplParser.RightBrace, 0); }
-		public List<TerminalNode> LeftBracket() { return getTokens(CaplParser.LeftBracket); }
+		public TerminalNode RightBrace() { return getToken(CplParser.RightBrace, 0); }
+		public List<TerminalNode> LeftBracket() { return getTokens(CplParser.LeftBracket); }
 		public TerminalNode LeftBracket(int i) {
-			return getToken(CaplParser.LeftBracket, i);
+			return getToken(CplParser.LeftBracket, i);
 		}
 		public List<ExpressionContext> expression() {
 			return getRuleContexts(ExpressionContext.class);
@@ -558,31 +558,31 @@ public class CaplParser extends Parser {
 		public ExpressionContext expression(int i) {
 			return getRuleContext(ExpressionContext.class,i);
 		}
-		public List<TerminalNode> RightBracket() { return getTokens(CaplParser.RightBracket); }
+		public List<TerminalNode> RightBracket() { return getTokens(CplParser.RightBracket); }
 		public TerminalNode RightBracket(int i) {
-			return getToken(CaplParser.RightBracket, i);
+			return getToken(CplParser.RightBracket, i);
 		}
-		public List<TerminalNode> Identifier() { return getTokens(CaplParser.Identifier); }
+		public List<TerminalNode> Identifier() { return getTokens(CplParser.Identifier); }
 		public TerminalNode Identifier(int i) {
-			return getToken(CaplParser.Identifier, i);
+			return getToken(CplParser.Identifier, i);
 		}
-		public List<TerminalNode> Dot() { return getTokens(CaplParser.Dot); }
+		public List<TerminalNode> Dot() { return getTokens(CplParser.Dot); }
 		public TerminalNode Dot(int i) {
-			return getToken(CaplParser.Dot, i);
+			return getToken(CplParser.Dot, i);
 		}
-		public List<TerminalNode> Arrow() { return getTokens(CaplParser.Arrow); }
+		public List<TerminalNode> Arrow() { return getTokens(CplParser.Arrow); }
 		public TerminalNode Arrow(int i) {
-			return getToken(CaplParser.Arrow, i);
+			return getToken(CplParser.Arrow, i);
 		}
-		public List<TerminalNode> PlusPlus() { return getTokens(CaplParser.PlusPlus); }
+		public List<TerminalNode> PlusPlus() { return getTokens(CplParser.PlusPlus); }
 		public TerminalNode PlusPlus(int i) {
-			return getToken(CaplParser.PlusPlus, i);
+			return getToken(CplParser.PlusPlus, i);
 		}
-		public List<TerminalNode> MinusMinus() { return getTokens(CaplParser.MinusMinus); }
+		public List<TerminalNode> MinusMinus() { return getTokens(CplParser.MinusMinus); }
 		public TerminalNode MinusMinus(int i) {
-			return getToken(CaplParser.MinusMinus, i);
+			return getToken(CplParser.MinusMinus, i);
 		}
-		public TerminalNode Comma() { return getToken(CaplParser.Comma, 0); }
+		public TerminalNode Comma() { return getToken(CplParser.Comma, 0); }
 		public List<ArgumentExpressionListContext> argumentExpressionList() {
 			return getRuleContexts(ArgumentExpressionListContext.class);
 		}
@@ -744,9 +744,9 @@ public class CaplParser extends Parser {
 		public AssignmentExpressionContext assignmentExpression(int i) {
 			return getRuleContext(AssignmentExpressionContext.class,i);
 		}
-		public List<TerminalNode> Comma() { return getTokens(CaplParser.Comma); }
+		public List<TerminalNode> Comma() { return getTokens(CplParser.Comma); }
 		public TerminalNode Comma(int i) {
-			return getToken(CaplParser.Comma, i);
+			return getToken(CplParser.Comma, i);
 		}
 		public ArgumentExpressionListContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -802,25 +802,25 @@ public class CaplParser extends Parser {
 		public CastExpressionContext castExpression() {
 			return getRuleContext(CastExpressionContext.class,0);
 		}
-		public TerminalNode LeftParen() { return getToken(CaplParser.LeftParen, 0); }
+		public TerminalNode LeftParen() { return getToken(CplParser.LeftParen, 0); }
 		public TypeNameContext typeName() {
 			return getRuleContext(TypeNameContext.class,0);
 		}
-		public TerminalNode RightParen() { return getToken(CaplParser.RightParen, 0); }
-		public TerminalNode AndAnd() { return getToken(CaplParser.AndAnd, 0); }
-		public TerminalNode Identifier() { return getToken(CaplParser.Identifier, 0); }
-		public List<TerminalNode> Sizeof() { return getTokens(CaplParser.Sizeof); }
+		public TerminalNode RightParen() { return getToken(CplParser.RightParen, 0); }
+		public TerminalNode AndAnd() { return getToken(CplParser.AndAnd, 0); }
+		public TerminalNode Identifier() { return getToken(CplParser.Identifier, 0); }
+		public List<TerminalNode> Sizeof() { return getTokens(CplParser.Sizeof); }
 		public TerminalNode Sizeof(int i) {
-			return getToken(CaplParser.Sizeof, i);
+			return getToken(CplParser.Sizeof, i);
 		}
-		public TerminalNode Alignof() { return getToken(CaplParser.Alignof, 0); }
-		public List<TerminalNode> PlusPlus() { return getTokens(CaplParser.PlusPlus); }
+		public TerminalNode Alignof() { return getToken(CplParser.Alignof, 0); }
+		public List<TerminalNode> PlusPlus() { return getTokens(CplParser.PlusPlus); }
 		public TerminalNode PlusPlus(int i) {
-			return getToken(CaplParser.PlusPlus, i);
+			return getToken(CplParser.PlusPlus, i);
 		}
-		public List<TerminalNode> MinusMinus() { return getTokens(CaplParser.MinusMinus); }
+		public List<TerminalNode> MinusMinus() { return getTokens(CplParser.MinusMinus); }
 		public TerminalNode MinusMinus(int i) {
-			return getToken(CaplParser.MinusMinus, i);
+			return getToken(CplParser.MinusMinus, i);
 		}
 		public UnaryExpressionContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -935,12 +935,12 @@ public class CaplParser extends Parser {
 	}
 
 	public static class UnaryOperatorContext extends ParserRuleContext {
-		public TerminalNode And() { return getToken(CaplParser.And, 0); }
-		public TerminalNode Star() { return getToken(CaplParser.Star, 0); }
-		public TerminalNode Plus() { return getToken(CaplParser.Plus, 0); }
-		public TerminalNode Minus() { return getToken(CaplParser.Minus, 0); }
-		public TerminalNode Tilde() { return getToken(CaplParser.Tilde, 0); }
-		public TerminalNode Not() { return getToken(CaplParser.Not, 0); }
+		public TerminalNode And() { return getToken(CplParser.And, 0); }
+		public TerminalNode Star() { return getToken(CplParser.Star, 0); }
+		public TerminalNode Plus() { return getToken(CplParser.Plus, 0); }
+		public TerminalNode Minus() { return getToken(CplParser.Minus, 0); }
+		public TerminalNode Tilde() { return getToken(CplParser.Tilde, 0); }
+		public TerminalNode Not() { return getToken(CplParser.Not, 0); }
 		public UnaryOperatorContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -978,18 +978,18 @@ public class CaplParser extends Parser {
 	}
 
 	public static class CastExpressionContext extends ParserRuleContext {
-		public TerminalNode LeftParen() { return getToken(CaplParser.LeftParen, 0); }
+		public TerminalNode LeftParen() { return getToken(CplParser.LeftParen, 0); }
 		public TypeNameContext typeName() {
 			return getRuleContext(TypeNameContext.class,0);
 		}
-		public TerminalNode RightParen() { return getToken(CaplParser.RightParen, 0); }
+		public TerminalNode RightParen() { return getToken(CplParser.RightParen, 0); }
 		public CastExpressionContext castExpression() {
 			return getRuleContext(CastExpressionContext.class,0);
 		}
 		public UnaryExpressionContext unaryExpression() {
 			return getRuleContext(UnaryExpressionContext.class,0);
 		}
-		public TerminalNode DigitSequence() { return getToken(CaplParser.DigitSequence, 0); }
+		public TerminalNode DigitSequence() { return getToken(CplParser.DigitSequence, 0); }
 		public CastExpressionContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -1061,17 +1061,17 @@ public class CaplParser extends Parser {
 		public CastExpressionContext castExpression(int i) {
 			return getRuleContext(CastExpressionContext.class,i);
 		}
-		public List<TerminalNode> Star() { return getTokens(CaplParser.Star); }
+		public List<TerminalNode> Star() { return getTokens(CplParser.Star); }
 		public TerminalNode Star(int i) {
-			return getToken(CaplParser.Star, i);
+			return getToken(CplParser.Star, i);
 		}
-		public List<TerminalNode> Div() { return getTokens(CaplParser.Div); }
+		public List<TerminalNode> Div() { return getTokens(CplParser.Div); }
 		public TerminalNode Div(int i) {
-			return getToken(CaplParser.Div, i);
+			return getToken(CplParser.Div, i);
 		}
-		public List<TerminalNode> Mod() { return getTokens(CaplParser.Mod); }
+		public List<TerminalNode> Mod() { return getTokens(CplParser.Mod); }
 		public TerminalNode Mod(int i) {
-			return getToken(CaplParser.Mod, i);
+			return getToken(CplParser.Mod, i);
 		}
 		public MultiplicativeExpressionContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -1132,13 +1132,13 @@ public class CaplParser extends Parser {
 		public MultiplicativeExpressionContext multiplicativeExpression(int i) {
 			return getRuleContext(MultiplicativeExpressionContext.class,i);
 		}
-		public List<TerminalNode> Plus() { return getTokens(CaplParser.Plus); }
+		public List<TerminalNode> Plus() { return getTokens(CplParser.Plus); }
 		public TerminalNode Plus(int i) {
-			return getToken(CaplParser.Plus, i);
+			return getToken(CplParser.Plus, i);
 		}
-		public List<TerminalNode> Minus() { return getTokens(CaplParser.Minus); }
+		public List<TerminalNode> Minus() { return getTokens(CplParser.Minus); }
 		public TerminalNode Minus(int i) {
-			return getToken(CaplParser.Minus, i);
+			return getToken(CplParser.Minus, i);
 		}
 		public AdditiveExpressionContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -1199,13 +1199,13 @@ public class CaplParser extends Parser {
 		public AdditiveExpressionContext additiveExpression(int i) {
 			return getRuleContext(AdditiveExpressionContext.class,i);
 		}
-		public List<TerminalNode> LeftShift() { return getTokens(CaplParser.LeftShift); }
+		public List<TerminalNode> LeftShift() { return getTokens(CplParser.LeftShift); }
 		public TerminalNode LeftShift(int i) {
-			return getToken(CaplParser.LeftShift, i);
+			return getToken(CplParser.LeftShift, i);
 		}
-		public List<TerminalNode> RightShift() { return getTokens(CaplParser.RightShift); }
+		public List<TerminalNode> RightShift() { return getTokens(CplParser.RightShift); }
 		public TerminalNode RightShift(int i) {
-			return getToken(CaplParser.RightShift, i);
+			return getToken(CplParser.RightShift, i);
 		}
 		public ShiftExpressionContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -1266,21 +1266,21 @@ public class CaplParser extends Parser {
 		public ShiftExpressionContext shiftExpression(int i) {
 			return getRuleContext(ShiftExpressionContext.class,i);
 		}
-		public List<TerminalNode> Less() { return getTokens(CaplParser.Less); }
+		public List<TerminalNode> Less() { return getTokens(CplParser.Less); }
 		public TerminalNode Less(int i) {
-			return getToken(CaplParser.Less, i);
+			return getToken(CplParser.Less, i);
 		}
-		public List<TerminalNode> Greater() { return getTokens(CaplParser.Greater); }
+		public List<TerminalNode> Greater() { return getTokens(CplParser.Greater); }
 		public TerminalNode Greater(int i) {
-			return getToken(CaplParser.Greater, i);
+			return getToken(CplParser.Greater, i);
 		}
-		public List<TerminalNode> LessEqual() { return getTokens(CaplParser.LessEqual); }
+		public List<TerminalNode> LessEqual() { return getTokens(CplParser.LessEqual); }
 		public TerminalNode LessEqual(int i) {
-			return getToken(CaplParser.LessEqual, i);
+			return getToken(CplParser.LessEqual, i);
 		}
-		public List<TerminalNode> GreaterEqual() { return getTokens(CaplParser.GreaterEqual); }
+		public List<TerminalNode> GreaterEqual() { return getTokens(CplParser.GreaterEqual); }
 		public TerminalNode GreaterEqual(int i) {
-			return getToken(CaplParser.GreaterEqual, i);
+			return getToken(CplParser.GreaterEqual, i);
 		}
 		public RelationalExpressionContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -1341,13 +1341,13 @@ public class CaplParser extends Parser {
 		public RelationalExpressionContext relationalExpression(int i) {
 			return getRuleContext(RelationalExpressionContext.class,i);
 		}
-		public List<TerminalNode> Equal() { return getTokens(CaplParser.Equal); }
+		public List<TerminalNode> Equal() { return getTokens(CplParser.Equal); }
 		public TerminalNode Equal(int i) {
-			return getToken(CaplParser.Equal, i);
+			return getToken(CplParser.Equal, i);
 		}
-		public List<TerminalNode> NotEqual() { return getTokens(CaplParser.NotEqual); }
+		public List<TerminalNode> NotEqual() { return getTokens(CplParser.NotEqual); }
 		public TerminalNode NotEqual(int i) {
-			return getToken(CaplParser.NotEqual, i);
+			return getToken(CplParser.NotEqual, i);
 		}
 		public EqualityExpressionContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -1408,9 +1408,9 @@ public class CaplParser extends Parser {
 		public EqualityExpressionContext equalityExpression(int i) {
 			return getRuleContext(EqualityExpressionContext.class,i);
 		}
-		public List<TerminalNode> And() { return getTokens(CaplParser.And); }
+		public List<TerminalNode> And() { return getTokens(CplParser.And); }
 		public TerminalNode And(int i) {
-			return getToken(CaplParser.And, i);
+			return getToken(CplParser.And, i);
 		}
 		public AndExpressionContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -1463,9 +1463,9 @@ public class CaplParser extends Parser {
 		public AndExpressionContext andExpression(int i) {
 			return getRuleContext(AndExpressionContext.class,i);
 		}
-		public List<TerminalNode> Caret() { return getTokens(CaplParser.Caret); }
+		public List<TerminalNode> Caret() { return getTokens(CplParser.Caret); }
 		public TerminalNode Caret(int i) {
-			return getToken(CaplParser.Caret, i);
+			return getToken(CplParser.Caret, i);
 		}
 		public ExclusiveOrExpressionContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -1518,9 +1518,9 @@ public class CaplParser extends Parser {
 		public ExclusiveOrExpressionContext exclusiveOrExpression(int i) {
 			return getRuleContext(ExclusiveOrExpressionContext.class,i);
 		}
-		public List<TerminalNode> Or() { return getTokens(CaplParser.Or); }
+		public List<TerminalNode> Or() { return getTokens(CplParser.Or); }
 		public TerminalNode Or(int i) {
-			return getToken(CaplParser.Or, i);
+			return getToken(CplParser.Or, i);
 		}
 		public InclusiveOrExpressionContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -1573,9 +1573,9 @@ public class CaplParser extends Parser {
 		public InclusiveOrExpressionContext inclusiveOrExpression(int i) {
 			return getRuleContext(InclusiveOrExpressionContext.class,i);
 		}
-		public List<TerminalNode> AndAnd() { return getTokens(CaplParser.AndAnd); }
+		public List<TerminalNode> AndAnd() { return getTokens(CplParser.AndAnd); }
 		public TerminalNode AndAnd(int i) {
-			return getToken(CaplParser.AndAnd, i);
+			return getToken(CplParser.AndAnd, i);
 		}
 		public LogicalAndExpressionContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -1628,9 +1628,9 @@ public class CaplParser extends Parser {
 		public LogicalAndExpressionContext logicalAndExpression(int i) {
 			return getRuleContext(LogicalAndExpressionContext.class,i);
 		}
-		public List<TerminalNode> OrOr() { return getTokens(CaplParser.OrOr); }
+		public List<TerminalNode> OrOr() { return getTokens(CplParser.OrOr); }
 		public TerminalNode OrOr(int i) {
-			return getToken(CaplParser.OrOr, i);
+			return getToken(CplParser.OrOr, i);
 		}
 		public LogicalOrExpressionContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -1680,11 +1680,11 @@ public class CaplParser extends Parser {
 		public LogicalOrExpressionContext logicalOrExpression() {
 			return getRuleContext(LogicalOrExpressionContext.class,0);
 		}
-		public TerminalNode Question() { return getToken(CaplParser.Question, 0); }
+		public TerminalNode Question() { return getToken(CplParser.Question, 0); }
 		public ExpressionContext expression() {
 			return getRuleContext(ExpressionContext.class,0);
 		}
-		public TerminalNode Colon() { return getToken(CaplParser.Colon, 0); }
+		public TerminalNode Colon() { return getToken(CplParser.Colon, 0); }
 		public ConditionalExpressionContext conditionalExpression() {
 			return getRuleContext(ConditionalExpressionContext.class,0);
 		}
@@ -1745,7 +1745,7 @@ public class CaplParser extends Parser {
 		public AssignmentExpressionContext assignmentExpression() {
 			return getRuleContext(AssignmentExpressionContext.class,0);
 		}
-		public TerminalNode DigitSequence() { return getToken(CaplParser.DigitSequence, 0); }
+		public TerminalNode DigitSequence() { return getToken(CplParser.DigitSequence, 0); }
 		public AssignmentExpressionContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -1798,17 +1798,17 @@ public class CaplParser extends Parser {
 	}
 
 	public static class AssignmentOperatorContext extends ParserRuleContext {
-		public TerminalNode Assign() { return getToken(CaplParser.Assign, 0); }
-		public TerminalNode StarAssign() { return getToken(CaplParser.StarAssign, 0); }
-		public TerminalNode DivAssign() { return getToken(CaplParser.DivAssign, 0); }
-		public TerminalNode ModAssign() { return getToken(CaplParser.ModAssign, 0); }
-		public TerminalNode PlusAssign() { return getToken(CaplParser.PlusAssign, 0); }
-		public TerminalNode MinusAssign() { return getToken(CaplParser.MinusAssign, 0); }
-		public TerminalNode LeftShiftAssign() { return getToken(CaplParser.LeftShiftAssign, 0); }
-		public TerminalNode RightShiftAssign() { return getToken(CaplParser.RightShiftAssign, 0); }
-		public TerminalNode AndAssign() { return getToken(CaplParser.AndAssign, 0); }
-		public TerminalNode XorAssign() { return getToken(CaplParser.XorAssign, 0); }
-		public TerminalNode OrAssign() { return getToken(CaplParser.OrAssign, 0); }
+		public TerminalNode Assign() { return getToken(CplParser.Assign, 0); }
+		public TerminalNode StarAssign() { return getToken(CplParser.StarAssign, 0); }
+		public TerminalNode DivAssign() { return getToken(CplParser.DivAssign, 0); }
+		public TerminalNode ModAssign() { return getToken(CplParser.ModAssign, 0); }
+		public TerminalNode PlusAssign() { return getToken(CplParser.PlusAssign, 0); }
+		public TerminalNode MinusAssign() { return getToken(CplParser.MinusAssign, 0); }
+		public TerminalNode LeftShiftAssign() { return getToken(CplParser.LeftShiftAssign, 0); }
+		public TerminalNode RightShiftAssign() { return getToken(CplParser.RightShiftAssign, 0); }
+		public TerminalNode AndAssign() { return getToken(CplParser.AndAssign, 0); }
+		public TerminalNode XorAssign() { return getToken(CplParser.XorAssign, 0); }
+		public TerminalNode OrAssign() { return getToken(CplParser.OrAssign, 0); }
 		public AssignmentOperatorContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -1852,9 +1852,9 @@ public class CaplParser extends Parser {
 		public AssignmentExpressionContext assignmentExpression(int i) {
 			return getRuleContext(AssignmentExpressionContext.class,i);
 		}
-		public List<TerminalNode> Comma() { return getTokens(CaplParser.Comma); }
+		public List<TerminalNode> Comma() { return getTokens(CplParser.Comma); }
 		public TerminalNode Comma(int i) {
-			return getToken(CaplParser.Comma, i);
+			return getToken(CplParser.Comma, i);
 		}
 		public ExpressionContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -1935,7 +1935,7 @@ public class CaplParser extends Parser {
 		public DeclarationSpecifiersContext declarationSpecifiers() {
 			return getRuleContext(DeclarationSpecifiersContext.class,0);
 		}
-		public TerminalNode Semi() { return getToken(CaplParser.Semi, 0); }
+		public TerminalNode Semi() { return getToken(CplParser.Semi, 0); }
 		public InitDeclaratorListContext initDeclaratorList() {
 			return getRuleContext(InitDeclaratorListContext.class,0);
 		}
@@ -2217,9 +2217,9 @@ public class CaplParser extends Parser {
 		public InitDeclaratorContext initDeclarator(int i) {
 			return getRuleContext(InitDeclaratorContext.class,i);
 		}
-		public List<TerminalNode> Comma() { return getTokens(CaplParser.Comma); }
+		public List<TerminalNode> Comma() { return getTokens(CplParser.Comma); }
 		public TerminalNode Comma(int i) {
-			return getToken(CaplParser.Comma, i);
+			return getToken(CplParser.Comma, i);
 		}
 		public InitDeclaratorListContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -2269,7 +2269,7 @@ public class CaplParser extends Parser {
 		public DeclaratorContext declarator() {
 			return getRuleContext(DeclaratorContext.class,0);
 		}
-		public TerminalNode Assign() { return getToken(CaplParser.Assign, 0); }
+		public TerminalNode Assign() { return getToken(CplParser.Assign, 0); }
 		public InitializerContext initializer() {
 			return getRuleContext(InitializerContext.class,0);
 		}
@@ -2314,12 +2314,12 @@ public class CaplParser extends Parser {
 	}
 
 	public static class StorageClassSpecifierContext extends ParserRuleContext {
-		public TerminalNode Typedef() { return getToken(CaplParser.Typedef, 0); }
-		public TerminalNode Extern() { return getToken(CaplParser.Extern, 0); }
-		public TerminalNode Static() { return getToken(CaplParser.Static, 0); }
-		public TerminalNode ThreadLocal() { return getToken(CaplParser.ThreadLocal, 0); }
-		public TerminalNode Auto() { return getToken(CaplParser.Auto, 0); }
-		public TerminalNode Register() { return getToken(CaplParser.Register, 0); }
+		public TerminalNode Typedef() { return getToken(CplParser.Typedef, 0); }
+		public TerminalNode Extern() { return getToken(CplParser.Extern, 0); }
+		public TerminalNode Static() { return getToken(CplParser.Static, 0); }
+		public TerminalNode ThreadLocal() { return getToken(CplParser.ThreadLocal, 0); }
+		public TerminalNode Auto() { return getToken(CplParser.Auto, 0); }
+		public TerminalNode Register() { return getToken(CplParser.Register, 0); }
 		public StorageClassSpecifierContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -2357,19 +2357,19 @@ public class CaplParser extends Parser {
 	}
 
 	public static class TypeSpecifierContext extends ParserRuleContext {
-		public TerminalNode Void() { return getToken(CaplParser.Void, 0); }
-		public TerminalNode Char() { return getToken(CaplParser.Char, 0); }
-		public TerminalNode Short() { return getToken(CaplParser.Short, 0); }
-		public TerminalNode Int() { return getToken(CaplParser.Int, 0); }
-		public TerminalNode Long() { return getToken(CaplParser.Long, 0); }
-		public TerminalNode Float() { return getToken(CaplParser.Float, 0); }
-		public TerminalNode Double() { return getToken(CaplParser.Double, 0); }
-		public TerminalNode Signed() { return getToken(CaplParser.Signed, 0); }
-		public TerminalNode Unsigned() { return getToken(CaplParser.Unsigned, 0); }
-		public TerminalNode Bool() { return getToken(CaplParser.Bool, 0); }
-		public TerminalNode Complex() { return getToken(CaplParser.Complex, 0); }
-		public TerminalNode LeftParen() { return getToken(CaplParser.LeftParen, 0); }
-		public TerminalNode RightParen() { return getToken(CaplParser.RightParen, 0); }
+		public TerminalNode Void() { return getToken(CplParser.Void, 0); }
+		public TerminalNode Char() { return getToken(CplParser.Char, 0); }
+		public TerminalNode Short() { return getToken(CplParser.Short, 0); }
+		public TerminalNode Int() { return getToken(CplParser.Int, 0); }
+		public TerminalNode Long() { return getToken(CplParser.Long, 0); }
+		public TerminalNode Float() { return getToken(CplParser.Float, 0); }
+		public TerminalNode Double() { return getToken(CplParser.Double, 0); }
+		public TerminalNode Signed() { return getToken(CplParser.Signed, 0); }
+		public TerminalNode Unsigned() { return getToken(CplParser.Unsigned, 0); }
+		public TerminalNode Bool() { return getToken(CplParser.Bool, 0); }
+		public TerminalNode Complex() { return getToken(CplParser.Complex, 0); }
+		public TerminalNode LeftParen() { return getToken(CplParser.LeftParen, 0); }
+		public TerminalNode RightParen() { return getToken(CplParser.RightParen, 0); }
 		public AtomicTypeSpecifierContext atomicTypeSpecifier() {
 			return getRuleContext(AtomicTypeSpecifierContext.class,0);
 		}
@@ -2543,12 +2543,12 @@ public class CaplParser extends Parser {
 		public StructOrUnionContext structOrUnion() {
 			return getRuleContext(StructOrUnionContext.class,0);
 		}
-		public TerminalNode LeftBrace() { return getToken(CaplParser.LeftBrace, 0); }
+		public TerminalNode LeftBrace() { return getToken(CplParser.LeftBrace, 0); }
 		public StructDeclarationListContext structDeclarationList() {
 			return getRuleContext(StructDeclarationListContext.class,0);
 		}
-		public TerminalNode RightBrace() { return getToken(CaplParser.RightBrace, 0); }
-		public TerminalNode Identifier() { return getToken(CaplParser.Identifier, 0); }
+		public TerminalNode RightBrace() { return getToken(CplParser.RightBrace, 0); }
+		public TerminalNode Identifier() { return getToken(CplParser.Identifier, 0); }
 		public StructOrUnionSpecifierContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -2609,8 +2609,8 @@ public class CaplParser extends Parser {
 	}
 
 	public static class StructOrUnionContext extends ParserRuleContext {
-		public TerminalNode Struct() { return getToken(CaplParser.Struct, 0); }
-		public TerminalNode Union() { return getToken(CaplParser.Union, 0); }
+		public TerminalNode Struct() { return getToken(CplParser.Struct, 0); }
+		public TerminalNode Union() { return getToken(CplParser.Union, 0); }
 		public StructOrUnionContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -2698,7 +2698,7 @@ public class CaplParser extends Parser {
 		public SpecifierQualifierListContext specifierQualifierList() {
 			return getRuleContext(SpecifierQualifierListContext.class,0);
 		}
-		public TerminalNode Semi() { return getToken(CaplParser.Semi, 0); }
+		public TerminalNode Semi() { return getToken(CplParser.Semi, 0); }
 		public StructDeclaratorListContext structDeclaratorList() {
 			return getRuleContext(StructDeclaratorListContext.class,0);
 		}
@@ -2851,9 +2851,9 @@ public class CaplParser extends Parser {
 		public StructDeclaratorContext structDeclarator(int i) {
 			return getRuleContext(StructDeclaratorContext.class,i);
 		}
-		public List<TerminalNode> Comma() { return getTokens(CaplParser.Comma); }
+		public List<TerminalNode> Comma() { return getTokens(CplParser.Comma); }
 		public TerminalNode Comma(int i) {
-			return getToken(CaplParser.Comma, i);
+			return getToken(CplParser.Comma, i);
 		}
 		public StructDeclaratorListContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -2903,7 +2903,7 @@ public class CaplParser extends Parser {
 		public DeclaratorContext declarator() {
 			return getRuleContext(DeclaratorContext.class,0);
 		}
-		public TerminalNode Colon() { return getToken(CaplParser.Colon, 0); }
+		public TerminalNode Colon() { return getToken(CplParser.Colon, 0); }
 		public ConstantExpressionContext constantExpression() {
 			return getRuleContext(ConstantExpressionContext.class,0);
 		}
@@ -2961,14 +2961,14 @@ public class CaplParser extends Parser {
 	}
 
 	public static class EnumSpecifierContext extends ParserRuleContext {
-		public TerminalNode Enum() { return getToken(CaplParser.Enum, 0); }
-		public TerminalNode LeftBrace() { return getToken(CaplParser.LeftBrace, 0); }
+		public TerminalNode Enum() { return getToken(CplParser.Enum, 0); }
+		public TerminalNode LeftBrace() { return getToken(CplParser.LeftBrace, 0); }
 		public EnumeratorListContext enumeratorList() {
 			return getRuleContext(EnumeratorListContext.class,0);
 		}
-		public TerminalNode RightBrace() { return getToken(CaplParser.RightBrace, 0); }
-		public TerminalNode Identifier() { return getToken(CaplParser.Identifier, 0); }
-		public TerminalNode Comma() { return getToken(CaplParser.Comma, 0); }
+		public TerminalNode RightBrace() { return getToken(CplParser.RightBrace, 0); }
+		public TerminalNode Identifier() { return getToken(CplParser.Identifier, 0); }
+		public TerminalNode Comma() { return getToken(CplParser.Comma, 0); }
 		public EnumSpecifierContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -3045,9 +3045,9 @@ public class CaplParser extends Parser {
 		public EnumeratorContext enumerator(int i) {
 			return getRuleContext(EnumeratorContext.class,i);
 		}
-		public List<TerminalNode> Comma() { return getTokens(CaplParser.Comma); }
+		public List<TerminalNode> Comma() { return getTokens(CplParser.Comma); }
 		public TerminalNode Comma(int i) {
-			return getToken(CaplParser.Comma, i);
+			return getToken(CplParser.Comma, i);
 		}
 		public EnumeratorListContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -3099,7 +3099,7 @@ public class CaplParser extends Parser {
 		public EnumerationConstantContext enumerationConstant() {
 			return getRuleContext(EnumerationConstantContext.class,0);
 		}
-		public TerminalNode Assign() { return getToken(CaplParser.Assign, 0); }
+		public TerminalNode Assign() { return getToken(CplParser.Assign, 0); }
 		public ConstantExpressionContext constantExpression() {
 			return getRuleContext(ConstantExpressionContext.class,0);
 		}
@@ -3144,7 +3144,7 @@ public class CaplParser extends Parser {
 	}
 
 	public static class EnumerationConstantContext extends ParserRuleContext {
-		public TerminalNode Identifier() { return getToken(CaplParser.Identifier, 0); }
+		public TerminalNode Identifier() { return getToken(CplParser.Identifier, 0); }
 		public EnumerationConstantContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -3173,12 +3173,12 @@ public class CaplParser extends Parser {
 	}
 
 	public static class AtomicTypeSpecifierContext extends ParserRuleContext {
-		public TerminalNode Atomic() { return getToken(CaplParser.Atomic, 0); }
-		public TerminalNode LeftParen() { return getToken(CaplParser.LeftParen, 0); }
+		public TerminalNode Atomic() { return getToken(CplParser.Atomic, 0); }
+		public TerminalNode LeftParen() { return getToken(CplParser.LeftParen, 0); }
 		public TypeNameContext typeName() {
 			return getRuleContext(TypeNameContext.class,0);
 		}
-		public TerminalNode RightParen() { return getToken(CaplParser.RightParen, 0); }
+		public TerminalNode RightParen() { return getToken(CplParser.RightParen, 0); }
 		public AtomicTypeSpecifierContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -3213,10 +3213,10 @@ public class CaplParser extends Parser {
 	}
 
 	public static class TypeQualifierContext extends ParserRuleContext {
-		public TerminalNode Const() { return getToken(CaplParser.Const, 0); }
-		public TerminalNode Restrict() { return getToken(CaplParser.Restrict, 0); }
-		public TerminalNode Volatile() { return getToken(CaplParser.Volatile, 0); }
-		public TerminalNode Atomic() { return getToken(CaplParser.Atomic, 0); }
+		public TerminalNode Const() { return getToken(CplParser.Const, 0); }
+		public TerminalNode Restrict() { return getToken(CplParser.Restrict, 0); }
+		public TerminalNode Volatile() { return getToken(CplParser.Volatile, 0); }
+		public TerminalNode Atomic() { return getToken(CplParser.Atomic, 0); }
 		public TypeQualifierContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -3254,14 +3254,14 @@ public class CaplParser extends Parser {
 	}
 
 	public static class FunctionSpecifierContext extends ParserRuleContext {
-		public TerminalNode Inline() { return getToken(CaplParser.Inline, 0); }
-		public TerminalNode Noreturn() { return getToken(CaplParser.Noreturn, 0); }
+		public TerminalNode Inline() { return getToken(CplParser.Inline, 0); }
+		public TerminalNode Noreturn() { return getToken(CplParser.Noreturn, 0); }
 		public GccAttributeSpecifierContext gccAttributeSpecifier() {
 			return getRuleContext(GccAttributeSpecifierContext.class,0);
 		}
-		public TerminalNode LeftParen() { return getToken(CaplParser.LeftParen, 0); }
-		public TerminalNode Identifier() { return getToken(CaplParser.Identifier, 0); }
-		public TerminalNode RightParen() { return getToken(CaplParser.RightParen, 0); }
+		public TerminalNode LeftParen() { return getToken(CplParser.LeftParen, 0); }
+		public TerminalNode Identifier() { return getToken(CplParser.Identifier, 0); }
+		public TerminalNode RightParen() { return getToken(CplParser.RightParen, 0); }
 		public FunctionSpecifierContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -3330,9 +3330,9 @@ public class CaplParser extends Parser {
 	}
 
 	public static class AlignmentSpecifierContext extends ParserRuleContext {
-		public TerminalNode Alignas() { return getToken(CaplParser.Alignas, 0); }
-		public TerminalNode LeftParen() { return getToken(CaplParser.LeftParen, 0); }
-		public TerminalNode RightParen() { return getToken(CaplParser.RightParen, 0); }
+		public TerminalNode Alignas() { return getToken(CplParser.Alignas, 0); }
+		public TerminalNode LeftParen() { return getToken(CplParser.LeftParen, 0); }
+		public TerminalNode RightParen() { return getToken(CplParser.RightParen, 0); }
 		public TypeNameContext typeName() {
 			return getRuleContext(TypeNameContext.class,0);
 		}
@@ -3455,14 +3455,14 @@ public class CaplParser extends Parser {
 	}
 
 	public static class DirectDeclaratorContext extends ParserRuleContext {
-		public TerminalNode Identifier() { return getToken(CaplParser.Identifier, 0); }
-		public TerminalNode LeftParen() { return getToken(CaplParser.LeftParen, 0); }
+		public TerminalNode Identifier() { return getToken(CplParser.Identifier, 0); }
+		public TerminalNode LeftParen() { return getToken(CplParser.LeftParen, 0); }
 		public DeclaratorContext declarator() {
 			return getRuleContext(DeclaratorContext.class,0);
 		}
-		public TerminalNode RightParen() { return getToken(CaplParser.RightParen, 0); }
-		public TerminalNode Colon() { return getToken(CaplParser.Colon, 0); }
-		public TerminalNode DigitSequence() { return getToken(CaplParser.DigitSequence, 0); }
+		public TerminalNode RightParen() { return getToken(CplParser.RightParen, 0); }
+		public TerminalNode Colon() { return getToken(CplParser.Colon, 0); }
+		public TerminalNode DigitSequence() { return getToken(CplParser.DigitSequence, 0); }
 		public PointerContext pointer() {
 			return getRuleContext(PointerContext.class,0);
 		}
@@ -3472,16 +3472,16 @@ public class CaplParser extends Parser {
 		public TypeSpecifierContext typeSpecifier() {
 			return getRuleContext(TypeSpecifierContext.class,0);
 		}
-		public TerminalNode LeftBracket() { return getToken(CaplParser.LeftBracket, 0); }
-		public TerminalNode RightBracket() { return getToken(CaplParser.RightBracket, 0); }
+		public TerminalNode LeftBracket() { return getToken(CplParser.LeftBracket, 0); }
+		public TerminalNode RightBracket() { return getToken(CplParser.RightBracket, 0); }
 		public TypeQualifierListContext typeQualifierList() {
 			return getRuleContext(TypeQualifierListContext.class,0);
 		}
 		public AssignmentExpressionContext assignmentExpression() {
 			return getRuleContext(AssignmentExpressionContext.class,0);
 		}
-		public TerminalNode Static() { return getToken(CaplParser.Static, 0); }
-		public TerminalNode Star() { return getToken(CaplParser.Star, 0); }
+		public TerminalNode Static() { return getToken(CplParser.Static, 0); }
+		public TerminalNode Star() { return getToken(CplParser.Star, 0); }
 		public ParameterTypeListContext parameterTypeList() {
 			return getRuleContext(ParameterTypeListContext.class,0);
 		}
@@ -3731,11 +3731,11 @@ public class CaplParser extends Parser {
 	}
 
 	public static class GccDeclaratorExtensionContext extends ParserRuleContext {
-		public TerminalNode LeftParen() { return getToken(CaplParser.LeftParen, 0); }
-		public TerminalNode RightParen() { return getToken(CaplParser.RightParen, 0); }
-		public List<TerminalNode> StringLiteral() { return getTokens(CaplParser.StringLiteral); }
+		public TerminalNode LeftParen() { return getToken(CplParser.LeftParen, 0); }
+		public TerminalNode RightParen() { return getToken(CplParser.RightParen, 0); }
+		public List<TerminalNode> StringLiteral() { return getTokens(CplParser.StringLiteral); }
 		public TerminalNode StringLiteral(int i) {
-			return getToken(CaplParser.StringLiteral, i);
+			return getToken(CplParser.StringLiteral, i);
 		}
 		public GccAttributeSpecifierContext gccAttributeSpecifier() {
 			return getRuleContext(GccAttributeSpecifierContext.class,0);
@@ -3802,16 +3802,16 @@ public class CaplParser extends Parser {
 	}
 
 	public static class GccAttributeSpecifierContext extends ParserRuleContext {
-		public List<TerminalNode> LeftParen() { return getTokens(CaplParser.LeftParen); }
+		public List<TerminalNode> LeftParen() { return getTokens(CplParser.LeftParen); }
 		public TerminalNode LeftParen(int i) {
-			return getToken(CaplParser.LeftParen, i);
+			return getToken(CplParser.LeftParen, i);
 		}
 		public GccAttributeListContext gccAttributeList() {
 			return getRuleContext(GccAttributeListContext.class,0);
 		}
-		public List<TerminalNode> RightParen() { return getTokens(CaplParser.RightParen); }
+		public List<TerminalNode> RightParen() { return getTokens(CplParser.RightParen); }
 		public TerminalNode RightParen(int i) {
-			return getToken(CaplParser.RightParen, i);
+			return getToken(CplParser.RightParen, i);
 		}
 		public GccAttributeSpecifierContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -3857,9 +3857,9 @@ public class CaplParser extends Parser {
 		public GccAttributeContext gccAttribute(int i) {
 			return getRuleContext(GccAttributeContext.class,i);
 		}
-		public List<TerminalNode> Comma() { return getTokens(CaplParser.Comma); }
+		public List<TerminalNode> Comma() { return getTokens(CplParser.Comma); }
 		public TerminalNode Comma(int i) {
-			return getToken(CaplParser.Comma, i);
+			return getToken(CplParser.Comma, i);
 		}
 		public GccAttributeListContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -3922,14 +3922,14 @@ public class CaplParser extends Parser {
 	}
 
 	public static class GccAttributeContext extends ParserRuleContext {
-		public TerminalNode Comma() { return getToken(CaplParser.Comma, 0); }
-		public List<TerminalNode> LeftParen() { return getTokens(CaplParser.LeftParen); }
+		public TerminalNode Comma() { return getToken(CplParser.Comma, 0); }
+		public List<TerminalNode> LeftParen() { return getTokens(CplParser.LeftParen); }
 		public TerminalNode LeftParen(int i) {
-			return getToken(CaplParser.LeftParen, i);
+			return getToken(CplParser.LeftParen, i);
 		}
-		public List<TerminalNode> RightParen() { return getTokens(CaplParser.RightParen); }
+		public List<TerminalNode> RightParen() { return getTokens(CplParser.RightParen); }
 		public TerminalNode RightParen(int i) {
-			return getToken(CaplParser.RightParen, i);
+			return getToken(CplParser.RightParen, i);
 		}
 		public ArgumentExpressionListContext argumentExpressionList() {
 			return getRuleContext(ArgumentExpressionListContext.class,0);
@@ -3993,9 +3993,9 @@ public class CaplParser extends Parser {
 	}
 
 	public static class NestedParenthesesBlockContext extends ParserRuleContext {
-		public List<TerminalNode> LeftParen() { return getTokens(CaplParser.LeftParen); }
+		public List<TerminalNode> LeftParen() { return getTokens(CplParser.LeftParen); }
 		public TerminalNode LeftParen(int i) {
-			return getToken(CaplParser.LeftParen, i);
+			return getToken(CplParser.LeftParen, i);
 		}
 		public List<NestedParenthesesBlockContext> nestedParenthesesBlock() {
 			return getRuleContexts(NestedParenthesesBlockContext.class);
@@ -4003,9 +4003,9 @@ public class CaplParser extends Parser {
 		public NestedParenthesesBlockContext nestedParenthesesBlock(int i) {
 			return getRuleContext(NestedParenthesesBlockContext.class,i);
 		}
-		public List<TerminalNode> RightParen() { return getTokens(CaplParser.RightParen); }
+		public List<TerminalNode> RightParen() { return getTokens(CplParser.RightParen); }
 		public TerminalNode RightParen(int i) {
-			return getToken(CaplParser.RightParen, i);
+			return getToken(CplParser.RightParen, i);
 		}
 		public NestedParenthesesBlockContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -4189,13 +4189,13 @@ public class CaplParser extends Parser {
 	}
 
 	public static class PointerContext extends ParserRuleContext {
-		public List<TerminalNode> Star() { return getTokens(CaplParser.Star); }
+		public List<TerminalNode> Star() { return getTokens(CplParser.Star); }
 		public TerminalNode Star(int i) {
-			return getToken(CaplParser.Star, i);
+			return getToken(CplParser.Star, i);
 		}
-		public List<TerminalNode> Caret() { return getTokens(CaplParser.Caret); }
+		public List<TerminalNode> Caret() { return getTokens(CplParser.Caret); }
 		public TerminalNode Caret(int i) {
-			return getToken(CaplParser.Caret, i);
+			return getToken(CplParser.Caret, i);
 		}
 		public List<TypeQualifierListContext> typeQualifierList() {
 			return getRuleContexts(TypeQualifierListContext.class);
@@ -4325,8 +4325,8 @@ public class CaplParser extends Parser {
 		public ParameterListContext parameterList() {
 			return getRuleContext(ParameterListContext.class,0);
 		}
-		public TerminalNode Comma() { return getToken(CaplParser.Comma, 0); }
-		public TerminalNode Ellipsis() { return getToken(CaplParser.Ellipsis, 0); }
+		public TerminalNode Comma() { return getToken(CplParser.Comma, 0); }
+		public TerminalNode Ellipsis() { return getToken(CplParser.Ellipsis, 0); }
 		public ParameterTypeListContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -4374,9 +4374,9 @@ public class CaplParser extends Parser {
 		public ParameterDeclarationContext parameterDeclaration(int i) {
 			return getRuleContext(ParameterDeclarationContext.class,i);
 		}
-		public List<TerminalNode> Comma() { return getTokens(CaplParser.Comma); }
+		public List<TerminalNode> Comma() { return getTokens(CplParser.Comma); }
 		public TerminalNode Comma(int i) {
-			return getToken(CaplParser.Comma, i);
+			return getToken(CplParser.Comma, i);
 		}
 		public ParameterListContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -4491,13 +4491,13 @@ public class CaplParser extends Parser {
 	}
 
 	public static class IdentifierListContext extends ParserRuleContext {
-		public List<TerminalNode> Identifier() { return getTokens(CaplParser.Identifier); }
+		public List<TerminalNode> Identifier() { return getTokens(CplParser.Identifier); }
 		public TerminalNode Identifier(int i) {
-			return getToken(CaplParser.Identifier, i);
+			return getToken(CplParser.Identifier, i);
 		}
-		public List<TerminalNode> Comma() { return getTokens(CaplParser.Comma); }
+		public List<TerminalNode> Comma() { return getTokens(CplParser.Comma); }
 		public TerminalNode Comma(int i) {
-			return getToken(CaplParser.Comma, i);
+			return getToken(CplParser.Comma, i);
 		}
 		public IdentifierListContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -4667,27 +4667,27 @@ public class CaplParser extends Parser {
 	}
 
 	public static class DirectAbstractDeclaratorContext extends ParserRuleContext {
-		public TerminalNode LeftParen() { return getToken(CaplParser.LeftParen, 0); }
+		public TerminalNode LeftParen() { return getToken(CplParser.LeftParen, 0); }
 		public AbstractDeclaratorContext abstractDeclarator() {
 			return getRuleContext(AbstractDeclaratorContext.class,0);
 		}
-		public TerminalNode RightParen() { return getToken(CaplParser.RightParen, 0); }
+		public TerminalNode RightParen() { return getToken(CplParser.RightParen, 0); }
 		public List<GccDeclaratorExtensionContext> gccDeclaratorExtension() {
 			return getRuleContexts(GccDeclaratorExtensionContext.class);
 		}
 		public GccDeclaratorExtensionContext gccDeclaratorExtension(int i) {
 			return getRuleContext(GccDeclaratorExtensionContext.class,i);
 		}
-		public TerminalNode LeftBracket() { return getToken(CaplParser.LeftBracket, 0); }
-		public TerminalNode RightBracket() { return getToken(CaplParser.RightBracket, 0); }
+		public TerminalNode LeftBracket() { return getToken(CplParser.LeftBracket, 0); }
+		public TerminalNode RightBracket() { return getToken(CplParser.RightBracket, 0); }
 		public TypeQualifierListContext typeQualifierList() {
 			return getRuleContext(TypeQualifierListContext.class,0);
 		}
 		public AssignmentExpressionContext assignmentExpression() {
 			return getRuleContext(AssignmentExpressionContext.class,0);
 		}
-		public TerminalNode Static() { return getToken(CaplParser.Static, 0); }
-		public TerminalNode Star() { return getToken(CaplParser.Star, 0); }
+		public TerminalNode Static() { return getToken(CplParser.Static, 0); }
+		public TerminalNode Star() { return getToken(CplParser.Star, 0); }
 		public ParameterTypeListContext parameterTypeList() {
 			return getRuleContext(ParameterTypeListContext.class,0);
 		}
@@ -5015,7 +5015,7 @@ public class CaplParser extends Parser {
 	}
 
 	public static class TypedefNameContext extends ParserRuleContext {
-		public TerminalNode Identifier() { return getToken(CaplParser.Identifier, 0); }
+		public TerminalNode Identifier() { return getToken(CplParser.Identifier, 0); }
 		public TypedefNameContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -5047,12 +5047,12 @@ public class CaplParser extends Parser {
 		public AssignmentExpressionContext assignmentExpression() {
 			return getRuleContext(AssignmentExpressionContext.class,0);
 		}
-		public TerminalNode LeftBrace() { return getToken(CaplParser.LeftBrace, 0); }
+		public TerminalNode LeftBrace() { return getToken(CplParser.LeftBrace, 0); }
 		public InitializerListContext initializerList() {
 			return getRuleContext(InitializerListContext.class,0);
 		}
-		public TerminalNode RightBrace() { return getToken(CaplParser.RightBrace, 0); }
-		public TerminalNode Comma() { return getToken(CaplParser.Comma, 0); }
+		public TerminalNode RightBrace() { return getToken(CplParser.RightBrace, 0); }
+		public TerminalNode Comma() { return getToken(CplParser.Comma, 0); }
 		public InitializerContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -5142,9 +5142,9 @@ public class CaplParser extends Parser {
 		public DesignationContext designation(int i) {
 			return getRuleContext(DesignationContext.class,i);
 		}
-		public List<TerminalNode> Comma() { return getTokens(CaplParser.Comma); }
+		public List<TerminalNode> Comma() { return getTokens(CplParser.Comma); }
 		public TerminalNode Comma(int i) {
-			return getToken(CaplParser.Comma, i);
+			return getToken(CplParser.Comma, i);
 		}
 		public InitializerListContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -5217,7 +5217,7 @@ public class CaplParser extends Parser {
 		public DesignatorListContext designatorList() {
 			return getRuleContext(DesignatorListContext.class,0);
 		}
-		public TerminalNode Assign() { return getToken(CaplParser.Assign, 0); }
+		public TerminalNode Assign() { return getToken(CplParser.Assign, 0); }
 		public DesignationContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -5295,13 +5295,13 @@ public class CaplParser extends Parser {
 	}
 
 	public static class DesignatorContext extends ParserRuleContext {
-		public TerminalNode LeftBracket() { return getToken(CaplParser.LeftBracket, 0); }
+		public TerminalNode LeftBracket() { return getToken(CplParser.LeftBracket, 0); }
 		public ConstantExpressionContext constantExpression() {
 			return getRuleContext(ConstantExpressionContext.class,0);
 		}
-		public TerminalNode RightBracket() { return getToken(CaplParser.RightBracket, 0); }
-		public TerminalNode Dot() { return getToken(CaplParser.Dot, 0); }
-		public TerminalNode Identifier() { return getToken(CaplParser.Identifier, 0); }
+		public TerminalNode RightBracket() { return getToken(CplParser.RightBracket, 0); }
+		public TerminalNode Dot() { return getToken(CplParser.Dot, 0); }
+		public TerminalNode Identifier() { return getToken(CplParser.Identifier, 0); }
 		public DesignatorContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -5351,17 +5351,17 @@ public class CaplParser extends Parser {
 	}
 
 	public static class StaticAssertDeclarationContext extends ParserRuleContext {
-		public TerminalNode StaticAssert() { return getToken(CaplParser.StaticAssert, 0); }
-		public TerminalNode LeftParen() { return getToken(CaplParser.LeftParen, 0); }
+		public TerminalNode StaticAssert() { return getToken(CplParser.StaticAssert, 0); }
+		public TerminalNode LeftParen() { return getToken(CplParser.LeftParen, 0); }
 		public ConstantExpressionContext constantExpression() {
 			return getRuleContext(ConstantExpressionContext.class,0);
 		}
-		public TerminalNode Comma() { return getToken(CaplParser.Comma, 0); }
-		public TerminalNode RightParen() { return getToken(CaplParser.RightParen, 0); }
-		public TerminalNode Semi() { return getToken(CaplParser.Semi, 0); }
-		public List<TerminalNode> StringLiteral() { return getTokens(CaplParser.StringLiteral); }
+		public TerminalNode Comma() { return getToken(CplParser.Comma, 0); }
+		public TerminalNode RightParen() { return getToken(CplParser.RightParen, 0); }
+		public TerminalNode Semi() { return getToken(CplParser.Semi, 0); }
+		public List<TerminalNode> StringLiteral() { return getTokens(CplParser.StringLiteral); }
 		public TerminalNode StringLiteral(int i) {
-			return getToken(CaplParser.StringLiteral, i);
+			return getToken(CplParser.StringLiteral, i);
 		}
 		public StaticAssertDeclarationContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -5434,23 +5434,23 @@ public class CaplParser extends Parser {
 		public JumpStatementContext jumpStatement() {
 			return getRuleContext(JumpStatementContext.class,0);
 		}
-		public TerminalNode LeftParen() { return getToken(CaplParser.LeftParen, 0); }
-		public TerminalNode RightParen() { return getToken(CaplParser.RightParen, 0); }
-		public TerminalNode Semi() { return getToken(CaplParser.Semi, 0); }
-		public TerminalNode Volatile() { return getToken(CaplParser.Volatile, 0); }
+		public TerminalNode LeftParen() { return getToken(CplParser.LeftParen, 0); }
+		public TerminalNode RightParen() { return getToken(CplParser.RightParen, 0); }
+		public TerminalNode Semi() { return getToken(CplParser.Semi, 0); }
+		public TerminalNode Volatile() { return getToken(CplParser.Volatile, 0); }
 		public List<LogicalOrExpressionContext> logicalOrExpression() {
 			return getRuleContexts(LogicalOrExpressionContext.class);
 		}
 		public LogicalOrExpressionContext logicalOrExpression(int i) {
 			return getRuleContext(LogicalOrExpressionContext.class,i);
 		}
-		public List<TerminalNode> Colon() { return getTokens(CaplParser.Colon); }
+		public List<TerminalNode> Colon() { return getTokens(CplParser.Colon); }
 		public TerminalNode Colon(int i) {
-			return getToken(CaplParser.Colon, i);
+			return getToken(CplParser.Colon, i);
 		}
-		public List<TerminalNode> Comma() { return getTokens(CaplParser.Comma); }
+		public List<TerminalNode> Comma() { return getTokens(CplParser.Comma); }
 		public TerminalNode Comma(int i) {
-			return getToken(CaplParser.Comma, i);
+			return getToken(CplParser.Comma, i);
 		}
 		public StatementContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -5619,16 +5619,16 @@ public class CaplParser extends Parser {
 	}
 
 	public static class LabeledStatementContext extends ParserRuleContext {
-		public TerminalNode Identifier() { return getToken(CaplParser.Identifier, 0); }
-		public TerminalNode Colon() { return getToken(CaplParser.Colon, 0); }
+		public TerminalNode Identifier() { return getToken(CplParser.Identifier, 0); }
+		public TerminalNode Colon() { return getToken(CplParser.Colon, 0); }
 		public StatementContext statement() {
 			return getRuleContext(StatementContext.class,0);
 		}
-		public TerminalNode Case() { return getToken(CaplParser.Case, 0); }
+		public TerminalNode Case() { return getToken(CplParser.Case, 0); }
 		public ConstantExpressionContext constantExpression() {
 			return getRuleContext(ConstantExpressionContext.class,0);
 		}
-		public TerminalNode Default() { return getToken(CaplParser.Default, 0); }
+		public TerminalNode Default() { return getToken(CplParser.Default, 0); }
 		public LabeledStatementContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -5693,8 +5693,8 @@ public class CaplParser extends Parser {
 	}
 
 	public static class CompoundStatementContext extends ParserRuleContext {
-		public TerminalNode LeftBrace() { return getToken(CaplParser.LeftBrace, 0); }
-		public TerminalNode RightBrace() { return getToken(CaplParser.RightBrace, 0); }
+		public TerminalNode LeftBrace() { return getToken(CplParser.LeftBrace, 0); }
+		public TerminalNode RightBrace() { return getToken(CplParser.RightBrace, 0); }
 		public BlockItemListContext blockItemList() {
 			return getRuleContext(BlockItemListContext.class,0);
 		}
@@ -5833,7 +5833,7 @@ public class CaplParser extends Parser {
 	}
 
 	public static class ExpressionStatementContext extends ParserRuleContext {
-		public TerminalNode Semi() { return getToken(CaplParser.Semi, 0); }
+		public TerminalNode Semi() { return getToken(CplParser.Semi, 0); }
 		public ExpressionContext expression() {
 			return getRuleContext(ExpressionContext.class,0);
 		}
@@ -5876,20 +5876,20 @@ public class CaplParser extends Parser {
 	}
 
 	public static class SelectionStatementContext extends ParserRuleContext {
-		public TerminalNode If() { return getToken(CaplParser.If, 0); }
-		public TerminalNode LeftParen() { return getToken(CaplParser.LeftParen, 0); }
+		public TerminalNode If() { return getToken(CplParser.If, 0); }
+		public TerminalNode LeftParen() { return getToken(CplParser.LeftParen, 0); }
 		public ExpressionContext expression() {
 			return getRuleContext(ExpressionContext.class,0);
 		}
-		public TerminalNode RightParen() { return getToken(CaplParser.RightParen, 0); }
+		public TerminalNode RightParen() { return getToken(CplParser.RightParen, 0); }
 		public List<StatementContext> statement() {
 			return getRuleContexts(StatementContext.class);
 		}
 		public StatementContext statement(int i) {
 			return getRuleContext(StatementContext.class,i);
 		}
-		public TerminalNode Else() { return getToken(CaplParser.Else, 0); }
-		public TerminalNode Switch() { return getToken(CaplParser.Switch, 0); }
+		public TerminalNode Else() { return getToken(CplParser.Else, 0); }
+		public TerminalNode Switch() { return getToken(CplParser.Switch, 0); }
 		public SelectionStatementContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -5961,18 +5961,18 @@ public class CaplParser extends Parser {
 	}
 
 	public static class IterationStatementContext extends ParserRuleContext {
-		public TerminalNode While() { return getToken(CaplParser.While, 0); }
-		public TerminalNode LeftParen() { return getToken(CaplParser.LeftParen, 0); }
+		public TerminalNode While() { return getToken(CplParser.While, 0); }
+		public TerminalNode LeftParen() { return getToken(CplParser.LeftParen, 0); }
 		public ExpressionContext expression() {
 			return getRuleContext(ExpressionContext.class,0);
 		}
-		public TerminalNode RightParen() { return getToken(CaplParser.RightParen, 0); }
+		public TerminalNode RightParen() { return getToken(CplParser.RightParen, 0); }
 		public StatementContext statement() {
 			return getRuleContext(StatementContext.class,0);
 		}
-		public TerminalNode Do() { return getToken(CaplParser.Do, 0); }
-		public TerminalNode Semi() { return getToken(CaplParser.Semi, 0); }
-		public TerminalNode For() { return getToken(CaplParser.For, 0); }
+		public TerminalNode Do() { return getToken(CplParser.Do, 0); }
+		public TerminalNode Semi() { return getToken(CplParser.Semi, 0); }
+		public TerminalNode For() { return getToken(CplParser.For, 0); }
 		public ForConditionContext forCondition() {
 			return getRuleContext(ForConditionContext.class,0);
 		}
@@ -6054,9 +6054,9 @@ public class CaplParser extends Parser {
 	}
 
 	public static class ForConditionContext extends ParserRuleContext {
-		public List<TerminalNode> Semi() { return getTokens(CaplParser.Semi); }
+		public List<TerminalNode> Semi() { return getTokens(CplParser.Semi); }
 		public TerminalNode Semi(int i) {
-			return getToken(CaplParser.Semi, i);
+			return getToken(CplParser.Semi, i);
 		}
 		public ForDeclarationContext forDeclaration() {
 			return getRuleContext(ForDeclarationContext.class,0);
@@ -6196,9 +6196,9 @@ public class CaplParser extends Parser {
 		public AssignmentExpressionContext assignmentExpression(int i) {
 			return getRuleContext(AssignmentExpressionContext.class,i);
 		}
-		public List<TerminalNode> Comma() { return getTokens(CaplParser.Comma); }
+		public List<TerminalNode> Comma() { return getTokens(CplParser.Comma); }
 		public TerminalNode Comma(int i) {
-			return getToken(CaplParser.Comma, i);
+			return getToken(CplParser.Comma, i);
 		}
 		public ForExpressionContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -6245,15 +6245,15 @@ public class CaplParser extends Parser {
 	}
 
 	public static class JumpStatementContext extends ParserRuleContext {
-		public TerminalNode Semi() { return getToken(CaplParser.Semi, 0); }
-		public TerminalNode Goto() { return getToken(CaplParser.Goto, 0); }
-		public TerminalNode Identifier() { return getToken(CaplParser.Identifier, 0); }
-		public TerminalNode Return() { return getToken(CaplParser.Return, 0); }
+		public TerminalNode Semi() { return getToken(CplParser.Semi, 0); }
+		public TerminalNode Goto() { return getToken(CplParser.Goto, 0); }
+		public TerminalNode Identifier() { return getToken(CplParser.Identifier, 0); }
+		public TerminalNode Return() { return getToken(CplParser.Return, 0); }
 		public UnaryExpressionContext unaryExpression() {
 			return getRuleContext(UnaryExpressionContext.class,0);
 		}
-		public TerminalNode Continue() { return getToken(CaplParser.Continue, 0); }
-		public TerminalNode Break() { return getToken(CaplParser.Break, 0); }
+		public TerminalNode Continue() { return getToken(CplParser.Continue, 0); }
+		public TerminalNode Break() { return getToken(CplParser.Break, 0); }
 		public ExpressionContext expression() {
 			return getRuleContext(ExpressionContext.class,0);
 		}
@@ -6336,7 +6336,7 @@ public class CaplParser extends Parser {
 	}
 
 	public static class CompilationUnitContext extends ParserRuleContext {
-		public TerminalNode EOF() { return getToken(CaplParser.EOF, 0); }
+		public TerminalNode EOF() { return getToken(CplParser.EOF, 0); }
 		public TranslationUnitContext translationUnit() {
 			return getRuleContext(TranslationUnitContext.class,0);
 		}
@@ -6432,7 +6432,7 @@ public class CaplParser extends Parser {
 		public DeclarationContext declaration() {
 			return getRuleContext(DeclarationContext.class,0);
 		}
-		public TerminalNode Semi() { return getToken(CaplParser.Semi, 0); }
+		public TerminalNode Semi() { return getToken(CplParser.Semi, 0); }
 		public ExternalDeclarationContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
