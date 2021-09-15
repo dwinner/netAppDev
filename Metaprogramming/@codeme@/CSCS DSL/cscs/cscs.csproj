@@ -1,0 +1,158 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <ProjectGuid>{F98C494A-35FA-43EE-B02C-314EE78BC811}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>CsCsLang</RootNamespace>
+    <AssemblyName>CsCsLang</AssemblyName>
+    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug</OutputPath>
+    <DefineConstants>DEBUG</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Externalconsole>true</Externalconsole>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+    <PlatformTarget>x86</PlatformTarget>
+  </PropertyGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <Compile Include="AbsFunction.cs" />
+    <Compile Include="AcosFunction.cs" />
+    <Compile Include="ActionFunction.cs" />
+    <Compile Include="AppendFunction.cs" />
+    <Compile Include="AppendLineFunction.cs" />
+    <Compile Include="AppendLinesFunction.cs" />
+    <Compile Include="AsinFunction.cs" />
+    <Compile Include="CdFunction.cs" />
+    <Compile Include="Cd__Function.cs" />
+    <Compile Include="CeilFunction.cs" />
+    <Compile Include="ClearConsole.cs" />
+    <Compile Include="ClientSocket.cs" />
+    <Compile Include="CopyFunction.cs" />
+    <Compile Include="CosFunction.cs" />
+    <Compile Include="DateTimeFunction.cs" />
+    <Compile Include="DeleteFunction.cs" />
+    <Compile Include="DirFunction.cs" />
+    <Compile Include="ExistsFunction.cs" />
+    <Compile Include="ExpFunction.cs" />
+    <Compile Include="FindfilesFunction.cs" />
+    <Compile Include="FindstrFunction.cs" />
+    <Compile Include="FloorFunction.cs" />
+    <Compile Include="FunctionFlow\AddFunction.cs" />
+    <Compile Include="FunctionFlow\AddVariablesToHashFunction.cs" />
+    <Compile Include="FunctionFlow\AddVariableToHashFunction.cs" />
+    <Compile Include="FunctionFlow\AssignFunction.cs" />
+    <Compile Include="FunctionFlow\BoolFunction.cs" />
+    <Compile Include="FunctionFlow\BreakStatement.cs" />
+    <Compile Include="FunctionFlow\ContainsFunction.cs" />
+    <Compile Include="FunctionFlow\ContinueStatement.cs" />
+    <Compile Include="FunctionFlow\CustomFunction.cs" />
+    <Compile Include="FunctionFlow\DeepCopyFunction.cs" />
+    <Compile Include="FunctionFlow\ExitFunction.cs" />
+    <Compile Include="FunctionFlow\ForStatement.cs" />
+    <Compile Include="FunctionFlow\FunctionCreator.cs" />
+    <Compile Include="FunctionFlow\GetAllKeysFunction.cs" />
+    <Compile Include="FunctionFlow\GetColumnFunction.cs" />
+    <Compile Include="FunctionFlow\GetVarFunction.cs" />
+    <Compile Include="FunctionFlow\IdentityFunction.cs" />
+    <Compile Include="FunctionFlow\IfStatement.cs" />
+    <Compile Include="FunctionFlow\IncludeFile.cs" />
+    <Compile Include="FunctionFlow\IncrementDecrementFunction.cs" />
+    <Compile Include="FunctionFlow\OperatorAssignFunction.cs" />
+    <Compile Include="FunctionFlow\RemoveAtFunction.cs" />
+    <Compile Include="FunctionFlow\RemoveFunction.cs" />
+    <Compile Include="FunctionFlow\ReturnStatement.cs" />
+    <Compile Include="FunctionFlow\SizeFunction.cs" />
+    <Compile Include="FunctionFlow\StringOrNumberFunction.cs" />
+    <Compile Include="FunctionFlow\ThrowFunction.cs" />
+    <Compile Include="FunctionFlow\TokenCounterFunction.cs" />
+    <Compile Include="FunctionFlow\TokenizeLinesFunction.cs" />
+    <Compile Include="FunctionFlow\TranslateFunction.cs" />
+    <Compile Include="FunctionFlow\TryBlock.cs" />
+    <Compile Include="FunctionFlow\TypeFunction.cs" />
+    <Compile Include="FunctionFlow\WhileStatement.cs" />
+    <Compile Include="GetEnvFunction.cs" />
+    <Compile Include="GetRandomFunction.cs" />
+    <Compile Include="IndexOfFunction.cs" />
+    <Compile Include="Interpreter.cs" />
+    <Compile Include="Constants.cs" />
+    <Compile Include="KillFunction.cs" />
+    <Compile Include="LockFunction.cs" />
+    <Compile Include="LogFunction.cs" />
+    <Compile Include="MkdirFunction.cs" />
+    <Compile Include="MoreFunction.cs" />
+    <Compile Include="MoveFunction.cs" />
+    <Compile Include="OutputAvailableEventArgs.cs" />
+    <Compile Include="PowFunction.cs" />
+    <Compile Include="PrintFunction.cs" />
+    <Compile Include="ProcessorTimeFunction.cs" />
+    <Compile Include="PwdFunction.cs" />
+    <Compile Include="ReadConsole.cs" />
+    <Compile Include="ReadCSCSFileFunction.cs" />
+    <Compile Include="RoundFunction.cs" />
+    <Compile Include="RunFunction.cs" />
+    <Compile Include="ServerSocket.cs" />
+    <Compile Include="SetEnvFunction.cs" />
+    <Compile Include="SignalWaitFunction.cs" />
+    <Compile Include="SinFunction.cs" />
+    <Compile Include="SleepFunction.cs" />
+    <Compile Include="SqrtFunction.cs" />
+    <Compile Include="StopWatchFunction.cs" />
+    <Compile Include="StringManipulationFunction.cs" />
+    <Compile Include="SubstrFunction.cs" />
+    <Compile Include="TailFunction.cs" />
+    <Compile Include="ThreadFunction.cs" />
+    <Compile Include="ThreadIDFunction.cs" />
+    <Compile Include="TokenizeFunction.cs" />
+    <Compile Include="ToLowerFunction.cs" />
+    <Compile Include="ToUpperFunction.cs" />
+    <Compile Include="Utils.cs" />
+    <Compile Include="Parser.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Utils.Parsing.cs" />
+    <Compile Include="ParserFunction.cs" />
+    <Compile Include="FunctionFlow\ShowFunction.cs" />
+    <Compile Include="PiFunction.cs" />
+    <Compile Include="PsInfoFunction.cs" />
+    <Compile Include="Variable.cs" />
+    <Compile Include="ParsingScript.cs" />
+    <Compile Include="Translation.cs" />
+    <Compile Include="WriteLineFunction.cs" />
+    <Compile Include="WriteLinesFunction.cs" />
+    <Compile Include="WriteToConsole.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="WindowsBase" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Xaml" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Windows" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Windows.Forms.DataVisualization" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,32 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EntMapping", "EntMapping\EntMapping.csproj", "{8E3F486C-A1E9-4F45-A58C-D98AB5BE48DC}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "output", "output", "{E7A0044A-4B01-45B5-BE8F-28D08EC93F3E}"
+	ProjectSection(SolutionItems) = preProject
+		output\EntityMapping.tokens = output\EntityMapping.tokens
+		output\EntityMappingLexer.cs = output\EntityMappingLexer.cs
+		output\EntityMappingParser.cs = output\EntityMappingParser.cs
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Grammar", "Grammar", "{2ECBC177-847E-41A7-A4AF-2C6BB2DCE1A1}"
+	ProjectSection(SolutionItems) = preProject
+		EntityMapping.g = EntityMapping.g
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x86 = Debug|x86
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{8E3F486C-A1E9-4F45-A58C-D98AB5BE48DC}.Debug|x86.ActiveCfg = Debug|x86
+		{8E3F486C-A1E9-4F45-A58C-D98AB5BE48DC}.Debug|x86.Build.0 = Debug|x86
+		{8E3F486C-A1E9-4F45-A58C-D98AB5BE48DC}.Release|x86.ActiveCfg = Release|x86
+		{8E3F486C-A1E9-4F45-A58C-D98AB5BE48DC}.Release|x86.Build.0 = Release|x86
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
