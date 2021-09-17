@@ -4,6 +4,10 @@
 
 grammar Capl;
 
+options {
+	language=CSharp;
+}
+
 compilationUnit: variableSection*;
 
 variableSection:
