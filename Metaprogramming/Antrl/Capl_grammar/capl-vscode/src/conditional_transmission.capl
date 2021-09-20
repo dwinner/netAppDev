@@ -1,0 +1,26 @@
+variables
+{
+    message 0x400 msgA = {dlc=1};
+    mstimer timerA;
+    int conditionA = 0; // initialize conditionA = off
+}
+
+on key 'a'
+{
+    conditionA =! conditionA; // toggle conditionA
+    if(conditionA == 1) // if condition is active
+    {
+        setTimer(timerA,200); // then start timer
+    }
+}
+
+on timer timerA
+{
+    if(conditionA == 1) // if condition is still true
+    {
+        setTimer(timerA,200); // then continue timer
+    }
+
+    msgA.byte(0)=msgA.byte(0)-1; // change the data
+    output(msgA); // output message
+}
