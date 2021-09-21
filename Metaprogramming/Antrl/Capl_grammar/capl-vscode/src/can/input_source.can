@@ -4,7 +4,7 @@ variables
     message clock_time clockMsg;
     int clock_seconds;
     int clock_minutes;
-    int clock_hours;
+    int clock_hours;    
 }
 
 on timer one_second_clock

@@ -1,0 +1,28 @@
+on message 555
+{
+    byte val;
+    val = 0;
+
+    /* checks to see if the message was received on CAN channel 1*/
+    if (this.CAN == 1)
+    {
+        // sets "val" to the value of the first data byte in the CAN message
+        val = this.byte(0);
+    }
+}
+
+on envVar LEDSwitch /* Triggered when LED Switch changes */
+{
+    int val;
+    val = getValue(this);
+}
+
+void printme (double num)
+{
+    write(“Floating point %f”, num);
+}
+
+void printme (int num, char units[])
+{
+    write(“%d %s”, num, units);
+}

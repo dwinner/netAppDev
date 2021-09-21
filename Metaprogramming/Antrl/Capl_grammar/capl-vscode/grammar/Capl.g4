@@ -13,23 +13,16 @@ grammar Capl;
 
 /* end - CAPL specific   */
 
-options {
+/*options {
 	language=CSharp;
-}
+}*/
 
 primaryExpression
     :   Identifier
     |   Constant
     |   StringLiteral+
     |   '(' expression ')'
-    |   genericSelection
-    |   '__extension__'? '(' compoundStatement ')' // Blocks (GCC extension)
-    |   '__builtin_va_arg' '(' unaryExpression ',' typeName ')'
-    |   '__builtin_offsetof' '(' typeName ',' unaryExpression ')'
-    ;
-
-genericSelection
-    :   '_Generic' '(' assignmentExpression ',' genericAssocList ')'
+    |   '(' compoundStatement ')'
     ;
 
 genericAssocList
@@ -43,11 +36,11 @@ genericAssociation
 postfixExpression
     :
     (   primaryExpression
-    |   '__extension__'? '(' typeName ')' '{' initializerList ','? '}'
+    |   '(' typeName ')' '{' initializerList ','? '}'
     )
     ('[' expression ']'
     | '(' argumentExpressionList? ')'
-    | ('.' | '->') Identifier
+    | '.' Identifier
     | ('++' | '--')
     )*
     ;
@@ -67,11 +60,11 @@ unaryExpression
     ;
 
 unaryOperator
-    :   '&' | '*' | '+' | '-' | '~' | '!'
+    :   '+' | '-' | '~' | '!'
     ;
 
 castExpression
-    :   '__extension__'? '(' typeName ')' castExpression
+    :   '(' typeName ')' castExpression
     |   unaryExpression
     |   DigitSequence // for
     ;
@@ -167,16 +160,21 @@ initDeclarator
 typeSpecifier
     :   ('void'
     |   'char'
+    |   'byte'
     |   'int'
     |   'long'
     |   'float'
     |   'double'
+    |   'word'
+    |   'dword'
+    |   'message'
+    |   'timer'
+    |   'msTimer'
     |   '_Bool'
     |   '_Complex'
     |   '__m128'
     |   '__m128d'
-    |   '__m128i')
-    |   '__extension__' '(' ('__m128' | '__m128d' | '__m128i') ')'
+    |   '__m128i')    
     |   atomicTypeSpecifier    
     ;
 
@@ -382,6 +380,7 @@ declarationList
 Break : 'break';
 Case : 'case';
 Char : 'char';
+Byte : 'byte';
 Continue : 'continue';
 Default : 'default';
 Do : 'do';
@@ -392,6 +391,11 @@ For : 'for';
 If : 'if';
 Inline : 'inline';
 Int : 'int';
+Word : 'word';
+Dword : 'dword';
+Message : 'message';
+Timer : 'timer';
+MsTimer : 'msTimer';
 Long : 'long';
 Restrict : 'restrict';
 Return : 'return';
@@ -404,7 +408,6 @@ Alignof : '_Alignof';
 Atomic : '_Atomic';
 Bool : '_Bool';
 Complex : '_Complex';
-Generic : '_Generic';
 Imaginary : '_Imaginary';
 Noreturn : '_Noreturn';
 ThreadLocal : '_Thread_local';
@@ -459,8 +462,6 @@ OrAssign : '|=';
 
 Equal : '==';
 NotEqual : '!=';
-
-Arrow : '->';
 Dot : '.';
 Ellipsis : '...';
 

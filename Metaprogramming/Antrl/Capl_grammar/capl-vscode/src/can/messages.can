@@ -1,0 +1,42 @@
+variables
+{
+    message * eTemp;
+
+    eTemp.CAN = 2; // set the transmit channel for this message to 2
+    int value = eTemp.TIME; // retrieve the time stamp of a message’s last transmission or reception
+    eTemp.ID = 100; // set the message identifier to 100 in decimal
+
+    int myValue;
+
+    myvalue = eTemp.WORD(2); // initialize the integer to 0x51FF
+    myvalue >>= 4; // shift 0x51FF to the right 4 bits to get 0x51F
+    myvalue &= 0xFF; // clears all unnecessary bits to get 0x1F
+
+    message EngData EDMsg; // declares EDMsg as type EngData
+    EDMsg.EngSpeed = 50000; // sets raw value, the same value on the bus
+    EDMsg.EngSpeed.phys = 50000; // sets physical value
+
+    message 0x100 msg1 = {dlc = 8}; // declare message to send
+    msg1.byte(0) = 0x12; // set the data field
+    msg1.long(1) = 0x90785634;
+    msg1.CarSpeed = 100; // assume CarSpeed occupies the last three bytes
+    msg1.CAN = 2;
+    output(msg1); // send the message
+}
+
+on message ABSdata
+{
+    if (this.DIR == RX)
+    {
+        write(“Message ID = %d is received from channel %d”, this.ID, this.CAN);
+        write(“The signal value of car speed is %d”, this.CarSpeed);
+    }
+}
+
+on message CAN1.ABSdata
+{
+    message * gatewayMsg;
+    gatewayMsg = this;
+    gatewayMsg.CAN = 2;
+    output(gatewayMsg);
+}

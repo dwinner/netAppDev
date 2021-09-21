@@ -1,4 +1,4 @@
-antlr4 Capl.g4 -visitor -o CaplGrammar.Core -package CaplGrammar.Core -Xlog
+antlr4 -Dlanguage=CSharp Capl.g4 -visitor -o CaplGrammar.Core -package CaplGrammar.Core -Xlog
 pause
 javac *.java
 pause

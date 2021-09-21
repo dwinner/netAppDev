@@ -32,6 +32,656 @@ using IToken = Antlr4.Runtime.IToken;
 [System.CLSCompliant(false)]
 public interface ICaplListener : IParseTreeListener {
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="CaplParser.primaryExpression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterPrimaryExpression([NotNull] CaplParser.PrimaryExpressionContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="CaplParser.primaryExpression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitPrimaryExpression([NotNull] CaplParser.PrimaryExpressionContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="CaplParser.genericAssocList"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterGenericAssocList([NotNull] CaplParser.GenericAssocListContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="CaplParser.genericAssocList"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitGenericAssocList([NotNull] CaplParser.GenericAssocListContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="CaplParser.genericAssociation"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterGenericAssociation([NotNull] CaplParser.GenericAssociationContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="CaplParser.genericAssociation"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitGenericAssociation([NotNull] CaplParser.GenericAssociationContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="CaplParser.postfixExpression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterPostfixExpression([NotNull] CaplParser.PostfixExpressionContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="CaplParser.postfixExpression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitPostfixExpression([NotNull] CaplParser.PostfixExpressionContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="CaplParser.argumentExpressionList"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterArgumentExpressionList([NotNull] CaplParser.ArgumentExpressionListContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="CaplParser.argumentExpressionList"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitArgumentExpressionList([NotNull] CaplParser.ArgumentExpressionListContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="CaplParser.unaryExpression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterUnaryExpression([NotNull] CaplParser.UnaryExpressionContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="CaplParser.unaryExpression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitUnaryExpression([NotNull] CaplParser.UnaryExpressionContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="CaplParser.unaryOperator"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterUnaryOperator([NotNull] CaplParser.UnaryOperatorContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="CaplParser.unaryOperator"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitUnaryOperator([NotNull] CaplParser.UnaryOperatorContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="CaplParser.castExpression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterCastExpression([NotNull] CaplParser.CastExpressionContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="CaplParser.castExpression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitCastExpression([NotNull] CaplParser.CastExpressionContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="CaplParser.multiplicativeExpression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterMultiplicativeExpression([NotNull] CaplParser.MultiplicativeExpressionContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="CaplParser.multiplicativeExpression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitMultiplicativeExpression([NotNull] CaplParser.MultiplicativeExpressionContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="CaplParser.additiveExpression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterAdditiveExpression([NotNull] CaplParser.AdditiveExpressionContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="CaplParser.additiveExpression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitAdditiveExpression([NotNull] CaplParser.AdditiveExpressionContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="CaplParser.shiftExpression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterShiftExpression([NotNull] CaplParser.ShiftExpressionContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="CaplParser.shiftExpression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitShiftExpression([NotNull] CaplParser.ShiftExpressionContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="CaplParser.relationalExpression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterRelationalExpression([NotNull] CaplParser.RelationalExpressionContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="CaplParser.relationalExpression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitRelationalExpression([NotNull] CaplParser.RelationalExpressionContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="CaplParser.equalityExpression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterEqualityExpression([NotNull] CaplParser.EqualityExpressionContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="CaplParser.equalityExpression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitEqualityExpression([NotNull] CaplParser.EqualityExpressionContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="CaplParser.andExpression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterAndExpression([NotNull] CaplParser.AndExpressionContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="CaplParser.andExpression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitAndExpression([NotNull] CaplParser.AndExpressionContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="CaplParser.exclusiveOrExpression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterExclusiveOrExpression([NotNull] CaplParser.ExclusiveOrExpressionContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="CaplParser.exclusiveOrExpression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitExclusiveOrExpression([NotNull] CaplParser.ExclusiveOrExpressionContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="CaplParser.inclusiveOrExpression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterInclusiveOrExpression([NotNull] CaplParser.InclusiveOrExpressionContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="CaplParser.inclusiveOrExpression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitInclusiveOrExpression([NotNull] CaplParser.InclusiveOrExpressionContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="CaplParser.logicalAndExpression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterLogicalAndExpression([NotNull] CaplParser.LogicalAndExpressionContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="CaplParser.logicalAndExpression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitLogicalAndExpression([NotNull] CaplParser.LogicalAndExpressionContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="CaplParser.logicalOrExpression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterLogicalOrExpression([NotNull] CaplParser.LogicalOrExpressionContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="CaplParser.logicalOrExpression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitLogicalOrExpression([NotNull] CaplParser.LogicalOrExpressionContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="CaplParser.conditionalExpression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterConditionalExpression([NotNull] CaplParser.ConditionalExpressionContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="CaplParser.conditionalExpression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitConditionalExpression([NotNull] CaplParser.ConditionalExpressionContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="CaplParser.assignmentExpression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterAssignmentExpression([NotNull] CaplParser.AssignmentExpressionContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="CaplParser.assignmentExpression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitAssignmentExpression([NotNull] CaplParser.AssignmentExpressionContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="CaplParser.assignmentOperator"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterAssignmentOperator([NotNull] CaplParser.AssignmentOperatorContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="CaplParser.assignmentOperator"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitAssignmentOperator([NotNull] CaplParser.AssignmentOperatorContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="CaplParser.expression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterExpression([NotNull] CaplParser.ExpressionContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="CaplParser.expression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitExpression([NotNull] CaplParser.ExpressionContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="CaplParser.constantExpression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterConstantExpression([NotNull] CaplParser.ConstantExpressionContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="CaplParser.constantExpression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitConstantExpression([NotNull] CaplParser.ConstantExpressionContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="CaplParser.declaration"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterDeclaration([NotNull] CaplParser.DeclarationContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="CaplParser.declaration"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitDeclaration([NotNull] CaplParser.DeclarationContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="CaplParser.declarationSpecifiers"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterDeclarationSpecifiers([NotNull] CaplParser.DeclarationSpecifiersContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="CaplParser.declarationSpecifiers"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitDeclarationSpecifiers([NotNull] CaplParser.DeclarationSpecifiersContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="CaplParser.declarationSpecifiers2"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterDeclarationSpecifiers2([NotNull] CaplParser.DeclarationSpecifiers2Context context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="CaplParser.declarationSpecifiers2"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitDeclarationSpecifiers2([NotNull] CaplParser.DeclarationSpecifiers2Context context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="CaplParser.declarationSpecifier"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterDeclarationSpecifier([NotNull] CaplParser.DeclarationSpecifierContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="CaplParser.declarationSpecifier"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitDeclarationSpecifier([NotNull] CaplParser.DeclarationSpecifierContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="CaplParser.initDeclaratorList"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterInitDeclaratorList([NotNull] CaplParser.InitDeclaratorListContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="CaplParser.initDeclaratorList"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitInitDeclaratorList([NotNull] CaplParser.InitDeclaratorListContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="CaplParser.initDeclarator"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterInitDeclarator([NotNull] CaplParser.InitDeclaratorContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="CaplParser.initDeclarator"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitInitDeclarator([NotNull] CaplParser.InitDeclaratorContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="CaplParser.typeSpecifier"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterTypeSpecifier([NotNull] CaplParser.TypeSpecifierContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="CaplParser.typeSpecifier"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitTypeSpecifier([NotNull] CaplParser.TypeSpecifierContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="CaplParser.specifierQualifierList"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterSpecifierQualifierList([NotNull] CaplParser.SpecifierQualifierListContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="CaplParser.specifierQualifierList"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitSpecifierQualifierList([NotNull] CaplParser.SpecifierQualifierListContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="CaplParser.atomicTypeSpecifier"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterAtomicTypeSpecifier([NotNull] CaplParser.AtomicTypeSpecifierContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="CaplParser.atomicTypeSpecifier"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitAtomicTypeSpecifier([NotNull] CaplParser.AtomicTypeSpecifierContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="CaplParser.functionSpecifier"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterFunctionSpecifier([NotNull] CaplParser.FunctionSpecifierContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="CaplParser.functionSpecifier"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitFunctionSpecifier([NotNull] CaplParser.FunctionSpecifierContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="CaplParser.alignmentSpecifier"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterAlignmentSpecifier([NotNull] CaplParser.AlignmentSpecifierContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="CaplParser.alignmentSpecifier"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitAlignmentSpecifier([NotNull] CaplParser.AlignmentSpecifierContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="CaplParser.declarator"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterDeclarator([NotNull] CaplParser.DeclaratorContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="CaplParser.declarator"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitDeclarator([NotNull] CaplParser.DeclaratorContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="CaplParser.directDeclarator"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterDirectDeclarator([NotNull] CaplParser.DirectDeclaratorContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="CaplParser.directDeclarator"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitDirectDeclarator([NotNull] CaplParser.DirectDeclaratorContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="CaplParser.gccDeclaratorExtension"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterGccDeclaratorExtension([NotNull] CaplParser.GccDeclaratorExtensionContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="CaplParser.gccDeclaratorExtension"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitGccDeclaratorExtension([NotNull] CaplParser.GccDeclaratorExtensionContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="CaplParser.gccAttributeSpecifier"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterGccAttributeSpecifier([NotNull] CaplParser.GccAttributeSpecifierContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="CaplParser.gccAttributeSpecifier"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitGccAttributeSpecifier([NotNull] CaplParser.GccAttributeSpecifierContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="CaplParser.gccAttributeList"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterGccAttributeList([NotNull] CaplParser.GccAttributeListContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="CaplParser.gccAttributeList"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitGccAttributeList([NotNull] CaplParser.GccAttributeListContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="CaplParser.gccAttribute"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterGccAttribute([NotNull] CaplParser.GccAttributeContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="CaplParser.gccAttribute"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitGccAttribute([NotNull] CaplParser.GccAttributeContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="CaplParser.nestedParenthesesBlock"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterNestedParenthesesBlock([NotNull] CaplParser.NestedParenthesesBlockContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="CaplParser.nestedParenthesesBlock"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitNestedParenthesesBlock([NotNull] CaplParser.NestedParenthesesBlockContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="CaplParser.parameterTypeList"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterParameterTypeList([NotNull] CaplParser.ParameterTypeListContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="CaplParser.parameterTypeList"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitParameterTypeList([NotNull] CaplParser.ParameterTypeListContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="CaplParser.parameterList"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterParameterList([NotNull] CaplParser.ParameterListContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="CaplParser.parameterList"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitParameterList([NotNull] CaplParser.ParameterListContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="CaplParser.parameterDeclaration"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterParameterDeclaration([NotNull] CaplParser.ParameterDeclarationContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="CaplParser.parameterDeclaration"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitParameterDeclaration([NotNull] CaplParser.ParameterDeclarationContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="CaplParser.identifierList"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterIdentifierList([NotNull] CaplParser.IdentifierListContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="CaplParser.identifierList"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitIdentifierList([NotNull] CaplParser.IdentifierListContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="CaplParser.typeName"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterTypeName([NotNull] CaplParser.TypeNameContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="CaplParser.typeName"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitTypeName([NotNull] CaplParser.TypeNameContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="CaplParser.abstractDeclarator"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterAbstractDeclarator([NotNull] CaplParser.AbstractDeclaratorContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="CaplParser.abstractDeclarator"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitAbstractDeclarator([NotNull] CaplParser.AbstractDeclaratorContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="CaplParser.directAbstractDeclarator"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterDirectAbstractDeclarator([NotNull] CaplParser.DirectAbstractDeclaratorContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="CaplParser.directAbstractDeclarator"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitDirectAbstractDeclarator([NotNull] CaplParser.DirectAbstractDeclaratorContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="CaplParser.initializer"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterInitializer([NotNull] CaplParser.InitializerContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="CaplParser.initializer"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitInitializer([NotNull] CaplParser.InitializerContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="CaplParser.initializerList"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterInitializerList([NotNull] CaplParser.InitializerListContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="CaplParser.initializerList"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitInitializerList([NotNull] CaplParser.InitializerListContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="CaplParser.designation"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterDesignation([NotNull] CaplParser.DesignationContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="CaplParser.designation"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitDesignation([NotNull] CaplParser.DesignationContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="CaplParser.designatorList"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterDesignatorList([NotNull] CaplParser.DesignatorListContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="CaplParser.designatorList"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitDesignatorList([NotNull] CaplParser.DesignatorListContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="CaplParser.designator"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterDesignator([NotNull] CaplParser.DesignatorContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="CaplParser.designator"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitDesignator([NotNull] CaplParser.DesignatorContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="CaplParser.statement"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterStatement([NotNull] CaplParser.StatementContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="CaplParser.statement"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitStatement([NotNull] CaplParser.StatementContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="CaplParser.labeledStatement"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterLabeledStatement([NotNull] CaplParser.LabeledStatementContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="CaplParser.labeledStatement"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitLabeledStatement([NotNull] CaplParser.LabeledStatementContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="CaplParser.compoundStatement"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterCompoundStatement([NotNull] CaplParser.CompoundStatementContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="CaplParser.compoundStatement"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitCompoundStatement([NotNull] CaplParser.CompoundStatementContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="CaplParser.blockItemList"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterBlockItemList([NotNull] CaplParser.BlockItemListContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="CaplParser.blockItemList"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitBlockItemList([NotNull] CaplParser.BlockItemListContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="CaplParser.blockItem"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterBlockItem([NotNull] CaplParser.BlockItemContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="CaplParser.blockItem"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitBlockItem([NotNull] CaplParser.BlockItemContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="CaplParser.expressionStatement"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterExpressionStatement([NotNull] CaplParser.ExpressionStatementContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="CaplParser.expressionStatement"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitExpressionStatement([NotNull] CaplParser.ExpressionStatementContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="CaplParser.selectionStatement"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterSelectionStatement([NotNull] CaplParser.SelectionStatementContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="CaplParser.selectionStatement"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitSelectionStatement([NotNull] CaplParser.SelectionStatementContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="CaplParser.iterationStatement"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterIterationStatement([NotNull] CaplParser.IterationStatementContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="CaplParser.iterationStatement"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitIterationStatement([NotNull] CaplParser.IterationStatementContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="CaplParser.forCondition"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterForCondition([NotNull] CaplParser.ForConditionContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="CaplParser.forCondition"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitForCondition([NotNull] CaplParser.ForConditionContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="CaplParser.forDeclaration"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterForDeclaration([NotNull] CaplParser.ForDeclarationContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="CaplParser.forDeclaration"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitForDeclaration([NotNull] CaplParser.ForDeclarationContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="CaplParser.forExpression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterForExpression([NotNull] CaplParser.ForExpressionContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="CaplParser.forExpression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitForExpression([NotNull] CaplParser.ForExpressionContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="CaplParser.jumpStatement"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterJumpStatement([NotNull] CaplParser.JumpStatementContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="CaplParser.jumpStatement"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitJumpStatement([NotNull] CaplParser.JumpStatementContext context);
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="CaplParser.compilationUnit"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -42,54 +692,44 @@ public interface ICaplListener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitCompilationUnit([NotNull] CaplParser.CompilationUnitContext context);
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="CaplParser.variableSection"/>.
+	/// Enter a parse tree produced by <see cref="CaplParser.translationUnit"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void EnterVariableSection([NotNull] CaplParser.VariableSectionContext context);
+	void EnterTranslationUnit([NotNull] CaplParser.TranslationUnitContext context);
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="CaplParser.variableSection"/>.
+	/// Exit a parse tree produced by <see cref="CaplParser.translationUnit"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void ExitVariableSection([NotNull] CaplParser.VariableSectionContext context);
+	void ExitTranslationUnit([NotNull] CaplParser.TranslationUnitContext context);
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="CaplParser.assignmentSet"/>.
+	/// Enter a parse tree produced by <see cref="CaplParser.externalDeclaration"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void EnterAssignmentSet([NotNull] CaplParser.AssignmentSetContext context);
+	void EnterExternalDeclaration([NotNull] CaplParser.ExternalDeclarationContext context);
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="CaplParser.assignmentSet"/>.
+	/// Exit a parse tree produced by <see cref="CaplParser.externalDeclaration"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void ExitAssignmentSet([NotNull] CaplParser.AssignmentSetContext context);
+	void ExitExternalDeclaration([NotNull] CaplParser.ExternalDeclarationContext context);
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="CaplParser.assignmentExpr"/>.
+	/// Enter a parse tree produced by <see cref="CaplParser.functionDefinition"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void EnterAssignmentExpr([NotNull] CaplParser.AssignmentExprContext context);
+	void EnterFunctionDefinition([NotNull] CaplParser.FunctionDefinitionContext context);
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="CaplParser.assignmentExpr"/>.
+	/// Exit a parse tree produced by <see cref="CaplParser.functionDefinition"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void ExitAssignmentExpr([NotNull] CaplParser.AssignmentExprContext context);
+	void ExitFunctionDefinition([NotNull] CaplParser.FunctionDefinitionContext context);
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="CaplParser.type"/>.
+	/// Enter a parse tree produced by <see cref="CaplParser.declarationList"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void EnterType([NotNull] CaplParser.TypeContext context);
+	void EnterDeclarationList([NotNull] CaplParser.DeclarationListContext context);
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="CaplParser.type"/>.
+	/// Exit a parse tree produced by <see cref="CaplParser.declarationList"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void ExitType([NotNull] CaplParser.TypeContext context);
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="CaplParser.expr"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void EnterExpr([NotNull] CaplParser.ExprContext context);
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="CaplParser.expr"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void ExitExpr([NotNull] CaplParser.ExprContext context);
+	void ExitDeclarationList([NotNull] CaplParser.DeclarationListContext context);
 }
 } // namespace CaplGrammar.Core

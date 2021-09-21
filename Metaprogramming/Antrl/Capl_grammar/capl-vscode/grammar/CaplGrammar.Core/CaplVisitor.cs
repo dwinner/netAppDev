@@ -33,40 +33,424 @@ using IToken = Antlr4.Runtime.IToken;
 [System.CLSCompliant(false)]
 public interface ICaplVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <summary>
+	/// Visit a parse tree produced by <see cref="CaplParser.primaryExpression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitPrimaryExpression([NotNull] CaplParser.PrimaryExpressionContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="CaplParser.genericAssocList"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitGenericAssocList([NotNull] CaplParser.GenericAssocListContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="CaplParser.genericAssociation"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitGenericAssociation([NotNull] CaplParser.GenericAssociationContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="CaplParser.postfixExpression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitPostfixExpression([NotNull] CaplParser.PostfixExpressionContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="CaplParser.argumentExpressionList"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitArgumentExpressionList([NotNull] CaplParser.ArgumentExpressionListContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="CaplParser.unaryExpression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitUnaryExpression([NotNull] CaplParser.UnaryExpressionContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="CaplParser.unaryOperator"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitUnaryOperator([NotNull] CaplParser.UnaryOperatorContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="CaplParser.castExpression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitCastExpression([NotNull] CaplParser.CastExpressionContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="CaplParser.multiplicativeExpression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitMultiplicativeExpression([NotNull] CaplParser.MultiplicativeExpressionContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="CaplParser.additiveExpression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitAdditiveExpression([NotNull] CaplParser.AdditiveExpressionContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="CaplParser.shiftExpression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitShiftExpression([NotNull] CaplParser.ShiftExpressionContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="CaplParser.relationalExpression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitRelationalExpression([NotNull] CaplParser.RelationalExpressionContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="CaplParser.equalityExpression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitEqualityExpression([NotNull] CaplParser.EqualityExpressionContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="CaplParser.andExpression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitAndExpression([NotNull] CaplParser.AndExpressionContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="CaplParser.exclusiveOrExpression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitExclusiveOrExpression([NotNull] CaplParser.ExclusiveOrExpressionContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="CaplParser.inclusiveOrExpression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitInclusiveOrExpression([NotNull] CaplParser.InclusiveOrExpressionContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="CaplParser.logicalAndExpression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitLogicalAndExpression([NotNull] CaplParser.LogicalAndExpressionContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="CaplParser.logicalOrExpression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitLogicalOrExpression([NotNull] CaplParser.LogicalOrExpressionContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="CaplParser.conditionalExpression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitConditionalExpression([NotNull] CaplParser.ConditionalExpressionContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="CaplParser.assignmentExpression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitAssignmentExpression([NotNull] CaplParser.AssignmentExpressionContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="CaplParser.assignmentOperator"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitAssignmentOperator([NotNull] CaplParser.AssignmentOperatorContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="CaplParser.expression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitExpression([NotNull] CaplParser.ExpressionContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="CaplParser.constantExpression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitConstantExpression([NotNull] CaplParser.ConstantExpressionContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="CaplParser.declaration"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitDeclaration([NotNull] CaplParser.DeclarationContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="CaplParser.declarationSpecifiers"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitDeclarationSpecifiers([NotNull] CaplParser.DeclarationSpecifiersContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="CaplParser.declarationSpecifiers2"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitDeclarationSpecifiers2([NotNull] CaplParser.DeclarationSpecifiers2Context context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="CaplParser.declarationSpecifier"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitDeclarationSpecifier([NotNull] CaplParser.DeclarationSpecifierContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="CaplParser.initDeclaratorList"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitInitDeclaratorList([NotNull] CaplParser.InitDeclaratorListContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="CaplParser.initDeclarator"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitInitDeclarator([NotNull] CaplParser.InitDeclaratorContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="CaplParser.typeSpecifier"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitTypeSpecifier([NotNull] CaplParser.TypeSpecifierContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="CaplParser.specifierQualifierList"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitSpecifierQualifierList([NotNull] CaplParser.SpecifierQualifierListContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="CaplParser.atomicTypeSpecifier"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitAtomicTypeSpecifier([NotNull] CaplParser.AtomicTypeSpecifierContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="CaplParser.functionSpecifier"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitFunctionSpecifier([NotNull] CaplParser.FunctionSpecifierContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="CaplParser.alignmentSpecifier"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitAlignmentSpecifier([NotNull] CaplParser.AlignmentSpecifierContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="CaplParser.declarator"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitDeclarator([NotNull] CaplParser.DeclaratorContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="CaplParser.directDeclarator"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitDirectDeclarator([NotNull] CaplParser.DirectDeclaratorContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="CaplParser.gccDeclaratorExtension"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitGccDeclaratorExtension([NotNull] CaplParser.GccDeclaratorExtensionContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="CaplParser.gccAttributeSpecifier"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitGccAttributeSpecifier([NotNull] CaplParser.GccAttributeSpecifierContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="CaplParser.gccAttributeList"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitGccAttributeList([NotNull] CaplParser.GccAttributeListContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="CaplParser.gccAttribute"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitGccAttribute([NotNull] CaplParser.GccAttributeContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="CaplParser.nestedParenthesesBlock"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitNestedParenthesesBlock([NotNull] CaplParser.NestedParenthesesBlockContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="CaplParser.parameterTypeList"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitParameterTypeList([NotNull] CaplParser.ParameterTypeListContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="CaplParser.parameterList"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitParameterList([NotNull] CaplParser.ParameterListContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="CaplParser.parameterDeclaration"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitParameterDeclaration([NotNull] CaplParser.ParameterDeclarationContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="CaplParser.identifierList"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitIdentifierList([NotNull] CaplParser.IdentifierListContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="CaplParser.typeName"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitTypeName([NotNull] CaplParser.TypeNameContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="CaplParser.abstractDeclarator"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitAbstractDeclarator([NotNull] CaplParser.AbstractDeclaratorContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="CaplParser.directAbstractDeclarator"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitDirectAbstractDeclarator([NotNull] CaplParser.DirectAbstractDeclaratorContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="CaplParser.initializer"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitInitializer([NotNull] CaplParser.InitializerContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="CaplParser.initializerList"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitInitializerList([NotNull] CaplParser.InitializerListContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="CaplParser.designation"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitDesignation([NotNull] CaplParser.DesignationContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="CaplParser.designatorList"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitDesignatorList([NotNull] CaplParser.DesignatorListContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="CaplParser.designator"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitDesignator([NotNull] CaplParser.DesignatorContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="CaplParser.statement"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitStatement([NotNull] CaplParser.StatementContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="CaplParser.labeledStatement"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitLabeledStatement([NotNull] CaplParser.LabeledStatementContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="CaplParser.compoundStatement"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitCompoundStatement([NotNull] CaplParser.CompoundStatementContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="CaplParser.blockItemList"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitBlockItemList([NotNull] CaplParser.BlockItemListContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="CaplParser.blockItem"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitBlockItem([NotNull] CaplParser.BlockItemContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="CaplParser.expressionStatement"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitExpressionStatement([NotNull] CaplParser.ExpressionStatementContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="CaplParser.selectionStatement"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitSelectionStatement([NotNull] CaplParser.SelectionStatementContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="CaplParser.iterationStatement"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitIterationStatement([NotNull] CaplParser.IterationStatementContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="CaplParser.forCondition"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitForCondition([NotNull] CaplParser.ForConditionContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="CaplParser.forDeclaration"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitForDeclaration([NotNull] CaplParser.ForDeclarationContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="CaplParser.forExpression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitForExpression([NotNull] CaplParser.ForExpressionContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="CaplParser.jumpStatement"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitJumpStatement([NotNull] CaplParser.JumpStatementContext context);
+	/// <summary>
 	/// Visit a parse tree produced by <see cref="CaplParser.compilationUnit"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitCompilationUnit([NotNull] CaplParser.CompilationUnitContext context);
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="CaplParser.variableSection"/>.
+	/// Visit a parse tree produced by <see cref="CaplParser.translationUnit"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	Result VisitVariableSection([NotNull] CaplParser.VariableSectionContext context);
+	Result VisitTranslationUnit([NotNull] CaplParser.TranslationUnitContext context);
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="CaplParser.assignmentSet"/>.
+	/// Visit a parse tree produced by <see cref="CaplParser.externalDeclaration"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	Result VisitAssignmentSet([NotNull] CaplParser.AssignmentSetContext context);
+	Result VisitExternalDeclaration([NotNull] CaplParser.ExternalDeclarationContext context);
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="CaplParser.assignmentExpr"/>.
+	/// Visit a parse tree produced by <see cref="CaplParser.functionDefinition"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	Result VisitAssignmentExpr([NotNull] CaplParser.AssignmentExprContext context);
+	Result VisitFunctionDefinition([NotNull] CaplParser.FunctionDefinitionContext context);
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="CaplParser.type"/>.
+	/// Visit a parse tree produced by <see cref="CaplParser.declarationList"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	Result VisitType([NotNull] CaplParser.TypeContext context);
-	/// <summary>
-	/// Visit a parse tree produced by <see cref="CaplParser.expr"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitExpr([NotNull] CaplParser.ExprContext context);
+	Result VisitDeclarationList([NotNull] CaplParser.DeclarationListContext context);
 }
 } // namespace CaplGrammar.Core
