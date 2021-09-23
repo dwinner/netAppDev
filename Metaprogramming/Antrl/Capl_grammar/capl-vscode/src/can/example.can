@@ -1,0 +1,70 @@
+variables
+{
+    message ABSmessage msgA;
+    mstimer timerA;
+    int condition = 0; // initialize condition = false
+
+    timer delayTimer; // seconds-based timer
+    long delayTimerPeriod = 5; // initialize delay of 5 seconds
+}
+
+on key 'a'
+{
+    condition = !condition; // toggle condition
+    if (condition == 1) // if condition is true
+    {
+        cancelTimer(timerA); // cancel the timer
+        setTimer(timerA,100); // then start timer
+    }
+}
+
+on timer timerA
+{
+    if (condition == 1) // if condition is still true
+    {
+        setTimer(timerA,100); // then continue timer
+    }
+
+    msgA.carspeed = msgA.carspeed + 1; // increment the car speed
+    output(msgA); // output a message
+}
+
+on message EngineData
+{
+    write("engine speed = %d", this.EngSpeed.phys);
+    write("engine temperature = %d.", this.EngTemp.phys);
+}
+
+on message EngineTemp
+{
+    float temp;
+    // assume temp is within the first four bytes
+    temp = this.long(0);
+    write("The temperature is %g degrees.", temp);
+}
+
+on message ExampleMessage
+{
+    int value;
+    value = this.word(0); // loads in the first two bytes
+    value >>= 2; // right shifts out two bits
+    value & 0x0FFF; // clears all unnecessary bits
+    write("Value = %d", value);
+}
+
+on message doorState
+{
+    if (this.Closed == 1) // door is closed
+        setTimer(delayTimer, delayTimerPeriod);
+    else // door is opened
+    {
+        // do this if door is opened
+    }
+}
+
+on timer delayTimer
+{
+    message DomeLight dlMsg;
+    dlMsg.Status = 0; // turns off dome light
+    output(dlMsg);
+}

@@ -1,0 +1,26 @@
+on key '1'
+{
+    //To enable all Logging blocks and bypass all
+    //triggering conditions:
+    startLogging();
+    //To enable a specific Logging block and bypass all
+    //triggering conditions:
+    startLogging("loggingblockname");
+    //To enable a specific Logging block with a specific
+    //pre-trigger time and bypass all triggering conditions:
+    startLogging("loggingblockname", 1000);
+}
+
+on key '2'
+{
+    //To disable all Logging blocks and bypass all
+    //triggering conditions:
+    stopLogging();
+    //To disable a specific Logging block and bypass all
+    //triggering conditions:
+    stopLogging("loggingblockname");
+    //To disable a specific Logging block with a specific
+    //post-trigger time and bypass all triggering
+    //conditions:
+    stopLogging("loggingblockname", 2000);
+}

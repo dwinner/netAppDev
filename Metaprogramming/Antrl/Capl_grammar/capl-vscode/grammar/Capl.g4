@@ -10,6 +10,7 @@ grammar Capl;
 /* TODO: Time events */
 /* TODO: I/O events */
 /* TODO: Can communication events */
+/* TODO: Add missing data types like int64 */
 
 /* end - CAPL specific   */
 
@@ -163,6 +164,7 @@ typeSpecifier
     |   'byte'
     |   'int'
     |   'long'
+    |   'int64'
     |   'float'
     |   'double'
     |   'word'
@@ -397,6 +399,7 @@ Message : 'message';
 Timer : 'timer';
 MsTimer : 'msTimer';
 Long : 'long';
+Int64 : 'int64';
 Restrict : 'restrict';
 Return : 'return';
 Switch : 'switch';

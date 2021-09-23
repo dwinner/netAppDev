@@ -5,7 +5,7 @@
             "name": "Debug Current Grammar",
             "type": "antlr-debug",
             "request": "launch",
-            "input": "src/input_source.capl",
+            "input": "src/can/arithmetic_operators.can",
             "grammar": "grammar/Capl.g4",
             "actionFile": "exampleActions.js",
             "startRule": "primaryExpression",
