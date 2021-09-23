@@ -16,21 +16,21 @@ public class CaplParser extends Parser {
 	protected static final PredictionContextCache _sharedContextCache =
 		new PredictionContextCache();
 	public static final int
-		T__0=1, T__1=2, T__2=3, T__3=4, T__4=5, T__5=6, T__6=7, T__7=8, Break=9, 
-		Case=10, Char=11, Byte=12, Continue=13, Default=14, Do=15, Double=16, 
-		Else=17, Float=18, For=19, If=20, Inline=21, Int=22, Word=23, Dword=24, 
-		Message=25, Timer=26, MsTimer=27, Long=28, Int64=29, Restrict=30, Return=31, 
-		Switch=32, Void=33, While=34, Alignas=35, Alignof=36, Atomic=37, Bool=38, 
-		Complex=39, Imaginary=40, Noreturn=41, ThreadLocal=42, LeftParen=43, RightParen=44, 
-		LeftBracket=45, RightBracket=46, LeftBrace=47, RightBrace=48, Less=49, 
-		LessEqual=50, Greater=51, GreaterEqual=52, LeftShift=53, RightShift=54, 
-		Plus=55, PlusPlus=56, Minus=57, MinusMinus=58, Star=59, Div=60, Mod=61, 
-		And=62, Or=63, AndAnd=64, OrOr=65, Caret=66, Not=67, Tilde=68, Question=69, 
-		Colon=70, Semi=71, Comma=72, Assign=73, StarAssign=74, DivAssign=75, ModAssign=76, 
-		PlusAssign=77, MinusAssign=78, LeftShiftAssign=79, RightShiftAssign=80, 
-		AndAssign=81, XorAssign=82, OrAssign=83, Equal=84, NotEqual=85, Dot=86, 
-		Ellipsis=87, Identifier=88, Constant=89, DigitSequence=90, StringLiteral=91, 
-		AsmBlock=92, Whitespace=93, Newline=94, BlockComment=95, LineComment=96;
+		T__0=1, T__1=2, T__2=3, T__3=4, T__4=5, T__5=6, T__6=7, T__7=8, Variables=9, 
+		Break=10, Case=11, Char=12, Byte=13, Continue=14, Default=15, Do=16, Double=17, 
+		Else=18, Float=19, For=20, If=21, Inline=22, Int=23, Word=24, Dword=25, 
+		Message=26, Timer=27, MsTimer=28, Long=29, Int64=30, Restrict=31, Return=32, 
+		Switch=33, Void=34, While=35, Alignas=36, Alignof=37, Atomic=38, Bool=39, 
+		Complex=40, Imaginary=41, Noreturn=42, ThreadLocal=43, LeftParen=44, RightParen=45, 
+		LeftBracket=46, RightBracket=47, LeftBrace=48, RightBrace=49, Less=50, 
+		LessEqual=51, Greater=52, GreaterEqual=53, LeftShift=54, RightShift=55, 
+		Plus=56, PlusPlus=57, Minus=58, MinusMinus=59, Star=60, Div=61, Mod=62, 
+		And=63, Or=64, AndAnd=65, OrOr=66, Caret=67, Not=68, Tilde=69, Question=70, 
+		Colon=71, Semi=72, Comma=73, Assign=74, StarAssign=75, DivAssign=76, ModAssign=77, 
+		PlusAssign=78, MinusAssign=79, LeftShiftAssign=80, RightShiftAssign=81, 
+		AndAssign=82, XorAssign=83, OrAssign=84, Equal=85, NotEqual=86, Dot=87, 
+		Ellipsis=88, Identifier=89, Constant=90, DigitSequence=91, StringLiteral=92, 
+		AsmBlock=93, Whitespace=94, Newline=95, BlockComment=96, LineComment=97;
 	public static final int
 		RULE_primaryExpression = 0, RULE_genericAssocList = 1, RULE_genericAssociation = 2, 
 		RULE_postfixExpression = 3, RULE_argumentExpressionList = 4, RULE_unaryExpression = 5, 
@@ -54,7 +54,8 @@ public class CaplParser extends Parser {
 		RULE_expressionStatement = 58, RULE_selectionStatement = 59, RULE_iterationStatement = 60, 
 		RULE_forCondition = 61, RULE_forDeclaration = 62, RULE_forExpression = 63, 
 		RULE_jumpStatement = 64, RULE_compilationUnit = 65, RULE_translationUnit = 66, 
-		RULE_externalDeclaration = 67, RULE_functionDefinition = 68, RULE_declarationList = 69;
+		RULE_externalDeclaration = 67, RULE_functionDefinition = 68, RULE_declarationList = 69, 
+		RULE_variableDeclarationBlock = 70;
 	private static String[] makeRuleNames() {
 		return new String[] {
 			"primaryExpression", "genericAssocList", "genericAssociation", "postfixExpression", 
@@ -75,7 +76,7 @@ public class CaplParser extends Parser {
 			"blockItemList", "blockItem", "expressionStatement", "selectionStatement", 
 			"iterationStatement", "forCondition", "forDeclaration", "forExpression", 
 			"jumpStatement", "compilationUnit", "translationUnit", "externalDeclaration", 
-			"functionDefinition", "declarationList"
+			"functionDefinition", "declarationList", "variableDeclarationBlock"
 		};
 	}
 	public static final String[] ruleNames = makeRuleNames();
@@ -83,36 +84,36 @@ public class CaplParser extends Parser {
 	private static String[] makeLiteralNames() {
 		return new String[] {
 			null, "'__m128'", "'__m128d'", "'__m128i'", "'__inline__'", "'__stdcall'", 
-			"'__declspec'", "'__asm'", "'__attribute__'", "'break'", "'case'", "'char'", 
-			"'byte'", "'continue'", "'default'", "'do'", "'double'", "'else'", "'float'", 
-			"'for'", "'if'", "'inline'", "'int'", "'word'", "'dword'", "'message'", 
-			"'timer'", "'msTimer'", "'long'", "'int64'", "'restrict'", "'return'", 
-			"'switch'", "'void'", "'while'", "'_Alignas'", "'_Alignof'", "'_Atomic'", 
-			"'_Bool'", "'_Complex'", "'_Imaginary'", "'_Noreturn'", "'_Thread_local'", 
-			"'('", "')'", "'['", "']'", "'{'", "'}'", "'<'", "'<='", "'>'", "'>='", 
-			"'<<'", "'>>'", "'+'", "'++'", "'-'", "'--'", "'*'", "'/'", "'%'", "'&'", 
-			"'|'", "'&&'", "'||'", "'^'", "'!'", "'~'", "'?'", "':'", "';'", "','", 
-			"'='", "'*='", "'/='", "'%='", "'+='", "'-='", "'<<='", "'>>='", "'&='", 
-			"'^='", "'|='", "'=='", "'!='", "'.'", "'...'"
+			"'__declspec'", "'__asm'", "'__attribute__'", "'variables'", "'break'", 
+			"'case'", "'char'", "'byte'", "'continue'", "'default'", "'do'", "'double'", 
+			"'else'", "'float'", "'for'", "'if'", "'inline'", "'int'", "'word'", 
+			"'dword'", "'message'", "'timer'", "'msTimer'", "'long'", "'int64'", 
+			"'restrict'", "'return'", "'switch'", "'void'", "'while'", "'_Alignas'", 
+			"'_Alignof'", "'_Atomic'", "'_Bool'", "'_Complex'", "'_Imaginary'", "'_Noreturn'", 
+			"'_Thread_local'", "'('", "')'", "'['", "']'", "'{'", "'}'", "'<'", "'<='", 
+			"'>'", "'>='", "'<<'", "'>>'", "'+'", "'++'", "'-'", "'--'", "'*'", "'/'", 
+			"'%'", "'&'", "'|'", "'&&'", "'||'", "'^'", "'!'", "'~'", "'?'", "':'", 
+			"';'", "','", "'='", "'*='", "'/='", "'%='", "'+='", "'-='", "'<<='", 
+			"'>>='", "'&='", "'^='", "'|='", "'=='", "'!='", "'.'", "'...'"
 		};
 	}
 	private static final String[] _LITERAL_NAMES = makeLiteralNames();
 	private static String[] makeSymbolicNames() {
 		return new String[] {
-			null, null, null, null, null, null, null, null, null, "Break", "Case", 
-			"Char", "Byte", "Continue", "Default", "Do", "Double", "Else", "Float", 
-			"For", "If", "Inline", "Int", "Word", "Dword", "Message", "Timer", "MsTimer", 
-			"Long", "Int64", "Restrict", "Return", "Switch", "Void", "While", "Alignas", 
-			"Alignof", "Atomic", "Bool", "Complex", "Imaginary", "Noreturn", "ThreadLocal", 
-			"LeftParen", "RightParen", "LeftBracket", "RightBracket", "LeftBrace", 
-			"RightBrace", "Less", "LessEqual", "Greater", "GreaterEqual", "LeftShift", 
-			"RightShift", "Plus", "PlusPlus", "Minus", "MinusMinus", "Star", "Div", 
-			"Mod", "And", "Or", "AndAnd", "OrOr", "Caret", "Not", "Tilde", "Question", 
-			"Colon", "Semi", "Comma", "Assign", "StarAssign", "DivAssign", "ModAssign", 
-			"PlusAssign", "MinusAssign", "LeftShiftAssign", "RightShiftAssign", "AndAssign", 
-			"XorAssign", "OrAssign", "Equal", "NotEqual", "Dot", "Ellipsis", "Identifier", 
-			"Constant", "DigitSequence", "StringLiteral", "AsmBlock", "Whitespace", 
-			"Newline", "BlockComment", "LineComment"
+			null, null, null, null, null, null, null, null, null, "Variables", "Break", 
+			"Case", "Char", "Byte", "Continue", "Default", "Do", "Double", "Else", 
+			"Float", "For", "If", "Inline", "Int", "Word", "Dword", "Message", "Timer", 
+			"MsTimer", "Long", "Int64", "Restrict", "Return", "Switch", "Void", "While", 
+			"Alignas", "Alignof", "Atomic", "Bool", "Complex", "Imaginary", "Noreturn", 
+			"ThreadLocal", "LeftParen", "RightParen", "LeftBracket", "RightBracket", 
+			"LeftBrace", "RightBrace", "Less", "LessEqual", "Greater", "GreaterEqual", 
+			"LeftShift", "RightShift", "Plus", "PlusPlus", "Minus", "MinusMinus", 
+			"Star", "Div", "Mod", "And", "Or", "AndAnd", "OrOr", "Caret", "Not", 
+			"Tilde", "Question", "Colon", "Semi", "Comma", "Assign", "StarAssign", 
+			"DivAssign", "ModAssign", "PlusAssign", "MinusAssign", "LeftShiftAssign", 
+			"RightShiftAssign", "AndAssign", "XorAssign", "OrAssign", "Equal", "NotEqual", 
+			"Dot", "Ellipsis", "Identifier", "Constant", "DigitSequence", "StringLiteral", 
+			"AsmBlock", "Whitespace", "Newline", "BlockComment", "LineComment"
 		};
 	}
 	private static final String[] _SYMBOLIC_NAMES = makeSymbolicNames();
@@ -181,6 +182,9 @@ public class CaplParser extends Parser {
 		public CompoundStatementContext compoundStatement() {
 			return getRuleContext(CompoundStatementContext.class,0);
 		}
+		public VariableDeclarationBlockContext variableDeclarationBlock() {
+			return getRuleContext(VariableDeclarationBlockContext.class,0);
+		}
 		public PrimaryExpressionContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -192,37 +196,37 @@ public class CaplParser extends Parser {
 		enterRule(_localctx, 0, RULE_primaryExpression);
 		int _la;
 		try {
-			setState(155);
+			setState(158);
 			_errHandler.sync(this);
 			switch ( getInterpreter().adaptivePredict(_input,1,_ctx) ) {
 			case 1:
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(140);
+				setState(142);
 				match(Identifier);
 				}
 				break;
 			case 2:
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(141);
+				setState(143);
 				match(Constant);
 				}
 				break;
 			case 3:
 				enterOuterAlt(_localctx, 3);
 				{
-				setState(143); 
+				setState(145); 
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 				do {
 					{
 					{
-					setState(142);
+					setState(144);
 					match(StringLiteral);
 					}
 					}
-					setState(145); 
+					setState(147); 
 					_errHandler.sync(this);
 					_la = _input.LA(1);
 				} while ( _la==StringLiteral );
@@ -231,23 +235,30 @@ public class CaplParser extends Parser {
 			case 4:
 				enterOuterAlt(_localctx, 4);
 				{
-				setState(147);
-				match(LeftParen);
-				setState(148);
-				expression();
 				setState(149);
+				match(LeftParen);
+				setState(150);
+				expression();
+				setState(151);
 				match(RightParen);
 				}
 				break;
 			case 5:
 				enterOuterAlt(_localctx, 5);
 				{
-				setState(151);
-				match(LeftParen);
-				setState(152);
-				compoundStatement();
 				setState(153);
+				match(LeftParen);
+				setState(154);
+				compoundStatement();
+				setState(155);
 				match(RightParen);
+				}
+				break;
+			case 6:
+				enterOuterAlt(_localctx, 6);
+				{
+				setState(157);
+				variableDeclarationBlock();
 				}
 				break;
 			}
@@ -287,21 +298,21 @@ public class CaplParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(157);
+			setState(160);
 			genericAssociation();
-			setState(162);
+			setState(165);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			while (_la==Comma) {
 				{
 				{
-				setState(158);
+				setState(161);
 				match(Comma);
-				setState(159);
+				setState(162);
 				genericAssociation();
 				}
 				}
-				setState(164);
+				setState(167);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			}
@@ -339,7 +350,7 @@ public class CaplParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(167);
+			setState(170);
 			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case T__0:
@@ -362,22 +373,22 @@ public class CaplParser extends Parser {
 			case Bool:
 			case Complex:
 				{
-				setState(165);
+				setState(168);
 				typeName();
 				}
 				break;
 			case Default:
 				{
-				setState(166);
+				setState(169);
 				match(Default);
 				}
 				break;
 			default:
 				throw new NoViableAltException(this);
 			}
-			setState(169);
+			setState(172);
 			match(Colon);
-			setState(170);
+			setState(173);
 			assignmentExpression();
 			}
 		}
@@ -462,90 +473,90 @@ public class CaplParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(183);
+			setState(186);
 			_errHandler.sync(this);
 			switch ( getInterpreter().adaptivePredict(_input,5,_ctx) ) {
 			case 1:
 				{
-				setState(172);
+				setState(175);
 				primaryExpression();
 				}
 				break;
 			case 2:
 				{
-				setState(173);
-				match(LeftParen);
-				setState(174);
-				typeName();
-				setState(175);
-				match(RightParen);
 				setState(176);
-				match(LeftBrace);
+				match(LeftParen);
 				setState(177);
-				initializerList();
+				typeName();
+				setState(178);
+				match(RightParen);
 				setState(179);
+				match(LeftBrace);
+				setState(180);
+				initializerList();
+				setState(182);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 				if (_la==Comma) {
 					{
-					setState(178);
+					setState(181);
 					match(Comma);
 					}
 				}
 
-				setState(181);
+				setState(184);
 				match(RightBrace);
 				}
 				break;
 			}
-			setState(199);
+			setState(202);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
-			while (((((_la - 43)) & ~0x3f) == 0 && ((1L << (_la - 43)) & ((1L << (LeftParen - 43)) | (1L << (LeftBracket - 43)) | (1L << (PlusPlus - 43)) | (1L << (MinusMinus - 43)) | (1L << (Dot - 43)))) != 0)) {
+			while (((((_la - 44)) & ~0x3f) == 0 && ((1L << (_la - 44)) & ((1L << (LeftParen - 44)) | (1L << (LeftBracket - 44)) | (1L << (PlusPlus - 44)) | (1L << (MinusMinus - 44)) | (1L << (Dot - 44)))) != 0)) {
 				{
-				setState(197);
+				setState(200);
 				_errHandler.sync(this);
 				switch (_input.LA(1)) {
 				case LeftBracket:
 					{
-					setState(185);
+					setState(188);
 					match(LeftBracket);
-					setState(186);
+					setState(189);
 					expression();
-					setState(187);
+					setState(190);
 					match(RightBracket);
 					}
 					break;
 				case LeftParen:
 					{
-					setState(189);
+					setState(192);
 					match(LeftParen);
-					setState(191);
+					setState(194);
 					_errHandler.sync(this);
 					_la = _input.LA(1);
-					if (((((_la - 36)) & ~0x3f) == 0 && ((1L << (_la - 36)) & ((1L << (Alignof - 36)) | (1L << (LeftParen - 36)) | (1L << (Plus - 36)) | (1L << (PlusPlus - 36)) | (1L << (Minus - 36)) | (1L << (MinusMinus - 36)) | (1L << (AndAnd - 36)) | (1L << (Not - 36)) | (1L << (Tilde - 36)) | (1L << (Identifier - 36)) | (1L << (Constant - 36)) | (1L << (DigitSequence - 36)) | (1L << (StringLiteral - 36)))) != 0)) {
+					if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << Variables) | (1L << Alignof) | (1L << LeftParen) | (1L << Plus) | (1L << PlusPlus) | (1L << Minus) | (1L << MinusMinus))) != 0) || ((((_la - 65)) & ~0x3f) == 0 && ((1L << (_la - 65)) & ((1L << (AndAnd - 65)) | (1L << (Not - 65)) | (1L << (Tilde - 65)) | (1L << (Identifier - 65)) | (1L << (Constant - 65)) | (1L << (DigitSequence - 65)) | (1L << (StringLiteral - 65)))) != 0)) {
 						{
-						setState(190);
+						setState(193);
 						argumentExpressionList();
 						}
 					}
 
-					setState(193);
+					setState(196);
 					match(RightParen);
 					}
 					break;
 				case Dot:
 					{
-					setState(194);
+					setState(197);
 					match(Dot);
-					setState(195);
+					setState(198);
 					match(Identifier);
 					}
 					break;
 				case PlusPlus:
 				case MinusMinus:
 					{
-					setState(196);
+					setState(199);
 					_la = _input.LA(1);
 					if ( !(_la==PlusPlus || _la==MinusMinus) ) {
 					_errHandler.recoverInline(this);
@@ -561,7 +572,7 @@ public class CaplParser extends Parser {
 					throw new NoViableAltException(this);
 				}
 				}
-				setState(201);
+				setState(204);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			}
@@ -602,21 +613,21 @@ public class CaplParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(202);
+			setState(205);
 			assignmentExpression();
-			setState(207);
+			setState(210);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			while (_la==Comma) {
 				{
 				{
-				setState(203);
+				setState(206);
 				match(Comma);
-				setState(204);
+				setState(207);
 				assignmentExpression();
 				}
 				}
-				setState(209);
+				setState(212);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			}
@@ -672,13 +683,13 @@ public class CaplParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(213);
+			setState(216);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			while (_la==PlusPlus || _la==MinusMinus) {
 				{
 				{
-				setState(210);
+				setState(213);
 				_la = _input.LA(1);
 				if ( !(_la==PlusPlus || _la==MinusMinus) ) {
 				_errHandler.recoverInline(this);
@@ -690,19 +701,20 @@ public class CaplParser extends Parser {
 				}
 				}
 				}
-				setState(215);
+				setState(218);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			}
-			setState(227);
+			setState(230);
 			_errHandler.sync(this);
 			switch (_input.LA(1)) {
+			case Variables:
 			case LeftParen:
 			case Identifier:
 			case Constant:
 			case StringLiteral:
 				{
-				setState(216);
+				setState(219);
 				postfixExpression();
 				}
 				break;
@@ -711,29 +723,29 @@ public class CaplParser extends Parser {
 			case Not:
 			case Tilde:
 				{
-				setState(217);
+				setState(220);
 				unaryOperator();
-				setState(218);
+				setState(221);
 				castExpression();
 				}
 				break;
 			case Alignof:
 				{
-				setState(220);
-				match(Alignof);
-				setState(221);
-				match(LeftParen);
-				setState(222);
-				typeName();
 				setState(223);
+				match(Alignof);
+				setState(224);
+				match(LeftParen);
+				setState(225);
+				typeName();
+				setState(226);
 				match(RightParen);
 				}
 				break;
 			case AndAnd:
 				{
-				setState(225);
+				setState(228);
 				match(AndAnd);
-				setState(226);
+				setState(229);
 				match(Identifier);
 				}
 				break;
@@ -771,9 +783,9 @@ public class CaplParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(229);
+			setState(232);
 			_la = _input.LA(1);
-			if ( !(((((_la - 55)) & ~0x3f) == 0 && ((1L << (_la - 55)) & ((1L << (Plus - 55)) | (1L << (Minus - 55)) | (1L << (Not - 55)) | (1L << (Tilde - 55)))) != 0)) ) {
+			if ( !(((((_la - 56)) & ~0x3f) == 0 && ((1L << (_la - 56)) & ((1L << (Plus - 56)) | (1L << (Minus - 56)) | (1L << (Not - 56)) | (1L << (Tilde - 56)))) != 0)) ) {
 			_errHandler.recoverInline(this);
 			}
 			else {
@@ -817,33 +829,33 @@ public class CaplParser extends Parser {
 		CastExpressionContext _localctx = new CastExpressionContext(_ctx, getState());
 		enterRule(_localctx, 14, RULE_castExpression);
 		try {
-			setState(238);
+			setState(241);
 			_errHandler.sync(this);
 			switch ( getInterpreter().adaptivePredict(_input,12,_ctx) ) {
 			case 1:
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(231);
-				match(LeftParen);
-				setState(232);
-				typeName();
-				setState(233);
-				match(RightParen);
 				setState(234);
+				match(LeftParen);
+				setState(235);
+				typeName();
+				setState(236);
+				match(RightParen);
+				setState(237);
 				castExpression();
 				}
 				break;
 			case 2:
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(236);
+				setState(239);
 				unaryExpression();
 				}
 				break;
 			case 3:
 				enterOuterAlt(_localctx, 3);
 				{
-				setState(237);
+				setState(240);
 				match(DigitSequence);
 				}
 				break;
@@ -892,15 +904,15 @@ public class CaplParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(240);
+			setState(243);
 			castExpression();
-			setState(245);
+			setState(248);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << Star) | (1L << Div) | (1L << Mod))) != 0)) {
 				{
 				{
-				setState(241);
+				setState(244);
 				_la = _input.LA(1);
 				if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << Star) | (1L << Div) | (1L << Mod))) != 0)) ) {
 				_errHandler.recoverInline(this);
@@ -910,11 +922,11 @@ public class CaplParser extends Parser {
 					_errHandler.reportMatch(this);
 					consume();
 				}
-				setState(242);
+				setState(245);
 				castExpression();
 				}
 				}
-				setState(247);
+				setState(250);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			}
@@ -959,15 +971,15 @@ public class CaplParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(248);
+			setState(251);
 			multiplicativeExpression();
-			setState(253);
+			setState(256);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			while (_la==Plus || _la==Minus) {
 				{
 				{
-				setState(249);
+				setState(252);
 				_la = _input.LA(1);
 				if ( !(_la==Plus || _la==Minus) ) {
 				_errHandler.recoverInline(this);
@@ -977,11 +989,11 @@ public class CaplParser extends Parser {
 					_errHandler.reportMatch(this);
 					consume();
 				}
-				setState(250);
+				setState(253);
 				multiplicativeExpression();
 				}
 				}
-				setState(255);
+				setState(258);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			}
@@ -1026,15 +1038,15 @@ public class CaplParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(256);
+			setState(259);
 			additiveExpression();
-			setState(261);
+			setState(264);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			while (_la==LeftShift || _la==RightShift) {
 				{
 				{
-				setState(257);
+				setState(260);
 				_la = _input.LA(1);
 				if ( !(_la==LeftShift || _la==RightShift) ) {
 				_errHandler.recoverInline(this);
@@ -1044,11 +1056,11 @@ public class CaplParser extends Parser {
 					_errHandler.reportMatch(this);
 					consume();
 				}
-				setState(258);
+				setState(261);
 				additiveExpression();
 				}
 				}
-				setState(263);
+				setState(266);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			}
@@ -1101,15 +1113,15 @@ public class CaplParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(264);
+			setState(267);
 			shiftExpression();
-			setState(269);
+			setState(272);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << Less) | (1L << LessEqual) | (1L << Greater) | (1L << GreaterEqual))) != 0)) {
 				{
 				{
-				setState(265);
+				setState(268);
 				_la = _input.LA(1);
 				if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << Less) | (1L << LessEqual) | (1L << Greater) | (1L << GreaterEqual))) != 0)) ) {
 				_errHandler.recoverInline(this);
@@ -1119,11 +1131,11 @@ public class CaplParser extends Parser {
 					_errHandler.reportMatch(this);
 					consume();
 				}
-				setState(266);
+				setState(269);
 				shiftExpression();
 				}
 				}
-				setState(271);
+				setState(274);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			}
@@ -1168,15 +1180,15 @@ public class CaplParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(272);
+			setState(275);
 			relationalExpression();
-			setState(277);
+			setState(280);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			while (_la==Equal || _la==NotEqual) {
 				{
 				{
-				setState(273);
+				setState(276);
 				_la = _input.LA(1);
 				if ( !(_la==Equal || _la==NotEqual) ) {
 				_errHandler.recoverInline(this);
@@ -1186,11 +1198,11 @@ public class CaplParser extends Parser {
 					_errHandler.reportMatch(this);
 					consume();
 				}
-				setState(274);
+				setState(277);
 				relationalExpression();
 				}
 				}
-				setState(279);
+				setState(282);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			}
@@ -1231,21 +1243,21 @@ public class CaplParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(280);
+			setState(283);
 			equalityExpression();
-			setState(285);
+			setState(288);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			while (_la==And) {
 				{
 				{
-				setState(281);
+				setState(284);
 				match(And);
-				setState(282);
+				setState(285);
 				equalityExpression();
 				}
 				}
-				setState(287);
+				setState(290);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			}
@@ -1286,21 +1298,21 @@ public class CaplParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(288);
+			setState(291);
 			andExpression();
-			setState(293);
+			setState(296);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			while (_la==Caret) {
 				{
 				{
-				setState(289);
+				setState(292);
 				match(Caret);
-				setState(290);
+				setState(293);
 				andExpression();
 				}
 				}
-				setState(295);
+				setState(298);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			}
@@ -1341,21 +1353,21 @@ public class CaplParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(296);
+			setState(299);
 			exclusiveOrExpression();
-			setState(301);
+			setState(304);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			while (_la==Or) {
 				{
 				{
-				setState(297);
+				setState(300);
 				match(Or);
-				setState(298);
+				setState(301);
 				exclusiveOrExpression();
 				}
 				}
-				setState(303);
+				setState(306);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			}
@@ -1396,21 +1408,21 @@ public class CaplParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(304);
+			setState(307);
 			inclusiveOrExpression();
-			setState(309);
+			setState(312);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			while (_la==AndAnd) {
 				{
 				{
-				setState(305);
+				setState(308);
 				match(AndAnd);
-				setState(306);
+				setState(309);
 				inclusiveOrExpression();
 				}
 				}
-				setState(311);
+				setState(314);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			}
@@ -1451,21 +1463,21 @@ public class CaplParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(312);
+			setState(315);
 			logicalAndExpression();
-			setState(317);
+			setState(320);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			while (_la==OrOr) {
 				{
 				{
-				setState(313);
+				setState(316);
 				match(OrOr);
-				setState(314);
+				setState(317);
 				logicalAndExpression();
 				}
 				}
-				setState(319);
+				setState(322);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			}
@@ -1507,20 +1519,20 @@ public class CaplParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(320);
+			setState(323);
 			logicalOrExpression();
-			setState(326);
+			setState(329);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==Question) {
 				{
-				setState(321);
-				match(Question);
-				setState(322);
-				expression();
-				setState(323);
-				match(Colon);
 				setState(324);
+				match(Question);
+				setState(325);
+				expression();
+				setState(326);
+				match(Colon);
+				setState(327);
 				conditionalExpression();
 				}
 			}
@@ -1562,31 +1574,31 @@ public class CaplParser extends Parser {
 		AssignmentExpressionContext _localctx = new AssignmentExpressionContext(_ctx, getState());
 		enterRule(_localctx, 38, RULE_assignmentExpression);
 		try {
-			setState(334);
+			setState(337);
 			_errHandler.sync(this);
 			switch ( getInterpreter().adaptivePredict(_input,24,_ctx) ) {
 			case 1:
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(328);
+				setState(331);
 				conditionalExpression();
 				}
 				break;
 			case 2:
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(329);
+				setState(332);
 				unaryExpression();
-				setState(330);
+				setState(333);
 				assignmentOperator();
-				setState(331);
+				setState(334);
 				assignmentExpression();
 				}
 				break;
 			case 3:
 				enterOuterAlt(_localctx, 3);
 				{
-				setState(333);
+				setState(336);
 				match(DigitSequence);
 				}
 				break;
@@ -1628,9 +1640,9 @@ public class CaplParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(336);
+			setState(339);
 			_la = _input.LA(1);
-			if ( !(((((_la - 73)) & ~0x3f) == 0 && ((1L << (_la - 73)) & ((1L << (Assign - 73)) | (1L << (StarAssign - 73)) | (1L << (DivAssign - 73)) | (1L << (ModAssign - 73)) | (1L << (PlusAssign - 73)) | (1L << (MinusAssign - 73)) | (1L << (LeftShiftAssign - 73)) | (1L << (RightShiftAssign - 73)) | (1L << (AndAssign - 73)) | (1L << (XorAssign - 73)) | (1L << (OrAssign - 73)))) != 0)) ) {
+			if ( !(((((_la - 74)) & ~0x3f) == 0 && ((1L << (_la - 74)) & ((1L << (Assign - 74)) | (1L << (StarAssign - 74)) | (1L << (DivAssign - 74)) | (1L << (ModAssign - 74)) | (1L << (PlusAssign - 74)) | (1L << (MinusAssign - 74)) | (1L << (LeftShiftAssign - 74)) | (1L << (RightShiftAssign - 74)) | (1L << (AndAssign - 74)) | (1L << (XorAssign - 74)) | (1L << (OrAssign - 74)))) != 0)) ) {
 			_errHandler.recoverInline(this);
 			}
 			else {
@@ -1675,21 +1687,21 @@ public class CaplParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(338);
+			setState(341);
 			assignmentExpression();
-			setState(343);
+			setState(346);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			while (_la==Comma) {
 				{
 				{
-				setState(339);
+				setState(342);
 				match(Comma);
-				setState(340);
+				setState(343);
 				assignmentExpression();
 				}
 				}
-				setState(345);
+				setState(348);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			}
@@ -1722,7 +1734,7 @@ public class CaplParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(346);
+			setState(349);
 			conditionalExpression();
 			}
 		}
@@ -1758,19 +1770,19 @@ public class CaplParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(348);
+			setState(351);
 			declarationSpecifiers();
-			setState(350);
+			setState(353);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==LeftParen || _la==Identifier) {
 				{
-				setState(349);
+				setState(352);
 				initDeclaratorList();
 				}
 			}
 
-			setState(352);
+			setState(355);
 			match(Semi);
 			}
 		}
@@ -1805,17 +1817,17 @@ public class CaplParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(355); 
+			setState(358); 
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			do {
 				{
 				{
-				setState(354);
+				setState(357);
 				declarationSpecifier();
 				}
 				}
-				setState(357); 
+				setState(360); 
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			} while ( (((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__0) | (1L << T__1) | (1L << T__2) | (1L << T__3) | (1L << T__4) | (1L << T__5) | (1L << T__7) | (1L << Char) | (1L << Byte) | (1L << Double) | (1L << Float) | (1L << Inline) | (1L << Int) | (1L << Word) | (1L << Dword) | (1L << Message) | (1L << Timer) | (1L << MsTimer) | (1L << Long) | (1L << Int64) | (1L << Void) | (1L << Alignas) | (1L << Atomic) | (1L << Bool) | (1L << Complex) | (1L << Noreturn))) != 0) );
@@ -1852,17 +1864,17 @@ public class CaplParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(360); 
+			setState(363); 
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			do {
 				{
 				{
-				setState(359);
+				setState(362);
 				declarationSpecifier();
 				}
 				}
-				setState(362); 
+				setState(365); 
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			} while ( (((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__0) | (1L << T__1) | (1L << T__2) | (1L << T__3) | (1L << T__4) | (1L << T__5) | (1L << T__7) | (1L << Char) | (1L << Byte) | (1L << Double) | (1L << Float) | (1L << Inline) | (1L << Int) | (1L << Word) | (1L << Dword) | (1L << Message) | (1L << Timer) | (1L << MsTimer) | (1L << Long) | (1L << Int64) | (1L << Void) | (1L << Alignas) | (1L << Atomic) | (1L << Bool) | (1L << Complex) | (1L << Noreturn))) != 0) );
@@ -1899,7 +1911,7 @@ public class CaplParser extends Parser {
 		DeclarationSpecifierContext _localctx = new DeclarationSpecifierContext(_ctx, getState());
 		enterRule(_localctx, 52, RULE_declarationSpecifier);
 		try {
-			setState(367);
+			setState(370);
 			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case T__0:
@@ -1923,7 +1935,7 @@ public class CaplParser extends Parser {
 			case Complex:
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(364);
+				setState(367);
 				typeSpecifier();
 				}
 				break;
@@ -1935,14 +1947,14 @@ public class CaplParser extends Parser {
 			case Noreturn:
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(365);
+				setState(368);
 				functionSpecifier();
 				}
 				break;
 			case Alignas:
 				enterOuterAlt(_localctx, 3);
 				{
-				setState(366);
+				setState(369);
 				alignmentSpecifier();
 				}
 				break;
@@ -1985,21 +1997,21 @@ public class CaplParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(369);
+			setState(372);
 			initDeclarator();
-			setState(374);
+			setState(377);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			while (_la==Comma) {
 				{
 				{
-				setState(370);
+				setState(373);
 				match(Comma);
-				setState(371);
+				setState(374);
 				initDeclarator();
 				}
 				}
-				setState(376);
+				setState(379);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			}
@@ -2037,16 +2049,16 @@ public class CaplParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(377);
-			declarator();
 			setState(380);
+			declarator();
+			setState(383);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==Assign) {
 				{
-				setState(378);
+				setState(381);
 				match(Assign);
-				setState(379);
+				setState(382);
 				initializer();
 				}
 			}
@@ -2094,7 +2106,7 @@ public class CaplParser extends Parser {
 		enterRule(_localctx, 58, RULE_typeSpecifier);
 		int _la;
 		try {
-			setState(384);
+			setState(387);
 			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case T__0:
@@ -2117,7 +2129,7 @@ public class CaplParser extends Parser {
 			case Complex:
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(382);
+				setState(385);
 				_la = _input.LA(1);
 				if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__0) | (1L << T__1) | (1L << T__2) | (1L << Char) | (1L << Byte) | (1L << Double) | (1L << Float) | (1L << Int) | (1L << Word) | (1L << Dword) | (1L << Message) | (1L << Timer) | (1L << MsTimer) | (1L << Long) | (1L << Int64) | (1L << Void) | (1L << Bool) | (1L << Complex))) != 0)) ) {
 				_errHandler.recoverInline(this);
@@ -2132,7 +2144,7 @@ public class CaplParser extends Parser {
 			case Atomic:
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(383);
+				setState(386);
 				atomicTypeSpecifier();
 				}
 				break;
@@ -2171,14 +2183,14 @@ public class CaplParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(386);
+			setState(389);
 			typeSpecifier();
-			setState(388);
+			setState(391);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__0) | (1L << T__1) | (1L << T__2) | (1L << Char) | (1L << Byte) | (1L << Double) | (1L << Float) | (1L << Int) | (1L << Word) | (1L << Dword) | (1L << Message) | (1L << Timer) | (1L << MsTimer) | (1L << Long) | (1L << Int64) | (1L << Void) | (1L << Atomic) | (1L << Bool) | (1L << Complex))) != 0)) {
 				{
-				setState(387);
+				setState(390);
 				specifierQualifierList();
 				}
 			}
@@ -2215,13 +2227,13 @@ public class CaplParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(390);
-			match(Atomic);
-			setState(391);
-			match(LeftParen);
-			setState(392);
-			typeName();
 			setState(393);
+			match(Atomic);
+			setState(394);
+			match(LeftParen);
+			setState(395);
+			typeName();
+			setState(396);
 			match(RightParen);
 			}
 		}
@@ -2256,7 +2268,7 @@ public class CaplParser extends Parser {
 		enterRule(_localctx, 64, RULE_functionSpecifier);
 		int _la;
 		try {
-			setState(401);
+			setState(404);
 			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case T__3:
@@ -2265,7 +2277,7 @@ public class CaplParser extends Parser {
 			case Noreturn:
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(395);
+				setState(398);
 				_la = _input.LA(1);
 				if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__3) | (1L << T__4) | (1L << Inline) | (1L << Noreturn))) != 0)) ) {
 				_errHandler.recoverInline(this);
@@ -2280,20 +2292,20 @@ public class CaplParser extends Parser {
 			case T__7:
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(396);
+				setState(399);
 				gccAttributeSpecifier();
 				}
 				break;
 			case T__5:
 				enterOuterAlt(_localctx, 3);
 				{
-				setState(397);
-				match(T__5);
-				setState(398);
-				match(LeftParen);
-				setState(399);
-				match(Identifier);
 				setState(400);
+				match(T__5);
+				setState(401);
+				match(LeftParen);
+				setState(402);
+				match(Identifier);
+				setState(403);
 				match(RightParen);
 				}
 				break;
@@ -2334,11 +2346,11 @@ public class CaplParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(403);
+			setState(406);
 			match(Alignas);
-			setState(404);
-			match(LeftParen);
 			setState(407);
+			match(LeftParen);
+			setState(410);
 			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case T__0:
@@ -2361,10 +2373,11 @@ public class CaplParser extends Parser {
 			case Bool:
 			case Complex:
 				{
-				setState(405);
+				setState(408);
 				typeName();
 				}
 				break;
+			case Variables:
 			case Alignof:
 			case LeftParen:
 			case Plus:
@@ -2379,14 +2392,14 @@ public class CaplParser extends Parser {
 			case DigitSequence:
 			case StringLiteral:
 				{
-				setState(406);
+				setState(409);
 				constantExpression();
 				}
 				break;
 			default:
 				throw new NoViableAltException(this);
 			}
-			setState(409);
+			setState(412);
 			match(RightParen);
 			}
 		}
@@ -2424,21 +2437,21 @@ public class CaplParser extends Parser {
 			int _alt;
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(411);
+			setState(414);
 			directDeclarator(0);
-			setState(415);
+			setState(418);
 			_errHandler.sync(this);
 			_alt = getInterpreter().adaptivePredict(_input,36,_ctx);
 			while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
 				if ( _alt==1 ) {
 					{
 					{
-					setState(412);
+					setState(415);
 					gccDeclaratorExtension();
 					}
 					} 
 				}
-				setState(417);
+				setState(420);
 				_errHandler.sync(this);
 				_alt = getInterpreter().adaptivePredict(_input,36,_ctx);
 			}
@@ -2500,38 +2513,38 @@ public class CaplParser extends Parser {
 			int _alt;
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(427);
+			setState(430);
 			_errHandler.sync(this);
 			switch ( getInterpreter().adaptivePredict(_input,37,_ctx) ) {
 			case 1:
 				{
-				setState(419);
+				setState(422);
 				match(Identifier);
 				}
 				break;
 			case 2:
 				{
-				setState(420);
+				setState(423);
 				match(LeftParen);
-				setState(421);
+				setState(424);
 				declarator();
-				setState(422);
+				setState(425);
 				match(RightParen);
 				}
 				break;
 			case 3:
 				{
-				setState(424);
+				setState(427);
 				match(Identifier);
-				setState(425);
+				setState(428);
 				match(Colon);
-				setState(426);
+				setState(429);
 				match(DigitSequence);
 				}
 				break;
 			}
 			_ctx.stop = _input.LT(-1);
-			setState(448);
+			setState(451);
 			_errHandler.sync(this);
 			_alt = getInterpreter().adaptivePredict(_input,41,_ctx);
 			while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
@@ -2539,28 +2552,28 @@ public class CaplParser extends Parser {
 					if ( _parseListeners!=null ) triggerExitRuleEvent();
 					_prevctx = _localctx;
 					{
-					setState(446);
+					setState(449);
 					_errHandler.sync(this);
 					switch ( getInterpreter().adaptivePredict(_input,40,_ctx) ) {
 					case 1:
 						{
 						_localctx = new DirectDeclaratorContext(_parentctx, _parentState);
 						pushNewRecursionContext(_localctx, _startState, RULE_directDeclarator);
-						setState(429);
-						if (!(precpred(_ctx, 4))) throw new FailedPredicateException(this, "precpred(_ctx, 4)");
-						setState(430);
-						match(LeftBracket);
 						setState(432);
+						if (!(precpred(_ctx, 4))) throw new FailedPredicateException(this, "precpred(_ctx, 4)");
+						setState(433);
+						match(LeftBracket);
+						setState(435);
 						_errHandler.sync(this);
 						_la = _input.LA(1);
-						if (((((_la - 36)) & ~0x3f) == 0 && ((1L << (_la - 36)) & ((1L << (Alignof - 36)) | (1L << (LeftParen - 36)) | (1L << (Plus - 36)) | (1L << (PlusPlus - 36)) | (1L << (Minus - 36)) | (1L << (MinusMinus - 36)) | (1L << (AndAnd - 36)) | (1L << (Not - 36)) | (1L << (Tilde - 36)) | (1L << (Identifier - 36)) | (1L << (Constant - 36)) | (1L << (DigitSequence - 36)) | (1L << (StringLiteral - 36)))) != 0)) {
+						if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << Variables) | (1L << Alignof) | (1L << LeftParen) | (1L << Plus) | (1L << PlusPlus) | (1L << Minus) | (1L << MinusMinus))) != 0) || ((((_la - 65)) & ~0x3f) == 0 && ((1L << (_la - 65)) & ((1L << (AndAnd - 65)) | (1L << (Not - 65)) | (1L << (Tilde - 65)) | (1L << (Identifier - 65)) | (1L << (Constant - 65)) | (1L << (DigitSequence - 65)) | (1L << (StringLiteral - 65)))) != 0)) {
 							{
-							setState(431);
+							setState(434);
 							assignmentExpression();
 							}
 						}
 
-						setState(434);
+						setState(437);
 						match(RightBracket);
 						}
 						break;
@@ -2568,13 +2581,13 @@ public class CaplParser extends Parser {
 						{
 						_localctx = new DirectDeclaratorContext(_parentctx, _parentState);
 						pushNewRecursionContext(_localctx, _startState, RULE_directDeclarator);
-						setState(435);
-						if (!(precpred(_ctx, 3))) throw new FailedPredicateException(this, "precpred(_ctx, 3)");
-						setState(436);
-						match(LeftParen);
-						setState(437);
-						parameterTypeList();
 						setState(438);
+						if (!(precpred(_ctx, 3))) throw new FailedPredicateException(this, "precpred(_ctx, 3)");
+						setState(439);
+						match(LeftParen);
+						setState(440);
+						parameterTypeList();
+						setState(441);
 						match(RightParen);
 						}
 						break;
@@ -2582,28 +2595,28 @@ public class CaplParser extends Parser {
 						{
 						_localctx = new DirectDeclaratorContext(_parentctx, _parentState);
 						pushNewRecursionContext(_localctx, _startState, RULE_directDeclarator);
-						setState(440);
-						if (!(precpred(_ctx, 2))) throw new FailedPredicateException(this, "precpred(_ctx, 2)");
-						setState(441);
-						match(LeftParen);
 						setState(443);
+						if (!(precpred(_ctx, 2))) throw new FailedPredicateException(this, "precpred(_ctx, 2)");
+						setState(444);
+						match(LeftParen);
+						setState(446);
 						_errHandler.sync(this);
 						_la = _input.LA(1);
 						if (_la==Identifier) {
 							{
-							setState(442);
+							setState(445);
 							identifierList();
 							}
 						}
 
-						setState(445);
+						setState(448);
 						match(RightParen);
 						}
 						break;
 					}
 					} 
 				}
-				setState(450);
+				setState(453);
 				_errHandler.sync(this);
 				_alt = getInterpreter().adaptivePredict(_input,41,_ctx);
 			}
@@ -2641,38 +2654,38 @@ public class CaplParser extends Parser {
 		enterRule(_localctx, 72, RULE_gccDeclaratorExtension);
 		int _la;
 		try {
-			setState(460);
+			setState(463);
 			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case T__6:
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(451);
+				setState(454);
 				match(T__6);
-				setState(452);
+				setState(455);
 				match(LeftParen);
-				setState(454); 
+				setState(457); 
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 				do {
 					{
 					{
-					setState(453);
+					setState(456);
 					match(StringLiteral);
 					}
 					}
-					setState(456); 
+					setState(459); 
 					_errHandler.sync(this);
 					_la = _input.LA(1);
 				} while ( _la==StringLiteral );
-				setState(458);
+				setState(461);
 				match(RightParen);
 				}
 				break;
 			case T__7:
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(459);
+				setState(462);
 				gccAttributeSpecifier();
 				}
 				break;
@@ -2715,17 +2728,17 @@ public class CaplParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(462);
-			match(T__7);
-			setState(463);
-			match(LeftParen);
-			setState(464);
-			match(LeftParen);
 			setState(465);
-			gccAttributeList();
+			match(T__7);
 			setState(466);
-			match(RightParen);
+			match(LeftParen);
 			setState(467);
+			match(LeftParen);
+			setState(468);
+			gccAttributeList();
+			setState(469);
+			match(RightParen);
+			setState(470);
 			match(RightParen);
 			}
 		}
@@ -2764,37 +2777,37 @@ public class CaplParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(470);
+			setState(473);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
-			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__0) | (1L << T__1) | (1L << T__2) | (1L << T__3) | (1L << T__4) | (1L << T__5) | (1L << T__6) | (1L << T__7) | (1L << Break) | (1L << Case) | (1L << Char) | (1L << Byte) | (1L << Continue) | (1L << Default) | (1L << Do) | (1L << Double) | (1L << Else) | (1L << Float) | (1L << For) | (1L << If) | (1L << Inline) | (1L << Int) | (1L << Word) | (1L << Dword) | (1L << Message) | (1L << Timer) | (1L << MsTimer) | (1L << Long) | (1L << Int64) | (1L << Restrict) | (1L << Return) | (1L << Switch) | (1L << Void) | (1L << While) | (1L << Alignas) | (1L << Alignof) | (1L << Atomic) | (1L << Bool) | (1L << Complex) | (1L << Imaginary) | (1L << Noreturn) | (1L << ThreadLocal) | (1L << LeftBracket) | (1L << RightBracket) | (1L << LeftBrace) | (1L << RightBrace) | (1L << Less) | (1L << LessEqual) | (1L << Greater) | (1L << GreaterEqual) | (1L << LeftShift) | (1L << RightShift) | (1L << Plus) | (1L << PlusPlus) | (1L << Minus) | (1L << MinusMinus) | (1L << Star) | (1L << Div) | (1L << Mod) | (1L << And) | (1L << Or))) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & ((1L << (AndAnd - 64)) | (1L << (OrOr - 64)) | (1L << (Caret - 64)) | (1L << (Not - 64)) | (1L << (Tilde - 64)) | (1L << (Question - 64)) | (1L << (Colon - 64)) | (1L << (Semi - 64)) | (1L << (Assign - 64)) | (1L << (StarAssign - 64)) | (1L << (DivAssign - 64)) | (1L << (ModAssign - 64)) | (1L << (PlusAssign - 64)) | (1L << (MinusAssign - 64)) | (1L << (LeftShiftAssign - 64)) | (1L << (RightShiftAssign - 64)) | (1L << (AndAssign - 64)) | (1L << (XorAssign - 64)) | (1L << (OrAssign - 64)) | (1L << (Equal - 64)) | (1L << (NotEqual - 64)) | (1L << (Dot - 64)) | (1L << (Ellipsis - 64)) | (1L << (Identifier - 64)) | (1L << (Constant - 64)) | (1L << (DigitSequence - 64)) | (1L << (StringLiteral - 64)) | (1L << (AsmBlock - 64)) | (1L << (Whitespace - 64)) | (1L << (Newline - 64)) | (1L << (BlockComment - 64)) | (1L << (LineComment - 64)))) != 0)) {
+			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__0) | (1L << T__1) | (1L << T__2) | (1L << T__3) | (1L << T__4) | (1L << T__5) | (1L << T__6) | (1L << T__7) | (1L << Variables) | (1L << Break) | (1L << Case) | (1L << Char) | (1L << Byte) | (1L << Continue) | (1L << Default) | (1L << Do) | (1L << Double) | (1L << Else) | (1L << Float) | (1L << For) | (1L << If) | (1L << Inline) | (1L << Int) | (1L << Word) | (1L << Dword) | (1L << Message) | (1L << Timer) | (1L << MsTimer) | (1L << Long) | (1L << Int64) | (1L << Restrict) | (1L << Return) | (1L << Switch) | (1L << Void) | (1L << While) | (1L << Alignas) | (1L << Alignof) | (1L << Atomic) | (1L << Bool) | (1L << Complex) | (1L << Imaginary) | (1L << Noreturn) | (1L << ThreadLocal) | (1L << LeftBracket) | (1L << RightBracket) | (1L << LeftBrace) | (1L << RightBrace) | (1L << Less) | (1L << LessEqual) | (1L << Greater) | (1L << GreaterEqual) | (1L << LeftShift) | (1L << RightShift) | (1L << Plus) | (1L << PlusPlus) | (1L << Minus) | (1L << MinusMinus) | (1L << Star) | (1L << Div) | (1L << Mod) | (1L << And))) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & ((1L << (Or - 64)) | (1L << (AndAnd - 64)) | (1L << (OrOr - 64)) | (1L << (Caret - 64)) | (1L << (Not - 64)) | (1L << (Tilde - 64)) | (1L << (Question - 64)) | (1L << (Colon - 64)) | (1L << (Semi - 64)) | (1L << (Assign - 64)) | (1L << (StarAssign - 64)) | (1L << (DivAssign - 64)) | (1L << (ModAssign - 64)) | (1L << (PlusAssign - 64)) | (1L << (MinusAssign - 64)) | (1L << (LeftShiftAssign - 64)) | (1L << (RightShiftAssign - 64)) | (1L << (AndAssign - 64)) | (1L << (XorAssign - 64)) | (1L << (OrAssign - 64)) | (1L << (Equal - 64)) | (1L << (NotEqual - 64)) | (1L << (Dot - 64)) | (1L << (Ellipsis - 64)) | (1L << (Identifier - 64)) | (1L << (Constant - 64)) | (1L << (DigitSequence - 64)) | (1L << (StringLiteral - 64)) | (1L << (AsmBlock - 64)) | (1L << (Whitespace - 64)) | (1L << (Newline - 64)) | (1L << (BlockComment - 64)) | (1L << (LineComment - 64)))) != 0)) {
 				{
-				setState(469);
+				setState(472);
 				gccAttribute();
 				}
 			}
 
-			setState(478);
+			setState(481);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			while (_la==Comma) {
 				{
 				{
-				setState(472);
+				setState(475);
 				match(Comma);
-				setState(474);
+				setState(477);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
-				if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__0) | (1L << T__1) | (1L << T__2) | (1L << T__3) | (1L << T__4) | (1L << T__5) | (1L << T__6) | (1L << T__7) | (1L << Break) | (1L << Case) | (1L << Char) | (1L << Byte) | (1L << Continue) | (1L << Default) | (1L << Do) | (1L << Double) | (1L << Else) | (1L << Float) | (1L << For) | (1L << If) | (1L << Inline) | (1L << Int) | (1L << Word) | (1L << Dword) | (1L << Message) | (1L << Timer) | (1L << MsTimer) | (1L << Long) | (1L << Int64) | (1L << Restrict) | (1L << Return) | (1L << Switch) | (1L << Void) | (1L << While) | (1L << Alignas) | (1L << Alignof) | (1L << Atomic) | (1L << Bool) | (1L << Complex) | (1L << Imaginary) | (1L << Noreturn) | (1L << ThreadLocal) | (1L << LeftBracket) | (1L << RightBracket) | (1L << LeftBrace) | (1L << RightBrace) | (1L << Less) | (1L << LessEqual) | (1L << Greater) | (1L << GreaterEqual) | (1L << LeftShift) | (1L << RightShift) | (1L << Plus) | (1L << PlusPlus) | (1L << Minus) | (1L << MinusMinus) | (1L << Star) | (1L << Div) | (1L << Mod) | (1L << And) | (1L << Or))) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & ((1L << (AndAnd - 64)) | (1L << (OrOr - 64)) | (1L << (Caret - 64)) | (1L << (Not - 64)) | (1L << (Tilde - 64)) | (1L << (Question - 64)) | (1L << (Colon - 64)) | (1L << (Semi - 64)) | (1L << (Assign - 64)) | (1L << (StarAssign - 64)) | (1L << (DivAssign - 64)) | (1L << (ModAssign - 64)) | (1L << (PlusAssign - 64)) | (1L << (MinusAssign - 64)) | (1L << (LeftShiftAssign - 64)) | (1L << (RightShiftAssign - 64)) | (1L << (AndAssign - 64)) | (1L << (XorAssign - 64)) | (1L << (OrAssign - 64)) | (1L << (Equal - 64)) | (1L << (NotEqual - 64)) | (1L << (Dot - 64)) | (1L << (Ellipsis - 64)) | (1L << (Identifier - 64)) | (1L << (Constant - 64)) | (1L << (DigitSequence - 64)) | (1L << (StringLiteral - 64)) | (1L << (AsmBlock - 64)) | (1L << (Whitespace - 64)) | (1L << (Newline - 64)) | (1L << (BlockComment - 64)) | (1L << (LineComment - 64)))) != 0)) {
+				if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__0) | (1L << T__1) | (1L << T__2) | (1L << T__3) | (1L << T__4) | (1L << T__5) | (1L << T__6) | (1L << T__7) | (1L << Variables) | (1L << Break) | (1L << Case) | (1L << Char) | (1L << Byte) | (1L << Continue) | (1L << Default) | (1L << Do) | (1L << Double) | (1L << Else) | (1L << Float) | (1L << For) | (1L << If) | (1L << Inline) | (1L << Int) | (1L << Word) | (1L << Dword) | (1L << Message) | (1L << Timer) | (1L << MsTimer) | (1L << Long) | (1L << Int64) | (1L << Restrict) | (1L << Return) | (1L << Switch) | (1L << Void) | (1L << While) | (1L << Alignas) | (1L << Alignof) | (1L << Atomic) | (1L << Bool) | (1L << Complex) | (1L << Imaginary) | (1L << Noreturn) | (1L << ThreadLocal) | (1L << LeftBracket) | (1L << RightBracket) | (1L << LeftBrace) | (1L << RightBrace) | (1L << Less) | (1L << LessEqual) | (1L << Greater) | (1L << GreaterEqual) | (1L << LeftShift) | (1L << RightShift) | (1L << Plus) | (1L << PlusPlus) | (1L << Minus) | (1L << MinusMinus) | (1L << Star) | (1L << Div) | (1L << Mod) | (1L << And))) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & ((1L << (Or - 64)) | (1L << (AndAnd - 64)) | (1L << (OrOr - 64)) | (1L << (Caret - 64)) | (1L << (Not - 64)) | (1L << (Tilde - 64)) | (1L << (Question - 64)) | (1L << (Colon - 64)) | (1L << (Semi - 64)) | (1L << (Assign - 64)) | (1L << (StarAssign - 64)) | (1L << (DivAssign - 64)) | (1L << (ModAssign - 64)) | (1L << (PlusAssign - 64)) | (1L << (MinusAssign - 64)) | (1L << (LeftShiftAssign - 64)) | (1L << (RightShiftAssign - 64)) | (1L << (AndAssign - 64)) | (1L << (XorAssign - 64)) | (1L << (OrAssign - 64)) | (1L << (Equal - 64)) | (1L << (NotEqual - 64)) | (1L << (Dot - 64)) | (1L << (Ellipsis - 64)) | (1L << (Identifier - 64)) | (1L << (Constant - 64)) | (1L << (DigitSequence - 64)) | (1L << (StringLiteral - 64)) | (1L << (AsmBlock - 64)) | (1L << (Whitespace - 64)) | (1L << (Newline - 64)) | (1L << (BlockComment - 64)) | (1L << (LineComment - 64)))) != 0)) {
 					{
-					setState(473);
+					setState(476);
 					gccAttribute();
 					}
 				}
 
 				}
 				}
-				setState(480);
+				setState(483);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			}
@@ -2837,9 +2850,9 @@ public class CaplParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(481);
+			setState(484);
 			_la = _input.LA(1);
-			if ( _la <= 0 || (((((_la - 43)) & ~0x3f) == 0 && ((1L << (_la - 43)) & ((1L << (LeftParen - 43)) | (1L << (RightParen - 43)) | (1L << (Comma - 43)))) != 0)) ) {
+			if ( _la <= 0 || (((((_la - 44)) & ~0x3f) == 0 && ((1L << (_la - 44)) & ((1L << (LeftParen - 44)) | (1L << (RightParen - 44)) | (1L << (Comma - 44)))) != 0)) ) {
 			_errHandler.recoverInline(this);
 			}
 			else {
@@ -2847,24 +2860,24 @@ public class CaplParser extends Parser {
 				_errHandler.reportMatch(this);
 				consume();
 			}
-			setState(487);
+			setState(490);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==LeftParen) {
 				{
-				setState(482);
+				setState(485);
 				match(LeftParen);
-				setState(484);
+				setState(487);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
-				if (((((_la - 36)) & ~0x3f) == 0 && ((1L << (_la - 36)) & ((1L << (Alignof - 36)) | (1L << (LeftParen - 36)) | (1L << (Plus - 36)) | (1L << (PlusPlus - 36)) | (1L << (Minus - 36)) | (1L << (MinusMinus - 36)) | (1L << (AndAnd - 36)) | (1L << (Not - 36)) | (1L << (Tilde - 36)) | (1L << (Identifier - 36)) | (1L << (Constant - 36)) | (1L << (DigitSequence - 36)) | (1L << (StringLiteral - 36)))) != 0)) {
+				if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << Variables) | (1L << Alignof) | (1L << LeftParen) | (1L << Plus) | (1L << PlusPlus) | (1L << Minus) | (1L << MinusMinus))) != 0) || ((((_la - 65)) & ~0x3f) == 0 && ((1L << (_la - 65)) & ((1L << (AndAnd - 65)) | (1L << (Not - 65)) | (1L << (Tilde - 65)) | (1L << (Identifier - 65)) | (1L << (Constant - 65)) | (1L << (DigitSequence - 65)) | (1L << (StringLiteral - 65)))) != 0)) {
 					{
-					setState(483);
+					setState(486);
 					argumentExpressionList();
 					}
 				}
 
-				setState(486);
+				setState(489);
 				match(RightParen);
 				}
 			}
@@ -2910,12 +2923,12 @@ public class CaplParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(496);
+			setState(499);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
-			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__0) | (1L << T__1) | (1L << T__2) | (1L << T__3) | (1L << T__4) | (1L << T__5) | (1L << T__6) | (1L << T__7) | (1L << Break) | (1L << Case) | (1L << Char) | (1L << Byte) | (1L << Continue) | (1L << Default) | (1L << Do) | (1L << Double) | (1L << Else) | (1L << Float) | (1L << For) | (1L << If) | (1L << Inline) | (1L << Int) | (1L << Word) | (1L << Dword) | (1L << Message) | (1L << Timer) | (1L << MsTimer) | (1L << Long) | (1L << Int64) | (1L << Restrict) | (1L << Return) | (1L << Switch) | (1L << Void) | (1L << While) | (1L << Alignas) | (1L << Alignof) | (1L << Atomic) | (1L << Bool) | (1L << Complex) | (1L << Imaginary) | (1L << Noreturn) | (1L << ThreadLocal) | (1L << LeftParen) | (1L << LeftBracket) | (1L << RightBracket) | (1L << LeftBrace) | (1L << RightBrace) | (1L << Less) | (1L << LessEqual) | (1L << Greater) | (1L << GreaterEqual) | (1L << LeftShift) | (1L << RightShift) | (1L << Plus) | (1L << PlusPlus) | (1L << Minus) | (1L << MinusMinus) | (1L << Star) | (1L << Div) | (1L << Mod) | (1L << And) | (1L << Or))) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & ((1L << (AndAnd - 64)) | (1L << (OrOr - 64)) | (1L << (Caret - 64)) | (1L << (Not - 64)) | (1L << (Tilde - 64)) | (1L << (Question - 64)) | (1L << (Colon - 64)) | (1L << (Semi - 64)) | (1L << (Comma - 64)) | (1L << (Assign - 64)) | (1L << (StarAssign - 64)) | (1L << (DivAssign - 64)) | (1L << (ModAssign - 64)) | (1L << (PlusAssign - 64)) | (1L << (MinusAssign - 64)) | (1L << (LeftShiftAssign - 64)) | (1L << (RightShiftAssign - 64)) | (1L << (AndAssign - 64)) | (1L << (XorAssign - 64)) | (1L << (OrAssign - 64)) | (1L << (Equal - 64)) | (1L << (NotEqual - 64)) | (1L << (Dot - 64)) | (1L << (Ellipsis - 64)) | (1L << (Identifier - 64)) | (1L << (Constant - 64)) | (1L << (DigitSequence - 64)) | (1L << (StringLiteral - 64)) | (1L << (AsmBlock - 64)) | (1L << (Whitespace - 64)) | (1L << (Newline - 64)) | (1L << (BlockComment - 64)) | (1L << (LineComment - 64)))) != 0)) {
+			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__0) | (1L << T__1) | (1L << T__2) | (1L << T__3) | (1L << T__4) | (1L << T__5) | (1L << T__6) | (1L << T__7) | (1L << Variables) | (1L << Break) | (1L << Case) | (1L << Char) | (1L << Byte) | (1L << Continue) | (1L << Default) | (1L << Do) | (1L << Double) | (1L << Else) | (1L << Float) | (1L << For) | (1L << If) | (1L << Inline) | (1L << Int) | (1L << Word) | (1L << Dword) | (1L << Message) | (1L << Timer) | (1L << MsTimer) | (1L << Long) | (1L << Int64) | (1L << Restrict) | (1L << Return) | (1L << Switch) | (1L << Void) | (1L << While) | (1L << Alignas) | (1L << Alignof) | (1L << Atomic) | (1L << Bool) | (1L << Complex) | (1L << Imaginary) | (1L << Noreturn) | (1L << ThreadLocal) | (1L << LeftParen) | (1L << LeftBracket) | (1L << RightBracket) | (1L << LeftBrace) | (1L << RightBrace) | (1L << Less) | (1L << LessEqual) | (1L << Greater) | (1L << GreaterEqual) | (1L << LeftShift) | (1L << RightShift) | (1L << Plus) | (1L << PlusPlus) | (1L << Minus) | (1L << MinusMinus) | (1L << Star) | (1L << Div) | (1L << Mod) | (1L << And))) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & ((1L << (Or - 64)) | (1L << (AndAnd - 64)) | (1L << (OrOr - 64)) | (1L << (Caret - 64)) | (1L << (Not - 64)) | (1L << (Tilde - 64)) | (1L << (Question - 64)) | (1L << (Colon - 64)) | (1L << (Semi - 64)) | (1L << (Comma - 64)) | (1L << (Assign - 64)) | (1L << (StarAssign - 64)) | (1L << (DivAssign - 64)) | (1L << (ModAssign - 64)) | (1L << (PlusAssign - 64)) | (1L << (MinusAssign - 64)) | (1L << (LeftShiftAssign - 64)) | (1L << (RightShiftAssign - 64)) | (1L << (AndAssign - 64)) | (1L << (XorAssign - 64)) | (1L << (OrAssign - 64)) | (1L << (Equal - 64)) | (1L << (NotEqual - 64)) | (1L << (Dot - 64)) | (1L << (Ellipsis - 64)) | (1L << (Identifier - 64)) | (1L << (Constant - 64)) | (1L << (DigitSequence - 64)) | (1L << (StringLiteral - 64)) | (1L << (AsmBlock - 64)) | (1L << (Whitespace - 64)) | (1L << (Newline - 64)) | (1L << (BlockComment - 64)) | (1L << (LineComment - 64)))) != 0)) {
 				{
-				setState(494);
+				setState(497);
 				_errHandler.sync(this);
 				switch (_input.LA(1)) {
 				case T__0:
@@ -2926,6 +2939,7 @@ public class CaplParser extends Parser {
 				case T__5:
 				case T__6:
 				case T__7:
+				case Variables:
 				case Break:
 				case Case:
 				case Char:
@@ -3013,7 +3027,7 @@ public class CaplParser extends Parser {
 				case BlockComment:
 				case LineComment:
 					{
-					setState(489);
+					setState(492);
 					_la = _input.LA(1);
 					if ( _la <= 0 || (_la==LeftParen || _la==RightParen) ) {
 					_errHandler.recoverInline(this);
@@ -3027,11 +3041,11 @@ public class CaplParser extends Parser {
 					break;
 				case LeftParen:
 					{
-					setState(490);
+					setState(493);
 					match(LeftParen);
-					setState(491);
+					setState(494);
 					nestedParenthesesBlock();
-					setState(492);
+					setState(495);
 					match(RightParen);
 					}
 					break;
@@ -3039,7 +3053,7 @@ public class CaplParser extends Parser {
 					throw new NoViableAltException(this);
 				}
 				}
-				setState(498);
+				setState(501);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			}
@@ -3075,16 +3089,16 @@ public class CaplParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(499);
-			parameterList();
 			setState(502);
+			parameterList();
+			setState(505);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==Comma) {
 				{
-				setState(500);
+				setState(503);
 				match(Comma);
-				setState(501);
+				setState(504);
 				match(Ellipsis);
 				}
 			}
@@ -3126,23 +3140,23 @@ public class CaplParser extends Parser {
 			int _alt;
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(504);
+			setState(507);
 			parameterDeclaration();
-			setState(509);
+			setState(512);
 			_errHandler.sync(this);
 			_alt = getInterpreter().adaptivePredict(_input,52,_ctx);
 			while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
 				if ( _alt==1 ) {
 					{
 					{
-					setState(505);
+					setState(508);
 					match(Comma);
-					setState(506);
+					setState(509);
 					parameterDeclaration();
 					}
 					} 
 				}
-				setState(511);
+				setState(514);
 				_errHandler.sync(this);
 				_alt = getInterpreter().adaptivePredict(_input,52,_ctx);
 			}
@@ -3183,29 +3197,29 @@ public class CaplParser extends Parser {
 		enterRule(_localctx, 86, RULE_parameterDeclaration);
 		int _la;
 		try {
-			setState(519);
+			setState(522);
 			_errHandler.sync(this);
 			switch ( getInterpreter().adaptivePredict(_input,54,_ctx) ) {
 			case 1:
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(512);
+				setState(515);
 				declarationSpecifiers();
-				setState(513);
+				setState(516);
 				declarator();
 				}
 				break;
 			case 2:
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(515);
+				setState(518);
 				declarationSpecifiers2();
-				setState(517);
+				setState(520);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 				if (_la==LeftParen || _la==LeftBracket) {
 					{
-					setState(516);
+					setState(519);
 					abstractDeclarator();
 					}
 				}
@@ -3247,21 +3261,21 @@ public class CaplParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(521);
+			setState(524);
 			match(Identifier);
-			setState(526);
+			setState(529);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			while (_la==Comma) {
 				{
 				{
-				setState(522);
+				setState(525);
 				match(Comma);
-				setState(523);
+				setState(526);
 				match(Identifier);
 				}
 				}
-				setState(528);
+				setState(531);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			}
@@ -3298,14 +3312,14 @@ public class CaplParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(529);
+			setState(532);
 			specifierQualifierList();
-			setState(531);
+			setState(534);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==LeftParen || _la==LeftBracket) {
 				{
-				setState(530);
+				setState(533);
 				abstractDeclarator();
 				}
 			}
@@ -3346,19 +3360,19 @@ public class CaplParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(533);
+			setState(536);
 			directAbstractDeclarator(0);
-			setState(537);
+			setState(540);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			while (_la==T__6 || _la==T__7) {
 				{
 				{
-				setState(534);
+				setState(537);
 				gccDeclaratorExtension();
 				}
 				}
-				setState(539);
+				setState(542);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			}
@@ -3421,30 +3435,30 @@ public class CaplParser extends Parser {
 			int _alt;
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(569);
+			setState(572);
 			_errHandler.sync(this);
 			switch ( getInterpreter().adaptivePredict(_input,62,_ctx) ) {
 			case 1:
 				{
-				setState(541);
+				setState(544);
 				match(LeftParen);
-				setState(542);
+				setState(545);
 				abstractDeclarator();
-				setState(543);
+				setState(546);
 				match(RightParen);
-				setState(547);
+				setState(550);
 				_errHandler.sync(this);
 				_alt = getInterpreter().adaptivePredict(_input,58,_ctx);
 				while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
 					if ( _alt==1 ) {
 						{
 						{
-						setState(544);
+						setState(547);
 						gccDeclaratorExtension();
 						}
 						} 
 					}
-					setState(549);
+					setState(552);
 					_errHandler.sync(this);
 					_alt = getInterpreter().adaptivePredict(_input,58,_ctx);
 				}
@@ -3452,61 +3466,61 @@ public class CaplParser extends Parser {
 				break;
 			case 2:
 				{
-				setState(550);
+				setState(553);
 				match(LeftBracket);
-				setState(552);
+				setState(555);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
-				if (((((_la - 36)) & ~0x3f) == 0 && ((1L << (_la - 36)) & ((1L << (Alignof - 36)) | (1L << (LeftParen - 36)) | (1L << (Plus - 36)) | (1L << (PlusPlus - 36)) | (1L << (Minus - 36)) | (1L << (MinusMinus - 36)) | (1L << (AndAnd - 36)) | (1L << (Not - 36)) | (1L << (Tilde - 36)) | (1L << (Identifier - 36)) | (1L << (Constant - 36)) | (1L << (DigitSequence - 36)) | (1L << (StringLiteral - 36)))) != 0)) {
+				if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << Variables) | (1L << Alignof) | (1L << LeftParen) | (1L << Plus) | (1L << PlusPlus) | (1L << Minus) | (1L << MinusMinus))) != 0) || ((((_la - 65)) & ~0x3f) == 0 && ((1L << (_la - 65)) & ((1L << (AndAnd - 65)) | (1L << (Not - 65)) | (1L << (Tilde - 65)) | (1L << (Identifier - 65)) | (1L << (Constant - 65)) | (1L << (DigitSequence - 65)) | (1L << (StringLiteral - 65)))) != 0)) {
 					{
-					setState(551);
+					setState(554);
 					assignmentExpression();
 					}
 				}
 
-				setState(554);
+				setState(557);
 				match(RightBracket);
 				}
 				break;
 			case 3:
 				{
-				setState(555);
+				setState(558);
 				match(LeftBracket);
-				setState(556);
+				setState(559);
 				match(Star);
-				setState(557);
+				setState(560);
 				match(RightBracket);
 				}
 				break;
 			case 4:
 				{
-				setState(558);
+				setState(561);
 				match(LeftParen);
-				setState(560);
+				setState(563);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 				if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__0) | (1L << T__1) | (1L << T__2) | (1L << T__3) | (1L << T__4) | (1L << T__5) | (1L << T__7) | (1L << Char) | (1L << Byte) | (1L << Double) | (1L << Float) | (1L << Inline) | (1L << Int) | (1L << Word) | (1L << Dword) | (1L << Message) | (1L << Timer) | (1L << MsTimer) | (1L << Long) | (1L << Int64) | (1L << Void) | (1L << Alignas) | (1L << Atomic) | (1L << Bool) | (1L << Complex) | (1L << Noreturn))) != 0)) {
 					{
-					setState(559);
+					setState(562);
 					parameterTypeList();
 					}
 				}
 
-				setState(562);
+				setState(565);
 				match(RightParen);
-				setState(566);
+				setState(569);
 				_errHandler.sync(this);
 				_alt = getInterpreter().adaptivePredict(_input,61,_ctx);
 				while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
 					if ( _alt==1 ) {
 						{
 						{
-						setState(563);
+						setState(566);
 						gccDeclaratorExtension();
 						}
 						} 
 					}
-					setState(568);
+					setState(571);
 					_errHandler.sync(this);
 					_alt = getInterpreter().adaptivePredict(_input,61,_ctx);
 				}
@@ -3514,7 +3528,7 @@ public class CaplParser extends Parser {
 				break;
 			}
 			_ctx.stop = _input.LT(-1);
-			setState(595);
+			setState(598);
 			_errHandler.sync(this);
 			_alt = getInterpreter().adaptivePredict(_input,67,_ctx);
 			while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
@@ -3522,28 +3536,28 @@ public class CaplParser extends Parser {
 					if ( _parseListeners!=null ) triggerExitRuleEvent();
 					_prevctx = _localctx;
 					{
-					setState(593);
+					setState(596);
 					_errHandler.sync(this);
 					switch ( getInterpreter().adaptivePredict(_input,66,_ctx) ) {
 					case 1:
 						{
 						_localctx = new DirectAbstractDeclaratorContext(_parentctx, _parentState);
 						pushNewRecursionContext(_localctx, _startState, RULE_directAbstractDeclarator);
-						setState(571);
-						if (!(precpred(_ctx, 3))) throw new FailedPredicateException(this, "precpred(_ctx, 3)");
-						setState(572);
-						match(LeftBracket);
 						setState(574);
+						if (!(precpred(_ctx, 3))) throw new FailedPredicateException(this, "precpred(_ctx, 3)");
+						setState(575);
+						match(LeftBracket);
+						setState(577);
 						_errHandler.sync(this);
 						_la = _input.LA(1);
-						if (((((_la - 36)) & ~0x3f) == 0 && ((1L << (_la - 36)) & ((1L << (Alignof - 36)) | (1L << (LeftParen - 36)) | (1L << (Plus - 36)) | (1L << (PlusPlus - 36)) | (1L << (Minus - 36)) | (1L << (MinusMinus - 36)) | (1L << (AndAnd - 36)) | (1L << (Not - 36)) | (1L << (Tilde - 36)) | (1L << (Identifier - 36)) | (1L << (Constant - 36)) | (1L << (DigitSequence - 36)) | (1L << (StringLiteral - 36)))) != 0)) {
+						if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << Variables) | (1L << Alignof) | (1L << LeftParen) | (1L << Plus) | (1L << PlusPlus) | (1L << Minus) | (1L << MinusMinus))) != 0) || ((((_la - 65)) & ~0x3f) == 0 && ((1L << (_la - 65)) & ((1L << (AndAnd - 65)) | (1L << (Not - 65)) | (1L << (Tilde - 65)) | (1L << (Identifier - 65)) | (1L << (Constant - 65)) | (1L << (DigitSequence - 65)) | (1L << (StringLiteral - 65)))) != 0)) {
 							{
-							setState(573);
+							setState(576);
 							assignmentExpression();
 							}
 						}
 
-						setState(576);
+						setState(579);
 						match(RightBracket);
 						}
 						break;
@@ -3551,13 +3565,13 @@ public class CaplParser extends Parser {
 						{
 						_localctx = new DirectAbstractDeclaratorContext(_parentctx, _parentState);
 						pushNewRecursionContext(_localctx, _startState, RULE_directAbstractDeclarator);
-						setState(577);
-						if (!(precpred(_ctx, 2))) throw new FailedPredicateException(this, "precpred(_ctx, 2)");
-						setState(578);
-						match(LeftBracket);
-						setState(579);
-						match(Star);
 						setState(580);
+						if (!(precpred(_ctx, 2))) throw new FailedPredicateException(this, "precpred(_ctx, 2)");
+						setState(581);
+						match(LeftBracket);
+						setState(582);
+						match(Star);
+						setState(583);
 						match(RightBracket);
 						}
 						break;
@@ -3565,35 +3579,35 @@ public class CaplParser extends Parser {
 						{
 						_localctx = new DirectAbstractDeclaratorContext(_parentctx, _parentState);
 						pushNewRecursionContext(_localctx, _startState, RULE_directAbstractDeclarator);
-						setState(581);
-						if (!(precpred(_ctx, 1))) throw new FailedPredicateException(this, "precpred(_ctx, 1)");
-						setState(582);
-						match(LeftParen);
 						setState(584);
+						if (!(precpred(_ctx, 1))) throw new FailedPredicateException(this, "precpred(_ctx, 1)");
+						setState(585);
+						match(LeftParen);
+						setState(587);
 						_errHandler.sync(this);
 						_la = _input.LA(1);
 						if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__0) | (1L << T__1) | (1L << T__2) | (1L << T__3) | (1L << T__4) | (1L << T__5) | (1L << T__7) | (1L << Char) | (1L << Byte) | (1L << Double) | (1L << Float) | (1L << Inline) | (1L << Int) | (1L << Word) | (1L << Dword) | (1L << Message) | (1L << Timer) | (1L << MsTimer) | (1L << Long) | (1L << Int64) | (1L << Void) | (1L << Alignas) | (1L << Atomic) | (1L << Bool) | (1L << Complex) | (1L << Noreturn))) != 0)) {
 							{
-							setState(583);
+							setState(586);
 							parameterTypeList();
 							}
 						}
 
-						setState(586);
+						setState(589);
 						match(RightParen);
-						setState(590);
+						setState(593);
 						_errHandler.sync(this);
 						_alt = getInterpreter().adaptivePredict(_input,65,_ctx);
 						while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
 							if ( _alt==1 ) {
 								{
 								{
-								setState(587);
+								setState(590);
 								gccDeclaratorExtension();
 								}
 								} 
 							}
-							setState(592);
+							setState(595);
 							_errHandler.sync(this);
 							_alt = getInterpreter().adaptivePredict(_input,65,_ctx);
 						}
@@ -3602,7 +3616,7 @@ public class CaplParser extends Parser {
 					}
 					} 
 				}
-				setState(597);
+				setState(600);
 				_errHandler.sync(this);
 				_alt = getInterpreter().adaptivePredict(_input,67,_ctx);
 			}
@@ -3640,9 +3654,10 @@ public class CaplParser extends Parser {
 		enterRule(_localctx, 96, RULE_initializer);
 		int _la;
 		try {
-			setState(606);
+			setState(609);
 			_errHandler.sync(this);
 			switch (_input.LA(1)) {
+			case Variables:
 			case Alignof:
 			case LeftParen:
 			case Plus:
@@ -3658,28 +3673,28 @@ public class CaplParser extends Parser {
 			case StringLiteral:
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(598);
+				setState(601);
 				assignmentExpression();
 				}
 				break;
 			case LeftBrace:
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(599);
-				match(LeftBrace);
-				setState(600);
-				initializerList();
 				setState(602);
+				match(LeftBrace);
+				setState(603);
+				initializerList();
+				setState(605);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 				if (_la==Comma) {
 					{
-					setState(601);
+					setState(604);
 					match(Comma);
 					}
 				}
 
-				setState(604);
+				setState(607);
 				match(RightBrace);
 				}
 				break;
@@ -3729,43 +3744,43 @@ public class CaplParser extends Parser {
 			int _alt;
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(609);
+			setState(612);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==LeftBracket || _la==Dot) {
 				{
-				setState(608);
+				setState(611);
 				designation();
 				}
 			}
 
-			setState(611);
+			setState(614);
 			initializer();
-			setState(619);
+			setState(622);
 			_errHandler.sync(this);
 			_alt = getInterpreter().adaptivePredict(_input,72,_ctx);
 			while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
 				if ( _alt==1 ) {
 					{
 					{
-					setState(612);
+					setState(615);
 					match(Comma);
-					setState(614);
+					setState(617);
 					_errHandler.sync(this);
 					_la = _input.LA(1);
 					if (_la==LeftBracket || _la==Dot) {
 						{
-						setState(613);
+						setState(616);
 						designation();
 						}
 					}
 
-					setState(616);
+					setState(619);
 					initializer();
 					}
 					} 
 				}
-				setState(621);
+				setState(624);
 				_errHandler.sync(this);
 				_alt = getInterpreter().adaptivePredict(_input,72,_ctx);
 			}
@@ -3799,9 +3814,9 @@ public class CaplParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(622);
+			setState(625);
 			designatorList();
-			setState(623);
+			setState(626);
 			match(Assign);
 			}
 		}
@@ -3836,17 +3851,17 @@ public class CaplParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(626); 
+			setState(629); 
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			do {
 				{
 				{
-				setState(625);
+				setState(628);
 				designator();
 				}
 				}
-				setState(628); 
+				setState(631); 
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			} while ( _la==LeftBracket || _la==Dot );
@@ -3881,26 +3896,26 @@ public class CaplParser extends Parser {
 		DesignatorContext _localctx = new DesignatorContext(_ctx, getState());
 		enterRule(_localctx, 104, RULE_designator);
 		try {
-			setState(636);
+			setState(639);
 			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case LeftBracket:
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(630);
+				setState(633);
 				match(LeftBracket);
-				setState(631);
+				setState(634);
 				constantExpression();
-				setState(632);
+				setState(635);
 				match(RightBracket);
 				}
 				break;
 			case Dot:
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(634);
+				setState(637);
 				match(Dot);
-				setState(635);
+				setState(638);
 				match(Identifier);
 				}
 				break;
@@ -3948,48 +3963,48 @@ public class CaplParser extends Parser {
 		StatementContext _localctx = new StatementContext(_ctx, getState());
 		enterRule(_localctx, 106, RULE_statement);
 		try {
-			setState(644);
+			setState(647);
 			_errHandler.sync(this);
 			switch ( getInterpreter().adaptivePredict(_input,75,_ctx) ) {
 			case 1:
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(638);
+				setState(641);
 				labeledStatement();
 				}
 				break;
 			case 2:
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(639);
+				setState(642);
 				compoundStatement();
 				}
 				break;
 			case 3:
 				enterOuterAlt(_localctx, 3);
 				{
-				setState(640);
+				setState(643);
 				expressionStatement();
 				}
 				break;
 			case 4:
 				enterOuterAlt(_localctx, 4);
 				{
-				setState(641);
+				setState(644);
 				selectionStatement();
 				}
 				break;
 			case 5:
 				enterOuterAlt(_localctx, 5);
 				{
-				setState(642);
+				setState(645);
 				iterationStatement();
 				}
 				break;
 			case 6:
 				enterOuterAlt(_localctx, 6);
 				{
-				setState(643);
+				setState(646);
 				jumpStatement();
 				}
 				break;
@@ -4027,41 +4042,41 @@ public class CaplParser extends Parser {
 		LabeledStatementContext _localctx = new LabeledStatementContext(_ctx, getState());
 		enterRule(_localctx, 108, RULE_labeledStatement);
 		try {
-			setState(657);
+			setState(660);
 			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case Identifier:
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(646);
+				setState(649);
 				match(Identifier);
-				setState(647);
+				setState(650);
 				match(Colon);
-				setState(648);
+				setState(651);
 				statement();
 				}
 				break;
 			case Case:
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(649);
-				match(Case);
-				setState(650);
-				constantExpression();
-				setState(651);
-				match(Colon);
 				setState(652);
+				match(Case);
+				setState(653);
+				constantExpression();
+				setState(654);
+				match(Colon);
+				setState(655);
 				statement();
 				}
 				break;
 			case Default:
 				enterOuterAlt(_localctx, 3);
 				{
-				setState(654);
+				setState(657);
 				match(Default);
-				setState(655);
+				setState(658);
 				match(Colon);
-				setState(656);
+				setState(659);
 				statement();
 				}
 				break;
@@ -4099,19 +4114,19 @@ public class CaplParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(659);
+			setState(662);
 			match(LeftBrace);
-			setState(661);
+			setState(664);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
-			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__0) | (1L << T__1) | (1L << T__2) | (1L << T__3) | (1L << T__4) | (1L << T__5) | (1L << T__7) | (1L << Break) | (1L << Case) | (1L << Char) | (1L << Byte) | (1L << Continue) | (1L << Default) | (1L << Do) | (1L << Double) | (1L << Float) | (1L << For) | (1L << If) | (1L << Inline) | (1L << Int) | (1L << Word) | (1L << Dword) | (1L << Message) | (1L << Timer) | (1L << MsTimer) | (1L << Long) | (1L << Int64) | (1L << Return) | (1L << Switch) | (1L << Void) | (1L << While) | (1L << Alignas) | (1L << Alignof) | (1L << Atomic) | (1L << Bool) | (1L << Complex) | (1L << Noreturn) | (1L << LeftParen) | (1L << LeftBrace) | (1L << Plus) | (1L << PlusPlus) | (1L << Minus) | (1L << MinusMinus))) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & ((1L << (AndAnd - 64)) | (1L << (Not - 64)) | (1L << (Tilde - 64)) | (1L << (Semi - 64)) | (1L << (Identifier - 64)) | (1L << (Constant - 64)) | (1L << (DigitSequence - 64)) | (1L << (StringLiteral - 64)))) != 0)) {
+			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__0) | (1L << T__1) | (1L << T__2) | (1L << T__3) | (1L << T__4) | (1L << T__5) | (1L << T__7) | (1L << Variables) | (1L << Break) | (1L << Case) | (1L << Char) | (1L << Byte) | (1L << Continue) | (1L << Default) | (1L << Do) | (1L << Double) | (1L << Float) | (1L << For) | (1L << If) | (1L << Inline) | (1L << Int) | (1L << Word) | (1L << Dword) | (1L << Message) | (1L << Timer) | (1L << MsTimer) | (1L << Long) | (1L << Int64) | (1L << Return) | (1L << Switch) | (1L << Void) | (1L << While) | (1L << Alignas) | (1L << Alignof) | (1L << Atomic) | (1L << Bool) | (1L << Complex) | (1L << Noreturn) | (1L << LeftParen) | (1L << LeftBrace) | (1L << Plus) | (1L << PlusPlus) | (1L << Minus) | (1L << MinusMinus))) != 0) || ((((_la - 65)) & ~0x3f) == 0 && ((1L << (_la - 65)) & ((1L << (AndAnd - 65)) | (1L << (Not - 65)) | (1L << (Tilde - 65)) | (1L << (Semi - 65)) | (1L << (Identifier - 65)) | (1L << (Constant - 65)) | (1L << (DigitSequence - 65)) | (1L << (StringLiteral - 65)))) != 0)) {
 				{
-				setState(660);
+				setState(663);
 				blockItemList();
 				}
 			}
 
-			setState(663);
+			setState(666);
 			match(RightBrace);
 			}
 		}
@@ -4146,20 +4161,20 @@ public class CaplParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(666); 
+			setState(669); 
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			do {
 				{
 				{
-				setState(665);
+				setState(668);
 				blockItem();
 				}
 				}
-				setState(668); 
+				setState(671); 
 				_errHandler.sync(this);
 				_la = _input.LA(1);
-			} while ( (((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__0) | (1L << T__1) | (1L << T__2) | (1L << T__3) | (1L << T__4) | (1L << T__5) | (1L << T__7) | (1L << Break) | (1L << Case) | (1L << Char) | (1L << Byte) | (1L << Continue) | (1L << Default) | (1L << Do) | (1L << Double) | (1L << Float) | (1L << For) | (1L << If) | (1L << Inline) | (1L << Int) | (1L << Word) | (1L << Dword) | (1L << Message) | (1L << Timer) | (1L << MsTimer) | (1L << Long) | (1L << Int64) | (1L << Return) | (1L << Switch) | (1L << Void) | (1L << While) | (1L << Alignas) | (1L << Alignof) | (1L << Atomic) | (1L << Bool) | (1L << Complex) | (1L << Noreturn) | (1L << LeftParen) | (1L << LeftBrace) | (1L << Plus) | (1L << PlusPlus) | (1L << Minus) | (1L << MinusMinus))) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & ((1L << (AndAnd - 64)) | (1L << (Not - 64)) | (1L << (Tilde - 64)) | (1L << (Semi - 64)) | (1L << (Identifier - 64)) | (1L << (Constant - 64)) | (1L << (DigitSequence - 64)) | (1L << (StringLiteral - 64)))) != 0) );
+			} while ( (((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__0) | (1L << T__1) | (1L << T__2) | (1L << T__3) | (1L << T__4) | (1L << T__5) | (1L << T__7) | (1L << Variables) | (1L << Break) | (1L << Case) | (1L << Char) | (1L << Byte) | (1L << Continue) | (1L << Default) | (1L << Do) | (1L << Double) | (1L << Float) | (1L << For) | (1L << If) | (1L << Inline) | (1L << Int) | (1L << Word) | (1L << Dword) | (1L << Message) | (1L << Timer) | (1L << MsTimer) | (1L << Long) | (1L << Int64) | (1L << Return) | (1L << Switch) | (1L << Void) | (1L << While) | (1L << Alignas) | (1L << Alignof) | (1L << Atomic) | (1L << Bool) | (1L << Complex) | (1L << Noreturn) | (1L << LeftParen) | (1L << LeftBrace) | (1L << Plus) | (1L << PlusPlus) | (1L << Minus) | (1L << MinusMinus))) != 0) || ((((_la - 65)) & ~0x3f) == 0 && ((1L << (_la - 65)) & ((1L << (AndAnd - 65)) | (1L << (Not - 65)) | (1L << (Tilde - 65)) | (1L << (Semi - 65)) | (1L << (Identifier - 65)) | (1L << (Constant - 65)) | (1L << (DigitSequence - 65)) | (1L << (StringLiteral - 65)))) != 0) );
 			}
 		}
 		catch (RecognitionException re) {
@@ -4190,9 +4205,10 @@ public class CaplParser extends Parser {
 		BlockItemContext _localctx = new BlockItemContext(_ctx, getState());
 		enterRule(_localctx, 114, RULE_blockItem);
 		try {
-			setState(672);
+			setState(675);
 			_errHandler.sync(this);
 			switch (_input.LA(1)) {
+			case Variables:
 			case Break:
 			case Case:
 			case Continue:
@@ -4220,7 +4236,7 @@ public class CaplParser extends Parser {
 			case StringLiteral:
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(670);
+				setState(673);
 				statement();
 				}
 				break;
@@ -4252,7 +4268,7 @@ public class CaplParser extends Parser {
 			case Noreturn:
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(671);
+				setState(674);
 				declaration();
 				}
 				break;
@@ -4289,17 +4305,17 @@ public class CaplParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(675);
+			setState(678);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
-			if (((((_la - 36)) & ~0x3f) == 0 && ((1L << (_la - 36)) & ((1L << (Alignof - 36)) | (1L << (LeftParen - 36)) | (1L << (Plus - 36)) | (1L << (PlusPlus - 36)) | (1L << (Minus - 36)) | (1L << (MinusMinus - 36)) | (1L << (AndAnd - 36)) | (1L << (Not - 36)) | (1L << (Tilde - 36)) | (1L << (Identifier - 36)) | (1L << (Constant - 36)) | (1L << (DigitSequence - 36)) | (1L << (StringLiteral - 36)))) != 0)) {
+			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << Variables) | (1L << Alignof) | (1L << LeftParen) | (1L << Plus) | (1L << PlusPlus) | (1L << Minus) | (1L << MinusMinus))) != 0) || ((((_la - 65)) & ~0x3f) == 0 && ((1L << (_la - 65)) & ((1L << (AndAnd - 65)) | (1L << (Not - 65)) | (1L << (Tilde - 65)) | (1L << (Identifier - 65)) | (1L << (Constant - 65)) | (1L << (DigitSequence - 65)) | (1L << (StringLiteral - 65)))) != 0)) {
 				{
-				setState(674);
+				setState(677);
 				expression();
 				}
 			}
 
-			setState(677);
+			setState(680);
 			match(Semi);
 			}
 		}
@@ -4339,30 +4355,30 @@ public class CaplParser extends Parser {
 		SelectionStatementContext _localctx = new SelectionStatementContext(_ctx, getState());
 		enterRule(_localctx, 118, RULE_selectionStatement);
 		try {
-			setState(694);
+			setState(697);
 			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case If:
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(679);
-				match(If);
-				setState(680);
-				match(LeftParen);
-				setState(681);
-				expression();
 				setState(682);
-				match(RightParen);
+				match(If);
 				setState(683);
-				statement();
+				match(LeftParen);
+				setState(684);
+				expression();
+				setState(685);
+				match(RightParen);
 				setState(686);
+				statement();
+				setState(689);
 				_errHandler.sync(this);
 				switch ( getInterpreter().adaptivePredict(_input,81,_ctx) ) {
 				case 1:
 					{
-					setState(684);
+					setState(687);
 					match(Else);
-					setState(685);
+					setState(688);
 					statement();
 					}
 					break;
@@ -4372,15 +4388,15 @@ public class CaplParser extends Parser {
 			case Switch:
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(688);
-				match(Switch);
-				setState(689);
-				match(LeftParen);
-				setState(690);
-				expression();
 				setState(691);
-				match(RightParen);
+				match(Switch);
 				setState(692);
+				match(LeftParen);
+				setState(693);
+				expression();
+				setState(694);
+				match(RightParen);
+				setState(695);
 				statement();
 				}
 				break;
@@ -4425,55 +4441,55 @@ public class CaplParser extends Parser {
 		IterationStatementContext _localctx = new IterationStatementContext(_ctx, getState());
 		enterRule(_localctx, 120, RULE_iterationStatement);
 		try {
-			setState(716);
+			setState(719);
 			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case While:
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(696);
-				match(While);
-				setState(697);
-				match(LeftParen);
-				setState(698);
-				expression();
 				setState(699);
-				match(RightParen);
+				match(While);
 				setState(700);
+				match(LeftParen);
+				setState(701);
+				expression();
+				setState(702);
+				match(RightParen);
+				setState(703);
 				statement();
 				}
 				break;
 			case Do:
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(702);
-				match(Do);
-				setState(703);
-				statement();
-				setState(704);
-				match(While);
 				setState(705);
-				match(LeftParen);
+				match(Do);
 				setState(706);
-				expression();
+				statement();
 				setState(707);
-				match(RightParen);
+				match(While);
 				setState(708);
+				match(LeftParen);
+				setState(709);
+				expression();
+				setState(710);
+				match(RightParen);
+				setState(711);
 				match(Semi);
 				}
 				break;
 			case For:
 				enterOuterAlt(_localctx, 3);
 				{
-				setState(710);
-				match(For);
-				setState(711);
-				match(LeftParen);
-				setState(712);
-				forCondition();
 				setState(713);
-				match(RightParen);
+				match(For);
 				setState(714);
+				match(LeftParen);
+				setState(715);
+				forCondition();
+				setState(716);
+				match(RightParen);
+				setState(717);
 				statement();
 				}
 				break;
@@ -4522,7 +4538,7 @@ public class CaplParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(722);
+			setState(725);
 			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case T__0:
@@ -4552,10 +4568,11 @@ public class CaplParser extends Parser {
 			case Complex:
 			case Noreturn:
 				{
-				setState(718);
+				setState(721);
 				forDeclaration();
 				}
 				break;
+			case Variables:
 			case Alignof:
 			case LeftParen:
 			case Plus:
@@ -4571,12 +4588,12 @@ public class CaplParser extends Parser {
 			case DigitSequence:
 			case StringLiteral:
 				{
-				setState(720);
+				setState(723);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
-				if (((((_la - 36)) & ~0x3f) == 0 && ((1L << (_la - 36)) & ((1L << (Alignof - 36)) | (1L << (LeftParen - 36)) | (1L << (Plus - 36)) | (1L << (PlusPlus - 36)) | (1L << (Minus - 36)) | (1L << (MinusMinus - 36)) | (1L << (AndAnd - 36)) | (1L << (Not - 36)) | (1L << (Tilde - 36)) | (1L << (Identifier - 36)) | (1L << (Constant - 36)) | (1L << (DigitSequence - 36)) | (1L << (StringLiteral - 36)))) != 0)) {
+				if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << Variables) | (1L << Alignof) | (1L << LeftParen) | (1L << Plus) | (1L << PlusPlus) | (1L << Minus) | (1L << MinusMinus))) != 0) || ((((_la - 65)) & ~0x3f) == 0 && ((1L << (_la - 65)) & ((1L << (AndAnd - 65)) | (1L << (Not - 65)) | (1L << (Tilde - 65)) | (1L << (Identifier - 65)) | (1L << (Constant - 65)) | (1L << (DigitSequence - 65)) | (1L << (StringLiteral - 65)))) != 0)) {
 					{
-					setState(719);
+					setState(722);
 					expression();
 					}
 				}
@@ -4586,26 +4603,26 @@ public class CaplParser extends Parser {
 			default:
 				throw new NoViableAltException(this);
 			}
-			setState(724);
+			setState(727);
 			match(Semi);
-			setState(726);
+			setState(729);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
-			if (((((_la - 36)) & ~0x3f) == 0 && ((1L << (_la - 36)) & ((1L << (Alignof - 36)) | (1L << (LeftParen - 36)) | (1L << (Plus - 36)) | (1L << (PlusPlus - 36)) | (1L << (Minus - 36)) | (1L << (MinusMinus - 36)) | (1L << (AndAnd - 36)) | (1L << (Not - 36)) | (1L << (Tilde - 36)) | (1L << (Identifier - 36)) | (1L << (Constant - 36)) | (1L << (DigitSequence - 36)) | (1L << (StringLiteral - 36)))) != 0)) {
+			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << Variables) | (1L << Alignof) | (1L << LeftParen) | (1L << Plus) | (1L << PlusPlus) | (1L << Minus) | (1L << MinusMinus))) != 0) || ((((_la - 65)) & ~0x3f) == 0 && ((1L << (_la - 65)) & ((1L << (AndAnd - 65)) | (1L << (Not - 65)) | (1L << (Tilde - 65)) | (1L << (Identifier - 65)) | (1L << (Constant - 65)) | (1L << (DigitSequence - 65)) | (1L << (StringLiteral - 65)))) != 0)) {
 				{
-				setState(725);
+				setState(728);
 				forExpression();
 				}
 			}
 
-			setState(728);
+			setState(731);
 			match(Semi);
-			setState(730);
+			setState(733);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
-			if (((((_la - 36)) & ~0x3f) == 0 && ((1L << (_la - 36)) & ((1L << (Alignof - 36)) | (1L << (LeftParen - 36)) | (1L << (Plus - 36)) | (1L << (PlusPlus - 36)) | (1L << (Minus - 36)) | (1L << (MinusMinus - 36)) | (1L << (AndAnd - 36)) | (1L << (Not - 36)) | (1L << (Tilde - 36)) | (1L << (Identifier - 36)) | (1L << (Constant - 36)) | (1L << (DigitSequence - 36)) | (1L << (StringLiteral - 36)))) != 0)) {
+			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << Variables) | (1L << Alignof) | (1L << LeftParen) | (1L << Plus) | (1L << PlusPlus) | (1L << Minus) | (1L << MinusMinus))) != 0) || ((((_la - 65)) & ~0x3f) == 0 && ((1L << (_la - 65)) & ((1L << (AndAnd - 65)) | (1L << (Not - 65)) | (1L << (Tilde - 65)) | (1L << (Identifier - 65)) | (1L << (Constant - 65)) | (1L << (DigitSequence - 65)) | (1L << (StringLiteral - 65)))) != 0)) {
 				{
-				setState(729);
+				setState(732);
 				forExpression();
 				}
 			}
@@ -4643,14 +4660,14 @@ public class CaplParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(732);
+			setState(735);
 			declarationSpecifiers();
-			setState(734);
+			setState(737);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==LeftParen || _la==Identifier) {
 				{
-				setState(733);
+				setState(736);
 				initDeclaratorList();
 				}
 			}
@@ -4692,21 +4709,21 @@ public class CaplParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(736);
+			setState(739);
 			assignmentExpression();
-			setState(741);
+			setState(744);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			while (_la==Comma) {
 				{
 				{
-				setState(737);
+				setState(740);
 				match(Comma);
-				setState(738);
+				setState(741);
 				assignmentExpression();
 				}
 				}
-				setState(743);
+				setState(746);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			}
@@ -4744,13 +4761,13 @@ public class CaplParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(749);
+			setState(752);
 			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case Break:
 			case Continue:
 				{
-				setState(744);
+				setState(747);
 				_la = _input.LA(1);
 				if ( !(_la==Break || _la==Continue) ) {
 				_errHandler.recoverInline(this);
@@ -4764,14 +4781,14 @@ public class CaplParser extends Parser {
 				break;
 			case Return:
 				{
-				setState(745);
+				setState(748);
 				match(Return);
-				setState(747);
+				setState(750);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
-				if (((((_la - 36)) & ~0x3f) == 0 && ((1L << (_la - 36)) & ((1L << (Alignof - 36)) | (1L << (LeftParen - 36)) | (1L << (Plus - 36)) | (1L << (PlusPlus - 36)) | (1L << (Minus - 36)) | (1L << (MinusMinus - 36)) | (1L << (AndAnd - 36)) | (1L << (Not - 36)) | (1L << (Tilde - 36)) | (1L << (Identifier - 36)) | (1L << (Constant - 36)) | (1L << (DigitSequence - 36)) | (1L << (StringLiteral - 36)))) != 0)) {
+				if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << Variables) | (1L << Alignof) | (1L << LeftParen) | (1L << Plus) | (1L << PlusPlus) | (1L << Minus) | (1L << MinusMinus))) != 0) || ((((_la - 65)) & ~0x3f) == 0 && ((1L << (_la - 65)) & ((1L << (AndAnd - 65)) | (1L << (Not - 65)) | (1L << (Tilde - 65)) | (1L << (Identifier - 65)) | (1L << (Constant - 65)) | (1L << (DigitSequence - 65)) | (1L << (StringLiteral - 65)))) != 0)) {
 					{
-					setState(746);
+					setState(749);
 					expression();
 					}
 				}
@@ -4781,7 +4798,7 @@ public class CaplParser extends Parser {
 			default:
 				throw new NoViableAltException(this);
 			}
-			setState(751);
+			setState(754);
 			match(Semi);
 			}
 		}
@@ -4814,17 +4831,17 @@ public class CaplParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(754);
+			setState(757);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__0) | (1L << T__1) | (1L << T__2) | (1L << T__3) | (1L << T__4) | (1L << T__5) | (1L << T__7) | (1L << Char) | (1L << Byte) | (1L << Double) | (1L << Float) | (1L << Inline) | (1L << Int) | (1L << Word) | (1L << Dword) | (1L << Message) | (1L << Timer) | (1L << MsTimer) | (1L << Long) | (1L << Int64) | (1L << Void) | (1L << Alignas) | (1L << Atomic) | (1L << Bool) | (1L << Complex) | (1L << Noreturn) | (1L << LeftParen))) != 0) || _la==Semi || _la==Identifier) {
 				{
-				setState(753);
+				setState(756);
 				translationUnit();
 				}
 			}
 
-			setState(756);
+			setState(759);
 			match(EOF);
 			}
 		}
@@ -4859,17 +4876,17 @@ public class CaplParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(759); 
+			setState(762); 
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			do {
 				{
 				{
-				setState(758);
+				setState(761);
 				externalDeclaration();
 				}
 				}
-				setState(761); 
+				setState(764); 
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			} while ( (((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__0) | (1L << T__1) | (1L << T__2) | (1L << T__3) | (1L << T__4) | (1L << T__5) | (1L << T__7) | (1L << Char) | (1L << Byte) | (1L << Double) | (1L << Float) | (1L << Inline) | (1L << Int) | (1L << Word) | (1L << Dword) | (1L << Message) | (1L << Timer) | (1L << MsTimer) | (1L << Long) | (1L << Int64) | (1L << Void) | (1L << Alignas) | (1L << Atomic) | (1L << Bool) | (1L << Complex) | (1L << Noreturn) | (1L << LeftParen))) != 0) || _la==Semi || _la==Identifier );
@@ -4904,27 +4921,27 @@ public class CaplParser extends Parser {
 		ExternalDeclarationContext _localctx = new ExternalDeclarationContext(_ctx, getState());
 		enterRule(_localctx, 134, RULE_externalDeclaration);
 		try {
-			setState(766);
+			setState(769);
 			_errHandler.sync(this);
 			switch ( getInterpreter().adaptivePredict(_input,94,_ctx) ) {
 			case 1:
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(763);
+				setState(766);
 				functionDefinition();
 				}
 				break;
 			case 2:
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(764);
+				setState(767);
 				declaration();
 				}
 				break;
 			case 3:
 				enterOuterAlt(_localctx, 3);
 				{
-				setState(765);
+				setState(768);
 				match(Semi);
 				}
 				break;
@@ -4967,29 +4984,29 @@ public class CaplParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(769);
+			setState(772);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__0) | (1L << T__1) | (1L << T__2) | (1L << T__3) | (1L << T__4) | (1L << T__5) | (1L << T__7) | (1L << Char) | (1L << Byte) | (1L << Double) | (1L << Float) | (1L << Inline) | (1L << Int) | (1L << Word) | (1L << Dword) | (1L << Message) | (1L << Timer) | (1L << MsTimer) | (1L << Long) | (1L << Int64) | (1L << Void) | (1L << Alignas) | (1L << Atomic) | (1L << Bool) | (1L << Complex) | (1L << Noreturn))) != 0)) {
 				{
-				setState(768);
+				setState(771);
 				declarationSpecifiers();
 				}
 			}
 
-			setState(771);
+			setState(774);
 			declarator();
-			setState(773);
+			setState(776);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__0) | (1L << T__1) | (1L << T__2) | (1L << T__3) | (1L << T__4) | (1L << T__5) | (1L << T__7) | (1L << Char) | (1L << Byte) | (1L << Double) | (1L << Float) | (1L << Inline) | (1L << Int) | (1L << Word) | (1L << Dword) | (1L << Message) | (1L << Timer) | (1L << MsTimer) | (1L << Long) | (1L << Int64) | (1L << Void) | (1L << Alignas) | (1L << Atomic) | (1L << Bool) | (1L << Complex) | (1L << Noreturn))) != 0)) {
 				{
-				setState(772);
+				setState(775);
 				declarationList();
 				}
 			}
 
-			setState(775);
+			setState(778);
 			compoundStatement();
 			}
 		}
@@ -5024,20 +5041,69 @@ public class CaplParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(778); 
+			setState(781); 
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			do {
 				{
 				{
-				setState(777);
+				setState(780);
 				declaration();
 				}
 				}
-				setState(780); 
+				setState(783); 
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			} while ( (((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__0) | (1L << T__1) | (1L << T__2) | (1L << T__3) | (1L << T__4) | (1L << T__5) | (1L << T__7) | (1L << Char) | (1L << Byte) | (1L << Double) | (1L << Float) | (1L << Inline) | (1L << Int) | (1L << Word) | (1L << Dword) | (1L << Message) | (1L << Timer) | (1L << MsTimer) | (1L << Long) | (1L << Int64) | (1L << Void) | (1L << Alignas) | (1L << Atomic) | (1L << Bool) | (1L << Complex) | (1L << Noreturn))) != 0) );
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static class VariableDeclarationBlockContext extends ParserRuleContext {
+		public TerminalNode Variables() { return getToken(CaplParser.Variables, 0); }
+		public TerminalNode LeftBrace() { return getToken(CaplParser.LeftBrace, 0); }
+		public TerminalNode RightBrace() { return getToken(CaplParser.RightBrace, 0); }
+		public BlockItemListContext blockItemList() {
+			return getRuleContext(BlockItemListContext.class,0);
+		}
+		public VariableDeclarationBlockContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_variableDeclarationBlock; }
+	}
+
+	public final VariableDeclarationBlockContext variableDeclarationBlock() throws RecognitionException {
+		VariableDeclarationBlockContext _localctx = new VariableDeclarationBlockContext(_ctx, getState());
+		enterRule(_localctx, 140, RULE_variableDeclarationBlock);
+		int _la;
+		try {
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(785);
+			match(Variables);
+			setState(786);
+			match(LeftBrace);
+			setState(788);
+			_errHandler.sync(this);
+			_la = _input.LA(1);
+			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__0) | (1L << T__1) | (1L << T__2) | (1L << T__3) | (1L << T__4) | (1L << T__5) | (1L << T__7) | (1L << Variables) | (1L << Break) | (1L << Case) | (1L << Char) | (1L << Byte) | (1L << Continue) | (1L << Default) | (1L << Do) | (1L << Double) | (1L << Float) | (1L << For) | (1L << If) | (1L << Inline) | (1L << Int) | (1L << Word) | (1L << Dword) | (1L << Message) | (1L << Timer) | (1L << MsTimer) | (1L << Long) | (1L << Int64) | (1L << Return) | (1L << Switch) | (1L << Void) | (1L << While) | (1L << Alignas) | (1L << Alignof) | (1L << Atomic) | (1L << Bool) | (1L << Complex) | (1L << Noreturn) | (1L << LeftParen) | (1L << LeftBrace) | (1L << Plus) | (1L << PlusPlus) | (1L << Minus) | (1L << MinusMinus))) != 0) || ((((_la - 65)) & ~0x3f) == 0 && ((1L << (_la - 65)) & ((1L << (AndAnd - 65)) | (1L << (Not - 65)) | (1L << (Tilde - 65)) | (1L << (Semi - 65)) | (1L << (Identifier - 65)) | (1L << (Constant - 65)) | (1L << (DigitSequence - 65)) | (1L << (StringLiteral - 65)))) != 0)) {
+				{
+				setState(787);
+				blockItemList();
+				}
+			}
+
+			setState(790);
+			match(RightBrace);
 			}
 		}
 		catch (RecognitionException re) {
@@ -5084,7 +5150,7 @@ public class CaplParser extends Parser {
 	}
 
 	public static final String _serializedATN =
-		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3b\u0311\4\2\t\2\4"+
+		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3c\u031b\4\2\t\2\4"+
 		"\3\t\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7\4\b\t\b\4\t\t\t\4\n\t\n\4\13\t"+
 		"\13\4\f\t\f\4\r\t\r\4\16\t\16\4\17\t\17\4\20\t\20\4\21\t\21\4\22\t\22"+
 		"\4\23\t\23\4\24\t\24\4\25\t\25\4\26\t\26\4\27\t\27\4\30\t\30\4\31\t\31"+
@@ -5092,294 +5158,298 @@ public class CaplParser extends Parser {
 		"\t!\4\"\t\"\4#\t#\4$\t$\4%\t%\4&\t&\4\'\t\'\4(\t(\4)\t)\4*\t*\4+\t+\4"+
 		",\t,\4-\t-\4.\t.\4/\t/\4\60\t\60\4\61\t\61\4\62\t\62\4\63\t\63\4\64\t"+
 		"\64\4\65\t\65\4\66\t\66\4\67\t\67\48\t8\49\t9\4:\t:\4;\t;\4<\t<\4=\t="+
-		"\4>\t>\4?\t?\4@\t@\4A\tA\4B\tB\4C\tC\4D\tD\4E\tE\4F\tF\4G\tG\3\2\3\2\3"+
-		"\2\6\2\u0092\n\2\r\2\16\2\u0093\3\2\3\2\3\2\3\2\3\2\3\2\3\2\3\2\5\2\u009e"+
-		"\n\2\3\3\3\3\3\3\7\3\u00a3\n\3\f\3\16\3\u00a6\13\3\3\4\3\4\5\4\u00aa\n"+
-		"\4\3\4\3\4\3\4\3\5\3\5\3\5\3\5\3\5\3\5\3\5\5\5\u00b6\n\5\3\5\3\5\5\5\u00ba"+
-		"\n\5\3\5\3\5\3\5\3\5\3\5\3\5\5\5\u00c2\n\5\3\5\3\5\3\5\3\5\7\5\u00c8\n"+
-		"\5\f\5\16\5\u00cb\13\5\3\6\3\6\3\6\7\6\u00d0\n\6\f\6\16\6\u00d3\13\6\3"+
-		"\7\7\7\u00d6\n\7\f\7\16\7\u00d9\13\7\3\7\3\7\3\7\3\7\3\7\3\7\3\7\3\7\3"+
-		"\7\3\7\3\7\5\7\u00e6\n\7\3\b\3\b\3\t\3\t\3\t\3\t\3\t\3\t\3\t\5\t\u00f1"+
-		"\n\t\3\n\3\n\3\n\7\n\u00f6\n\n\f\n\16\n\u00f9\13\n\3\13\3\13\3\13\7\13"+
-		"\u00fe\n\13\f\13\16\13\u0101\13\13\3\f\3\f\3\f\7\f\u0106\n\f\f\f\16\f"+
-		"\u0109\13\f\3\r\3\r\3\r\7\r\u010e\n\r\f\r\16\r\u0111\13\r\3\16\3\16\3"+
-		"\16\7\16\u0116\n\16\f\16\16\16\u0119\13\16\3\17\3\17\3\17\7\17\u011e\n"+
-		"\17\f\17\16\17\u0121\13\17\3\20\3\20\3\20\7\20\u0126\n\20\f\20\16\20\u0129"+
-		"\13\20\3\21\3\21\3\21\7\21\u012e\n\21\f\21\16\21\u0131\13\21\3\22\3\22"+
-		"\3\22\7\22\u0136\n\22\f\22\16\22\u0139\13\22\3\23\3\23\3\23\7\23\u013e"+
-		"\n\23\f\23\16\23\u0141\13\23\3\24\3\24\3\24\3\24\3\24\3\24\5\24\u0149"+
-		"\n\24\3\25\3\25\3\25\3\25\3\25\3\25\5\25\u0151\n\25\3\26\3\26\3\27\3\27"+
-		"\3\27\7\27\u0158\n\27\f\27\16\27\u015b\13\27\3\30\3\30\3\31\3\31\5\31"+
-		"\u0161\n\31\3\31\3\31\3\32\6\32\u0166\n\32\r\32\16\32\u0167\3\33\6\33"+
-		"\u016b\n\33\r\33\16\33\u016c\3\34\3\34\3\34\5\34\u0172\n\34\3\35\3\35"+
-		"\3\35\7\35\u0177\n\35\f\35\16\35\u017a\13\35\3\36\3\36\3\36\5\36\u017f"+
-		"\n\36\3\37\3\37\5\37\u0183\n\37\3 \3 \5 \u0187\n \3!\3!\3!\3!\3!\3\"\3"+
-		"\"\3\"\3\"\3\"\3\"\5\"\u0194\n\"\3#\3#\3#\3#\5#\u019a\n#\3#\3#\3$\3$\7"+
-		"$\u01a0\n$\f$\16$\u01a3\13$\3%\3%\3%\3%\3%\3%\3%\3%\3%\5%\u01ae\n%\3%"+
-		"\3%\3%\5%\u01b3\n%\3%\3%\3%\3%\3%\3%\3%\3%\3%\5%\u01be\n%\3%\7%\u01c1"+
-		"\n%\f%\16%\u01c4\13%\3&\3&\3&\6&\u01c9\n&\r&\16&\u01ca\3&\3&\5&\u01cf"+
-		"\n&\3\'\3\'\3\'\3\'\3\'\3\'\3\'\3(\5(\u01d9\n(\3(\3(\5(\u01dd\n(\7(\u01df"+
-		"\n(\f(\16(\u01e2\13(\3)\3)\3)\5)\u01e7\n)\3)\5)\u01ea\n)\3*\3*\3*\3*\3"+
-		"*\7*\u01f1\n*\f*\16*\u01f4\13*\3+\3+\3+\5+\u01f9\n+\3,\3,\3,\7,\u01fe"+
-		"\n,\f,\16,\u0201\13,\3-\3-\3-\3-\3-\5-\u0208\n-\5-\u020a\n-\3.\3.\3.\7"+
-		".\u020f\n.\f.\16.\u0212\13.\3/\3/\5/\u0216\n/\3\60\3\60\7\60\u021a\n\60"+
-		"\f\60\16\60\u021d\13\60\3\61\3\61\3\61\3\61\3\61\7\61\u0224\n\61\f\61"+
-		"\16\61\u0227\13\61\3\61\3\61\5\61\u022b\n\61\3\61\3\61\3\61\3\61\3\61"+
-		"\3\61\5\61\u0233\n\61\3\61\3\61\7\61\u0237\n\61\f\61\16\61\u023a\13\61"+
-		"\5\61\u023c\n\61\3\61\3\61\3\61\5\61\u0241\n\61\3\61\3\61\3\61\3\61\3"+
-		"\61\3\61\3\61\3\61\5\61\u024b\n\61\3\61\3\61\7\61\u024f\n\61\f\61\16\61"+
-		"\u0252\13\61\7\61\u0254\n\61\f\61\16\61\u0257\13\61\3\62\3\62\3\62\3\62"+
-		"\5\62\u025d\n\62\3\62\3\62\5\62\u0261\n\62\3\63\5\63\u0264\n\63\3\63\3"+
-		"\63\3\63\5\63\u0269\n\63\3\63\7\63\u026c\n\63\f\63\16\63\u026f\13\63\3"+
-		"\64\3\64\3\64\3\65\6\65\u0275\n\65\r\65\16\65\u0276\3\66\3\66\3\66\3\66"+
-		"\3\66\3\66\5\66\u027f\n\66\3\67\3\67\3\67\3\67\3\67\3\67\5\67\u0287\n"+
-		"\67\38\38\38\38\38\38\38\38\38\38\38\58\u0294\n8\39\39\59\u0298\n9\39"+
-		"\39\3:\6:\u029d\n:\r:\16:\u029e\3;\3;\5;\u02a3\n;\3<\5<\u02a6\n<\3<\3"+
-		"<\3=\3=\3=\3=\3=\3=\3=\5=\u02b1\n=\3=\3=\3=\3=\3=\3=\5=\u02b9\n=\3>\3"+
-		">\3>\3>\3>\3>\3>\3>\3>\3>\3>\3>\3>\3>\3>\3>\3>\3>\3>\3>\5>\u02cf\n>\3"+
-		"?\3?\5?\u02d3\n?\5?\u02d5\n?\3?\3?\5?\u02d9\n?\3?\3?\5?\u02dd\n?\3@\3"+
-		"@\5@\u02e1\n@\3A\3A\3A\7A\u02e6\nA\fA\16A\u02e9\13A\3B\3B\3B\5B\u02ee"+
-		"\nB\5B\u02f0\nB\3B\3B\3C\5C\u02f5\nC\3C\3C\3D\6D\u02fa\nD\rD\16D\u02fb"+
-		"\3E\3E\3E\5E\u0301\nE\3F\5F\u0304\nF\3F\3F\5F\u0308\nF\3F\3F\3G\6G\u030d"+
-		"\nG\rG\16G\u030e\3G\2\4H`H\2\4\6\b\n\f\16\20\22\24\26\30\32\34\36 \"$"+
-		"&(*,.\60\62\64\668:<>@BDFHJLNPRTVXZ\\^`bdfhjlnprtvxz|~\u0080\u0082\u0084"+
-		"\u0086\u0088\u008a\u008c\2\17\4\2::<<\5\299;;EF\3\2=?\4\299;;\3\2\678"+
-		"\3\2\63\66\3\2VW\3\2KU\t\2\3\5\r\16\22\22\24\24\30\37##()\5\2\6\7\27\27"+
-		"++\4\2-.JJ\3\2-.\4\2\13\13\17\17\2\u0343\2\u009d\3\2\2\2\4\u009f\3\2\2"+
-		"\2\6\u00a9\3\2\2\2\b\u00b9\3\2\2\2\n\u00cc\3\2\2\2\f\u00d7\3\2\2\2\16"+
-		"\u00e7\3\2\2\2\20\u00f0\3\2\2\2\22\u00f2\3\2\2\2\24\u00fa\3\2\2\2\26\u0102"+
-		"\3\2\2\2\30\u010a\3\2\2\2\32\u0112\3\2\2\2\34\u011a\3\2\2\2\36\u0122\3"+
-		"\2\2\2 \u012a\3\2\2\2\"\u0132\3\2\2\2$\u013a\3\2\2\2&\u0142\3\2\2\2(\u0150"+
-		"\3\2\2\2*\u0152\3\2\2\2,\u0154\3\2\2\2.\u015c\3\2\2\2\60\u015e\3\2\2\2"+
-		"\62\u0165\3\2\2\2\64\u016a\3\2\2\2\66\u0171\3\2\2\28\u0173\3\2\2\2:\u017b"+
-		"\3\2\2\2<\u0182\3\2\2\2>\u0184\3\2\2\2@\u0188\3\2\2\2B\u0193\3\2\2\2D"+
-		"\u0195\3\2\2\2F\u019d\3\2\2\2H\u01ad\3\2\2\2J\u01ce\3\2\2\2L\u01d0\3\2"+
-		"\2\2N\u01d8\3\2\2\2P\u01e3\3\2\2\2R\u01f2\3\2\2\2T\u01f5\3\2\2\2V\u01fa"+
-		"\3\2\2\2X\u0209\3\2\2\2Z\u020b\3\2\2\2\\\u0213\3\2\2\2^\u0217\3\2\2\2"+
-		"`\u023b\3\2\2\2b\u0260\3\2\2\2d\u0263\3\2\2\2f\u0270\3\2\2\2h\u0274\3"+
-		"\2\2\2j\u027e\3\2\2\2l\u0286\3\2\2\2n\u0293\3\2\2\2p\u0295\3\2\2\2r\u029c"+
-		"\3\2\2\2t\u02a2\3\2\2\2v\u02a5\3\2\2\2x\u02b8\3\2\2\2z\u02ce\3\2\2\2|"+
-		"\u02d4\3\2\2\2~\u02de\3\2\2\2\u0080\u02e2\3\2\2\2\u0082\u02ef\3\2\2\2"+
-		"\u0084\u02f4\3\2\2\2\u0086\u02f9\3\2\2\2\u0088\u0300\3\2\2\2\u008a\u0303"+
-		"\3\2\2\2\u008c\u030c\3\2\2\2\u008e\u009e\7Z\2\2\u008f\u009e\7[\2\2\u0090"+
-		"\u0092\7]\2\2\u0091\u0090\3\2\2\2\u0092\u0093\3\2\2\2\u0093\u0091\3\2"+
-		"\2\2\u0093\u0094\3\2\2\2\u0094\u009e\3\2\2\2\u0095\u0096\7-\2\2\u0096"+
-		"\u0097\5,\27\2\u0097\u0098\7.\2\2\u0098\u009e\3\2\2\2\u0099\u009a\7-\2"+
-		"\2\u009a\u009b\5p9\2\u009b\u009c\7.\2\2\u009c\u009e\3\2\2\2\u009d\u008e"+
-		"\3\2\2\2\u009d\u008f\3\2\2\2\u009d\u0091\3\2\2\2\u009d\u0095\3\2\2\2\u009d"+
-		"\u0099\3\2\2\2\u009e\3\3\2\2\2\u009f\u00a4\5\6\4\2\u00a0\u00a1\7J\2\2"+
-		"\u00a1\u00a3\5\6\4\2\u00a2\u00a0\3\2\2\2\u00a3\u00a6\3\2\2\2\u00a4\u00a2"+
-		"\3\2\2\2\u00a4\u00a5\3\2\2\2\u00a5\5\3\2\2\2\u00a6\u00a4\3\2\2\2\u00a7"+
-		"\u00aa\5\\/\2\u00a8\u00aa\7\20\2\2\u00a9\u00a7\3\2\2\2\u00a9\u00a8\3\2"+
-		"\2\2\u00aa\u00ab\3\2\2\2\u00ab\u00ac\7H\2\2\u00ac\u00ad\5(\25\2\u00ad"+
-		"\7\3\2\2\2\u00ae\u00ba\5\2\2\2\u00af\u00b0\7-\2\2\u00b0\u00b1\5\\/\2\u00b1"+
-		"\u00b2\7.\2\2\u00b2\u00b3\7\61\2\2\u00b3\u00b5\5d\63\2\u00b4\u00b6\7J"+
-		"\2\2\u00b5\u00b4\3\2\2\2\u00b5\u00b6\3\2\2\2\u00b6\u00b7\3\2\2\2\u00b7"+
-		"\u00b8\7\62\2\2\u00b8\u00ba\3\2\2\2\u00b9\u00ae\3\2\2\2\u00b9\u00af\3"+
-		"\2\2\2\u00ba\u00c9\3\2\2\2\u00bb\u00bc\7/\2\2\u00bc\u00bd\5,\27\2\u00bd"+
-		"\u00be\7\60\2\2\u00be\u00c8\3\2\2\2\u00bf\u00c1\7-\2\2\u00c0\u00c2\5\n"+
-		"\6\2\u00c1\u00c0\3\2\2\2\u00c1\u00c2\3\2\2\2\u00c2\u00c3\3\2\2\2\u00c3"+
-		"\u00c8\7.\2\2\u00c4\u00c5\7X\2\2\u00c5\u00c8\7Z\2\2\u00c6\u00c8\t\2\2"+
-		"\2\u00c7\u00bb\3\2\2\2\u00c7\u00bf\3\2\2\2\u00c7\u00c4\3\2\2\2\u00c7\u00c6"+
-		"\3\2\2\2\u00c8\u00cb\3\2\2\2\u00c9\u00c7\3\2\2\2\u00c9\u00ca\3\2\2\2\u00ca"+
-		"\t\3\2\2\2\u00cb\u00c9\3\2\2\2\u00cc\u00d1\5(\25\2\u00cd\u00ce\7J\2\2"+
-		"\u00ce\u00d0\5(\25\2\u00cf\u00cd\3\2\2\2\u00d0\u00d3\3\2\2\2\u00d1\u00cf"+
-		"\3\2\2\2\u00d1\u00d2\3\2\2\2\u00d2\13\3\2\2\2\u00d3\u00d1\3\2\2\2\u00d4"+
-		"\u00d6\t\2\2\2\u00d5\u00d4\3\2\2\2\u00d6\u00d9\3\2\2\2\u00d7\u00d5\3\2"+
-		"\2\2\u00d7\u00d8\3\2\2\2\u00d8\u00e5\3\2\2\2\u00d9\u00d7\3\2\2\2\u00da"+
-		"\u00e6\5\b\5\2\u00db\u00dc\5\16\b\2\u00dc\u00dd\5\20\t\2\u00dd\u00e6\3"+
-		"\2\2\2\u00de\u00df\7&\2\2\u00df\u00e0\7-\2\2\u00e0\u00e1\5\\/\2\u00e1"+
-		"\u00e2\7.\2\2\u00e2\u00e6\3\2\2\2\u00e3\u00e4\7B\2\2\u00e4\u00e6\7Z\2"+
-		"\2\u00e5\u00da\3\2\2\2\u00e5\u00db\3\2\2\2\u00e5\u00de\3\2\2\2\u00e5\u00e3"+
-		"\3\2\2\2\u00e6\r\3\2\2\2\u00e7\u00e8\t\3\2\2\u00e8\17\3\2\2\2\u00e9\u00ea"+
-		"\7-\2\2\u00ea\u00eb\5\\/\2\u00eb\u00ec\7.\2\2\u00ec\u00ed\5\20\t\2\u00ed"+
-		"\u00f1\3\2\2\2\u00ee\u00f1\5\f\7\2\u00ef\u00f1\7\\\2\2\u00f0\u00e9\3\2"+
-		"\2\2\u00f0\u00ee\3\2\2\2\u00f0\u00ef\3\2\2\2\u00f1\21\3\2\2\2\u00f2\u00f7"+
-		"\5\20\t\2\u00f3\u00f4\t\4\2\2\u00f4\u00f6\5\20\t\2\u00f5\u00f3\3\2\2\2"+
-		"\u00f6\u00f9\3\2\2\2\u00f7\u00f5\3\2\2\2\u00f7\u00f8\3\2\2\2\u00f8\23"+
-		"\3\2\2\2\u00f9\u00f7\3\2\2\2\u00fa\u00ff\5\22\n\2\u00fb\u00fc\t\5\2\2"+
-		"\u00fc\u00fe\5\22\n\2\u00fd\u00fb\3\2\2\2\u00fe\u0101\3\2\2\2\u00ff\u00fd"+
-		"\3\2\2\2\u00ff\u0100\3\2\2\2\u0100\25\3\2\2\2\u0101\u00ff\3\2\2\2\u0102"+
-		"\u0107\5\24\13\2\u0103\u0104\t\6\2\2\u0104\u0106\5\24\13\2\u0105\u0103"+
-		"\3\2\2\2\u0106\u0109\3\2\2\2\u0107\u0105\3\2\2\2\u0107\u0108\3\2\2\2\u0108"+
-		"\27\3\2\2\2\u0109\u0107\3\2\2\2\u010a\u010f\5\26\f\2\u010b\u010c\t\7\2"+
-		"\2\u010c\u010e\5\26\f\2\u010d\u010b\3\2\2\2\u010e\u0111\3\2\2\2\u010f"+
-		"\u010d\3\2\2\2\u010f\u0110\3\2\2\2\u0110\31\3\2\2\2\u0111\u010f\3\2\2"+
-		"\2\u0112\u0117\5\30\r\2\u0113\u0114\t\b\2\2\u0114\u0116\5\30\r\2\u0115"+
-		"\u0113\3\2\2\2\u0116\u0119\3\2\2\2\u0117\u0115\3\2\2\2\u0117\u0118\3\2"+
-		"\2\2\u0118\33\3\2\2\2\u0119\u0117\3\2\2\2\u011a\u011f\5\32\16\2\u011b"+
-		"\u011c\7@\2\2\u011c\u011e\5\32\16\2\u011d\u011b\3\2\2\2\u011e\u0121\3"+
-		"\2\2\2\u011f\u011d\3\2\2\2\u011f\u0120\3\2\2\2\u0120\35\3\2\2\2\u0121"+
-		"\u011f\3\2\2\2\u0122\u0127\5\34\17\2\u0123\u0124\7D\2\2\u0124\u0126\5"+
-		"\34\17\2\u0125\u0123\3\2\2\2\u0126\u0129\3\2\2\2\u0127\u0125\3\2\2\2\u0127"+
-		"\u0128\3\2\2\2\u0128\37\3\2\2\2\u0129\u0127\3\2\2\2\u012a\u012f\5\36\20"+
-		"\2\u012b\u012c\7A\2\2\u012c\u012e\5\36\20\2\u012d\u012b\3\2\2\2\u012e"+
-		"\u0131\3\2\2\2\u012f\u012d\3\2\2\2\u012f\u0130\3\2\2\2\u0130!\3\2\2\2"+
-		"\u0131\u012f\3\2\2\2\u0132\u0137\5 \21\2\u0133\u0134\7B\2\2\u0134\u0136"+
-		"\5 \21\2\u0135\u0133\3\2\2\2\u0136\u0139\3\2\2\2\u0137\u0135\3\2\2\2\u0137"+
-		"\u0138\3\2\2\2\u0138#\3\2\2\2\u0139\u0137\3\2\2\2\u013a\u013f\5\"\22\2"+
-		"\u013b\u013c\7C\2\2\u013c\u013e\5\"\22\2\u013d\u013b\3\2\2\2\u013e\u0141"+
-		"\3\2\2\2\u013f\u013d\3\2\2\2\u013f\u0140\3\2\2\2\u0140%\3\2\2\2\u0141"+
-		"\u013f\3\2\2\2\u0142\u0148\5$\23\2\u0143\u0144\7G\2\2\u0144\u0145\5,\27"+
-		"\2\u0145\u0146\7H\2\2\u0146\u0147\5&\24\2\u0147\u0149\3\2\2\2\u0148\u0143"+
-		"\3\2\2\2\u0148\u0149\3\2\2\2\u0149\'\3\2\2\2\u014a\u0151\5&\24\2\u014b"+
-		"\u014c\5\f\7\2\u014c\u014d\5*\26\2\u014d\u014e\5(\25\2\u014e\u0151\3\2"+
-		"\2\2\u014f\u0151\7\\\2\2\u0150\u014a\3\2\2\2\u0150\u014b\3\2\2\2\u0150"+
-		"\u014f\3\2\2\2\u0151)\3\2\2\2\u0152\u0153\t\t\2\2\u0153+\3\2\2\2\u0154"+
-		"\u0159\5(\25\2\u0155\u0156\7J\2\2\u0156\u0158\5(\25\2\u0157\u0155\3\2"+
-		"\2\2\u0158\u015b\3\2\2\2\u0159\u0157\3\2\2\2\u0159\u015a\3\2\2\2\u015a"+
-		"-\3\2\2\2\u015b\u0159\3\2\2\2\u015c\u015d\5&\24\2\u015d/\3\2\2\2\u015e"+
-		"\u0160\5\62\32\2\u015f\u0161\58\35\2\u0160\u015f\3\2\2\2\u0160\u0161\3"+
-		"\2\2\2\u0161\u0162\3\2\2\2\u0162\u0163\7I\2\2\u0163\61\3\2\2\2\u0164\u0166"+
-		"\5\66\34\2\u0165\u0164\3\2\2\2\u0166\u0167\3\2\2\2\u0167\u0165\3\2\2\2"+
-		"\u0167\u0168\3\2\2\2\u0168\63\3\2\2\2\u0169\u016b\5\66\34\2\u016a\u0169"+
-		"\3\2\2\2\u016b\u016c\3\2\2\2\u016c\u016a\3\2\2\2\u016c\u016d\3\2\2\2\u016d"+
-		"\65\3\2\2\2\u016e\u0172\5<\37\2\u016f\u0172\5B\"\2\u0170\u0172\5D#\2\u0171"+
-		"\u016e\3\2\2\2\u0171\u016f\3\2\2\2\u0171\u0170\3\2\2\2\u0172\67\3\2\2"+
-		"\2\u0173\u0178\5:\36\2\u0174\u0175\7J\2\2\u0175\u0177\5:\36\2\u0176\u0174"+
-		"\3\2\2\2\u0177\u017a\3\2\2\2\u0178\u0176\3\2\2\2\u0178\u0179\3\2\2\2\u0179"+
-		"9\3\2\2\2\u017a\u0178\3\2\2\2\u017b\u017e\5F$\2\u017c\u017d\7K\2\2\u017d"+
-		"\u017f\5b\62\2\u017e\u017c\3\2\2\2\u017e\u017f\3\2\2\2\u017f;\3\2\2\2"+
-		"\u0180\u0183\t\n\2\2\u0181\u0183\5@!\2\u0182\u0180\3\2\2\2\u0182\u0181"+
-		"\3\2\2\2\u0183=\3\2\2\2\u0184\u0186\5<\37\2\u0185\u0187\5> \2\u0186\u0185"+
-		"\3\2\2\2\u0186\u0187\3\2\2\2\u0187?\3\2\2\2\u0188\u0189\7\'\2\2\u0189"+
-		"\u018a\7-\2\2\u018a\u018b\5\\/\2\u018b\u018c\7.\2\2\u018cA\3\2\2\2\u018d"+
-		"\u0194\t\13\2\2\u018e\u0194\5L\'\2\u018f\u0190\7\b\2\2\u0190\u0191\7-"+
-		"\2\2\u0191\u0192\7Z\2\2\u0192\u0194\7.\2\2\u0193\u018d\3\2\2\2\u0193\u018e"+
-		"\3\2\2\2\u0193\u018f\3\2\2\2\u0194C\3\2\2\2\u0195\u0196\7%\2\2\u0196\u0199"+
-		"\7-\2\2\u0197\u019a\5\\/\2\u0198\u019a\5.\30\2\u0199\u0197\3\2\2\2\u0199"+
-		"\u0198\3\2\2\2\u019a\u019b\3\2\2\2\u019b\u019c\7.\2\2\u019cE\3\2\2\2\u019d"+
-		"\u01a1\5H%\2\u019e\u01a0\5J&\2\u019f\u019e\3\2\2\2\u01a0\u01a3\3\2\2\2"+
-		"\u01a1\u019f\3\2\2\2\u01a1\u01a2\3\2\2\2\u01a2G\3\2\2\2\u01a3\u01a1\3"+
-		"\2\2\2\u01a4\u01a5\b%\1\2\u01a5\u01ae\7Z\2\2\u01a6\u01a7\7-\2\2\u01a7"+
-		"\u01a8\5F$\2\u01a8\u01a9\7.\2\2\u01a9\u01ae\3\2\2\2\u01aa\u01ab\7Z\2\2"+
-		"\u01ab\u01ac\7H\2\2\u01ac\u01ae\7\\\2\2\u01ad\u01a4\3\2\2\2\u01ad\u01a6"+
-		"\3\2\2\2\u01ad\u01aa\3\2\2\2\u01ae\u01c2\3\2\2\2\u01af\u01b0\f\6\2\2\u01b0"+
-		"\u01b2\7/\2\2\u01b1\u01b3\5(\25\2\u01b2\u01b1\3\2\2\2\u01b2\u01b3\3\2"+
-		"\2\2\u01b3\u01b4\3\2\2\2\u01b4\u01c1\7\60\2\2\u01b5\u01b6\f\5\2\2\u01b6"+
-		"\u01b7\7-\2\2\u01b7\u01b8\5T+\2\u01b8\u01b9\7.\2\2\u01b9\u01c1\3\2\2\2"+
-		"\u01ba\u01bb\f\4\2\2\u01bb\u01bd\7-\2\2\u01bc\u01be\5Z.\2\u01bd\u01bc"+
-		"\3\2\2\2\u01bd\u01be\3\2\2\2\u01be\u01bf\3\2\2\2\u01bf\u01c1\7.\2\2\u01c0"+
-		"\u01af\3\2\2\2\u01c0\u01b5\3\2\2\2\u01c0\u01ba\3\2\2\2\u01c1\u01c4\3\2"+
-		"\2\2\u01c2\u01c0\3\2\2\2\u01c2\u01c3\3\2\2\2\u01c3I\3\2\2\2\u01c4\u01c2"+
-		"\3\2\2\2\u01c5\u01c6\7\t\2\2\u01c6\u01c8\7-\2\2\u01c7\u01c9\7]\2\2\u01c8"+
-		"\u01c7\3\2\2\2\u01c9\u01ca\3\2\2\2\u01ca\u01c8\3\2\2\2\u01ca\u01cb\3\2"+
-		"\2\2\u01cb\u01cc\3\2\2\2\u01cc\u01cf\7.\2\2\u01cd\u01cf\5L\'\2\u01ce\u01c5"+
-		"\3\2\2\2\u01ce\u01cd\3\2\2\2\u01cfK\3\2\2\2\u01d0\u01d1\7\n\2\2\u01d1"+
-		"\u01d2\7-\2\2\u01d2\u01d3\7-\2\2\u01d3\u01d4\5N(\2\u01d4\u01d5\7.\2\2"+
-		"\u01d5\u01d6\7.\2\2\u01d6M\3\2\2\2\u01d7\u01d9\5P)\2\u01d8\u01d7\3\2\2"+
-		"\2\u01d8\u01d9\3\2\2\2\u01d9\u01e0\3\2\2\2\u01da\u01dc\7J\2\2\u01db\u01dd"+
-		"\5P)\2\u01dc\u01db\3\2\2\2\u01dc\u01dd\3\2\2\2\u01dd\u01df\3\2\2\2\u01de"+
-		"\u01da\3\2\2\2\u01df\u01e2\3\2\2\2\u01e0\u01de\3\2\2\2\u01e0\u01e1\3\2"+
-		"\2\2\u01e1O\3\2\2\2\u01e2\u01e0\3\2\2\2\u01e3\u01e9\n\f\2\2\u01e4\u01e6"+
-		"\7-\2\2\u01e5\u01e7\5\n\6\2\u01e6\u01e5\3\2\2\2\u01e6\u01e7\3\2\2\2\u01e7"+
-		"\u01e8\3\2\2\2\u01e8\u01ea\7.\2\2\u01e9\u01e4\3\2\2\2\u01e9\u01ea\3\2"+
-		"\2\2\u01eaQ\3\2\2\2\u01eb\u01f1\n\r\2\2\u01ec\u01ed\7-\2\2\u01ed\u01ee"+
-		"\5R*\2\u01ee\u01ef\7.\2\2\u01ef\u01f1\3\2\2\2\u01f0\u01eb\3\2\2\2\u01f0"+
-		"\u01ec\3\2\2\2\u01f1\u01f4\3\2\2\2\u01f2\u01f0\3\2\2\2\u01f2\u01f3\3\2"+
-		"\2\2\u01f3S\3\2\2\2\u01f4\u01f2\3\2\2\2\u01f5\u01f8\5V,\2\u01f6\u01f7"+
-		"\7J\2\2\u01f7\u01f9\7Y\2\2\u01f8\u01f6\3\2\2\2\u01f8\u01f9\3\2\2\2\u01f9"+
-		"U\3\2\2\2\u01fa\u01ff\5X-\2\u01fb\u01fc\7J\2\2\u01fc\u01fe\5X-\2\u01fd"+
-		"\u01fb\3\2\2\2\u01fe\u0201\3\2\2\2\u01ff\u01fd\3\2\2\2\u01ff\u0200\3\2"+
-		"\2\2\u0200W\3\2\2\2\u0201\u01ff\3\2\2\2\u0202\u0203\5\62\32\2\u0203\u0204"+
-		"\5F$\2\u0204\u020a\3\2\2\2\u0205\u0207\5\64\33\2\u0206\u0208\5^\60\2\u0207"+
-		"\u0206\3\2\2\2\u0207\u0208\3\2\2\2\u0208\u020a\3\2\2\2\u0209\u0202\3\2"+
-		"\2\2\u0209\u0205\3\2\2\2\u020aY\3\2\2\2\u020b\u0210\7Z\2\2\u020c\u020d"+
-		"\7J\2\2\u020d\u020f\7Z\2\2\u020e\u020c\3\2\2\2\u020f\u0212\3\2\2\2\u0210"+
-		"\u020e\3\2\2\2\u0210\u0211\3\2\2\2\u0211[\3\2\2\2\u0212\u0210\3\2\2\2"+
-		"\u0213\u0215\5> \2\u0214\u0216\5^\60\2\u0215\u0214\3\2\2\2\u0215\u0216"+
-		"\3\2\2\2\u0216]\3\2\2\2\u0217\u021b\5`\61\2\u0218\u021a\5J&\2\u0219\u0218"+
-		"\3\2\2\2\u021a\u021d\3\2\2\2\u021b\u0219\3\2\2\2\u021b\u021c\3\2\2\2\u021c"+
-		"_\3\2\2\2\u021d\u021b\3\2\2\2\u021e\u021f\b\61\1\2\u021f\u0220\7-\2\2"+
-		"\u0220\u0221\5^\60\2\u0221\u0225\7.\2\2\u0222\u0224\5J&\2\u0223\u0222"+
-		"\3\2\2\2\u0224\u0227\3\2\2\2\u0225\u0223\3\2\2\2\u0225\u0226\3\2\2\2\u0226"+
-		"\u023c\3\2\2\2\u0227\u0225\3\2\2\2\u0228\u022a\7/\2\2\u0229\u022b\5(\25"+
-		"\2\u022a\u0229\3\2\2\2\u022a\u022b\3\2\2\2\u022b\u022c\3\2\2\2\u022c\u023c"+
-		"\7\60\2\2\u022d\u022e\7/\2\2\u022e\u022f\7=\2\2\u022f\u023c\7\60\2\2\u0230"+
-		"\u0232\7-\2\2\u0231\u0233\5T+\2\u0232\u0231\3\2\2\2\u0232\u0233\3\2\2"+
-		"\2\u0233\u0234\3\2\2\2\u0234\u0238\7.\2\2\u0235\u0237\5J&\2\u0236\u0235"+
-		"\3\2\2\2\u0237\u023a\3\2\2\2\u0238\u0236\3\2\2\2\u0238\u0239\3\2\2\2\u0239"+
-		"\u023c\3\2\2\2\u023a\u0238\3\2\2\2\u023b\u021e\3\2\2\2\u023b\u0228\3\2"+
-		"\2\2\u023b\u022d\3\2\2\2\u023b\u0230\3\2\2\2\u023c\u0255\3\2\2\2\u023d"+
-		"\u023e\f\5\2\2\u023e\u0240\7/\2\2\u023f\u0241\5(\25\2\u0240\u023f\3\2"+
-		"\2\2\u0240\u0241\3\2\2\2\u0241\u0242\3\2\2\2\u0242\u0254\7\60\2\2\u0243"+
-		"\u0244\f\4\2\2\u0244\u0245\7/\2\2\u0245\u0246\7=\2\2\u0246\u0254\7\60"+
-		"\2\2\u0247\u0248\f\3\2\2\u0248\u024a\7-\2\2\u0249\u024b\5T+\2\u024a\u0249"+
-		"\3\2\2\2\u024a\u024b\3\2\2\2\u024b\u024c\3\2\2\2\u024c\u0250\7.\2\2\u024d"+
-		"\u024f\5J&\2\u024e\u024d\3\2\2\2\u024f\u0252\3\2\2\2\u0250\u024e\3\2\2"+
-		"\2\u0250\u0251\3\2\2\2\u0251\u0254\3\2\2\2\u0252\u0250\3\2\2\2\u0253\u023d"+
-		"\3\2\2\2\u0253\u0243\3\2\2\2\u0253\u0247\3\2\2\2\u0254\u0257\3\2\2\2\u0255"+
-		"\u0253\3\2\2\2\u0255\u0256\3\2\2\2\u0256a\3\2\2\2\u0257\u0255\3\2\2\2"+
-		"\u0258\u0261\5(\25\2\u0259\u025a\7\61\2\2\u025a\u025c\5d\63\2\u025b\u025d"+
-		"\7J\2\2\u025c\u025b\3\2\2\2\u025c\u025d\3\2\2\2\u025d\u025e\3\2\2\2\u025e"+
-		"\u025f\7\62\2\2\u025f\u0261\3\2\2\2\u0260\u0258\3\2\2\2\u0260\u0259\3"+
-		"\2\2\2\u0261c\3\2\2\2\u0262\u0264\5f\64\2\u0263\u0262\3\2\2\2\u0263\u0264"+
-		"\3\2\2\2\u0264\u0265\3\2\2\2\u0265\u026d\5b\62\2\u0266\u0268\7J\2\2\u0267"+
-		"\u0269\5f\64\2\u0268\u0267\3\2\2\2\u0268\u0269\3\2\2\2\u0269\u026a\3\2"+
-		"\2\2\u026a\u026c\5b\62\2\u026b\u0266\3\2\2\2\u026c\u026f\3\2\2\2\u026d"+
-		"\u026b\3\2\2\2\u026d\u026e\3\2\2\2\u026ee\3\2\2\2\u026f\u026d\3\2\2\2"+
-		"\u0270\u0271\5h\65\2\u0271\u0272\7K\2\2\u0272g\3\2\2\2\u0273\u0275\5j"+
-		"\66\2\u0274\u0273\3\2\2\2\u0275\u0276\3\2\2\2\u0276\u0274\3\2\2\2\u0276"+
-		"\u0277\3\2\2\2\u0277i\3\2\2\2\u0278\u0279\7/\2\2\u0279\u027a\5.\30\2\u027a"+
-		"\u027b\7\60\2\2\u027b\u027f\3\2\2\2\u027c\u027d\7X\2\2\u027d\u027f\7Z"+
-		"\2\2\u027e\u0278\3\2\2\2\u027e\u027c\3\2\2\2\u027fk\3\2\2\2\u0280\u0287"+
-		"\5n8\2\u0281\u0287\5p9\2\u0282\u0287\5v<\2\u0283\u0287\5x=\2\u0284\u0287"+
-		"\5z>\2\u0285\u0287\5\u0082B\2\u0286\u0280\3\2\2\2\u0286\u0281\3\2\2\2"+
-		"\u0286\u0282\3\2\2\2\u0286\u0283\3\2\2\2\u0286\u0284\3\2\2\2\u0286\u0285"+
-		"\3\2\2\2\u0287m\3\2\2\2\u0288\u0289\7Z\2\2\u0289\u028a\7H\2\2\u028a\u0294"+
-		"\5l\67\2\u028b\u028c\7\f\2\2\u028c\u028d\5.\30\2\u028d\u028e\7H\2\2\u028e"+
-		"\u028f\5l\67\2\u028f\u0294\3\2\2\2\u0290\u0291\7\20\2\2\u0291\u0292\7"+
-		"H\2\2\u0292\u0294\5l\67\2\u0293\u0288\3\2\2\2\u0293\u028b\3\2\2\2\u0293"+
-		"\u0290\3\2\2\2\u0294o\3\2\2\2\u0295\u0297\7\61\2\2\u0296\u0298\5r:\2\u0297"+
-		"\u0296\3\2\2\2\u0297\u0298\3\2\2\2\u0298\u0299\3\2\2\2\u0299\u029a\7\62"+
-		"\2\2\u029aq\3\2\2\2\u029b\u029d\5t;\2\u029c\u029b\3\2\2\2\u029d\u029e"+
-		"\3\2\2\2\u029e\u029c\3\2\2\2\u029e\u029f\3\2\2\2\u029fs\3\2\2\2\u02a0"+
-		"\u02a3\5l\67\2\u02a1\u02a3\5\60\31\2\u02a2\u02a0\3\2\2\2\u02a2\u02a1\3"+
-		"\2\2\2\u02a3u\3\2\2\2\u02a4\u02a6\5,\27\2\u02a5\u02a4\3\2\2\2\u02a5\u02a6"+
-		"\3\2\2\2\u02a6\u02a7\3\2\2\2\u02a7\u02a8\7I\2\2\u02a8w\3\2\2\2\u02a9\u02aa"+
-		"\7\26\2\2\u02aa\u02ab\7-\2\2\u02ab\u02ac\5,\27\2\u02ac\u02ad\7.\2\2\u02ad"+
-		"\u02b0\5l\67\2\u02ae\u02af\7\23\2\2\u02af\u02b1\5l\67\2\u02b0\u02ae\3"+
-		"\2\2\2\u02b0\u02b1\3\2\2\2\u02b1\u02b9\3\2\2\2\u02b2\u02b3\7\"\2\2\u02b3"+
-		"\u02b4\7-\2\2\u02b4\u02b5\5,\27\2\u02b5\u02b6\7.\2\2\u02b6\u02b7\5l\67"+
-		"\2\u02b7\u02b9\3\2\2\2\u02b8\u02a9\3\2\2\2\u02b8\u02b2\3\2\2\2\u02b9y"+
-		"\3\2\2\2\u02ba\u02bb\7$\2\2\u02bb\u02bc\7-\2\2\u02bc\u02bd\5,\27\2\u02bd"+
-		"\u02be\7.\2\2\u02be\u02bf\5l\67\2\u02bf\u02cf\3\2\2\2\u02c0\u02c1\7\21"+
-		"\2\2\u02c1\u02c2\5l\67\2\u02c2\u02c3\7$\2\2\u02c3\u02c4\7-\2\2\u02c4\u02c5"+
-		"\5,\27\2\u02c5\u02c6\7.\2\2\u02c6\u02c7\7I\2\2\u02c7\u02cf\3\2\2\2\u02c8"+
-		"\u02c9\7\25\2\2\u02c9\u02ca\7-\2\2\u02ca\u02cb\5|?\2\u02cb\u02cc\7.\2"+
-		"\2\u02cc\u02cd\5l\67\2\u02cd\u02cf\3\2\2\2\u02ce\u02ba\3\2\2\2\u02ce\u02c0"+
-		"\3\2\2\2\u02ce\u02c8\3\2\2\2\u02cf{\3\2\2\2\u02d0\u02d5\5~@\2\u02d1\u02d3"+
-		"\5,\27\2\u02d2\u02d1\3\2\2\2\u02d2\u02d3\3\2\2\2\u02d3\u02d5\3\2\2\2\u02d4"+
-		"\u02d0\3\2\2\2\u02d4\u02d2\3\2\2\2\u02d5\u02d6\3\2\2\2\u02d6\u02d8\7I"+
-		"\2\2\u02d7\u02d9\5\u0080A\2\u02d8\u02d7\3\2\2\2\u02d8\u02d9\3\2\2\2\u02d9"+
-		"\u02da\3\2\2\2\u02da\u02dc\7I\2\2\u02db\u02dd\5\u0080A\2\u02dc\u02db\3"+
-		"\2\2\2\u02dc\u02dd\3\2\2\2\u02dd}\3\2\2\2\u02de\u02e0\5\62\32\2\u02df"+
-		"\u02e1\58\35\2\u02e0\u02df\3\2\2\2\u02e0\u02e1\3\2\2\2\u02e1\177\3\2\2"+
-		"\2\u02e2\u02e7\5(\25\2\u02e3\u02e4\7J\2\2\u02e4\u02e6\5(\25\2\u02e5\u02e3"+
-		"\3\2\2\2\u02e6\u02e9\3\2\2\2\u02e7\u02e5\3\2\2\2\u02e7\u02e8\3\2\2\2\u02e8"+
-		"\u0081\3\2\2\2\u02e9\u02e7\3\2\2\2\u02ea\u02f0\t\16\2\2\u02eb\u02ed\7"+
-		"!\2\2\u02ec\u02ee\5,\27\2\u02ed\u02ec\3\2\2\2\u02ed\u02ee\3\2\2\2\u02ee"+
-		"\u02f0\3\2\2\2\u02ef\u02ea\3\2\2\2\u02ef\u02eb\3\2\2\2\u02f0\u02f1\3\2"+
-		"\2\2\u02f1\u02f2\7I\2\2\u02f2\u0083\3\2\2\2\u02f3\u02f5\5\u0086D\2\u02f4"+
-		"\u02f3\3\2\2\2\u02f4\u02f5\3\2\2\2\u02f5\u02f6\3\2\2\2\u02f6\u02f7\7\2"+
-		"\2\3\u02f7\u0085\3\2\2\2\u02f8\u02fa\5\u0088E\2\u02f9\u02f8\3\2\2\2\u02fa"+
-		"\u02fb\3\2\2\2\u02fb\u02f9\3\2\2\2\u02fb\u02fc\3\2\2\2\u02fc\u0087\3\2"+
-		"\2\2\u02fd\u0301\5\u008aF\2\u02fe\u0301\5\60\31\2\u02ff\u0301\7I\2\2\u0300"+
-		"\u02fd\3\2\2\2\u0300\u02fe\3\2\2\2\u0300\u02ff\3\2\2\2\u0301\u0089\3\2"+
-		"\2\2\u0302\u0304\5\62\32\2\u0303\u0302\3\2\2\2\u0303\u0304\3\2\2\2\u0304"+
-		"\u0305\3\2\2\2\u0305\u0307\5F$\2\u0306\u0308\5\u008cG\2\u0307\u0306\3"+
-		"\2\2\2\u0307\u0308\3\2\2\2\u0308\u0309\3\2\2\2\u0309\u030a\5p9\2\u030a"+
-		"\u008b\3\2\2\2\u030b\u030d\5\60\31\2\u030c\u030b\3\2\2\2\u030d\u030e\3"+
-		"\2\2\2\u030e\u030c\3\2\2\2\u030e\u030f\3\2\2\2\u030f\u008d\3\2\2\2d\u0093"+
-		"\u009d\u00a4\u00a9\u00b5\u00b9\u00c1\u00c7\u00c9\u00d1\u00d7\u00e5\u00f0"+
-		"\u00f7\u00ff\u0107\u010f\u0117\u011f\u0127\u012f\u0137\u013f\u0148\u0150"+
-		"\u0159\u0160\u0167\u016c\u0171\u0178\u017e\u0182\u0186\u0193\u0199\u01a1"+
-		"\u01ad\u01b2\u01bd\u01c0\u01c2\u01ca\u01ce\u01d8\u01dc\u01e0\u01e6\u01e9"+
-		"\u01f0\u01f2\u01f8\u01ff\u0207\u0209\u0210\u0215\u021b\u0225\u022a\u0232"+
-		"\u0238\u023b\u0240\u024a\u0250\u0253\u0255\u025c\u0260\u0263\u0268\u026d"+
-		"\u0276\u027e\u0286\u0293\u0297\u029e\u02a2\u02a5\u02b0\u02b8\u02ce\u02d2"+
-		"\u02d4\u02d8\u02dc\u02e0\u02e7\u02ed\u02ef\u02f4\u02fb\u0300\u0303\u0307"+
-		"\u030e";
+		"\4>\t>\4?\t?\4@\t@\4A\tA\4B\tB\4C\tC\4D\tD\4E\tE\4F\tF\4G\tG\4H\tH\3\2"+
+		"\3\2\3\2\6\2\u0094\n\2\r\2\16\2\u0095\3\2\3\2\3\2\3\2\3\2\3\2\3\2\3\2"+
+		"\3\2\5\2\u00a1\n\2\3\3\3\3\3\3\7\3\u00a6\n\3\f\3\16\3\u00a9\13\3\3\4\3"+
+		"\4\5\4\u00ad\n\4\3\4\3\4\3\4\3\5\3\5\3\5\3\5\3\5\3\5\3\5\5\5\u00b9\n\5"+
+		"\3\5\3\5\5\5\u00bd\n\5\3\5\3\5\3\5\3\5\3\5\3\5\5\5\u00c5\n\5\3\5\3\5\3"+
+		"\5\3\5\7\5\u00cb\n\5\f\5\16\5\u00ce\13\5\3\6\3\6\3\6\7\6\u00d3\n\6\f\6"+
+		"\16\6\u00d6\13\6\3\7\7\7\u00d9\n\7\f\7\16\7\u00dc\13\7\3\7\3\7\3\7\3\7"+
+		"\3\7\3\7\3\7\3\7\3\7\3\7\3\7\5\7\u00e9\n\7\3\b\3\b\3\t\3\t\3\t\3\t\3\t"+
+		"\3\t\3\t\5\t\u00f4\n\t\3\n\3\n\3\n\7\n\u00f9\n\n\f\n\16\n\u00fc\13\n\3"+
+		"\13\3\13\3\13\7\13\u0101\n\13\f\13\16\13\u0104\13\13\3\f\3\f\3\f\7\f\u0109"+
+		"\n\f\f\f\16\f\u010c\13\f\3\r\3\r\3\r\7\r\u0111\n\r\f\r\16\r\u0114\13\r"+
+		"\3\16\3\16\3\16\7\16\u0119\n\16\f\16\16\16\u011c\13\16\3\17\3\17\3\17"+
+		"\7\17\u0121\n\17\f\17\16\17\u0124\13\17\3\20\3\20\3\20\7\20\u0129\n\20"+
+		"\f\20\16\20\u012c\13\20\3\21\3\21\3\21\7\21\u0131\n\21\f\21\16\21\u0134"+
+		"\13\21\3\22\3\22\3\22\7\22\u0139\n\22\f\22\16\22\u013c\13\22\3\23\3\23"+
+		"\3\23\7\23\u0141\n\23\f\23\16\23\u0144\13\23\3\24\3\24\3\24\3\24\3\24"+
+		"\3\24\5\24\u014c\n\24\3\25\3\25\3\25\3\25\3\25\3\25\5\25\u0154\n\25\3"+
+		"\26\3\26\3\27\3\27\3\27\7\27\u015b\n\27\f\27\16\27\u015e\13\27\3\30\3"+
+		"\30\3\31\3\31\5\31\u0164\n\31\3\31\3\31\3\32\6\32\u0169\n\32\r\32\16\32"+
+		"\u016a\3\33\6\33\u016e\n\33\r\33\16\33\u016f\3\34\3\34\3\34\5\34\u0175"+
+		"\n\34\3\35\3\35\3\35\7\35\u017a\n\35\f\35\16\35\u017d\13\35\3\36\3\36"+
+		"\3\36\5\36\u0182\n\36\3\37\3\37\5\37\u0186\n\37\3 \3 \5 \u018a\n \3!\3"+
+		"!\3!\3!\3!\3\"\3\"\3\"\3\"\3\"\3\"\5\"\u0197\n\"\3#\3#\3#\3#\5#\u019d"+
+		"\n#\3#\3#\3$\3$\7$\u01a3\n$\f$\16$\u01a6\13$\3%\3%\3%\3%\3%\3%\3%\3%\3"+
+		"%\5%\u01b1\n%\3%\3%\3%\5%\u01b6\n%\3%\3%\3%\3%\3%\3%\3%\3%\3%\5%\u01c1"+
+		"\n%\3%\7%\u01c4\n%\f%\16%\u01c7\13%\3&\3&\3&\6&\u01cc\n&\r&\16&\u01cd"+
+		"\3&\3&\5&\u01d2\n&\3\'\3\'\3\'\3\'\3\'\3\'\3\'\3(\5(\u01dc\n(\3(\3(\5"+
+		"(\u01e0\n(\7(\u01e2\n(\f(\16(\u01e5\13(\3)\3)\3)\5)\u01ea\n)\3)\5)\u01ed"+
+		"\n)\3*\3*\3*\3*\3*\7*\u01f4\n*\f*\16*\u01f7\13*\3+\3+\3+\5+\u01fc\n+\3"+
+		",\3,\3,\7,\u0201\n,\f,\16,\u0204\13,\3-\3-\3-\3-\3-\5-\u020b\n-\5-\u020d"+
+		"\n-\3.\3.\3.\7.\u0212\n.\f.\16.\u0215\13.\3/\3/\5/\u0219\n/\3\60\3\60"+
+		"\7\60\u021d\n\60\f\60\16\60\u0220\13\60\3\61\3\61\3\61\3\61\3\61\7\61"+
+		"\u0227\n\61\f\61\16\61\u022a\13\61\3\61\3\61\5\61\u022e\n\61\3\61\3\61"+
+		"\3\61\3\61\3\61\3\61\5\61\u0236\n\61\3\61\3\61\7\61\u023a\n\61\f\61\16"+
+		"\61\u023d\13\61\5\61\u023f\n\61\3\61\3\61\3\61\5\61\u0244\n\61\3\61\3"+
+		"\61\3\61\3\61\3\61\3\61\3\61\3\61\5\61\u024e\n\61\3\61\3\61\7\61\u0252"+
+		"\n\61\f\61\16\61\u0255\13\61\7\61\u0257\n\61\f\61\16\61\u025a\13\61\3"+
+		"\62\3\62\3\62\3\62\5\62\u0260\n\62\3\62\3\62\5\62\u0264\n\62\3\63\5\63"+
+		"\u0267\n\63\3\63\3\63\3\63\5\63\u026c\n\63\3\63\7\63\u026f\n\63\f\63\16"+
+		"\63\u0272\13\63\3\64\3\64\3\64\3\65\6\65\u0278\n\65\r\65\16\65\u0279\3"+
+		"\66\3\66\3\66\3\66\3\66\3\66\5\66\u0282\n\66\3\67\3\67\3\67\3\67\3\67"+
+		"\3\67\5\67\u028a\n\67\38\38\38\38\38\38\38\38\38\38\38\58\u0297\n8\39"+
+		"\39\59\u029b\n9\39\39\3:\6:\u02a0\n:\r:\16:\u02a1\3;\3;\5;\u02a6\n;\3"+
+		"<\5<\u02a9\n<\3<\3<\3=\3=\3=\3=\3=\3=\3=\5=\u02b4\n=\3=\3=\3=\3=\3=\3"+
+		"=\5=\u02bc\n=\3>\3>\3>\3>\3>\3>\3>\3>\3>\3>\3>\3>\3>\3>\3>\3>\3>\3>\3"+
+		">\3>\5>\u02d2\n>\3?\3?\5?\u02d6\n?\5?\u02d8\n?\3?\3?\5?\u02dc\n?\3?\3"+
+		"?\5?\u02e0\n?\3@\3@\5@\u02e4\n@\3A\3A\3A\7A\u02e9\nA\fA\16A\u02ec\13A"+
+		"\3B\3B\3B\5B\u02f1\nB\5B\u02f3\nB\3B\3B\3C\5C\u02f8\nC\3C\3C\3D\6D\u02fd"+
+		"\nD\rD\16D\u02fe\3E\3E\3E\5E\u0304\nE\3F\5F\u0307\nF\3F\3F\5F\u030b\n"+
+		"F\3F\3F\3G\6G\u0310\nG\rG\16G\u0311\3H\3H\3H\5H\u0317\nH\3H\3H\3H\2\4"+
+		"H`I\2\4\6\b\n\f\16\20\22\24\26\30\32\34\36 \"$&(*,.\60\62\64\668:<>@B"+
+		"DFHJLNPRTVXZ\\^`bdfhjlnprtvxz|~\u0080\u0082\u0084\u0086\u0088\u008a\u008c"+
+		"\u008e\2\17\4\2;;==\5\2::<<FG\3\2>@\4\2::<<\3\289\3\2\64\67\3\2WX\3\2"+
+		"LV\t\2\3\5\16\17\23\23\25\25\31 $$)*\5\2\6\7\30\30,,\4\2./KK\3\2./\4\2"+
+		"\f\f\20\20\2\u034e\2\u00a0\3\2\2\2\4\u00a2\3\2\2\2\6\u00ac\3\2\2\2\b\u00bc"+
+		"\3\2\2\2\n\u00cf\3\2\2\2\f\u00da\3\2\2\2\16\u00ea\3\2\2\2\20\u00f3\3\2"+
+		"\2\2\22\u00f5\3\2\2\2\24\u00fd\3\2\2\2\26\u0105\3\2\2\2\30\u010d\3\2\2"+
+		"\2\32\u0115\3\2\2\2\34\u011d\3\2\2\2\36\u0125\3\2\2\2 \u012d\3\2\2\2\""+
+		"\u0135\3\2\2\2$\u013d\3\2\2\2&\u0145\3\2\2\2(\u0153\3\2\2\2*\u0155\3\2"+
+		"\2\2,\u0157\3\2\2\2.\u015f\3\2\2\2\60\u0161\3\2\2\2\62\u0168\3\2\2\2\64"+
+		"\u016d\3\2\2\2\66\u0174\3\2\2\28\u0176\3\2\2\2:\u017e\3\2\2\2<\u0185\3"+
+		"\2\2\2>\u0187\3\2\2\2@\u018b\3\2\2\2B\u0196\3\2\2\2D\u0198\3\2\2\2F\u01a0"+
+		"\3\2\2\2H\u01b0\3\2\2\2J\u01d1\3\2\2\2L\u01d3\3\2\2\2N\u01db\3\2\2\2P"+
+		"\u01e6\3\2\2\2R\u01f5\3\2\2\2T\u01f8\3\2\2\2V\u01fd\3\2\2\2X\u020c\3\2"+
+		"\2\2Z\u020e\3\2\2\2\\\u0216\3\2\2\2^\u021a\3\2\2\2`\u023e\3\2\2\2b\u0263"+
+		"\3\2\2\2d\u0266\3\2\2\2f\u0273\3\2\2\2h\u0277\3\2\2\2j\u0281\3\2\2\2l"+
+		"\u0289\3\2\2\2n\u0296\3\2\2\2p\u0298\3\2\2\2r\u029f\3\2\2\2t\u02a5\3\2"+
+		"\2\2v\u02a8\3\2\2\2x\u02bb\3\2\2\2z\u02d1\3\2\2\2|\u02d7\3\2\2\2~\u02e1"+
+		"\3\2\2\2\u0080\u02e5\3\2\2\2\u0082\u02f2\3\2\2\2\u0084\u02f7\3\2\2\2\u0086"+
+		"\u02fc\3\2\2\2\u0088\u0303\3\2\2\2\u008a\u0306\3\2\2\2\u008c\u030f\3\2"+
+		"\2\2\u008e\u0313\3\2\2\2\u0090\u00a1\7[\2\2\u0091\u00a1\7\\\2\2\u0092"+
+		"\u0094\7^\2\2\u0093\u0092\3\2\2\2\u0094\u0095\3\2\2\2\u0095\u0093\3\2"+
+		"\2\2\u0095\u0096\3\2\2\2\u0096\u00a1\3\2\2\2\u0097\u0098\7.\2\2\u0098"+
+		"\u0099\5,\27\2\u0099\u009a\7/\2\2\u009a\u00a1\3\2\2\2\u009b\u009c\7.\2"+
+		"\2\u009c\u009d\5p9\2\u009d\u009e\7/\2\2\u009e\u00a1\3\2\2\2\u009f\u00a1"+
+		"\5\u008eH\2\u00a0\u0090\3\2\2\2\u00a0\u0091\3\2\2\2\u00a0\u0093\3\2\2"+
+		"\2\u00a0\u0097\3\2\2\2\u00a0\u009b\3\2\2\2\u00a0\u009f\3\2\2\2\u00a1\3"+
+		"\3\2\2\2\u00a2\u00a7\5\6\4\2\u00a3\u00a4\7K\2\2\u00a4\u00a6\5\6\4\2\u00a5"+
+		"\u00a3\3\2\2\2\u00a6\u00a9\3\2\2\2\u00a7\u00a5\3\2\2\2\u00a7\u00a8\3\2"+
+		"\2\2\u00a8\5\3\2\2\2\u00a9\u00a7\3\2\2\2\u00aa\u00ad\5\\/\2\u00ab\u00ad"+
+		"\7\21\2\2\u00ac\u00aa\3\2\2\2\u00ac\u00ab\3\2\2\2\u00ad\u00ae\3\2\2\2"+
+		"\u00ae\u00af\7I\2\2\u00af\u00b0\5(\25\2\u00b0\7\3\2\2\2\u00b1\u00bd\5"+
+		"\2\2\2\u00b2\u00b3\7.\2\2\u00b3\u00b4\5\\/\2\u00b4\u00b5\7/\2\2\u00b5"+
+		"\u00b6\7\62\2\2\u00b6\u00b8\5d\63\2\u00b7\u00b9\7K\2\2\u00b8\u00b7\3\2"+
+		"\2\2\u00b8\u00b9\3\2\2\2\u00b9\u00ba\3\2\2\2\u00ba\u00bb\7\63\2\2\u00bb"+
+		"\u00bd\3\2\2\2\u00bc\u00b1\3\2\2\2\u00bc\u00b2\3\2\2\2\u00bd\u00cc\3\2"+
+		"\2\2\u00be\u00bf\7\60\2\2\u00bf\u00c0\5,\27\2\u00c0\u00c1\7\61\2\2\u00c1"+
+		"\u00cb\3\2\2\2\u00c2\u00c4\7.\2\2\u00c3\u00c5\5\n\6\2\u00c4\u00c3\3\2"+
+		"\2\2\u00c4\u00c5\3\2\2\2\u00c5\u00c6\3\2\2\2\u00c6\u00cb\7/\2\2\u00c7"+
+		"\u00c8\7Y\2\2\u00c8\u00cb\7[\2\2\u00c9\u00cb\t\2\2\2\u00ca\u00be\3\2\2"+
+		"\2\u00ca\u00c2\3\2\2\2\u00ca\u00c7\3\2\2\2\u00ca\u00c9\3\2\2\2\u00cb\u00ce"+
+		"\3\2\2\2\u00cc\u00ca\3\2\2\2\u00cc\u00cd\3\2\2\2\u00cd\t\3\2\2\2\u00ce"+
+		"\u00cc\3\2\2\2\u00cf\u00d4\5(\25\2\u00d0\u00d1\7K\2\2\u00d1\u00d3\5(\25"+
+		"\2\u00d2\u00d0\3\2\2\2\u00d3\u00d6\3\2\2\2\u00d4\u00d2\3\2\2\2\u00d4\u00d5"+
+		"\3\2\2\2\u00d5\13\3\2\2\2\u00d6\u00d4\3\2\2\2\u00d7\u00d9\t\2\2\2\u00d8"+
+		"\u00d7\3\2\2\2\u00d9\u00dc\3\2\2\2\u00da\u00d8\3\2\2\2\u00da\u00db\3\2"+
+		"\2\2\u00db\u00e8\3\2\2\2\u00dc\u00da\3\2\2\2\u00dd\u00e9\5\b\5\2\u00de"+
+		"\u00df\5\16\b\2\u00df\u00e0\5\20\t\2\u00e0\u00e9\3\2\2\2\u00e1\u00e2\7"+
+		"\'\2\2\u00e2\u00e3\7.\2\2\u00e3\u00e4\5\\/\2\u00e4\u00e5\7/\2\2\u00e5"+
+		"\u00e9\3\2\2\2\u00e6\u00e7\7C\2\2\u00e7\u00e9\7[\2\2\u00e8\u00dd\3\2\2"+
+		"\2\u00e8\u00de\3\2\2\2\u00e8\u00e1\3\2\2\2\u00e8\u00e6\3\2\2\2\u00e9\r"+
+		"\3\2\2\2\u00ea\u00eb\t\3\2\2\u00eb\17\3\2\2\2\u00ec\u00ed\7.\2\2\u00ed"+
+		"\u00ee\5\\/\2\u00ee\u00ef\7/\2\2\u00ef\u00f0\5\20\t\2\u00f0\u00f4\3\2"+
+		"\2\2\u00f1\u00f4\5\f\7\2\u00f2\u00f4\7]\2\2\u00f3\u00ec\3\2\2\2\u00f3"+
+		"\u00f1\3\2\2\2\u00f3\u00f2\3\2\2\2\u00f4\21\3\2\2\2\u00f5\u00fa\5\20\t"+
+		"\2\u00f6\u00f7\t\4\2\2\u00f7\u00f9\5\20\t\2\u00f8\u00f6\3\2\2\2\u00f9"+
+		"\u00fc\3\2\2\2\u00fa\u00f8\3\2\2\2\u00fa\u00fb\3\2\2\2\u00fb\23\3\2\2"+
+		"\2\u00fc\u00fa\3\2\2\2\u00fd\u0102\5\22\n\2\u00fe\u00ff\t\5\2\2\u00ff"+
+		"\u0101\5\22\n\2\u0100\u00fe\3\2\2\2\u0101\u0104\3\2\2\2\u0102\u0100\3"+
+		"\2\2\2\u0102\u0103\3\2\2\2\u0103\25\3\2\2\2\u0104\u0102\3\2\2\2\u0105"+
+		"\u010a\5\24\13\2\u0106\u0107\t\6\2\2\u0107\u0109\5\24\13\2\u0108\u0106"+
+		"\3\2\2\2\u0109\u010c\3\2\2\2\u010a\u0108\3\2\2\2\u010a\u010b\3\2\2\2\u010b"+
+		"\27\3\2\2\2\u010c\u010a\3\2\2\2\u010d\u0112\5\26\f\2\u010e\u010f\t\7\2"+
+		"\2\u010f\u0111\5\26\f\2\u0110\u010e\3\2\2\2\u0111\u0114\3\2\2\2\u0112"+
+		"\u0110\3\2\2\2\u0112\u0113\3\2\2\2\u0113\31\3\2\2\2\u0114\u0112\3\2\2"+
+		"\2\u0115\u011a\5\30\r\2\u0116\u0117\t\b\2\2\u0117\u0119\5\30\r\2\u0118"+
+		"\u0116\3\2\2\2\u0119\u011c\3\2\2\2\u011a\u0118\3\2\2\2\u011a\u011b\3\2"+
+		"\2\2\u011b\33\3\2\2\2\u011c\u011a\3\2\2\2\u011d\u0122\5\32\16\2\u011e"+
+		"\u011f\7A\2\2\u011f\u0121\5\32\16\2\u0120\u011e\3\2\2\2\u0121\u0124\3"+
+		"\2\2\2\u0122\u0120\3\2\2\2\u0122\u0123\3\2\2\2\u0123\35\3\2\2\2\u0124"+
+		"\u0122\3\2\2\2\u0125\u012a\5\34\17\2\u0126\u0127\7E\2\2\u0127\u0129\5"+
+		"\34\17\2\u0128\u0126\3\2\2\2\u0129\u012c\3\2\2\2\u012a\u0128\3\2\2\2\u012a"+
+		"\u012b\3\2\2\2\u012b\37\3\2\2\2\u012c\u012a\3\2\2\2\u012d\u0132\5\36\20"+
+		"\2\u012e\u012f\7B\2\2\u012f\u0131\5\36\20\2\u0130\u012e\3\2\2\2\u0131"+
+		"\u0134\3\2\2\2\u0132\u0130\3\2\2\2\u0132\u0133\3\2\2\2\u0133!\3\2\2\2"+
+		"\u0134\u0132\3\2\2\2\u0135\u013a\5 \21\2\u0136\u0137\7C\2\2\u0137\u0139"+
+		"\5 \21\2\u0138\u0136\3\2\2\2\u0139\u013c\3\2\2\2\u013a\u0138\3\2\2\2\u013a"+
+		"\u013b\3\2\2\2\u013b#\3\2\2\2\u013c\u013a\3\2\2\2\u013d\u0142\5\"\22\2"+
+		"\u013e\u013f\7D\2\2\u013f\u0141\5\"\22\2\u0140\u013e\3\2\2\2\u0141\u0144"+
+		"\3\2\2\2\u0142\u0140\3\2\2\2\u0142\u0143\3\2\2\2\u0143%\3\2\2\2\u0144"+
+		"\u0142\3\2\2\2\u0145\u014b\5$\23\2\u0146\u0147\7H\2\2\u0147\u0148\5,\27"+
+		"\2\u0148\u0149\7I\2\2\u0149\u014a\5&\24\2\u014a\u014c\3\2\2\2\u014b\u0146"+
+		"\3\2\2\2\u014b\u014c\3\2\2\2\u014c\'\3\2\2\2\u014d\u0154\5&\24\2\u014e"+
+		"\u014f\5\f\7\2\u014f\u0150\5*\26\2\u0150\u0151\5(\25\2\u0151\u0154\3\2"+
+		"\2\2\u0152\u0154\7]\2\2\u0153\u014d\3\2\2\2\u0153\u014e\3\2\2\2\u0153"+
+		"\u0152\3\2\2\2\u0154)\3\2\2\2\u0155\u0156\t\t\2\2\u0156+\3\2\2\2\u0157"+
+		"\u015c\5(\25\2\u0158\u0159\7K\2\2\u0159\u015b\5(\25\2\u015a\u0158\3\2"+
+		"\2\2\u015b\u015e\3\2\2\2\u015c\u015a\3\2\2\2\u015c\u015d\3\2\2\2\u015d"+
+		"-\3\2\2\2\u015e\u015c\3\2\2\2\u015f\u0160\5&\24\2\u0160/\3\2\2\2\u0161"+
+		"\u0163\5\62\32\2\u0162\u0164\58\35\2\u0163\u0162\3\2\2\2\u0163\u0164\3"+
+		"\2\2\2\u0164\u0165\3\2\2\2\u0165\u0166\7J\2\2\u0166\61\3\2\2\2\u0167\u0169"+
+		"\5\66\34\2\u0168\u0167\3\2\2\2\u0169\u016a\3\2\2\2\u016a\u0168\3\2\2\2"+
+		"\u016a\u016b\3\2\2\2\u016b\63\3\2\2\2\u016c\u016e\5\66\34\2\u016d\u016c"+
+		"\3\2\2\2\u016e\u016f\3\2\2\2\u016f\u016d\3\2\2\2\u016f\u0170\3\2\2\2\u0170"+
+		"\65\3\2\2\2\u0171\u0175\5<\37\2\u0172\u0175\5B\"\2\u0173\u0175\5D#\2\u0174"+
+		"\u0171\3\2\2\2\u0174\u0172\3\2\2\2\u0174\u0173\3\2\2\2\u0175\67\3\2\2"+
+		"\2\u0176\u017b\5:\36\2\u0177\u0178\7K\2\2\u0178\u017a\5:\36\2\u0179\u0177"+
+		"\3\2\2\2\u017a\u017d\3\2\2\2\u017b\u0179\3\2\2\2\u017b\u017c\3\2\2\2\u017c"+
+		"9\3\2\2\2\u017d\u017b\3\2\2\2\u017e\u0181\5F$\2\u017f\u0180\7L\2\2\u0180"+
+		"\u0182\5b\62\2\u0181\u017f\3\2\2\2\u0181\u0182\3\2\2\2\u0182;\3\2\2\2"+
+		"\u0183\u0186\t\n\2\2\u0184\u0186\5@!\2\u0185\u0183\3\2\2\2\u0185\u0184"+
+		"\3\2\2\2\u0186=\3\2\2\2\u0187\u0189\5<\37\2\u0188\u018a\5> \2\u0189\u0188"+
+		"\3\2\2\2\u0189\u018a\3\2\2\2\u018a?\3\2\2\2\u018b\u018c\7(\2\2\u018c\u018d"+
+		"\7.\2\2\u018d\u018e\5\\/\2\u018e\u018f\7/\2\2\u018fA\3\2\2\2\u0190\u0197"+
+		"\t\13\2\2\u0191\u0197\5L\'\2\u0192\u0193\7\b\2\2\u0193\u0194\7.\2\2\u0194"+
+		"\u0195\7[\2\2\u0195\u0197\7/\2\2\u0196\u0190\3\2\2\2\u0196\u0191\3\2\2"+
+		"\2\u0196\u0192\3\2\2\2\u0197C\3\2\2\2\u0198\u0199\7&\2\2\u0199\u019c\7"+
+		".\2\2\u019a\u019d\5\\/\2\u019b\u019d\5.\30\2\u019c\u019a\3\2\2\2\u019c"+
+		"\u019b\3\2\2\2\u019d\u019e\3\2\2\2\u019e\u019f\7/\2\2\u019fE\3\2\2\2\u01a0"+
+		"\u01a4\5H%\2\u01a1\u01a3\5J&\2\u01a2\u01a1\3\2\2\2\u01a3\u01a6\3\2\2\2"+
+		"\u01a4\u01a2\3\2\2\2\u01a4\u01a5\3\2\2\2\u01a5G\3\2\2\2\u01a6\u01a4\3"+
+		"\2\2\2\u01a7\u01a8\b%\1\2\u01a8\u01b1\7[\2\2\u01a9\u01aa\7.\2\2\u01aa"+
+		"\u01ab\5F$\2\u01ab\u01ac\7/\2\2\u01ac\u01b1\3\2\2\2\u01ad\u01ae\7[\2\2"+
+		"\u01ae\u01af\7I\2\2\u01af\u01b1\7]\2\2\u01b0\u01a7\3\2\2\2\u01b0\u01a9"+
+		"\3\2\2\2\u01b0\u01ad\3\2\2\2\u01b1\u01c5\3\2\2\2\u01b2\u01b3\f\6\2\2\u01b3"+
+		"\u01b5\7\60\2\2\u01b4\u01b6\5(\25\2\u01b5\u01b4\3\2\2\2\u01b5\u01b6\3"+
+		"\2\2\2\u01b6\u01b7\3\2\2\2\u01b7\u01c4\7\61\2\2\u01b8\u01b9\f\5\2\2\u01b9"+
+		"\u01ba\7.\2\2\u01ba\u01bb\5T+\2\u01bb\u01bc\7/\2\2\u01bc\u01c4\3\2\2\2"+
+		"\u01bd\u01be\f\4\2\2\u01be\u01c0\7.\2\2\u01bf\u01c1\5Z.\2\u01c0\u01bf"+
+		"\3\2\2\2\u01c0\u01c1\3\2\2\2\u01c1\u01c2\3\2\2\2\u01c2\u01c4\7/\2\2\u01c3"+
+		"\u01b2\3\2\2\2\u01c3\u01b8\3\2\2\2\u01c3\u01bd\3\2\2\2\u01c4\u01c7\3\2"+
+		"\2\2\u01c5\u01c3\3\2\2\2\u01c5\u01c6\3\2\2\2\u01c6I\3\2\2\2\u01c7\u01c5"+
+		"\3\2\2\2\u01c8\u01c9\7\t\2\2\u01c9\u01cb\7.\2\2\u01ca\u01cc\7^\2\2\u01cb"+
+		"\u01ca\3\2\2\2\u01cc\u01cd\3\2\2\2\u01cd\u01cb\3\2\2\2\u01cd\u01ce\3\2"+
+		"\2\2\u01ce\u01cf\3\2\2\2\u01cf\u01d2\7/\2\2\u01d0\u01d2\5L\'\2\u01d1\u01c8"+
+		"\3\2\2\2\u01d1\u01d0\3\2\2\2\u01d2K\3\2\2\2\u01d3\u01d4\7\n\2\2\u01d4"+
+		"\u01d5\7.\2\2\u01d5\u01d6\7.\2\2\u01d6\u01d7\5N(\2\u01d7\u01d8\7/\2\2"+
+		"\u01d8\u01d9\7/\2\2\u01d9M\3\2\2\2\u01da\u01dc\5P)\2\u01db\u01da\3\2\2"+
+		"\2\u01db\u01dc\3\2\2\2\u01dc\u01e3\3\2\2\2\u01dd\u01df\7K\2\2\u01de\u01e0"+
+		"\5P)\2\u01df\u01de\3\2\2\2\u01df\u01e0\3\2\2\2\u01e0\u01e2\3\2\2\2\u01e1"+
+		"\u01dd\3\2\2\2\u01e2\u01e5\3\2\2\2\u01e3\u01e1\3\2\2\2\u01e3\u01e4\3\2"+
+		"\2\2\u01e4O\3\2\2\2\u01e5\u01e3\3\2\2\2\u01e6\u01ec\n\f\2\2\u01e7\u01e9"+
+		"\7.\2\2\u01e8\u01ea\5\n\6\2\u01e9\u01e8\3\2\2\2\u01e9\u01ea\3\2\2\2\u01ea"+
+		"\u01eb\3\2\2\2\u01eb\u01ed\7/\2\2\u01ec\u01e7\3\2\2\2\u01ec\u01ed\3\2"+
+		"\2\2\u01edQ\3\2\2\2\u01ee\u01f4\n\r\2\2\u01ef\u01f0\7.\2\2\u01f0\u01f1"+
+		"\5R*\2\u01f1\u01f2\7/\2\2\u01f2\u01f4\3\2\2\2\u01f3\u01ee\3\2\2\2\u01f3"+
+		"\u01ef\3\2\2\2\u01f4\u01f7\3\2\2\2\u01f5\u01f3\3\2\2\2\u01f5\u01f6\3\2"+
+		"\2\2\u01f6S\3\2\2\2\u01f7\u01f5\3\2\2\2\u01f8\u01fb\5V,\2\u01f9\u01fa"+
+		"\7K\2\2\u01fa\u01fc\7Z\2\2\u01fb\u01f9\3\2\2\2\u01fb\u01fc\3\2\2\2\u01fc"+
+		"U\3\2\2\2\u01fd\u0202\5X-\2\u01fe\u01ff\7K\2\2\u01ff\u0201\5X-\2\u0200"+
+		"\u01fe\3\2\2\2\u0201\u0204\3\2\2\2\u0202\u0200\3\2\2\2\u0202\u0203\3\2"+
+		"\2\2\u0203W\3\2\2\2\u0204\u0202\3\2\2\2\u0205\u0206\5\62\32\2\u0206\u0207"+
+		"\5F$\2\u0207\u020d\3\2\2\2\u0208\u020a\5\64\33\2\u0209\u020b\5^\60\2\u020a"+
+		"\u0209\3\2\2\2\u020a\u020b\3\2\2\2\u020b\u020d\3\2\2\2\u020c\u0205\3\2"+
+		"\2\2\u020c\u0208\3\2\2\2\u020dY\3\2\2\2\u020e\u0213\7[\2\2\u020f\u0210"+
+		"\7K\2\2\u0210\u0212\7[\2\2\u0211\u020f\3\2\2\2\u0212\u0215\3\2\2\2\u0213"+
+		"\u0211\3\2\2\2\u0213\u0214\3\2\2\2\u0214[\3\2\2\2\u0215\u0213\3\2\2\2"+
+		"\u0216\u0218\5> \2\u0217\u0219\5^\60\2\u0218\u0217\3\2\2\2\u0218\u0219"+
+		"\3\2\2\2\u0219]\3\2\2\2\u021a\u021e\5`\61\2\u021b\u021d\5J&\2\u021c\u021b"+
+		"\3\2\2\2\u021d\u0220\3\2\2\2\u021e\u021c\3\2\2\2\u021e\u021f\3\2\2\2\u021f"+
+		"_\3\2\2\2\u0220\u021e\3\2\2\2\u0221\u0222\b\61\1\2\u0222\u0223\7.\2\2"+
+		"\u0223\u0224\5^\60\2\u0224\u0228\7/\2\2\u0225\u0227\5J&\2\u0226\u0225"+
+		"\3\2\2\2\u0227\u022a\3\2\2\2\u0228\u0226\3\2\2\2\u0228\u0229\3\2\2\2\u0229"+
+		"\u023f\3\2\2\2\u022a\u0228\3\2\2\2\u022b\u022d\7\60\2\2\u022c\u022e\5"+
+		"(\25\2\u022d\u022c\3\2\2\2\u022d\u022e\3\2\2\2\u022e\u022f\3\2\2\2\u022f"+
+		"\u023f\7\61\2\2\u0230\u0231\7\60\2\2\u0231\u0232\7>\2\2\u0232\u023f\7"+
+		"\61\2\2\u0233\u0235\7.\2\2\u0234\u0236\5T+\2\u0235\u0234\3\2\2\2\u0235"+
+		"\u0236\3\2\2\2\u0236\u0237\3\2\2\2\u0237\u023b\7/\2\2\u0238\u023a\5J&"+
+		"\2\u0239\u0238\3\2\2\2\u023a\u023d\3\2\2\2\u023b\u0239\3\2\2\2\u023b\u023c"+
+		"\3\2\2\2\u023c\u023f\3\2\2\2\u023d\u023b\3\2\2\2\u023e\u0221\3\2\2\2\u023e"+
+		"\u022b\3\2\2\2\u023e\u0230\3\2\2\2\u023e\u0233\3\2\2\2\u023f\u0258\3\2"+
+		"\2\2\u0240\u0241\f\5\2\2\u0241\u0243\7\60\2\2\u0242\u0244\5(\25\2\u0243"+
+		"\u0242\3\2\2\2\u0243\u0244\3\2\2\2\u0244\u0245\3\2\2\2\u0245\u0257\7\61"+
+		"\2\2\u0246\u0247\f\4\2\2\u0247\u0248\7\60\2\2\u0248\u0249\7>\2\2\u0249"+
+		"\u0257\7\61\2\2\u024a\u024b\f\3\2\2\u024b\u024d\7.\2\2\u024c\u024e\5T"+
+		"+\2\u024d\u024c\3\2\2\2\u024d\u024e\3\2\2\2\u024e\u024f\3\2\2\2\u024f"+
+		"\u0253\7/\2\2\u0250\u0252\5J&\2\u0251\u0250\3\2\2\2\u0252\u0255\3\2\2"+
+		"\2\u0253\u0251\3\2\2\2\u0253\u0254\3\2\2\2\u0254\u0257\3\2\2\2\u0255\u0253"+
+		"\3\2\2\2\u0256\u0240\3\2\2\2\u0256\u0246\3\2\2\2\u0256\u024a\3\2\2\2\u0257"+
+		"\u025a\3\2\2\2\u0258\u0256\3\2\2\2\u0258\u0259\3\2\2\2\u0259a\3\2\2\2"+
+		"\u025a\u0258\3\2\2\2\u025b\u0264\5(\25\2\u025c\u025d\7\62\2\2\u025d\u025f"+
+		"\5d\63\2\u025e\u0260\7K\2\2\u025f\u025e\3\2\2\2\u025f\u0260\3\2\2\2\u0260"+
+		"\u0261\3\2\2\2\u0261\u0262\7\63\2\2\u0262\u0264\3\2\2\2\u0263\u025b\3"+
+		"\2\2\2\u0263\u025c\3\2\2\2\u0264c\3\2\2\2\u0265\u0267\5f\64\2\u0266\u0265"+
+		"\3\2\2\2\u0266\u0267\3\2\2\2\u0267\u0268\3\2\2\2\u0268\u0270\5b\62\2\u0269"+
+		"\u026b\7K\2\2\u026a\u026c\5f\64\2\u026b\u026a\3\2\2\2\u026b\u026c\3\2"+
+		"\2\2\u026c\u026d\3\2\2\2\u026d\u026f\5b\62\2\u026e\u0269\3\2\2\2\u026f"+
+		"\u0272\3\2\2\2\u0270\u026e\3\2\2\2\u0270\u0271\3\2\2\2\u0271e\3\2\2\2"+
+		"\u0272\u0270\3\2\2\2\u0273\u0274\5h\65\2\u0274\u0275\7L\2\2\u0275g\3\2"+
+		"\2\2\u0276\u0278\5j\66\2\u0277\u0276\3\2\2\2\u0278\u0279\3\2\2\2\u0279"+
+		"\u0277\3\2\2\2\u0279\u027a\3\2\2\2\u027ai\3\2\2\2\u027b\u027c\7\60\2\2"+
+		"\u027c\u027d\5.\30\2\u027d\u027e\7\61\2\2\u027e\u0282\3\2\2\2\u027f\u0280"+
+		"\7Y\2\2\u0280\u0282\7[\2\2\u0281\u027b\3\2\2\2\u0281\u027f\3\2\2\2\u0282"+
+		"k\3\2\2\2\u0283\u028a\5n8\2\u0284\u028a\5p9\2\u0285\u028a\5v<\2\u0286"+
+		"\u028a\5x=\2\u0287\u028a\5z>\2\u0288\u028a\5\u0082B\2\u0289\u0283\3\2"+
+		"\2\2\u0289\u0284\3\2\2\2\u0289\u0285\3\2\2\2\u0289\u0286\3\2\2\2\u0289"+
+		"\u0287\3\2\2\2\u0289\u0288\3\2\2\2\u028am\3\2\2\2\u028b\u028c\7[\2\2\u028c"+
+		"\u028d\7I\2\2\u028d\u0297\5l\67\2\u028e\u028f\7\r\2\2\u028f\u0290\5.\30"+
+		"\2\u0290\u0291\7I\2\2\u0291\u0292\5l\67\2\u0292\u0297\3\2\2\2\u0293\u0294"+
+		"\7\21\2\2\u0294\u0295\7I\2\2\u0295\u0297\5l\67\2\u0296\u028b\3\2\2\2\u0296"+
+		"\u028e\3\2\2\2\u0296\u0293\3\2\2\2\u0297o\3\2\2\2\u0298\u029a\7\62\2\2"+
+		"\u0299\u029b\5r:\2\u029a\u0299\3\2\2\2\u029a\u029b\3\2\2\2\u029b\u029c"+
+		"\3\2\2\2\u029c\u029d\7\63\2\2\u029dq\3\2\2\2\u029e\u02a0\5t;\2\u029f\u029e"+
+		"\3\2\2\2\u02a0\u02a1\3\2\2\2\u02a1\u029f\3\2\2\2\u02a1\u02a2\3\2\2\2\u02a2"+
+		"s\3\2\2\2\u02a3\u02a6\5l\67\2\u02a4\u02a6\5\60\31\2\u02a5\u02a3\3\2\2"+
+		"\2\u02a5\u02a4\3\2\2\2\u02a6u\3\2\2\2\u02a7\u02a9\5,\27\2\u02a8\u02a7"+
+		"\3\2\2\2\u02a8\u02a9\3\2\2\2\u02a9\u02aa\3\2\2\2\u02aa\u02ab\7J\2\2\u02ab"+
+		"w\3\2\2\2\u02ac\u02ad\7\27\2\2\u02ad\u02ae\7.\2\2\u02ae\u02af\5,\27\2"+
+		"\u02af\u02b0\7/\2\2\u02b0\u02b3\5l\67\2\u02b1\u02b2\7\24\2\2\u02b2\u02b4"+
+		"\5l\67\2\u02b3\u02b1\3\2\2\2\u02b3\u02b4\3\2\2\2\u02b4\u02bc\3\2\2\2\u02b5"+
+		"\u02b6\7#\2\2\u02b6\u02b7\7.\2\2\u02b7\u02b8\5,\27\2\u02b8\u02b9\7/\2"+
+		"\2\u02b9\u02ba\5l\67\2\u02ba\u02bc\3\2\2\2\u02bb\u02ac\3\2\2\2\u02bb\u02b5"+
+		"\3\2\2\2\u02bcy\3\2\2\2\u02bd\u02be\7%\2\2\u02be\u02bf\7.\2\2\u02bf\u02c0"+
+		"\5,\27\2\u02c0\u02c1\7/\2\2\u02c1\u02c2\5l\67\2\u02c2\u02d2\3\2\2\2\u02c3"+
+		"\u02c4\7\22\2\2\u02c4\u02c5\5l\67\2\u02c5\u02c6\7%\2\2\u02c6\u02c7\7."+
+		"\2\2\u02c7\u02c8\5,\27\2\u02c8\u02c9\7/\2\2\u02c9\u02ca\7J\2\2\u02ca\u02d2"+
+		"\3\2\2\2\u02cb\u02cc\7\26\2\2\u02cc\u02cd\7.\2\2\u02cd\u02ce\5|?\2\u02ce"+
+		"\u02cf\7/\2\2\u02cf\u02d0\5l\67\2\u02d0\u02d2\3\2\2\2\u02d1\u02bd\3\2"+
+		"\2\2\u02d1\u02c3\3\2\2\2\u02d1\u02cb\3\2\2\2\u02d2{\3\2\2\2\u02d3\u02d8"+
+		"\5~@\2\u02d4\u02d6\5,\27\2\u02d5\u02d4\3\2\2\2\u02d5\u02d6\3\2\2\2\u02d6"+
+		"\u02d8\3\2\2\2\u02d7\u02d3\3\2\2\2\u02d7\u02d5\3\2\2\2\u02d8\u02d9\3\2"+
+		"\2\2\u02d9\u02db\7J\2\2\u02da\u02dc\5\u0080A\2\u02db\u02da\3\2\2\2\u02db"+
+		"\u02dc\3\2\2\2\u02dc\u02dd\3\2\2\2\u02dd\u02df\7J\2\2\u02de\u02e0\5\u0080"+
+		"A\2\u02df\u02de\3\2\2\2\u02df\u02e0\3\2\2\2\u02e0}\3\2\2\2\u02e1\u02e3"+
+		"\5\62\32\2\u02e2\u02e4\58\35\2\u02e3\u02e2\3\2\2\2\u02e3\u02e4\3\2\2\2"+
+		"\u02e4\177\3\2\2\2\u02e5\u02ea\5(\25\2\u02e6\u02e7\7K\2\2\u02e7\u02e9"+
+		"\5(\25\2\u02e8\u02e6\3\2\2\2\u02e9\u02ec\3\2\2\2\u02ea\u02e8\3\2\2\2\u02ea"+
+		"\u02eb\3\2\2\2\u02eb\u0081\3\2\2\2\u02ec\u02ea\3\2\2\2\u02ed\u02f3\t\16"+
+		"\2\2\u02ee\u02f0\7\"\2\2\u02ef\u02f1\5,\27\2\u02f0\u02ef\3\2\2\2\u02f0"+
+		"\u02f1\3\2\2\2\u02f1\u02f3\3\2\2\2\u02f2\u02ed\3\2\2\2\u02f2\u02ee\3\2"+
+		"\2\2\u02f3\u02f4\3\2\2\2\u02f4\u02f5\7J\2\2\u02f5\u0083\3\2\2\2\u02f6"+
+		"\u02f8\5\u0086D\2\u02f7\u02f6\3\2\2\2\u02f7\u02f8\3\2\2\2\u02f8\u02f9"+
+		"\3\2\2\2\u02f9\u02fa\7\2\2\3\u02fa\u0085\3\2\2\2\u02fb\u02fd\5\u0088E"+
+		"\2\u02fc\u02fb\3\2\2\2\u02fd\u02fe\3\2\2\2\u02fe\u02fc\3\2\2\2\u02fe\u02ff"+
+		"\3\2\2\2\u02ff\u0087\3\2\2\2\u0300\u0304\5\u008aF\2\u0301\u0304\5\60\31"+
+		"\2\u0302\u0304\7J\2\2\u0303\u0300\3\2\2\2\u0303\u0301\3\2\2\2\u0303\u0302"+
+		"\3\2\2\2\u0304\u0089\3\2\2\2\u0305\u0307\5\62\32\2\u0306\u0305\3\2\2\2"+
+		"\u0306\u0307\3\2\2\2\u0307\u0308\3\2\2\2\u0308\u030a\5F$\2\u0309\u030b"+
+		"\5\u008cG\2\u030a\u0309\3\2\2\2\u030a\u030b\3\2\2\2\u030b\u030c\3\2\2"+
+		"\2\u030c\u030d\5p9\2\u030d\u008b\3\2\2\2\u030e\u0310\5\60\31\2\u030f\u030e"+
+		"\3\2\2\2\u0310\u0311\3\2\2\2\u0311\u030f\3\2\2\2\u0311\u0312\3\2\2\2\u0312"+
+		"\u008d\3\2\2\2\u0313\u0314\7\13\2\2\u0314\u0316\7\62\2\2\u0315\u0317\5"+
+		"r:\2\u0316\u0315\3\2\2\2\u0316\u0317\3\2\2\2\u0317\u0318\3\2\2\2\u0318"+
+		"\u0319\7\63\2\2\u0319\u008f\3\2\2\2e\u0095\u00a0\u00a7\u00ac\u00b8\u00bc"+
+		"\u00c4\u00ca\u00cc\u00d4\u00da\u00e8\u00f3\u00fa\u0102\u010a\u0112\u011a"+
+		"\u0122\u012a\u0132\u013a\u0142\u014b\u0153\u015c\u0163\u016a\u016f\u0174"+
+		"\u017b\u0181\u0185\u0189\u0196\u019c\u01a4\u01b0\u01b5\u01c0\u01c3\u01c5"+
+		"\u01cd\u01d1\u01db\u01df\u01e3\u01e9\u01ec\u01f3\u01f5\u01fb\u0202\u020a"+
+		"\u020c\u0213\u0218\u021e\u0228\u022d\u0235\u023b\u023e\u0243\u024d\u0253"+
+		"\u0256\u0258\u025f\u0263\u0266\u026b\u0270\u0279\u0281\u0289\u0296\u029a"+
+		"\u02a1\u02a5\u02a8\u02b3\u02bb\u02d1\u02d5\u02d7\u02db\u02df\u02e3\u02ea"+
+		"\u02f0\u02f2\u02f7\u02fe\u0303\u0306\u030a\u0311\u0316";
 	public static final ATN _ATN =
 		new ATNDeserializer().deserialize(_serializedATN.toCharArray());
 	static {

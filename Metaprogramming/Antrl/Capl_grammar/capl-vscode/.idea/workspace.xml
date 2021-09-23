@@ -1,7 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="950f7524-631c-4812-8c77-3d61ee540d20" name="Default Changelist" comment="" />
+    <list default="true" id="950f7524-631c-4812-8c77-3d61ee540d20" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/grammar/.antlr/Capl.interp" beforeDir="false" afterPath="$PROJECT_DIR$/grammar/.antlr/Capl.interp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/grammar/.antlr/Capl.tokens" beforeDir="false" afterPath="$PROJECT_DIR$/grammar/.antlr/Capl.tokens" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/grammar/.antlr/CaplLexer.interp" beforeDir="false" afterPath="$PROJECT_DIR$/grammar/.antlr/CaplLexer.interp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/grammar/.antlr/CaplLexer.java" beforeDir="false" afterPath="$PROJECT_DIR$/grammar/.antlr/CaplLexer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/grammar/.antlr/CaplLexer.tokens" beforeDir="false" afterPath="$PROJECT_DIR$/grammar/.antlr/CaplLexer.tokens" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/grammar/.antlr/CaplParser.java" beforeDir="false" afterPath="$PROJECT_DIR$/grammar/.antlr/CaplParser.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/grammar/Capl.g4" beforeDir="false" afterPath="$PROJECT_DIR$/grammar/Capl.g4" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -22,6 +32,7 @@
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
     <property name="dart.analysis.tool.window.visible" value="false" />
+    <property name="settings.editor.selected.configurable" value="reference.settingsdialog.IDE.editor.colors.Color Scheme Font" />
     <property name="show.migrate.to.gradle.popup" value="false" />
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
@@ -33,6 +44,7 @@
       <option name="presentableId" value="Default" />
       <updated>1631884972379</updated>
       <workItem from="1631884973514" duration="125000" />
+      <workItem from="1632394757192" duration="443000" />
     </task>
     <servers />
   </component>
@@ -49,5 +61,6 @@
         </entry>
       </map>
     </option>
+    <option name="oldMeFiltersMigrated" value="true" />
   </component>
 </project>

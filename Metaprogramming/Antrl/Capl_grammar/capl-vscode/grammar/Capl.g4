@@ -6,7 +6,6 @@ grammar Capl;
 
 /* begin - CAPL specific */
 
-/* TODO: Variable declarations */
 /* TODO: Time events */
 /* TODO: I/O events */
 /* TODO: Can communication events */
@@ -14,9 +13,11 @@ grammar Capl;
 
 /* end - CAPL specific   */
 
-/*options {
+/*
+options {
 	language=CSharp;
-}*/
+}
+*/
 
 primaryExpression
     :   Identifier
@@ -24,6 +25,7 @@ primaryExpression
     |   StringLiteral+
     |   '(' expression ')'
     |   '(' compoundStatement ')'
+    |   variableDeclarationBlock
     ;
 
 genericAssocList
@@ -379,6 +381,11 @@ declarationList
     :   declaration+
     ;
 
+variableDeclarationBlock
+    : 'variables' '{' blockItemList? '}'
+    ;
+
+Variables : 'variables';
 Break : 'break';
 Case : 'case';
 Char : 'char';
