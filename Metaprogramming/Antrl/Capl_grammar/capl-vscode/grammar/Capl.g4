@@ -28,14 +28,6 @@ primaryExpression
     |   variableDeclarationBlock
     ;
 
-genericAssocList
-    :   genericAssociation (',' genericAssociation)*
-    ;
-
-genericAssociation
-    :   (typeName | 'default') ':' assignmentExpression
-    ;
-
 postfixExpression
     :
     (   primaryExpression
@@ -55,11 +47,7 @@ argumentExpressionList
 unaryExpression
     :
     ('++' |  '--')*
-    (postfixExpression
-    |   unaryOperator castExpression
-    |   '_Alignof' '(' typeName ')'
-    |   '&&' Identifier // GCC extension address of label
-    )
+    (postfixExpression | unaryOperator castExpression)
     ;
 
 unaryOperator
@@ -147,9 +135,7 @@ declarationSpecifiers2
     ;
 
 declarationSpecifier
-    :   typeSpecifier    
-    |   functionSpecifier
-    |   alignmentSpecifier
+    :   typeSpecifier
     ;
 
 initDeclaratorList
@@ -173,38 +159,15 @@ typeSpecifier
     |   'dword'
     |   'message'
     |   'timer'
-    |   'msTimer'
-    |   '_Bool'
-    |   '_Complex'
-    |   '__m128'
-    |   '__m128d'
-    |   '__m128i')    
-    |   atomicTypeSpecifier    
+    |   'msTimer')
     ;
 
 specifierQualifierList
     :   typeSpecifier specifierQualifierList?
     ;
 
-atomicTypeSpecifier
-    :   '_Atomic' '(' typeName ')'
-    ;
-
-functionSpecifier
-    :   ('inline'
-    |   '_Noreturn'
-    |   '__inline__' // GCC extension
-    |   '__stdcall')
-    |   gccAttributeSpecifier
-    |   '__declspec' '(' Identifier ')'
-    ;
-
-alignmentSpecifier
-    :   '_Alignas' '(' (typeName | constantExpression) ')'
-    ;
-
 declarator
-    :   directDeclarator gccDeclaratorExtension*
+    :   directDeclarator
     ;
 
 directDeclarator
@@ -213,25 +176,6 @@ directDeclarator
     |   directDeclarator '[' assignmentExpression? ']'    
     |   directDeclarator '(' parameterTypeList ')'
     |   directDeclarator '(' identifierList? ')'
-    |   Identifier ':' DigitSequence  // bit field    
-    ;
-
-gccDeclaratorExtension
-    :   '__asm' '(' StringLiteral+ ')'
-    |   gccAttributeSpecifier
-    ;
-
-gccAttributeSpecifier
-    :   '__attribute__' '(' '(' gccAttributeList ')' ')'
-    ;
-
-gccAttributeList
-    :   gccAttribute? (',' gccAttribute?)*
-    ;
-
-gccAttribute
-    :   ~(',' | '(' | ')') // relaxed def for "identifier or reserved word"
-        ('(' argumentExpressionList? ')')?
     ;
 
 nestedParenthesesBlock
@@ -262,17 +206,17 @@ typeName
     ;
 
 abstractDeclarator
-	:    directAbstractDeclarator gccDeclaratorExtension*
+	:    directAbstractDeclarator
     ;
 
 directAbstractDeclarator
-    :   '(' abstractDeclarator ')' gccDeclaratorExtension*
+    :   '(' abstractDeclarator ')'
     |   '[' assignmentExpression? ']'    
     |   '[' '*' ']'
-    |   '(' parameterTypeList? ')' gccDeclaratorExtension*
+    |   '(' parameterTypeList? ')'
     |   directAbstractDeclarator '[' assignmentExpression? ']'    
     |   directAbstractDeclarator '[' '*' ']'
-    |   directAbstractDeclarator '(' parameterTypeList? ')' gccDeclaratorExtension*
+    |   directAbstractDeclarator '(' parameterTypeList? ')'
     ;
 
 initializer
@@ -294,7 +238,6 @@ designatorList
 
 designator
     :   '[' constantExpression ']'
-    |   '.' Identifier
     ;
 
 statement
@@ -398,7 +341,6 @@ Else : 'else';
 Float : 'float';
 For : 'for';
 If : 'if';
-Inline : 'inline';
 Int : 'int';
 Word : 'word';
 Dword : 'dword';
@@ -407,20 +349,10 @@ Timer : 'timer';
 MsTimer : 'msTimer';
 Long : 'long';
 Int64 : 'int64';
-Restrict : 'restrict';
 Return : 'return';
 Switch : 'switch';
 Void : 'void';
 While : 'while';
-
-Alignas : '_Alignas';
-Alignof : '_Alignof';
-Atomic : '_Atomic';
-Bool : '_Bool';
-Complex : '_Complex';
-Imaginary : '_Imaginary';
-Noreturn : '_Noreturn';
-ThreadLocal : '_Thread_local';
 
 LeftParen : '(';
 RightParen : ')';
@@ -472,15 +404,15 @@ OrAssign : '|=';
 
 Equal : '==';
 NotEqual : '!=';
-Dot : '.';
 Ellipsis : '...';
 
 Identifier
-    :   IdentifierNondigit
-        (   IdentifierNondigit
-        |   Digit
-        )*
+    :   IdentifierNondigit (IdentifierNondigit | Digit )*
+    |   'this' '.' Identifier ('.' (Identifier))*
     ;
+
+This : 'this';
+Dot : '.';
 
 fragment
 IdentifierNondigit
@@ -702,11 +634,6 @@ SChar
     |   EscapeSequence
     |   '\\\n'   // Added line
     |   '\\\r\n' // Added line
-    ;
-
-AsmBlock
-    :   'asm' ~'{'* '{' ~'}'* '}'
-	-> skip
     ;
 
 Whitespace

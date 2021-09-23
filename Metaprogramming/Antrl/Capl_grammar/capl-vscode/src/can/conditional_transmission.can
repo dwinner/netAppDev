@@ -1,10 +1,10 @@
 variables
 {
     message 0x400 msgA = {dlc=1};
-    mstimer timerA;
-    int conditionA = 0; // initialize conditionA = off
+    msTimer timerA;
+    int conditionA = 0;
 }
-
+/*
 on key 'a'
 {
     conditionA =! conditionA; // toggle conditionA
@@ -23,4 +23,4 @@ on timer timerA
 
     msgA.byte(0)=msgA.byte(0)-1; // change the data
     output(msgA); // output message
-}
+}*/
