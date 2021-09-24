@@ -10,11 +10,42 @@ primaryExpression
     |   StringLiteral+
     |   '(' expression ')'
     |   '(' compoundStatement ')'
-    |   canDeclarations
+    |   caplBlocks
     ;
 
-canDeclarations
-    : variableDeclarationBlock* eventDeclarationBlock* timerDeclarationBlock* errorFrame*
+caplBlocks
+    :   variableBlock* eventBlock* timerBlock* errorFrame* messageBlock* envBlock*
+    ;
+
+variableBlock
+    :   'variables' '{' blockItemList? '}'
+    ;
+
+eventBlock
+    :   'on' 'key' (KeyHit|'*') '{' blockItemList? '}'
+    ;
+
+KeyHit :    KeyboardSymbol ;
+
+KeyboardSymbol :    '\'' [a-zA-Z] '\'' ;
+
+timerBlock
+    :   'on' 'timer' Identifier ('.' (Identifier|'*'))? '{' blockItemList '}'
+    ;
+
+errorFrame
+    :   'on' 'errorFrame' '{' blockItemList? '}'
+    ;
+
+messageBlock
+    :   'on' 'message' (Identifier ('.' (Identifier|'*'|hexConstMessage))?
+    |   '*'
+    |   hexConstMessage
+    )   '{' blockItemList '}'
+    ;
+
+envBlock
+    :   'on' 'envVar' Identifier '{' blockItemList '}'
     ;
 
 postfixExpression
@@ -322,25 +353,6 @@ declarationList
     :   declaration+
     ;
 
-variableDeclarationBlock
-    : 'variables' '{' blockItemList? '}'
-    ;
-
-eventDeclarationBlock
-    : 'on' 'key' (KeyHit|'*') '{' blockItemList? '}';
-
-KeyHit : KeyboardSymbol ;
-
-KeyboardSymbol : '\'' [a-zA-Z] '\'';
-
-timerDeclarationBlock
-    : 'on' 'timer' Identifier ('.' (Identifier|'*'))? '{' blockItemList '}'
-    ;
-
-errorFrame
-    : 'on' 'errorFrame' '{' blockItemList? '}'
-    ;
-
 ErrorFrame : 'errorFrame';
 Key : 'key';
 On : 'on';
@@ -361,6 +373,7 @@ Int : 'int';
 Word : 'word';
 Dword : 'dword';
 Message : 'message';
+EnvVar : 'envVar';
 Timer : 'timer';
 MsTimer : 'msTimer';
 Long : 'long';
