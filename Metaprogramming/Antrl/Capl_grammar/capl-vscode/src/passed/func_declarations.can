@@ -22,7 +22,7 @@ variables
     float value3 = 0.23;
     float value4 = 23E-2;
 
-    char value5 = 'B';
+    //char value5 = 'B';
     char value6 = '8';
     char value7 = '?';
 
@@ -40,7 +40,7 @@ variables
 void myFunc()
 {
     byte value = 10; // static; called once
-    write(“value = %d”, value);
+    write("value = %d", value);
     value = 35;
 }
 

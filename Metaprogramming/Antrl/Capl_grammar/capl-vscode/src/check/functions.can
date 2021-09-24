@@ -6,7 +6,7 @@ variables
     msTimer mytimer; // timer
     message 100 msg; // CAN message
 
-    Timer t1;
+    msTimer t1;
 
     int mat1[2][2] = {{1,2}, {3,4}};
     int mat2[3][3] = {{1,2,3}, {4,5,6}, {7,8,9}};
@@ -24,12 +24,12 @@ on message * // the * symbol is a wildcard for all messages
         write("Message: %s", buffer);
     }
     else
-        write(“Message ID = %d is not defined.”, this.id);
+        write("Message ID = %d is not defined.", this.id);
 
     long z1;
     long z2;
-    z1 = atol(“200”);
-    z2 = atol(“0xFF”);
+    z1 = atol("200");
+    z2 = atol("0xFF");
 }
 
 on start
@@ -50,7 +50,7 @@ double tangent(double x) // user-defined function tangent()
 on key F1
 {
     setTimer(mytimer, 100); // start 100 ms timer
-    write(“F1 pressed”); // output to Write window
+    write("F1 pressed"); // output to Write window
 }
 
 on timer mytimer
@@ -61,12 +61,12 @@ on timer mytimer
         output(msg); // send message while key is pressed
     }
     else
-        write(“F1 released”);
+        write("F1 released");
 }
 
 on message 100 // this example triggers all the Logging blocks
 {
-    writeToLog(“Logging starts”);
+    writeToLog("Logging starts");
     // this example sets the pre-trigger time before logging to 25 milliseconds:
     setPreTrigger(25);
     trigger(); // start logging
@@ -98,13 +98,13 @@ on key 's'
     float fval;
     char buff[25];
 
-    // Assign the value of the environment variable “Switch” to val
+    // Assign the value of the environment variable "Switch" to val
     val = getValue(Switch);
     
-    // Assign the value of the environment variable “Temp” to fval
+    // Assign the value of the environment variable "Temp" to fval
     fval = getValue(Temp);
 
-    // Read the value of environment variable “NodeName”
+    // Read the value of environment variable "NodeName"
     // val in this case is the number of bytes returned
     val = getValue(NodeName, buff);
 }
@@ -123,5 +123,5 @@ void sum(int matrix[][])
         }
     }
 
-    write(“The sum is %d”, answer);
+    write("The sum is %d", answer);
 }

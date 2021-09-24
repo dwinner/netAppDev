@@ -1,7 +1,7 @@
 variables
 {
     message ABSmessage msgA;
-    mstimer timerA;
+    msTimer timerA;
     int condition = 0; // initialize condition = false
 
     timer delayTimer; // seconds-based timer
@@ -43,15 +43,6 @@ on message EngineTemp
     write("The temperature is %g degrees.", temp);
 }
 
-on message ExampleMessage
-{
-    int value;
-    value = this.word(0); // loads in the first two bytes
-    value >>= 2; // right shifts out two bits
-    value & 0x0FFF; // clears all unnecessary bits
-    write("Value = %d", value);
-}
-
 on message doorState
 {
     if (this.Closed == 1) // door is closed
@@ -60,11 +51,4 @@ on message doorState
     {
         // do this if door is opened
     }
-}
-
-on timer delayTimer
-{
-    message DomeLight dlMsg;
-    dlMsg.Status = 0; // turns off dome light
-    output(dlMsg);
 }
