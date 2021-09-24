@@ -5,16 +5,16 @@
 grammar Capl;
 
 primaryExpression
-    :   canDeclarations
-    |   Identifier
+    :   Identifier
     |   Constant
     |   StringLiteral+
     |   '(' expression ')'
     |   '(' compoundStatement ')'
+    |   canDeclarations
     ;
 
 canDeclarations
-    : variableDeclarationBlock* eventDeclarationBlock* timerDeclarationBlock*
+    : variableDeclarationBlock* eventDeclarationBlock* timerDeclarationBlock* errorFrame*
     ;
 
 postfixExpression
@@ -24,8 +24,6 @@ postfixExpression
     )
     ('[' expression ']'
     | '(' argumentExpressionList? ')'
-    //| '.' Identifier
-    //| Identifier ('.' Identifier)* ('(' '0' ')')?
     | ('++' | '--')
     )*
     ;
@@ -149,6 +147,7 @@ typeSpecifier
     |   'dword'
     |   'timer'
     |   'msTimer'
+    |   'char[]'
     |   messageType
     )
     ;
@@ -171,7 +170,7 @@ declarator
 directDeclarator
     :   Identifier
     |   '(' declarator ')'
-    |   directDeclarator '[' assignmentExpression? ']'    
+    |   directDeclarator '[' assignmentExpression? ']'
     |   directDeclarator '(' parameterTypeList ')'
     |   directDeclarator '(' identifierList? ')'
     ;
@@ -336,6 +335,11 @@ timerDeclarationBlock
     : 'on' 'timer' Identifier ('.' (Identifier|'*'))? '{' blockItemList '}'
     ;
 
+errorFrame
+    : 'on' 'errorFrame' '{' blockItemList? '}'
+    ;
+
+ErrorFrame : 'errorFrame';
 Key : 'key';
 On : 'on';
 Variables : 'variables';

@@ -1,10 +1,8 @@
-variables
-{
-
-}
-
 on errorFrame
 {
-    if (this.can == 1 && (timeNow() – pretime) < 100000)
-        write(“Error frames received less than one second apart on channel 1.”);
+    char char_message[26] = "Hello";
+    int pretime = 0;
+    
+    if (this.can == 1 && (timeNow() - pretime) < 100000)
+        write("Error frames received less than one second apart on channel 1.");
 }
