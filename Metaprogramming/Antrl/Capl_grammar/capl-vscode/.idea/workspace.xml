@@ -4,29 +4,14 @@
     <list default="true" id="950f7524-631c-4812-8c77-3d61ee540d20" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/grammar/.antlr/Capl.interp" beforeDir="false" afterPath="$PROJECT_DIR$/grammar/.antlr/Capl.interp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/grammar/.antlr/Capl.tokens" beforeDir="false" afterPath="$PROJECT_DIR$/grammar/.antlr/Capl.tokens" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/grammar/.antlr/CaplLexer.interp" beforeDir="false" afterPath="$PROJECT_DIR$/grammar/.antlr/CaplLexer.interp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/grammar/.antlr/CaplLexer.java" beforeDir="false" afterPath="$PROJECT_DIR$/grammar/.antlr/CaplLexer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/grammar/.antlr/CaplLexer.tokens" beforeDir="false" afterPath="$PROJECT_DIR$/grammar/.antlr/CaplLexer.tokens" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/grammar/.antlr/CaplParser.java" beforeDir="false" afterPath="$PROJECT_DIR$/grammar/.antlr/CaplParser.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/grammar/Capl.g4" beforeDir="false" afterPath="$PROJECT_DIR$/grammar/Capl.g4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/can/arithmetic_operators.can" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/can/assignment_operators.can" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/can/bitwise_operators.can" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/can/boolean_operators.can" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/can/conditional_transmission.can" beforeDir="false" afterPath="$PROJECT_DIR$/src/can/conditional_transmission.can" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/cpl/BinaryDigit.c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/cpl/FuncCallAsFuncArgument.c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/cpl/FuncCallwithVarArgs.c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/cpl/FuncForwardDeclaration.c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/cpl/FunctionCall.c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/cpl/FunctionPointer.c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/cpl/FunctionReturningPointer.c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/cpl/ParameterOfPointerType.c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/cpl/TypeCast.c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/cpl/add.c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/cpl/bt.c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/cpl/dialog.c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/cpl/helloworld.c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/cpl/integrate.c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/cpl/ll.c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/cpl/pr403.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/grammar/Cpl.g4" beforeDir="false" afterPath="$PROJECT_DIR$/grammar/Cpl.g4" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/can/conditional_transmission.can" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -49,9 +34,22 @@
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
     <property name="dart.analysis.tool.window.visible" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/can/conditional_transmission.can" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/can/error_frames.can" />
     <property name="settings.editor.selected.configurable" value="reference.settingsdialog.IDE.editor.colors.Color Scheme Font" />
     <property name="show.migrate.to.gradle.popup" value="false" />
+  </component>
+  <component name="RunManager">
+    <configuration default="true" type="ArquillianJUnit" factoryName="" nameIsGenerated="true">
+      <option name="arquillianRunConfiguration">
+        <value>
+          <option name="containerStateName" value="" />
+        </value>
+      </option>
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
@@ -63,6 +61,7 @@
       <updated>1631884972379</updated>
       <workItem from="1631884973514" duration="125000" />
       <workItem from="1632394757192" duration="9512000" />
+      <workItem from="1632459007547" duration="13740000" />
     </task>
     <servers />
   </component>

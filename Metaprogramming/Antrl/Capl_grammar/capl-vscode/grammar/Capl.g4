@@ -4,28 +4,17 @@
 
 grammar Capl;
 
-/* begin - CAPL specific */
-
-/* TODO: Time events */
-/* TODO: I/O events */
-/* TODO: Can communication events */
-/* TODO: Add missing data types like int64 */
-
-/* end - CAPL specific   */
-
-/*
-options {
-	language=CSharp;
-}
-*/
-
 primaryExpression
-    :   Identifier
+    :   canDeclarations
+    |   Identifier
     |   Constant
     |   StringLiteral+
     |   '(' expression ')'
     |   '(' compoundStatement ')'
-    |   variableDeclarationBlock
+    ;
+
+canDeclarations
+    : variableDeclarationBlock* eventDeclarationBlock* timerDeclarationBlock*
     ;
 
 postfixExpression
@@ -35,7 +24,8 @@ postfixExpression
     )
     ('[' expression ']'
     | '(' argumentExpressionList? ')'
-    | '.' Identifier
+    //| '.' Identifier
+    //| Identifier ('.' Identifier)* ('(' '0' ')')?
     | ('++' | '--')
     )*
     ;
@@ -157,10 +147,18 @@ typeSpecifier
     |   'double'
     |   'word'
     |   'dword'
-    |   'message'
     |   'timer'
-    |   'msTimer')
+    |   'msTimer'
+    |   messageType
+    )
     ;
+
+messageType: 'message' (hexConstMessage|Identifier)
+    ;
+
+hexConstMessage : MessageIdHex;
+
+MessageIdHex : '0' [xX] [0-9a-fA-F]+ ;
 
 specifierQualifierList
     :   typeSpecifier specifierQualifierList?
@@ -328,6 +326,18 @@ variableDeclarationBlock
     : 'variables' '{' blockItemList? '}'
     ;
 
+eventDeclarationBlock
+    : 'on' 'key' KeyHit '{' blockItemList? '}';
+
+KeyHit : KeyboardSymbol;
+KeyboardSymbol : '\'' [a-zA-Z|*] '\'';
+
+timerDeclarationBlock
+    : 'on' 'timer' Identifier ('.' (Identifier|'*'))? '{' blockItemList '}'
+    ;
+
+Key : 'key';
+On : 'on';
 Variables : 'variables';
 Break : 'break';
 Case : 'case';
@@ -408,7 +418,7 @@ Ellipsis : '...';
 
 Identifier
     :   IdentifierNondigit (IdentifierNondigit | Digit )*
-    |   'this' '.' Identifier ('.' (Identifier))*
+    |   ('this'|IdentifierNondigit (IdentifierNondigit | Digit )*) '.' Identifier ('.' (Identifier))*
     ;
 
 This : 'this';

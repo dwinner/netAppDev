@@ -4,7 +4,6 @@
 
 grammar Cpl;
 
-
 primaryExpression
     :   Identifier
     |   Constant
@@ -17,7 +16,7 @@ primaryExpression
     ;
 
 genericSelection
-    :   '_Generic' '(' assignmentExpression ',' genericAssocList ')'
+    :   '_Generic' '(' assignmentExpression ',' genericAssocList ')'    
     ;
 
 genericAssocList
