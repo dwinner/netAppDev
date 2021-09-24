@@ -96,6 +96,7 @@ assignmentExpression
     :   conditionalExpression
     |   unaryExpression assignmentOperator assignmentExpression
     |   DigitSequence // for
+    |   hexConstMessage// '0x100' on the right side
     ;
 
 assignmentOperator
@@ -108,6 +109,7 @@ expression
 
 constantExpression
     :   conditionalExpression
+    //|   charConstantExpression
     ;
 
 declaration
@@ -147,17 +149,16 @@ typeSpecifier
     |   'dword'
     |   'timer'
     |   'msTimer'
-    |   'char[]'
     |   messageType
     )
     ;
 
-messageType: 'message' (hexConstMessage|Identifier)
+messageType: 'message' (hexConstMessage|Identifier|'*')
     ;
 
 hexConstMessage : MessageIdHex;
 
-MessageIdHex : '0' [xX] [0-9a-fA-F]+ ;
+MessageIdHex : HexadecimalConstant;// '0' [xX] [0-9a-fA-F]+ ;
 
 specifierQualifierList
     :   typeSpecifier specifierQualifierList?
@@ -248,7 +249,7 @@ statement
 
 labeledStatement
     :   Identifier ':' statement
-    |   'case' constantExpression ':' statement
+    |   'case' (constantExpression) ':' statement
     |   'default' ':' statement
     ;
 
@@ -326,10 +327,11 @@ variableDeclarationBlock
     ;
 
 eventDeclarationBlock
-    : 'on' 'key' KeyHit '{' blockItemList? '}';
+    : 'on' 'key' (KeyHit|'*') '{' blockItemList? '}';
 
-KeyHit : KeyboardSymbol;
-KeyboardSymbol : '\'' [a-zA-Z|*] '\'';
+KeyHit : KeyboardSymbol ;
+
+KeyboardSymbol : '\'' [a-zA-Z] '\'';
 
 timerDeclarationBlock
     : 'on' 'timer' Identifier ('.' (Identifier|'*'))? '{' blockItemList '}'

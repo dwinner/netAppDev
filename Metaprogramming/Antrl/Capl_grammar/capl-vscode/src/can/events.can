@@ -19,7 +19,7 @@ on key * // for all keys
     // print the key that was pressed
     write("The key you have pressed is %c", this);
 
-    switch (this) // “this” holds the value of the key pressed
+    switch (this) // "this" holds the value of the key pressed
     {
         case 'a':
         case 'b':
