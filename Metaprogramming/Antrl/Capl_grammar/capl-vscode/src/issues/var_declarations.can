@@ -1,6 +1,6 @@
 variables
 {
-    char letter_a = “a”;
+    char letter_a = "a";
     int number_days_in_year = 365;
     message wake-up xxx; // see Chapter 11 on using messages for more detail
     timer one_second; // see Chapter 14 on using timers for more detail

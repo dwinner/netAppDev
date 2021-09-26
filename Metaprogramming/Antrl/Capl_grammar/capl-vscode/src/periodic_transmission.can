@@ -1,7 +1,7 @@
 variables
 {
     message 0x555 msg1 = {dlc=1};
-    mstimer timer1; // define timer1
+    msTimer timer1; // define timer1
 }
 
 on start

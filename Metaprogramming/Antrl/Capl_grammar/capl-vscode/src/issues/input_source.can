@@ -14,8 +14,9 @@ on timer one_second_clock
     output(clockMsg);
 }
 
-on start {
-	write("on start");
+on start
+{
+    write("on start");
 }
 
 on message connect

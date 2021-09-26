@@ -19,10 +19,10 @@ on envVar LEDSwitch /* Triggered when LED Switch changes */
 
 void printme (double num)
 {
-    write(“Floating point %f”, num);
+    write("Floating point %f", num);
 }
 
 void printme (int num, char units[])
 {
-    write(“%d %s”, num, units);
+    write("%d %s", num, units);
 }

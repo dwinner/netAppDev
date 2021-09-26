@@ -10,17 +10,20 @@ primaryExpression
     |   StringLiteral+
     |   '(' expression ')'
     |   '(' compoundStatement ')'
-    |   caplBlocks
+    |
+    (   variableBlock
+        |   eventBlock
+        |   timerBlock
+        |   errorFrame
+        |   envBlock
+        |   functionDefinition
+        |   startBlock
+        |   messageBlock
+    )*
     ;
 
-caplBlocks
-    :   variableBlock*
-    |   eventBlock*
-    |   timerBlock*
-    |   errorFrame*
-    |   messageBlock*
-    |   envBlock*
-    |   functionDefinition*
+startBlock
+    : 'on' 'start' '{' blockItemList? '}'
     ;
 
 variableBlock
@@ -362,6 +365,7 @@ declarationList
     :   declaration+
     ;
 
+Start : 'start';
 ErrorFrame : 'errorFrame';
 Key : 'key';
 On : 'on';

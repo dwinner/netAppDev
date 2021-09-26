@@ -15,7 +15,7 @@ void func()
             break;
 
         case '-':
-            result = value1 – value2;
+            result = value1 - value2;
             break;
 
         case '*':
@@ -24,13 +24,13 @@ void func()
 
         case '/':
             if ( value2 == 0)
-                write (“Division by zero!”);
+                write ("Division by zero!");
             else
                 result = value1 / value2;
             break;
 
         default:
-            write (“Unknown operator.”);
+            write ("Unknown operator.");
             break;
     }
 }
