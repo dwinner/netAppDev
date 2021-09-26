@@ -15,12 +15,12 @@ primaryExpression
 
 caplBlocks
     :   variableBlock*
-        eventBlock*
-        timerBlock*
-        errorFrame*
-        messageBlock*
-        envBlock*
-        functionDefinition*
+    |   eventBlock*
+    |   timerBlock*
+    |   errorFrame*
+    |   messageBlock*
+    |   envBlock*
+    |   functionDefinition*
     ;
 
 variableBlock
@@ -44,10 +44,12 @@ errorFrame
     ;
 
 messageBlock
-    :   'on' 'message' (Identifier ('.' (Identifier|'*'|hexConstMessage))?
-    |   '*'
-    |   hexConstMessage
-    // error: CAN2.0x100 |   channelName ('.' hexConstMessage)?
+    :   'on' 'message'
+    (
+        Identifier ('.' (Identifier|'*'|hexConstMessage))?
+        |   '*'
+        |   hexConstMessage
+        //|   Identifier '.' '0x100'
     )   '{' blockItemList '}'
     ;
 
