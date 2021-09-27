@@ -52,8 +52,16 @@ messageBlock
         Identifier ('.' (Identifier|'*'|hexConstMessage))?
         |   '*'
         |   hexConstMessage
-        //|   Identifier '.' '0x100'
+        |   messageHexIdentifier
     )   '{' blockItemList '}'
+    ;
+
+DotWithHex
+    :   '.' HexadecimalConstant
+    ;
+
+messageHexIdentifier
+    :   Identifier DotWithHex
     ;
 
 envBlock
@@ -196,7 +204,8 @@ typeSpecifier
     )
     ;
 
-messageType: 'message' (hexConstMessage|Identifier|'*')
+messageType
+    : 'message' (hexConstMessage|Identifier|'*')
     ;
 
 hexConstMessage : MessageIdHex;
