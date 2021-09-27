@@ -2,8 +2,7 @@ variables
 {
     message EngineTemp eTemp;
 
-    // or use its numeric identifier
-    message 0x100 eTemp = {DLC = 8};
+    // or use its numeric identifier    
     eTemp.DLC = 8;
     
     // two instances of the same message
@@ -12,7 +11,6 @@ variables
     message * eTemp2 = { DLC = 8};
     eTemp2.ID = 0x100;
 }
-
 
 on key * // for all keys
 {
@@ -36,12 +34,6 @@ on message CAN1.* // for all messages received on CAN channel 1
 {
     // print
     write("The message received on CAN channel 1 is %c", this.id);
-}
-
-on message 0x100 // for messages with ID equal to 100 in hex only
-{
-    // print
-    write("The message with ID 0x100 is received.");
 }
 
 on envVar envIgnitionSwitch

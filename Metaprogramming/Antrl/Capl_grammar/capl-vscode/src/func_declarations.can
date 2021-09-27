@@ -20,10 +20,7 @@ variables
     int value = 20;
     int value2 = 0x14;
     float value3 = 0.23;
-    float value4 = 23E-2;
-
-    //char value5 = 'B';
-    char value6 = '8';
+    float value4 = 23E-2;    
     char value7 = '?';
 
     char value8 = 0x42;

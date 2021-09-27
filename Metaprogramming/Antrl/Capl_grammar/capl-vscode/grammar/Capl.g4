@@ -10,8 +10,7 @@ primaryExpression
     |   StringLiteral+
     |   '(' expression ')'
     |   '(' compoundStatement ')'
-    |
-    (   variableBlock
+    |   (   variableBlock
         |   eventBlock
         |   timerBlock
         |   errorFrame
@@ -19,7 +18,7 @@ primaryExpression
         |   functionDefinition
         |   startBlock
         |   messageBlock
-    )*
+        |   stopMeasurement)*
     ;
 
 startBlock
@@ -36,33 +35,34 @@ eventBlock
 
 KeyHit :    KeyboardSymbol ;
 
-KeyboardSymbol :    '\'' [a-zA-Z] '\'' ;
+KeyboardSymbol
+    :   '\'' [a-zA-Z1-9] '\''
+    |   'F1'    // TODO: enumerate all printable symbols there
+    ;
 
 timerBlock
     :   'on' 'timer' Identifier ('.' (Identifier|'*'))? '{' blockItemList '}'
     ;
 
-errorFrame
-    :   'on' 'errorFrame' '{' blockItemList? '}'
+errorFrame  // TODO: this should be case insensitive
+    :   'on' ('errorFrame'|'errorframe') '{' blockItemList? '}'
     ;
 
 messageBlock
-    :   'on' 'message'
-    (
-        Identifier ('.' (Identifier|'*'|hexConstMessage))?
-        |   '*'
-        |   hexConstMessage
-        |   messageHexIdentifier
-    )   '{' blockItemList '}'
+    :   'on' 'message' messageIdentifier '{' blockItemList '}'
     ;
 
-DotWithHex
+stopMeasurement
+    :    'on' 'stopMeasurement' '{' blockItemList '}'
+    ;
+
+/*DotWithHex
     :   '.' HexadecimalConstant
     ;
 
 messageHexIdentifier
     :   Identifier DotWithHex
-    ;
+    ;*/
 
 envBlock
     :   'on' 'envVar' Identifier '{' blockItemList '}'
@@ -147,7 +147,7 @@ assignmentExpression
     :   conditionalExpression
     |   unaryExpression assignmentOperator assignmentExpression
     |   DigitSequence // for
-    |   hexConstMessage// '0x100' on the right side
+    //|   hexConstMessage
     ;
 
 assignmentOperator
@@ -200,17 +200,24 @@ typeSpecifier
     |   'dword'
     |   'timer'
     |   'msTimer'
-    |   messageType
-    )
+    |   messageType)
     ;
 
 messageType
-    : 'message' (hexConstMessage|Identifier|'*')
+    : 'message' messageIdentifier
     ;
 
-hexConstMessage : MessageIdHex;
+//decimalConstMessage: MessageIdDec;
+//MessageIdDec : DecimalConstant;
+//hexConstMessage : MessageIdHex;
+//MessageIdHex : HexadecimalConstant;
 
-MessageIdHex : HexadecimalConstant;// '0' [xX] [0-9a-fA-F]+ ;
+messageIdentifier
+    :   Identifier ('.' (Identifier|'*'/*|hexConstMessage*/))?
+    |   '*'
+    //|   hexConstMessage
+    //|   decimalConstMessage
+    ;
 
 specifierQualifierList
     :   typeSpecifier specifierQualifierList?
@@ -374,6 +381,7 @@ declarationList
     :   declaration+
     ;
 
+StopMeasurement : 'stopMeasurement';
 Start : 'start';
 ErrorFrame : 'errorFrame';
 Key : 'key';

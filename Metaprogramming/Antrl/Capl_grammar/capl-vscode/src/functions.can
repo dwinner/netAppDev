@@ -3,13 +3,14 @@ variables
     double x;
     x = cos(PI); // returns –1, PI is a built-in constant
 
-    msTimer mytimer; // timer
-    message 100 msg; // CAN message
-
+    msTimer mytimer; // timer    
     msTimer t1;
 
     int mat1[2][2] = {{1,2}, {3,4}};
     int mat2[3][3] = {{1,2,3}, {4,5,6}, {7,8,9}};
+
+    int mat3[3] = {1,2,3};
+    int m=1;
 }
 
 on message * // the * symbol is a wildcard for all messages
@@ -62,14 +63,6 @@ on timer mytimer
     }
     else
         write("F1 released");
-}
-
-on message 100 // this example triggers all the Logging blocks
-{
-    writeToLog("Logging starts");
-    // this example sets the pre-trigger time before logging to 25 milliseconds:
-    setPreTrigger(25);
-    trigger(); // start logging
 }
 
 on key *

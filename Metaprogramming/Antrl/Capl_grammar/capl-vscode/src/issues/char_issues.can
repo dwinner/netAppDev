@@ -1,0 +1,5 @@
+variables
+{
+    char value5 = 'B';
+    char value6 = '8';
+}

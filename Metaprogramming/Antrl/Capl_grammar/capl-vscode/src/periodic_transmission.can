@@ -1,6 +1,6 @@
 variables
-{
-    message 0x555 msg1 = {dlc=1};
+{    
+    message * mgs1;
     msTimer timer1; // define timer1
 }
 

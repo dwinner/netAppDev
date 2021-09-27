@@ -15,8 +15,7 @@ variables
     message EngData EDMsg; // declares EDMsg as type EngData
     EDMsg.EngSpeed = 50000; // sets raw value, the same value on the bus
     EDMsg.EngSpeed.phys = 50000; // sets physical value
-
-    message 0x100 msg1 = {dlc = 8}; // declare message to send
+    
     msg1.byte(0) = 0x12; // set the data field
     msg1.long(1) = 0x90785634;
     msg1.CarSpeed = 100; // assume CarSpeed occupies the last three bytes
@@ -28,8 +27,8 @@ on message ABSdata
 {
     if (this.DIR == RX)
     {
-        write(“Message ID = %d is received from channel %d”, this.ID, this.CAN);
-        write(“The signal value of car speed is %d”, this.CarSpeed);
+        write("Message ID = %d is received from channel %d", this.ID, this.CAN);
+        write("The signal value of car speed is %d", this.CarSpeed);
     }
 }
 

@@ -1,5 +1,0 @@
-on message CAN2.0x100 // for messages with ID equal to 0x100 from CAN channel 2
-{    
-    // print
-    write("The message with ID 0x100 is received from CAN channel 2.");
-}
