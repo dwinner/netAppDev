@@ -1,4 +1,4 @@
-// Generated from d:\Projects\dotNET\appDev-NET\Metaprogramming\Antrl\Capl_grammar\capl-vscode\grammar\Capl.g4 by ANTLR 4.8
+// Generated from d:\Projects\dotNET\appDev-NET\Metaprogramming\Antrl\Capl_grammar\capl-vscode\grammar\CaplParser.g4 by ANTLR 4.8
 import org.antlr.v4.runtime.Lexer;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.Token;
@@ -138,7 +138,7 @@ public class CaplLexer extends Lexer {
 	}
 
 	@Override
-	public String getGrammarFileName() { return "Capl.g4"; }
+	public String getGrammarFileName() { return "CaplParser.g4"; }
 
 	@Override
 	public String[] getRuleNames() { return ruleNames; }
