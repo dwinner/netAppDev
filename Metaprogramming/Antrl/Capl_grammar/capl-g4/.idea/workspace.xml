@@ -3,38 +3,13 @@
   <component name="ChangeListManager">
     <list default="true" id="950f7524-631c-4812-8c77-3d61ee540d20" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gen/CaplLexer.interp" beforeDir="false" afterPath="$PROJECT_DIR$/gen/CaplLexer.interp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/gen/CaplLexer.java" beforeDir="false" afterPath="$PROJECT_DIR$/gen/CaplLexer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gen/CaplLexer.tokens" beforeDir="false" afterPath="$PROJECT_DIR$/gen/CaplLexer.tokens" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/grammar/.antlr/CPP14Lexer.interp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/grammar/.antlr/CPP14Lexer.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/grammar/.antlr/CPP14Lexer.tokens" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/grammar/.antlr/CPP14Parser.interp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/grammar/.antlr/CPP14Parser.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/grammar/.antlr/CPP14Parser.tokens" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/grammar/.antlr/Capl.interp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/grammar/.antlr/Capl.tokens" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/grammar/.antlr/CaplLexer.interp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/grammar/.antlr/CaplLexer.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/grammar/.antlr/CaplLexer.tokens" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/grammar/.antlr/CaplParser.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/grammar/.antlr/Cpl.interp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/grammar/.antlr/Cpl.tokens" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/grammar/.antlr/CplLexer.interp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/grammar/.antlr/CplLexer.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/grammar/.antlr/CplLexer.tokens" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/grammar/.antlr/CplParser.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/grammar/CaplLexer.g4" beforeDir="false" afterPath="$PROJECT_DIR$/grammar/CaplLexer.g4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/grammar/CaplLexer.interp" beforeDir="false" afterPath="$PROJECT_DIR$/grammar/CaplLexer.interp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/grammar/CaplLexer.tokens" beforeDir="false" afterPath="$PROJECT_DIR$/grammar/CaplLexer.tokens" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/grammar/CaplParser.g4" beforeDir="false" afterPath="$PROJECT_DIR$/grammar/CaplParser.g4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/conditional_transmission.can" beforeDir="false" afterPath="$PROJECT_DIR$/src/conditional_transmission.can" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/events.can" beforeDir="false" afterPath="$PROJECT_DIR$/src/events.can" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/example.can" beforeDir="false" afterPath="$PROJECT_DIR$/src/example.can" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/func_declarations.can" beforeDir="false" afterPath="$PROJECT_DIR$/src/func_declarations.can" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/functions.can" beforeDir="false" afterPath="$PROJECT_DIR$/src/functions.can" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/issues/char_issues.can" beforeDir="false" afterPath="$PROJECT_DIR$/src/issues/char_issues.can" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/switch_stmt.can" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/grammar/CaplLexer.g4" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/grammar/CaplLexer.interp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/grammar/CaplLexer.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/grammar/CaplLexer.tokens" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/grammar/CaplParser.g4" beforeDir="false" afterPath="$PROJECT_DIR$/grammar/Capl.g4" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/issues/messages_issues.can" beforeDir="false" afterPath="$PROJECT_DIR$/src/issues/messages_issues.can" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -57,18 +32,20 @@
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
     <property name="dart.analysis.tool.window.visible" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/issues/char_issues.can" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/issues/messages_issues.can" />
     <property name="settings.editor.selected.configurable" value="reference.settingsdialog.IDE.editor.colors.Color Scheme Font" />
     <property name="show.migrate.to.gradle.popup" value="false" />
   </component>
   <component name="RunManager">
-    <configuration default="true" type="ArquillianJUnit" factoryName="" nameIsGenerated="true">
+    <configuration default="true" type="ArquillianTestNG" factoryName="" nameIsGenerated="true">
       <option name="arquillianRunConfiguration">
         <value>
           <option name="containerStateName" value="" />
         </value>
       </option>
-      <option name="TEST_OBJECT" value="class" />
+      <option name="TEST_OBJECT" value="CLASS" />
+      <properties />
+      <listeners />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -88,6 +65,7 @@
       <workItem from="1632648862546" duration="2862000" />
       <workItem from="1632728107923" duration="19453000" />
       <workItem from="1632762053826" duration="100000" />
+      <workItem from="1632825040400" duration="1390000" />
     </task>
     <servers />
   </component>

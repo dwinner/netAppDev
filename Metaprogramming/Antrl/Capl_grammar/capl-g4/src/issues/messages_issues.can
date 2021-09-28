@@ -1,5 +1,6 @@
 variables
 {
+    message * all;
     message 100 msg; // CAN message
     msTimer myTimer; // creates a millisecond timer
     message wake-up xxx; // see Chapter 11 on using messages for more detail
