@@ -38,7 +38,7 @@ errorFrame : // TODO: this should be case insensitive
 	'on' ('errorFrame') '{' blockItemList? '}';
 
 messageBlock:
-	'on' 'message' messageIdentifier '{' blockItemList '}';
+	'on' messageType '{' blockItemList '}';
 
 stopMeasurement: 'on' 'stopMeasurement' '{' blockItemList '}';
 
@@ -152,18 +152,6 @@ typeSpecifier: (
 		| 'msTimer'
 		| messageType
 	);
-
-messageType: 'message' messageIdentifier;
-
-messageIdentifier
-    :   Identifier ('.' (Identifier | '*'))?
-    //|   decimalMessage
-    //|    'wake-up'
-    |   '*';
-
-//decimalMessage : MessageDecId;
-
-//MessageDecId : [1-9] [0-9]* ;
 
 specifierQualifierList: typeSpecifier specifierQualifierList?;
 
@@ -357,11 +345,18 @@ KeyIdentifier: ('\'' (NonzeroDigit | CChar) '\'')
 Quote: '\'';
 //FOne : 'F1'; FTwo : 'F2';
 
+messageType
+    :   'message' Identifier ('.' (Identifier | '*'))?
+    |   'message' '*'
+    //|   'message' Identifier '.' Constant
+    |   'message' Constant
+    |   'message' Identifier '-' Identifier
+    ;
+
 Identifier:
 	IdentifierNondigit (IdentifierNondigit | Digit)*
-	| ('this' | IdentifierNondigit (IdentifierNondigit | Digit)*) '.' Identifier (
-		'.' (Identifier)
-	)*;
+	|   ('this' | IdentifierNondigit (IdentifierNondigit | Digit)*) '.' Identifier ('.' (Identifier))*
+	|   IdentifierNondigit (IdentifierNondigit | Digit)* '.' Constant;
 
 This: 'this';
 Dot: '.';
