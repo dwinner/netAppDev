@@ -1,6 +1,6 @@
 variables
 {
-    //message 0x555 msg1 = {dlc=1};
+    message 0x555 msg1 = {dlc=1};
     message * msg1;
 }
 
