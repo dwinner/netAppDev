@@ -2,19 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="950f7524-631c-4812-8c77-3d61ee540d20" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/grammar/CaplLexer.g4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/grammar/.antlr/CaplLexer.java" beforeDir="false" afterPath="$PROJECT_DIR$/grammar/.antlr/CaplLexer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/grammar/.antlr/CaplParser.java" beforeDir="false" afterPath="$PROJECT_DIR$/grammar/.antlr/CaplParser.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/grammar/CPP14Lexer.g4" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/grammar/CPP14Parser.g4" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/grammar/Capl.g4" beforeDir="false" afterPath="$PROJECT_DIR$/grammar/CaplParser.g4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/grammar/CaplGrammar.Core/CaplLexer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/grammar/CaplGrammar.Core/CaplLexer.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/grammar/CaplGrammar.Core/CaplLexer.interp" beforeDir="false" afterPath="$PROJECT_DIR$/grammar/CaplGrammar.Core/CaplLexer.interp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/grammar/CaplGrammar.Core/CaplLexer.tokens" beforeDir="false" afterPath="$PROJECT_DIR$/grammar/CaplGrammar.Core/CaplLexer.tokens" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/grammar/CaplGrammar.Core/CaplParser.cs" beforeDir="false" afterPath="$PROJECT_DIR$/grammar/CaplGrammar.Core/CaplParser.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/grammar/Cpl.g4" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/grammar/gen_code.bat" beforeDir="false" afterPath="$PROJECT_DIR$/grammar/gen_code.bat" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gen/CaplLexer.interp" beforeDir="false" afterPath="$PROJECT_DIR$/gen/CaplLexer.interp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gen/CaplLexer.java" beforeDir="false" afterPath="$PROJECT_DIR$/gen/CaplLexer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/functions.can" beforeDir="false" afterPath="$PROJECT_DIR$/src/functions.can" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

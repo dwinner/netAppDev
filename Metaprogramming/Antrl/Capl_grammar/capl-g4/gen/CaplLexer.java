@@ -1,4 +1,4 @@
-// Generated from D:/Projects/dotNET/appDev-NET/Metaprogramming/Antrl/Capl_grammar/capl-vscode/grammar\CaplLexer.g4 by ANTLR 4.9.1
+// Generated from D:/Projects/dotNET/appDev-NET/Metaprogramming/Antrl/Capl_grammar/capl-g4/grammar\CaplLexer.g4 by ANTLR 4.9.1
 import org.antlr.v4.runtime.Lexer;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.Token;

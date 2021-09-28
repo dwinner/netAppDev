@@ -77,7 +77,7 @@ on timer updateTimer
     setTimer(updateTimer, 100);
 }
 
-on errorframe
+on errorFrame
 {
     startStatisticAcquisition();
 }
