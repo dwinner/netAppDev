@@ -29,7 +29,8 @@ startBlock: 'on' 'start' '{' blockItemList? '}';
 variableBlock: 'variables' '{' blockItemList? '}';
 
 // TODO: enumerate all printable chars for keyboard input there
-eventBlock: 'on' 'key' KeyIdentifier '{' blockItemList? '}';
+eventBlock:
+    'on' keyEventType '{' blockItemList '}';
 
 timerBlock:
 	'on' 'timer' Identifier ('.' (Identifier | '*'))? '{' blockItemList '}';
@@ -336,22 +337,33 @@ Equal: '==';
 NotEqual: '!=';
 Ellipsis: '...';
 
-KeyIdentifier: ('\'' (NonzeroDigit | CChar) '\'')
-	| Star
-	| 'F1'
-	| 'F2'
-	; //  TODO: etc...
-
-Quote: '\'';
-//FOne : 'F1'; FTwo : 'F2';
-
 messageType
     :   'message' Identifier ('.' (Identifier | '*'))?
     |   'message' '*'
-    //|   'message' Identifier '.' Constant
     |   'message' Constant
     |   'message' Identifier '-' Identifier
     ;
+
+keyEventType
+    :   'key' '\'' Constant '\''
+    |   'key' ('F1'|'F2'|'F3'|'F4'|'F5'|'F6'|'F7'|'F8'|'F9'|'F10'|'F11'|'F12')
+    |   'key' '*'
+    ;
+
+F1  : 'F1';
+F2  : 'F2';
+F3  : 'F3';
+F4  : 'F4';
+F5  : 'F5';
+F6  : 'F6';
+F7  : 'F7';
+F8  : 'F8';
+F9  : 'F9';
+F10 : 'F10';
+F11 : 'F11';
+F12 : 'F12';
+
+//L_S_STRING  : '\'' ( ('\'\'') | ('\\'+ ~'\\') | ~('\'' | '\\') )*? '\'';
 
 Identifier:
 	IdentifierNondigit (IdentifierNondigit | Digit)*
