@@ -28,18 +28,14 @@ startBlock: 'on' 'start' '{' blockItemList? '}';
 
 variableBlock: 'variables' '{' blockItemList? '}';
 
-// TODO: enumerate all printable chars for keyboard input there
-eventBlock:
-    'on' keyEventType '{' blockItemList '}';
+eventBlock: 'on' keyEventType '{' blockItemList '}';
 
 timerBlock:
 	'on' 'timer' Identifier ('.' (Identifier | '*'))? '{' blockItemList '}';
 
-errorFrame : // TODO: this should be case insensitive
-	'on' ('errorFrame') '{' blockItemList? '}';
+errorFrame: 'on' ('errorFrame') '{' blockItemList? '}';
 
-messageBlock:
-	'on' messageType '{' blockItemList '}';
+messageBlock: 'on' messageType '{' blockItemList '}';
 
 stopMeasurement: 'on' 'stopMeasurement' '{' blockItemList '}';
 
@@ -337,36 +333,49 @@ Equal: '==';
 NotEqual: '!=';
 Ellipsis: '...';
 
-messageType
-    :   'message' Identifier ('.' (Identifier | '*'))?
-    |   'message' '*'
-    |   'message' Constant
-    |   'message' Identifier '-' Identifier
-    ;
+messageType:
+	'message' Identifier ('.' (Identifier | '*'))?
+	| 'message' '*'
+	| 'message' Constant
+	| 'message' Identifier '-' Identifier;
 
-keyEventType
-    :   'key' Constant
-    |   'key' ('F1'|'F2'|'F3'|'F4'|'F5'|'F6'|'F7'|'F8'|'F9'|'F10'|'F11'|'F12')
-    |   'key' '*'
-    ;
+keyEventType:
+	'key' Constant
+	| 'key' (
+		'F1'
+		| 'F2'
+		| 'F3'
+		| 'F4'
+		| 'F5'
+		| 'F6'
+		| 'F7'
+		| 'F8'
+		| 'F9'
+		| 'F10'
+		| 'F11'
+		| 'F12'
+	)
+	| 'key' '*';
 
-F1  : 'F1';
-F2  : 'F2';
-F3  : 'F3';
-F4  : 'F4';
-F5  : 'F5';
-F6  : 'F6';
-F7  : 'F7';
-F8  : 'F8';
-F9  : 'F9';
-F10 : 'F10';
-F11 : 'F11';
-F12 : 'F12';
+F1: 'F1';
+F2: 'F2';
+F3: 'F3';
+F4: 'F4';
+F5: 'F5';
+F6: 'F6';
+F7: 'F7';
+F8: 'F8';
+F9: 'F9';
+F10: 'F10';
+F11: 'F11';
+F12: 'F12';
 
 Identifier:
 	IdentifierNondigit (IdentifierNondigit | Digit)*
-	|   ('this' | IdentifierNondigit (IdentifierNondigit | Digit)*) '.' Identifier ('.' (Identifier))*
-	|   IdentifierNondigit (IdentifierNondigit | Digit)* '.' Constant;
+	| ('this' | IdentifierNondigit (IdentifierNondigit | Digit)*) '.' Identifier (
+		'.' (Identifier)
+	)*
+	| IdentifierNondigit (IdentifierNondigit | Digit)* '.' Constant;
 
 This: 'this';
 Dot: '.';
@@ -485,7 +494,13 @@ fragment SChar:
 	~["\\\r\n]
 	| EscapeSequence
 	| '\\\n' // Added line
-	| '\\\r\n' ; // Added line
+	| '\\\r\n'; // Added line
+
+IncludeDirective:
+	'#' Whitespace? 'include' Whitespace? (
+		('"' ~[\r\n]* '"')
+		| ('<' ~[\r\n]* '>')
+	) Whitespace? Newline -> skip;
 
 Whitespace: [ \t]+ -> skip;
 
