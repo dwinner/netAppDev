@@ -1,12 +1,5 @@
 lexer grammar CaplLexer;
 
-KeyHit :    KeyboardSymbol ;
-
-KeyboardSymbol
-    :   '\'' [a-zA-Z1-9] '\''
-    |   'F1'    // TODO: enumerate all printable symbols there
-    ;
-
 StopMeasurement : 'stopMeasurement';
 Start : 'start';
 ErrorFrame : 'errorFrame';
@@ -57,7 +50,6 @@ Plus : '+';
 PlusPlus : '++';
 Minus : '-';
 MinusMinus : '--';
-Star : '*';
 Div : '/';
 Mod : '%';
 
@@ -86,13 +78,25 @@ RightShiftAssign : '>>=';
 AndAssign : '&=';
 XorAssign : '^=';
 OrAssign : '|=';
-
+Star : '*';
 Equal : '==';
 NotEqual : '!=';
 Ellipsis : '...';
 
+KeyIdentifier
+    :   ('\'' (NonzeroDigit|CChar) '\'')
+    |   Star
+    |   'F1'
+    |   'F2'
+    //  TODO: etc...
+    ;
+
+Quote : '\'';
+//FOne : 'F1';
+//FTwo : 'F2';
+
 Identifier
-    :   IdentifierNondigit (IdentifierNondigit | Digit )*
+    :   IdentifierNondigit (IdentifierNondigit | Digit)*
     |   ('this'|IdentifierNondigit (IdentifierNondigit | Digit )*) '.' Identifier ('.' (Identifier))*
     ;
 

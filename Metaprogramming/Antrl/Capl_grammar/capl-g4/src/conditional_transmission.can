@@ -4,15 +4,6 @@ variables
     int conditionA = 0;
 }
 
-on key 'a'
-{
-    conditionA =! conditionA; // toggle conditionA
-    if(conditionA == 1) // if condition is active
-    {
-        setTimer(timerA,200); // then start timer
-    }
-}
-
 on timer timerA
 {
     if(conditionA == 1) // if condition is still true

@@ -12,18 +12,6 @@ variables
     eTemp2.ID = 0x100;
 }
 
-on key * // for all keys
-{
-    // print the key that was pressed
-    write("The key you have pressed is %c", this);
-}
-
-on key 'a' // for the lowercase 'a' key only
-{
-    // print the ‘a’ key
-    write("The 'a' key is pressed");
-}
-
 on message * // for all messages
 {
     // print

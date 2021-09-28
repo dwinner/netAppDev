@@ -8,16 +8,6 @@ variables
     long delayTimerPeriod = 5; // initialize delay of 5 seconds
 }
 
-on key 'a'
-{
-    condition = !condition; // toggle condition
-    if (condition == 1) // if condition is true
-    {
-        cancelTimer(timerA); // cancel the timer
-        setTimer(timerA,100); // then start timer
-    }
-}
-
 on timer timerA
 {
     if (condition == 1) // if condition is still true

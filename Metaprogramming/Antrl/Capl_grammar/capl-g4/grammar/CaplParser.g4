@@ -26,15 +26,16 @@ primaryExpression
     ;
 
 startBlock
-    : 'on' 'start' '{' blockItemList? '}'
+    :   'on' 'start' '{' blockItemList? '}'
     ;
 
 variableBlock
     :   'variables' '{' blockItemList? '}'
     ;
 
+// TODO: enumerate all printable chars for keyboard input there
 eventBlock
-    :   'on' 'key' (KeyHit|'*') '{' blockItemList? '}'
+    :   'on' 'key' KeyIdentifier '{' blockItemList? '}'
     ;
 
 timerBlock
