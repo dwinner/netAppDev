@@ -11,7 +11,8 @@ primaryExpression: Identifier
 	| StringLiteral+
 	| '(' expression ')'
 	| '(' compoundStatement ')'
-	| ( variableBlock
+	| ( includeBlock
+	    | variableBlock
 		| eventBlock
 		| timerBlock
 		| errorFrame
@@ -24,6 +25,10 @@ primaryExpression: Identifier
 		| diagRequestBlock
 		| diagResponseBlock)+
 	;
+
+includeBlock
+    : 'includes' '{' IncludeDirective* '}'
+    ;
 
 startBlock
     : 'on' 'start' '{' blockItemList? '}'
@@ -369,6 +374,7 @@ declarationList: declaration+;
 
 /* Capl lexer */
 
+Includes: 'includes';
 Const: 'const';
 StopMeasurement: 'stopMeasurement';
 Start: 'start';
@@ -655,7 +661,7 @@ IncludeDirective:
 	'#' Whitespace? 'include' Whitespace? (
 		('"' ~[\r\n]* '"')
 		| ('<' ~[\r\n]* '>')
-	) Whitespace? Newline -> skip;
+	) Whitespace? Newline -> channel(HIDDEN);
 
 Whitespace: [ \t]+ -> skip;
 
