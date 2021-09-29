@@ -17,6 +17,7 @@ primaryExpression: Identifier
 		| errorFrame
 		| envBlock
 		| functionDefinition
+		| enumSpecifier
 		| startBlock
 		| messageBlock
 		| stopMeasurement
@@ -209,6 +210,7 @@ typeSpecifier
 		| 'qword'
 		| 'timer'
 		| 'msTimer'
+		| enumSpecifier
 		| messageType
 		| diagRequestType
 		| diagResponseType)
@@ -441,6 +443,25 @@ Star: '*';
 Equal: '==';
 NotEqual: '!=';
 Ellipsis: '...';
+
+enumSpecifier
+    :   'enum' Identifier? '{' enumeratorList ','? '}' ';'?
+    |   'enum' Identifier
+    ;
+
+enumeratorList
+    :   enumerator (',' enumerator)*
+    ;
+
+enumerator
+    :   enumerationConstant ('=' constantExpression)?
+    ;
+
+enumerationConstant
+    :   Identifier
+    ;
+
+Enum : 'enum';
 
 messageType
     : 'message' Identifier ('.' (Identifier | '*'))?
