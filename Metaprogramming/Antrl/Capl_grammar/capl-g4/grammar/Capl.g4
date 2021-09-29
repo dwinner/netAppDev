@@ -23,7 +23,8 @@ primaryExpression: Identifier
 		| messageBlock
 		| stopMeasurement
 		| diagRequestBlock
-		| diagResponseBlock)+
+		| diagResponseBlock
+		| signalBlock)+
 	;
 
 includeBlock
@@ -60,6 +61,10 @@ diagRequestBlock
 
 diagResponseBlock
     : 'on' diagResponseType '{' blockItemList '}'
+    ;
+
+signalBlock
+    : 'on' signalType '{' blockItemList '}'
     ;
 
 stopMeasurement
@@ -218,7 +223,8 @@ typeSpecifier
 		| enumSpecifier
 		| messageType
 		| diagRequestType
-		| diagResponseType)
+		| diagResponseType
+		| signalType)
 		;
 
 specifierQualifierList
@@ -497,6 +503,15 @@ diagResponseType
 DiagResponse: 'diagResponse';
 DoubleColon: '::';
 
+signalType
+    : 'signal' Identifier (('.'|'::') (Identifier | '*'))?
+	| 'signal' '*'
+	| 'signal' Constant
+	| 'signal' Identifier '-' Identifier
+	;
+
+Signal: 'signal';
+
 keyEventType
     : 'key' Constant
 	| 'key' (
@@ -512,6 +527,21 @@ keyEventType
 		| 'F10'
 		| 'F11'
 		| 'F12'
+		| 'ctrlF1'
+		| 'ctrlF2'
+		| 'ctrlF3'
+		| 'ctrlF4'
+		| 'ctrlF5'
+		| 'ctrlF6'
+		| 'ctrlF7'
+		| 'ctrlF8'
+		| 'ctrlF9'
+		| 'ctrlF10'
+		| 'ctrlF11'
+		| 'ctrlF12'
+		| 'PageUp'
+		| 'PageDown'
+		| 'Home'
 	)
 	| 'key' '*'
 	;
@@ -529,6 +559,21 @@ F9: 'F9';
 F10: 'F10';
 F11: 'F11';
 F12: 'F12';
+CtrlF1: 'ctrlF1';
+CtrlF2: 'ctrlF2';
+CtrlF3: 'ctrlF3';
+CtrlF4: 'ctrlF4';
+CtrlF5: 'ctrlF5';
+CtrlF6: 'ctrlF6';
+CtrlF7: 'ctrlF7';
+CtrlF8: 'ctrlF8';
+CtrlF9: 'ctrlF9';
+CtrlF10: 'ctrlF10';
+CtrlF11: 'ctrlF11';
+CtrlF12: 'ctrlF12';
+PageUp: 'PageUp';
+PageDown: 'PageDown';
+Home: 'Home';
 
 Identifier
     : IdentifierNondigit (IdentifierNondigit | Digit)*

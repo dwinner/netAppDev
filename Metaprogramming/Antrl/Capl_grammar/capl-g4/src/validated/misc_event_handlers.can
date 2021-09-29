@@ -19,7 +19,7 @@ on signal sigTemp
 
 on timer tmrCycle
 {
-    write ("within cycle")
+    write ("within cycle");
 }
 
 on key 'a'
