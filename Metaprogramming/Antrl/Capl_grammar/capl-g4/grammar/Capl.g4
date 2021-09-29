@@ -19,7 +19,9 @@ primaryExpression: Identifier
 		| functionDefinition
 		| startBlock
 		| messageBlock
-		| stopMeasurement)+
+		| stopMeasurement
+		| diagRequestBlock
+		| diagResponseBlock)+
 	;
 
 startBlock
@@ -44,6 +46,14 @@ errorFrame
 
 messageBlock
     : 'on' messageType '{' blockItemList '}'
+    ;
+
+diagRequestBlock
+    : 'on' diagRequestType '{' blockItemList '}'
+    ;
+
+diagResponseBlock
+    : 'on' diagResponseType '{' blockItemList '}'
     ;
 
 stopMeasurement
@@ -199,7 +209,9 @@ typeSpecifier
 		| 'qword'
 		| 'timer'
 		| 'msTimer'
-		| messageType)
+		| messageType
+		| diagRequestType
+		| diagResponseType)
 		;
 
 specifierQualifierList
@@ -359,7 +371,6 @@ Const: 'const';
 StopMeasurement: 'stopMeasurement';
 Start: 'start';
 ErrorFrame: 'errorFrame';
-Key: 'key';
 On: 'on';
 Variables: 'variables';
 Break: 'break';
@@ -377,7 +388,6 @@ If: 'if';
 Int: 'int';
 Word: 'word';
 Dword: 'dword';
-Message: 'message';
 EnvVar: 'envVar';
 Timer: 'timer';
 MsTimer: 'msTimer';
@@ -439,6 +449,27 @@ messageType
 	| 'message' Identifier '-' Identifier
 	;
 
+Message: 'message';
+
+diagRequestType
+    : 'diagRequest' Identifier (('.'|'::') (Identifier | '*'))?
+	| 'diagRequest' '*'
+	| 'diagRequest' Constant
+	| 'diagRequest' Identifier '-' Identifier
+	;
+
+DiagRequest: 'diagRequest';
+
+diagResponseType
+    : 'diagResponse' Identifier (('.'|'::') (Identifier | '*'))?
+	| 'diagResponse' '*'
+	| 'diagResponse' Constant
+	| 'diagResponse' Identifier '-' Identifier
+	;
+
+DiagResponse: 'diagResponse';
+DoubleColon: '::';
+
 keyEventType
     : 'key' Constant
 	| 'key' (
@@ -458,6 +489,7 @@ keyEventType
 	| 'key' '*'
 	;
 
+Key: 'key';
 F1: 'F1';
 F2: 'F2';
 F3: 'F3';
