@@ -193,6 +193,7 @@ typeSpecifier
 		| 'double'
 		| 'word'
 		| 'dword'
+		| 'qword'
 		| 'timer'
 		| 'msTimer'
 		| messageType)

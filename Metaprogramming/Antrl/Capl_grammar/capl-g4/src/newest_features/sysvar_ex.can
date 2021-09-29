@@ -1,0 +1,10 @@
+on sysvar sysvar::VTS::Speed::PWMFreq 
+{ 
+    if (@sysvar::VTS::Speed::PWMFreq > 100) 
+        TestSupplyTextEvent (“Speed100”); 
+}
+ 
+testcase TC () 
+{   
+    TestWaitForTextEvent (“Speed100”, 2000);  
+}

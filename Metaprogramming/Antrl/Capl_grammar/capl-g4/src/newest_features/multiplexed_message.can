@@ -1,0 +1,14 @@
+variables
+{
+    multiplexed_message * mpMessage;
+}
+
+on message mpMessage
+{
+    write("received");
+}
+
+on multiplexed_message message mpMessage
+{
+    write("received");
+}

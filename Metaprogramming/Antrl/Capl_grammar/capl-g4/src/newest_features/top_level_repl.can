@@ -1,0 +1,8 @@
+int i = 100; // Declaration and initialization of an integer
+char ch = 'a'; // Declaration and initialization of a character
+float x; // Declaration of a floating point number
+write ("Hundred as decimal number: %d", i);
+write ("Hundred as hexadecimal number: %x", i);
+write ("Pi as floating point number: %f", pi);
+write ("The decimal ASCII code of %c is %d", ch, ch);
+write ("The value of x is %f", x);
