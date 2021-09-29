@@ -6,5 +6,11 @@ on sysvar sysvar::VTS::Speed::PWMFreq
  
 testcase TC () 
 {   
-    TestWaitForTextEvent (“Speed100”, 2000);  
+    TestWaitForTextEvent (“Speed100”, 2000);
+    @sysvar::Lights::LightDisplay = tmpLightDsp;    
+}
+
+on message EngineState
+{
+    @sysvar::Engine::EngineSpeedDspMeter = this.EngineSpeed / 1000.0;
 }

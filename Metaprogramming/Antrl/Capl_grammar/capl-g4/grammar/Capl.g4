@@ -172,7 +172,10 @@ declarationSpecifiers2
 
 declarationSpecifier
     : typeSpecifier
+    | typeQualifier
     ;
+
+typeQualifier: 'const';
 
 initDeclaratorList
     : initDeclarator (',' initDeclarator)*
@@ -200,7 +203,7 @@ typeSpecifier
 		;
 
 specifierQualifierList
-    : typeSpecifier specifierQualifierList?
+    : (typeSpecifier | typeQualifier) specifierQualifierList?
     ;
 
 declarator
@@ -352,6 +355,7 @@ declarationList: declaration+;
 
 /* Capl lexer */
 
+Const: 'const';
 StopMeasurement: 'stopMeasurement';
 Start: 'start';
 ErrorFrame: 'errorFrame';

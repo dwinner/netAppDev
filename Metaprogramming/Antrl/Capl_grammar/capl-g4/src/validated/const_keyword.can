@@ -4,11 +4,6 @@ variables
     const long kOn = 1;
 }
 
-on message EngineState
-{
-    @sysvar::Engine::EngineSpeedDspMeter = this.EngineSpeed / 1000.0;
-}
-
 on message LightState
 {
     if (this.dir == RX)
@@ -29,7 +24,5 @@ SetLightDsp (long headLight, long hazardFlasher)
     if (headLight == kOn)
         tmpLightDsp = 4;
     if (hazardFlasher == kOn)
-        tmpLightDsp += 3;
-
-    @sysvar::Lights::LightDisplay = tmpLightDsp;
+        tmpLightDsp += 3;   
 }
