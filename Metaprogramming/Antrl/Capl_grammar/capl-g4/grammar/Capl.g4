@@ -6,14 +6,12 @@ grammar Capl;
 
 /* Capl parser */
 
-primaryExpression:
-	Identifier
+primaryExpression: Identifier
 	| Constant
 	| StringLiteral+
 	| '(' expression ')'
 	| '(' compoundStatement ')'
-	| (
-		variableBlock
+	| ( variableBlock
 		| eventBlock
 		| timerBlock
 		| errorFrame
@@ -21,92 +19,125 @@ primaryExpression:
 		| functionDefinition
 		| startBlock
 		| messageBlock
-		| stopMeasurement
-	)*;
+		| stopMeasurement)+
+	;
 
-startBlock: 'on' 'start' '{' blockItemList? '}';
+startBlock
+    : 'on' 'start' '{' blockItemList? '}'
+    ;
 
-variableBlock: 'variables' '{' blockItemList? '}';
+variableBlock
+    : 'variables' '{' blockItemList? '}'
+    ;
 
-eventBlock: 'on' keyEventType '{' blockItemList '}';
+eventBlock
+    : 'on' keyEventType '{' blockItemList '}'
+    ;
 
-timerBlock:
-	'on' 'timer' Identifier ('.' (Identifier | '*'))? '{' blockItemList '}';
+timerBlock
+    : 'on' 'timer' Identifier ('.' (Identifier | '*'))? '{' blockItemList '}'
+    ;
 
-errorFrame: 'on' ('errorFrame') '{' blockItemList? '}';
+errorFrame
+    : 'on' 'errorFrame' '{' blockItemList? '}'
+    ;
 
-messageBlock: 'on' messageType '{' blockItemList '}';
+messageBlock
+    : 'on' messageType '{' blockItemList '}'
+    ;
 
-stopMeasurement: 'on' 'stopMeasurement' '{' blockItemList '}';
+stopMeasurement
+    : 'on' 'stopMeasurement' '{' blockItemList '}'
+    ;
 
-envBlock: 'on' 'envVar' Identifier '{' blockItemList '}';
+envBlock
+    : 'on' 'envVar' Identifier '{' blockItemList '}'
+    ;
 
-postfixExpression: (
-		primaryExpression
+postfixExpression
+    : (primaryExpression
 		| '(' typeName ')' '{' initializerList ','? '}'
-	) (
-		'[' expression ']'
+	) ('[' expression ']'
 		| '(' argumentExpressionList? ')'
 		| ('++' | '--')
-	)*;
+	)*
+	;
 
-argumentExpressionList:
-	assignmentExpression (',' assignmentExpression)*;
+argumentExpressionList
+    : assignmentExpression (',' assignmentExpression)*
+    ;
 
-unaryExpression: ('++' | '--')* (
+unaryExpression
+    : ('++' | '--')* (
 		postfixExpression
-		| unaryOperator castExpression
-	);
+		| unaryOperator castExpression)
+    ;
 
-unaryOperator: '+' | '-' | '~' | '!';
+unaryOperator
+    : '+' | '-' | '~' | '!'
+    ;
 
-castExpression:
-	'(' typeName ')' castExpression
+castExpression
+    : '(' typeName ')' castExpression
 	| unaryExpression
-	| DigitSequence ; // for
+	| DigitSequence // for
+	;
 
-multiplicativeExpression:
-	castExpression (('*' | '/' | '%') castExpression)*;
+multiplicativeExpression
+    : castExpression (('*' | '/' | '%') castExpression)*
+    ;
 
-additiveExpression:
-	multiplicativeExpression (
+additiveExpression
+    : multiplicativeExpression (
 		('+' | '-') multiplicativeExpression
-	)*;
+	)*
+	;
 
-shiftExpression:
-	additiveExpression (('<<' | '>>') additiveExpression)*;
+shiftExpression
+    : additiveExpression (('<<' | '>>') additiveExpression)*
+    ;
 
-relationalExpression:
-	shiftExpression (('<' | '>' | '<=' | '>=') shiftExpression)*;
+relationalExpression
+    : shiftExpression (('<' | '>' | '<=' | '>=') shiftExpression)*
+    ;
 
-equalityExpression:
-	relationalExpression (('==' | '!=') relationalExpression)*;
+equalityExpression
+    : relationalExpression (('==' | '!=') relationalExpression)*
+    ;
 
-andExpression: equalityExpression ( '&' equalityExpression)*;
+andExpression
+    : equalityExpression ( '&' equalityExpression)*
+    ;
 
-exclusiveOrExpression: andExpression ('^' andExpression)*;
+exclusiveOrExpression
+    : andExpression ('^' andExpression)*
+    ;
 
-inclusiveOrExpression:
-	exclusiveOrExpression ('|' exclusiveOrExpression)*;
+inclusiveOrExpression
+    : exclusiveOrExpression ('|' exclusiveOrExpression)*
+    ;
 
-logicalAndExpression:
-	inclusiveOrExpression ('&&' inclusiveOrExpression)*;
+logicalAndExpression
+    : inclusiveOrExpression ('&&' inclusiveOrExpression)*
+    ;
 
-logicalOrExpression:
-	logicalAndExpression ('||' logicalAndExpression)*;
+logicalOrExpression
+    : logicalAndExpression ('||' logicalAndExpression)*
+    ;
 
-conditionalExpression:
-	logicalOrExpression (
+conditionalExpression
+    : logicalOrExpression (
 		'?' expression ':' conditionalExpression
-	)?;
+	)?
+	;
 
-assignmentExpression:
-	conditionalExpression
+assignmentExpression
+    : conditionalExpression
 	| unaryExpression assignmentOperator assignmentExpression
 	| DigitSequence ; // for
 
-assignmentOperator:
-	'='
+assignmentOperator
+    : '='
 	| '*='
 	| '/='
 	| '%='
@@ -116,26 +147,43 @@ assignmentOperator:
 	| '>>='
 	| '&='
 	| '^='
-	| '|=';
+	| '|='
+	;
 
-expression: assignmentExpression (',' assignmentExpression)*;
+expression
+    : assignmentExpression (',' assignmentExpression)*
+    ;
 
-constantExpression: conditionalExpression;
+constantExpression
+    : conditionalExpression
+    ;
 
-declaration: declarationSpecifiers initDeclaratorList? ';';
+declaration
+    : declarationSpecifiers initDeclaratorList? ';'
+    ;
 
-declarationSpecifiers: declarationSpecifier+;
+declarationSpecifiers
+    : declarationSpecifier+
+    ;
 
-declarationSpecifiers2: declarationSpecifier+;
+declarationSpecifiers2
+    : declarationSpecifier+
+    ;
 
-declarationSpecifier: typeSpecifier;
+declarationSpecifier
+    : typeSpecifier
+    ;
 
-initDeclaratorList: initDeclarator (',' initDeclarator)*;
+initDeclaratorList
+    : initDeclarator (',' initDeclarator)*
+    ;
 
-initDeclarator: declarator ('=' initializer)?;
+initDeclarator
+    : declarator ('=' initializer)?
+    ;
 
-typeSpecifier: (
-		'void'
+typeSpecifier
+    : ('void'
 		| 'char'
 		| 'byte'
 		| 'int'
@@ -147,110 +195,157 @@ typeSpecifier: (
 		| 'dword'
 		| 'timer'
 		| 'msTimer'
-		| messageType
-	);
+		| messageType)
+		;
 
-specifierQualifierList: typeSpecifier specifierQualifierList?;
+specifierQualifierList
+    : typeSpecifier specifierQualifierList?
+    ;
 
-declarator: directDeclarator;
+declarator
+    : directDeclarator
+    ;
 
-directDeclarator:
-	Identifier
+directDeclarator
+    : Identifier
 	| '(' declarator ')'
 	| directDeclarator '[' assignmentExpression? ']'
 	| directDeclarator '(' parameterTypeList ')'
-	| directDeclarator '(' identifierList? ')';
+	| directDeclarator '(' identifierList? ')'
+	;
 
-nestedParenthesesBlock: (
-		~('(' | ')')
+nestedParenthesesBlock
+    : (~('(' | ')')
 		| '(' nestedParenthesesBlock ')'
-	)*;
+	)*
+	;
 
-parameterTypeList: parameterList (',' '...')?;
+parameterTypeList
+    : parameterList (',' '...')?
+    ;
 
-parameterList: parameterDeclaration (',' parameterDeclaration)*;
+parameterList
+    : parameterDeclaration (',' parameterDeclaration)*
+    ;
 
-parameterDeclaration:
-	declarationSpecifiers declarator
-	| declarationSpecifiers2 abstractDeclarator?;
+parameterDeclaration
+    : declarationSpecifiers declarator
+	| declarationSpecifiers2 abstractDeclarator?
+	;
 
-identifierList: Identifier (',' Identifier)*;
+identifierList
+    : Identifier (',' Identifier)*
+    ;
 
-typeName: specifierQualifierList abstractDeclarator?;
+typeName
+    : specifierQualifierList abstractDeclarator?
+    ;
 
-abstractDeclarator: directAbstractDeclarator;
+abstractDeclarator
+    : directAbstractDeclarator
+    ;
 
-directAbstractDeclarator:
-	'(' abstractDeclarator ')'
+directAbstractDeclarator
+    : '(' abstractDeclarator ')'
 	| '[' assignmentExpression? ']'
 	| '[' '*' ']'
 	| '(' parameterTypeList? ')'
 	| directAbstractDeclarator '[' assignmentExpression? ']'
 	| directAbstractDeclarator '[' '*' ']'
-	| directAbstractDeclarator '(' parameterTypeList? ')';
+	| directAbstractDeclarator '(' parameterTypeList? ')'
+	;
 
-initializer:
-	assignmentExpression
-	| '{' initializerList ','? '}';
+initializer
+    : assignmentExpression
+	| '{' initializerList ','? '}'
+	;
 
-initializerList:
-	designation? initializer (',' designation? initializer)*;
+initializerList
+    : designation? initializer (',' designation? initializer)*
+    ;
 
-designation: designatorList '=';
+designation
+    : designatorList '='
+    ;
 
-designatorList: designator+;
+designatorList
+    : designator+
+    ;
 
-designator: '[' constantExpression ']';
+designator
+    : '[' constantExpression ']'
+    ;
 
-statement:
-	labeledStatement
+statement
+    : labeledStatement
 	| compoundStatement
 	| expressionStatement
 	| selectionStatement
 	| iterationStatement
-	| jumpStatement;
+	| jumpStatement
+	;
 
-labeledStatement:
-	Identifier ':' statement
+labeledStatement
+    : Identifier ':' statement
 	| 'case' (constantExpression) ':' statement
-	| 'default' ':' statement;
+	| 'default' ':' statement
+	;
 
-compoundStatement: '{' blockItemList? '}';
+compoundStatement
+    : '{' blockItemList? '}'
+    ;
 
-blockItemList: blockItem+;
+blockItemList
+    : blockItem+
+    ;
 
-blockItem: statement | declaration;
+blockItem
+    : statement | declaration
+    ;
 
-expressionStatement: expression? ';';
+expressionStatement
+    : expression? ';'
+    ;
 
-selectionStatement:
-	'if' '(' expression ')' statement ('else' statement)?
-	| 'switch' '(' expression ')' statement;
+selectionStatement
+    : 'if' '(' expression ')' statement ('else' statement)?
+	| 'switch' '(' expression ')' statement
+	;
 
-iterationStatement:
-	While '(' expression ')' statement
+iterationStatement
+    : While '(' expression ')' statement
 	| Do statement While '(' expression ')' ';'
-	| For '(' forCondition ')' statement;
+	| For '(' forCondition ')' statement
+	;
 
-forCondition: (forDeclaration | expression?) ';' forExpression? ';' forExpression?;
+forCondition
+    : (forDeclaration | expression?) ';' forExpression? ';' forExpression?
+    ;
 
-forDeclaration: declarationSpecifiers initDeclaratorList?;
+forDeclaration
+    : declarationSpecifiers initDeclaratorList?
+    ;
 
-forExpression: assignmentExpression (',' assignmentExpression)*;
+forExpression
+    : assignmentExpression (',' assignmentExpression)*
+    ;
 
-jumpStatement: (('continue' | 'break') | 'return' expression?) ';';
+jumpStatement
+    : (('continue' | 'break') | 'return' expression?) ';'
+    ;
 
 compilationUnit: translationUnit? EOF;
 
 translationUnit: externalDeclaration+;
 
-externalDeclaration:
-	functionDefinition
+externalDeclaration
+    : functionDefinition
 	| declaration
 	| ';' ; // stray ;
 
-functionDefinition:
-	declarationSpecifiers? declarator declarationList? compoundStatement;
+functionDefinition
+    : declarationSpecifiers? declarator declarationList? compoundStatement
+    ;
 
 declarationList: declaration+;
 
@@ -317,7 +412,6 @@ Colon: ':';
 Semi: ';';
 Comma: ',';
 Assign: '=';
-// '*=' | '/=' | '%=' | '+=' | '-=' | '<<=' | '>>=' | '&=' | '^=' | '|='
 StarAssign: '*=';
 DivAssign: '/=';
 ModAssign: '%=';
@@ -333,14 +427,15 @@ Equal: '==';
 NotEqual: '!=';
 Ellipsis: '...';
 
-messageType:
-	'message' Identifier ('.' (Identifier | '*'))?
+messageType
+    : 'message' Identifier ('.' (Identifier | '*'))?
 	| 'message' '*'
 	| 'message' Constant
-	| 'message' Identifier '-' Identifier;
+	| 'message' Identifier '-' Identifier
+	;
 
-keyEventType:
-	'key' Constant
+keyEventType
+    : 'key' Constant
 	| 'key' (
 		'F1'
 		| 'F2'
@@ -355,7 +450,8 @@ keyEventType:
 		| 'F11'
 		| 'F12'
 	)
-	| 'key' '*';
+	| 'key' '*'
+	;
 
 F1: 'F1';
 F2: 'F2';
@@ -370,12 +466,13 @@ F10: 'F10';
 F11: 'F11';
 F12: 'F12';
 
-Identifier:
-	IdentifierNondigit (IdentifierNondigit | Digit)*
+Identifier
+    : IdentifierNondigit (IdentifierNondigit | Digit)*
 	| ('this' | IdentifierNondigit (IdentifierNondigit | Digit)*) '.' Identifier (
 		'.' (Identifier)
 	)*
-	| IdentifierNondigit (IdentifierNondigit | Digit)* '.' Constant;
+	| IdentifierNondigit (IdentifierNondigit | Digit)* '.' Constant
+	;
 
 This: 'this';
 Dot: '.';
