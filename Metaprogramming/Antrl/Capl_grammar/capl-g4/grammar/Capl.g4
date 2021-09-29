@@ -21,6 +21,7 @@ primaryExpression: Identifier
 		| enumSpecifier
 		| startBlock
 		| messageBlock
+		| multiplexedMessageBlock
 		| stopMeasurement
 		| diagRequestBlock
 		| diagResponseBlock
@@ -53,6 +54,10 @@ errorFrame
 
 messageBlock
     : 'on' messageType '{' blockItemList '}'
+    ;
+
+multiplexedMessageBlock
+    : 'on' multiplexedMessageType '{' blockItemList '}'
     ;
 
 diagRequestBlock
@@ -222,6 +227,7 @@ typeSpecifier
 		| 'msTimer'
 		| enumSpecifier
 		| messageType
+		| multiplexedMessageType
 		| diagRequestType
 		| diagResponseType
 		| signalType)
@@ -483,6 +489,15 @@ messageType
 	;
 
 Message: 'message';
+
+multiplexedMessageType
+    : 'multiplexed_message' Identifier ('.' (Identifier | '*'))?
+	| 'multiplexed_message' '*'
+	| 'multiplexed_message' Constant
+	| 'multiplexed_message' Identifier '-' Identifier
+	;
+
+MultiplexedMessage: 'multiplexed_message';
 
 diagRequestType
     : 'diagRequest' Identifier (('.'|'::') (Identifier | '*'))?
