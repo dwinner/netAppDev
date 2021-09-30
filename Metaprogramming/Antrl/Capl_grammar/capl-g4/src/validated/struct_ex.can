@@ -18,3 +18,10 @@ on start
     /* accessing the struct elements */
     write("i=%d, f=%f", data.i, data.f);
 }
+
+struct TopLevelSt
+{
+    int first;
+    qword second;
+    signal * sig;    
+};

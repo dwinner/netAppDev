@@ -21,6 +21,7 @@ primaryExpression
 		| envBlock
 		| functionDefinition
 		| enumSpecifier
+		| structSpecifier
 		| startBlock
 		| messageBlock
 		| multiplexedMessageBlock
@@ -227,6 +228,7 @@ typeSpecifier
 		| 'qword'
 		| 'timer'
 		| 'msTimer'
+		| structSpecifier
 		| enumSpecifier
 		| messageType
 		| multiplexedMessageType
@@ -235,8 +237,34 @@ typeSpecifier
 		| signalType)
 		;
 
+structSpecifier
+    : structure Identifier? '{' structDeclarationList '}'
+    | structure Identifier
+    ;
+
+structure
+    : 'struct'
+    ;
+
+structDeclarationList
+    : structDeclaration+
+    ;
+
+structDeclaration
+    : specifierQualifierList structDeclaratorList? ';'
+    ;
+
 specifierQualifierList
     : (typeSpecifier | typeQualifier) specifierQualifierList?
+    ;
+
+structDeclaratorList
+    : structDeclarator (',' structDeclarator)*
+    ;
+
+structDeclarator
+    : declarator
+    | declarator? ':' constantExpression
     ;
 
 declarator
@@ -419,6 +447,8 @@ Return: 'return';
 Switch: 'switch';
 Void: 'void';
 While: 'while';
+Struct : 'struct';
+
 LeftParen: '(';
 RightParen: ')';
 LeftBracket: '[';
