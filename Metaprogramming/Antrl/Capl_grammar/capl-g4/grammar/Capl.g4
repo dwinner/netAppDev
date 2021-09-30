@@ -6,7 +6,9 @@ grammar Capl;
 
 /* Capl parser */
 
-primaryExpression: Identifier
+primaryExpression
+    : Identifier
+    | AccessToSignalIdentifier
 	| Constant
 	| StringLiteral+
 	| '(' expression ')'
@@ -592,14 +594,24 @@ Home: 'Home';
 
 Identifier
     : IdentifierNondigit (IdentifierNondigit | Digit)*
-	| ('this' | IdentifierNondigit (IdentifierNondigit | Digit)*) '.' Identifier (
-		'.' (Identifier)
-	)*
+	| (('this' | IdentifierNondigit) (IdentifierNondigit | Digit)*)
+	    '.' Identifier ('.' (Identifier))*
 	| IdentifierNondigit (IdentifierNondigit | Digit)* '.' Constant
 	;
 
 This: 'this';
 Dot: '.';
+
+AccessToSignalIdentifier
+    : '$' Identifier ('phys'|'raw'|'raw64'|'rx'|'txrq')?
+    ;
+
+Dollar: '$';
+Phys: 'phys';
+Raw: 'raw';
+Raw64: 'raw64';
+Rx: 'rx';
+RxRequest: 'txrq';
 
 fragment IdentifierNondigit: Nondigit | UniversalCharacterName;
 
