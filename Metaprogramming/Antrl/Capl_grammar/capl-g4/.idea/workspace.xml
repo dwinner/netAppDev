@@ -4,7 +4,7 @@
     <list default="true" id="950f7524-631c-4812-8c77-3d61ee540d20" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/grammar/Capl.g4" beforeDir="false" afterPath="$PROJECT_DIR$/grammar/Capl.g4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/newest_features/sysvar_ex.can" beforeDir="false" afterPath="$PROJECT_DIR$/src/newest_features/sysvar_ex.can" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/newest_features/testcase_ex.can" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -49,7 +49,7 @@
       <workItem from="1632890141365" duration="4687000" />
       <workItem from="1632895456926" duration="1829000" />
       <workItem from="1632923622720" duration="9398000" />
-      <workItem from="1632981105916" duration="9656000" />
+      <workItem from="1632981105916" duration="11460000" />
     </task>
     <servers />
   </component>

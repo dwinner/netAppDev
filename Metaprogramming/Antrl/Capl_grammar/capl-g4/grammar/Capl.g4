@@ -206,12 +206,18 @@ declarationSpecifiers2
     : declarationSpecifier+
     ;
 
+typeQualifier: 'const';
+
+functionSpecifier
+    : 'testfunction'
+    | ('export')? 'testcase'
+    ;
+
 declarationSpecifier
     : typeSpecifier
     | typeQualifier
+    | functionSpecifier
     ;
-
-typeQualifier: 'const';
 
 initDeclaratorList
     : initDeclarator (',' initDeclarator)*
@@ -242,13 +248,8 @@ typeSpecifier
 		| diagRequestType
 		| diagResponseType
 		| signalType
-		| sysvarType
-		| testCaseType)
+		| sysvarType)
 		;
-
-testCaseType
-    : ('export')? 'testcase'
-    ;
 
 structSpecifier
     : structure Identifier? '{' structDeclarationList '}'
@@ -431,6 +432,7 @@ declarationList: declaration+;
 
 Export: 'export';
 Testcase: 'testcase';
+Testfunction: 'testfunction';
 Includes: 'includes';
 Const: 'const';
 StopMeasurement: 'stopMeasurement';
