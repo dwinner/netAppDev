@@ -6,9 +6,11 @@ grammar Capl;
 
 /* Capl parser */
 
+/* Start left recursive rule */
 primaryExpression
     : Identifier
     | AccessToSignalIdentifier
+    | SysvarIdentifier
 	| Constant
 	| StringLiteral+
 	| '(' expression ')'
@@ -28,7 +30,8 @@ primaryExpression
 		| stopMeasurement
 		| diagRequestBlock
 		| diagResponseBlock
-		| signalBlock)+
+		| signalBlock
+		| sysvarBlock)+
 	;
 
 includeBlock
@@ -73,6 +76,10 @@ diagResponseBlock
 
 signalBlock
     : 'on' signalType '{' blockItemList '}'
+    ;
+
+sysvarBlock
+    : 'on' sysvarType '{' blockItemList '}'
     ;
 
 stopMeasurement
@@ -235,6 +242,7 @@ typeSpecifier
 		| diagRequestType
 		| diagResponseType
 		| signalType
+		| sysvarType
 		| testCaseType)
 		;
 
@@ -555,7 +563,6 @@ diagResponseType
 	;
 
 DiagResponse: 'diagResponse';
-DoubleColon: '::';
 
 signalType
     : 'signal' Identifier (('.'|'::') (Identifier | '*'))?
@@ -565,6 +572,10 @@ signalType
 	;
 
 Signal: 'signal';
+
+sysvarType
+    : 'sysvar sysvar' '::' Identifier ('::' Identifier)*
+	;
 
 keyEventType
     : 'key' Constant
@@ -649,6 +660,15 @@ Raw: 'raw';
 Raw64: 'raw64';
 Rx: 'rx';
 RxRequest: 'txrq';
+
+SysvarIdentifier
+    : '@' 'sysvar' '::' Identifier ('::' Identifier)*
+    ;
+
+Sysvar: 'sysvar';
+DoubleColon: '::';
+AtSign: '@';
+DoubleSysvar: 'sysvar sysvar';
 
 fragment IdentifierNondigit: Nondigit | UniversalCharacterName;
 
