@@ -234,8 +234,13 @@ typeSpecifier
 		| multiplexedMessageType
 		| diagRequestType
 		| diagResponseType
-		| signalType)
+		| signalType
+		| testCaseType)
 		;
+
+testCaseType
+    : ('export')? 'testcase'
+    ;
 
 structSpecifier
     : structure Identifier? '{' structDeclarationList '}'
@@ -416,6 +421,8 @@ declarationList: declaration+;
 
 /* Capl lexer */
 
+Export: 'export';
+Testcase: 'testcase';
 Includes: 'includes';
 Const: 'const';
 StopMeasurement: 'stopMeasurement';
