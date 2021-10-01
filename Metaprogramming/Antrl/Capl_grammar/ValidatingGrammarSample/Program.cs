@@ -1,12 +1,32 @@
-﻿using System;
+﻿/*
+ * Simple parsing for CAPL source code
+ */
+
+using System;
+using Antlr4.Runtime;
+using CaplGrammar.Core;
 
 namespace ValidatingGrammarSample
 {
-   class Program
+   internal static class Program
    {
-      static void Main(string[] args)
+      private const string CaplSourceCode = "arithmetic_operators.can";
+
+      private static void Main()
       {
-         Console.WriteLine("Hello World!");
+         AntlrInputStream antlrStream = new AntlrFileStream(CaplSourceCode);
+
+         var caplLexer = new CaplLexer(antlrStream);
+         var tokens = new CommonTokenStream(caplLexer);
+         var caplParser = new CaplParser(tokens);
+         caplParser.RemoveErrorListeners();
+         var errorHandler = new DefaultErrorHandlerImpl();
+         caplParser.AddErrorListener(errorHandler);
+         var caplRoot = caplParser.primaryExpression();
+         if (caplRoot.IsEmpty)
+         {
+            errorHandler.Errors.ForEach(error => Console.WriteLine(error));
+         }
       }
    }
 }
