@@ -6,6 +6,16 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="usages.can" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="usages.can">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Antlr4.Runtime.Standard" Version="4.9.2" />
   </ItemGroup>
 

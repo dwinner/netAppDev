@@ -1,5 +1,6 @@
 ﻿namespace ValidatingSymbolUsage
 {
+   // TODO: Add others from the grammar file
    public enum BuiltInType
    {
       Invalid,
@@ -8,7 +9,8 @@
 
       Int,
 
-      Float
-      // TODO: Add others from the grammar file
+      Float,
+
+      Char
    }
 }

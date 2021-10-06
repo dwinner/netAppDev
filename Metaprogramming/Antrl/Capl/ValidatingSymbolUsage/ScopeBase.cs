@@ -31,7 +31,7 @@ namespace ValidatingSymbolUsage
       public Symbol Resolve(string aSymbolName) =>
          _symbols.TryGetValue(aSymbolName, out var symbol)
             ? symbol
-            : EnclosingScope?.Resolve(aSymbolName) ?? Symbol.Null;   // TODO: Handle null object there
+            : EnclosingScope?.Resolve(aSymbolName) ?? Symbol.Null;
 
       public override string ToString() =>
          $"{ScopeName}:{_symbols.Keys.Aggregate(string.Empty, (current, key) => $"{current}{key}, ")}";

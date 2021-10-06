@@ -23,6 +23,9 @@ namespace ValidatingGrammarSample
          var errorHandler = new DefaultErrorHandlerImpl();
          caplParser.AddErrorListener(errorHandler);
          var caplRoot = caplParser.primaryExpression();
+
+         Console.WriteLine(caplRoot.ToStringTree());
+
          if (caplRoot.IsEmpty)
          {
             errorHandler.Errors.ForEach(error => Console.WriteLine(error));
