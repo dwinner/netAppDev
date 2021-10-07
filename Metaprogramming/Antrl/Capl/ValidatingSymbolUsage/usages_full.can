@@ -1,0 +1,63 @@
+﻿const char varConst = 0;
+char topChar = 'a';
+byte topByte;
+const int topInt = 1;
+long topLong;
+const int64 topInt64 = 4L;
+float topFloat;
+const double topDouble = 5.5;
+const word topWord = 3; 
+dword topDword;
+const qword topQword = 0;
+const int topConst = 10;
+int topInt1, topInt2, topInt3;
+
+struct TopLevelSt topSt = 
+{
+    first = 0,
+    second = 0    
+};
+
+enum OPTION_1
+{
+    ACTIVATED   = 1,
+    DEACTIVATED = 0
+};
+
+enum OPTION_1 topOpt1;
+enum OPTION_2 topOpt2 = ACTIVATED;
+char topArray[10];
+
+/* ------------------------------------------------------------ */
+/*struct TopLevelSt
+{
+    int first;
+    qword second;
+    signal * sig;    
+};*/
+
+variables
+{
+    timer varTimer;
+    msTimer varMsTimer;
+    struct TopLevelSt varSt;
+    enum OPTION_1 varOpt1;
+    enum OPTION_2 varOpt2;
+
+    varOpt1 = OPTION_1.ACTIVATED;
+    varOpt2 = OPTION_2.OFF;
+
+    message * eTemp;
+    multiplexed_message * mpMessage;
+    diagRequest FaultMem_ReportDTCByStatusMask  diag_req;
+    diagResponse this resp;
+    signal * varSignal;
+    const char varConst = 0;
+    int varInt1, varInt2, varInt3;
+    enum OPTION_1
+        varEn1 = ACTIVATED,
+        varEn2 = ACTIVATED,
+        varEn3 = ACTIVATED;
+
+    char varArray[10] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+}

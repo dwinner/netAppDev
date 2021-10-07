@@ -14,5 +14,10 @@
          : base(aSymbolName, aType)
       {
       }
+
+      public VariableSymbol(string aSymbolName, BuiltInType aType, string anUserDefinedType)
+         : base(aSymbolName, aType, anUserDefinedType)
+      {
+      }
    }
 }

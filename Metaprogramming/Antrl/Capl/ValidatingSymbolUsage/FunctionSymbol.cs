@@ -5,8 +5,6 @@ namespace ValidatingSymbolUsage
 {
    public class FunctionSymbol : Symbol, IScope
    {
-      private readonly Dictionary<string, Symbol> _arguments = new();
-
       public FunctionSymbol(string aSymbolName)
          : base(aSymbolName)
       {
@@ -25,23 +23,25 @@ namespace ValidatingSymbolUsage
 
       public IScope EnclosingScope { get; }
 
+      public IDictionary<string, Symbol> Symbols { get; } = new Dictionary<string, Symbol>();
+
       public void Define(Symbol aSymbol)
       {
-         if (_arguments.ContainsKey(aSymbol.Name))
+         if (Symbols.ContainsKey(aSymbol.Name))
          {
             return;
          }
 
-         _arguments[aSymbol.Name] = aSymbol;
+         Symbols[aSymbol.Name] = aSymbol;
          aSymbol.Scope = this;
       }
 
       public Symbol Resolve(string aSymbolName) =>
-         _arguments.TryGetValue(aSymbolName, out var symbolName)
+         Symbols.TryGetValue(aSymbolName, out var symbolName)
             ? symbolName
             : EnclosingScope?.Resolve(aSymbolName) ?? Null;
 
       public override string ToString() =>
-         $"function {base.ToString()}:{_arguments.Values.Aggregate(string.Empty, (current, symbol) => $"{current}{symbol}, ")}";
+         $"function {base.ToString()}:{Symbols.Values.Aggregate(string.Empty, (current, symbol) => $"{current}{symbol}, ")}";
    }
 }

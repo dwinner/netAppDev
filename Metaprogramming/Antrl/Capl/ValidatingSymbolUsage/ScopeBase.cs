@@ -5,7 +5,7 @@ namespace ValidatingSymbolUsage
 {
    public abstract class ScopeBase : IScope
    {
-      private readonly Dictionary<string, Symbol> _symbols = new();
+      public IDictionary<string, Symbol> Symbols { get; } = new Dictionary<string, Symbol>();
 
       protected ScopeBase(IScope aScope) => EnclosingScope = aScope;
 
@@ -19,21 +19,21 @@ namespace ValidatingSymbolUsage
 
       public void Define(Symbol aSymbol)
       {
-         if (_symbols.ContainsKey(aSymbol.Name))
+         if (Symbols.ContainsKey(aSymbol.Name))
          {
             return;
          }
 
-         _symbols[aSymbol.Name] = aSymbol;
+         Symbols[aSymbol.Name] = aSymbol;
          aSymbol.Scope = this; // track the scope in each symbol
       }
 
       public Symbol Resolve(string aSymbolName) =>
-         _symbols.TryGetValue(aSymbolName, out var symbol)
+         Symbols.TryGetValue(aSymbolName, out var symbol)
             ? symbol
             : EnclosingScope?.Resolve(aSymbolName) ?? Symbol.Null;
 
       public override string ToString() =>
-         $"{ScopeName}:{_symbols.Keys.Aggregate(string.Empty, (current, key) => $"{current}{key}, ")}";
+         $"{ScopeName}:{Symbols.Keys.Aggregate(string.Empty, (current, key) => $"{current}{key}, ")}";
    }
 }

@@ -1,4 +1,6 @@
-﻿namespace ValidatingSymbolUsage
+﻿using System.Collections.Generic;
+
+namespace ValidatingSymbolUsage
 {
    /// <summary>
    ///    Scope
@@ -14,6 +16,8 @@
       ///    Where to look next for symbols
       /// </summary>
       IScope EnclosingScope { get; }
+
+      IDictionary<string, Symbol> Symbols { get; }
 
       /// <summary>
       ///    Define the symbol in the current scope

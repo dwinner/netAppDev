@@ -2,12 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="950f7524-631c-4812-8c77-3d61ee540d20" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/../ValidatingGrammarSample/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../ValidatingGrammarSample/Program.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../ValidatingSymbolUsage/BuiltInType.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../ValidatingSymbolUsage/BuiltInType.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../ValidatingSymbolUsage/DefPhase.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../ValidatingSymbolUsage/DefPhase.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../ValidatingSymbolUsage/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../ValidatingSymbolUsage/Program.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../ValidatingSymbolUsage/ScopeBase.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../ValidatingSymbolUsage/ScopeBase.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../ValidatingSymbolUsage/ValidatingSymbolUsage.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/../ValidatingSymbolUsage/ValidatingSymbolUsage.csproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ValidatingSymbolUsage/DefPhase.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ValidatingSymbolUsage/Program.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ValidatingSymbolUsage/usages.can" beforeDir="false" afterPath="$PROJECT_DIR$/../ValidatingSymbolUsage/usages.can" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -35,19 +32,6 @@
     <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
     <property name="show.migrate.to.gradle.popup" value="false" />
   </component>
-  <component name="RunManager">
-    <configuration default="true" type="ArquillianJUnit" factoryName="" nameIsGenerated="true">
-      <option name="arquillianRunConfiguration">
-        <value>
-          <option name="containerStateName" value="" />
-        </value>
-      </option>
-      <option name="TEST_OBJECT" value="class" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-  </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
@@ -74,7 +58,8 @@
       <workItem from="1633412267107" duration="26000" />
       <workItem from="1633448946717" duration="268000" />
       <workItem from="1633487737028" duration="17000" />
-      <workItem from="1633510466152" duration="4565000" />
+      <workItem from="1633510466152" duration="10566000" />
+      <workItem from="1633577758541" duration="9564000" />
     </task>
     <servers />
   </component>

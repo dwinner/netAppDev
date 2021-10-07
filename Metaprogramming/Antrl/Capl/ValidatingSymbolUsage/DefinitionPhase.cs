@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
@@ -6,7 +7,7 @@ using CaplGrammar.Core;
 
 namespace ValidatingSymbolUsage
 {
-   public class DefPhase : CaplBaseListener
+   public class DefinitionPhase : CaplBaseListener
    {
       private IScope _currentScope; // define symbols in this scope
       public ParseTreeProperty<IScope> Scopes { get; } = new();
@@ -14,14 +15,16 @@ namespace ValidatingSymbolUsage
 
       public override void EnterPrimaryExpression(CaplParser.PrimaryExpressionContext context)
       {
+         // primary expr is left recursive, so the root is being walking only onc: when there is no parent context
          var parentCtx = context.Parent;
-
-         // primary expr is left recursive, so the root is being walking only once - than there is no parent context
-         if (parentCtx == null)
+         if (parentCtx != null)
          {
-            Globals = new GlobalScope(null); // TODO: Use null-object there
-            _currentScope = Globals;
+            // dont't reenter if it's not the root
+            return;
          }
+
+         Globals = new GlobalScope(null); // TODO: Use null-object there
+         _currentScope = Globals;
       }
 
       public override void ExitPrimaryExpression(CaplParser.PrimaryExpressionContext context)
@@ -87,26 +90,45 @@ namespace ValidatingSymbolUsage
 
       public override void ExitDeclaration(CaplParser.DeclarationContext context)
       {
-         var declCtx = context.declarationSpecifiers().declarationSpecifier().FirstOrDefault();
-         if (declCtx == null)
+         // Get the type for variable declaration
+         var declSpecCtx = context.declarationSpecifiers().declarationSpecifier();
+         var typeSpecCtx = declSpecCtx
+            .Select(ctx => ctx.typeSpecifier())
+            .FirstOrDefault(ctx => ctx != null);
+         if (typeSpecCtx == null)
          {
             return;
          }
 
-         var tokenType = declCtx.typeSpecifier().Start.Type;
-         var declType = CheckSymbolsUtils.GetCaplType(tokenType);
-         var initDeclarators = context.initDeclaratorList().initDeclarator();
+         var declType = typeSpecCtx.Start.Type.GetCaplType();
+         var userTypeToken = declType switch
+         {
+            BuiltInType.Struct => typeSpecCtx.structSpecifier()?.Identifier()?.Symbol,
+            BuiltInType.Enum => typeSpecCtx.enumSpecifier()?.Identifier()?.Symbol,
+            _ => null
+         };
 
-         // TODO: ofc, there can be more than one, i.e. float x, y, z...
-         var initDeclCtx = initDeclarators.FirstOrDefault();
-         var declName = initDeclCtx.declarator().directDeclarator().Identifier().Symbol;
+         // Get variable(s) name(s)
+         // PERFORMANCE-NOTE: ToList() is waste, use morelinq lib
+         var list = new List<IToken>();
+         foreach (var declCtx in context.initDeclaratorList().initDeclarator())
+         {
+            var topDeclarator = declCtx.declarator()?.directDeclarator();
+            var declToken = topDeclarator?.Identifier()?.Symbol // Primitive type
+                            ?? topDeclarator?.directDeclarator()?.Identifier()?.Symbol;   // Array
+            if (declToken != null)
+            {
+               list.Add(declToken);
+            }
+         }
 
-         DefineVar(declType, declName);
+         list.ForEach(idToken => DefineVar(declType, idToken, userTypeToken));
       }
 
-      private void DefineVar(BuiltInType aType, IToken aName)
+      private void DefineVar(BuiltInType aType, IToken aNameToken, IToken userType)
       {
-         var variable = new VariableSymbol(aName.Text, aType);
+         var userDefType = userType == null ? string.Empty : userType.Text;
+         var variable = new VariableSymbol(aNameToken.Text, aType, userDefType);
          _currentScope.Define(variable);
       }
 

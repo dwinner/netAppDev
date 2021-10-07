@@ -2,19 +2,20 @@
  * Symbol usage validation
  */
 
+using System;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
 using CaplGrammar.Core;
 
 namespace ValidatingSymbolUsage
 {
-   internal static class Program
+   internal static class MainEntry
    {
       private const string CanFile = "usages.can";
 
       private static void Main()
       {
-         AntlrInputStream antlrStream = new AntlrFileStream(CanFile);
+         var antlrStream = new AntlrFileStream(CanFile);
 
          var caplLexer = new CaplLexer(antlrStream);
          var tokens = new CommonTokenStream(caplLexer);
@@ -24,11 +25,17 @@ namespace ValidatingSymbolUsage
          //Console.WriteLine(sourceTree.ToStringTree());
 
          var walker = new ParseTreeWalker();
-         var def = new DefPhase();
+         var def = new DefinitionPhase();
          walker.Walk(def, sourceTree);
 
          var globals = def.Globals;
-         var scopes = def.Scopes;
+         //var scopes = def.Scopes;
+
+         Console.WriteLine("Globals:");
+         foreach (var (_, value) in globals.Symbols)
+         {
+            Console.WriteLine($"\t{value}");
+         }
       }
    }
 }
