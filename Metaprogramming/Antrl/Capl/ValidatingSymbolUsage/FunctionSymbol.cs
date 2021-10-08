@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace ValidatingSymbolUsage
 {
@@ -15,9 +17,12 @@ namespace ValidatingSymbolUsage
       {
       }
 
-      public FunctionSymbol(string aSymbolName, BuiltInType aReturnType, IScope anEnclosingScope)
-         : this(aSymbolName, aReturnType) =>
+      public FunctionSymbol(string aSymbolName, BuiltInType aReturnType, IScope anEnclosingScope, string userDefined)
+         : this(aSymbolName, aReturnType)
+      {
          EnclosingScope = anEnclosingScope;
+         UserDefinedType = userDefined;
+      }
 
       public string ScopeName => Name;
 
@@ -41,7 +46,14 @@ namespace ValidatingSymbolUsage
             ? symbolName
             : EnclosingScope?.Resolve(aSymbolName) ?? Null;
 
-      public override string ToString() =>
-         $"function {base.ToString()}:{Symbols.Values.Aggregate(string.Empty, (current, symbol) => $"{current}{symbol}, ")}";
+      public override string ToString()
+      {
+         var debugInfo = new StringBuilder()
+            .AppendLine($"Function: {base.ToString()}")
+            .AppendLine(Symbols.Values.Aggregate(string.Empty,
+               (current, symbol) => $"{current}{symbol}{Environment.NewLine}"));
+
+         return debugInfo.ToString();
+      }
    }
 }

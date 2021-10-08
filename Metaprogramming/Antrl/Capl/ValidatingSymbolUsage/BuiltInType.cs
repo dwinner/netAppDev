@@ -17,6 +17,12 @@
       QWord,
       Struct,
       Enum,
-      Timer
+      Timer,
+      MsTimer,
+      Message,
+      MultiplexedMessage,
+      DiagRequest,
+      DiagResponse,
+      Signal
    }
 }

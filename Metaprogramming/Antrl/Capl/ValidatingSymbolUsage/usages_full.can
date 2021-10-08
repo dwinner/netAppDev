@@ -28,14 +28,6 @@ enum OPTION_1 topOpt1;
 enum OPTION_2 topOpt2 = ACTIVATED;
 char topArray[10];
 
-/* ------------------------------------------------------------ */
-/*struct TopLevelSt
-{
-    int first;
-    qword second;
-    signal * sig;    
-};*/
-
 variables
 {
     timer varTimer;
@@ -60,4 +52,65 @@ variables
         varEn3 = ACTIVATED;
 
     char varArray[10] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+}
+
+SetLightDsp (long headLight, const long hazardFlasher[])
+{
+    long tmpLightDsp;
+    tmpLightDsp = 0;
+
+    if (headLight == kOn)
+    {
+        tmpLightDsp = 4;
+        int lOne = 1;
+    }        
+
+    if (hazardFlasher == kOn)
+    {
+        tmpLightDsp += 3;
+        int lTwo = 2;
+    }        
+}
+
+void myFunc()
+{
+    const byte value = 10; // static; called once
+    write("value = %d", value);
+    value = 35;
+}
+
+void myFunc2()
+{
+    byte value; // variable declarations
+    int x, y;
+    value = 10; // variable initializations
+    x = 0;
+    y = 5;    
+}
+
+void sum(int matrix[][])
+{
+    int i, j;
+    int answer;
+    answer = 0;
+
+    for (i = 0; i < elCount(matrix); i++)
+    {
+        for (j = 0; j < elCount(matrix[i]); j++)
+        {
+            answer += matrix[i][j];
+        }
+    }
+
+    write("The sum is %d", answer);
+}
+
+struct StructType stFunc()
+{
+    return;
+}
+
+enum MY_ENUM enFunc()
+{
+    return;
 }

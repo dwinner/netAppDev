@@ -1,8 +1,8 @@
 ﻿namespace ValidatingSymbolUsage
 {
-   public class GlobalScope : ScopeBase
+   public sealed class GlobalSpaceScope : ScopeBase
    {
-      public GlobalScope(IScope aScope)
+      public GlobalSpaceScope(IScope aScope)
          : base(aScope)
       {
       }

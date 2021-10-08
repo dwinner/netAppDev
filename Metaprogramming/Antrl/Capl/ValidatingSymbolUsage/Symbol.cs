@@ -16,10 +16,19 @@ namespace ValidatingSymbolUsage
          Type = aType;
 
       protected Symbol(string aSymbolName, BuiltInType aType, string anUserDefinedType)
+         : this(aSymbolName, aType, anUserDefinedType, null)
       {
          Name = aSymbolName;
          Type = aType;
          UserDefinedType = anUserDefinedType;
+      }
+
+      protected Symbol(string aSymbolName, BuiltInType aType, string anUserDefinedType, IScope aScope)
+      {
+         Name = aSymbolName;
+         Type = aType;
+         UserDefinedType = anUserDefinedType;
+         Scope = aScope;
       }
 
       /// <summary>
@@ -29,7 +38,7 @@ namespace ValidatingSymbolUsage
 
       public BuiltInType Type { get; }
 
-      public string UserDefinedType { get; }
+      public string UserDefinedType { get; init; }
 
       /// <summary>
       ///    All symbols know what scope contains them
@@ -43,7 +52,7 @@ namespace ValidatingSymbolUsage
          var debugInfo = new StringBuilder()
             .Append($"Symbol name: {Name}. ")
             .Append($"Symbol type: {Type}. ")
-            .Append($"Scope {Scope}. ");
+            .Append($"Scope: {Scope?.ScopeName}. ");
          if (!string.IsNullOrEmpty(UserDefinedType))
          {
             debugInfo.AppendFormat("User defined type: {0}.", UserDefinedType);

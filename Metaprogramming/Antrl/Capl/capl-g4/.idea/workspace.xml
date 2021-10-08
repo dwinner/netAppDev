@@ -2,9 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="950f7524-631c-4812-8c77-3d61ee540d20" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/../ValidatingSymbolUsage/DefPhase.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../ValidatingSymbolUsage/Program.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../ValidatingSymbolUsage/usages.can" beforeDir="false" afterPath="$PROJECT_DIR$/../ValidatingSymbolUsage/usages.can" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -60,6 +57,7 @@
       <workItem from="1633487737028" duration="17000" />
       <workItem from="1633510466152" duration="10566000" />
       <workItem from="1633577758541" duration="9564000" />
+      <workItem from="1633675472133" duration="5886000" />
     </task>
     <servers />
   </component>
