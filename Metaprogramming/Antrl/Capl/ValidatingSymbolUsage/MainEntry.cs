@@ -3,6 +3,7 @@
  */
 
 using System;
+using System.Collections.Generic;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
 using CaplGrammar.Core;
@@ -30,29 +31,49 @@ namespace ValidatingSymbolUsage
 
          //var scopes = def.Scopes;
 
-         Console.WriteLine("Globals:");
-         Console.WriteLine("-------------------------------------------------");
-         var globalSpace = def.GlobalSpace?.Symbols;
-         if (globalSpace != null)
+         //Console.WriteLine("Globals:");
+         //Console.WriteLine("-------------------------------------------------");
+         //var globalSpace = def.GlobalSpace?.Symbols;
+         //if (globalSpace != null)
+         //{
+         //   foreach (var (_, value) in globalSpace)
+         //   {
+         //      Console.WriteLine($"{value}");
+         //   }
+         //}
+
+         //Console.WriteLine("Variables:");
+         //Console.WriteLine("-------------------------------------------------");
+         //var varSpace = def.VariableSpace?.Symbols;
+         //if (varSpace != null)
+         //{
+         //   foreach (var (_, value) in varSpace)
+         //   {
+         //      Console.WriteLine($"{value}");
+         //   }
+         //}
+
+         PrintLocals(def.GlobalSpace?.Symbols);
+      }
+
+      private static void PrintLocals(IDictionary<string, Symbol> symbols)
+      {
+         if (symbols != null)
          {
-            foreach (var (_, value) in globalSpace)
+            foreach (var (_, value) in symbols)
             {
-               Console.WriteLine($"{value}");
+               var nestedScope = value.Scope.NestedScope;
+               if (nestedScope != null)
+               {
+                  PrintLocals(nestedScope.Symbols);
+               }
+            }
+
+            foreach (var (key, value) in symbols)
+            {
+               Console.WriteLine($"Symbol name: {key}. Value: {value}");
             }
          }
-
-         Console.WriteLine("Variables:");
-         Console.WriteLine("-------------------------------------------------");
-         var varSpace = def.VariableSpace?.Symbols;
-         if (varSpace != null)
-         {
-            foreach (var (_, value) in varSpace)
-            {
-               Console.WriteLine($"{value}");
-            }
-         }
-
-         // NOTE: Descent into def.GlobalSpace recursively to reveal local symbols
       }
    }
 }

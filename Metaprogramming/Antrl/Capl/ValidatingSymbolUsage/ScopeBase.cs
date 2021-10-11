@@ -17,6 +17,8 @@ namespace ValidatingSymbolUsage
       /// </summary>
       public IScope EnclosingScope { get; }
 
+      public IScope NestedScope { get; set; }
+
       public void Define(Symbol aSymbol)
       {
          if (Symbols.ContainsKey(aSymbol.Name))

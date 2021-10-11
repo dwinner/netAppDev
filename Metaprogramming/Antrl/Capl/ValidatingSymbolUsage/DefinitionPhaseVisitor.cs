@@ -40,6 +40,7 @@ namespace ValidatingSymbolUsage
       public override void EnterVariableBlock(CaplParser.VariableBlockContext context)
       {
          VariableSpace = new VariableSectionScope(GlobalSpace);
+         GlobalSpace.NestedScope = VariableSpace;
          _currentScope = VariableSpace;
       }
 
@@ -54,9 +55,11 @@ namespace ValidatingSymbolUsage
          var funcName = context.declarator()?.directDeclarator()?.directDeclarator()?.Identifier()?.GetText()
                         ?? throw new ArgumentNullException(nameof(EnterFunctionDefinition),
                            "Unable to select function name");
+
          var typeSpecifier = context.declarationSpecifiers()?.declarationSpecifier()
             .Select(declSpec => declSpec.typeSpecifier())
             .FirstOrDefault(ctx => ctx != null);
+
          var returnType = typeSpecifier?.Start.Type.GetCaplType() ?? BuiltInType.Void;
          var userTypeToken = GetUserTypeToken(returnType, typeSpecifier);
          var userDefType = userTypeToken?.Text ?? string.Empty;
@@ -65,6 +68,7 @@ namespace ValidatingSymbolUsage
          var function = new FunctionSymbol(funcName, returnType, _currentScope, userDefType);
          _currentScope.Define(function); // define function in current scope
          SaveScope(context, function); // push: set function's parent to current
+         _currentScope.NestedScope = function;
          _currentScope = function;
       }
 
@@ -91,7 +95,9 @@ namespace ValidatingSymbolUsage
          }
 
          // push new local scope
-         _currentScope = new LocalScope(_currentScope);
+         var localScope = new LocalScope(_currentScope);
+         _currentScope.NestedScope = localScope;
+         _currentScope = localScope;
          SaveScope(context, _currentScope);
       }
 
@@ -143,6 +149,7 @@ namespace ValidatingSymbolUsage
          var declTokenList = context.initDeclaratorList().initDeclarator()
             .Select(ctx => GetTypeToken(ctx.declarator()?.directDeclarator()))
             .ToList();
+
          declTokenList.ForEach(idToken => DefineVar(declType, idToken, userTypeToken));
       }
 

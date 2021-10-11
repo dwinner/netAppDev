@@ -28,6 +28,8 @@ namespace ValidatingSymbolUsage
 
       public IScope EnclosingScope { get; }
 
+      public IScope NestedScope { get; set; }
+
       public IDictionary<string, Symbol> Symbols { get; } = new Dictionary<string, Symbol>();
 
       public void Define(Symbol aSymbol)
