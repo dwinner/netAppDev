@@ -1,0 +1,13 @@
+variables
+{
+    int x,y,z;
+    y = 8;
+    z = 4;
+    x = y + z;  // Addition. Result = 12
+    x = y - z;  // Subtraction. Result = 4
+    x = y * z;  // Multiplication. Result = 32
+    x = y / z;  // Division. Result = 2
+    x = z % y;  // Modulo. Result = 4
+    x = y++;    // Increment. Result = 9
+    x = z--; 
+}

@@ -1,0 +1,45 @@
+variables
+{
+    message EngineTemp eTemp;
+
+    // or use its numeric identifier    
+    eTemp.DLC = 8;
+    
+    // two instances of the same message
+    message EngineTemp eTemp1, eTemp2;
+
+    message * eTemp2 = { DLC = 8};
+    eTemp2.ID = 0x100;
+}
+
+on message * // for all messages
+{
+    // print
+    write("The message received is %c", this.id);
+}
+
+on message CAN1.* // for all messages received on CAN channel 1
+{
+    // print
+    write("The message received on CAN channel 1 is %c", this.id);
+}
+
+on envVar envIgnitionSwitch
+{
+    if (getValue(this) == 1)
+    {
+        // set signals here to lock all doors
+    }        
+    else
+    {
+        // set signals here to unlock all doors
+        output(doorStateMessage);
+    }
+}
+
+on envVar FlowRate
+{
+    int val;
+    val = getValue(this); // read value of FlowRate into val
+    write("The flow rate is %d", val); // display it
+}

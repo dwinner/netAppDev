@@ -1,0 +1,6 @@
+on timer delayTimer
+{
+    message DomeLight dlMsg;
+    dlMsg.Status = 0; // turns off dome light
+    output(dlMsg);
+}

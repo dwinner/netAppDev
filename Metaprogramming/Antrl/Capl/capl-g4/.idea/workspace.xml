@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="950f7524-631c-4812-8c77-3d61ee540d20" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/../ValidatingSymbolUsage/DefinitionPhaseVisitor.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../ValidatingSymbolUsage/DefinitionPhaseVisitor.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ValidatingSymbolUsage/MainEntry.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../ValidatingSymbolUsage/MainEntry.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ValidatingSymbolUsage/ReferencePhaseVisitor.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../ValidatingSymbolUsage/ReferencePhaseVisitor.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ValidatingSymbolUsage/Symbol.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../ValidatingSymbolUsage/Symbol.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ValidatingSymbolUsage/VariableSectionScope.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ValidatingSymbolUsage/usages.can" beforeDir="false" afterPath="$PROJECT_DIR$/../ValidatingSymbolUsage/usages.can" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../../../.." />
+  </component>
+  <component name="ProjectId" id="1yGjlsalxHctvYe91HAB087KXo6" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="aspect.path.notification.shown" value="true" />
+    <property name="dart.analysis.tool.window.visible" value="false" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../ValidatingSymbolUsage/usages.can" />
+    <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
+    <property name="show.migrate.to.gradle.popup" value="false" />
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="950f7524-631c-4812-8c77-3d61ee540d20" name="Default Changelist" comment="" />
+      <created>1631884972379</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1631884972379</updated>
+      <workItem from="1631884973514" duration="125000" />
+      <workItem from="1632394757192" duration="9512000" />
+      <workItem from="1632459007547" duration="31402000" />
+      <workItem from="1632648862546" duration="2862000" />
+      <workItem from="1632728107923" duration="19453000" />
+      <workItem from="1632762053826" duration="100000" />
+      <workItem from="1632825040400" duration="1390000" />
+      <workItem from="1632890141365" duration="4687000" />
+      <workItem from="1632895456926" duration="1829000" />
+      <workItem from="1632923622720" duration="9398000" />
+      <workItem from="1632981105916" duration="11460000" />
+      <workItem from="1633005456659" duration="2753000" />
+      <workItem from="1633349886278" duration="260000" />
+      <workItem from="1633350176654" duration="96000" />
+      <workItem from="1633350283255" duration="302000" />
+      <workItem from="1633412267107" duration="26000" />
+      <workItem from="1633448946717" duration="268000" />
+      <workItem from="1633487737028" duration="17000" />
+      <workItem from="1633510466152" duration="10566000" />
+      <workItem from="1633577758541" duration="9564000" />
+      <workItem from="1633675472133" duration="5886000" />
+      <workItem from="1634012680778" duration="5725000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="oldMeFiltersMigrated" value="true" />
+  </component>
+  <component name="XSLT-Support.FileAssociations.UIState">
+    <expand />
+    <select />
+  </component>
+</project>
