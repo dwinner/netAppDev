@@ -17,11 +17,6 @@ namespace ValidatingSymbolUsage
       /// </summary>
       IScope EnclosingScope { get; }
 
-      /// <summary>
-      ///    Where to look nested symbols
-      /// </summary>
-      IScope NestedScope { get; set; }
-
       IDictionary<string, Symbol> Symbols { get; }
 
       /// <summary>

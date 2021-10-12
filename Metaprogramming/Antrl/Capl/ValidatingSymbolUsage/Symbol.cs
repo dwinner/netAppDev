@@ -1,11 +1,12 @@
-﻿using System.Text;
+﻿using System;
+using System.Text;
 
 namespace ValidatingSymbolUsage
 {
    /// <summary>
    ///    A generic programming language symbol
    /// </summary>
-   public class Symbol
+   public class Symbol : IEquatable<Symbol>
    {
       protected Symbol(string aSymbolName)
          : this(aSymbolName, BuiltInType.Invalid) =>
@@ -46,6 +47,47 @@ namespace ValidatingSymbolUsage
       public IScope Scope { get; set; }
 
       public static Symbol Null => new(string.Empty, BuiltInType.Invalid);
+
+      public bool Equals(Symbol other)
+      {
+         if (ReferenceEquals(null, other))
+         {
+            return false;
+         }
+
+         if (ReferenceEquals(this, other))
+         {
+            return true;
+         }
+
+         return Name == other.Name && Type == other.Type && UserDefinedType == other.UserDefinedType && Equals(Scope, other.Scope);
+      }
+
+      public override bool Equals(object obj)
+      {
+         if (ReferenceEquals(null, obj))
+         {
+            return false;
+         }
+
+         if (ReferenceEquals(this, obj))
+         {
+            return true;
+         }
+
+         if (obj.GetType() != this.GetType())
+         {
+            return false;
+         }
+
+         return Equals((Symbol) obj);
+      }
+
+      public override int GetHashCode() => HashCode.Combine(Name, (int) Type, UserDefinedType, Scope);
+
+      public static bool operator ==(Symbol left, Symbol right) => Equals(left, right);
+
+      public static bool operator !=(Symbol left, Symbol right) => !Equals(left, right);
 
       public override string ToString()
       {

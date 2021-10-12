@@ -1,116 +1,34 @@
-﻿const char varConst = 0;
-char topChar = 'a';
-byte topByte;
-const int topInt = 1;
-long topLong;
-const int64 topInt64 = 4L;
-float topFloat;
-const double topDouble = 5.5;
-const word topWord = 3; 
-dword topDword;
-const qword topQword = 0;
-const int topConst = 10;
-int topInt1, topInt2, topInt3;
+﻿int x;
+int y;
 
-struct TopLevelSt topSt = 
+int f(int x, float y)
 {
-    first = 0,
-    second = 0    
-};
-
-enum OPTION_1
-{
-    ACTIVATED   = 1,
-    DEACTIVATED = 0
-};
-
-enum OPTION_1 topOpt1;
-enum OPTION_2 topOpt2 = ACTIVATED;
-char topArray[10];
-
-variables
-{
-    timer varTimer;
-    msTimer varMsTimer;
-    struct TopLevelSt varSt;
-    enum OPTION_1 varOpt1;
-    enum OPTION_2 varOpt2;
-
-    varOpt1 = OPTION_1.ACTIVATED;
-    varOpt2 = OPTION_2.OFF;
-
-    message * eTemp;
-    multiplexed_message * mpMessage;
-    diagRequest FaultMem_ReportDTCByStatusMask  diag_req;
-    diagResponse this resp;
-    signal * varSignal;
-    const char varConst = 0;
-    int varInt1, varInt2, varInt3;
-    enum OPTION_1
-        varEn1 = ACTIVATED,
-        varEn2 = ACTIVATED,
-        varEn3 = ACTIVATED;
-
-    char varArray[10] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+    g();   // forward reference is ok
+    i = 3; // no declaration for i (error)
+    g = 4; // g is not variable (error)
+    return x + y; // x, y are defined, so no problem
 }
 
-SetLightDsp (long headLight, const long hazardFlasher[])
+void g()
 {
-    long tmpLightDsp;
-    tmpLightDsp = 0;
+    int x = 0;
+    float y;
+    y = 9; // y is defined
+    f();   // backward reference is ok
+    z();   // no such function (error)
+    y();   // y is not function (error)
+    x = f; // f is not a variable (error)
+}
 
-    if (headLight == kOn)
+void a()
+{
+    int x;
+    x = 1;  // x resolves to current scope, not x in global scope
+    y = 2;  // y is not found in current scope, but resolves in global
     {
-        tmpLightDsp = 4;
-        int lOne = 1;
-    }        
-
-    if (hazardFlasher == kOn)
-    {
-        tmpLightDsp += 3;
-        int lTwo = 2;
-    }        
-}
-
-void myFunc()
-{
-    const byte value = 10; // static; called once
-    write("value = %d", value);
-    value = 35;
-}
-
-void myFunc2()
-{
-    byte value; // variable declarations
-    int x, y;
-    value = 10; // variable initializations
-    x = 0;
-    y = 5;    
-}
-
-void sum(int matrix[][])
-{
-    int i, j;
-    int answer;
-    answer = 0;
-
-    for (i = 0; i < elCount(matrix); i++)
-    {
-        for (j = 0; j < elCount(matrix[i]); j++)
-        {
-            answer += matrix[i][j];
-        }
+        int y = x;
     }
-
-    write("The sum is %d", answer);
 }
 
-struct StructType stFunc()
-{
-    return;
-}
-
-enum MY_ENUM enFunc()
-{
-    return;
-}
+void b(int z)
+{ }

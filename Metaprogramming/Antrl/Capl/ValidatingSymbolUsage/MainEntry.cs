@@ -2,8 +2,6 @@
  * Symbol usage validation
  */
 
-using System;
-using System.Collections.Generic;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
 using CaplGrammar.Core;
@@ -21,59 +19,16 @@ namespace ValidatingSymbolUsage
          var caplLexer = new CaplLexer(antlrStream);
          var tokens = new CommonTokenStream(caplLexer);
          var caplParser = new CaplParser(tokens) {BuildParseTree = true};
-         var sourceTree = caplParser.primaryExpression();
-
-         //Console.WriteLine(sourceTree.ToStringTree());
+         var caplAst = caplParser.primaryExpression();
 
          var walker = new ParseTreeWalker();
-         var def = new DefinitionPhaseVisitor();
-         walker.Walk(def, sourceTree);
+         var definitionPhase = new DefinitionPhaseVisitor();
+         walker.Walk(definitionPhase, caplAst);
 
-         //var scopes = def.Scopes;
-
-         //Console.WriteLine("Globals:");
-         //Console.WriteLine("-------------------------------------------------");
-         //var globalSpace = def.GlobalSpace?.Symbols;
-         //if (globalSpace != null)
-         //{
-         //   foreach (var (_, value) in globalSpace)
-         //   {
-         //      Console.WriteLine($"{value}");
-         //   }
-         //}
-
-         //Console.WriteLine("Variables:");
-         //Console.WriteLine("-------------------------------------------------");
-         //var varSpace = def.VariableSpace?.Symbols;
-         //if (varSpace != null)
-         //{
-         //   foreach (var (_, value) in varSpace)
-         //   {
-         //      Console.WriteLine($"{value}");
-         //   }
-         //}
-
-         PrintLocals(def.GlobalSpace?.Symbols);
-      }
-
-      private static void PrintLocals(IDictionary<string, Symbol> symbols)
-      {
-         if (symbols != null)
-         {
-            foreach (var (_, value) in symbols)
-            {
-               var nestedScope = value.Scope.NestedScope;
-               if (nestedScope != null)
-               {
-                  PrintLocals(nestedScope.Symbols);
-               }
-            }
-
-            foreach (var (key, value) in symbols)
-            {
-               Console.WriteLine($"Symbol name: {key}. Value: {value}");
-            }
-         }
+         var globalScope = definitionPhase.GlobalScope;
+         var scopes = definitionPhase.Scopes;
+         var referencePhase = new ReferencePhaseVisitor(globalScope, scopes);
+         walker.Walk(referencePhase, caplAst);
       }
    }
 }

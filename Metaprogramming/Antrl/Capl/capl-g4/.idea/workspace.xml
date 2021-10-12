@@ -2,6 +2,12 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="950f7524-631c-4812-8c77-3d61ee540d20" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/../ValidatingSymbolUsage/DefinitionPhaseVisitor.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../ValidatingSymbolUsage/DefinitionPhaseVisitor.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ValidatingSymbolUsage/MainEntry.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../ValidatingSymbolUsage/MainEntry.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ValidatingSymbolUsage/ReferencePhaseVisitor.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../ValidatingSymbolUsage/ReferencePhaseVisitor.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ValidatingSymbolUsage/Symbol.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../ValidatingSymbolUsage/Symbol.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ValidatingSymbolUsage/VariableSectionScope.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ValidatingSymbolUsage/usages.can" beforeDir="false" afterPath="$PROJECT_DIR$/../ValidatingSymbolUsage/usages.can" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -58,6 +64,7 @@
       <workItem from="1633510466152" duration="10566000" />
       <workItem from="1633577758541" duration="9564000" />
       <workItem from="1633675472133" duration="5886000" />
+      <workItem from="1634012680778" duration="5725000" />
     </task>
     <servers />
   </component>

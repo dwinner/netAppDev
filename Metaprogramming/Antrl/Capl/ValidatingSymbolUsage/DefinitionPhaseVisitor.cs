@@ -12,11 +12,12 @@ namespace ValidatingSymbolUsage
    {
       private IScope _currentScope; // define symbols in this scope
 
+      // NOTE maybe you need to extend it for more flexible using
       public ParseTreeProperty<IScope> Scopes { get; } = new();
 
-      public GlobalSpaceScope GlobalSpace { get; private set; }
+      public GlobalSpaceScope GlobalScope { get; private set; }
 
-      public VariableSectionScope VariableSpace { get; private set; }
+      private bool _isVariableBlock;
 
       public override void EnterPrimaryExpression(CaplParser.PrimaryExpressionContext context)
       {
@@ -28,26 +29,26 @@ namespace ValidatingSymbolUsage
             return;
          }
 
-         GlobalSpace = new GlobalSpaceScope(null); // TODO: Use null-object there
-         _currentScope = GlobalSpace;
+         GlobalScope = new GlobalSpaceScope(null); // TODO: Use null-object there
+         _currentScope = GlobalScope;
       }
 
       public override void ExitPrimaryExpression(CaplParser.PrimaryExpressionContext context)
       {
-         Debug.WriteLine(GlobalSpace);
+         Debug.WriteLine(GlobalScope);
       }
 
       public override void EnterVariableBlock(CaplParser.VariableBlockContext context)
       {
-         VariableSpace = new VariableSectionScope(GlobalSpace);
-         GlobalSpace.NestedScope = VariableSpace;
-         _currentScope = VariableSpace;
+         _currentScope = GlobalScope;
+         _isVariableBlock = true;
       }
 
       public override void ExitVariableBlock(CaplParser.VariableBlockContext context)
       {
          Debug.WriteLine(_currentScope);
-         _currentScope = _currentScope?.EnclosingScope; // pop scope
+         _currentScope = GlobalScope;
+         _isVariableBlock = false;
       }
 
       public override void EnterFunctionDefinition(CaplParser.FunctionDefinitionContext context)
@@ -68,7 +69,6 @@ namespace ValidatingSymbolUsage
          var function = new FunctionSymbol(funcName, returnType, _currentScope, userDefType);
          _currentScope.Define(function); // define function in current scope
          SaveScope(context, function); // push: set function's parent to current
-         _currentScope.NestedScope = function;
          _currentScope = function;
       }
 
@@ -89,14 +89,13 @@ namespace ValidatingSymbolUsage
       public override void EnterBlockItemList(CaplParser.BlockItemListContext context)
       {
          // Variables-block is like a global scope in CAPL
-         if (_currentScope.ScopeName == "Variables")
+         if (_isVariableBlock)
          {
             return;
          }
 
          // push new local scope
          var localScope = new LocalScope(_currentScope);
-         _currentScope.NestedScope = localScope;
          _currentScope = localScope;
          SaveScope(context, _currentScope);
       }
@@ -104,7 +103,7 @@ namespace ValidatingSymbolUsage
       public override void ExitBlockItemList(CaplParser.BlockItemListContext context)
       {
          // Keep in mind that variables-scope has no nested scopes due to our handling anymore
-         if (_currentScope.ScopeName == "Variables")
+         if (_isVariableBlock)
          {
             return;
          }
