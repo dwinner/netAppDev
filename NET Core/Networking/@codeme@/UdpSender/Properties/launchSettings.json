@@ -1,8 +1,0 @@
-{
-  "profiles": {
-    "UdpSender": {
-      "commandName": "Project",
-      "commandLineArgs": "-p 17 -b"
-    }
-  }
-}

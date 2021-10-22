@@ -1,12 +1,15 @@
-﻿using System;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using UdpSender;
 
-namespace UdpSender
-{
-   class Program
+using var host = Host.CreateDefaultBuilder(args)
+   .ConfigureServices((context, services) =>
    {
-      static void Main(string[] args)
-      {
-         Console.WriteLine("Hello World!");
-      }
-   }
-}
+      IConfiguration configuration = context.Configuration;
+      services.Configure<SenderOptions>(configuration.GetSection("UdpSender"));
+      services.AddTransient<Sender>();
+   }).Build();
+
+var sender = host.Services.GetRequiredService<Sender>();
+await sender.RunAsync();
