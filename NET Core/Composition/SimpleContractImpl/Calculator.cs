@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Composition;
 using Contract;
 
 namespace SimpleContractImpl
 {
-   [Export(typeof(ICalculator))]
    public class Calculator : ICalculator
    {
       public IList<IOperation> GetOperations() =>

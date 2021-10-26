@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.31729.503
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HostApp", "HostApp\HostApp.csproj", "{7AAE7EC5-B21F-4DEE-81DA-A8A2B3657F71}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HostApp", "HostApp\HostApp.csproj", "{7AAE7EC5-B21F-4DEE-81DA-A8A2B3657F71}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Contract", "Contract\Contract.csproj", "{C79E85D1-2685-42F0-8B02-03359D7CCDEE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Contract", "Contract\Contract.csproj", "{C79E85D1-2685-42F0-8B02-03359D7CCDEE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleContractImpl", "SimpleContractImpl\SimpleContractImpl.csproj", "{C2641291-D87D-4D23-8E2F-02C0B34EE7F6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleContractImpl", "SimpleContractImpl\SimpleContractImpl.csproj", "{C2641291-D87D-4D23-8E2F-02C0B34EE7F6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

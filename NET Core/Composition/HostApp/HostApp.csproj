@@ -10,12 +10,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <AdditionalFiles Include="..\ArchValidation\DependencyValidation1.layerdiagram" Link="DependencyValidation1.layerdiagram">
+      <Visible>False</Visible>
+    </AdditionalFiles>
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="System.Composition" Version="5.0.1" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Contract\Contract.csproj" />
-    <ProjectReference Include="..\SimpleContractImpl\SimpleContractImpl.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,22 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Composition;
+using System.Composition.Convention;
 using System.Composition.Hosting;
+using System.IO;
+using System.Linq;
+using System.Reflection;
 using Contract;
-using SimpleContractImpl;
 using static System.Console;
 
 namespace HostApp
 {
    public class HostEntry
    {
-      [Import]
       public ICalculator Calculator { get; set; }
 
       private static void Main()
       {
          var entry = new HostEntry();
-         entry.Bootstrapper();
+         var currentDir = Environment.CurrentDirectory;
+         entry.Bootstrap(currentDir);
          entry.Run();
       }
 
@@ -65,12 +68,23 @@ namespace HostApp
          } while (selectedOp != "exit");
       }
 
-      private void Bootstrapper()
+      private void Bootstrap(string pluginPath)
       {
+         var conventions = new ConventionBuilder();
+         conventions.ForTypesDerivedFrom<ICalculator>().Export<ICalculator>().Shared();
+         conventions.ForType<HostEntry>().ImportProperty<ICalculator>(entry => entry.Calculator);
+
          var configuration = new ContainerConfiguration()
-            .WithPart<Calculator>();
+            .WithDefaultConventions(conventions)
+            .WithAssemblies(GetAssemblies(pluginPath));
+
          using var host = configuration.CreateContainer();
-         host.SatisfyImports(this);
+         host.SatisfyImports(this, conventions);
       }
+
+      private static IEnumerable<Assembly> GetAssemblies(string pluginPath) =>
+         Directory.EnumerateFiles(pluginPath, "*.dll")
+            .Select(Assembly.LoadFile)
+            .ToList();
    }
 }

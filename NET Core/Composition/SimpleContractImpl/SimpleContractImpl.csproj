@@ -9,7 +9,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="System.Composition" Version="5.0.1" />
+    <AdditionalFiles Include="..\ArchValidation\DependencyValidation1.layerdiagram" Link="DependencyValidation1.layerdiagram">
+      <Visible>False</Visible>
+    </AdditionalFiles>
   </ItemGroup>
 
   <ItemGroup>

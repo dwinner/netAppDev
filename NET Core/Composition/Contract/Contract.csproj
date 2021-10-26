@@ -8,4 +8,10 @@
     <OutputPath>$(SolutionDir)out</OutputPath>
   </PropertyGroup>
 
+  <ItemGroup>
+    <AdditionalFiles Include="..\ArchValidation\DependencyValidation1.layerdiagram" Link="DependencyValidation1.layerdiagram">
+      <Visible>False</Visible>
+    </AdditionalFiles>
+  </ItemGroup>
+
 </Project>
