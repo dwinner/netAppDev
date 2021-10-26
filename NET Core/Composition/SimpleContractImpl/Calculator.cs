@@ -6,6 +6,8 @@ namespace SimpleContractImpl
 {
    public class Calculator : ICalculator
    {
+      public string AddInName => "Simple";
+
       public IList<IOperation> GetOperations() =>
          new List<IOperation>
          {

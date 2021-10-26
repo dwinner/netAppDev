@@ -1,8 +1,8 @@
 ﻿using Contract;
 
-namespace SimpleContractImpl
+namespace YetAnotherCacl
 {
-   public class Operation : IOperation
+   public class OperationImpl : IOperation
    {
       public string Name { get; internal init; }
 

@@ -9,6 +9,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Contract", "Contract\Contra
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleContractImpl", "SimpleContractImpl\SimpleContractImpl.csproj", "{C2641291-D87D-4D23-8E2F-02C0B34EE7F6}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YetAnotherCacl", "YetAnotherCacl\YetAnotherCacl.csproj", "{93BE92C5-220B-440C-98BB-C8FCA06DB1DF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{C2641291-D87D-4D23-8E2F-02C0B34EE7F6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C2641291-D87D-4D23-8E2F-02C0B34EE7F6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C2641291-D87D-4D23-8E2F-02C0B34EE7F6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{93BE92C5-220B-440C-98BB-C8FCA06DB1DF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{93BE92C5-220B-440C-98BB-C8FCA06DB1DF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{93BE92C5-220B-440C-98BB-C8FCA06DB1DF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{93BE92C5-220B-440C-98BB-C8FCA06DB1DF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

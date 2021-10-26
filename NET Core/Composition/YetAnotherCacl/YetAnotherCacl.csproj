@@ -9,12 +9,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <AdditionalFiles Include="..\ArchValidation\DependencyValidation1.layerdiagram" Link="DependencyValidation1.layerdiagram">
-      <Visible>False</Visible>
-    </AdditionalFiles>
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\Contract\Contract.csproj" />
   </ItemGroup>
 

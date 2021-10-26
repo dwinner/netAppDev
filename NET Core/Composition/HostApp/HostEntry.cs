@@ -6,6 +6,7 @@ using System.Composition.Hosting;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 using Contract;
 using static System.Console;
 
@@ -13,7 +14,7 @@ namespace HostApp
 {
    public class HostEntry
    {
-      public ICalculator Calculator { get; set; }
+      public IEnumerable<ICalculator> Calculators { get; set; }
 
       private static void Main()
       {
@@ -25,54 +26,24 @@ namespace HostApp
 
       private void Run()
       {
-         var operations = Calculator.GetOperations();
-         var operationsDict = new SortedList<string, IOperation>();
-         foreach (var item in operations)
+         WriteLine("Loaded extensions");
+         var strBuilder = new StringBuilder();
+         foreach (var calculator in Calculators)
          {
-            WriteLine($"Name: {item.Name}, number operands: {item.NumberOperands}");
-            operationsDict.Add(item.Name, item);
+            strBuilder
+               .Append("AddIn name: " + calculator.AddInName + ". ")
+               .Append("Operation count: " + calculator.GetOperations().Count)
+               .AppendLine();
          }
 
-         WriteLine();
-         string selectedOp = null;
-         do
-         {
-            try
-            {
-               Write("Operation? ");
-               selectedOp = ReadLine();
-               if (selectedOp.ToLower() == "exit" ||
-                   !operationsDict.ContainsKey(selectedOp))
-               {
-                  continue;
-               }
-
-               var operation = operationsDict[selectedOp];
-               var operands = new double[operation.NumberOperands];
-               for (var i = 0; i < operation.NumberOperands; i++)
-               {
-                  Write($"\t operand {i + 1}? ");
-                  var selectedOperand = ReadLine();
-                  operands[i] = double.Parse(selectedOperand!);
-               }
-
-               WriteLine("calling calculator");
-               var result = Calculator.Operate(operation, operands);
-               WriteLine($"result: {result}");
-            }
-            catch (FormatException ex)
-            {
-               WriteLine(ex.Message);
-               WriteLine();
-            }
-         } while (selectedOp != "exit");
+         WriteLine(strBuilder.ToString());
       }
 
       private void Bootstrap(string pluginPath)
       {
          var conventions = new ConventionBuilder();
          conventions.ForTypesDerivedFrom<ICalculator>().Export<ICalculator>().Shared();
-         conventions.ForType<HostEntry>().ImportProperty<ICalculator>(entry => entry.Calculator);
+         conventions.ForType<HostEntry>().ImportProperty<IEnumerable<ICalculator>>(entry => entry.Calculators);
 
          var configuration = new ContainerConfiguration()
             .WithDefaultConventions(conventions)
