@@ -14,8 +14,4 @@
     </AdditionalFiles>
   </ItemGroup>
 
-  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="xcopy &quot;$(TargetDir)*.*&quot; &quot;$(SolutionDir)Output\*.*&quot; /Y /E /C" />
-  </Target>
-
 </Project>

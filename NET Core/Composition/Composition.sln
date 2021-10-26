@@ -4,12 +4,18 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 16.0.31729.503
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HostApp", "HostApp\HostApp.csproj", "{7AAE7EC5-B21F-4DEE-81DA-A8A2B3657F71}"
+	ProjectSection(ProjectDependencies) = postProject
+		{C2641291-D87D-4D23-8E2F-02C0B34EE7F6} = {C2641291-D87D-4D23-8E2F-02C0B34EE7F6}
+		{93BE92C5-220B-440C-98BB-C8FCA06DB1DF} = {93BE92C5-220B-440C-98BB-C8FCA06DB1DF}
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Contract", "Contract\Contract.csproj", "{C79E85D1-2685-42F0-8B02-03359D7CCDEE}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleContractImpl", "SimpleContractImpl\SimpleContractImpl.csproj", "{C2641291-D87D-4D23-8E2F-02C0B34EE7F6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YetAnotherCacl", "YetAnotherCacl\YetAnotherCacl.csproj", "{93BE92C5-220B-440C-98BB-C8FCA06DB1DF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YetAnotherCacl", "YetAnotherCacl\YetAnotherCacl.csproj", "{93BE92C5-220B-440C-98BB-C8FCA06DB1DF}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "AddIns", "AddIns", "{0A47EAED-4CC6-4952-B546-481BC3353E38}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -36,6 +42,10 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{C2641291-D87D-4D23-8E2F-02C0B34EE7F6} = {0A47EAED-4CC6-4952-B546-481BC3353E38}
+		{93BE92C5-220B-440C-98BB-C8FCA06DB1DF} = {0A47EAED-4CC6-4952-B546-481BC3353E38}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {267CF0B2-BBA1-4410-B751-CE9B030A8482}

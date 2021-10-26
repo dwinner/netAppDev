@@ -8,19 +8,24 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using Contract;
+using JetBrains.Annotations;
 using static System.Console;
 
 namespace HostApp
 {
    public class HostEntry
    {
+      [UsedImplicitly]
       public IEnumerable<ICalculator> Calculators { get; set; }
+
+      private const string AddInTarget = "addins";
 
       private static void Main()
       {
          var entry = new HostEntry();
          var currentDir = Environment.CurrentDirectory;
-         entry.Bootstrap(currentDir);
+         var addInPath = Path.Combine(currentDir, AddInTarget);
+         entry.Bootstrap(addInPath);
          entry.Run();
       }
 
@@ -31,8 +36,8 @@ namespace HostApp
          foreach (var calculator in Calculators)
          {
             strBuilder
-               .Append("AddIn name: " + calculator.AddInName + ". ")
-               .Append("Operation count: " + calculator.GetOperations().Count)
+               .Append($"AddIn name: {calculator.AddInName}. ")
+               .Append($"Operation count: {calculator.GetOperations().Count}")
                .AppendLine();
          }
 
@@ -45,9 +50,10 @@ namespace HostApp
          conventions.ForTypesDerivedFrom<ICalculator>().Export<ICalculator>().Shared();
          conventions.ForType<HostEntry>().ImportProperty<IEnumerable<ICalculator>>(entry => entry.Calculators);
 
+         var addInAssemblies = GetAssemblies(pluginPath);
          var configuration = new ContainerConfiguration()
             .WithDefaultConventions(conventions)
-            .WithAssemblies(GetAssemblies(pluginPath));
+            .WithAssemblies(addInAssemblies);
 
          using var host = configuration.CreateContainer();
          host.SatisfyImports(this, conventions);
