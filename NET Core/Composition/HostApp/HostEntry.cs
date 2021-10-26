@@ -15,10 +15,10 @@ namespace HostApp
 {
    public class HostEntry
    {
-      [UsedImplicitly]
-      public IEnumerable<ICalculator> Calculators { get; set; }
-
       private const string AddInTarget = "addins";
+
+      [UsedImplicitly]
+      public IEnumerable<Lazy<ICalculator>> Calculators { get; set; }
 
       private static void Main()
       {
@@ -33,8 +33,9 @@ namespace HostApp
       {
          WriteLine("Loaded extensions");
          var strBuilder = new StringBuilder();
-         foreach (var calculator in Calculators)
+         foreach (var deferredCalc in Calculators)
          {
+            var calculator = deferredCalc.Value;
             strBuilder
                .Append($"AddIn name: {calculator.AddInName}. ")
                .Append($"Operation count: {calculator.GetOperations().Count}")
@@ -47,8 +48,13 @@ namespace HostApp
       private void Bootstrap(string pluginPath)
       {
          var conventions = new ConventionBuilder();
-         conventions.ForTypesDerivedFrom<ICalculator>().Export<ICalculator>().Shared();
-         conventions.ForType<HostEntry>().ImportProperty<IEnumerable<ICalculator>>(entry => entry.Calculators);
+         conventions
+            .ForTypesDerivedFrom<ICalculator>()
+            .Export<ICalculator>()
+            .Shared();
+         conventions
+            .ForType<HostEntry>()
+            .ImportProperty<IEnumerable<Lazy<ICalculator>>>(entry => entry.Calculators);
 
          var addInAssemblies = GetAssemblies(pluginPath);
          var configuration = new ContainerConfiguration()
