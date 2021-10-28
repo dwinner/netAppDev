@@ -203,3 +203,6 @@ sysinfo.txt
 
 # Java
 *.class
+
+# idea files
+.idea/
