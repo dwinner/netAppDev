@@ -7,11 +7,17 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Analyzer Include="C:\sourcegenerators\CodeGenerationSample.dll" />
+    <Analyzer Include="analyzers/CodeGenerationSample.dll"/>
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\CodeGenerationSample\CodeGenerationSample.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="analyzers\CodeGenerationSample.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>
