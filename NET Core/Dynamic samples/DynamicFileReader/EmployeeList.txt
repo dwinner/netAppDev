@@ -1,4 +1,4 @@
 ﻿FirstName, LastName, City, State
-Mario Andretti, Nazareth, Pennsylvania
+Mario, Andretti, Nazareth, Pennsylvania
 Carlos, Reutemann, Santa Fe, Argentine
 Sebastian, Vettel, Thurgovia, Switzerland

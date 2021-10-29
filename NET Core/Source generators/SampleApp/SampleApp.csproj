@@ -10,4 +10,8 @@
     <Analyzer Include="C:\sourcegenerators\CodeGenerationSample.dll" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\CodeGenerationSample\CodeGenerationSample.csproj" />
+  </ItemGroup>
+
 </Project>
