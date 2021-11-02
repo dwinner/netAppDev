@@ -1,0 +1,45 @@
+﻿using System;
+
+IfStatement();
+Book b = new("Professional C#");
+PatternMatching(b);
+
+void PatternMatching(object o)
+{
+   if (o is null)
+   {
+      throw new ArgumentNullException(nameof(o));
+   }
+
+   if (o is Book b)
+   {
+      Console.WriteLine($"received a book: {b.Title}");
+   }
+}
+
+void IfStatement()
+{
+   Console.WriteLine("Type in a string");
+   var input = Console.ReadLine();
+
+   if (string.IsNullOrEmpty(input))
+   {
+      Console.WriteLine("You typed in an empty string.");
+   }
+   else if (input.Length < 5)
+   {
+      Console.WriteLine("The string had less than 5 characters.");
+   }
+   else
+   {
+      Console.WriteLine("Read any other string");
+   }
+
+   Console.WriteLine("The string was " + input);
+}
+
+internal class Book
+{
+   public Book(string title) => Title = title;
+   public string Title { get; }
+}
