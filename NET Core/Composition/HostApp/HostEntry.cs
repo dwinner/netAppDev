@@ -23,8 +23,7 @@ namespace HostApp
       private static void Main()
       {
          var entry = new HostEntry();
-         var currentDir = Environment.CurrentDirectory;
-         var addInPath = Path.Combine(currentDir, AddInTarget);
+         var addInPath = Path.Combine(Environment.CurrentDirectory, AddInTarget);
          entry.Bootstrap(addInPath);
          entry.Run();
       }
