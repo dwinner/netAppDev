@@ -1,8 +1,4 @@
-﻿class GreetingService
+﻿internal class GreetingService
 {
-    public string Greet(Person person)
-    {
-        return $"Hello, {person.FirstName}!";
-    }
+   public string Greet(Person person) => $"Hello, {person.FirstName}!";
 }
-

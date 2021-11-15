@@ -1,6 +1,5 @@
 ﻿using System.Collections.ObjectModel;
 
-class MyCollection<T> : Collection<T>, IEnumerableEx<T>
+internal class MyCollection<T> : Collection<T>, IEnumerableEx<T>
 {
 }
-

@@ -1,8 +1,8 @@
 ﻿using System;
 
-Book theBook = new("Professional C#") 
-{ 
-    Publisher = "Wrox Press" 
+Book theBook = new("Professional C#")
+{
+   Publisher = "Wrox Press"
 };
 
 
@@ -15,5 +15,5 @@ Console.WriteLine(greeting);
 
 // deconstruction
 
-(var first, var last, _) = katharina;
+var (first, last, _) = katharina;
 Console.WriteLine($"{first} {last}");

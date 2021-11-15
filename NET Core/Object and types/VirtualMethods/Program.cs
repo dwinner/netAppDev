@@ -19,8 +19,8 @@ r1.Move(new Position { X = 120, Y = 40 });
 
 void DisplayShapes(params Shape[] shapes)
 {
-    foreach (var shape in shapes)
-    {
-        shape.Draw();
-    }
+   foreach (var shape in shapes)
+   {
+      shape.Draw();
+   }
 }

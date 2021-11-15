@@ -1,29 +1,23 @@
 public class Person
-{ 
-    public Person(string firstName, string lastName)
-    {
-        _firstName = firstName;
-        _lastName = lastName;
-    }
+{
+   public Person(string firstName, string lastName)
+   {
+      FirstName = firstName;
+      LastName = lastName;
+   }
 
-    private readonly string _firstName;
-    public string FirstName => _firstName;
-    private readonly string _lastName;
-    public string LastName => _lastName;
+   public string FirstName { get; }
 
-    public string FullName => $"{FirstName} {LastName}";
+   public string LastName { get; }
 
-    private int _age;
-    public int Age
-    {
-        get => _age;
-        set => _age = value;
-    }
+   public string FullName => $"{FirstName} {LastName}";
 
-    public void Deconstruct(out string firstName, out string lastName, out int age)
-    {
-        firstName = FirstName;
-        lastName = LastName;
-        age = Age;
-    }
+   public int Age { get; set; }
+
+   public void Deconstruct(out string firstName, out string lastName, out int age)
+   {
+      firstName = FirstName;
+      lastName = LastName;
+      age = Age;
+   }
 }

@@ -7,8 +7,9 @@ list1.AddLast(2);
 
 foreach (var item in list1)
 {
-    Console.WriteLine(item);
+   Console.WriteLine(item);
 }
+
 Console.WriteLine();
 
 LinkedList<string> list2 = new();
@@ -24,8 +25,9 @@ list3.AddLast((1, 2));
 list3.AddLast((3, 4));
 foreach (var item in list3)
 {
-    Console.WriteLine(item);
+   Console.WriteLine(item);
 }
+
 Console.WriteLine();
 
 LinkedList<Person> list4 = new();

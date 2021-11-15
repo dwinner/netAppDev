@@ -1,6 +1,6 @@
 ﻿public enum Color : short
 {
-    Red = 1,
-    Green = 2,
-    Blue = 3
+   Red = 1,
+   Green = 2,
+   Blue = 3
 }

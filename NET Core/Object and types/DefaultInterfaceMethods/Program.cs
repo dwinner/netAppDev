@@ -9,5 +9,5 @@ IEnumerableEx<string> names = new MyCollection<string> { "James", "Jack", "Joche
 var jNames = names.Where(n => n.StartsWith("J"));
 foreach (var name in jNames)
 {
-    Console.WriteLine(name);
+   Console.WriteLine(name);
 }
