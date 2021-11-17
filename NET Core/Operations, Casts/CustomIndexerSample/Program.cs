@@ -10,6 +10,7 @@ Console.WriteLine(coll[2]);
 
 foreach (var r in coll[new DateTime(1960, 3, 21)])
 {
-    Console.WriteLine(r);
+   Console.WriteLine(r);
 }
+
 Console.ReadLine();
