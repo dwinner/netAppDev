@@ -1,6 +1,6 @@
 ﻿using System;
 
-long myLongNumber = 333333423;
+const long myLongNumber = 333333423;
 object myObject = myLongNumber;
 var myIntNumber = (int)(long)myObject;
 

@@ -3,6 +3,7 @@
 public readonly struct Currency
 {
    public readonly uint Dollars;
+
    public readonly ushort Cents;
 
    public Currency(uint dollars, ushort cents) => (Dollars, Cents) = (dollars, cents);
@@ -25,7 +26,6 @@ public readonly struct Currency
          checked
          {
             var dollars = (uint)value;
-
             var cents = Convert.ToUInt16((value - dollars) * 100);
             return new Currency(dollars, cents);
          }
