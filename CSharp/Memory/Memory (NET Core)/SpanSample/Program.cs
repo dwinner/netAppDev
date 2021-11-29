@@ -1,0 +1,81 @@
+﻿using System;
+using System.Runtime.InteropServices;
+
+SpanOnTheHeap();
+SpanOnTheStack();
+SpanOnNativeMemory();
+SpanExtensions();
+
+unsafe void SpanOnNativeMemory()
+{
+   Console.WriteLine(nameof(SpanOnNativeMemory));
+
+   const int nbytes = 100;
+   nint p = Marshal.AllocHGlobal(nbytes);
+   try
+   {
+      var p2 = (int*)p;
+      Span<int> span = new(p2, nbytes >> 2);
+      span.Fill(42);
+      const int max = nbytes >> 2;
+      for (var i = 0; i < max; i++)
+      {
+         Console.Write($"{span[i]} ");
+      }
+
+      Console.WriteLine();
+   }
+   finally
+   {
+      Marshal.FreeHGlobal(p);
+   }
+
+   Console.WriteLine();
+}
+
+unsafe void SpanOnTheStack()
+{
+   Console.WriteLine(nameof(SpanOnTheStack));
+
+   const int arLen = 20;
+   var lp = stackalloc long[arLen];
+   Span<long> span1 = new(lp, arLen);
+   for (var i = 0; i < arLen; i++)
+   {
+      span1[i] = i;
+   }
+
+   Console.WriteLine(string.Join(", ", span1.ToArray()));
+   Console.WriteLine();
+}
+
+void SpanOnTheHeap()
+{
+   Console.WriteLine(nameof(SpanOnTheHeap));
+   var span1 = new[] { 1, 5, 11, 71, 22, 19, 21, 33 }.AsSpan();
+
+   // span1.Slice(start: 4, length: 3).Fill(42);
+   span1[4..7].Fill(42);
+
+   Console.WriteLine(string.Join(", ", span1.ToArray()));
+   Console.WriteLine();
+}
+
+void SpanExtensions()
+{
+   Console.WriteLine(nameof(SpanExtensions));
+   var span1 = new[] { 1, 5, 11, 71, 22, 19, 21, 33 }.AsSpan();
+   var span2 = span1[3..7];
+
+   var overlaps = span1.Overlaps(span2);
+   Console.WriteLine($"span1 overlaps span2: {overlaps}");
+   span1.Reverse();
+   Console.WriteLine($"span1 reversed: {string.Join(", ", span1.ToArray())}");
+   Console.WriteLine($"span2 (a slice) after reversing span1: {string.Join(", ", span2.ToArray())}");
+   var index = span1.IndexOf(span2);
+   Console.WriteLine($"index of span2 in span1: {index}");
+   Console.WriteLine();
+
+   string s1 = "the quick brown fox";
+   var spantostring = s1.AsSpan();
+}

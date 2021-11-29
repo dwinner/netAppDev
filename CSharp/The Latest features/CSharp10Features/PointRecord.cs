@@ -1,0 +1,1 @@
+﻿public readonly record struct PointRecord(double x, double y, double z);

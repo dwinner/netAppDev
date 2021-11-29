@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.30204.135
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSharp7Features", "CSharp7Features\CSharp7Features.csproj", "{72132CC7-5C54-4DED-AC39-FB97EC0251A2}"
 EndProject
@@ -9,7 +9,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CSharp8Features", "CSharp8F
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetFxConsoleApp", "NetFxConsoleApp\NetFxConsoleApp.csproj", "{16C8CC63-DC92-4D68-BD4E-B10D602777DB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSharp9Features", "CSharp9Features\CSharp9Features.csproj", "{2FE93F7C-8905-48BB-9362-B24CAEC4C325}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CSharp9Features", "CSharp9Features\CSharp9Features.csproj", "{2FE93F7C-8905-48BB-9362-B24CAEC4C325}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSharp10Features", "CSharp10Features\CSharp10Features.csproj", "{4BC76784-4643-4852-AE8C-333403193A94}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{2FE93F7C-8905-48BB-9362-B24CAEC4C325}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2FE93F7C-8905-48BB-9362-B24CAEC4C325}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2FE93F7C-8905-48BB-9362-B24CAEC4C325}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4BC76784-4643-4852-AE8C-333403193A94}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4BC76784-4643-4852-AE8C-333403193A94}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4BC76784-4643-4852-AE8C-333403193A94}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4BC76784-4643-4852-AE8C-333403193A94}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
