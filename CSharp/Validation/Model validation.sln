@@ -3,15 +3,19 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29519.87
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ModelValidationSample", "ModelValidationSample\ModelValidationSample.csproj", "{A1D46F76-2335-44A8-9DD0-B1AFA41D6DAE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ModelValidationSample", "ModelValidationSample\ModelValidationSample.csproj", "{A1D46F76-2335-44A8-9DD0-B1AFA41D6DAE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ModelTypes", "ModelTypes\ModelTypes.csproj", "{BB7A1DEC-CE03-4C85-9445-C22FFB274475}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ModelTypes", "ModelTypes\ModelTypes.csproj", "{BB7A1DEC-CE03-4C85-9445-C22FFB274475}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CustomValidationAttributes", "CustomValidationAttributes\CustomValidationAttributes.csproj", "{42FFCBB6-F56F-4999-B971-7DF292DAD719}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CustomValidationAttributes", "CustomValidationAttributes\CustomValidationAttributes.csproj", "{42FFCBB6-F56F-4999-B971-7DF292DAD719}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MessageResources", "MessageResources\MessageResources.csproj", "{68CC8BDB-2268-4156-9200-CE1F0AFA0B95}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MessageResources", "MessageResources\MessageResources.csproj", "{68CC8BDB-2268-4156-9200-CE1F0AFA0B95}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SelfValidatedModelSample", "SelfValidatedModelSample\SelfValidatedModelSample.csproj", "{0498E5FD-23A7-4B70-BC84-570758B82BD3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SelfValidatedModelSample", "SelfValidatedModelSample\SelfValidatedModelSample.csproj", "{0498E5FD-23A7-4B70-BC84-570758B82BD3}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "FluentValidation", "FluentValidation", "{AF38E57F-57E5-4F71-B8F5-DF56AF7174A6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FirstValidatorSample", "FluentValidation\FirstValidatorSample\FirstValidatorSample.csproj", "{B6CB5F88-F055-4FCD-AA22-DEC8F4E6B9E8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,9 +43,16 @@ Global
 		{0498E5FD-23A7-4B70-BC84-570758B82BD3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0498E5FD-23A7-4B70-BC84-570758B82BD3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0498E5FD-23A7-4B70-BC84-570758B82BD3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B6CB5F88-F055-4FCD-AA22-DEC8F4E6B9E8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B6CB5F88-F055-4FCD-AA22-DEC8F4E6B9E8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B6CB5F88-F055-4FCD-AA22-DEC8F4E6B9E8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B6CB5F88-F055-4FCD-AA22-DEC8F4E6B9E8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{B6CB5F88-F055-4FCD-AA22-DEC8F4E6B9E8} = {AF38E57F-57E5-4F71-B8F5-DF56AF7174A6}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {C3435A8F-ECE2-427B-BB22-E0D8436277D0}
