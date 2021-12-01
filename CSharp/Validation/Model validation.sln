@@ -15,7 +15,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SelfValidatedModelSample", 
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "FluentValidation", "FluentValidation", "{AF38E57F-57E5-4F71-B8F5-DF56AF7174A6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FirstValidatorSample", "FluentValidation\FirstValidatorSample\FirstValidatorSample.csproj", "{B6CB5F88-F055-4FCD-AA22-DEC8F4E6B9E8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FirstValidatorSample", "FluentValidation\FirstValidatorSample\FirstValidatorSample.csproj", "{B6CB5F88-F055-4FCD-AA22-DEC8F4E6B9E8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ValidationInCollectionSample", "FluentValidation\ValidationInCollectionSample\ValidationInCollectionSample.csproj", "{A6D20287-6472-4FAC-B13D-1DE6FFC96541}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InheritanceValidationSample", "FluentValidation\InheritanceValidationSample\InheritanceValidationSample.csproj", "{7813A3C8-0D0F-40E5-85C2-415332E3BE12}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RuleSetSample", "FluentValidation\RuleSetSample\RuleSetSample.csproj", "{F9E11D05-C0AE-4EF4-A72F-8ADED9243E3E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -47,12 +53,27 @@ Global
 		{B6CB5F88-F055-4FCD-AA22-DEC8F4E6B9E8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B6CB5F88-F055-4FCD-AA22-DEC8F4E6B9E8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B6CB5F88-F055-4FCD-AA22-DEC8F4E6B9E8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A6D20287-6472-4FAC-B13D-1DE6FFC96541}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A6D20287-6472-4FAC-B13D-1DE6FFC96541}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A6D20287-6472-4FAC-B13D-1DE6FFC96541}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A6D20287-6472-4FAC-B13D-1DE6FFC96541}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7813A3C8-0D0F-40E5-85C2-415332E3BE12}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7813A3C8-0D0F-40E5-85C2-415332E3BE12}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7813A3C8-0D0F-40E5-85C2-415332E3BE12}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7813A3C8-0D0F-40E5-85C2-415332E3BE12}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F9E11D05-C0AE-4EF4-A72F-8ADED9243E3E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F9E11D05-C0AE-4EF4-A72F-8ADED9243E3E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F9E11D05-C0AE-4EF4-A72F-8ADED9243E3E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F9E11D05-C0AE-4EF4-A72F-8ADED9243E3E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{B6CB5F88-F055-4FCD-AA22-DEC8F4E6B9E8} = {AF38E57F-57E5-4F71-B8F5-DF56AF7174A6}
+		{A6D20287-6472-4FAC-B13D-1DE6FFC96541} = {AF38E57F-57E5-4F71-B8F5-DF56AF7174A6}
+		{7813A3C8-0D0F-40E5-85C2-415332E3BE12} = {AF38E57F-57E5-4F71-B8F5-DF56AF7174A6}
+		{F9E11D05-C0AE-4EF4-A72F-8ADED9243E3E} = {AF38E57F-57E5-4F71-B8F5-DF56AF7174A6}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {C3435A8F-ECE2-427B-BB22-E0D8436277D0}
