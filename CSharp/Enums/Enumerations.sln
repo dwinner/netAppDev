@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28307.168
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31829.152
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EnumFlags", "EnumFlags\EnumFlags.csproj", "{F1D21165-409E-497D-B2BF-7F31A23AAF59}"
 EndProject
@@ -14,6 +14,10 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AddingMethodsToEnums", "AddingMethodsToEnums\AddingMethodsToEnums.csproj", "{26F235BC-A23C-47B3-9068-E73F43A12852}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EnumConvertationSample", "EnumConvertationSample\EnumConvertationSample.csproj", "{2E074BA3-1602-4EF4-9086-B17548200B99}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChainViaEnums", "ChainViaEnums\ChainViaEnums.csproj", "{7BFFCAC4-F639-434A-9453-88BE3F258F87}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StateMachineViaEnum", "StateMachineViaEnum\StateMachineViaEnum.csproj", "{92600EEB-D4AE-4DF8-9455-8EFDA367F3DE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,6 +49,14 @@ Global
 		{2E074BA3-1602-4EF4-9086-B17548200B99}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2E074BA3-1602-4EF4-9086-B17548200B99}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2E074BA3-1602-4EF4-9086-B17548200B99}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7BFFCAC4-F639-434A-9453-88BE3F258F87}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7BFFCAC4-F639-434A-9453-88BE3F258F87}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7BFFCAC4-F639-434A-9453-88BE3F258F87}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7BFFCAC4-F639-434A-9453-88BE3F258F87}.Release|Any CPU.Build.0 = Release|Any CPU
+		{92600EEB-D4AE-4DF8-9455-8EFDA367F3DE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{92600EEB-D4AE-4DF8-9455-8EFDA367F3DE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{92600EEB-D4AE-4DF8-9455-8EFDA367F3DE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{92600EEB-D4AE-4DF8-9455-8EFDA367F3DE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
