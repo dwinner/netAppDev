@@ -24,11 +24,11 @@ namespace ValidatingSymbolUsage
          UserDefinedType = userDefined;
       }
 
+      public IScope NestedScope { get; set; }
+
       public string ScopeName => Name;
 
       public IScope EnclosingScope { get; }
-
-      public IScope NestedScope { get; set; }
 
       public IDictionary<string, Symbol> Symbols { get; } = new Dictionary<string, Symbol>();
 

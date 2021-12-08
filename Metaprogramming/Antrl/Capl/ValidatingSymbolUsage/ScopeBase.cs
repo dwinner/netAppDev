@@ -5,9 +5,10 @@ namespace ValidatingSymbolUsage
 {
    public abstract class ScopeBase : IScope
    {
-      public IDictionary<string, Symbol> Symbols { get; } = new Dictionary<string, Symbol>();
-
       protected ScopeBase(IScope aScope) => EnclosingScope = aScope;
+
+      public IScope NestedScope { get; set; }
+      public IDictionary<string, Symbol> Symbols { get; } = new Dictionary<string, Symbol>();
 
       public abstract string ScopeName { get; }
 
@@ -16,8 +17,6 @@ namespace ValidatingSymbolUsage
       ///    <remarks>null if global (outermost) scope</remarks>
       /// </summary>
       public IScope EnclosingScope { get; }
-
-      public IScope NestedScope { get; set; }
 
       public void Define(Symbol aSymbol)
       {

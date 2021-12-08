@@ -18,7 +18,7 @@ namespace ValidatingSymbolUsage
 
          var caplLexer = new CaplLexer(antlrStream);
          var tokens = new CommonTokenStream(caplLexer);
-         var caplParser = new CaplParser(tokens) {BuildParseTree = true};
+         var caplParser = new CaplParser(tokens) { BuildParseTree = true };
          var caplAst = caplParser.primaryExpression();
 
          var walker = new ParseTreeWalker();

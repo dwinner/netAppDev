@@ -173,7 +173,7 @@ namespace CaplGrammar.Core
          LineComment = 137;
 
       protected static DFA[] decisionToDFA;
-      protected static PredictionContextCache sharedContextCache = new();
+      protected static PredictionContextCache sharedContextCache = new PredictionContextCache();
 
       public static string[] channelNames =
       {
@@ -1497,6 +1497,6 @@ namespace CaplGrammar.Core
 
       public override string[] ModeNames => modeNames;
 
-      public override string SerializedAtn => new(_serializedATN);
+      public override string SerializedAtn => new string(_serializedATN);
    }
 } // namespace CaplGrammar.Core
