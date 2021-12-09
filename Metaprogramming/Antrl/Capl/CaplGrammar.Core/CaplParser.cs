@@ -272,7 +272,7 @@ namespace CaplGrammar.Core
          RULE_keyEventType = 94;
 
       protected static DFA[] decisionToDFA;
-      protected static PredictionContextCache sharedContextCache = new();
+      protected static PredictionContextCache sharedContextCache = new PredictionContextCache();
 
       public static readonly string[] ruleNames =
       {
@@ -1306,7 +1306,7 @@ namespace CaplGrammar.Core
 
       public override string[] RuleNames => ruleNames;
 
-      public override string SerializedAtn => new(_serializedATN);
+      public override string SerializedAtn => new string(_serializedATN);
 
       [RuleVersion(0)]
       public PrimaryExpressionContext primaryExpression()
