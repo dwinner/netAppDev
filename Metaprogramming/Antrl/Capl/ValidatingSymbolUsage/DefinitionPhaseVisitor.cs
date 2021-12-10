@@ -12,12 +12,12 @@ namespace ValidatingSymbolUsage
    {
       private IScope _currentScope; // define symbols in this scope
 
+      private bool _isVariableBlock;
+
       // NOTE maybe you need to extend it for more flexible using
-      public ParseTreeProperty<IScope> Scopes { get; } = new();
+      public ParseTreeProperty<IScope> Scopes { get; } = new ParseTreeProperty<IScope>();
 
       public GlobalSpaceScope GlobalScope { get; private set; }
-
-      private bool _isVariableBlock;
 
       public override void EnterPrimaryExpression(CaplParser.PrimaryExpressionContext context)
       {
@@ -72,13 +72,18 @@ namespace ValidatingSymbolUsage
          _currentScope = function;
       }
 
-      private static IToken GetUserTypeToken(BuiltInType builtInType, CaplParser.TypeSpecifierContext typeSpecCtx) =>
-         builtInType switch
+      private static IToken GetUserTypeToken(BuiltInType builtInType, CaplParser.TypeSpecifierContext typeSpecCtx)
+      {
+         switch (builtInType)
          {
-            BuiltInType.Struct => typeSpecCtx.structSpecifier()?.Identifier()?.Symbol,
-            BuiltInType.Enum => typeSpecCtx.enumSpecifier()?.Identifier()?.Symbol,
-            _ => null // TODO: avoid using null, prefer null object with enum's
-         };
+            case BuiltInType.Struct:
+               return typeSpecCtx.structSpecifier()?.Identifier()?.Symbol;
+            case BuiltInType.Enum:
+               return typeSpecCtx.enumSpecifier()?.Identifier()?.Symbol;
+            default:
+               return null; // TODO: avoid using null, prefer null object with enum's
+         }
+      }
 
       public override void ExitFunctionDefinition(CaplParser.FunctionDefinitionContext context)
       {

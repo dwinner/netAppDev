@@ -24,7 +24,7 @@ namespace ValidatingSymbolUsage
          UserDefinedType = anUserDefinedType;
       }
 
-      protected Symbol(string aSymbolName, BuiltInType aType, string anUserDefinedType, IScope aScope)
+      private Symbol(string aSymbolName, BuiltInType aType, string anUserDefinedType, IScope aScope)
       {
          Name = aSymbolName;
          Type = aType;
@@ -39,51 +39,37 @@ namespace ValidatingSymbolUsage
 
       public BuiltInType Type { get; }
 
-      public string UserDefinedType { get; init; }
+      public string UserDefinedType { get; set; }
 
       /// <summary>
       ///    All symbols know what scope contains them
       /// </summary>
-      public IScope Scope { get; set; }
+      public IScope Scope { get; internal set; }
 
-      public static Symbol Null => new(string.Empty, BuiltInType.Invalid);
+      public static Symbol Null => new Symbol(string.Empty, BuiltInType.Invalid);
 
-      public bool Equals(Symbol other)
+      public bool Equals(Symbol other) =>
+         !ReferenceEquals(null, other)
+         && (ReferenceEquals(this, other) || Name == other.Name
+            && Type == other.Type
+            && UserDefinedType == other.UserDefinedType
+            && Equals(Scope, other.Scope));
+
+      public override bool Equals(object obj) =>
+         !ReferenceEquals(null, obj) &&
+         (ReferenceEquals(this, obj) || obj.GetType() == GetType() && Equals((Symbol)obj));
+
+      public override int GetHashCode()
       {
-         if (ReferenceEquals(null, other))
+         unchecked
          {
-            return false;
+            var hashCode = Name != null ? Name.GetHashCode() : 0;
+            hashCode = (hashCode * 397) ^ (int)Type;
+            hashCode = (hashCode * 397) ^ (UserDefinedType != null ? UserDefinedType.GetHashCode() : 0);
+            hashCode = (hashCode * 397) ^ (Scope != null ? Scope.GetHashCode() : 0);
+            return hashCode;
          }
-
-         if (ReferenceEquals(this, other))
-         {
-            return true;
-         }
-
-         return Name == other.Name && Type == other.Type && UserDefinedType == other.UserDefinedType && Equals(Scope, other.Scope);
       }
-
-      public override bool Equals(object obj)
-      {
-         if (ReferenceEquals(null, obj))
-         {
-            return false;
-         }
-
-         if (ReferenceEquals(this, obj))
-         {
-            return true;
-         }
-
-         if (obj.GetType() != this.GetType())
-         {
-            return false;
-         }
-
-         return Equals((Symbol) obj);
-      }
-
-      public override int GetHashCode() => HashCode.Combine(Name, (int) Type, UserDefinedType, Scope);
 
       public static bool operator ==(Symbol left, Symbol right) => Equals(left, right);
 

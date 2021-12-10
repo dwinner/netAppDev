@@ -1,35 +1,36 @@
 ﻿using CaplGrammar.Core;
-using static ValidatingSymbolUsage.BuiltInType;
 
 namespace ValidatingSymbolUsage
 {
    public static class CaplSymbolExtensions
    {
       // TODO: Add other type there
-      public static BuiltInType GetCaplType(this int @this) =>
-         @this switch
+      public static BuiltInType GetCaplType(this int @this)
+      {
+         switch (@this)
          {
-            CaplParser.Void => Void,
-            CaplParser.Int => Int,
-            CaplParser.Float => Float,
-            CaplParser.Char => Char,
-            CaplParser.Byte => Byte,
-            CaplParser.Long => Long,
-            CaplParser.Int64 => Int64,
-            CaplParser.Double => Double,
-            CaplParser.Word => Word,
-            CaplParser.Dword => DWord,
-            CaplParser.Qword => QWord,
-            CaplParser.Struct => Struct,
-            CaplParser.Enum => Enum,
-            CaplParser.Timer => Timer,
-            CaplParser.MsTimer => MsTimer,
-            CaplParser.Message => Message,
-            CaplParser.MultiplexedMessage => MultiplexedMessage,
-            CaplParser.DiagRequest => DiagRequest,
-            CaplParser.DiagResponse => DiagResponse,
-            CaplParser.Signal => Signal,
-            _ => Invalid
-         };
+            case CaplParser.Void: return BuiltInType.Void;
+            case CaplParser.Int: return BuiltInType.Int;
+            case CaplParser.Float: return BuiltInType.Float;
+            case CaplParser.Char: return BuiltInType.Char;
+            case CaplParser.Byte: return BuiltInType.Byte;
+            case CaplParser.Long: return BuiltInType.Long;
+            case CaplParser.Int64: return BuiltInType.Int64;
+            case CaplParser.Double: return BuiltInType.Double;
+            case CaplParser.Word: return BuiltInType.Word;
+            case CaplParser.Dword: return BuiltInType.DWord;
+            case CaplParser.Qword: return BuiltInType.QWord;
+            case CaplParser.Struct: return BuiltInType.Struct;
+            case CaplParser.Enum: return BuiltInType.Enum;
+            case CaplParser.Timer: return BuiltInType.Timer;
+            case CaplParser.MsTimer: return BuiltInType.MsTimer;
+            case CaplParser.Message: return BuiltInType.Message;
+            case CaplParser.MultiplexedMessage: return BuiltInType.MultiplexedMessage;
+            case CaplParser.DiagRequest: return BuiltInType.DiagRequest;
+            case CaplParser.DiagResponse: return BuiltInType.DiagResponse;
+            case CaplParser.Signal: return BuiltInType.Signal;
+            default: return BuiltInType.Invalid;
+         }
+      }
    }
 }

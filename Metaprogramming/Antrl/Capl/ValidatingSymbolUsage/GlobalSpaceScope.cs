@@ -7,7 +7,7 @@
       {
       }
 
-      public override string ScopeName => "Globals";  // TODO: Introduce enum for it or something unique
+      public override string ScopeName => "Globals"; // TODO: Introduce enum for it or something unique
 
       public override string ToString() => ScopeName;
    }

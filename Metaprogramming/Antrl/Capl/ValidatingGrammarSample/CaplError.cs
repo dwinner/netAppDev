@@ -2,7 +2,7 @@
 
 namespace ValidatingGrammarSample
 {
-   public readonly struct CaplError
+   public struct CaplError
    {
       public CaplError(int line, int column, string message, IToken token)
       {
