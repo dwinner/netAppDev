@@ -13,8 +13,11 @@ namespace CaplGrammar.Application.Impl.GrammarValidation
       {
          AntlrInputStream antlrStream = new AntlrFileStream(sourceFile, CurrentEncoding);
          var caplLexer = new CaplLexer(antlrStream);
-         var tokens = new CommonTokenStream(caplLexer);
-         var caplParser = new CaplParser(tokens);
+         var tokenStream = new CommonTokenStream(caplLexer);
+         var caplParser = new CaplParser(tokenStream)
+         {
+            ErrorHandler = new CaplErrorStrategy()
+         };
          caplParser.RemoveErrorListeners();
          var errorHandler = new DefaultErrorHandlerImpl();
          caplParser.AddErrorListener(errorHandler);

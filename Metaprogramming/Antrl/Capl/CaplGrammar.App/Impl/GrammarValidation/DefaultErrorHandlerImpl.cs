@@ -21,7 +21,7 @@ namespace CaplGrammar.Application.Impl.GrammarValidation
          string msg,
          RecognitionException e)
       {
-         var caplIssue = new CaplIssue(msg, offendingSymbol);
+         var caplIssue = new CaplIssue(msg, offendingSymbol, line, charPositionInLine);
          Issues.Add(caplIssue);
       }
    }

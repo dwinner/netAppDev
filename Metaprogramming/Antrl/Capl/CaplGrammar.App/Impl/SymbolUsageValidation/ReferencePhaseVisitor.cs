@@ -49,6 +49,8 @@ namespace CaplGrammar.Application.Impl.SymbolUsageValidation
          }
 
          var issueToken = identifier.Symbol;
+         var line = issueToken.Line;
+         var column = issueToken.Column;
          var lastChild = parentCtx.GetChild(parentCtx.ChildCount - 1);
          if (lastChild.GetText().Equals(")"))
          {
@@ -57,13 +59,13 @@ namespace CaplGrammar.Application.Impl.SymbolUsageValidation
             var funcSymbol = _currentScope.Resolve(funcName);
             if (funcSymbol == Symbol.Null)
             {
-               var issue = new CaplIssue($"No such function: '{funcName}'", issueToken);
+               var issue = new CaplIssue($"No such function: '{funcName}'", issueToken, line, column);
                Issues.Add(issue);
             }
 
             if (funcSymbol is VariableSymbol)
             {
-               var issue = new CaplIssue($"The '{funcName}' is not a function!", issueToken);
+               var issue = new CaplIssue($"The '{funcName}' is not a function!", issueToken, line, column);
                Issues.Add(issue);
             }
 
@@ -77,13 +79,13 @@ namespace CaplGrammar.Application.Impl.SymbolUsageValidation
             var varSymbol = _currentScope.Resolve(varName);
             if (varSymbol == Symbol.Null)
             {
-               var issue = new CaplIssue($"No such variable: '{varName}'", issueToken);
+               var issue = new CaplIssue($"No such variable: '{varName}'", issueToken, line, column);
                Issues.Add(issue);
             }
 
             if (varSymbol is FunctionSymbol)
             {
-               var issue = new CaplIssue($"{varName} is not a variable", issueToken);
+               var issue = new CaplIssue($"{varName} is not a variable", issueToken, line, column);
                Issues.Add(issue);
             }
          }
