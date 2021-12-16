@@ -4,21 +4,20 @@ using System.Threading.Tasks;
 
 public class Calculator
 {
-    private CountdownEvent _cEvent;
+   private readonly CountdownEvent _cEvent;
 
-    public int Result { get; private set; }
+   public Calculator(CountdownEvent ev) => _cEvent = ev;
 
-    public Calculator(CountdownEvent ev) => _cEvent = ev;
+   public int Result { get; private set; }
 
+   public void Calculation(int x, int y)
+   {
+      Console.WriteLine($"Task {Task.CurrentId} starts calculation");
+      Task.Delay(new Random().Next(3000)).Wait();
+      Result = x + y;
 
-    public void Calculation(int x, int y)
-    {
-        Console.WriteLine($"Task {Task.CurrentId} starts calculation");
-        Task.Delay(new Random().Next(3000)).Wait();
-        Result = x + y;
-
-        // signal the event-completed!
-        Console.WriteLine($"Task {Task.CurrentId} is ready");
-        _cEvent.Signal();
-    }
+      // signal the event-completed!
+      Console.WriteLine($"Task {Task.CurrentId} is ready");
+      _cEvent.Signal();
+   }
 }

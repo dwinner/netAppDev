@@ -5,112 +5,115 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-class Program
+internal static class Program
 {
-    static void Main()
-    {
-        const int numberTasks = 2;
-        const int partitionSize = 1_000_000;
-        const int loops = 5;
-        Dictionary<int, int[][]> taskResults = new();
-        List<string>[] data = new List<string>[loops];
-        for (int i = 0; i < loops; i++)
-        {
-            data[i] = new(FillData(partitionSize * numberTasks));
-        }
+   private static void Main()
+   {
+      const int numberTasks = 2;
+      const int partitionSize = 1_000_000;
+      const int loops = 5;
+      Dictionary<int, int[][]> taskResults = new();
+      List<string>[] data = new List<string>[loops];
+      for (var i = 0; i < loops; i++)
+      {
+         data[i] = new List<string>(FillData(partitionSize * numberTasks));
+      }
 
-        using Barrier barrier = new(1);
-        
-        LogBarrierInformation("initial participants in barrier", barrier);
+      using Barrier barrier = new(1);
 
-        for (int i = 0; i < numberTasks; i++)
-        {
-            barrier.AddParticipant();
+      LogBarrierInformation("initial participants in barrier", barrier);
 
-            int jobNumber = i;
-            taskResults.Add(i, new int[loops][]);
-            for (int loop = 0; loop < loops; loop++)
-            {
-                taskResults[i][loop] = new int[26];
-            }
-            Console.WriteLine($"Main - starting task job {jobNumber}");
-            Task.Run(() => CalculationInTask(jobNumber, partitionSize, barrier, data, loops, taskResults[jobNumber]));
-        }
+      for (var i = 0; i < numberTasks; i++)
+      {
+         barrier.AddParticipant();
 
-        for (int loop = 0; loop < 5; loop++)
-        {
-            LogBarrierInformation("main task, start signaling and wait", barrier);
-            barrier.SignalAndWait();
-            LogBarrierInformation("main task waiting completed", barrier);
-            //                var resultCollection = tasks[0].Result.Zip(tasks[1].Result, (c1, c2) => c1 + c2);
-            int[][] resultCollection1 = taskResults[0];
-            int[][] resultCollection2 = taskResults[1];
-            var resultCollection = resultCollection1[loop].Zip(resultCollection2[loop], (c1, c2) => c1 + c2);
+         var jobNumber = i;
+         taskResults.Add(i, new int[loops][]);
+         for (var loop = 0; loop < loops; loop++)
+         {
+            taskResults[i][loop] = new int[26];
+         }
 
-            char ch = 'a';
-            int sum = 0;
-            foreach (var x in resultCollection)
-            {
-                Console.WriteLine($"{ch++}, count: {x}");
-                sum += x;
-            }
+         Console.WriteLine($"Main - starting task job {jobNumber}");
+         Task.Run(() => CalculationInTask(jobNumber, partitionSize, barrier, data, loops, taskResults[jobNumber]));
+      }
 
-            LogBarrierInformation($"main task finished loop {loop}, sum: {sum}", barrier);
-        }
+      for (var loop = 0; loop < 5; loop++)
+      {
+         LogBarrierInformation("main task, start signaling and wait", barrier);
+         barrier.SignalAndWait();
+         LogBarrierInformation("main task waiting completed", barrier);
+         //                var resultCollection = tasks[0].Result.Zip(tasks[1].Result, (c1, c2) => c1 + c2);
+         int[][] resultCollection1 = taskResults[0];
+         int[][] resultCollection2 = taskResults[1];
+         var resultCollection = resultCollection1[loop].Zip(resultCollection2[loop], (c1, c2) => c1 + c2);
 
-        Console.WriteLine("at the end");
-        Console.ReadLine();
-    }
+         var ch = 'a';
+         var sum = 0;
+         foreach (var x in resultCollection)
+         {
+            Console.WriteLine($"{ch++}, count: {x}");
+            sum += x;
+         }
 
-    public static IEnumerable<string> FillData(int size)
-    {
-        Random r = new();
-        return Enumerable.Range(0, size).Select(x => GetString(r));
-    }
+         LogBarrierInformation($"main task finished loop {loop}, sum: {sum}", barrier);
+      }
 
-    private static string GetString(Random r)
-    {
-        StringBuilder sb = new(6);
-        for (int i = 0; i < 6; i++)
-        {
-            sb.Append((char)(r.Next(26) + 97));
-        }
-        return sb.ToString();
-    }
+      Console.WriteLine("at the end");
+      Console.ReadLine();
+   }
 
-    private static void CalculationInTask(int jobNumber, int partitionSize, Barrier barrier, IList<string>[] coll, int loops, int[][] results)
-    {
+   public static IEnumerable<string> FillData(int size)
+   {
+      Random r = new();
+      return Enumerable.Range(0, size).Select(x => GetString(r));
+   }
 
-        LogBarrierInformation("CalculationInTask started", barrier);
+   private static string GetString(Random r)
+   {
+      StringBuilder sb = new(6);
+      for (var i = 0; i < 6; i++)
+      {
+         sb.Append((char)(r.Next(26) + 97));
+      }
 
-        for (int i = 0; i < loops; i++)
-        {
-            List<string> data = new(coll[i]);
+      return sb.ToString();
+   }
 
-            int start = jobNumber * partitionSize;
-            int end = start + partitionSize;
-            Console.WriteLine($"Task {Task.CurrentId} in loop {i}: partition from {start} to {end}");
+   private static void CalculationInTask(int jobNumber, int partitionSize, Barrier barrier, IList<string>[] coll,
+      int loops, int[][] results)
+   {
+      LogBarrierInformation("CalculationInTask started", barrier);
 
-            for (int j = start; j < end; j++)
-            {
-                char c = data[j][0];
-                results[i][c - 97]++;
-            }
+      for (var i = 0; i < loops; i++)
+      {
+         List<string> data = new(coll[i]);
 
-            Console.WriteLine($"Calculation completed from task {Task.CurrentId} in loop {i}. " +
-                $"{results[i][0]} times a, {results[i][25]} times z");
+         var start = jobNumber * partitionSize;
+         var end = start + partitionSize;
+         Console.WriteLine($"Task {Task.CurrentId} in loop {i}: partition from {start} to {end}");
 
-            LogBarrierInformation("sending signal and wait for all", barrier);
-            barrier.SignalAndWait();
-            LogBarrierInformation("waiting completed", barrier);
-        }
+         for (var j = start; j < end; j++)
+         {
+            var c = data[j][0];
+            results[i][c - 97]++;
+         }
 
-        barrier.RemoveParticipant();
-        LogBarrierInformation("finished task, removed participant", barrier);
-    }
+         Console.WriteLine($"Calculation completed from task {Task.CurrentId} in loop {i}. " +
+                           $"{results[i][0]} times a, {results[i][25]} times z");
 
-    private static void LogBarrierInformation(string info, Barrier barrier)
-    {
-        Console.WriteLine($"Task {Task.CurrentId}: {info}. {barrier.ParticipantCount} current and {barrier.ParticipantsRemaining} remaining participants, phase {barrier.CurrentPhaseNumber}");
-    }
+         LogBarrierInformation("sending signal and wait for all", barrier);
+         barrier.SignalAndWait();
+         LogBarrierInformation("waiting completed", barrier);
+      }
+
+      barrier.RemoveParticipant();
+      LogBarrierInformation("finished task, removed participant", barrier);
+   }
+
+   private static void LogBarrierInformation(string info, Barrier barrier)
+   {
+      Console.WriteLine(
+         $"Task {Task.CurrentId}: {info}. {barrier.ParticipantCount} current and {barrier.ParticipantsRemaining} remaining participants, phase {barrier.CurrentPhaseNumber}");
+   }
 }
