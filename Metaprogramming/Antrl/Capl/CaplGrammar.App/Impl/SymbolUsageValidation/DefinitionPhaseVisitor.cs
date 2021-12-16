@@ -4,14 +4,15 @@ using System.Diagnostics;
 using System.Linq;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
+using CaplGrammar.Application.Contract;
+using CaplGrammar.Application.Poco;
 using CaplGrammar.Core;
 
-namespace ValidatingSymbolUsage
+namespace CaplGrammar.Application.Impl.SymbolUsageValidation
 {
-   public class DefinitionPhaseVisitor : CaplBaseListener
+   internal sealed class DefinitionPhaseVisitor : CaplBaseListener
    {
       private IScope _currentScope; // define symbols in this scope
-
       private bool _isVariableBlock;
 
       // NOTE maybe you need to extend it for more flexible using
@@ -29,13 +30,13 @@ namespace ValidatingSymbolUsage
             return;
          }
 
-         GlobalScope = new GlobalSpaceScope(null); // TODO: Use null-object there
+         GlobalScope = new GlobalSpaceScope(null);
          _currentScope = GlobalScope;
       }
 
       public override void ExitPrimaryExpression(CaplParser.PrimaryExpressionContext context)
       {
-         Debug.WriteLine(GlobalScope);
+         Debug.WriteLine((object)GlobalScope);
       }
 
       public override void EnterVariableBlock(CaplParser.VariableBlockContext context)
@@ -46,7 +47,7 @@ namespace ValidatingSymbolUsage
 
       public override void ExitVariableBlock(CaplParser.VariableBlockContext context)
       {
-         Debug.WriteLine(_currentScope);
+         Debug.WriteLine((object)_currentScope);
          _currentScope = GlobalScope;
          _isVariableBlock = false;
       }
@@ -81,13 +82,13 @@ namespace ValidatingSymbolUsage
             case BuiltInType.Enum:
                return typeSpecCtx.enumSpecifier()?.Identifier()?.Symbol;
             default:
-               return null; // TODO: avoid using null, prefer null object with enum's
+               return null;
          }
       }
 
       public override void ExitFunctionDefinition(CaplParser.FunctionDefinitionContext context)
       {
-         Debug.WriteLine(_currentScope);
+         Debug.WriteLine((object)_currentScope);
          _currentScope = _currentScope?.EnclosingScope;
       }
 
@@ -113,7 +114,7 @@ namespace ValidatingSymbolUsage
             return;
          }
 
-         Debug.WriteLine(_currentScope);
+         Debug.WriteLine((object)_currentScope);
          _currentScope = _currentScope?.EnclosingScope; // pop scope
       }
 
@@ -149,7 +150,6 @@ namespace ValidatingSymbolUsage
          var userTypeToken = GetUserTypeToken(declType, typeSpecCtx);
 
          // Get variable(s) name(s)
-         // PERFORMANCE-NOTE: ToList() is waste, use morelinq lib instead
          var declTokenList = context.initDeclaratorList().initDeclarator()
             .Select(ctx => GetTypeToken(ctx.declarator()?.directDeclarator()))
             .ToList();

@@ -1,11 +1,12 @@
 ﻿using System.Collections.Generic;
+using CaplGrammar.Application.Poco;
 
-namespace ValidatingSymbolUsage
+namespace CaplGrammar.Application.Contract
 {
    /// <summary>
    ///    Scope
    /// </summary>
-   public interface IScope
+   internal interface IScope
    {
       /// <summary>
       ///    Scope name
@@ -17,6 +18,9 @@ namespace ValidatingSymbolUsage
       /// </summary>
       IScope EnclosingScope { get; }
 
+      /// <summary>
+      ///    Symbols in current scope
+      /// </summary>
       IDictionary<string, Symbol> Symbols { get; }
 
       /// <summary>

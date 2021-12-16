@@ -3,8 +3,8 @@
  */
 
 using System;
-using Antlr4.Runtime;
-using CaplGrammar.Core;
+using CaplGrammar.Application.Contract;
+using CaplGrammar.Application.Impl.GrammarValidation;
 
 namespace ValidatingGrammarSample
 {
@@ -14,21 +14,11 @@ namespace ValidatingGrammarSample
 
       private static void Main()
       {
-         AntlrInputStream antlrStream = new AntlrFileStream(CaplSourceCode);
-
-         var caplLexer = new CaplLexer(antlrStream);
-         var tokens = new CommonTokenStream(caplLexer);
-         var caplParser = new CaplParser(tokens);
-         caplParser.RemoveErrorListeners();
-         var errorHandler = new DefaultErrorHandlerImpl();
-         caplParser.AddErrorListener(errorHandler);
-         var caplRoot = caplParser.primaryExpression();
-
-         Console.WriteLine(caplRoot.ToStringTree());
-
-         if (caplRoot.IsEmpty)
+         ICaplValidation sntxValidation = new CaplSyntaxValidationImpl();
+         var issues = sntxValidation.GetIssues(CaplSourceCode);
+         foreach (var issue in issues)
          {
-            errorHandler.Errors.ForEach(error => Console.WriteLine(error));
+            Console.WriteLine(issue);
          }
       }
    }

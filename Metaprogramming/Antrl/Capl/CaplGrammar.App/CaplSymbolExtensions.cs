@@ -1,10 +1,9 @@
 ﻿using CaplGrammar.Core;
 
-namespace ValidatingSymbolUsage
+namespace CaplGrammar.Application
 {
    public static class CaplSymbolExtensions
    {
-      // TODO: Add other type there
       public static BuiltInType GetCaplType(this int @this)
       {
          switch (@this)

@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Text;
+using CaplGrammar.Application.Contract;
 
-namespace ValidatingSymbolUsage
+namespace CaplGrammar.Application.Poco
 {
    /// <summary>
    ///    A generic programming language symbol
    /// </summary>
-   public class Symbol : IEquatable<Symbol>
+   internal class Symbol : IEquatable<Symbol>
    {
       protected Symbol(string aSymbolName)
          : this(aSymbolName, BuiltInType.Invalid) =>

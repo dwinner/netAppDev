@@ -1,21 +1,27 @@
-﻿using System;
+﻿using System.Collections.Generic;
 using Antlr4.Runtime.Tree;
+using CaplGrammar.Application.Contract;
+using CaplGrammar.Application.Poco;
 using CaplGrammar.Core;
 
-namespace ValidatingSymbolUsage
+namespace CaplGrammar.Application.Impl.SymbolUsageValidation
 {
-   public sealed class ReferencePhaseVisitor : CaplBaseListener
+   internal sealed class ReferencePhaseVisitor : CaplBaseListener
    {
+      private const int DefaultCapacity = 0x400;
       private readonly GlobalSpaceScope _globalScope;
       private readonly ParseTreeProperty<IScope> _scopes;
       private IScope _currentScope;
       private bool _isVariableBlock;
 
-      public ReferencePhaseVisitor(GlobalSpaceScope globalScope, ParseTreeProperty<IScope> scopes)
+      internal ReferencePhaseVisitor(GlobalSpaceScope globalScope, ParseTreeProperty<IScope> scopes)
       {
          _scopes = scopes;
          _globalScope = globalScope;
+         Issues = new List<CaplIssue>(DefaultCapacity);
       }
+
+      public IList<CaplIssue> Issues { get; }
 
       public override void EnterPrimaryExpression(CaplParser.PrimaryExpressionContext context)
       {
@@ -42,22 +48,23 @@ namespace ValidatingSymbolUsage
             return;
          }
 
+         var issueToken = identifier.Symbol;
          var lastChild = parentCtx.GetChild(parentCtx.ChildCount - 1);
          if (lastChild.GetText().Equals(")"))
          {
             // This is a function
             var funcName = identifier.GetText();
             var funcSymbol = _currentScope.Resolve(funcName);
-
-            // TODO: notify or collect errors
             if (funcSymbol == Symbol.Null)
             {
-               Console.WriteLine($"Error! No such function: {funcName}");
+               var issue = new CaplIssue($"No such function: '{funcName}'", issueToken);
+               Issues.Add(issue);
             }
 
             if (funcSymbol is VariableSymbol)
             {
-               Console.WriteLine($"Error! {funcName} is not a function!");
+               var issue = new CaplIssue($"The '{funcName}' is not a function!", issueToken);
+               Issues.Add(issue);
             }
 
             return;
@@ -68,16 +75,16 @@ namespace ValidatingSymbolUsage
             // This is a variable usage
             var varName = identifier.GetText();
             var varSymbol = _currentScope.Resolve(varName);
-
-            // TODO: notify or collect errors
             if (varSymbol == Symbol.Null)
             {
-               Console.WriteLine($"No such variable: {varName}");
+               var issue = new CaplIssue($"No such variable: '{varName}'", issueToken);
+               Issues.Add(issue);
             }
 
             if (varSymbol is FunctionSymbol)
             {
-               Console.WriteLine($"{varName} is not a variable");
+               var issue = new CaplIssue($"{varName} is not a variable", issueToken);
+               Issues.Add(issue);
             }
          }
       }

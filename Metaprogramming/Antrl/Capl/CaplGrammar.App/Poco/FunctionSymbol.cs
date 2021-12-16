@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using CaplGrammar.Application.Contract;
 
-namespace ValidatingSymbolUsage
+namespace CaplGrammar.Application.Poco
 {
-   public class FunctionSymbol : Symbol, IScope
+   internal class FunctionSymbol : Symbol, IScope
    {
       public FunctionSymbol(string aSymbolName)
          : base(aSymbolName)
@@ -24,7 +25,7 @@ namespace ValidatingSymbolUsage
          UserDefinedType = userDefined;
       }
 
-      public IScope NestedScope { get; set; }
+      //public IScope NestedScope { get; set; }
 
       public string ScopeName => Name;
 
