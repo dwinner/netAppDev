@@ -1,0 +1,63 @@
+variables
+{    
+}
+
+on start
+{
+    write ("Start of CANoe");
+}
+
+on message 0x123
+{
+    write ("CAN Message 123");
+}
+
+on signal sigTemp
+{
+    write ("Signal Temperature");
+}
+
+on timer tmrCycle
+{
+    write ("within cycle");
+}
+
+on key 'a'
+{
+    write ("Key >a< pressed");
+}
+
+on key ' '
+{
+    write ("Key >a< pressed");
+}
+
+on key 0x20
+{
+    write ("Key >a< pressed");
+}
+
+on key F10
+{
+    write ("Key >a< pressed");
+}
+
+on key ctrlF12
+{
+    write ("Key >a< pressed");
+}
+
+on key PageUp
+{
+    write ("Key >a< pressed");
+}
+
+on key Home
+{
+    write ("Key >a< pressed");
+}
+
+on key *
+{
+    write ("Key >a< pressed");
+}

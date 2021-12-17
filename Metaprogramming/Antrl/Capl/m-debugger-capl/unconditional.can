@@ -1,0 +1,35 @@
+variables
+{
+
+}
+
+func()
+{
+    int x, y, z;
+    while ( x != 0 )
+    {
+        doThis (x);
+        if ( x == 0 )
+            break;
+        doThat (x);
+    }
+
+    while ( x != 0 )
+    {
+        doThis (x);
+        if ( x == 4 )
+            continue;
+        doThat (x);
+    }
+}
+
+long power(int x, int y)
+{
+    int i;
+    long result;
+    result = 1;
+    for (i = 1; i <= y; i++)
+        result *= x;
+
+    return result;
+}

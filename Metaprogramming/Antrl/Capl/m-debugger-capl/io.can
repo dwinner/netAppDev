@@ -1,0 +1,111 @@
+variables
+{
+    long cyclicPeriod=0;
+    long prePeriod=0;
+    dword readHandle = 0;
+    byte endOfFileFlag=0;
+    char signalBuffer[24];
+    msTimer cyclicTimer;
+    message ABSdata msg1;
+}
+
+on start
+{
+    // initialize handle to data file opened in ASCII mode
+    readHandle = openFileRead ("random.asc", 0);
+    // the next line of code is also used to skip the first row of data in the data file and to make sure the handle is valid
+    if (readHandle != 0 && fileGetString(timeBuffer, elcount(timeBuffer), readHandle) != 0)
+        // set transmission to trigger after 100 ms
+        settimer(cyclicTimer, 100);
+    else
+        write("Data file cannot be opened for read access.");
+}
+
+on timer cyclicTimer
+{
+    getData();
+    if (endOfFileFlag != 1)
+    {
+        output(msg1);
+        settimer(cyclicTimer, cyclicPeriod);
+    }
+    else
+        endoffileconfirm();
+}
+
+on stopMeasurement
+{
+    // close handle to data file opened in ASCII mode
+    fileClose(readHandle);
+}
+
+getData ()
+{
+    int i;
+    i = 0;
+    //store data into timeBuffer
+    if (readHandle != 0 && fileGetString(timeBuffer, elcount(timeBuffer), readHandle) != 0 )
+    {
+        // convert period from 10 microseconds unit to milliseconds unit
+        cyclicPeriod = (atol(timeBuffer) - prePeriod) / 100;
+        prePeriod = atol(timeBuffer);
+        while (timeBuffer[i] != 0x9) {i = i + 1;}; // skip the time stamp
+        i = i + 1;        
+        signalBuffer[0] = timeBuffer[i];
+        signalBuffer[1] = timeBuffer[i+1];
+        signalBuffer[2] = timeBuffer[i+2];
+        msg1.CarSpeed = atol(signalBuffer);
+    }
+    else
+    {
+        // set end of file flag if end of file is reached
+        write("End of data file reached, timer cancelled.");
+        endOfFileFlag = 1;
+    }
+}
+
+endoffileconfirm ()
+{
+    dword handle;
+    char buffer[64];
+    setFilePath("C:\\Projects\\Data Files\\Result ", 1);
+    // file will be created automatically if one does not exist. If the file exists, everything will be overwritten
+    handle = openFileWrite("EOFFile.txt", 0);
+    snprintf(buffer, elcount(buffer), "End of File Reached at Time = %d (10 microseconds)\n", timenow());
+    if (handle!=0)
+        filePutString(buffer, elcount(buffer), handle);
+    fileClose(handle);
+}
+
+on key 'i'
+{
+    message dummyMsg msg1;
+    char charArray[8];
+    int rxValue;
+    int flag;
+    setFilePath("C:\\data file directory", 1);
+    msg1.ID = getProfileInt("Message1","ID", -1, "datafile2.txt");
+    msg1.DLC = getProfileInt("Message1", "DLC", -1, "datafile2.txt");
+    
+    // assume database exists for the following signals
+    msg1.intSignal1 = getProfileInt("Message1", "Signal1", -1, "datafile2.txt");
+    msg1.intSignal2 = getProfileInt("Message1", "Signal2", -1, "datafile2.txt");
+    msg1.floatSignal = getProfilefloat("Message1", "Signal3", -1, "datefile2.txt");
+    rxValue = getProfileString("Control", "Type", "Error", charArray, elcount(charArray), "datafile2.txt");
+    write("charArray = %s", charArray);
+
+    // output should be charArray = System
+    rxValue = getProfileInt("Control", "Nodes", -1, "datafile2.txt");
+    write("rxValue = %d", rxValue);
+
+    // result should be rxValue = 5
+    flag = getProFileArray("Control", "NodeIDs", charArray, 6, "datafile2.txt");
+    write("Array: %d, %c, %x, %s", charArray[0], charArray[0], charArray[0], charArray);
+
+    // result should be Array: 50, 2, 32, 28R5A
+    //The output file, sections, and entries will be created if they
+    //don't exist. Be careful - entries will be overwritten.
+    writeProfileInt("Output", "Message ID", msg1.ID, "data2.txt");
+    writeProfileString("Output", "charArray", charArray, "data2.txt");
+    output(msg1);
+}

@@ -1,0 +1,5 @@
+on message ExampleMessage
+{
+    int value; 
+    value & 0x0FFF; // clears all unnecessary bits    
+}

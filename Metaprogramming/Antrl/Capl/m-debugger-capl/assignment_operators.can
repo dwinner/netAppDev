@@ -1,0 +1,17 @@
+variables
+{
+    int y, z;
+    y = 8;
+    z = 4;
+    
+    // each statement below is independent from the others
+    y += z; // Addition. Result: y = 12
+    y -= z; // Subtraction. Result: y = 4
+    y *= z; // Multiplication. Result: y = 32
+    y /= z; // Division. Result: y = 2
+    y %= z; // Modulo. Result: y = 0
+    y <<= 1; // Left-shift. Result: y = 16
+    y &= z; // AND. Result: y = 0 (binary arithmetic)
+    y |= z; // OR. Result: y = 12 (binary arithmetic)
+    y ^= z; // XOR. Result: y = 12 (binary arithmetic)    
+}
