@@ -8,8 +8,8 @@ namespace CaplGrammar.Application.Contract
    {
       Encoding CurrentEncoding { get; set; }
 
-      IEnumerable<CaplIssue> GetIssues(params string[] sourceFiles);
+      IEnumerable<CaplIssue> GetIssues(AntlrInput antlrInput, params string[] sources);
 
-      IEnumerable<CaplIssue> GetIssues(string sourceFile);
+      IEnumerable<CaplIssue> GetIssues(string source, AntlrInput antlrInput);
    }
 }

@@ -5,7 +5,12 @@
 }
 
 variables
-{    
+{        
     int x = 1;
     struct SomeType y;
+}
+
+on start
+{
+    
 }
