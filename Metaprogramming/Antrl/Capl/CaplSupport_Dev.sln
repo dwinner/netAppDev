@@ -12,9 +12,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ValidatingGrammarSample", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ValidatingSymbolUsage", "ValidatingSymbolUsage\ValidatingSymbolUsage.csproj", "{3DA0668F-DFB5-48C2-A2CD-52AEAE842EA1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CaplGrammar.App", "CaplGrammar.App\CaplGrammar.App.csproj", "{050DF251-631B-4979-8178-5A62E045FDBC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CaplGrammar.App", "CaplGrammar.App\CaplGrammar.App.csproj", "{050DF251-631B-4979-8178-5A62E045FDBC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CaplGrammar.Core", "CaplGrammar.Core\CaplGrammar.Core.csproj", "{D60B898A-CABF-4003-93A8-43FED8B67A49}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CaplGrammar.Core", "CaplGrammar.Core\CaplGrammar.Core.csproj", "{D60B898A-CABF-4003-93A8-43FED8B67A49}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CaplAutoCompletion", "CaplAutoCompletion\CaplAutoCompletion.csproj", "{C9F889B0-3751-4F0D-BF89-8FE037BAB47D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -38,6 +40,10 @@ Global
 		{D60B898A-CABF-4003-93A8-43FED8B67A49}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D60B898A-CABF-4003-93A8-43FED8B67A49}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D60B898A-CABF-4003-93A8-43FED8B67A49}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C9F889B0-3751-4F0D-BF89-8FE037BAB47D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C9F889B0-3751-4F0D-BF89-8FE037BAB47D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C9F889B0-3751-4F0D-BF89-8FE037BAB47D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C9F889B0-3751-4F0D-BF89-8FE037BAB47D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
