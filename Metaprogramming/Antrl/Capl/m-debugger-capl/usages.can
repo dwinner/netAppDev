@@ -10,7 +10,7 @@ int f(int x, float y)
 }
 
 void g()
-{
+{        
     int x = 0;
     float y;
     y = 9; // y is defined
