@@ -1,0 +1,71 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.2" xml:lang="en-US">
+  <compounddef id="classcapl_1_1_diag_event" kind="class" language="C++" prot="public">
+    <compoundname>capl::DiagEvent</compoundname>
+    <basecompoundref refid="classcapl_1_1_i_event" prot="public" virt="non-virtual">capl::IEvent&lt; IDiag &amp; &gt;</basecompoundref>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classcapl_1_1_diag_event_1afeee58a9f13fb3f7d10cc13903bc8c25" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>capl::DiagEvent::DiagEvent</definition>
+        <argsstring>()</argsstring>
+        <name>DiagEvent</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="CAPLPluginApi.h" line="2552" column="9"/>
+      </memberdef>
+      <memberdef kind="function" id="classcapl_1_1_diag_event_1aeab2c1b324ecd717a0af365b3eb7b97e" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type></type>
+        <definition>virtual capl::DiagEvent::~DiagEvent</definition>
+        <argsstring>()</argsstring>
+        <name>~DiagEvent</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="CAPLPluginApi.h" line="2553" column="17"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <inheritancegraph>
+      <node id="2">
+        <label>capl::IEvent&lt; IDiag &amp; &gt;</label>
+        <link refid="classcapl_1_1_i_event"/>
+      </node>
+      <node id="1">
+        <label>capl::DiagEvent</label>
+        <link refid="classcapl_1_1_diag_event"/>
+        <childnode refid="2" relation="public-inheritance">
+        </childnode>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="2">
+        <label>capl::IEvent&lt; IDiag &amp; &gt;</label>
+        <link refid="classcapl_1_1_i_event"/>
+      </node>
+      <node id="1">
+        <label>capl::DiagEvent</label>
+        <link refid="classcapl_1_1_diag_event"/>
+        <childnode refid="2" relation="public-inheritance">
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="CAPLPluginApi.h" line="2549" column="5" bodyfile="CAPLPluginApi.h" bodystart="2550" bodyend="2555"/>
+    <listofallmembers>
+      <member refid="classcapl_1_1_diag_event_1afeee58a9f13fb3f7d10cc13903bc8c25" prot="public" virt="non-virtual"><scope>capl::DiagEvent</scope><name>DiagEvent</name></member>
+      <member refid="classcapl_1_1_i_event_1a3fb0217883734109c5ebba0e89ddc302" prot="public" virt="non-virtual"><scope>capl::DiagEvent</scope><name>IEvent</name></member>
+      <member refid="classcapl_1_1_i_event_1acf5a313898cfb55070e749789b31528f" prot="protected" virt="non-virtual"><scope>capl::DiagEvent</scope><name>m_hEvent</name></member>
+      <member refid="classcapl_1_1_i_event_1a5d6973af1cfbe659c3b0ec1ef0d92200" prot="public" virt="pure-virtual"><scope>capl::DiagEvent</scope><name>OnEvent</name></member>
+      <member refid="classcapl_1_1_diag_event_1aeab2c1b324ecd717a0af365b3eb7b97e" prot="public" virt="virtual"><scope>capl::DiagEvent</scope><name>~DiagEvent</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

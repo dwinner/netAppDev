@@ -1,0 +1,757 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.2" xml:lang="en-US">
+  <compounddef id="classcapl_1_1_i_message" kind="class" language="C++" prot="public" abstract="yes">
+    <compoundname>capl::IMessage</compoundname>
+      <sectiondef kind="public-type">
+      <memberdef kind="enum" id="classcapl_1_1_i_message_1a2fcaad1310bfdb336d026da47c378c19" prot="public" static="no" strong="no">
+        <type></type>
+        <name>Direction</name>
+        <enumvalue id="classcapl_1_1_i_message_1a2fcaad1310bfdb336d026da47c378c19adb280e3233d20b9b074270ef2e2a01ff" prot="public">
+          <name>Rx</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="classcapl_1_1_i_message_1a2fcaad1310bfdb336d026da47c378c19a0c44a97b2b78c19b34ab4ff78a256592" prot="public">
+          <name>Tx</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="classcapl_1_1_i_message_1a2fcaad1310bfdb336d026da47c378c19a4486c040d233577165014d29f12e6307" prot="public">
+          <name>TxRequest</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="CAPLPluginApi.h" line="507" column="9" bodyfile="CAPLPluginApi.h" bodystart="507" bodyend="507"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classcapl_1_1_i_message_1a3e35501626aee3afaba265bf90d2988d" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>void</type>
+        <definition>virtual void capl::IMessage::Send</definition>
+        <argsstring>()=0</argsstring>
+        <name>Send</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="CAPLPluginApi.h" line="509" column="30"/>
+      </memberdef>
+      <memberdef kind="function" id="classcapl_1_1_i_message_1a2434010e3a5bd9628243aa8166eed477" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="classcapl_1_1_i_message" kindref="compound">IMessage</ref> *</type>
+        <definition>virtual IMessage * capl::IMessage::GetMessage</definition>
+        <argsstring>(const char *sName)=0</argsstring>
+        <name>GetMessage</name>
+        <param>
+          <type>const char *</type>
+          <declname>sName</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="CAPLPluginApi.h" line="510" column="34"/>
+      </memberdef>
+      <memberdef kind="function" id="classcapl_1_1_i_message_1ab2e9318e0bee78709699deaefcd5965a" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="classcapl_1_1_i_signal" kindref="compound">ISignal</ref> *</type>
+        <definition>virtual ISignal * capl::IMessage::GetSignal</definition>
+        <argsstring>(unsigned __int32 uiIndex, const char *pSigNameArr)=0</argsstring>
+        <name>GetSignal</name>
+        <param>
+          <type>unsigned __int32</type>
+          <declname>uiIndex</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>pSigNameArr</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="CAPLPluginApi.h" line="511" column="33"/>
+      </memberdef>
+      <memberdef kind="function" id="classcapl_1_1_i_message_1aa75e3945781eaf23a4f5a1567d1b262a" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>DWORD &amp;</type>
+        <definition>virtual DWORD &amp; capl::IMessage::ID</definition>
+        <argsstring>()=0</argsstring>
+        <name>ID</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Message identifier <simplesect kind="return"><para>Byte </para>
+</simplesect>
+<simplesect kind="note"><para>CAN Message Selectors . &quot;ID&quot; field </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="CAPLPluginApi.h" line="518" column="33"/>
+      </memberdef>
+      <memberdef kind="function" id="classcapl_1_1_i_message_1a05dc3ed4a0a9ed1891352cf554c19285" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>BYTE &amp;</type>
+        <definition>virtual BYTE &amp; capl::IMessage::CAN</definition>
+        <argsstring>()=0</argsstring>
+        <name>CAN</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Transmission channel or channel through which the frame has been received. Value range: 1..32 <simplesect kind="return"><para>Byte </para>
+</simplesect>
+<simplesect kind="note"><para>CAN Message Selectors. &quot;CAN&quot; field </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="CAPLPluginApi.h" line="525" column="32"/>
+      </memberdef>
+      <memberdef kind="function" id="classcapl_1_1_i_message_1ae0288f76be6f72e16ffa3bb5660044a3" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>BYTE &amp;</type>
+        <definition>virtual BYTE &amp; capl::IMessage::DLC</definition>
+        <argsstring>()=0</argsstring>
+        <name>DLC</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>The data field length of a message is coded with the DLC (Data Length Code). Value range: 0..15(Data field length: CAN messages: 0..8, CAN FD messages: 0..64, J1939 parameter groups: 0..1785) <simplesect kind="return"><para>Byte </para>
+</simplesect>
+<simplesect kind="note"><para>CAN Message Selectors. &quot;DLC&quot; field </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="CAPLPluginApi.h" line="532" column="32"/>
+      </memberdef>
+      <memberdef kind="function" id="classcapl_1_1_i_message_1a188d397dad75bb88271218db9b466e54" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>Direction &amp;</type>
+        <definition>virtual Direction &amp; capl::IMessage::DIR</definition>
+        <argsstring>()=0</argsstring>
+        <name>DIR</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Direction of transmission, event classification; possible values: Rx, Tx, TXREQUEST <simplesect kind="return"><para>Direction </para>
+</simplesect>
+<simplesect kind="note"><para>CAN Message Selectors. &quot;DIR&quot; field </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="CAPLPluginApi.h" line="539" column="37"/>
+      </memberdef>
+      <memberdef kind="function" id="classcapl_1_1_i_message_1a0ad11a732592fe63a0e2a3f513656289" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>bool &amp;</type>
+        <definition>virtual bool &amp; capl::IMessage::RTR</definition>
+        <argsstring>()=0</argsstring>
+        <name>RTR</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Remote Transmission Request; possible values: 0 (no RTR), 1 (RTR) <simplesect kind="return"><para>Bool </para>
+</simplesect>
+<simplesect kind="note"><para>CAN Message Selectors. &quot;RTR&quot; field </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="CAPLPluginApi.h" line="546" column="32"/>
+      </memberdef>
+      <memberdef kind="function" id="classcapl_1_1_i_message_1acaaf2f1a7046879dc051f218f74ed8e8" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type>__int32</type>
+        <definition>virtual __int32 capl::IMessage::TYPE</definition>
+        <argsstring>() const =0</argsstring>
+        <name>TYPE</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Remote Transmission Request; possible values: 0 (no RTR), 1 (RTR) <simplesect kind="return"><para>Bool </para>
+</simplesect>
+<simplesect kind="note"><para>CAN Message Selectors. &quot;TYPE&quot; field </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="CAPLPluginApi.h" line="553" column="35"/>
+      </memberdef>
+      <memberdef kind="function" id="classcapl_1_1_i_message_1ab7a66f575a68d3da0fb8317274d8cdae" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type>__int32</type>
+        <definition>virtual __int32 capl::IMessage::MsgFlags</definition>
+        <argsstring>() const =0</argsstring>
+        <name>MsgFlags</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Transmission channel or channel through which the frame has been received. Value range: 1..32 <simplesect kind="return"><para>Word </para>
+</simplesect>
+<simplesect kind="note"><para>CAN Message Selectors. &quot;MsgFlags&quot; field </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="CAPLPluginApi.h" line="560" column="35"/>
+      </memberdef>
+      <memberdef kind="function" id="classcapl_1_1_i_message_1afa1d4c66b014775a786f86b1d86b9b6a" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>QWORD &amp;</type>
+        <definition>virtual QWORD &amp; capl::IMessage::TIME</definition>
+        <argsstring>()=0</argsstring>
+        <name>TIME</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Point in time, units: 10 microseconds. This selector is not available when executing CAPL code directly on hardware interfaces. Therefore you must use Time_ns <simplesect kind="return"><para>QWORD </para>
+</simplesect>
+<simplesect kind="note"><para>CAN Message Selectors. &quot;TIME&quot; field </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="CAPLPluginApi.h" line="567" column="33"/>
+      </memberdef>
+      <memberdef kind="function" id="classcapl_1_1_i_message_1a1b9379d32dc78a22e7c0ca6f354e5971" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>QWORD &amp;</type>
+        <definition>virtual QWORD &amp; capl::IMessage::Time_NS</definition>
+        <argsstring>()=0</argsstring>
+        <name>Time_NS</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Point in time, units: nanoseconds <simplesect kind="return"><para>QWORD </para>
+</simplesect>
+<simplesect kind="note"><para>CAN Message Selectors. &quot;TIME_NS&quot; field </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="CAPLPluginApi.h" line="574" column="33"/>
+      </memberdef>
+      <memberdef kind="function" id="classcapl_1_1_i_message_1a8de5ffbf7409ed0bd438633df8a1ba58" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>bool &amp;</type>
+        <definition>virtual bool &amp; capl::IMessage::SIMULATED</definition>
+        <argsstring>()=0</argsstring>
+        <name>SIMULATED</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Point in time, units: nanoseconds <simplesect kind="return"><para>Bool </para>
+</simplesect>
+<simplesect kind="note"><para>CAN Message Selectors. &quot;SIMULATED&quot; field </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="CAPLPluginApi.h" line="581" column="32"/>
+      </memberdef>
+      <memberdef kind="function" id="classcapl_1_1_i_message_1ad4e56ce4afa93144e5a1b249dad0daa3" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>BYTE &amp;</type>
+        <definition>virtual BYTE &amp; capl::IMessage::Byte</definition>
+        <argsstring>(BYTE byteIndex)=0</argsstring>
+        <name>Byte</name>
+        <param>
+          <type>BYTE</type>
+          <declname>byteIndex</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Message data byte (unsigned 8 bit); possible values for xx sets the datafield byte for the beginning of the value.*: 0…63 <simplesect kind="return"><para>Byte </para>
+</simplesect>
+<simplesect kind="note"><para>CAN Message Selectors. &quot;Byte(x)&quot; field </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="CAPLPluginApi.h" line="588" column="32"/>
+      </memberdef>
+      <memberdef kind="function" id="classcapl_1_1_i_message_1a3d201efe5be47828960bfe14655c6978" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>WORD &amp;</type>
+        <definition>virtual WORD &amp; capl::IMessage::Word</definition>
+        <argsstring>(BYTE byteIndex)=0</argsstring>
+        <name>Word</name>
+        <param>
+          <type>BYTE</type>
+          <declname>byteIndex</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Message data word (unsigned 16 bit); possible values for xx sets the datafield byte for the beginning of the value.*: 0…62. The index is byte-oriented; for example, word(1) references to the data beginning at byte 1 and consists of byte 1…2 (16 bit) <simplesect kind="return"><para>Word </para>
+</simplesect>
+<simplesect kind="note"><para>CAN Message Selectors. &quot;Word(x)&quot; field </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="CAPLPluginApi.h" line="595" column="32"/>
+      </memberdef>
+      <memberdef kind="function" id="classcapl_1_1_i_message_1a9d9a58b218b414e3b0f143cf4778c66a" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>DWORD &amp;</type>
+        <definition>virtual DWORD &amp; capl::IMessage::Dword</definition>
+        <argsstring>(BYTE byteIndex)=0</argsstring>
+        <name>Dword</name>
+        <param>
+          <type>BYTE</type>
+          <declname>byteIndex</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Message data word (unsigned 32 bit); possible values for xx sets the datafield byte for the beginning of the value.*: 0…60. The index is byte-oriented; for example, dword(1) references to the data beginning at byte 1 and consists of byte 1…4 (32 bit) <simplesect kind="return"><para>Dword </para>
+</simplesect>
+<simplesect kind="note"><para>CAN Message Selectors. &quot;DWord(x)&quot; field </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="CAPLPluginApi.h" line="602" column="33"/>
+      </memberdef>
+      <memberdef kind="function" id="classcapl_1_1_i_message_1a90084424c01b25b2eb57e1a3fb5d3dec" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>QWORD &amp;</type>
+        <definition>virtual QWORD &amp; capl::IMessage::Qword</definition>
+        <argsstring>(BYTE byteIndex=0)=0</argsstring>
+        <name>Qword</name>
+        <param>
+          <type>BYTE</type>
+          <declname>byteIndex</declname>
+          <defval>0</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Message data word (unsigned 64 bit); possible values for xx sets the datafield byte for the beginning of the value.*: 0…56 <simplesect kind="return"><para>Qword </para>
+</simplesect>
+<simplesect kind="note"><para>CAN Message Selectors. &quot;QWORDord(x)&quot; field </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="CAPLPluginApi.h" line="609" column="33"/>
+      </memberdef>
+      <memberdef kind="function" id="classcapl_1_1_i_message_1aa9a5c53c41916332a0a4d7e63272525f" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>char &amp;</type>
+        <definition>virtual char &amp; capl::IMessage::Char</definition>
+        <argsstring>(BYTE byteIndex)=0</argsstring>
+        <name>Char</name>
+        <param>
+          <type>BYTE</type>
+          <declname>byteIndex</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Message data byte (signed 8 bit); possible values for xx sets the datafield byte for the beginning of the value.*: 0…63 <simplesect kind="return"><para>Char </para>
+</simplesect>
+<simplesect kind="note"><para>CAN Message Selectors. &quot;Char(x)&quot; field </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="CAPLPluginApi.h" line="616" column="32"/>
+      </memberdef>
+      <memberdef kind="function" id="classcapl_1_1_i_message_1a350a5df9fb86484a2956485d908aaba2" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>short &amp;</type>
+        <definition>virtual short &amp; capl::IMessage::Short</definition>
+        <argsstring>(BYTE byteIndex)=0</argsstring>
+        <name>Short</name>
+        <param>
+          <type>BYTE</type>
+          <declname>byteIndex</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="CAPLPluginApi.h" line="617" column="33"/>
+      </memberdef>
+      <memberdef kind="function" id="classcapl_1_1_i_message_1a6f497010e60de9bc86f9d476f36b7f92" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>__int32 &amp;</type>
+        <definition>virtual __int32 &amp; capl::IMessage::Long</definition>
+        <argsstring>(BYTE byteIndex)=0</argsstring>
+        <name>Long</name>
+        <param>
+          <type>BYTE</type>
+          <declname>byteIndex</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Message data word (signed 32 bit); possible values for xx sets the datafield byte for the beginning of the value.*: 0…60. The index is byte-oriented; for example, long(1) references to the data beginning at byte 1 and consists of byte 1…4 (32 bit) <simplesect kind="return"><para>Long </para>
+</simplesect>
+<simplesect kind="note"><para>CAN Message Selectors. &quot;Char(x)&quot; field </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="CAPLPluginApi.h" line="624" column="37"/>
+      </memberdef>
+      <memberdef kind="function" id="classcapl_1_1_i_message_1a12f19279b4f60f4c4d1bbf7a70082138" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>void</type>
+        <definition>virtual void capl::IMessage::CopyData</definition>
+        <argsstring>(IMessage &amp;msg)=0</argsstring>
+        <name>CopyData</name>
+        <param>
+          <type><ref refid="classcapl_1_1_i_message" kindref="compound">IMessage</ref> &amp;</type>
+          <declname>msg</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Message data word (signed 32 bit); possible values for xx sets the datafield byte for the beginning of the value.*: 0…60. The index is byte-oriented; for example, long(1) references to the data beginning at byte 1 and consists of byte 1…4 (32 bit) <simplesect kind="return"><para>Long </para>
+</simplesect>
+<simplesect kind="note"><para>CAN Message Selectors. &quot;Char(x)&quot; field </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="CAPLPluginApi.h" line="631" column="30"/>
+      </memberdef>
+      <memberdef kind="function" id="classcapl_1_1_i_message_1ac7705e9555d8bb8200ccec3cac8dd16e" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>BYTE *</type>
+        <definition>virtual BYTE * capl::IMessage::GetData</definition>
+        <argsstring>()=0</argsstring>
+        <name>GetData</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="CAPLPluginApi.h" line="632" column="30"/>
+      </memberdef>
+      <memberdef kind="function" id="classcapl_1_1_i_message_1a50848663277df54b49c87dc9f76dd741" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="classcapl_1_1_i_attribute" kindref="compound">IAttribute</ref> *</type>
+        <definition>virtual IAttribute * capl::IMessage::GetAttribute</definition>
+        <argsstring>(const char *sAttrName)=0</argsstring>
+        <name>GetAttribute</name>
+        <param>
+          <type>const char *</type>
+          <declname>sAttrName</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="CAPLPluginApi.h" line="634" column="37"/>
+      </memberdef>
+      <memberdef kind="function" id="classcapl_1_1_i_message_1a8f16ca5280052d48739c6fd104a1e9e9" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>bool &amp;</type>
+        <definition>virtual bool &amp; capl::IMessage::BRS</definition>
+        <argsstring>()=0</argsstring>
+        <name>BRS</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Bit Rate Switch. Only for CAN FD messages. 0: Use arbitration bit rate for data segment; 1: use data bit rate for data segment <simplesect kind="return"><para>Bool </para>
+</simplesect>
+<simplesect kind="note"><para>CAN Message Selectors. &quot;BRS&quot; field </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="CAPLPluginApi.h" line="641" column="32"/>
+      </memberdef>
+      <memberdef kind="function" id="classcapl_1_1_i_message_1a1b0dea7fe3ea81aef8890486c3a16bae" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>bool &amp;</type>
+        <definition>virtual bool &amp; capl::IMessage::EDL</definition>
+        <argsstring>()=0</argsstring>
+        <name>EDL</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="CAPLPluginApi.h" line="643" column="32"/>
+      </memberdef>
+      <memberdef kind="function" id="classcapl_1_1_i_message_1a4ed6ab8b3fe874eeee05670f021b097e" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>bool &amp;</type>
+        <definition>virtual bool &amp; capl::IMessage::FDF</definition>
+        <argsstring>()=0</argsstring>
+        <name>FDF</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>FD Format Indicator: 0 = Classic CAN message; 1 = CAN FD message <simplesect kind="return"><para>Bool </para>
+</simplesect>
+<simplesect kind="note"><para>CAN Message Selectors. &quot;FDF&quot; field </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="CAPLPluginApi.h" line="650" column="32"/>
+      </memberdef>
+      <memberdef kind="function" id="classcapl_1_1_i_message_1a2fc0498ccf0b6df05286473780fc7982" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>__int32</type>
+        <definition>virtual __int32 capl::IMessage::SetSignalStartValues</definition>
+        <argsstring>()=0</argsstring>
+        <name>SetSignalStartValues</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Sets the values of the signals in the parameter to the start values defined in the database <parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>msg</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Objects where the signals shall be set </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>0: function was successful </para>
+</simplesect>
+<simplesect kind="return"><para>1: message / frame / PDU / paramGroup wasn&apos;t found in the database </para>
+</simplesect>
+<simplesect kind="return"><para>2: at least one signal start value didn&apos;t fit into the signal in the message </para>
+</simplesect>
+<simplesect kind="note"><para>setSignalStartValues(message msg) </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="CAPLPluginApi.h" line="660" column="35"/>
+      </memberdef>
+      <memberdef kind="function" id="classcapl_1_1_i_message_1a0922c25379b5caa4a2242677967bff93" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type>unsigned __int32</type>
+        <definition>virtual unsigned __int32 capl::IMessage::BusType</definition>
+        <argsstring>() const =0</argsstring>
+        <name>BusType</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Returns the bus type to which the channel belongs <parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>object</parametername>
+</parameternamelist>
+<parameterdescription>
+<para></para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="remark"><para>The following bus types are defined: 1|cCAN 2|cJ1939 4|cTTP 5|cLIN 6|cMOST </para>
+</simplesect>
+<simplesect kind="return"><para>The bus type </para>
+</simplesect>
+<simplesect kind="note"><para>object.BusType </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="CAPLPluginApi.h" line="676" column="46"/>
+      </memberdef>
+      <memberdef kind="function" id="classcapl_1_1_i_message_1a0dcbb79e419cf75292c3f1cb15a59798" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type>const __int8 *</type>
+        <definition>virtual const __int8 * capl::IMessage::Name</definition>
+        <argsstring>() const =0</argsstring>
+        <name>Name</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Symbolic Name of the PDU Read only <simplesect kind="note"><para>PDU. &quot;Name&quot; field </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="CAPLPluginApi.h" line="682" column="40"/>
+      </memberdef>
+      <memberdef kind="function" id="classcapl_1_1_i_message_1abf2d6a209e6bc34f5267b929fedc7b47" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type>unsigned __int32</type>
+        <definition>virtual unsigned __int32 capl::IMessage::MaxDLC</definition>
+        <argsstring>() const =0</argsstring>
+        <name>MaxDLC</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="CAPLPluginApi.h" line="683" column="46"/>
+      </memberdef>
+      <memberdef kind="function" id="classcapl_1_1_i_message_1a8e518e541ab114b4d8e075cdcf03499f" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type>__int8</type>
+        <definition>virtual __int8 capl::IMessage::UpdateBit</definition>
+        <argsstring>() const =0</argsstring>
+        <name>UpdateBit</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="CAPLPluginApi.h" line="684" column="34"/>
+      </memberdef>
+      <memberdef kind="function" id="classcapl_1_1_i_message_1a90643b7e1c26a533fdd09f9adb57e35d" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>unsigned __int8 *</type>
+        <definition>virtual unsigned __int8 * capl::IMessage::Payload</definition>
+        <argsstring>()=0</argsstring>
+        <name>Payload</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="CAPLPluginApi.h" line="685" column="43"/>
+      </memberdef>
+      <memberdef kind="function" id="classcapl_1_1_i_message_1a089ee81bda19b4832b8f239800d30ec7" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type>unsigned __int8</type>
+        <definition>virtual unsigned __int8 capl::IMessage::ValidationFlags</definition>
+        <argsstring>() const =0</argsstring>
+        <name>ValidationFlags</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="CAPLPluginApi.h" line="686" column="43"/>
+      </memberdef>
+      <memberdef kind="function" id="classcapl_1_1_i_message_1a5d1a003c29b771824e17faf35c0d1f05" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type>bool</type>
+        <definition>virtual bool capl::IMessage::IsContained</definition>
+        <argsstring>() const =0</argsstring>
+        <name>IsContained</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="CAPLPluginApi.h" line="687" column="30"/>
+      </memberdef>
+      <memberdef kind="function" id="classcapl_1_1_i_message_1a3521833efc486eb8c92ac8c23f5eeace" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type>unsigned __int8</type>
+        <definition>virtual unsigned __int8 capl::IMessage::AutosarPDUType</definition>
+        <argsstring>() const =0</argsstring>
+        <name>AutosarPDUType</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="CAPLPluginApi.h" line="688" column="43"/>
+      </memberdef>
+      <memberdef kind="function" id="classcapl_1_1_i_message_1a424febc8b89038f54399fc392a3b0e04" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type>unsigned __int8</type>
+        <definition>virtual unsigned __int8 capl::IMessage::IsSecured</definition>
+        <argsstring>() const =0</argsstring>
+        <name>IsSecured</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="CAPLPluginApi.h" line="689" column="43"/>
+      </memberdef>
+      <memberdef kind="function" id="classcapl_1_1_i_message_1a1ad9cc4e5c64f93a44213758476ff70f" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type>unsigned __int32</type>
+        <definition>virtual unsigned __int32 capl::IMessage::BitCount</definition>
+        <argsstring>() const =0</argsstring>
+        <name>BitCount</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Number of bits in the signal <simplesect kind="return"><para>Dword </para>
+</simplesect>
+<simplesect kind="note"><para>Dynamic Search of Messages and Signals in Databases. &quot;bitcount&quot; field </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="CAPLPluginApi.h" line="696" column="46"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="CAPLPluginApi.h" line="504" column="5" bodyfile="CAPLPluginApi.h" bodystart="505" bodyend="697"/>
+    <listofallmembers>
+      <member refid="classcapl_1_1_i_message_1a3521833efc486eb8c92ac8c23f5eeace" prot="public" virt="pure-virtual"><scope>capl::IMessage</scope><name>AutosarPDUType</name></member>
+      <member refid="classcapl_1_1_i_message_1a1ad9cc4e5c64f93a44213758476ff70f" prot="public" virt="pure-virtual"><scope>capl::IMessage</scope><name>BitCount</name></member>
+      <member refid="classcapl_1_1_i_message_1a8f16ca5280052d48739c6fd104a1e9e9" prot="public" virt="pure-virtual"><scope>capl::IMessage</scope><name>BRS</name></member>
+      <member refid="classcapl_1_1_i_message_1a0922c25379b5caa4a2242677967bff93" prot="public" virt="pure-virtual"><scope>capl::IMessage</scope><name>BusType</name></member>
+      <member refid="classcapl_1_1_i_message_1ad4e56ce4afa93144e5a1b249dad0daa3" prot="public" virt="pure-virtual"><scope>capl::IMessage</scope><name>Byte</name></member>
+      <member refid="classcapl_1_1_i_message_1a05dc3ed4a0a9ed1891352cf554c19285" prot="public" virt="pure-virtual"><scope>capl::IMessage</scope><name>CAN</name></member>
+      <member refid="classcapl_1_1_i_message_1aa9a5c53c41916332a0a4d7e63272525f" prot="public" virt="pure-virtual"><scope>capl::IMessage</scope><name>Char</name></member>
+      <member refid="classcapl_1_1_i_message_1a12f19279b4f60f4c4d1bbf7a70082138" prot="public" virt="pure-virtual"><scope>capl::IMessage</scope><name>CopyData</name></member>
+      <member refid="classcapl_1_1_i_message_1a188d397dad75bb88271218db9b466e54" prot="public" virt="pure-virtual"><scope>capl::IMessage</scope><name>DIR</name></member>
+      <member refid="classcapl_1_1_i_message_1a2fcaad1310bfdb336d026da47c378c19" prot="public" virt="non-virtual"><scope>capl::IMessage</scope><name>Direction</name></member>
+      <member refid="classcapl_1_1_i_message_1ae0288f76be6f72e16ffa3bb5660044a3" prot="public" virt="pure-virtual"><scope>capl::IMessage</scope><name>DLC</name></member>
+      <member refid="classcapl_1_1_i_message_1a9d9a58b218b414e3b0f143cf4778c66a" prot="public" virt="pure-virtual"><scope>capl::IMessage</scope><name>Dword</name></member>
+      <member refid="classcapl_1_1_i_message_1a1b0dea7fe3ea81aef8890486c3a16bae" prot="public" virt="pure-virtual"><scope>capl::IMessage</scope><name>EDL</name></member>
+      <member refid="classcapl_1_1_i_message_1a4ed6ab8b3fe874eeee05670f021b097e" prot="public" virt="pure-virtual"><scope>capl::IMessage</scope><name>FDF</name></member>
+      <member refid="classcapl_1_1_i_message_1a50848663277df54b49c87dc9f76dd741" prot="public" virt="pure-virtual"><scope>capl::IMessage</scope><name>GetAttribute</name></member>
+      <member refid="classcapl_1_1_i_message_1ac7705e9555d8bb8200ccec3cac8dd16e" prot="public" virt="pure-virtual"><scope>capl::IMessage</scope><name>GetData</name></member>
+      <member refid="classcapl_1_1_i_message_1a2434010e3a5bd9628243aa8166eed477" prot="public" virt="pure-virtual"><scope>capl::IMessage</scope><name>GetMessage</name></member>
+      <member refid="classcapl_1_1_i_message_1ab2e9318e0bee78709699deaefcd5965a" prot="public" virt="pure-virtual"><scope>capl::IMessage</scope><name>GetSignal</name></member>
+      <member refid="classcapl_1_1_i_message_1aa75e3945781eaf23a4f5a1567d1b262a" prot="public" virt="pure-virtual"><scope>capl::IMessage</scope><name>ID</name></member>
+      <member refid="classcapl_1_1_i_message_1a5d1a003c29b771824e17faf35c0d1f05" prot="public" virt="pure-virtual"><scope>capl::IMessage</scope><name>IsContained</name></member>
+      <member refid="classcapl_1_1_i_message_1a424febc8b89038f54399fc392a3b0e04" prot="public" virt="pure-virtual"><scope>capl::IMessage</scope><name>IsSecured</name></member>
+      <member refid="classcapl_1_1_i_message_1a6f497010e60de9bc86f9d476f36b7f92" prot="public" virt="pure-virtual"><scope>capl::IMessage</scope><name>Long</name></member>
+      <member refid="classcapl_1_1_i_message_1abf2d6a209e6bc34f5267b929fedc7b47" prot="public" virt="pure-virtual"><scope>capl::IMessage</scope><name>MaxDLC</name></member>
+      <member refid="classcapl_1_1_i_message_1ab7a66f575a68d3da0fb8317274d8cdae" prot="public" virt="pure-virtual"><scope>capl::IMessage</scope><name>MsgFlags</name></member>
+      <member refid="classcapl_1_1_i_message_1a0dcbb79e419cf75292c3f1cb15a59798" prot="public" virt="pure-virtual"><scope>capl::IMessage</scope><name>Name</name></member>
+      <member refid="classcapl_1_1_i_message_1a90643b7e1c26a533fdd09f9adb57e35d" prot="public" virt="pure-virtual"><scope>capl::IMessage</scope><name>Payload</name></member>
+      <member refid="classcapl_1_1_i_message_1a90084424c01b25b2eb57e1a3fb5d3dec" prot="public" virt="pure-virtual"><scope>capl::IMessage</scope><name>Qword</name></member>
+      <member refid="classcapl_1_1_i_message_1a0ad11a732592fe63a0e2a3f513656289" prot="public" virt="pure-virtual"><scope>capl::IMessage</scope><name>RTR</name></member>
+      <member refid="classcapl_1_1_i_message_1a2fcaad1310bfdb336d026da47c378c19adb280e3233d20b9b074270ef2e2a01ff" prot="public" virt="non-virtual"><scope>capl::IMessage</scope><name>Rx</name></member>
+      <member refid="classcapl_1_1_i_message_1a3e35501626aee3afaba265bf90d2988d" prot="public" virt="pure-virtual"><scope>capl::IMessage</scope><name>Send</name></member>
+      <member refid="classcapl_1_1_i_message_1a2fc0498ccf0b6df05286473780fc7982" prot="public" virt="pure-virtual"><scope>capl::IMessage</scope><name>SetSignalStartValues</name></member>
+      <member refid="classcapl_1_1_i_message_1a350a5df9fb86484a2956485d908aaba2" prot="public" virt="pure-virtual"><scope>capl::IMessage</scope><name>Short</name></member>
+      <member refid="classcapl_1_1_i_message_1a8de5ffbf7409ed0bd438633df8a1ba58" prot="public" virt="pure-virtual"><scope>capl::IMessage</scope><name>SIMULATED</name></member>
+      <member refid="classcapl_1_1_i_message_1afa1d4c66b014775a786f86b1d86b9b6a" prot="public" virt="pure-virtual"><scope>capl::IMessage</scope><name>TIME</name></member>
+      <member refid="classcapl_1_1_i_message_1a1b9379d32dc78a22e7c0ca6f354e5971" prot="public" virt="pure-virtual"><scope>capl::IMessage</scope><name>Time_NS</name></member>
+      <member refid="classcapl_1_1_i_message_1a2fcaad1310bfdb336d026da47c378c19a0c44a97b2b78c19b34ab4ff78a256592" prot="public" virt="non-virtual"><scope>capl::IMessage</scope><name>Tx</name></member>
+      <member refid="classcapl_1_1_i_message_1a2fcaad1310bfdb336d026da47c378c19a4486c040d233577165014d29f12e6307" prot="public" virt="non-virtual"><scope>capl::IMessage</scope><name>TxRequest</name></member>
+      <member refid="classcapl_1_1_i_message_1acaaf2f1a7046879dc051f218f74ed8e8" prot="public" virt="pure-virtual"><scope>capl::IMessage</scope><name>TYPE</name></member>
+      <member refid="classcapl_1_1_i_message_1a8e518e541ab114b4d8e075cdcf03499f" prot="public" virt="pure-virtual"><scope>capl::IMessage</scope><name>UpdateBit</name></member>
+      <member refid="classcapl_1_1_i_message_1a089ee81bda19b4832b8f239800d30ec7" prot="public" virt="pure-virtual"><scope>capl::IMessage</scope><name>ValidationFlags</name></member>
+      <member refid="classcapl_1_1_i_message_1a3d201efe5be47828960bfe14655c6978" prot="public" virt="pure-virtual"><scope>capl::IMessage</scope><name>Word</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

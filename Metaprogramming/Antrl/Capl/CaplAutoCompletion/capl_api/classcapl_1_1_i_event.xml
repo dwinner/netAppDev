@@ -1,0 +1,69 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.2" xml:lang="en-US">
+  <compounddef id="classcapl_1_1_i_event" kind="class" language="C++" prot="public" abstract="yes">
+    <compoundname>capl::IEvent</compoundname>
+    <templateparamlist>
+      <param>
+        <type>class T</type>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="protected-attrib">
+      <memberdef kind="variable" id="classcapl_1_1_i_event_1acf5a313898cfb55070e749789b31528f" prot="protected" static="no" mutable="no">
+        <type>void *</type>
+        <definition>void* capl::IEvent&lt; T &gt;::m_hEvent</definition>
+        <argsstring></argsstring>
+        <name>m_hEvent</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="CAPLPluginApi.h" line="2324" column="16" bodyfile="CAPLPluginApi.h" bodystart="2324" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classcapl_1_1_i_event_1a3fb0217883734109c5ebba0e89ddc302" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>capl::IEvent&lt; T &gt;::IEvent</definition>
+        <argsstring>()</argsstring>
+        <name>IEvent</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="CAPLPluginApi.h" line="2321" column="9" bodyfile="CAPLPluginApi.h" bodystart="2321" bodyend="2321"/>
+      </memberdef>
+      <memberdef kind="function" id="classcapl_1_1_i_event_1a5d6973af1cfbe659c3b0ec1ef0d92200" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>void</type>
+        <definition>virtual void capl::IEvent&lt; T &gt;::OnEvent</definition>
+        <argsstring>(T sender)=0</argsstring>
+        <name>OnEvent</name>
+        <reimplementedby refid="classcapl_1_1_timer_array_event_1_1_child_event_1ac12fea40e72c4919c1d547a92acef61f">OnEvent</reimplementedby>
+        <param>
+          <type>T</type>
+          <declname>sender</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="CAPLPluginApi.h" line="2322" column="30"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="CAPLPluginApi.h" line="2315" column="5" bodyfile="CAPLPluginApi.h" bodystart="2319" bodyend="2325"/>
+    <listofallmembers>
+      <member refid="classcapl_1_1_i_event_1a3fb0217883734109c5ebba0e89ddc302" prot="public" virt="non-virtual"><scope>capl::IEvent</scope><name>IEvent</name></member>
+      <member refid="classcapl_1_1_i_event_1acf5a313898cfb55070e749789b31528f" prot="protected" virt="non-virtual"><scope>capl::IEvent</scope><name>m_hEvent</name></member>
+      <member refid="classcapl_1_1_i_event_1a5d6973af1cfbe659c3b0ec1ef0d92200" prot="public" virt="pure-virtual"><scope>capl::IEvent</scope><name>OnEvent</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

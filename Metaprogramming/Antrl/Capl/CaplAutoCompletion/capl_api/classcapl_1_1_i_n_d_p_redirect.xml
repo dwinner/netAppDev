@@ -1,0 +1,98 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.2" xml:lang="en-US">
+  <compounddef id="classcapl_1_1_i_n_d_p_redirect" kind="class" language="C++" prot="public" abstract="yes">
+    <compoundname>capl::INDPRedirect</compoundname>
+    <basecompoundref refid="classcapl_1_1_i_ethernet_packet_protocol" prot="public" virt="non-virtual">capl::IEthernetPacketProtocol</basecompoundref>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classcapl_1_1_i_n_d_p_redirect_1a14b92124874052e8c0ae4afad1874691" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="classcapl_1_1_i_ethernet_packet_protocol_q_word_field" kindref="compound">IEthernetPacketProtocolQWordField</ref> &amp;</type>
+        <definition>virtual IEthernetPacketProtocolQWordField &amp; capl::INDPRedirect::target</definition>
+        <argsstring>()=0</argsstring>
+        <name>target</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>IP address that is a better first hop to use for the ICMP destination address <simplesect kind="return"><para>QWord </para>
+</simplesect>
+<simplesect kind="note"><para>NDP protocol Header structure. &quot;Target Address&quot; field </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="CAPLPluginApi.h" line="1746" column="59"/>
+      </memberdef>
+      <memberdef kind="function" id="classcapl_1_1_i_n_d_p_redirect_1aeb30873e2b12134870ea0f704dc18e2d" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="classcapl_1_1_i_ethernet_packet_protocol_q_word_field" kindref="compound">IEthernetPacketProtocolQWordField</ref> &amp;</type>
+        <definition>virtual IEthernetPacketProtocolQWordField &amp; capl::INDPRedirect::destination</definition>
+        <argsstring>()=0</argsstring>
+        <name>destination</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>IP address of the destination that is redirected to the target <simplesect kind="return"><para>QWord </para>
+</simplesect>
+<simplesect kind="note"><para>NDP protocol Header structure. &quot;Destination Address&quot; field </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="CAPLPluginApi.h" line="1753" column="59"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <inheritancegraph>
+      <node id="2">
+        <label>capl::IEthernetPacketProtocol</label>
+        <link refid="classcapl_1_1_i_ethernet_packet_protocol"/>
+      </node>
+      <node id="1">
+        <label>capl::INDPRedirect</label>
+        <link refid="classcapl_1_1_i_n_d_p_redirect"/>
+        <childnode refid="2" relation="public-inheritance">
+        </childnode>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="2">
+        <label>capl::IEthernetPacketProtocol</label>
+        <link refid="classcapl_1_1_i_ethernet_packet_protocol"/>
+      </node>
+      <node id="1">
+        <label>capl::INDPRedirect</label>
+        <link refid="classcapl_1_1_i_n_d_p_redirect"/>
+        <childnode refid="2" relation="public-inheritance">
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="CAPLPluginApi.h" line="1737" column="5" bodyfile="CAPLPluginApi.h" bodystart="1738" bodyend="1754"/>
+    <listofallmembers>
+      <member refid="classcapl_1_1_i_ethernet_packet_protocol_1a7e0b85de5365949422d44b319c9c9b4b" prot="public" virt="pure-virtual"><scope>capl::INDPRedirect</scope><name>Byte</name></member>
+      <member refid="classcapl_1_1_i_ethernet_packet_protocol_1af3d897a6e01ca1307e3402bac8ca3ea6" prot="public" virt="pure-virtual"><scope>capl::INDPRedirect</scope><name>byteLength</name></member>
+      <member refid="classcapl_1_1_i_ethernet_packet_protocol_1ad75c16f80e01431df2d5550388f7bad5" prot="public" virt="pure-virtual"><scope>capl::INDPRedirect</scope><name>byteOffset</name></member>
+      <member refid="classcapl_1_1_i_ethernet_packet_protocol_1ae028555aa44b2b4d089f84784bab9818" prot="public" virt="pure-virtual"><scope>capl::INDPRedirect</scope><name>Char</name></member>
+      <member refid="classcapl_1_1_i_ethernet_packet_protocol_1ae73092fb840043ad7629f7471275dbd6" prot="public" virt="pure-virtual"><scope>capl::INDPRedirect</scope><name>CompletePacket</name></member>
+      <member refid="classcapl_1_1_i_ethernet_packet_protocol_1a9009ffb90167216e0b26a3d30eb1404a" prot="public" virt="pure-virtual"><scope>capl::INDPRedirect</scope><name>Data</name></member>
+      <member refid="classcapl_1_1_i_n_d_p_redirect_1aeb30873e2b12134870ea0f704dc18e2d" prot="public" virt="pure-virtual"><scope>capl::INDPRedirect</scope><name>destination</name></member>
+      <member refid="classcapl_1_1_i_ethernet_packet_protocol_1a56ef87fe52db2a14705c7f7fce218dbf" prot="public" virt="pure-virtual"><scope>capl::INDPRedirect</scope><name>Dword</name></member>
+      <member refid="classcapl_1_1_i_ethernet_packet_protocol_1a8c521930cccbd833489b54768033d386" prot="public" virt="pure-virtual"><scope>capl::INDPRedirect</scope><name>GetData</name></member>
+      <member refid="classcapl_1_1_i_ethernet_packet_protocol_1ab3b3995e13e2885ec7e69a108e97a939" prot="public" virt="pure-virtual"><scope>capl::INDPRedirect</scope><name>GetDataOffset</name></member>
+      <member refid="classcapl_1_1_i_ethernet_packet_protocol_1ae7256f92b0ffd7b8571ab0643e225c5e" prot="public" virt="pure-virtual"><scope>capl::INDPRedirect</scope><name>Init</name></member>
+      <member refid="classcapl_1_1_i_ethernet_packet_protocol_1af9d4516c27afadd84949aad159b7422d" prot="public" virt="pure-virtual"><scope>capl::INDPRedirect</scope><name>IsAvailable</name></member>
+      <member refid="classcapl_1_1_i_ethernet_packet_protocol_1aacc10aa8d426f654d6db5cfc8519df3a" prot="public" virt="pure-virtual"><scope>capl::INDPRedirect</scope><name>Long</name></member>
+      <member refid="classcapl_1_1_i_ethernet_packet_protocol_1afbd981a2fe3924fdc098c694da13662c" prot="public" virt="pure-virtual"><scope>capl::INDPRedirect</scope><name>LongLong</name></member>
+      <member refid="classcapl_1_1_i_ethernet_packet_protocol_1a3a82eae1785e7eb7823fa7a790d25db7" prot="public" virt="pure-virtual"><scope>capl::INDPRedirect</scope><name>nextOffset</name></member>
+      <member refid="classcapl_1_1_i_ethernet_packet_protocol_1ae999ac355b7cea884f0d7df23e30e47a" prot="public" virt="pure-virtual"><scope>capl::INDPRedirect</scope><name>Qword</name></member>
+      <member refid="classcapl_1_1_i_ethernet_packet_protocol_1a0d204ced6e880ed78bbd371393a70039" prot="public" virt="pure-virtual"><scope>capl::INDPRedirect</scope><name>ResizeData</name></member>
+      <member refid="classcapl_1_1_i_ethernet_packet_protocol_1ac88b4003564a0e8e324f871efce88e4a" prot="public" virt="pure-virtual"><scope>capl::INDPRedirect</scope><name>SetData</name></member>
+      <member refid="classcapl_1_1_i_ethernet_packet_protocol_1a17e2f454b4b88e4d0a2ccabb6c1665a2" prot="public" virt="pure-virtual"><scope>capl::INDPRedirect</scope><name>SetDataOffset</name></member>
+      <member refid="classcapl_1_1_i_ethernet_packet_protocol_1a61ff67bd20f13c7f70902139a3de9841" prot="public" virt="pure-virtual"><scope>capl::INDPRedirect</scope><name>Short</name></member>
+      <member refid="classcapl_1_1_i_n_d_p_redirect_1a14b92124874052e8c0ae4afad1874691" prot="public" virt="pure-virtual"><scope>capl::INDPRedirect</scope><name>target</name></member>
+      <member refid="classcapl_1_1_i_ethernet_packet_protocol_1a4972ed0ccef2a1dd4c6dec2cfdcb403b" prot="public" virt="pure-virtual"><scope>capl::INDPRedirect</scope><name>Word</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

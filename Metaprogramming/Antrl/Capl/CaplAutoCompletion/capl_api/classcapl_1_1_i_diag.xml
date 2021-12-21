@@ -1,0 +1,29 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.2" xml:lang="en-US">
+  <compounddef id="classcapl_1_1_i_diag" kind="class" language="C++" prot="public" abstract="yes">
+    <compoundname>capl::IDiag</compoundname>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classcapl_1_1_i_diag_1a5dc0997ef1f863fd04b7c27e22c234b8" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type>__int32</type>
+        <definition>virtual __int32 capl::IDiag::GetStatus</definition>
+        <argsstring>() const =0</argsstring>
+        <name>GetStatus</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="CAPLPluginApi.h" line="2235" column="35"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="CAPLPluginApi.h" line="2232" column="5" bodyfile="CAPLPluginApi.h" bodystart="2233" bodyend="2236"/>
+    <listofallmembers>
+      <member refid="classcapl_1_1_i_diag_1a5dc0997ef1f863fd04b7c27e22c234b8" prot="public" virt="pure-virtual"><scope>capl::IDiag</scope><name>GetStatus</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

@@ -1,0 +1,47 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.2" xml:lang="en-US">
+  <compounddef id="classcapl_1_1_i_q_word_value" kind="class" language="C++" prot="public" abstract="yes">
+    <compoundname>capl::IQWordValue</compoundname>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classcapl_1_1_i_q_word_value_1a043abd7239e724e4c5ce8e81e776ca02" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>QWORD</type>
+        <definition>virtual QWORD capl::IQWordValue::operator=</definition>
+        <argsstring>(QWORD value)=0</argsstring>
+        <name>operator=</name>
+        <param>
+          <type>QWORD</type>
+          <declname>value</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="CAPLPluginApi.h" line="1257" column="31"/>
+      </memberdef>
+      <memberdef kind="function" id="classcapl_1_1_i_q_word_value_1a176419c1b9b0f977411a5ff1c3c5b8b7" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type></type>
+        <definition>virtual capl::IQWordValue::operator QWORD</definition>
+        <argsstring>()=0</argsstring>
+        <name>operator QWORD</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="CAPLPluginApi.h" line="1258" column="22"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="CAPLPluginApi.h" line="1254" column="5" bodyfile="CAPLPluginApi.h" bodystart="1255" bodyend="1259"/>
+    <listofallmembers>
+      <member refid="classcapl_1_1_i_q_word_value_1a176419c1b9b0f977411a5ff1c3c5b8b7" prot="public" virt="pure-virtual"><scope>capl::IQWordValue</scope><name>operator QWORD</name></member>
+      <member refid="classcapl_1_1_i_q_word_value_1a043abd7239e724e4c5ce8e81e776ca02" prot="public" virt="pure-virtual"><scope>capl::IQWordValue</scope><name>operator=</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

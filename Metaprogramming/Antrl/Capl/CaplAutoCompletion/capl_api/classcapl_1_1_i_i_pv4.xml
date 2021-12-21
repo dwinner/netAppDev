@@ -1,0 +1,307 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.2" xml:lang="en-US">
+  <compounddef id="classcapl_1_1_i_i_pv4" kind="class" language="C++" prot="public" abstract="yes">
+    <compoundname>capl::IIPv4</compoundname>
+    <basecompoundref refid="classcapl_1_1_i_ethernet_packet_protocol" prot="public" virt="non-virtual">capl::IEthernetPacketProtocol</basecompoundref>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classcapl_1_1_i_i_pv4_1aa682443c826fb248ecf1284304e45036" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="classcapl_1_1_i_ethernet_packet_protocol_byte_field" kindref="compound">IEthernetPacketProtocolByteField</ref> &amp;</type>
+        <definition>virtual IEthernetPacketProtocolByteField &amp; capl::IIPv4::version</definition>
+        <argsstring>()=0</argsstring>
+        <name>version</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>4-bit internet protocol version number = 4 <simplesect kind="return"><para>Byte </para>
+</simplesect>
+<simplesect kind="note"><para>IPv4 protocol Header structure. &quot;Version&quot; field </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="CAPLPluginApi.h" line="1445" column="58"/>
+      </memberdef>
+      <memberdef kind="function" id="classcapl_1_1_i_i_pv4_1abdbfb71137f99936db7a44c3355b8def" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="classcapl_1_1_i_ethernet_packet_protocol_byte_field" kindref="compound">IEthernetPacketProtocolByteField</ref> &amp;</type>
+        <definition>virtual IEthernetPacketProtocolByteField &amp; capl::IIPv4::ihl</definition>
+        <argsstring>()=0</argsstring>
+        <name>ihl</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Internet header length This is the length of the IP header as a multiple of 4 bytes. It is necessary due to possible options <simplesect kind="return"><para>Byte </para>
+</simplesect>
+<simplesect kind="note"><para>IPv4 protocol Header structure. &quot;Ihl&quot; field </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="CAPLPluginApi.h" line="1452" column="58"/>
+      </memberdef>
+      <memberdef kind="function" id="classcapl_1_1_i_i_pv4_1a7d2d229fd9e18cd21cbf26dcbff584da" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="classcapl_1_1_i_ethernet_packet_protocol_byte_field" kindref="compound">IEthernetPacketProtocolByteField</ref> &amp;</type>
+        <definition>virtual IEthernetPacketProtocolByteField &amp; capl::IIPv4::dscp</definition>
+        <argsstring>()=0</argsstring>
+        <name>dscp</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>The Differentiated Services Code Point value (DSCP) sets the priority of the packet. The first three bits specify the Class Selector, the next three bits specify the Drop-Precedence <simplesect kind="return"><para>Byte </para>
+</simplesect>
+<simplesect kind="note"><para>IPv4 protocol Header structure. &quot;Dscp&quot; field </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="CAPLPluginApi.h" line="1459" column="58"/>
+      </memberdef>
+      <memberdef kind="function" id="classcapl_1_1_i_i_pv4_1a32c30cc347c50174247836a6aa2f67ac" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="classcapl_1_1_i_ethernet_packet_protocol_byte_field" kindref="compound">IEthernetPacketProtocolByteField</ref> &amp;</type>
+        <definition>virtual IEthernetPacketProtocolByteField &amp; capl::IIPv4::ecn</definition>
+        <argsstring>()=0</argsstring>
+        <name>ecn</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>If there is an overload possible the router can signal this with the Explicit Congestion Notification (ECN). 00: The sending host does not support ECN. 01 or 10: The sending host supports ECN. 11: A router is busy <simplesect kind="return"><para>Byte </para>
+</simplesect>
+<simplesect kind="note"><para>IPv4 protocol Header structure. &quot;Ecn&quot; field </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="CAPLPluginApi.h" line="1466" column="58"/>
+      </memberdef>
+      <memberdef kind="function" id="classcapl_1_1_i_i_pv4_1a4899cfe104ff3f6416c4cbc0d750350d" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="classcapl_1_1_i_ethernet_packet_protocol_word_field" kindref="compound">IEthernetPacketProtocolWordField</ref> &amp;</type>
+        <definition>virtual IEthernetPacketProtocolWordField &amp; capl::IIPv4::length</definition>
+        <argsstring>()=0</argsstring>
+        <name>length</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Total length of a single IP datagram in bytes (IP header plus payload) <simplesect kind="return"><para>Word </para>
+</simplesect>
+<simplesect kind="note"><para>IPv4 protocol Header structure. &quot;Lenght&quot; field </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="CAPLPluginApi.h" line="1473" column="58"/>
+      </memberdef>
+      <memberdef kind="function" id="classcapl_1_1_i_i_pv4_1a068af43855fb234498649bcbc0295263" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="classcapl_1_1_i_ethernet_packet_protocol_word_field" kindref="compound">IEthernetPacketProtocolWordField</ref> &amp;</type>
+        <definition>virtual IEthernetPacketProtocolWordField &amp; capl::IIPv4::identification</definition>
+        <argsstring>()=0</argsstring>
+        <name>identification</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Identification of a datagram. If a datagram is fragmented each fragment has the same identification number <simplesect kind="return"><para>Word </para>
+</simplesect>
+<simplesect kind="note"><para>IPv4 protocol Header structure. &quot;Identification&quot; field </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="CAPLPluginApi.h" line="1480" column="58"/>
+      </memberdef>
+      <memberdef kind="function" id="classcapl_1_1_i_i_pv4_1a4e5dc4b1a2489066710999205c98d411" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="classcapl_1_1_i_ethernet_packet_protocol_byte_field" kindref="compound">IEthernetPacketProtocolByteField</ref> &amp;</type>
+        <definition>virtual IEthernetPacketProtocolByteField &amp; capl::IIPv4::flags</definition>
+        <argsstring>()=0</argsstring>
+        <name>flags</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Various control flags: bit 0: reserved, must be zero; bit 1: don&apos;t fragment this datagram (DF); bit 2: more fragments flag (MF) <simplesect kind="return"><para>Byte </para>
+</simplesect>
+<simplesect kind="note"><para>IPv4 protocol Header structure. &quot;Flags&quot; field </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="CAPLPluginApi.h" line="1487" column="58"/>
+      </memberdef>
+      <memberdef kind="function" id="classcapl_1_1_i_i_pv4_1a3c58bc51803fa84589ecd72d5ca70417" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="classcapl_1_1_i_ethernet_packet_protocol_word_field" kindref="compound">IEthernetPacketProtocolWordField</ref> &amp;</type>
+        <definition>virtual IEthernetPacketProtocolWordField &amp; capl::IIPv4::offset</definition>
+        <argsstring>()=0</argsstring>
+        <name>offset</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>The offset identifies the position of a fragment in the original IP packet. Due fragments always have a length of a multiple of 8 byte, 13 bit are adequate <simplesect kind="return"><para>Word </para>
+</simplesect>
+<simplesect kind="note"><para>IPv4 protocol Header structure. &quot;Offset&quot; field </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="CAPLPluginApi.h" line="1494" column="58"/>
+      </memberdef>
+      <memberdef kind="function" id="classcapl_1_1_i_i_pv4_1a597db9ce24257d8533e4870ae48bdeed" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="classcapl_1_1_i_ethernet_packet_protocol_byte_field" kindref="compound">IEthernetPacketProtocolByteField</ref> &amp;</type>
+        <definition>virtual IEthernetPacketProtocolByteField &amp; capl::IIPv4::ttl</definition>
+        <argsstring>()=0</argsstring>
+        <name>ttl</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>This value is decremented of the packet passed the router. If the value is set to 0 the packet is discarded <simplesect kind="return"><para>Byte </para>
+</simplesect>
+<simplesect kind="note"><para>IPv4 protocol Header structure. &quot;Ttl&quot; field </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="CAPLPluginApi.h" line="1501" column="58"/>
+      </memberdef>
+      <memberdef kind="function" id="classcapl_1_1_i_i_pv4_1a73b4792ea90d08eb74b85c637dc49120" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="classcapl_1_1_i_ethernet_packet_protocol_byte_field" kindref="compound">IEthernetPacketProtocolByteField</ref> &amp;</type>
+        <definition>virtual IEthernetPacketProtocolByteField &amp; capl::IIPv4::protocol</definition>
+        <argsstring>()=0</argsstring>
+        <name>protocol</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Indication of the transported protocol: 1: ICMPv4; 2: IGMP; 6: TCP; 17: UDP <simplesect kind="return"><para>Byte </para>
+</simplesect>
+<simplesect kind="note"><para>IPv4 protocol Header structure. &quot;Protocol&quot; field </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="CAPLPluginApi.h" line="1508" column="58"/>
+      </memberdef>
+      <memberdef kind="function" id="classcapl_1_1_i_i_pv4_1a0e3bddfd7abee302be5a54dd96c9289b" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="classcapl_1_1_i_ethernet_packet_protocol_word_field" kindref="compound">IEthernetPacketProtocolWordField</ref> &amp;</type>
+        <definition>virtual IEthernetPacketProtocolWordField &amp; capl::IIPv4::checksum</definition>
+        <argsstring>()=0</argsstring>
+        <name>checksum</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Checksum of the header. Some header fields can change (e.g. ttl), so the checksum is calculated and verified at each point that the Internet header is processed <simplesect kind="return"><para>Word </para>
+</simplesect>
+<simplesect kind="note"><para>IPv4 protocol Header structure. &quot;Checksum&quot; field </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="CAPLPluginApi.h" line="1515" column="58"/>
+      </memberdef>
+      <memberdef kind="function" id="classcapl_1_1_i_i_pv4_1a833b6a2829f41e8db391448094bac39b" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="classcapl_1_1_i_ethernet_packet_protocol_d_word_field" kindref="compound">IEthernetPacketProtocolDWordField</ref> &amp;</type>
+        <definition>virtual IEthernetPacketProtocolDWordField &amp; capl::IIPv4::source</definition>
+        <argsstring>()=0</argsstring>
+        <name>source</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>source IPv4 address. The first byte is the Source Network. The following three bytes are the Source Local Address <simplesect kind="return"><para>DWord </para>
+</simplesect>
+<simplesect kind="note"><para>IPv4 protocol Header structure. &quot;Source&quot; field </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="CAPLPluginApi.h" line="1522" column="59"/>
+      </memberdef>
+      <memberdef kind="function" id="classcapl_1_1_i_i_pv4_1a6b26af8cee11a32b1e9c79af1d56df22" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="classcapl_1_1_i_ethernet_packet_protocol_d_word_field" kindref="compound">IEthernetPacketProtocolDWordField</ref> &amp;</type>
+        <definition>virtual IEthernetPacketProtocolDWordField &amp; capl::IIPv4::destination</definition>
+        <argsstring>()=0</argsstring>
+        <name>destination</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>destination IPv4 address. The first byte is the Destination Network. The following three bytes are the Destination Local Address <simplesect kind="return"><para>DWord </para>
+</simplesect>
+<simplesect kind="note"><para>IPv4 protocol Header structure. &quot;Destination&quot; field </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="CAPLPluginApi.h" line="1529" column="59"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <inheritancegraph>
+      <node id="2">
+        <label>capl::IEthernetPacketProtocol</label>
+        <link refid="classcapl_1_1_i_ethernet_packet_protocol"/>
+      </node>
+      <node id="1">
+        <label>capl::IIPv4</label>
+        <link refid="classcapl_1_1_i_i_pv4"/>
+        <childnode refid="2" relation="public-inheritance">
+        </childnode>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="2">
+        <label>capl::IEthernetPacketProtocol</label>
+        <link refid="classcapl_1_1_i_ethernet_packet_protocol"/>
+      </node>
+      <node id="1">
+        <label>capl::IIPv4</label>
+        <link refid="classcapl_1_1_i_i_pv4"/>
+        <childnode refid="2" relation="public-inheritance">
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="CAPLPluginApi.h" line="1436" column="5" bodyfile="CAPLPluginApi.h" bodystart="1437" bodyend="1530"/>
+    <listofallmembers>
+      <member refid="classcapl_1_1_i_ethernet_packet_protocol_1a7e0b85de5365949422d44b319c9c9b4b" prot="public" virt="pure-virtual"><scope>capl::IIPv4</scope><name>Byte</name></member>
+      <member refid="classcapl_1_1_i_ethernet_packet_protocol_1af3d897a6e01ca1307e3402bac8ca3ea6" prot="public" virt="pure-virtual"><scope>capl::IIPv4</scope><name>byteLength</name></member>
+      <member refid="classcapl_1_1_i_ethernet_packet_protocol_1ad75c16f80e01431df2d5550388f7bad5" prot="public" virt="pure-virtual"><scope>capl::IIPv4</scope><name>byteOffset</name></member>
+      <member refid="classcapl_1_1_i_ethernet_packet_protocol_1ae028555aa44b2b4d089f84784bab9818" prot="public" virt="pure-virtual"><scope>capl::IIPv4</scope><name>Char</name></member>
+      <member refid="classcapl_1_1_i_i_pv4_1a0e3bddfd7abee302be5a54dd96c9289b" prot="public" virt="pure-virtual"><scope>capl::IIPv4</scope><name>checksum</name></member>
+      <member refid="classcapl_1_1_i_ethernet_packet_protocol_1ae73092fb840043ad7629f7471275dbd6" prot="public" virt="pure-virtual"><scope>capl::IIPv4</scope><name>CompletePacket</name></member>
+      <member refid="classcapl_1_1_i_ethernet_packet_protocol_1a9009ffb90167216e0b26a3d30eb1404a" prot="public" virt="pure-virtual"><scope>capl::IIPv4</scope><name>Data</name></member>
+      <member refid="classcapl_1_1_i_i_pv4_1a6b26af8cee11a32b1e9c79af1d56df22" prot="public" virt="pure-virtual"><scope>capl::IIPv4</scope><name>destination</name></member>
+      <member refid="classcapl_1_1_i_i_pv4_1a7d2d229fd9e18cd21cbf26dcbff584da" prot="public" virt="pure-virtual"><scope>capl::IIPv4</scope><name>dscp</name></member>
+      <member refid="classcapl_1_1_i_ethernet_packet_protocol_1a56ef87fe52db2a14705c7f7fce218dbf" prot="public" virt="pure-virtual"><scope>capl::IIPv4</scope><name>Dword</name></member>
+      <member refid="classcapl_1_1_i_i_pv4_1a32c30cc347c50174247836a6aa2f67ac" prot="public" virt="pure-virtual"><scope>capl::IIPv4</scope><name>ecn</name></member>
+      <member refid="classcapl_1_1_i_i_pv4_1a4e5dc4b1a2489066710999205c98d411" prot="public" virt="pure-virtual"><scope>capl::IIPv4</scope><name>flags</name></member>
+      <member refid="classcapl_1_1_i_ethernet_packet_protocol_1a8c521930cccbd833489b54768033d386" prot="public" virt="pure-virtual"><scope>capl::IIPv4</scope><name>GetData</name></member>
+      <member refid="classcapl_1_1_i_ethernet_packet_protocol_1ab3b3995e13e2885ec7e69a108e97a939" prot="public" virt="pure-virtual"><scope>capl::IIPv4</scope><name>GetDataOffset</name></member>
+      <member refid="classcapl_1_1_i_i_pv4_1a068af43855fb234498649bcbc0295263" prot="public" virt="pure-virtual"><scope>capl::IIPv4</scope><name>identification</name></member>
+      <member refid="classcapl_1_1_i_i_pv4_1abdbfb71137f99936db7a44c3355b8def" prot="public" virt="pure-virtual"><scope>capl::IIPv4</scope><name>ihl</name></member>
+      <member refid="classcapl_1_1_i_ethernet_packet_protocol_1ae7256f92b0ffd7b8571ab0643e225c5e" prot="public" virt="pure-virtual"><scope>capl::IIPv4</scope><name>Init</name></member>
+      <member refid="classcapl_1_1_i_ethernet_packet_protocol_1af9d4516c27afadd84949aad159b7422d" prot="public" virt="pure-virtual"><scope>capl::IIPv4</scope><name>IsAvailable</name></member>
+      <member refid="classcapl_1_1_i_i_pv4_1a4899cfe104ff3f6416c4cbc0d750350d" prot="public" virt="pure-virtual"><scope>capl::IIPv4</scope><name>length</name></member>
+      <member refid="classcapl_1_1_i_ethernet_packet_protocol_1aacc10aa8d426f654d6db5cfc8519df3a" prot="public" virt="pure-virtual"><scope>capl::IIPv4</scope><name>Long</name></member>
+      <member refid="classcapl_1_1_i_ethernet_packet_protocol_1afbd981a2fe3924fdc098c694da13662c" prot="public" virt="pure-virtual"><scope>capl::IIPv4</scope><name>LongLong</name></member>
+      <member refid="classcapl_1_1_i_ethernet_packet_protocol_1a3a82eae1785e7eb7823fa7a790d25db7" prot="public" virt="pure-virtual"><scope>capl::IIPv4</scope><name>nextOffset</name></member>
+      <member refid="classcapl_1_1_i_i_pv4_1a3c58bc51803fa84589ecd72d5ca70417" prot="public" virt="pure-virtual"><scope>capl::IIPv4</scope><name>offset</name></member>
+      <member refid="classcapl_1_1_i_i_pv4_1a73b4792ea90d08eb74b85c637dc49120" prot="public" virt="pure-virtual"><scope>capl::IIPv4</scope><name>protocol</name></member>
+      <member refid="classcapl_1_1_i_ethernet_packet_protocol_1ae999ac355b7cea884f0d7df23e30e47a" prot="public" virt="pure-virtual"><scope>capl::IIPv4</scope><name>Qword</name></member>
+      <member refid="classcapl_1_1_i_ethernet_packet_protocol_1a0d204ced6e880ed78bbd371393a70039" prot="public" virt="pure-virtual"><scope>capl::IIPv4</scope><name>ResizeData</name></member>
+      <member refid="classcapl_1_1_i_ethernet_packet_protocol_1ac88b4003564a0e8e324f871efce88e4a" prot="public" virt="pure-virtual"><scope>capl::IIPv4</scope><name>SetData</name></member>
+      <member refid="classcapl_1_1_i_ethernet_packet_protocol_1a17e2f454b4b88e4d0a2ccabb6c1665a2" prot="public" virt="pure-virtual"><scope>capl::IIPv4</scope><name>SetDataOffset</name></member>
+      <member refid="classcapl_1_1_i_ethernet_packet_protocol_1a61ff67bd20f13c7f70902139a3de9841" prot="public" virt="pure-virtual"><scope>capl::IIPv4</scope><name>Short</name></member>
+      <member refid="classcapl_1_1_i_i_pv4_1a833b6a2829f41e8db391448094bac39b" prot="public" virt="pure-virtual"><scope>capl::IIPv4</scope><name>source</name></member>
+      <member refid="classcapl_1_1_i_i_pv4_1a597db9ce24257d8533e4870ae48bdeed" prot="public" virt="pure-virtual"><scope>capl::IIPv4</scope><name>ttl</name></member>
+      <member refid="classcapl_1_1_i_i_pv4_1aa682443c826fb248ecf1284304e45036" prot="public" virt="pure-virtual"><scope>capl::IIPv4</scope><name>version</name></member>
+      <member refid="classcapl_1_1_i_ethernet_packet_protocol_1a4972ed0ccef2a1dd4c6dec2cfdcb403b" prot="public" virt="pure-virtual"><scope>capl::IIPv4</scope><name>Word</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>
