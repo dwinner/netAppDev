@@ -31,8 +31,8 @@ internal class BobRunner
       aes.Key = symmKey;
       aes.IV = iv;
       using ICryptoTransform decryptor = aes.CreateDecryptor();
-      using MemoryStream ms = new();
-      using (CryptoStream cs = new(ms, decryptor, CryptoStreamMode.Write))
+      await using MemoryStream ms = new();
+      await using (CryptoStream cs = new(ms, decryptor, CryptoStreamMode.Write))
       {
          await cs.WriteAsync(encryptedData.AsMemory());
       } // close the cryptostream before using the memorystream 
