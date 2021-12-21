@@ -43,94 +43,22 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DisposableBase.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="XmlValidator.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <Content Include="capl_api.xsd">
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="capl_api\classcapl_1_1_bus_event.xml" />
-    <Content Include="capl_api\classcapl_1_1_diag_event.xml" />
-    <Content Include="capl_api\classcapl_1_1_diag_request_event.xml" />
-    <Content Include="capl_api\classcapl_1_1_diag_response_event.xml" />
-    <Content Include="capl_api\classcapl_1_1_error_active_event.xml" />
-    <Content Include="capl_api\classcapl_1_1_error_bus_off_event.xml" />
-    <Content Include="capl_api\classcapl_1_1_error_frame_event.xml" />
-    <Content Include="capl_api\classcapl_1_1_error_passive_event.xml" />
-    <Content Include="capl_api\classcapl_1_1_ethernet_packet_event.xml" />
-    <Content Include="capl_api\classcapl_1_1_ethernet_status_event.xml" />
-    <Content Include="capl_api\classcapl_1_1_i_access.xml" />
-    <Content Include="capl_api\classcapl_1_1_i_attribute.xml" />
-    <Content Include="capl_api\classcapl_1_1_i_byte_value.xml" />
-    <Content Include="capl_api\classcapl_1_1_i_can_error.xml" />
-    <Content Include="capl_api\classcapl_1_1_i_char_value.xml" />
-    <Content Include="capl_api\classcapl_1_1_i_diag.xml" />
-    <Content Include="capl_api\classcapl_1_1_i_diag_base.xml" />
-    <Content Include="capl_api\classcapl_1_1_i_diag_request.xml" />
-    <Content Include="capl_api\classcapl_1_1_i_diag_response.xml" />
-    <Content Include="capl_api\classcapl_1_1_i_d_word_value.xml" />
-    <Content Include="capl_api\classcapl_1_1_i_env_var.xml" />
-    <Content Include="capl_api\classcapl_1_1_i_env_var_event.xml" />
-    <Content Include="capl_api\classcapl_1_1_i_error_frame.xml" />
-    <Content Include="capl_api\classcapl_1_1_i_ethernet_packet.xml" />
-    <Content Include="capl_api\classcapl_1_1_i_ethernet_packet_protocol.xml" />
-    <Content Include="capl_api\classcapl_1_1_i_ethernet_packet_protocol_byte_field.xml" />
-    <Content Include="capl_api\classcapl_1_1_i_ethernet_packet_protocol_d_word_field.xml" />
-    <Content Include="capl_api\classcapl_1_1_i_ethernet_packet_protocol_field.xml" />
-    <Content Include="capl_api\classcapl_1_1_i_ethernet_packet_protocol_q_word_field.xml" />
-    <Content Include="capl_api\classcapl_1_1_i_ethernet_packet_protocol_word_field.xml" />
-    <Content Include="capl_api\classcapl_1_1_i_ethernet_status.xml" />
-    <Content Include="capl_api\classcapl_1_1_i_event.xml" />
-    <Content Include="capl_api\classcapl_1_1_i_event_3_01void_01_4.xml" />
-    <Content Include="capl_api\classcapl_1_1_i_i_c_m_pv6.xml" />
-    <Content Include="capl_api\classcapl_1_1_i_i_pv4.xml" />
-    <Content Include="capl_api\classcapl_1_1_i_i_pv6.xml" />
-    <Content Include="capl_api\classcapl_1_1_i_key.xml" />
-    <Content Include="capl_api\classcapl_1_1_i_lin_wakeup_frame.xml" />
-    <Content Include="capl_api\classcapl_1_1_i_long_long_value.xml" />
-    <Content Include="capl_api\classcapl_1_1_i_long_value.xml" />
-    <Content Include="capl_api\classcapl_1_1_i_message.xml" />
-    <Content Include="capl_api\classcapl_1_1_i_n_d_p.xml" />
-    <Content Include="capl_api\classcapl_1_1_i_n_d_p_neighbor_advertisement.xml" />
-    <Content Include="capl_api\classcapl_1_1_i_n_d_p_neighbor_solicitation.xml" />
-    <Content Include="capl_api\classcapl_1_1_i_n_d_p_redirect.xml" />
-    <Content Include="capl_api\classcapl_1_1_i_n_d_p_router_advertisement.xml" />
-    <Content Include="capl_api\classcapl_1_1_i_n_d_p_router_solicitation.xml" />
-    <Content Include="capl_api\classcapl_1_1_i_phys_raw_value.xml" />
-    <Content Include="capl_api\classcapl_1_1_i_pre_start.xml" />
-    <Content Include="capl_api\classcapl_1_1_i_pre_stop.xml" />
-    <Content Include="capl_api\classcapl_1_1_i_property.xml" />
-    <Content Include="capl_api\classcapl_1_1_i_q_word_value.xml" />
-    <Content Include="capl_api\classcapl_1_1_i_short_value.xml" />
-    <Content Include="capl_api\classcapl_1_1_i_signal.xml" />
-    <Content Include="capl_api\classcapl_1_1_i_signal_val.xml" />
-    <Content Include="capl_api\classcapl_1_1_i_start.xml" />
-    <Content Include="capl_api\classcapl_1_1_i_stop.xml" />
-    <Content Include="capl_api\classcapl_1_1_i_timer.xml" />
-    <Content Include="capl_api\classcapl_1_1_i_t_c_p.xml" />
-    <Content Include="capl_api\classcapl_1_1_i_u_d_p.xml" />
-    <Content Include="capl_api\classcapl_1_1_i_value_table.xml" />
-    <Content Include="capl_api\classcapl_1_1_i_word_value.xml" />
-    <Content Include="capl_api\classcapl_1_1_key_event.xml" />
-    <Content Include="capl_api\classcapl_1_1_lin_wakeup_frame_event.xml" />
-    <Content Include="capl_api\classcapl_1_1_message_event.xml" />
-    <Content Include="capl_api\classcapl_1_1_pre_start_event.xml" />
-    <Content Include="capl_api\classcapl_1_1_pre_stop_event.xml" />
-    <Content Include="capl_api\classcapl_1_1_signal_event.xml" />
-    <Content Include="capl_api\classcapl_1_1_signal_update_event.xml" />
-    <Content Include="capl_api\classcapl_1_1_start_event.xml" />
-    <Content Include="capl_api\classcapl_1_1_stop_event.xml" />
-    <Content Include="capl_api\classcapl_1_1_test_info.xml" />
-    <Content Include="capl_api\classcapl_1_1_thread.xml" />
-    <Content Include="capl_api\classcapl_1_1_timer_array_event.xml" />
-    <Content Include="capl_api\classcapl_1_1_timer_array_event_1_1_child_event.xml" />
-    <Content Include="capl_api\classcapl_1_1_timer_event.xml" />
-    <Content Include="capl_api\classcapl_1_1_warning_limit_event.xml" />
-    <Content Include="capl_api\namespacecapl.xml" />
-    <Content Include="capl_api\structcapl_1_1_d_b_lookup_msg_ret.xml" />
-    <Content Include="capl_api\structcapl_1_1_d_b_lookup_sig_ret.xml" />
-    <Content Include="capl_api\structcapl_1_1_file_info.xml" />
+    <Content Include="capl_api.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
