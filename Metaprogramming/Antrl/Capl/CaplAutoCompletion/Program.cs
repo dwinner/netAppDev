@@ -1,51 +1,41 @@
 ﻿using System;
-using System.Diagnostics;
-using System.Xml;
-using System.Xml.Schema;
+using System.Xml.XPath;
 
 namespace CaplAutoCompletion
 {
     internal static class Program
     {
-        private const string CaplApi = "namespacecapl.xml";
-        private const string CaplApiSchema = "namespacecapl.xsd";
-        private static bool _isXmlValid = true;
+        private const string CaplApiXml = "capl_api.xml";
+        private const string CaplApiXsd = "capl_api.xsd";
 
         private static void Main()
         {
-            // Check Capl doc file validation first
-            var settings = new XmlReaderSettings();
-            settings.Schemas.Add(null, CaplApiSchema);
-            settings.ValidationType = ValidationType.Schema;
-            settings.ValidationEventHandler += OnValidation;
-            var reader = XmlReader.Create(CaplApi, settings);
-            while (reader.Read() && _isXmlValid)
+            bool validated;
+            string errorMessage;
+            using (var validator = new XmlValidator(CaplApiXml, CaplApiXsd))
             {
-                if (reader.NodeType == XmlNodeType.Text)
-                {
-                    Debug.WriteLine("In validation");
-                }
+                validated = validator.Validate(out errorMessage);
             }
 
-            Console.WriteLine(_isXmlValid ? "XML file is valid" : "XML file is invalid");
-            Console.ReadKey();
-        }
-
-        private static void OnValidation(object sender, ValidationEventArgs e)
-        {
-            Debug.WriteLine(e.Message);
-            switch (e.Severity)
+            if (validated)
             {
-                case XmlSeverityType.Error:
-                    Debug.WriteLine("Error occured: {0}", e.Exception.Message);
-                    _isXmlValid = false;
-                    break;
-                case XmlSeverityType.Warning:
-                    Debug.WriteLine("Warning occured: {0}", e.Message);
-                    _isXmlValid = false;
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
+                Console.WriteLine("Validation is Ok");
+            }
+            else
+            {
+                Console.WriteLine("Validation error: {0}", errorMessage);
+            }
+
+            var document = new XPathDocument(CaplApiXml);
+            var navigator = ((IXPathNavigable)document).CreateNavigator();
+            if (navigator != null)
+            {
+                var iterator = navigator.Select("/doxygen/compounddef/innerclass");
+                while (iterator.MoveNext())
+                {
+                    var caplClassName = iterator.Current.Value;
+                    Console.WriteLine(caplClassName);
+                }
             }
         }
     }
