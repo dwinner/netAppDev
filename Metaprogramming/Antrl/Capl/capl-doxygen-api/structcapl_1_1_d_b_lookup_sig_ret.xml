@@ -1,0 +1,213 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.2" xml:lang="en-US">
+  <compounddef id="structcapl_1_1_d_b_lookup_sig_ret" kind="struct" language="C++" prot="public">
+    <compoundname>capl::DBLookupSigRet</compoundname>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="structcapl_1_1_d_b_lookup_sig_ret_1a0fba800319e5ffcf75b967e68bc4d606" prot="public" static="no" mutable="no">
+        <type>bool</type>
+        <definition>bool capl::DBLookupSigRet::valid</definition>
+        <argsstring></argsstring>
+        <name>valid</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="CAPLPluginApi.h" line="7478" column="14" bodyfile="CAPLPluginApi.h" bodystart="7478" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structcapl_1_1_d_b_lookup_sig_ret_1a4bdba8874835732a4f555a48e1db0e8c" prot="public" static="no" mutable="no">
+        <type>unsigned __int32</type>
+        <definition>unsigned __int32 capl::DBLookupSigRet::bitstart</definition>
+        <argsstring></argsstring>
+        <name>bitstart</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="CAPLPluginApi.h" line="7479" column="30" bodyfile="CAPLPluginApi.h" bodystart="7479" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structcapl_1_1_d_b_lookup_sig_ret_1a5e653e6b7c675887adee408e0a2f147f" prot="public" static="no" mutable="no">
+        <type>unsigned __int32</type>
+        <definition>unsigned __int32 capl::DBLookupSigRet::bitcount</definition>
+        <argsstring></argsstring>
+        <name>bitcount</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="CAPLPluginApi.h" line="7480" column="30" bodyfile="CAPLPluginApi.h" bodystart="7480" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structcapl_1_1_d_b_lookup_sig_ret_1ad0d692b0dfad74229ffe163ac67e5238" prot="public" static="no" mutable="no">
+        <type>double</type>
+        <definition>double capl::DBLookupSigRet::offset</definition>
+        <argsstring></argsstring>
+        <name>offset</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="CAPLPluginApi.h" line="7481" column="16" bodyfile="CAPLPluginApi.h" bodystart="7481" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structcapl_1_1_d_b_lookup_sig_ret_1aaa715b15d13dc5b43dad57784316d1aa" prot="public" static="no" mutable="no">
+        <type>double</type>
+        <definition>double capl::DBLookupSigRet::factor</definition>
+        <argsstring></argsstring>
+        <name>factor</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="CAPLPluginApi.h" line="7482" column="16" bodyfile="CAPLPluginApi.h" bodystart="7482" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structcapl_1_1_d_b_lookup_sig_ret_1a83cc60789f0b31489ae3eefed5ad1f10" prot="public" static="no" mutable="no">
+        <type>char</type>
+        <definition>char capl::DBLookupSigRet::unit[50]</definition>
+        <argsstring>[50]</argsstring>
+        <name>unit</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="CAPLPluginApi.h" line="7483" column="14" bodyfile="CAPLPluginApi.h" bodystart="7483" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structcapl_1_1_d_b_lookup_sig_ret_1a1dea8ebddc50ffd6247a76e8be14640b" prot="public" static="no" mutable="no">
+        <type>double</type>
+        <definition>double capl::DBLookupSigRet::minimum</definition>
+        <argsstring></argsstring>
+        <name>minimum</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="CAPLPluginApi.h" line="7484" column="16" bodyfile="CAPLPluginApi.h" bodystart="7484" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structcapl_1_1_d_b_lookup_sig_ret_1a912974e0d99a50326e52878a63994b7a" prot="public" static="no" mutable="no">
+        <type>double</type>
+        <definition>double capl::DBLookupSigRet::maximum</definition>
+        <argsstring></argsstring>
+        <name>maximum</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="CAPLPluginApi.h" line="7485" column="16" bodyfile="CAPLPluginApi.h" bodystart="7485" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structcapl_1_1_d_b_lookup_sig_ret_1af10fea87d9f629f5f36664fa11e5be5e" prot="public" static="no" mutable="no">
+        <type>__int64</type>
+        <definition>__int64 capl::DBLookupSigRet::DefaultValue</definition>
+        <argsstring></argsstring>
+        <name>DefaultValue</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="CAPLPluginApi.h" line="7486" column="19" bodyfile="CAPLPluginApi.h" bodystart="7486" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structcapl_1_1_d_b_lookup_sig_ret_1a759291bf5c15ce0602ed389de7e9d345" prot="public" static="no" mutable="no">
+        <type>__int64</type>
+        <definition>__int64 capl::DBLookupSigRet::NotValidLowerLimit</definition>
+        <argsstring></argsstring>
+        <name>NotValidLowerLimit</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="CAPLPluginApi.h" line="7487" column="19" bodyfile="CAPLPluginApi.h" bodystart="7487" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structcapl_1_1_d_b_lookup_sig_ret_1aca8b255b3275613bdf84c6709bdfd27e" prot="public" static="no" mutable="no">
+        <type>__int64</type>
+        <definition>__int64 capl::DBLookupSigRet::NotValidUpperLimit</definition>
+        <argsstring></argsstring>
+        <name>NotValidUpperLimit</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="CAPLPluginApi.h" line="7488" column="19" bodyfile="CAPLPluginApi.h" bodystart="7488" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structcapl_1_1_d_b_lookup_sig_ret_1aefe5f7f3187ba99145cf1409b99aebff" prot="public" static="no" mutable="no">
+        <type>char</type>
+        <definition>char capl::DBLookupSigRet::signalgroup[250]</definition>
+        <argsstring>[250]</argsstring>
+        <name>signalgroup</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="CAPLPluginApi.h" line="7489" column="14" bodyfile="CAPLPluginApi.h" bodystart="7489" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structcapl_1_1_d_b_lookup_sig_ret_1a0306e484ea89cefb7be13bbcce9bfc56" prot="public" static="no" mutable="no">
+        <type>char</type>
+        <definition>char capl::DBLookupSigRet::txpdu[250]</definition>
+        <argsstring>[250]</argsstring>
+        <name>txpdu</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="CAPLPluginApi.h" line="7490" column="14" bodyfile="CAPLPluginApi.h" bodystart="7490" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="structcapl_1_1_d_b_lookup_sig_ret_1a7d40c63fa81f6b6c6291f70a54c7a30e" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>capl::DBLookupSigRet::operator unsigned __int8</definition>
+        <argsstring>() const</argsstring>
+        <name>operator unsigned __int8</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="CAPLPluginApi.h" line="7491" column="9" bodyfile="CAPLPluginApi.h" bodystart="7491" bodyend="7494"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="CAPLPluginApi.h" line="7476" column="5" bodyfile="CAPLPluginApi.h" bodystart="7477" bodyend="7495"/>
+    <listofallmembers>
+      <member refid="structcapl_1_1_d_b_lookup_sig_ret_1a5e653e6b7c675887adee408e0a2f147f" prot="public" virt="non-virtual"><scope>capl::DBLookupSigRet</scope><name>bitcount</name></member>
+      <member refid="structcapl_1_1_d_b_lookup_sig_ret_1a4bdba8874835732a4f555a48e1db0e8c" prot="public" virt="non-virtual"><scope>capl::DBLookupSigRet</scope><name>bitstart</name></member>
+      <member refid="structcapl_1_1_d_b_lookup_sig_ret_1af10fea87d9f629f5f36664fa11e5be5e" prot="public" virt="non-virtual"><scope>capl::DBLookupSigRet</scope><name>DefaultValue</name></member>
+      <member refid="structcapl_1_1_d_b_lookup_sig_ret_1aaa715b15d13dc5b43dad57784316d1aa" prot="public" virt="non-virtual"><scope>capl::DBLookupSigRet</scope><name>factor</name></member>
+      <member refid="structcapl_1_1_d_b_lookup_sig_ret_1a912974e0d99a50326e52878a63994b7a" prot="public" virt="non-virtual"><scope>capl::DBLookupSigRet</scope><name>maximum</name></member>
+      <member refid="structcapl_1_1_d_b_lookup_sig_ret_1a1dea8ebddc50ffd6247a76e8be14640b" prot="public" virt="non-virtual"><scope>capl::DBLookupSigRet</scope><name>minimum</name></member>
+      <member refid="structcapl_1_1_d_b_lookup_sig_ret_1a759291bf5c15ce0602ed389de7e9d345" prot="public" virt="non-virtual"><scope>capl::DBLookupSigRet</scope><name>NotValidLowerLimit</name></member>
+      <member refid="structcapl_1_1_d_b_lookup_sig_ret_1aca8b255b3275613bdf84c6709bdfd27e" prot="public" virt="non-virtual"><scope>capl::DBLookupSigRet</scope><name>NotValidUpperLimit</name></member>
+      <member refid="structcapl_1_1_d_b_lookup_sig_ret_1ad0d692b0dfad74229ffe163ac67e5238" prot="public" virt="non-virtual"><scope>capl::DBLookupSigRet</scope><name>offset</name></member>
+      <member refid="structcapl_1_1_d_b_lookup_sig_ret_1a7d40c63fa81f6b6c6291f70a54c7a30e" prot="public" virt="non-virtual"><scope>capl::DBLookupSigRet</scope><name>operator unsigned __int8</name></member>
+      <member refid="structcapl_1_1_d_b_lookup_sig_ret_1aefe5f7f3187ba99145cf1409b99aebff" prot="public" virt="non-virtual"><scope>capl::DBLookupSigRet</scope><name>signalgroup</name></member>
+      <member refid="structcapl_1_1_d_b_lookup_sig_ret_1a0306e484ea89cefb7be13bbcce9bfc56" prot="public" virt="non-virtual"><scope>capl::DBLookupSigRet</scope><name>txpdu</name></member>
+      <member refid="structcapl_1_1_d_b_lookup_sig_ret_1a83cc60789f0b31489ae3eefed5ad1f10" prot="public" virt="non-virtual"><scope>capl::DBLookupSigRet</scope><name>unit</name></member>
+      <member refid="structcapl_1_1_d_b_lookup_sig_ret_1a0fba800319e5ffcf75b967e68bc4d606" prot="public" virt="non-virtual"><scope>capl::DBLookupSigRet</scope><name>valid</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

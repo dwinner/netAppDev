@@ -1,0 +1,212 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.2" xml:lang="en-US">
+  <compounddef id="classcapl_1_1_i_diag_response" kind="class" language="C++" prot="public" abstract="yes">
+    <compoundname>capl::IDiagResponse</compoundname>
+    <basecompoundref refid="classcapl_1_1_i_diag_base" prot="public" virt="non-virtual">capl::IDiagBase</basecompoundref>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classcapl_1_1_i_diag_response_1ab501e7782497f1a3ed6b7ca2fbefe401" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>__int32</type>
+        <definition>virtual __int32 capl::IDiagResponse::Initialize</definition>
+        <argsstring>(const char serviceQualifier[], const char primitiveQualifier[])=0</argsstring>
+        <name>Initialize</name>
+        <param>
+          <type>const char</type>
+          <declname>serviceQualifier</declname>
+          <array>[]</array>
+        </param>
+        <param>
+          <type>const char</type>
+          <declname>primitiveQualifier</declname>
+          <array>[]</array>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Reinitializes the object for the given service or primitive <parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>serviceQualifier</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Diagnostics object to re-initialize </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>primitiveQualifier</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Qualifier of the service primitive that should be used for reinterpretation </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>0: No error, OK </para>
+</simplesect>
+<simplesect kind="return"><para>&lt;0: Error code </para>
+</simplesect>
+<simplesect kind="note"><para>diagReponse::Initialize( char serviceQualifier[], char primitiveQualifier[]); </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="CAPLPluginApi.h" line="1143" column="35"/>
+      </memberdef>
+      <memberdef kind="function" id="classcapl_1_1_i_diag_response_1ab6c6bea9022c26d2ba33cd06ba45d912" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>__int32</type>
+        <definition>virtual __int32 capl::IDiagResponse::SendResponse</definition>
+        <argsstring>()=0</argsstring>
+        <name>SendResponse</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Sends the response object back to the tester. Can only be called in the ECU simulation <simplesect kind="return"><para>Error code </para>
+</simplesect>
+<simplesect kind="note"><para>diagResponse::SendResponse () </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="CAPLPluginApi.h" line="1150" column="35"/>
+      </memberdef>
+      <memberdef kind="function" id="classcapl_1_1_i_diag_response_1a009b6c6d965a9ddfaaa412e2fd3e2692" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type>__int32</type>
+        <definition>virtual __int32 capl::IDiagResponse::IsNegativeResponse</definition>
+        <argsstring>() const =0</argsstring>
+        <name>IsNegativeResponse</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Returns value &lt;&gt; 0 if the object is a negative response to a request <simplesect kind="return"><para>0 or &lt;&gt;0 </para>
+</simplesect>
+<simplesect kind="note"><para>diagResponse::IsNegativeResponse () </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="CAPLPluginApi.h" line="1157" column="35"/>
+      </memberdef>
+      <memberdef kind="function" id="classcapl_1_1_i_diag_response_1a21410e7add2f72680ebb69adb0011f39" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type>__int32</type>
+        <definition>virtual __int32 capl::IDiagResponse::GetResponseCode</definition>
+        <argsstring>() const =0</argsstring>
+        <name>GetResponseCode</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Returns the code of the specified response or last received response (for the specified request) <simplesect kind="return"><para>-1: The response was positive, i.e. there is no error code </para>
+</simplesect>
+<simplesect kind="return"><para>0: No response has been received yet </para>
+</simplesect>
+<simplesect kind="return"><para>&gt;0: Error code of the negative response </para>
+</simplesect>
+<simplesect kind="return"><para>Error code </para>
+</simplesect>
+<simplesect kind="note"><para>long diagResponse::GetResponseCode(); </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="CAPLPluginApi.h" line="1167" column="35"/>
+      </memberdef>
+      <memberdef kind="function" id="classcapl_1_1_i_diag_response_1a51883279cebdf213bd11df5503ec0254" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type>__int32</type>
+        <definition>virtual __int32 capl::IDiagResponse::GetLastResponse</definition>
+        <argsstring>() const =0</argsstring>
+        <name>GetLastResponse</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Returns the code of the specified response or last received response (for the specified request) <simplesect kind="return"><para>-1: The response was positive, i.e. there is no error code </para>
+</simplesect>
+<simplesect kind="return"><para>0: No response has been received yet </para>
+</simplesect>
+<simplesect kind="return"><para>&gt;0: Error code of the negative response </para>
+</simplesect>
+<simplesect kind="return"><para>Error code </para>
+</simplesect>
+<simplesect kind="note"><para>long diagRequest::GetLastResponseCode() </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="CAPLPluginApi.h" line="1177" column="35"/>
+      </memberdef>
+      <memberdef kind="function" id="classcapl_1_1_i_diag_response_1aff6aa0075c7550ac0b2b654bfad93159" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type>__int32</type>
+        <definition>virtual __int32 capl::IDiagResponse::IsPositiveResponse</definition>
+        <argsstring>() const =0</argsstring>
+        <name>IsPositiveResponse</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Sends the response object back to the tester. Can only be called in the ECU simulation <simplesect kind="return"><para>Error code </para>
+</simplesect>
+<simplesect kind="note"><para>diagResponse::SendPositiveResponse() </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="CAPLPluginApi.h" line="1184" column="35"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <inheritancegraph>
+      <node id="2">
+        <label>capl::IDiagBase</label>
+        <link refid="classcapl_1_1_i_diag_base"/>
+      </node>
+      <node id="1">
+        <label>capl::IDiagResponse</label>
+        <link refid="classcapl_1_1_i_diag_response"/>
+        <childnode refid="2" relation="public-inheritance">
+        </childnode>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="2">
+        <label>capl::IDiagBase</label>
+        <link refid="classcapl_1_1_i_diag_base"/>
+      </node>
+      <node id="1">
+        <label>capl::IDiagResponse</label>
+        <link refid="classcapl_1_1_i_diag_response"/>
+        <childnode refid="2" relation="public-inheritance">
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="CAPLPluginApi.h" line="1128" column="5" bodyfile="CAPLPluginApi.h" bodystart="1129" bodyend="1185"/>
+    <listofallmembers>
+      <member refid="classcapl_1_1_i_diag_base_1a6dff5b84ffaf844c807385da35660c58" prot="public" virt="pure-virtual"><scope>capl::IDiagResponse</scope><name>CopyData</name></member>
+      <member refid="classcapl_1_1_i_diag_response_1a51883279cebdf213bd11df5503ec0254" prot="public" virt="pure-virtual"><scope>capl::IDiagResponse</scope><name>GetLastResponse</name></member>
+      <member refid="classcapl_1_1_i_diag_base_1a8f0c89c287b4d74ba803017d46cf33c9" prot="public" virt="pure-virtual"><scope>capl::IDiagResponse</scope><name>GetParameter</name></member>
+      <member refid="classcapl_1_1_i_diag_base_1a7b5b26cb7365d462e2ad8e18936076d3" prot="public" virt="pure-virtual"><scope>capl::IDiagResponse</scope><name>GetParameter</name></member>
+      <member refid="classcapl_1_1_i_diag_base_1a0de1a3a2d8f5f3ebda110ca984f849ca" prot="public" virt="pure-virtual"><scope>capl::IDiagResponse</scope><name>GetParameter</name></member>
+      <member refid="classcapl_1_1_i_diag_base_1a7820250580688aa6f91dfcb39e8daf5e" prot="public" virt="pure-virtual"><scope>capl::IDiagResponse</scope><name>GetParameter</name></member>
+      <member refid="classcapl_1_1_i_diag_base_1ab07b4e3bcac59b2d80b04d5530a1ee01" prot="public" virt="pure-virtual"><scope>capl::IDiagResponse</scope><name>GetParameter</name></member>
+      <member refid="classcapl_1_1_i_diag_base_1afe62039c746863c521cd7c09b48e5a42" prot="public" virt="pure-virtual"><scope>capl::IDiagResponse</scope><name>GetParameterRaw</name></member>
+      <member refid="classcapl_1_1_i_diag_base_1a265da697768555012a35f46bd9304b24" prot="public" virt="pure-virtual"><scope>capl::IDiagResponse</scope><name>GetPrimitiveData</name></member>
+      <member refid="classcapl_1_1_i_diag_base_1a99d72429fad0910ea6224972b9eac982" prot="public" virt="pure-virtual"><scope>capl::IDiagResponse</scope><name>GetPrimitiveSize</name></member>
+      <member refid="classcapl_1_1_i_diag_response_1a21410e7add2f72680ebb69adb0011f39" prot="public" virt="pure-virtual"><scope>capl::IDiagResponse</scope><name>GetResponseCode</name></member>
+      <member refid="classcapl_1_1_i_diag_response_1ab501e7782497f1a3ed6b7ca2fbefe401" prot="public" virt="pure-virtual"><scope>capl::IDiagResponse</scope><name>Initialize</name></member>
+      <member refid="classcapl_1_1_i_diag_base_1ae37d1083454aa19fc2a903d60339f065" prot="public" virt="pure-virtual" ambiguityscope="capl::IDiagBase::"><scope>capl::IDiagResponse</scope><name>Initialize</name></member>
+      <member refid="classcapl_1_1_i_diag_base_1ac58c1dfb40c485d55c627507deb74059" prot="public" virt="pure-virtual" ambiguityscope="capl::IDiagBase::"><scope>capl::IDiagResponse</scope><name>Initialize</name></member>
+      <member refid="classcapl_1_1_i_diag_response_1a009b6c6d965a9ddfaaa412e2fd3e2692" prot="public" virt="pure-virtual"><scope>capl::IDiagResponse</scope><name>IsNegativeResponse</name></member>
+      <member refid="classcapl_1_1_i_diag_response_1aff6aa0075c7550ac0b2b654bfad93159" prot="public" virt="pure-virtual"><scope>capl::IDiagResponse</scope><name>IsPositiveResponse</name></member>
+      <member refid="classcapl_1_1_i_diag_base_1a9d1e99be3c7208b65d67d15e905c5e27" prot="public" virt="pure-virtual"><scope>capl::IDiagResponse</scope><name>Resize</name></member>
+      <member refid="classcapl_1_1_i_diag_response_1ab6c6bea9022c26d2ba33cd06ba45d912" prot="public" virt="pure-virtual"><scope>capl::IDiagResponse</scope><name>SendResponse</name></member>
+      <member refid="classcapl_1_1_i_diag_base_1aee83a16cbc69c1b8ec143ddb10e46134" prot="public" virt="pure-virtual"><scope>capl::IDiagResponse</scope><name>SetParameter</name></member>
+      <member refid="classcapl_1_1_i_diag_base_1a98befa42c8861f9e9c4b9a108c6d791b" prot="public" virt="pure-virtual"><scope>capl::IDiagResponse</scope><name>SetParameter</name></member>
+      <member refid="classcapl_1_1_i_diag_base_1a8d561ac405f4631fb3982a2a3e52419e" prot="public" virt="pure-virtual"><scope>capl::IDiagResponse</scope><name>SetParameter</name></member>
+      <member refid="classcapl_1_1_i_diag_base_1a32f62926dd0e35872b45a3c1eb754522" prot="public" virt="pure-virtual"><scope>capl::IDiagResponse</scope><name>SetParameterRaw</name></member>
+      <member refid="classcapl_1_1_i_diag_base_1ab45d8dbb993847cb5562cf2d2b434f2f" prot="public" virt="pure-virtual"><scope>capl::IDiagResponse</scope><name>SetPrimitiveData</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

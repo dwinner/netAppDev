@@ -1,0 +1,88 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.2" xml:lang="en-US">
+  <compounddef id="classcapl_1_1_i_ethernet_packet_protocol_q_word_field" kind="class" language="C++" prot="public" abstract="yes">
+    <compoundname>capl::IEthernetPacketProtocolQWordField</compoundname>
+    <basecompoundref refid="classcapl_1_1_i_ethernet_packet_protocol_field" prot="public" virt="non-virtual">capl::IEthernetPacketProtocolField</basecompoundref>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classcapl_1_1_i_ethernet_packet_protocol_q_word_field_1a4bf0d9771b6d25b5138926412bcebb02" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>QWORD</type>
+        <definition>virtual QWORD capl::IEthernetPacketProtocolQWordField::operator=</definition>
+        <argsstring>(QWORD value)=0</argsstring>
+        <name>operator=</name>
+        <param>
+          <type>QWORD</type>
+          <declname>value</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="CAPLPluginApi.h" line="1368" column="31"/>
+      </memberdef>
+      <memberdef kind="function" id="classcapl_1_1_i_ethernet_packet_protocol_q_word_field_1aa9c2c96b8a3b3b5732e97b85a45c079c" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type></type>
+        <definition>virtual capl::IEthernetPacketProtocolQWordField::operator QWORD</definition>
+        <argsstring>()=0</argsstring>
+        <name>operator QWORD</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="CAPLPluginApi.h" line="1369" column="22"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <inheritancegraph>
+      <node id="2">
+        <label>capl::IEthernetPacketProtocolField</label>
+        <link refid="classcapl_1_1_i_ethernet_packet_protocol_field"/>
+      </node>
+      <node id="1">
+        <label>capl::IEthernetPacketProtocolQWordField</label>
+        <link refid="classcapl_1_1_i_ethernet_packet_protocol_q_word_field"/>
+        <childnode refid="2" relation="public-inheritance">
+        </childnode>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="2">
+        <label>capl::IEthernetPacketProtocolField</label>
+        <link refid="classcapl_1_1_i_ethernet_packet_protocol_field"/>
+      </node>
+      <node id="1">
+        <label>capl::IEthernetPacketProtocolQWordField</label>
+        <link refid="classcapl_1_1_i_ethernet_packet_protocol_q_word_field"/>
+        <childnode refid="2" relation="public-inheritance">
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="CAPLPluginApi.h" line="1365" column="5" bodyfile="CAPLPluginApi.h" bodystart="1366" bodyend="1370"/>
+    <listofallmembers>
+      <member refid="classcapl_1_1_i_ethernet_packet_protocol_field_1a35a81c5067ee4ff955fe5e1ffd819e73" prot="public" virt="pure-virtual"><scope>capl::IEthernetPacketProtocolQWordField</scope><name>bitLength</name></member>
+      <member refid="classcapl_1_1_i_ethernet_packet_protocol_field_1a7306d4b1a36cdaeccad2b62ab7e6ec08" prot="public" virt="pure-virtual"><scope>capl::IEthernetPacketProtocolQWordField</scope><name>bitOffset</name></member>
+      <member refid="classcapl_1_1_i_ethernet_packet_protocol_field_1a5ef6c31c8cdec4695fca7a7c577ebbd8" prot="public" virt="pure-virtual"><scope>capl::IEthernetPacketProtocolQWordField</scope><name>Byte</name></member>
+      <member refid="classcapl_1_1_i_ethernet_packet_protocol_field_1a844c3afedfb307009e51a8792dfe03ed" prot="public" virt="pure-virtual"><scope>capl::IEthernetPacketProtocolQWordField</scope><name>byteLength</name></member>
+      <member refid="classcapl_1_1_i_ethernet_packet_protocol_field_1aa844c93de405365eff480323ad90687b" prot="public" virt="pure-virtual"><scope>capl::IEthernetPacketProtocolQWordField</scope><name>byteOffset</name></member>
+      <member refid="classcapl_1_1_i_ethernet_packet_protocol_field_1ae3a0728b6ecef22cd8d3a83e40c023b7" prot="public" virt="pure-virtual"><scope>capl::IEthernetPacketProtocolQWordField</scope><name>Char</name></member>
+      <member refid="classcapl_1_1_i_ethernet_packet_protocol_field_1a8d553153c98d7b82f7af848fbce887a4" prot="public" virt="pure-virtual"><scope>capl::IEthernetPacketProtocolQWordField</scope><name>Dword</name></member>
+      <member refid="classcapl_1_1_i_ethernet_packet_protocol_field_1ae12eeb2397734af3f355e045192d725b" prot="public" virt="pure-virtual"><scope>capl::IEthernetPacketProtocolQWordField</scope><name>GetData</name></member>
+      <member refid="classcapl_1_1_i_ethernet_packet_protocol_field_1aa2aff045c8addc8306eb160909fe2431" prot="public" virt="pure-virtual"><scope>capl::IEthernetPacketProtocolQWordField</scope><name>IsAvailable</name></member>
+      <member refid="classcapl_1_1_i_ethernet_packet_protocol_field_1afaf997adb196bcffc5b7a66a3d40c35d" prot="public" virt="pure-virtual"><scope>capl::IEthernetPacketProtocolQWordField</scope><name>Long</name></member>
+      <member refid="classcapl_1_1_i_ethernet_packet_protocol_field_1a8543812ebcad291f0bf96a0420eecc4c" prot="public" virt="pure-virtual"><scope>capl::IEthernetPacketProtocolQWordField</scope><name>LongLong</name></member>
+      <member refid="classcapl_1_1_i_ethernet_packet_protocol_q_word_field_1aa9c2c96b8a3b3b5732e97b85a45c079c" prot="public" virt="pure-virtual"><scope>capl::IEthernetPacketProtocolQWordField</scope><name>operator QWORD</name></member>
+      <member refid="classcapl_1_1_i_ethernet_packet_protocol_q_word_field_1a4bf0d9771b6d25b5138926412bcebb02" prot="public" virt="pure-virtual"><scope>capl::IEthernetPacketProtocolQWordField</scope><name>operator=</name></member>
+      <member refid="classcapl_1_1_i_ethernet_packet_protocol_field_1ac915f78cbdaad05e59a5d9a06efb363f" prot="public" virt="pure-virtual"><scope>capl::IEthernetPacketProtocolQWordField</scope><name>ParseAddress</name></member>
+      <member refid="classcapl_1_1_i_ethernet_packet_protocol_field_1afbebb17f2ac12176c7582b74f16149fc" prot="public" virt="pure-virtual"><scope>capl::IEthernetPacketProtocolQWordField</scope><name>Qword</name></member>
+      <member refid="classcapl_1_1_i_ethernet_packet_protocol_field_1a35f1d84c0bbe9f88c7eefc385cf7a3d3" prot="public" virt="pure-virtual"><scope>capl::IEthernetPacketProtocolQWordField</scope><name>SetData</name></member>
+      <member refid="classcapl_1_1_i_ethernet_packet_protocol_field_1a16d30b88134399f8e8623fee1a747a7c" prot="public" virt="pure-virtual"><scope>capl::IEthernetPacketProtocolQWordField</scope><name>Short</name></member>
+      <member refid="classcapl_1_1_i_ethernet_packet_protocol_field_1a34b28e1ee1afa45f7f520b811f1f16bc" prot="public" virt="pure-virtual"><scope>capl::IEthernetPacketProtocolQWordField</scope><name>Word</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

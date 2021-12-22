@@ -1,0 +1,52 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.2" xml:lang="en-US">
+  <compounddef id="classcapl_1_1_i_property" kind="class" language="C++" prot="public" abstract="yes">
+    <compoundname>capl::IProperty</compoundname>
+    <templateparamlist>
+      <param>
+        <type>class T</type>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classcapl_1_1_i_property_1afa8837a8fd7223d7d267c0700e1b1704" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type></type>
+        <definition>virtual capl::IProperty&lt; T &gt;::operator T</definition>
+        <argsstring>() const =0</argsstring>
+        <name>operator T</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="CAPLPluginApi.h" line="490" column="22"/>
+      </memberdef>
+      <memberdef kind="function" id="classcapl_1_1_i_property_1a79bd6369d684088762bc2b2b2b68f3e1" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>T</type>
+        <definition>virtual T capl::IProperty&lt; T &gt;::operator=</definition>
+        <argsstring>(T value)=0</argsstring>
+        <name>operator=</name>
+        <param>
+          <type>T</type>
+          <declname>value</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="CAPLPluginApi.h" line="491" column="27"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="CAPLPluginApi.h" line="487" column="5" bodyfile="CAPLPluginApi.h" bodystart="488" bodyend="492"/>
+    <listofallmembers>
+      <member refid="classcapl_1_1_i_property_1afa8837a8fd7223d7d267c0700e1b1704" prot="public" virt="pure-virtual"><scope>capl::IProperty</scope><name>operator T</name></member>
+      <member refid="classcapl_1_1_i_property_1a79bd6369d684088762bc2b2b2b68f3e1" prot="public" virt="pure-virtual"><scope>capl::IProperty</scope><name>operator=</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

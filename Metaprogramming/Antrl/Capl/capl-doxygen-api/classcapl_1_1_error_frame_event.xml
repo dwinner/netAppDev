@@ -1,0 +1,71 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.2" xml:lang="en-US">
+  <compounddef id="classcapl_1_1_error_frame_event" kind="class" language="C++" prot="public">
+    <compoundname>capl::ErrorFrameEvent</compoundname>
+    <basecompoundref refid="classcapl_1_1_i_event" prot="public" virt="non-virtual">capl::IEvent&lt; IErrorFrame &amp; &gt;</basecompoundref>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classcapl_1_1_error_frame_event_1ae49e9db7d0dda01c1eaa680cf56b2021" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>capl::ErrorFrameEvent::ErrorFrameEvent</definition>
+        <argsstring>()</argsstring>
+        <name>ErrorFrameEvent</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="CAPLPluginApi.h" line="2535" column="9"/>
+      </memberdef>
+      <memberdef kind="function" id="classcapl_1_1_error_frame_event_1a4e8a03821cc22ab911d0b426708deb47" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type></type>
+        <definition>virtual capl::ErrorFrameEvent::~ErrorFrameEvent</definition>
+        <argsstring>()</argsstring>
+        <name>~ErrorFrameEvent</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="CAPLPluginApi.h" line="2536" column="17"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <inheritancegraph>
+      <node id="2">
+        <label>capl::IEvent&lt; IErrorFrame &amp; &gt;</label>
+        <link refid="classcapl_1_1_i_event"/>
+      </node>
+      <node id="1">
+        <label>capl::ErrorFrameEvent</label>
+        <link refid="classcapl_1_1_error_frame_event"/>
+        <childnode refid="2" relation="public-inheritance">
+        </childnode>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="2">
+        <label>capl::IEvent&lt; IErrorFrame &amp; &gt;</label>
+        <link refid="classcapl_1_1_i_event"/>
+      </node>
+      <node id="1">
+        <label>capl::ErrorFrameEvent</label>
+        <link refid="classcapl_1_1_error_frame_event"/>
+        <childnode refid="2" relation="public-inheritance">
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="CAPLPluginApi.h" line="2532" column="5" bodyfile="CAPLPluginApi.h" bodystart="2533" bodyend="2538"/>
+    <listofallmembers>
+      <member refid="classcapl_1_1_error_frame_event_1ae49e9db7d0dda01c1eaa680cf56b2021" prot="public" virt="non-virtual"><scope>capl::ErrorFrameEvent</scope><name>ErrorFrameEvent</name></member>
+      <member refid="classcapl_1_1_i_event_1a3fb0217883734109c5ebba0e89ddc302" prot="public" virt="non-virtual"><scope>capl::ErrorFrameEvent</scope><name>IEvent</name></member>
+      <member refid="classcapl_1_1_i_event_1acf5a313898cfb55070e749789b31528f" prot="protected" virt="non-virtual"><scope>capl::ErrorFrameEvent</scope><name>m_hEvent</name></member>
+      <member refid="classcapl_1_1_i_event_1a5d6973af1cfbe659c3b0ec1ef0d92200" prot="public" virt="pure-virtual"><scope>capl::ErrorFrameEvent</scope><name>OnEvent</name></member>
+      <member refid="classcapl_1_1_error_frame_event_1a4e8a03821cc22ab911d0b426708deb47" prot="public" virt="virtual"><scope>capl::ErrorFrameEvent</scope><name>~ErrorFrameEvent</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>
