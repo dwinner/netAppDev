@@ -5,19 +5,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Id = Microsoft.Identity.Client;
 
-internal static class IdentityLogLevelExtensions
-{
-   public static LogLevel ToLogLevel(this Id.LogLevel logLevel)
-      => logLevel switch
-      {
-         Id.LogLevel.Error => LogLevel.Error,
-         Id.LogLevel.Warning => LogLevel.Warning,
-         Id.LogLevel.Info => LogLevel.Information,
-         Id.LogLevel.Verbose => LogLevel.Trace,
-         _ => throw new InvalidOperationException("Update for a new log level")
-      };
-}
-
 internal class Runner
 {
    private readonly string _clientId;
