@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Xml.Linq;
 using System.Xml.XPath;
 
 namespace CaplAutoCompletion
@@ -26,17 +29,38 @@ namespace CaplAutoCompletion
                 Console.WriteLine("Validation error: {0}", errorMessage);
             }
 
-            var document = new XPathDocument(CaplApiXml);
-            var navigator = ((IXPathNavigable)document).CreateNavigator();
-            if (navigator != null)
+            var xRoot = XElement.Load(CaplApiXml);
+
+            // Find all CAPL's enums and there values
+            var enumElements = xRoot.XPathSelectElements("/compounddef/sectiondef[@kind='enum']/memberdef");
+            var caplEnums = new Dictionary<string, List<(string enumVal, string enumDesc)>>();
+            foreach (var enumElement in enumElements)
             {
-                var iterator = navigator.Select("/doxygen/compounddef/innerclass");
-                while (iterator.MoveNext())
+                var enumName = enumElement.XPathSelectElement("./name")?.Value;
+                if (!string.IsNullOrWhiteSpace(enumName))
                 {
-                    var caplClassName = iterator.Current.Value;
-                    Console.WriteLine(caplClassName);
+                    var enumItems = new List<(string enumVal, string enumDesc)>();
+                    var xElements =
+                        from enumValue in enumElement.Elements("enumvalue")
+                        let currentValue = enumValue.Element("name")?.Value ?? string.Empty
+                        let enumDecs = enumValue.Element("briefdescription")?.Element("param")?.Value ?? "No description"
+                        where !string.IsNullOrWhiteSpace(enumName)
+                        select (currentValue, enumDecs);
+                    enumItems.AddRange(xElements);
+                    caplEnums.Add(enumName, enumItems);
                 }
             }
+
+            Console.WriteLine();
         }
+
+        private static IEnumerable<string> GetCaplClassNames(XContainer xRoot) =>
+            from classContent in from element in xRoot.Descendants("innerclass")
+                select element.Value
+            where !string.IsNullOrWhiteSpace(classContent)
+            select classContent.Split(new[] { "::" }, StringSplitOptions.RemoveEmptyEntries)
+            into classified
+            where classified.Length == 2
+            select classified[1];
     }
 }
