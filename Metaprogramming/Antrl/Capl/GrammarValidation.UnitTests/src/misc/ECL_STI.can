@@ -1,0 +1,616 @@
+//-----------------------------------------------------------------------------
+//  Copyright (C) Continental Automotive All Right Reserved
+//            File        : ECL_STI.can
+//            Author      : Ratheesh
+//            Environment : CAPL
+//-----------------------------------------------------------------------------
+//  Type        : CAPL script
+//  Description : This file contains the simulation of MOST150 Electrical
+//                Control Line (ECL) System Test Initiator (STI)
+//  Code Status : Not tested
+//  Reference   : Electrical_Control_Line_1V1-1.pdf
+//-----------------------------------------------------------------------------
+//  Revision History
+//  Version     Modified by         Date            Description
+//  1.0         Ratheesh            26-Feb-2013     Initial version
+//  1.1         Ratheesh            01-Apr-2013     ECL log viewer integrated
+//  1.2         Ratheesh            11-Apr-2013     TV Test integrated
+//  1.3         Ratheesh            18-Apr-2013     TV test modified
+//  1.4         Ratheesh            20-Sep-2013     TV Test RBD. Removed node availability check
+//	1.5			    Ratheesh			      17-Sep-2014     tTSI pulse width added in ECL panel
+//  1.6         Fadillah            10-Apr-2017     Added 1.1k pull-up option for ECL test
+//                                                  Added support for NWD
+//-----------------------------------------------------------------------------
+
+includes
+{
+  #include "ECL.cin"
+  #include "GenFunc.cin"
+}
+
+variables
+{
+  char STI_Panel[256] = "ECL_SystemTestInitiator";
+  char STI_PanelControl[256] = "ECLTestOutput";
+
+  // TV test timer
+  msTimer tTVTest;
+  // TV test process interval 1ms
+  long gTVTestTOut = 1;
+  // Variable indicating TV test run status
+  byte gTVTestStatus = 0;
+  // Log file handle
+  dword gTVTestFileHandle;
+  // TV test LED states
+  enum TVTest_LEDState
+  {
+    LEDState_Error = 0, // red/orange
+    LEDState_Start = 1, // green
+    LEDState_Idle = 2   // yellow
+  };
+  // TV test states
+  enum TVTest_State
+  {
+    TVTest_State_Init,
+    TVTest_State_NodeAddrSend,
+    TVTest_State_RBDStart,
+    TVTest_State_Wait,
+    TVTest_State_NodeAddrWait
+  };
+  // Max device list
+  const int kDevListMax = 50;
+  // Node Address list
+  int gNodeAddrList[kDevListMax];
+  // TV test state
+  long gTVTestState;
+  // Max. No. of nodes in the ring
+  int gMaxNode ;
+  // Current node
+  int gCurrNode;
+  // TVTest response flag
+  byte gTVTestResponseFlag = 0;
+  // TVTest response timer
+  msTimer tTVTestResponse;
+  // TVTest response timeout
+  long gTVTestResponseTOut = 10;
+  // RBD test complete
+  int gRBDTestComplete = 0;
+  // RBD trigger timer
+  msTimer tRBDTrig;
+  // RBD trigger interval
+  long gRBDTrigTOut = (5 * 60 * 1000);
+  // ECL system test
+  enum EclSystemTest
+  {
+    enEclSystemTest_RBD = 0,
+    enEclSystemTest_NWD = 4,    
+    enEclSystemTest_CodingError = 8,
+    enEclSystemTest_Alive = 16,
+    enEclSystemTest_SSOCU = 24
+  };
+  // ECL parameter default values
+  const long kParticipantNumDefValue = 5;
+  const long kStartSeqRetriesDefValue = 1;
+  const long kStartupTimeDefValue = 5000;
+  const long kTestPauseTimeDefValue = 7000;
+}
+
+void ECL_CB_OnECLError(char msg[])
+{
+  write("%FILE_NAME%: ECL_CB_OnECLError: %s", msg);
+  if (gTVTestStatus == 0)
+  {
+    ECLLog(msg);
+  }
+  else
+  {
+    @TVTEST::LED_State = LEDState_Error;
+    TVTestLog(gTVTestFileHandle, msg);
+  }
+
+  if (gTVTestStatus == 1)
+    gRBDTestComplete = 1;
+}
+
+void ECL_STI_CB_OnSystemTestResultsReceived(long testParameter, long electricalStates[], long opticalStates[], long numResults)
+{
+  char tmpStr1[256];
+  char tmpStr2[256];
+  char tmpStr3[256];
+  int deviceClass;
+  int i;
+
+  write("%FILE_NAME%: ECL_STI_CB_OnSystemTestResultsReceived: testParameter: %d, numResults: %d", testParameter, numResults);
+  ECL_GetStringForSystemTestParameter(testParameter, tmpStr1);
+  snprintf(tmpStr2, elcount(tmpStr2), "Results for system test: %d (%s)", testParameter, tmpStr1);
+  ECLLog(tmpStr2);
+
+  for(i = 0; i < numResults; i++)
+  {
+    deviceClass = i+1;
+    ECL_GetStringForSystemTestResult(testParameter,  electricalStates[i], opticalStates[i], tmpStr1, tmpStr2);
+    snprintf(tmpStr3, elcount(tmpStr3), "STP dev. class %d: electr. state: %d (%s) opt. state: %d (%s)",
+        deviceClass, electricalStates[i], tmpStr1, opticalStates[i], tmpStr2);
+    // Display result in write window
+    write("STP dev. class %d: electr. state: %d (%s) opt. state: %d (%s)",
+        deviceClass, electricalStates[i], tmpStr1, opticalStates[i], tmpStr2);
+    if (gTVTestStatus == 0)
+    {
+      ECLLog(tmpStr3);
+    }
+    else
+    {
+      if ((electricalStates[i] == 0) && (opticalStates[i] == 0))
+      {
+        // Device alive and stable lock. No need to log
+      }
+      // ratheesh. 20.09.13 Removed node availability check as per request from BBU
+//      else if (IsNodeAlive(gNodeAddrList[deviceClass]))
+      else
+      {
+        // ratheesh 25.09.13 E260 onwards cluster reply only on slot 5
+        if (1 == @TVTEST::CheckBox_Validate_Slot_5)
+        {
+          if (5 == deviceClass)
+          {
+            @TVTEST::LED_State = LEDState_Error;
+            TVTestLog(gTVTestFileHandle, tmpStr3);
+          }
+        }
+        else
+        {
+            @TVTEST::LED_State = LEDState_Error;
+            TVTestLog(gTVTestFileHandle, tmpStr3);
+        }
+      }
+    }
+  }
+  if (gTVTestStatus == 1)
+    gRBDTestComplete = 1;
+}
+
+void ECL_STI_CB_OnSystemTestStartupError(char msg[])
+{
+  write("%FILE_NAME%: ECL_STI_CB_OnSystemTestStartupError: %s", msg);
+  ECLLog("System Test error detected:");
+  ECLLog(msg);
+}
+
+void ECL_STP_CB_OnStartupSequenceReceived()
+{
+  write("%FILE_NAME%: ECL_STP_CB_OnStartupSequenceReceived: Error: this callback should not be called for system test initiator!");
+}
+
+void ECL_STP_CB_OnSystemTestParameterReceived(long testParameter)
+{
+  write("%FILE_NAME%: ECL_STP_CB_OnSystemTestParameterReceived: Error: this callback should not be called for system test initiator!");
+}
+
+void ECL_STP_CB_OnSystemTestSendResults(long testParameter, long classID)
+{
+  write("%FILE_NAME%: ECL_STP_CB_OnSystemTestSendResults: Error: this callback should not be called for system test initiator!");
+}
+
+void ECL_WP_CB_OnElectricalWakeupReceived()
+{
+  write("%FILE_NAME%: ECL_WP_CB_OnElectricalWakeupReceived");
+  ECLLog("electrical wakeup signal received!");
+}
+
+on sysvar ECL_STI::Button_ECLStartSequence
+{
+  long testType;
+  long participantNum;
+  long startupRetries;
+  long startupTime;
+  long testPauseTime;
+  long result;
+  byte bPullUpResistor;
+
+  if (@this == 0)
+    return;
+
+  if (gTVTestStatus == 1)
+  {
+    write("%FILE_NAME%: Could not start! Another method is running!!");;
+    return;
+  }
+
+  // Get test paramters from panel
+  testType = @ECL_STI::TestType;
+  participantNum = @ECL_STI::ParticipantNumber;
+  startupRetries = @ECL_STI::StartSeqRetries;
+  startupTime = @ECL_STI::StartupTime;
+  testPauseTime = @ECL_STI::TestPauseTime;
+  cECL_tTSI = @ECL_STI::TSI_PulseWidth;
+  bPullUpResistor = @ECL_STI::PullUpResistor;
+  
+  if (bPullUpResistor == 1) 
+  {
+    mostSetEclTermination(mostGetChannel(), 1);
+  }
+  else 
+  {
+    mostSetEclTermination(mostGetChannel(), 0);
+  }
+
+  result = ECL_STI_StartSystemTest(startupRetries, startupTime,
+    testType, testPauseTime, participantNum);
+  if (result != 0)
+  {
+    write("%FILE_NAME%: Error occurred in ECL_STI_StartSystemTest: %d", result);
+  }
+}
+
+on sysvar MAIN::Button_ECLRBDTest
+{
+  if (@this == 0)
+    return;
+
+  if (0 == getValue(env_ECL_RBDTestEvent))
+  {
+    putValue(env_ECL_RBDTestEvent, 1);
+  }
+  else
+  {
+    putValue(env_ECL_RBDTestEvent, 0);
+  }
+}
+
+on envVar env_ECL_RBDTestEvent
+{
+  long testType;
+  long participantNum;
+  long startupRetries;
+  long startupTime;
+  long testPauseTime;
+  long result;
+
+  // Get test paramters from panel
+  testType = enEclSystemTest_RBD;
+  participantNum = kParticipantNumDefValue;
+  startupRetries = kStartSeqRetriesDefValue;
+  startupTime = kStartupTimeDefValue;
+  testPauseTime = kTestPauseTimeDefValue;
+  cECL_tTSI = 200;
+
+  result = ECL_STI_StartSystemTest(startupRetries, startupTime,
+    testType, testPauseTime, participantNum);
+  if (result != 0)
+  {
+    write("%FILE_NAME%: Error occurred in ECL_STI_StartSystemTest: %d", result);
+  }
+}
+
+on sysvar ECL_STI::Button_ElectricalWakeup
+{
+  long result;
+
+  if (@this == 0)
+    return;
+
+  if (gTVTestStatus == 1)
+  {
+    write("%FILE_NAME%: Could not start! Another method is running!!");;
+    return;
+  }
+
+  result = ECL_WI_SendElectricalWakeup();
+  if (result != 0)
+  {
+    write("%FILE_NAME%: ECL_WI_SendElectricalWakeup failed - returned %d", result);
+  }
+}
+
+on preStart
+{
+  // Set ECL verbose
+  ECL_SetECLVerbose(ECL_Verbose_Off);
+
+  ECL_SetSysVarNamesSpace("ECL_STI");
+  ECL_SetSignalLevelSysVarName("ECLSignalLevel");
+
+  // receive electrical wakeup signals
+  ECL_WP_Start();
+
+  @TVTEST::LED_State = LEDState_Idle;
+}
+
+// Function to log messages in output view of panel
+void ECLLog(char buf[])
+{
+  long tm[9];
+  dword d;
+  word ms, us, ns;
+  char tempBuf[256];
+  byte h, m, s;
+  char str[256];
+
+  // Get date and time
+  getLocalTime(tm);
+  convertTimestampNS(timeNowNS(), d, h, m, s, ms, us, ns);
+  // Prepare string
+  snprintf(tempBuf, elcount(tempBuf),
+    "\n%.2d.%.2d.%.4d-%.2d:%.2d:%.2d:%.3d - %s",
+    tm[3], tm[4]+1, tm[5]+1900, tm[2], tm[1], tm[0], ms, buf);
+  putValueToControl(STI_Panel, STI_PanelControl, tempBuf);
+}
+
+//---------------------------------------------------------------------------------
+//                                    TV Test
+//---------------------------------------------------------------------------------
+on sysvar TVTEST::RadioButton_Auto_Man
+{
+  if (@TVTEST::RadioButton_Auto_Man == 0)
+  {
+    // Manual
+    enableControl("ReliabilityTest", "Num_Participant_Input_Box", 1);
+    @TVTEST::ParticipantNum = 5;
+  }
+  else if (@TVTEST::RadioButton_Auto_Man == 1)
+  {
+    // Automatic
+    // Get MPR
+    @TVTEST::ParticipantNum = mostGetMPR(mostGetChannel()) - 1;
+    enableControl("ReliabilityTest", "Num_Participant_Input_Box", 0);
+  }
+  else
+  {
+    // Do nothing
+  }
+}
+
+on sysvar TVTEST::Button_Measurement_Start_Stop
+{
+  long tm[9];
+  dword d;
+  word ms, us, ns;
+  char fileName[50];
+  char buf[100];
+  byte h, m, s;
+
+  if (@this == 0)
+    return;
+
+  if(gTVTestStatus == 0)
+  {
+    // Check whether system state is OK
+    if(5 == mostGetNetState())
+    {
+      gTVTestStatus = 1;
+      gRBDTrigTOut = @TVTEST::RBDTrigInterval * 60 * 1000;
+      // Set file name according to date and time
+      getLocalTime(tm);
+      convertTimestampNS(timeNowNS(), d, h, m, s, ms, us, ns);
+      snprintf(fileName, elcount(fileName),
+        "TVTest_%.2d_%.2d_%.4d__%.2d_%.2d_%.2d.asc",
+        tm[3], tm[4]+1, tm[5]+1900, tm[2], tm[1], tm[0]);
+      // Open file for writing ECL results
+      gTVTestFileHandle = openFileWrite(fileName, 2);
+      if (gTVTestFileHandle == 0)
+      {
+        gTVTestStatus = 0;
+        write("%FILE_NAME%:Error: File open failed! Could not start TVTest!");
+        // LED red
+        @TVTEST::LED_State = LEDState_Error;
+        return;
+      }
+      else
+      {
+        write("%FILE_NAME%:File opened with name %s\n", fileName);
+      }
+      TVTestLog(gTVTestFileHandle, "Start of Measuring");
+      TVTestLog(gTVTestFileHandle, "User Press Button to start TVTest Method");
+      // LED Green
+      @TVTEST::LED_State = LEDState_Start;
+      gTVTestState = TVTest_State_Init;
+      setTimerCyclic(tTVTest, gTVTestTOut);
+    }
+    else
+    {
+      // Error message
+      write("%FILE_NAME%:Couldn't start method: system state is NotOK");
+      // LED yellow
+      @TVTEST::LED_State = LEDState_Idle;
+    }
+  }
+  else
+  {
+    write("%FILE_NAME%: TV test stopped");
+    TVTestLog(gTVTestFileHandle, "User Press Button to stop TVTest Method");
+    gTVTestStatus = 0;
+    // Close file
+    fileClose(gTVTestFileHandle);
+    // LED Stop
+    @TVTEST::LED_State = LEDState_Idle;
+    cancelTimer(tTVTest);
+  }
+}
+
+void TVTest_RBDStart(void)
+{
+  long testType;
+  long participantNum;
+  long startupRetries;
+  long startupTime;
+  long testPauseTime;
+  long result;
+
+  // Set parameters
+  participantNum = @TVTEST::ParticipantNum;
+  testType = 0x00; // RBD
+  startupRetries = 1;
+  startupTime = 5000;
+  testPauseTime = 8000;
+  cECL_tTSI = 200;
+
+  result = ECL_STI_StartSystemTest(startupRetries, startupTime,
+    testType, testPauseTime, participantNum);
+  if (result != 0)
+  {
+    write("%FILE_NAME%: ECL_STI::tTVTest: error occurred in ECL_STI_StartSystemTest: %d", result);
+    TVTestLog(gTVTestFileHandle, "ECL_STI_StartSystemTest failed!");
+    @TVTEST::LED_State = LEDState_Error;
+  }
+}
+
+void TVTestProc(void)
+{
+  switch(gTVTestState)
+  {
+    case TVTest_State_Init:
+    {
+      int i;
+
+      // reset the device list
+      for (i = 0; i < kDevListMax; i++)
+      {
+        gNodeAddrList[i] = 0xFFFF;
+      }
+      // Max nodes
+      gMaxNode = mostGetMPR(mostGetChannel());
+      // Set current node to be scanned
+      gCurrNode = 1;
+      if (gCurrNode < gMaxNode)
+      {
+        gTVTestState = TVTest_State_NodeAddrSend;
+      }
+      else
+      {
+        // Stop test
+        TVTestLog(gTVTestFileHandle, "Error! Only one MOST node detected.");
+        write("Error! Only one MOST node detected.");
+        @TVTEST::LED_State = LEDState_Error;
+        fileClose(gTVTestFileHandle);
+        cancelTimer(tTVTest);
+      }
+    }
+    break;
+    case TVTest_State_NodeAddrSend:
+    {
+      mostAMSMessage NetBlock.NodeAddress.Get msg;
+
+      msg.DA = 0x400 + gCurrNode;
+      msg.MsgChannel = mostGetChannel();
+      msg.InstanceId = 0x00;
+      output(msg);
+
+      gTVTestResponseFlag = 0;
+      setTimer(tTVTestResponse, gTVTestResponseTOut);
+      gTVTestState = TVTest_State_NodeAddrWait;
+    }
+    break;
+    case TVTest_State_NodeAddrWait:
+    {
+      if((gTVTestResponseFlag == 1) || (!isTimerActive(tTVTestResponse)))
+      {
+        // Scan for next node
+        gCurrNode++;
+        if (gCurrNode < gMaxNode)
+        {
+          gTVTestState = TVTest_State_NodeAddrSend;
+        }
+        else
+        {
+          gTVTestState = TVTest_State_RBDStart;
+        }
+
+        // Cancel timer
+        cancelTimer(tTVTestResponse);
+      }
+    }
+    break;
+    case TVTest_State_RBDStart:
+    {
+      gRBDTestComplete = 0;
+      TVTest_RBDStart();
+      setTimer(tRBDTrig, gRBDTrigTOut);
+      gTVTestState = TVTest_State_Wait;
+    }
+    break;
+    case TVTest_State_Wait:
+    {
+      if ((gRBDTestComplete == 1) && (!isTimerActive(tRBDTrig)))
+      {
+        gTVTestState = TVTest_State_RBDStart;
+      }
+    }
+    break;
+    default:
+    {
+      write("%FILE_NAME%: TVTestProc: Invalid TVTest state");
+    }
+    break;
+  }
+}
+
+on timer tTVTestResponse
+{
+  // Dummy
+}
+
+on timer tRBDTrig
+{
+  // Dummy
+}
+
+on timer tTVTest
+{
+  TVTestProc();
+}
+
+on mostAmsMessage NetBlock.NodeAddress.Status
+{
+  gNodeAddrList[gCurrNode] = ((this.BYTE(0) << 8) | this.BYTE(1));
+  gTVTestResponseFlag = 1;
+}
+
+// Function to write time stamp and message to a file
+// The format of the time stamp is DD.MM.YYYY-HH:MM:SS:XXX - 
+// Return: 0 - Error
+//         1 - No Error
+long TVTestLog(dword fHandle, char buf[])
+{
+  long ret;
+  long tm[9];
+  dword d;
+  word ms, us, ns;
+  char tempBuf[256];
+  byte h, m, s;
+
+  // Get date and time
+  getLocalTime(tm);
+  convertTimestampNS(timeNowNS(), d, h, m, s, ms, us, ns);
+  // Prepare string
+  snprintf(tempBuf, elcount(tempBuf),
+    "\n%.2d.%.2d.%.4d-%.2d:%.2d:%.2d:%.3d - %s",
+    tm[3], tm[4]+1, tm[5]+1900, tm[2], tm[1], tm[0], ms, buf);
+  // Write to file
+  ret = filePutString(tempBuf, elcount(tempBuf), fHandle);
+  return ret;
+}
+
+on sysvar ECL_STI::TestType
+{
+  if (enEclSystemTest_RBD == @this)
+  {
+    @ECL_STI::ParticipantNumber = 5;
+    @ECL_STI::StartSeqRetries = 1;
+    @ECL_STI::StartupTime = 5000;
+    @ECL_STI::TestPauseTime = 7000;
+  }
+  else if (enEclSystemTest_Alive == @this)
+  {
+    @ECL_STI::ParticipantNumber = 5;
+    @ECL_STI::StartSeqRetries = 1;
+    @ECL_STI::StartupTime = 5000;
+    @ECL_STI::TestPauseTime = 100;
+  }
+  else if (enEclSystemTest_NWD == @this)
+  {
+    @ECL_STI::ParticipantNumber = 5;
+    @ECL_STI::StartSeqRetries = 1;
+    @ECL_STI::StartupTime = 5000;
+    @ECL_STI::TestPauseTime = 100;    
+  }
+}

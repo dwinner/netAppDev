@@ -1,0 +1,2215 @@
+/*@@var:*/
+/*
+Copyright ( C ) Continental AG 2012
+
+
+
+Based on Version  1.0, 12.05.10   from M.Dangelmeyr      IBD im Auftrag von EP/ESE   Daimler AG
+
+Date of creation :  14.04.2011
+
+Created by :                 Hans Jürgen Hipp
+
+
+Version info
+
+1.00	   10.2013	Inital versioning introduced
+1.01	07.11.2013	ORC_Disp_Stat_AR_output: Profile_02-check corrected
+1.10	04.11.2013	HMI_2013_42a database
+// #VERSION#
+// #VERSION_END#
+*/
+
+
+variables
+{
+    const TRUE =    0xAA;
+    const FALSE =   0x00;
+    const cManual = 0x00;
+    const cAuto =   0xAA;
+
+    msTimer t_DBKomTimer_20ms;      // Timer zum zyklischen Aufruf der DBKom-Task
+    int c_tDBKomTimer_20ms = 20;    // msec
+    msTimer t_DBKomTimer_5ms;       // Timer zum zyklischen Aufruf der DBKom-Task
+    int c_tDBKomTimer_5ms = 5;      // msec
+
+
+    // BA_DEF_ BO_  "GenMsgSendType" ENUM
+    //  0 : cyclicX
+    //  1 : spontanX
+    //  2 : cyclicIfActiveX
+    //  3 : spontanWithDelay
+    //  4 : cyclicAndSpontanX
+    //  5 : cyclicAndSpontanWithDelay
+    //  6 : spontanWithRepitition
+    //  7 : cyclicIfActiveAndSpontanWD
+    //  8 : cyclicIfActiveFast
+    //  9 : cyclicWithRepeatOnDemand
+    //  10 : none
+
+// #VAR_DEF#
+    // Botschaft ORC_Disp_Stat_AR ID: 719 --- Sendeart 5 cyclicAndSpontanWithDelay --- 
+    message ORC_Disp_Stat_AR _mORC_Disp_Stat_AR;
+    int _ORC_Disp_Stat_AR_Timebase;
+    int _ORC_Disp_Stat_AR_CycleCount = 5;
+    int _ORC_Disp_Stat_AR_StartDelay;
+    int _ORC_Disp_Stat_AR_Cnt;
+    int _ORC_Disp_Stat_AR_SpontanFlag = 0;
+
+    byte     _ORC_Disp_Stat_AR_E2E_Armed;
+    byte     _ORC_Disp_Stat_AR_CRC_ErrorCnt;
+    byte     _ORC_Disp_Stat_AR_SQC_TriggPos;
+    int      _ORC_Disp_Stat_AR_SQC_WrongSeqJump;
+    byte     _ORC_Disp_Stat_AR_SQC_RepeatedCnt;
+    byte     _ORC_Disp_Stat_AR_MSG_DropCnt;
+    byte     _ORC_Disp_Stat_AR_CRC_Offset[16] = {  34,  73, 112, 151, 190, 229,  17,  56,  95, 134, 173, 212, 251,  39,  78, 117 };
+    msTimer _tORC_Disp_Stat_AR;
+
+    // Botschaft ORC_Impact_AR ID: 117 --- Sendeart 2 cyclicIfActive --- 
+    message ORC_Impact_AR _mORC_Impact_AR;
+    int _ORC_Impact_AR_Timebase;
+    int _ORC_Impact_AR_CycleCountSlow = 50; // 1000 ms
+    int _ORC_Impact_AR_CycleCountFast = 1;  //   20 ms
+    int _ORC_Impact_AR_StartDelay;
+    int _ORC_Impact_AR_Cnt;
+    int _ORC_Impact_AR_SigActivity = 0;
+
+    int _ORC_Impact_AR_Impact_A_LastState = 0;
+    int _ORC_Impact_AR_Impact_B_LastState = 0;
+    int _ORC_Impact_AR_Impact_C_LastState = 0;
+    int _ORC_Impact_AR_Impact_D_LastState = 0;
+    int _ORC_Impact_AR_Impact_E_LastState = 0;
+    int _ORC_Impact_AR_Impact_F_LastState = 0;
+    int _ORC_Impact_AR_Impact_G_LastState = 0;
+    int _ORC_Impact_AR_Impact_H_LastState = 0;
+    int _ORC_Impact_AR_Impact_I_LastState = 0;
+    int _ORC_Impact_AR_Impact_K_LastState = 0;
+    int _ORC_Impact_AR_Impact_L_LastState = 0;
+    int _ORC_Impact_AR_Impact_M_LastState = 0;
+    int _ORC_Impact_AR_Impact_N_LastState = 0;
+    int _ORC_Impact_AR_Impact_O_LastState = 0;
+    int _ORC_Impact_AR_Impact_P_LastState = 0;
+    int _ORC_Impact_AR_Impact_Q_LastState = 0;
+    int _ORC_Impact_AR_Impact_R_LastState = 0;
+    int _ORC_Impact_AR_Impact_S_LastState = 0;
+    int _ORC_Impact_AR_Impact_T_LastState = 0;
+    int _ORC_Impact_AR_Impact_Tgl_LastState = 0;
+    int _ORC_Impact_AR_Impact_U_LastState = 0;
+	int _ORC_Impact_AR_Impact_V_LastState = 0;
+    int _ORC_Impact_AR_Impact_X_LastState = 0;
+    int _ORC_Impact_AR_PyrofuseActvd_LastState = 0;
+    int _ORC_Impact_AR_Rsrv1_Impact_LastState = 0;
+    int _ORC_Impact_AR_Rsrv2_Impact_LastState = 0;
+    int _ORC_Impact_AR_Rsrv3_Impact_LastState = 0;
+    int _ORC_Impact_AR_Rsrv4_Impact_LastState = 0;
+    int _ORC_Impact_AR_SADR_TrgrPrio_ORC_LastState = 0;
+    int _ORC_Impact_AR_SADR_TrgrTm_ORC_LastState = 0;
+
+    byte     _ORC_Impact_AR_E2E_Armed;
+    byte     _ORC_Impact_AR_CRC_ErrorCnt;
+    byte     _ORC_Impact_AR_SQC_TriggPos;
+    int      _ORC_Impact_AR_SQC_WrongSeqJump;
+    byte     _ORC_Impact_AR_SQC_RepeatedCnt;
+    byte     _ORC_Impact_AR_MSG_DropCnt;
+    byte     _ORC_Impact_AR_CRC_Offset[16] = {  93, 168, 243,  67, 142, 217,  41, 116, 191,  15,  90, 165, 240,  64, 139, 214 };
+    msTimer _tORC_Impact_AR;
+
+    // Botschaft ROE_ORC ID: 2565817600 --- Sendeart 9 cyclicWithRepeatOnDemand --- 
+    message ROE_ORC _mROE_ORC;
+    int _ROE_ORC_Timebase;
+    int _ROE_ORC_CycleCount;
+    int _ROE_ORC_StartDelay;
+    int _ROE_ORC_Cnt;
+    int _ROE_ORC_MsgRepetitions;
+
+// #VAR_DEF_END#
+    Timer t_DoorNMCancelTimer;
+    Timer t_KeyInLockNMCancelTimer;
+    Timer t_StWhlButtonNMCancelTimer;
+    Timer t_WakeWarningNMCancelTimer;
+    Timer t_CarClosureNMCancelTimer;
+    Timer t_EPKBWarningNMCancelTimer;
+    Timer t_IlluNMCancelTimer;
+    Timer t_GearIndNMCancelTimer;
+    const byte c_NMCancelTimer_05sec = 5;
+    const byte c_NMCancelTimer_30sec = 30;
+
+    char buffer[1024], stringbuffer[512];
+    int bActiveHelper;    // Hilfsvariable für "Aktive Signale"
+
+//--------------------------------------- AUTOSAR NM ------------------------------------------------
+
+    const byte cAUTO =   0;
+    const byte cMANUAL = 1;
+
+    msTimer t_NM_Transmit;
+    long  NM_Transmit_Cycle;
+    msTimer t_NM_Wait_Bus_Sleep_Time;
+    const c_NM_Wait_Bus_Sleep_Time = 1500;
+//    msTimer t_NM_Remote_Sleep_Ind_Time;
+    const c_NM_Remote_Sleep_Ind_Time = 5000;
+    msTimer t_NM_Repeat_Message_Time;
+    const c_NM_Repeat_Message_Time = 6000;
+    msTimer t_NM_Timeout_Time;
+    const c_NM_Timeout_Time = 5000;
+
+    byte NM_Mode = 0;
+    const byte cNM_Mode_Init = 0;
+    const byte cNM_Mode_Sleep = 1;
+    const byte cNM_Mode_Prepare_Bus_Sleep = 2;
+    const byte cNM_Mode_Ready_Sleep = 3;
+    const byte cNM_Mode_Normal_Operation_State = 4;
+    const byte cNM_Mode_RepeatMsg = 5;
+
+    byte boCanNM_Rx_Indication = 0;
+    byte boCanNM_Tx_Confirmation = 0;
+    byte boCanNM_WaitBusSleep_Timer_Expired = 0;
+    byte boCanNM_RepeatMessage_Timer_Expired = 0;
+    byte boCanNM_NM_Timeout_Timer_Expired = 0;
+    byte boCanNM_RepeatMessage_Requested = 0;
+
+    const word cFLDoorNMRequest =       0x0001;
+    const word cFRDoorNMRequest =       0x0002;
+    const word cRLDoorNMRequest =       0x0004;
+    const word cRRDoorNMRequest =       0x0008;
+    const word cAllDoorNMRequest =      0x000F;
+    const word cIgnitionNMRequest =     0x0010;
+    const word cStWhlButtonNMRequest =  0x0020;
+    const word cWakeWarningNMRequest =  0x0040;
+    const word cEPKBWarningNMRequest =  0x0080;
+    const word cIlluNMRequest =         0x0100;
+    const word cCarClosureNMRequest =   0x0200;
+    const word cGearIndNMRequest =      0x0400;
+
+    const word cManualNMRequest =       0x8000;
+    const word cAllNMRequest =          0xFFFF;
+
+    const CanNmNodeId_Base =       1280; //  =  07h
+    const CanNmNodeId_APM =          76; //  =  4Ch
+    const CanNmNodeId_DRVU =         77; //  =  4Dh
+    const CanNmNodeId_EIS =           7; //  =  07h
+    const CanNmNodeId_HGW =          27; //  =  07h
+    const CanNmNodeId_TGW =          56; //  =  38h
+    const CanNmNodeId_RBTM_FR =      64; //  =  40h
+    const CanNmNodeId_IC =           65; //  =  41h
+    const CanNmNodeId_HUD =          66; //  =  42h
+    const CanNmNodeId_NV =           67; //  =  43h
+    const CanNmNodeId_RVC_SVS =      68; //  =  44h
+    const CanNmNodeId_ORC =          69; //  =  45h
+    const CanNmNodeId_RBTM_FL =      71; //  =  47h
+    const CanNmNodeId_TPM =          82; //  =  52h
+
+    const CanNmNodeDetectionEnabled          = 0; //false
+    const CanNmNodeIdEnabled                 = 1; //true
+    const CanNmUserDataEnabled               = 1; //true;
+    const CanNmUserDataLentgh                = 7;
+    const CanNmRepeatMsgIndEnabled           = 1; //true;
+    const CanNmDevErrorDetect                = 0; //false
+//    const CanNmUserDataEnabled             = 1; //true
+    const CanNmRemoteSleepIndEnabled         = 0; //false
+    const CanNmMsgReducedtime                = 80; //ms
+    const CanNmPduRxIndicationEnabled        = 0; //false
+    const CanNmStateChangeIndEnabled         = 0; //false
+    const CanNmImmediateTxconfEnabled        = 0;// false
+    const CanNmMsgTimeoutTime                = 5000; //ms
+    const CanNmPduNidPosition                = 0; //CANNM_PDU_BYTE_0;
+    const CanNmPduCbvPosition                = 0xFF; //ANNM_PDU_OFF;
+    const CanNmPduLength                     = 8;
+    const cCanNmPassiveModeEnabled           = 0; //false
+    const CanNmBusSynchronizationEnabled     = 0; //false
+    const CanNmBusLoadReductionEnabled       = 1; //true
+//    const CanNmRemoteSleepIndEnabled       = 0; //false
+//    const CanNmNodeDetectionEnabled        = 0; //false
+    const CanNmComControlEnabled             = 1; //true    
+
+    const NmAsrCanMsgStandardCycle =          2000;
+    const NmAsrCanMsgCycleOffset_APM =          40;
+    const NmAsrCanMsgReducedTime_APM =        1760;
+    const NmAsrCanMsgCycleOffset_DRVU =         50;
+    const NmAsrCanMsgReducedTime_DRVU =       1770;
+    const NmAsrCanMsgCycleOffset_EIS =          70;
+    const NmAsrCanMsgReducedTime_EIS =        1070;
+    const NmAsrCanMsgCycleOffset_HGW =          30;
+    const NmAsrCanMsgReducedTime_HGW =        1270;
+    const NmAsrCanMsgCycleOffset_HUD =          20;
+    const NmAsrCanMsgReducedTime_HUD =        1660;
+    const NmAsrCanMsgCycleOffset_IC =           10;
+    const NmAsrCanMsgReducedTime_IC =         1650;
+    const NmAsrCanMsgCycleOffset_NV =           30;
+    const NmAsrCanMsgReducedTime_NV =         1670;
+    const NmAsrCanMsgCycleOffset_ORC =          50;
+    const NmAsrCanMsgReducedTime_ORC =        1690;
+    const NmAsrCanMsgCycleOffset_RBTM_FL =       0;
+    const NmAsrCanMsgReducedTime_RBTM_FL =    1640;
+    const NmAsrCanMsgCycleOffset_RBTM_FR =      70;
+    const NmAsrCanMsgReducedTime_RBTM_FR =    1710;
+    const NmAsrCanMsgCycleOffset_RVC =          40;
+    const NmAsrCanMsgReducedTime_RVC =        1680;
+    const NmAsrCanMsgCycleOffset_SVS =          40;
+    const NmAsrCanMsgReducedTime_SVS =        1680;
+    const NmAsrCanMsgCycleOffset_TGW =           0;
+    const NmAsrCanMsgReducedTime_TGW =        1560;
+    const NmAsrCanMsgCycleOffset_TPM =          20;
+    const NmAsrCanMsgReducedTime_TPM =        1820;
+
+    char gECU[12] = "HMI_ORC";
+
+    byte CanNmNodeId            = CanNmNodeId_ORC;
+    word NmNodeIdentifier       = CanNmNodeId_Base + CanNmNodeId_ORC;
+    word NmAsrCanMsgCycleOffset = NmAsrCanMsgCycleOffset_ORC;
+    word NmAsrCanMsgReducedTime = NmAsrCanMsgReducedTime_ORC;
+    word NmAsrCanMsgCycleTime   = 2000;
+    byte NM_Repeat_Message_State_Active = 0;
+    byte NM_AutomaticModeActive = 0;
+
+    // Botschaft NM_xxx_AR --- Sendeart cyclicX --- 
+    message NM_ORC_AR _mNM_xxx_AR;
+    byte _mNM_xxx_Transmit_Allowed = 1;
+
+//--------------------------------------- AUTOSAR NM ------------------------------------------------
+
+    byte  crctable[256] = {
+        0x00, 0x1D, 0x3A, 0x27, 0x74, 0x69, 0x4E, 0x53, 0xE8, 0xF5, 0xD2, 0xCF, 0x9C, 0x81, 0xA6, 0xBB,
+        0xCD, 0xD0, 0xF7, 0xEA, 0xB9, 0xA4, 0x83, 0x9E, 0x25, 0x38, 0x1F, 0x02, 0x51, 0x4C, 0x6B, 0x76,
+        0x87, 0x9A, 0xBD, 0xA0, 0xF3, 0xEE, 0xC9, 0xD4, 0x6F, 0x72, 0x55, 0x48, 0x1B, 0x06, 0x21, 0x3C,
+        0x4A, 0x57, 0x70, 0x6D, 0x3E, 0x23, 0x04, 0x19, 0xA2, 0xBF, 0x98, 0x85, 0xD6, 0xCB, 0xEC, 0xF1,
+        0x13, 0x0E, 0x29, 0x34, 0x67, 0x7A, 0x5D, 0x40, 0xFB, 0xE6, 0xC1, 0xDC, 0x8F, 0x92, 0xB5, 0xA8,
+        0xDE, 0xC3, 0xE4, 0xF9, 0xAA, 0xB7, 0x90, 0x8D, 0x36, 0x2B, 0x0C, 0x11, 0x42, 0x5F, 0x78, 0x65,
+        0x94, 0x89, 0xAE, 0xB3, 0xE0, 0xFD, 0xDA, 0xC7, 0x7C, 0x61, 0x46, 0x5B, 0x08, 0x15, 0x32, 0x2F,
+        0x59, 0x44, 0x63, 0x7E, 0x2D, 0x30, 0x17, 0x0A, 0xB1, 0xAC, 0x8B, 0x96, 0xC5, 0xD8, 0xFF, 0xE2,
+        0x26, 0x3B, 0x1C, 0x01, 0x52, 0x4F, 0x68, 0x75, 0xCE, 0xD3, 0xF4, 0xE9, 0xBA, 0xA7, 0x80, 0x9D,
+        0xEB, 0xF6, 0xD1, 0xCC, 0x9F, 0x82, 0xA5, 0xB8, 0x03, 0x1E, 0x39, 0x24, 0x77, 0x6A, 0x4D, 0x50,
+        0xA1, 0xBC, 0x9B, 0x86, 0xD5, 0xC8, 0xEF, 0xF2, 0x49, 0x54, 0x73, 0x6E, 0x3D, 0x20, 0x07, 0x1A,
+        0x6C, 0x71, 0x56, 0x4B, 0x18, 0x05, 0x22, 0x3F, 0x84, 0x99, 0xBE, 0xA3, 0xF0, 0xED, 0xCA, 0xD7,
+        0x35, 0x28, 0x0F, 0x12, 0x41, 0x5C, 0x7B, 0x66, 0xDD, 0xC0, 0xE7, 0xFA, 0xA9, 0xB4, 0x93, 0x8E,
+        0xF8, 0xE5, 0xC2, 0xDF, 0x8C, 0x91, 0xB6, 0xAB, 0x10, 0x0D, 0x2A, 0x37, 0x64, 0x79, 0x5E, 0x43,
+        0xB2, 0xAF, 0x88, 0x95, 0xC6, 0xDB, 0xFC, 0xE1, 0x5A, 0x47, 0x60, 0x7D, 0x2E, 0x33, 0x14, 0x09,
+        0x7F, 0x62, 0x45, 0x58, 0x0B, 0x16, 0x31, 0x2C, 0x97, 0x8A, 0xAD, 0xB0, 0xE3, 0xFE, 0xD9, 0xC4
+    };
+
+    byte  crctable_profile02[256] = {
+        0x00, 0x2F, 0x5E, 0x71, 0xBC, 0x93, 0xE2, 0xCD, 0x57, 0x78, 0x09, 0x26, 0xEB, 0xC4, 0xB5, 0x9A,
+        0xAE, 0x81, 0xF0, 0xDF, 0x12, 0x3D, 0x4C, 0x63, 0xF9, 0xD6, 0xA7, 0x88, 0x45, 0x6A, 0x1B, 0x34,
+        0x73, 0x5C, 0x2D, 0x02, 0xCF, 0xE0, 0x91, 0xBE, 0x24, 0x0B, 0x7A, 0x55, 0x98, 0xB7, 0xC6, 0xE9,
+        0xDD, 0xF2, 0x83, 0xAC, 0x61, 0x4E, 0x3F, 0x10, 0x8A, 0xA5, 0xD4, 0xFB, 0x36, 0x19, 0x68, 0x47,
+        0xE6, 0xC9, 0xB8, 0x97, 0x5A, 0x75, 0x04, 0x2B, 0xB1, 0x9E, 0xEF, 0xC0, 0x0D, 0x22, 0x53, 0x7C,
+        0x48, 0x67, 0x16, 0x39, 0xF4, 0xDB, 0xAA, 0x85, 0x1F, 0x30, 0x41, 0x6E, 0xA3, 0x8C, 0xFD, 0xD2,
+        0x95, 0xBA, 0xCB, 0xE4, 0x29, 0x06, 0x77, 0x58, 0xC2, 0xED, 0x9C, 0xB3, 0x7E, 0x51, 0x20, 0x0F,
+        0x3B, 0x14, 0x65, 0x4A, 0x87, 0xA8, 0xD9, 0xF6, 0x6C, 0x43, 0x32, 0x1D, 0xD0, 0xFF, 0x8E, 0xA1,
+        0xE3, 0xCC, 0xBD, 0x92, 0x5F, 0x70, 0x01, 0x2E, 0xB4, 0x9B, 0xEA, 0xC5, 0x08, 0x27, 0x56, 0x79,
+        0x4D, 0x62, 0x13, 0x3C, 0xF1, 0xDE, 0xAF, 0x80, 0x1A, 0x35, 0x44, 0x6B, 0xA6, 0x89, 0xF8, 0xD7,
+        0x90, 0xBF, 0xCE, 0xE1, 0x2C, 0x03, 0x72, 0x5D, 0xC7, 0xE8, 0x99, 0xB6, 0x7B, 0x54, 0x25, 0x0A,
+        0x3E, 0x11, 0x60, 0x4F, 0x82, 0xAD, 0xDC, 0xF3, 0x69, 0x46, 0x37, 0x18, 0xD5, 0xFA, 0x8B, 0xA4,
+        0x05, 0x2A, 0x5B, 0x74, 0xB9, 0x96, 0xE7, 0xC8, 0x52, 0x7D, 0x0C, 0x23, 0xEE, 0xC1, 0xB0, 0x9F,
+        0xAB, 0x84, 0xF5, 0xDA, 0x17, 0x38, 0x49, 0x66, 0xFC, 0xD3, 0xA2, 0x8D, 0x40, 0x6F, 0x1E, 0x31,
+        0x76, 0x59, 0x28, 0x07, 0xCA, 0xE5, 0x94, 0xBB, 0x21, 0x0E, 0x7F, 0x50, 0x9D, 0xB2, 0xC3, 0xEC,
+        0xD8, 0xF7, 0x86, 0xA9, 0x64, 0x4B, 0x3A, 0x15, 0x8F, 0xA0, 0xD1, 0xFE, 0x33, 0x1C, 0x6D, 0x42
+    };
+}
+/*@@end*/
+
+/*@@startStart:Start:*/
+on start
+{
+    putValue( HMI__NM_ORC_NM_Request, 0 );  // reset all requests
+    _NM_Switch_NM_Mode();
+    
+    // DBKom-Task starten
+    
+    __ORC_Init_Msg();
+    __ORC_Startup_Delay();
+
+    putValue( HMI__NM_ORC_AutomaticModeActive, 0 );
+    putValue( HMI__NM_ORC_AutomaticModeActive, 1 );
+}
+/*@@end*/
+
+/*@@caplFunc:__ORC_Init_Msg():*///function
+__ORC_Init_Msg()
+{
+// #START_INIT#
+    ORC_Disp_Stat_AR_init();               // Botschaft ORC_Disp_Stat_AR       --- Sendeart cyclicAndSpontanWithDelay --- 
+    ORC_Impact_AR_init ();                 // Botschaft ORC_Impact_AR          --- Sendeart cyclicIfActiveFast --- 
+    ROE_ORC_init();                        // Botschaft ROE_ORC                --- Sendeart cyclicWithRepeatOnDemand --- 
+// #START_INIT_END#
+    NM_xxx_AR_init();                      // Botschaft NM_xxx_AR                    --- Sendeart --- 
+//    XCP_Rs_ORC_init();                   // Botschaft XCP_Rs_ORC             --- Sendeart cyclicIfActiveFast
+}
+/*@@end*/
+
+/*@@envVar:HMI__STOP_All_MESSAGES_DEFAULT_STARTDELAY:*/
+on envVar HMI__STOP_All_MESSAGES_DEFAULT_STARTDELAY
+{
+    if( getValue( this ) )
+    {
+        __ORC_Init_Msg();
+        __ORC_Startup_Delay();
+    }
+}
+/*@@end*/
+
+/*@@envVar:HMI__STOP_All_MESSAGES_SET_STARTDELAY:*/
+on envVar HMI__STOP_All_MESSAGES_SET_STARTDELAY
+{
+    if( getValue( this ) )
+    {
+        __ORC_Startup_Delay();
+    }
+}
+/*@@end*/
+
+/*@@caplFunc:__ORC_Startup_Delay():*///function
+__ORC_Startup_Delay()
+{
+//    write(" Delay setzen :__ORC_Startup_Delay");
+
+// #START_DELAY#
+    _ORC_Disp_Stat_AR_Cnt =       getValue( HMI__STMSGSD_ORC_Disp_Stat_AR  ) / _ORC_Disp_Stat_AR_Timebase;
+    _ORC_Impact_AR_Cnt =          getValue( HMI__STMSGSD_ORC_Impact_AR     ) / _ORC_Impact_AR_Timebase;
+    _ROE_ORC_Cnt =                getValue( HMI__STMSGSD_ROE_ORC           ) / _ROE_ORC_Timebase;
+// #START_DELAY_END#
+}
+/*@@end*/
+
+/*@@timer:t_DBKomTimer_5ms:*/
+on Timer t_DBKomTimer_5ms
+{
+// *** DBKom-Sendefunktion ***
+    // timer aufziehen für nächsten Zyklus
+    if( getValue( HMI__NM_ORC_CommActive    ) |
+        getValue( HMI__NM_ORC_RequestBusCom )   )
+    {
+        setTimer( t_DBKomTimer_5ms, c_tDBKomTimer_5ms );
+    }
+// #CYC_TIMER_5_MS#
+//    CLkS_Rq_AR_check_output();                   // Botschaft CLkS_Rq_AR                   --- Sendeart 8 cyclicIfActiveFast --- 
+// #CYC_TIMER_5_MS_END#
+}
+/*@@end*/
+
+/*@@timer:t_DBKomTimer_20ms:*/
+on Timer t_DBKomTimer_20ms
+{
+// *** DBKom-Sendefunktion ***
+    // timer aufziehen für nächsten Zyklus
+    if( getValue( HMI__NM_ORC_CommActive    ) |
+        getValue( HMI__NM_ORC_RequestBusCom )   )
+    {
+        setTimer( t_DBKomTimer_20ms, c_tDBKomTimer_20ms );
+    }
+// #CYC_TIMER_20_MS#
+    ORC_Disp_Stat_AR_check_output();        // Botschaft ORC_Disp_Stat_AR       --- Sendeart cyclicAndSpontanWithDelay
+    ORC_Impact_AR_check_output();           // Botschaft ORC_Impact_AR          --- Sendeart cyclicIfActiveFast
+    ROE_ORC_check_output();                 // Botschaft ROE_ORC                --- Sendeart cyclicWithRepeatOnDemand            
+// #CYC_TIMER_20_MS_END#
+
+//    ECU_APPL_ORC1_check_output();        // Botschaft ECU_APPL_ORC1 --- Sendeart 
+//    NM_ORC_AR_check_output();        // Botschaft NM_ORC_AR --- Sendeart 
+}
+/*@@end*/
+
+/*@@envVar:HMI__SAVE_PANEL_CONFIG_ORC:*/
+on EnvVar HMI__SAVE_PANEL_CONFIG_ORC
+{
+    dword hFile;
+
+    if( getValue(this) )
+    {
+        write("Saving HMI Panel Variables ...");
+
+        hFile = openFileWrite( "CONFIG\\HMI_PRESETS.ASC", 0 );
+        filePutString( "base hex timestamps absolute\n", 31, hFile );
+
+// #MSG_SAVEENVVAR#
+        ORC_Disp_Stat_AR_saveEnvVars( hFile );   
+        ORC_Impact_AR_saveEnvVars( hFile );   
+        ROE_ORC_saveEnvVars( hFile );   
+// #MSG_SAVEENVVAR_END#
+
+//        ECU_APPL_ORC1_saveEnvVars( hFile );   
+        NM_xxx_AR_saveEnvVars( hFile );   
+
+        fileClose(hFile );
+    }
+}
+/*@@end*/
+
+/*@@envVar:HMI__STOP_ORC_MESSAGES_OFF:*/
+on EnvVar HMI__STOP_ORC_MESSAGES_OFF
+{
+    if( getValue(this) )
+    {
+// #MSG_OFF#
+//        putValue(HMI__STMSG_ECU_APPL_ORC1, 1 );
+        putValue(HMI__STMSG_NM_ORC_AR, 1 );
+        putValue(HMI__STMSG_ORC_Disp_Stat_AR, 1 );
+        putValue(HMI__STMSG_ORC_Impact_AR, 1 );
+        putValue(HMI__STMSG_ROE_ORC, 1 );
+// #MSG_OFF_END#
+
+//        putValue(HMI__STMSG_ECU_APPL_ORC1, 1 );
+        putValue(HMI__STMSG_NM_ORC_AR, 1 );
+    }
+}
+/*@@end*/
+
+/*@@envVar:HMI__STOP_ORC_MESSAGES_ON:*/
+on envVar HMI__STOP_ORC_MESSAGES_ON
+{
+    if( getValue(this) )
+    {
+// #MSG_ON#
+        putValue(HMI__STMSG_ORC_Disp_Stat_AR, 0 );
+        putValue(HMI__STMSG_ORC_Impact_AR, 0 );
+        putValue(HMI__STMSG_ROE_ORC, 0 );
+// #MSG_ON_END#
+
+//        putValue(HMI__STMSG_ECU_APPL_ORC1, 0 );
+        putValue(HMI__STMSG_NM_ORC_AR, 0 );
+    }
+}
+/*@@end*/
+
+/*@@busOff:BusOff:*/
+on busOff
+{
+    resetCan();
+    write("CAN has been resetted due to BUSOFF    ( coded version )");
+}
+/*@@end*/
+
+/*@@msg:0x500-0x57F:*/
+on message 0x500-0x57F
+{
+    byte Identifier;
+
+    Identifier = this.byte( 1 );
+
+    if( this.byte( 1 ) == CanNmNodeId )    // check, wether the received NM-Frame is an own one
+    {
+        boCanNM_Tx_Confirmation = TRUE;    // so it is a TX-confirmation
+    }
+    else
+    {
+        boCanNM_Rx_Indication = TRUE;     // else it is a NM-Frame from another ECU
+    }
+    _NM_Switch_NM_Mode();     // inform the state-mashine
+}
+/*@@end*/
+
+/*@@timer:t_DoorNMCancelTimer:*/
+on timer t_DoorNMCancelTimer
+{
+    if( getValue( HMI__NM_EIS_AutomaticModeActive ) == 1 )
+    {
+        _ReleaseCommRequest( 15 );  // all doors reset their requests
+    }
+}
+/*@@end*/
+
+/*@@timer:t_KeyInLockNMCancelTimer:*/
+on timer t_KeyInLockNMCancelTimer
+{
+    if( getValue( HMI__NM_EIS_AutomaticModeActive ) == 1 )
+    {
+        _ReleaseCommRequest( cIgnitionNMRequest );
+    }
+}
+/*@@end*/
+
+/*@@timer:t_StWhlButtonNMCancelTimer:*/
+on timer t_StWhlButtonNMCancelTimer
+{
+    if( getValue( HMI__NM_EIS_AutomaticModeActive ) == 1 )
+    {
+        _ReleaseCommRequest( cStWhlButtonNMRequest );  // all keys reset their requests
+    }
+}
+/*@@end*/
+
+/*@@timer:t_WakeWarningNMCancelTimer:*/
+on timer t_WakeWarningNMCancelTimer
+{
+    if( getValue( HMI__NM_EIS_AutomaticModeActive ) == 1 )
+    {
+        _ReleaseCommRequest( cWakeWarningNMRequest );  // all keys reset their requests
+    }
+}
+/*@@end*/
+
+/*@@timer:t_EPKBWarningNMCancelTimer:*/
+on timer t_EPKBWarningNMCancelTimer
+{
+    if( getValue( HMI__NM_EIS_AutomaticModeActive ) == 1 )
+    {
+        _ReleaseCommRequest( cEPKBWarningNMRequest );  // all keys reset their requests
+    }
+}
+/*@@end*/
+
+/*@@timer:t_IlluNMCancelTimer:*/
+on timer t_IlluNMCancelTimer
+{
+    if( getValue( HMI__NM_EIS_AutomaticModeActive ) == 1 )
+    {
+        _ReleaseCommRequest( cIlluNMRequest );  // all keys reset their requests
+    }
+}
+/*@@end*/
+
+/*@@timer:t_CarClosureNMCancelTimer:*/
+on timer t_CarClosureNMCancelTimer
+{
+    if( getValue( HMI__NM_EIS_AutomaticModeActive ) == 1 )
+    {
+        _ReleaseCommRequest( cCarClosureNMRequest );  // all keys reset their requests
+    }
+}
+/*@@end*/
+
+/*@@timer:t_GearIndNMCancelTimer:*/
+on timer t_GearIndNMCancelTimer
+{
+    if( getValue( HMI__NM_EIS_AutomaticModeActive ) == 1 )
+    {
+        _ReleaseCommRequest( cGearIndNMRequest );  // all keys reset their requests
+    }
+}
+/*@@end*/
+
+/*@@timer:t_NM_Repeat_Message_Time:*/
+on timer t_NM_Repeat_Message_Time
+{
+    boCanNM_RepeatMessage_Timer_Expired = TRUE;
+    _NM_Switch_NM_Mode();     // inform the state-mashine
+}
+/*@@end*/
+
+/*@@timer:t_NM_Timeout_Time:*/
+on timer t_NM_Timeout_Time
+{
+    boCanNM_NM_Timeout_Timer_Expired = TRUE;
+    _NM_Switch_NM_Mode();     // inform the state-mashine
+}
+/*@@end*/
+
+/*@@timer:t_NM_Transmit:*/
+on timer t_NM_Transmit
+{
+    setTimer( t_NM_Transmit, NM_Transmit_Cycle );
+    _mNM_xxx_AR.byte( 1 ) = CanNmNodeId;
+    if( _mNM_xxx_Transmit_Allowed )
+        output( _mNM_xxx_AR );
+}
+/*@@end*/
+
+/*@@timer:t_NM_Wait_Bus_Sleep_Time:*/
+on timer t_NM_Wait_Bus_Sleep_Time
+{
+    boCanNM_WaitBusSleep_Timer_Expired = TRUE;
+    _NM_Switch_NM_Mode();     // inform the state-mashine
+}
+/*@@end*/
+
+/*@@caplFunc:NM_xxx_AR_init():*/
+NM_xxx_AR_init()
+{
+    _mNM_xxx_AR.Awake_Diag_Actv = getValue(HMI_Awake_Diag_Actv_ORC);
+    _mNM_xxx_AR.Awake_Ignition_On = getValue(HMI_Awake_Ignition_On_ORC);
+    _mNM_xxx_AR.Awake_Term15r_Actv = getValue(HMI_Awake_Term15r_Actv_ORC);
+    _mNM_xxx_AR.WakeupRsn_ORC.phys = getValue(HMI_WakeupRsn_ORC);
+}
+/*@@end*/
+
+/*@@caplFunc:NM_xxx_AR_saveEnvVars(dword):*/
+NM_xxx_AR_saveEnvVars( dword hFile )
+{
+    filePutString("\n// Knoten NM_ORC_AR\n", 33, hFile );
+    snprintf(buffer, elcount(buffer), "0.0000 HMI__STMSG_NM_ORC_AR := %X\n", getValue(HMI__STMSG_NM_ORC_AR ));		filePutString (buffer, elcount(buffer), hFile);
+    snprintf(buffer, elcount(buffer), "0.0000 HMI__STMSGT_NM_ORC_AR := %X\n", getValue(HMI__STMSGT_NM_ORC_AR ));		filePutString (buffer, elcount(buffer), hFile);
+    snprintf(buffer, elcount(buffer), "0.0000 HMI_Awake_Diag_Actv_ORC := %X\n", getValue( HMI_Awake_Diag_Actv_ORC ) );		filePutString (buffer, elcount(buffer), hFile);
+    snprintf(buffer, elcount(buffer), "0.0000 HMI_Awake_Ignition_On_ORC := %X\n", getValue( HMI_Awake_Ignition_On_ORC ) );		filePutString (buffer, elcount(buffer), hFile);
+    snprintf(buffer, elcount(buffer), "0.0000 HMI_Awake_Term15r_Actv_ORC := %X\n", getValue( HMI_Awake_Term15r_Actv_ORC ) );		filePutString (buffer, elcount(buffer), hFile);
+    snprintf(buffer, elcount(buffer), "0.0000 HMI_WakeupRsn_ORC := %X\n", getValue( HMI_WakeupRsn_ORC ) );		filePutString (buffer, elcount(buffer), hFile);
+}
+/*@@end*/
+
+/*@@envVar:HMI__STMSG_NM_ORC_AR:*/
+on envVar HMI__STMSG_NM_ORC_AR
+{
+    if( getValue( this ) == 0 )
+        _mNM_xxx_Transmit_Allowed = 1;
+    else
+        _mNM_xxx_Transmit_Allowed = 0;    
+}
+/*@@end*/
+
+/*@@envVar:HMI_Awake_Diag_Actv_ORC:*/
+on EnvVar HMI_Awake_Diag_Actv_ORC
+{
+    _mNM_xxx_AR.Awake_Diag_Actv = getValue(this);
+}
+/*@@end*/
+
+/*@@envVar:HMI_Awake_Ignition_On_ORC:*/
+on EnvVar HMI_Awake_Ignition_On_ORC
+{
+    _mNM_xxx_AR.Awake_Ignition_On = getValue(this);
+}
+/*@@end*/
+
+/*@@envVar:HMI_Awake_Term15r_Actv_ORC:*/
+on EnvVar HMI_Awake_Term15r_Actv_ORC
+{
+    _mNM_xxx_AR.Awake_Term15r_Actv.phys = getValue(this);
+}
+/*@@end*/
+
+/*@@envVar:HMI_WakeupRsn_ORC:*/
+on EnvVar HMI_WakeupRsn_ORC
+{
+    _mNM_xxx_AR.WakeupRsn_ORC.phys = getValue(this);
+}
+/*@@end*/
+
+/*@@caplFunc:_NM_Switch_NM_Mode():*/
+_NM_Switch_NM_Mode()
+{
+    byte bOld_NM_Mode;
+    word NM_Request_State;
+
+    bOld_NM_Mode = NM_Mode;
+    NM_Request_State = getValue( HMI__NM_ORC_NM_Request );
+    switch( NM_Mode )
+    {
+        case cNM_Mode_Init:                   _NM_Init();
+                                              NM_Mode = cNM_Mode_Sleep;
+                                              break;
+        case cNM_Mode_Sleep:                  if( boCanNM_Rx_Indication == TRUE )
+                                              {
+                                                  // _NM_NetworkStartIndication();   nothing to do
+                                                  // _NM_PassiveStartUp();    is content of _NM_NetworkMode();
+                                                  setTimer( t_NM_Transmit, NmAsrCanMsgCycleOffset );    // send NM-Frame delayed
+                                                  boCanNM_Rx_Indication = FALSE;
+                                                  cancelTimer( t_NM_Timeout_Time );
+                                                  setTimer( t_NM_Timeout_Time, c_NM_Timeout_Time );
+                                                  setTimer( t_NM_Repeat_Message_Time, c_NM_Repeat_Message_Time );
+                                                  NM_Transmit_Cycle = NmAsrCanMsgStandardCycle;
+                                                  _NM_NetworkMode();
+                                                  NM_Mode = cNM_Mode_RepeatMsg;
+                                              }
+                                              if( NM_Request_State )
+                                              {
+                                                  setTimer( t_NM_Transmit, 1 );    //send NM-Franme immediately
+                                                  NM_Transmit_Cycle = NmAsrCanMsgStandardCycle;
+                                                  cancelTimer( t_NM_Timeout_Time );
+                                                  setTimer( t_NM_Timeout_Time, c_NM_Timeout_Time );
+                                                  setTimer( t_NM_Repeat_Message_Time, c_NM_Repeat_Message_Time );
+                                                  NM_Transmit_Cycle = NmAsrCanMsgStandardCycle;
+                                                  _NM_NetworkMode();
+                                                  NM_Mode = cNM_Mode_RepeatMsg;
+                                              }
+                                              break;
+        case cNM_Mode_Prepare_Bus_Sleep:      if( boCanNM_WaitBusSleep_Timer_Expired == TRUE )
+                                              {
+                                                  _NM_BusSleepModeInd();   // no action to be taken
+                                                  NM_Mode = cNM_Mode_Sleep;
+                                                  boCanNM_WaitBusSleep_Timer_Expired = FALSE;
+                                              }
+                                              if( boCanNM_NM_Timeout_Timer_Expired == TRUE )
+                                                  boCanNM_NM_Timeout_Timer_Expired = FALSE;
+                                              if( ( boCanNM_Rx_Indication == TRUE ) ||  NM_Request_State )
+                                              {
+                                                  boCanNM_Rx_Indication = FALSE;
+                                                  if( NM_Request_State )
+                                                  {
+                                                      setTimer( t_NM_Transmit, 1 );    //send NM-Franme immediately
+                                                  }
+                                                  cancelTimer( t_NM_Timeout_Time );
+                                                  setTimer( t_NM_Timeout_Time, c_NM_Timeout_Time );
+                                                  setTimer( t_NM_Repeat_Message_Time, c_NM_Repeat_Message_Time );
+                                                  _NM_NetworkMode();
+                                                  NM_Transmit_Cycle = NmAsrCanMsgStandardCycle;
+                                                  NM_Mode = cNM_Mode_RepeatMsg;
+                                              }
+                                              break;
+        case cNM_Mode_Ready_Sleep:            if( boCanNM_Rx_Indication == TRUE )
+                                              {
+                                                  cancelTimer( t_NM_Timeout_Time );
+                                                  setTimer( t_NM_Timeout_Time, c_NM_Timeout_Time );
+                                                  boCanNM_Rx_Indication = FALSE;
+                                              }
+                                              if( boCanNM_Tx_Confirmation == TRUE )
+                                              {
+                                                  cancelTimer( t_NM_Timeout_Time );
+                                                  setTimer( t_NM_Timeout_Time, c_NM_Timeout_Time );
+                                                  boCanNM_Tx_Confirmation = FALSE;
+                                              }
+                                              if( NM_Request_State )
+                                              {
+                                                  setTimer( t_NM_Transmit, 1 );    //send NM-Franme immediately
+                                                  cancelTimer( t_NM_Timeout_Time );
+                                                  setTimer( t_NM_Timeout_Time, c_NM_Timeout_Time );
+                                                  NM_Transmit_Cycle = NmAsrCanMsgReducedTime;
+                                                  NM_Mode = cNM_Mode_Normal_Operation_State;
+                                              }
+                                              if( boCanNM_RepeatMessage_Requested == TRUE )
+                                              {
+                                                  setTimer( t_NM_Transmit, NmAsrCanMsgCycleOffset );    // send NM-Frame delayed
+                                                  cancelTimer( t_NM_Timeout_Time );
+                                                  setTimer( t_NM_Timeout_Time, c_NM_Timeout_Time );
+                                                  setTimer( t_NM_Repeat_Message_Time, c_NM_Repeat_Message_Time );
+                                                  NM_Transmit_Cycle = NmAsrCanMsgStandardCycle;
+                                                  boCanNM_RepeatMessage_Requested = FALSE;
+                                                  NM_Mode = cNM_Mode_RepeatMsg;
+                                              }
+                                              if( boCanNM_NM_Timeout_Timer_Expired == TRUE )
+                                              {
+                                                  setTimer( t_NM_Wait_Bus_Sleep_Time, c_NM_Wait_Bus_Sleep_Time );
+                                                  _NM_PrepareBusSleepModeInd();    // here t_DBKonTimer is stopped
+                                                  NM_Mode = cNM_Mode_Prepare_Bus_Sleep;
+                                                  boCanNM_NM_Timeout_Timer_Expired = FALSE;
+                                              }
+                                              break;
+        case cNM_Mode_Normal_Operation_State: if( boCanNM_NM_Timeout_Timer_Expired == TRUE )
+                                              {
+                                                  setTimer( t_NM_Timeout_Time, c_NM_Timeout_Time );
+                                                  // _NM_TimeoutExeption();    // no action to be done
+                                                  boCanNM_NM_Timeout_Timer_Expired = FALSE;
+                                              }
+                                              if( boCanNM_Rx_Indication == TRUE )
+                                              {
+                                                  cancelTimer( t_NM_Timeout_Time );
+                                                  setTimer( t_NM_Timeout_Time, c_NM_Timeout_Time );
+                                                  cancelTimer( t_NM_Transmit );
+                                                  setTimer( t_NM_Transmit, NmAsrCanMsgReducedTime );
+                                                  boCanNM_Rx_Indication = FALSE;
+                                              }
+                                              if( boCanNM_Tx_Confirmation == TRUE )
+                                              {
+                                                  cancelTimer( t_NM_Timeout_Time );
+                                                  setTimer( t_NM_Timeout_Time, c_NM_Timeout_Time );
+                                                  cancelTimer( t_NM_Transmit );
+                                                  setTimer( t_NM_Transmit, NmAsrCanMsgStandardCycle );
+                                                  boCanNM_Tx_Confirmation = FALSE;
+                                              }
+                                              if( NM_Request_State == 0 )    //no network requested
+                                              {
+                                                  cancelTimer( t_NM_Transmit );    // stop NM-Franme immediately
+                                                  NM_Mode = cNM_Mode_Ready_Sleep;
+                                              }
+                                              if( boCanNM_RepeatMessage_Requested == TRUE )
+                                              {
+                                                  setTimer( t_NM_Transmit, NmAsrCanMsgCycleOffset );    // send NM-Frame delayed
+                                                  cancelTimer( t_NM_Timeout_Time );
+                                                  setTimer( t_NM_Timeout_Time, c_NM_Timeout_Time );
+                                                  setTimer( t_NM_Repeat_Message_Time, c_NM_Repeat_Message_Time );
+                                                  boCanNM_RepeatMessage_Requested = FALSE;
+                                                  NM_Transmit_Cycle = NmAsrCanMsgStandardCycle;
+                                                  NM_Mode = cNM_Mode_RepeatMsg;
+                                              }
+                                              break;
+        case cNM_Mode_RepeatMsg:              if( boCanNM_NM_Timeout_Timer_Expired == TRUE )
+                                              {
+                                                  setTimer( t_NM_Timeout_Time, c_NM_Timeout_Time );
+                                                  boCanNM_NM_Timeout_Timer_Expired = FALSE;
+                                              }
+                                              if( boCanNM_Rx_Indication == TRUE )
+                                              {
+                                                  cancelTimer( t_NM_Timeout_Time );
+                                                  setTimer( t_NM_Timeout_Time, c_NM_Timeout_Time );
+                                                  boCanNM_Rx_Indication = FALSE;
+                                              }
+                                              if( boCanNM_Tx_Confirmation == TRUE )
+                                              {
+                                                  cancelTimer( t_NM_Timeout_Time );
+                                                  setTimer( t_NM_Timeout_Time, c_NM_Timeout_Time );
+                                                  boCanNM_Tx_Confirmation = FALSE;
+                                              }
+                                              if( boCanNM_RepeatMessage_Timer_Expired == TRUE )
+                                              {
+                                                  boCanNM_RepeatMessage_Timer_Expired = FALSE;
+                                                  if( NM_Request_State )
+                                                  {
+                                                      NM_Mode = cNM_Mode_Normal_Operation_State;
+                                                      NM_Transmit_Cycle = NmAsrCanMsgReducedTime;
+                                                  }
+                                                  else
+                                                  {
+                                                      cancelTimer( t_NM_Transmit );    // stop NM-Franme immediately
+                                                      NM_Mode = cNM_Mode_Ready_Sleep;
+                                                  }
+                                              }
+                                              break;
+    }
+    if( bOld_NM_Mode != NM_Mode )
+    {
+        _Nm_StateChangeNotification( bOld_NM_Mode, NM_Mode );    // does the Trace
+        putValue( HMI__NM_ORC_ActualState, NM_Mode );
+    }
+}
+/*@@end*/
+
+/*@@caplFunc:_NM_Init():*/
+_NM_Init()
+{
+    NM_Transmit_Cycle = NmAsrCanMsgStandardCycle;
+}
+/*@@end*/
+
+/*@@caplFunc:_NM_NetworkMode():*/
+_NM_NetworkMode()
+{
+    setTimer( t_DBKomTimer_5ms, 1 ); //  ms     start CAN-communication immediately
+    setTimer( t_DBKomTimer_20ms, 2 ); //  ms     start CAN-communication immediately
+    putValue( HMI__NM_ORC_CommActive, 1 );
+}
+/*@@end*/
+
+/*@@caplFunc:_Nm_BusSleepModeInd():*/
+_Nm_BusSleepModeInd()
+{
+//    _Trace( "_Nm_BusSleepModeInd", "Sleep Mode active");
+    __ORC_Startup_Delay();
+}
+/*@@end*/
+
+/*@@caplFunc:_Nm_PrepareBusSleepModeInd():*/
+void _Nm_PrepareBusSleepModeInd()
+{
+//    _Trace( "Nm_PrepareBusSleepModeInd", "Prepare Sleep Mode active");
+    putValue( HMI__NM_ORC_CommActive, 0 );
+    cancelTimer( t_DBKomTimer_20ms );
+    cancelTimer( t_DBKomTimer_5ms );
+}
+/*@@end*/
+
+/*@@caplFunc:_Nm_StateChangeNotification(byte,byte):*/
+_Nm_StateChangeNotification( byte previousState, byte currentState )
+{
+/*
+    char line[50];
+
+    snprintf( line, elcount(line ), "Transition from %d to %d", previousState, currentState );
+    _Trace( "Nm_StateChangeNotification", "", line );
+*/
+}
+/*@@end*/
+
+/*@@caplFunc:_ReleaseCommRequest(word):*/
+_ReleaseCommRequest( word RequestID )
+{
+    word temp; // actual NM request status
+
+    temp = getValue( HMI__NM_ORC_NM_Request );
+    temp &= ~RequestID; // reset NM request 
+    putValue( HMI__NM_ORC_NM_Request, temp );
+    _NM_Switch_NM_Mode();
+}
+/*@@end*/
+
+/*@@caplFunc:_SetCommRequest(word):*/
+_SetCommRequest( word RequestID )
+{
+    word temp; // actual NM request status
+
+    temp = getValue( HMI__NM_ORC_NM_Request );
+    temp |= RequestID; // set NM request 
+    putValue( HMI__NM_ORC_NM_Request, temp );
+    _NM_Switch_NM_Mode();
+}
+/*@@end*/
+
+/*@@caplFunc:_TraceCall(char[],long):*/
+void _TraceCall( char functionName[], long callResult )
+{
+    char line[100];
+
+    if( callResult == 1 )
+        snprintf( line, elcount(line ), "calling %s", functionName );
+    else
+        snprintf( line, elcount(line ), "call to %s failed - wrong state?", functionName );
+    _Trace( "", "", line );
+}
+/*@@end*/
+
+/*@@caplFunc:_Trace(char[],char[]):*/
+void _Trace( char functionName[], char info[])
+{
+    _Trace( functionName, info, "");
+}
+/*@@end*/
+
+/*@@caplFunc:_Trace(char[],char[],char[],long):*/
+void _Trace( char functionName[], char info[], char verbose[], long argument )
+{
+    char line[100];
+
+    snprintf( line, elcount(line ), verbose, argument );
+    _Trace( functionName, info, line );
+}
+/*@@end*/
+
+/*@@caplFunc:_Trace(char[],char[],char[]):*/
+void _Trace( char functionName[], char info[], char verbose[])
+{
+  char sep[2] = "/";
+  sep[0] = functionName[0] ? '/' : 0;
+  if( verbose[0])
+  {
+    write( "[%.3f]%s%s%s: %s", timeNow()/100000.0, gECU
+           , sep
+           , functionName
+           , verbose
+           );
+  } else
+  {
+    write( "[%.3f]%s%s%s: %s", timeNow()/100000.0, gECU
+           , sep
+           , functionName
+           , info
+           );
+  }
+}
+/*@@end*/
+
+/*@@caplFunc:___Template_Header():*/
+___Template_Header()
+{
+
+// #FUNCTIONS#
+// #FUNCTIONS_END#
+// #TIMERS#
+// #TIMERS_END#
+// #ENVVARS#
+// #ENVVARS_END#
+}
+/*@@end*/
+
+/*@@caplFunc:ORC_Disp_Stat_AR_check_output():*/
+ORC_Disp_Stat_AR_check_output()
+{
+      if( !getValue( HMI__STMSG_ORC_Disp_Stat_AR ))
+    {
+        // Botschaft ORC_Disp_Stat_AR_AR --- Sendeart 5 cyclicAndSpontanWithDelay --- 
+        _ORC_Disp_Stat_AR_Cnt--;
+        if( _ORC_Disp_Stat_AR_Cnt < 1 )
+        {
+            // Nachricht wg. abgelaufenem Zyklus ausgeben
+            ORC_Disp_Stat_AR_output();
+            _ORC_Disp_Stat_AR_Cnt = _ORC_Disp_Stat_AR_CycleCount; // Zyklus-Zähler zurücksetzen
+            _ORC_Disp_Stat_AR_SpontanFlag = 0; // Spontan-Flag zurücksetzen
+        }
+        else if( _ORC_Disp_Stat_AR_SpontanFlag )
+        {
+            // Nachricht wg. spontaner Änderung ausgeben
+            ORC_Disp_Stat_AR_output();
+            _ORC_Disp_Stat_AR_SpontanFlag = 0; // Spontan-Flag zurücksetzen
+        }
+    }
+}
+/*@@end*/
+
+/*@@caplFunc:ORC_Disp_Stat_AR_init():*/
+ORC_Disp_Stat_AR_init()
+{   /* Botschaft ORC_Disp_Stat_AR ID: 719 --- Sendeart 5 cyclicAndSpontanWithDelay --- 
+BA_ "ApplMessage" BO_ 719 0;
+BA_ "NmAsrMessage" BO_ 719 0;
+BA_ "GenMsgMinAcceptLength" BO_ 719 8;
+BA_ "GenMsgILSupport" BO_ 719 1;
+BA_ "DiagState" BO_ 719 0;
+BA_ "DiagRequest" BO_ 719 0;
+BA_ "DiagResponse" BO_ 719 0;
+BA_ "GenMsgStartValue" BO_ 719 "0";
+BA_ "GenMsgStartDelayTime" BO_ 719 0;
+BA_ "GenMsgDelayTime" BO_ 719 20;
+BA_ "GenMsgNrOfRepetitions" BO_ 719 0;
+BA_ "GenMsgCycleTime" BO_ 719 100;
+BA_ "GenMsgSendType" BO_ 719 5;
+    */
+    _ORC_Disp_Stat_AR_Timebase =             c_tDBKomTimer_20ms;
+    _ORC_Disp_Stat_AR_CycleCount =          100 / _ORC_Disp_Stat_AR_Timebase;
+    _ORC_Disp_Stat_AR_StartDelay =            0 / _ORC_Disp_Stat_AR_Timebase;
+    _ORC_Disp_Stat_AR_Cnt = _ORC_Disp_Stat_AR_StartDelay;
+    _ORC_Disp_Stat_AR_SpontanFlag = 0;
+
+    putValue( HMI__STMSGSD_ORC_Disp_Stat_AR, _ORC_Disp_Stat_AR_StartDelay * _ORC_Disp_Stat_AR_Timebase );
+    
+    _mORC_Disp_Stat_AR.Airbag_P_LED_On_Rq.phys = getValue( HMI_Airbag_P_LED_On_Rq );
+    _mORC_Disp_Stat_AR.Bckl_Sw_D_Stat.phys = getValue( HMI_Bckl_Sw_D_Stat );
+    _mORC_Disp_Stat_AR.Bckl_Sw_FP_Stat.phys = getValue( HMI_Bckl_Sw_FP_Stat );
+    _mORC_Disp_Stat_AR.Bckl_Sw_FPM_Stat.phys = getValue( HMI_Bckl_Sw_FPM_Stat );
+    _mORC_Disp_Stat_AR.COD_Ind_LED_Rq.phys = getValue( HMI_COD_Ind_LED_Rq );
+    _mORC_Disp_Stat_AR.ESL_Lk_Appl_ORC.phys = getValue( HMI_ESL_Lk_Appl_ORC );
+    _mORC_Disp_Stat_AR.HV_Pyrofuse_Flt.phys = getValue( HMI_HV_Pyrofuse_Flt );
+    _mORC_Disp_Stat_AR.OC_D_Fast_ORC.phys = getValue( HMI_OC_D_Fast_ORC );
+    _mORC_Disp_Stat_AR.OC_P_Fast_ORC.phys = getValue( HMI_OC_P_Fast_ORC );
+    _mORC_Disp_Stat_AR.OC_P_Flt_ORC.phys = getValue( HMI_OC_P_Flt_ORC );
+    _mORC_Disp_Stat_AR.OC_P_ORC.phys = getValue( HMI_OC_P_ORC );
+    _mORC_Disp_Stat_AR.OC_PM_Fast_ORC.phys = getValue( HMI_OC_PM_Fast_ORC );
+    _mORC_Disp_Stat_AR.OCM_MsgDisp_Rq.phys = getValue( HMI_OCM_MsgDisp_Rq );
+    _mORC_Disp_Stat_AR.ORC_CrashDet_Flt.phys = getValue( HMI_ORC_CrashDet_Flt );
+    _mORC_Disp_Stat_AR.PP_Msg1_Disp_Rq.phys = getValue( HMI_PP_Msg1_Disp_Rq );
+    _mORC_Disp_Stat_AR.SQC_Bckl_Sw_Ft_Stat.phys = getValue( HMI_SQC_Bckl_Sw_Ft_Stat );
+    _mORC_Disp_Stat_AR.SRS_DtlMsg01_Disp_Rq.phys = getValue( HMI_SRS_DtlMsg01_Disp_Rq );
+    _mORC_Disp_Stat_AR.SRS_DtlMsg02_Disp_Rq.phys = getValue( HMI_SRS_DtlMsg02_Disp_Rq );
+    _mORC_Disp_Stat_AR.SRS_DtlMsg03_Disp_Rq.phys = getValue( HMI_SRS_DtlMsg03_Disp_Rq );
+    _mORC_Disp_Stat_AR.SRS_DtlMsg04_Disp_Rq.phys = getValue( HMI_SRS_DtlMsg04_Disp_Rq );
+    _mORC_Disp_Stat_AR.SRS_DtlMsg05_Disp_Rq.phys = getValue( HMI_SRS_DtlMsg05_Disp_Rq );
+    _mORC_Disp_Stat_AR.SRS_DtlMsg06_Disp_Rq.phys = getValue( HMI_SRS_DtlMsg06_Disp_Rq );
+    _mORC_Disp_Stat_AR.SRS_DtlMsg07_Disp_Rq.phys = getValue( HMI_SRS_DtlMsg07_Disp_Rq );
+    _mORC_Disp_Stat_AR.SRS_DtlMsg08_Disp_Rq.phys = getValue( HMI_SRS_DtlMsg08_Disp_Rq );
+    _mORC_Disp_Stat_AR.SRS_DtlMsg09_Disp_Rq.phys = getValue( HMI_SRS_DtlMsg09_Disp_Rq );
+    _mORC_Disp_Stat_AR.SRS_DtlMsg10_Disp_Rq.phys = getValue( HMI_SRS_DtlMsg10_Disp_Rq );
+    _mORC_Disp_Stat_AR.SRS_DtlMsg11_Disp_Rq.phys = getValue( HMI_SRS_DtlMsg11_Disp_Rq );
+    _mORC_Disp_Stat_AR.SRS_DtlMsg12_Disp_Rq.phys = getValue( HMI_SRS_DtlMsg12_Disp_Rq );
+    _mORC_Disp_Stat_AR.SRS_DtlMsg13_Disp_Rq.phys = getValue( HMI_SRS_DtlMsg13_Disp_Rq );
+    _mORC_Disp_Stat_AR.SRS_DtlMsg14_Disp_Rq.phys = getValue( HMI_SRS_DtlMsg14_Disp_Rq );
+    _mORC_Disp_Stat_AR.SRS_DtlMsg15_Disp_Rq.phys = getValue( HMI_SRS_DtlMsg15_Disp_Rq );
+    _mORC_Disp_Stat_AR.SRS_DtlMsg16_Disp_Rq.phys = getValue( HMI_SRS_DtlMsg16_Disp_Rq );
+    _mORC_Disp_Stat_AR.SRS_IndLmp_Rq.phys = getValue( HMI_SRS_IndLmp_Rq );
+}
+/*@@end*/
+
+/*@@caplFunc:ORC_Disp_Stat_AR_output():*/
+ORC_Disp_Stat_AR_output()
+{
+    byte crc;
+    byte SQC_help;
+
+    SQC_help = getValue( HMI_SQC_Bckl_Sw_Ft_Stat ); //get copy of actual EnvVar
+    if( !getValue( HMI_SQC_Bckl_Sw_Ft_Stat_Auto ) ) // automatic SQC-calculation active ?
+    {
+        if( SQC_help == _ORC_Disp_Stat_AR_SQC_TriggPos ) // start injection of error when trigger reached
+        {
+            _ORC_Disp_Stat_AR_E2E_Armed = 1;   // run
+            putValue( HMI_E2E_Bckl_Sw_Ft_Stat_State, 1 );
+        }
+        // calculate new sequence counter
+        
+        if( ( _ORC_Disp_Stat_AR_SQC_WrongSeqJump != 0 ) &&
+            ( _ORC_Disp_Stat_AR_E2E_Armed == 1        )    )
+        {
+            SQC_help = SQC_help + 16 + _ORC_Disp_Stat_AR_SQC_WrongSeqJump;
+            if( SQC_help > 15 )
+                SQC_help = SQC_help - 16;
+            if( SQC_help > 15 )
+                SQC_help = SQC_help - 16;
+            _ORC_Disp_Stat_AR_SQC_WrongSeqJump = 0;
+        }
+        
+        if( ( _ORC_Disp_Stat_AR_SQC_RepeatedCnt ) &&
+            ( _ORC_Disp_Stat_AR_E2E_Armed == 1  )    )
+        {
+            _ORC_Disp_Stat_AR_SQC_RepeatedCnt--;
+        }
+        else
+        {
+            if( SQC_help >= 15 ) SQC_help = 0;
+            else SQC_help++;
+        }
+            
+        putValue( HMI_SQC_Bckl_Sw_Ft_Stat, SQC_help );
+    }
+    _mORC_Disp_Stat_AR.SQC_Bckl_Sw_Ft_Stat = SQC_help;
+
+    if( getValue( HMI_CRC_Bckl_Sw_Ft_Stat_Profile_02 ) )
+    {
+        if( !getValue( HMI_CRC_Bckl_Sw_Ft_Stat_Auto ) )
+        {   // CRC according Profile_02 ( W213 )
+            // berechne crc
+            crc = 0xFF;
+//            crc = crctable_profile02[ crc ^ _mORC_Disp_Stat_AR.byte( 0 ) ];
+//            crc = crctable_profile02[ crc ^ _mORC_Disp_Stat_AR.byte( 1 ) ];
+//            crc = crctable_profile02[ crc ^ _mORC_Disp_Stat_AR.byte( 2 ) ];
+//            crc = crctable_profile02[ crc ^ _mORC_Disp_Stat_AR.byte( 3 ) ];
+//            crc = crctable_profile02[ crc ^ _mORC_Disp_Stat_AR.byte( 4 ) ];
+//            crc = crctable_profile02[ crc ^ _mORC_Disp_Stat_AR.byte( 5 ) ];  CRC
+            crc = crctable_profile02[ crc ^ _mORC_Disp_Stat_AR.byte( 6 ) ];
+            crc = crctable_profile02[ crc ^ _mORC_Disp_Stat_AR.byte( 7 ) ];
+            crc = crctable_profile02[ crc ^ _ORC_Disp_Stat_AR_CRC_Offset[ _mORC_Disp_Stat_AR.SQC_Bckl_Sw_Ft_Stat ] ]; // load offset
+            crc = (crc ^ 0xFF);
+            
+            if( ( _ORC_Disp_Stat_AR_CRC_ErrorCnt   && ( _ORC_Disp_Stat_AR_E2E_Armed == 1   ) ) ||
+                ( getValue( HMI_CRC_Bckl_Sw_Ft_Stat_Invalid )                                         )    )
+            {
+                crc++;
+                if( _ORC_Disp_Stat_AR_CRC_ErrorCnt > 0 )
+                    _ORC_Disp_Stat_AR_CRC_ErrorCnt--; 
+            }
+            _mORC_Disp_Stat_AR.CRC_Bckl_Sw_Ft_Stat = crc;
+            putValue( HMI_CRC_Bckl_Sw_Ft_Stat, crc );
+        }
+        else
+            _mORC_Disp_Stat_AR.CRC_Bckl_Sw_Ft_Stat = getValue( HMI_CRC_Bckl_Sw_Ft_Stat );
+    }
+    else
+    {
+        if( !getValue( HMI_CRC_Bckl_Sw_Ft_Stat_Auto ) )
+        {   // CRC according to SAE1850 ( W222 )
+            // berechne crc
+            crc = 0xFF;
+//            crc = crctable[crc ^ _mORC_Disp_Stat_AR.byte( 0 )];
+//            crc = crctable[crc ^ _mORC_Disp_Stat_AR.byte( 1 )];
+//            crc = crctable[crc ^ _mORC_Disp_Stat_AR.byte( 2 )];
+//            crc = crctable[crc ^ _mORC_Disp_Stat_AR.byte( 3 )];
+//            crc = crctable[crc ^ _mORC_Disp_Stat_AR.byte( 4 )];
+//            crc = crctable[crc ^ _mORC_Disp_Stat_AR.byte( 5 )];  CRC
+            crc = crctable[crc ^ _mORC_Disp_Stat_AR.byte( 6 )];
+            crc = crctable[crc ^ _mORC_Disp_Stat_AR.byte( 7 )];
+            crc = (crc ^ 0xFF);
+            if( ( _ORC_Disp_Stat_AR_CRC_ErrorCnt   && ( _ORC_Disp_Stat_AR_E2E_Armed == 1   ) ) ||
+                ( getValue( HMI_CRC_Bckl_Sw_Ft_Stat_Invalid )                                         )    )
+            {
+                crc++;
+                if( _ORC_Disp_Stat_AR_CRC_ErrorCnt > 0 )
+                    _ORC_Disp_Stat_AR_CRC_ErrorCnt--; 
+            }
+            _mORC_Disp_Stat_AR.CRC_Bckl_Sw_Ft_Stat = crc;
+            putValue( HMI_CRC_Bckl_Sw_Ft_Stat, crc );
+        }
+        else
+            _mORC_Disp_Stat_AR.CRC_Bckl_Sw_Ft_Stat = getValue( HMI_CRC_Bckl_Sw_Ft_Stat );
+    }
+    if( ( _ORC_Disp_Stat_AR_MSG_DropCnt > 0 ) &&
+        ( _ORC_Disp_Stat_AR_E2E_Armed == 1  )    )
+    {
+        _ORC_Disp_Stat_AR_MSG_DropCnt--;  // do not send message
+    }
+    else
+        output( _mORC_Disp_Stat_AR );
+        
+    if( _ORC_Disp_Stat_AR_E2E_Armed == 1 )
+    {
+        if ( ( _ORC_Disp_Stat_AR_MSG_DropCnt == 0      ) &&
+             ( _ORC_Disp_Stat_AR_CRC_ErrorCnt == 0     ) &&
+             ( _ORC_Disp_Stat_AR_SQC_RepeatedCnt == 0  ) &&
+             ( _ORC_Disp_Stat_AR_SQC_WrongSeqJump == 0 )    )
+        {
+            _ORC_Disp_Stat_AR_E2E_Armed = 0; // no further influence, injetion completed
+            putValue( HMI_E2E_Bckl_Sw_Ft_Stat_State, 0 );
+        }
+    }
+}
+/*@@end*/
+
+/*@@caplFunc:ORC_Disp_Stat_AR_saveEnvVars(dword):*/
+void ORC_Disp_Stat_AR_saveEnvVars( dword hFile )
+{
+    filePutString("\n// Knoten ORC: ORC_Disp_Stat_AR\n", 30, hFile);
+    snprintf(buffer, elcount(buffer), "0.0000 HMI__STMSG_ORC_Disp_Stat := %X\n", getValue(HMI__STMSG_ORC_Disp_Stat_AR ));        filePutString (buffer, elcount(buffer), hFile);
+    snprintf(buffer, elcount(buffer), "0.0000 HMI__STMSGT_ORC_Disp_Stat := %X\n", getValue(HMI__STMSGT_ORC_Disp_Stat_AR ));        filePutString (buffer, elcount(buffer), hFile);
+    snprintf(buffer, elcount(buffer), "0.0000 HMI_Airbag_P_LED_On_Rq := %X\n", getValue( HMI_Airbag_P_LED_On_Rq ) );        filePutString (buffer, elcount(buffer), hFile);
+    snprintf(buffer, elcount(buffer), "0.0000 HMI_Bckl_Sw_D_Stat := %X\n", getValue( HMI_Bckl_Sw_D_Stat ) );        filePutString (buffer, elcount(buffer), hFile);
+    snprintf(buffer, elcount(buffer), "0.0000 HMI_Bckl_Sw_FP_Stat := %X\n", getValue( HMI_Bckl_Sw_FP_Stat ) );        filePutString (buffer, elcount(buffer), hFile);
+    snprintf(buffer, elcount(buffer), "0.0000 HMI_Bckl_Sw_FPM_Stat := %X\n", getValue( HMI_Bckl_Sw_FPM_Stat ) );        filePutString (buffer, elcount(buffer), hFile);
+    snprintf(buffer, elcount(buffer), "0.0000 HMI_COD_Ind_LED_Rq := %X\n", getValue( HMI_COD_Ind_LED_Rq ) );        filePutString (buffer, elcount(buffer), hFile);
+    snprintf(buffer, elcount(buffer), "0.0000 HMI_CRC_Bckl_Sw_Ft_Stat := %X\n", getValue( HMI_CRC_Bckl_Sw_Ft_Stat ) );        filePutString (buffer, elcount(buffer), hFile);
+    snprintf(buffer, elcount(buffer), "0.0000 HMI_CRC_Bckl_Sw_Ft_Stat_Auto := %X\n", getValue( HMI_CRC_Bckl_Sw_Ft_Stat_Auto ) );        filePutString (buffer, elcount(buffer), hFile);
+    snprintf(buffer, elcount(buffer), "0.0000 HMI_ESL_Lk_Appl_ORC := %X\n", getValue( HMI_ESL_Lk_Appl_ORC ) );        filePutString (buffer, elcount(buffer), hFile);
+    snprintf(buffer, elcount(buffer), "0.0000 HMI_HV_Pyrofuse_Flt := %X\n", getValue( HMI_HV_Pyrofuse_Flt ) );        filePutString (buffer, elcount(buffer), hFile);
+    snprintf(buffer, elcount(buffer), "0.0000 HMI_OC_D_Fast_ORC := %X\n", getValue( HMI_OC_D_Fast_ORC ) );        filePutString (buffer, elcount(buffer), hFile);
+    snprintf(buffer, elcount(buffer), "0.0000 HMI_OC_P_Fast_ORC := %X\n", getValue( HMI_OC_P_Fast_ORC ) );        filePutString (buffer, elcount(buffer), hFile);
+    snprintf(buffer, elcount(buffer), "0.0000 HMI_OC_P_Flt_ORC := %X\n", getValue( HMI_OC_P_Flt_ORC ) );        filePutString (buffer, elcount(buffer), hFile);
+    snprintf(buffer, elcount(buffer), "0.0000 HMI_OC_P_ORC := %X\n", getValue( HMI_OC_P_ORC ) );        filePutString (buffer, elcount(buffer), hFile);
+    snprintf(buffer, elcount(buffer), "0.0000 HMI_OC_PM_Fast_ORC := %X\n", getValue( HMI_OC_PM_Fast_ORC ) );        filePutString (buffer, elcount(buffer), hFile);
+    snprintf(buffer, elcount(buffer), "0.0000 HMI_OCM_MsgDisp_Rq := %X\n", getValue( HMI_OCM_MsgDisp_Rq ) );        filePutString (buffer, elcount(buffer), hFile);
+    snprintf(buffer, elcount(buffer), "0.0000 HMI_ORC_CrashDet_Flt := %X\n", getValue( HMI_ORC_CrashDet_Flt ) );        filePutString (buffer, elcount(buffer), hFile);
+    snprintf(buffer, elcount(buffer), "0.0000 HMI_PP_Msg1_Disp_Rq := %X\n", getValue( HMI_PP_Msg1_Disp_Rq ) );        filePutString (buffer, elcount(buffer), hFile);
+    snprintf(buffer, elcount(buffer), "0.0000 HMI_SQC_Bckl_Sw_Ft_Stat := %X\n", getValue( HMI_SQC_Bckl_Sw_Ft_Stat ) );        filePutString (buffer, elcount(buffer), hFile);
+    snprintf(buffer, elcount(buffer), "0.0000 HMI_SQC_Bckl_Sw_Ft_Stat_Auto := %X\n", getValue( HMI_SQC_Bckl_Sw_Ft_Stat_Auto ) );        filePutString (buffer, elcount(buffer), hFile);
+    snprintf(buffer, elcount(buffer), "0.0000 HMI_SRS_DtlMsg01_Disp_Rq := %X\n", getValue( HMI_SRS_DtlMsg01_Disp_Rq ) );        filePutString (buffer, elcount(buffer), hFile);
+    snprintf(buffer, elcount(buffer), "0.0000 HMI_SRS_DtlMsg02_Disp_Rq := %X\n", getValue( HMI_SRS_DtlMsg02_Disp_Rq ) );        filePutString (buffer, elcount(buffer), hFile);
+    snprintf(buffer, elcount(buffer), "0.0000 HMI_SRS_DtlMsg03_Disp_Rq := %X\n", getValue( HMI_SRS_DtlMsg03_Disp_Rq ) );        filePutString (buffer, elcount(buffer), hFile);
+    snprintf(buffer, elcount(buffer), "0.0000 HMI_SRS_DtlMsg04_Disp_Rq := %X\n", getValue( HMI_SRS_DtlMsg04_Disp_Rq ) );        filePutString (buffer, elcount(buffer), hFile);
+    snprintf(buffer, elcount(buffer), "0.0000 HMI_SRS_DtlMsg05_Disp_Rq := %X\n", getValue( HMI_SRS_DtlMsg05_Disp_Rq ) );        filePutString (buffer, elcount(buffer), hFile);
+    snprintf(buffer, elcount(buffer), "0.0000 HMI_SRS_DtlMsg06_Disp_Rq := %X\n", getValue( HMI_SRS_DtlMsg06_Disp_Rq ) );        filePutString (buffer, elcount(buffer), hFile);
+    snprintf(buffer, elcount(buffer), "0.0000 HMI_SRS_DtlMsg07_Disp_Rq := %X\n", getValue( HMI_SRS_DtlMsg07_Disp_Rq ) );        filePutString (buffer, elcount(buffer), hFile);
+    snprintf(buffer, elcount(buffer), "0.0000 HMI_SRS_DtlMsg08_Disp_Rq := %X\n", getValue( HMI_SRS_DtlMsg08_Disp_Rq ) );        filePutString (buffer, elcount(buffer), hFile);
+    snprintf(buffer, elcount(buffer), "0.0000 HMI_SRS_DtlMsg09_Disp_Rq := %X\n", getValue( HMI_SRS_DtlMsg09_Disp_Rq ) );        filePutString (buffer, elcount(buffer), hFile);
+    snprintf(buffer, elcount(buffer), "0.0000 HMI_SRS_DtlMsg10_Disp_Rq := %X\n", getValue( HMI_SRS_DtlMsg10_Disp_Rq ) );        filePutString (buffer, elcount(buffer), hFile);
+    snprintf(buffer, elcount(buffer), "0.0000 HMI_SRS_DtlMsg11_Disp_Rq := %X\n", getValue( HMI_SRS_DtlMsg11_Disp_Rq ) );        filePutString (buffer, elcount(buffer), hFile);
+    snprintf(buffer, elcount(buffer), "0.0000 HMI_SRS_DtlMsg12_Disp_Rq := %X\n", getValue( HMI_SRS_DtlMsg12_Disp_Rq ) );        filePutString (buffer, elcount(buffer), hFile);
+    snprintf(buffer, elcount(buffer), "0.0000 HMI_SRS_DtlMsg13_Disp_Rq := %X\n", getValue( HMI_SRS_DtlMsg13_Disp_Rq ) );        filePutString (buffer, elcount(buffer), hFile);
+    snprintf(buffer, elcount(buffer), "0.0000 HMI_SRS_DtlMsg14_Disp_Rq := %X\n", getValue( HMI_SRS_DtlMsg14_Disp_Rq ) );        filePutString (buffer, elcount(buffer), hFile);
+    snprintf(buffer, elcount(buffer), "0.0000 HMI_SRS_DtlMsg15_Disp_Rq := %X\n", getValue( HMI_SRS_DtlMsg15_Disp_Rq ) );        filePutString (buffer, elcount(buffer), hFile);
+    snprintf(buffer, elcount(buffer), "0.0000 HMI_SRS_DtlMsg16_Disp_Rq := %X\n", getValue( HMI_SRS_DtlMsg16_Disp_Rq ) );        filePutString (buffer, elcount(buffer), hFile);
+    snprintf(buffer, elcount(buffer), "0.0000 HMI_SRS_IndLmp_Rq := %X\n", getValue( HMI_SRS_IndLmp_Rq ) );        filePutString (buffer, elcount(buffer), hFile);
+}
+/*@@end*/
+
+/*@@timer:_tORC_Disp_Stat_AR:*/
+on timer _tORC_Disp_Stat_AR
+{
+    putValue( HMI__STMSG_ORC_Disp_Stat_AR, 0 );
+}
+/*@@end*/
+
+/*@@envVar:HMI__STMSG_ORC_Disp_Stat_AR:*/
+on EnvVar HMI__STMSG_ORC_Disp_Stat_AR
+{
+    long tDelay;
+    if( getValue( this ) == 2 )
+    {
+        tDelay = getValue( HMI__STMSGT_ORC_Disp_Stat_AR );
+        if( tDelay > 0 )
+            setTimer( _tORC_Disp_Stat_AR, tDelay );
+        else
+            putValue( HMI__STMSG_ORC_Disp_Stat_AR, 0 );
+    }
+}
+/*@@end*/
+
+/*@@envVar:HMI_E2E_Bckl_Sw_Ft_Stat_Inject:*/
+on envVar HMI_E2E_Bckl_Sw_Ft_Stat_Inject
+{
+    if( getValue( this ) )
+    {
+        _ORC_Disp_Stat_AR_CRC_ErrorCnt = getValue( HMI_CRC_Bckl_Sw_Ft_Stat_ErrorCount );
+        _ORC_Disp_Stat_AR_SQC_TriggPos = getValue( HMI_SQC_Bckl_Sw_Ft_Stat_TriggerPosition );
+        _ORC_Disp_Stat_AR_SQC_WrongSeqJump = getValue( HMI_SQC_Bckl_Sw_Ft_Stat_WrongSeq );
+        _ORC_Disp_Stat_AR_SQC_RepeatedCnt = getValue( HMI_SQC_Bckl_Sw_Ft_Stat_Repeated );
+        _ORC_Disp_Stat_AR_MSG_DropCnt = getValue( HMI_SQC_Bckl_Sw_Ft_Stat_MSG_DropCnt );
+        putValue( HMI_E2E_Bckl_Sw_Ft_Stat_State, 2 );
+        _ORC_Disp_Stat_AR_E2E_Armed = 2;  //armed
+    }
+}
+/*@@end*/
+
+/*@@envVar:HMI_Airbag_P_LED_On_Rq:*/
+on EnvVar HMI_Airbag_P_LED_On_Rq
+{
+    _mORC_Disp_Stat_AR.Airbag_P_LED_On_Rq.phys = getValue(this);
+    _ORC_Disp_Stat_AR_SpontanFlag = 1;
+}
+/*@@end*/
+
+/*@@envVar:HMI_Bckl_Sw_D_Stat:*/
+on EnvVar HMI_Bckl_Sw_D_Stat
+{
+    _mORC_Disp_Stat_AR.Bckl_Sw_D_Stat.phys = getValue(this);
+    _ORC_Disp_Stat_AR_SpontanFlag = 1;
+}
+/*@@end*/
+
+/*@@envVar:HMI_Bckl_Sw_FP_Stat:*/
+on EnvVar HMI_Bckl_Sw_FP_Stat
+{
+    _mORC_Disp_Stat_AR.Bckl_Sw_FP_Stat.phys = getValue(this);
+    _ORC_Disp_Stat_AR_SpontanFlag = 1;
+}
+/*@@end*/
+
+/*@@envVar:HMI_Bckl_Sw_FPM_Stat:*/
+on EnvVar HMI_Bckl_Sw_FPM_Stat
+{
+    _mORC_Disp_Stat_AR.Bckl_Sw_FPM_Stat.phys = getValue(this);
+    _ORC_Disp_Stat_AR_SpontanFlag = 1;
+}
+/*@@end*/
+
+/*@@envVar:HMI_COD_Ind_LED_Rq:*/
+on EnvVar HMI_COD_Ind_LED_Rq
+{
+    _mORC_Disp_Stat_AR.COD_Ind_LED_Rq.phys = getValue(this);
+    _ORC_Disp_Stat_AR_SpontanFlag = 1;
+}
+/*@@end*/
+
+/*@@envVar:HMI_ESL_Lk_Appl_ORC:*/
+on EnvVar HMI_ESL_Lk_Appl_ORC
+{
+    _mORC_Disp_Stat_AR.ESL_Lk_Appl_ORC.phys = getValue(this);
+    _ORC_Disp_Stat_AR_SpontanFlag = 1;
+}
+/*@@end*/
+
+/*@@envVar:HMI_HV_Pyrofuse_Flt:*/
+on EnvVar HMI_HV_Pyrofuse_Flt
+{
+    _mORC_Disp_Stat_AR.HV_Pyrofuse_Flt.phys = getValue(this);
+    _ORC_Disp_Stat_AR_SpontanFlag = 1;
+}
+/*@@end*/
+
+/*@@envVar:HMI_OC_D_Fast_ORC:*/
+on EnvVar HMI_OC_D_Fast_ORC
+{
+    _mORC_Disp_Stat_AR.OC_D_Fast_ORC.phys = getValue(this);
+    _ORC_Disp_Stat_AR_SpontanFlag = 1;
+}
+/*@@end*/
+
+/*@@envVar:HMI_OC_P_Fast_ORC:*/
+on EnvVar HMI_OC_P_Fast_ORC
+{
+    _mORC_Disp_Stat_AR.OC_P_Fast_ORC.phys = getValue(this);
+    _ORC_Disp_Stat_AR_SpontanFlag = 1;
+}
+/*@@end*/
+
+/*@@envVar:HMI_OC_P_Flt_ORC:*/
+on EnvVar HMI_OC_P_Flt_ORC
+{
+    _mORC_Disp_Stat_AR.OC_P_Flt_ORC.phys = getValue(this);
+    _ORC_Disp_Stat_AR_SpontanFlag = 1;
+}
+/*@@end*/
+
+/*@@envVar:HMI_OC_P_ORC:*/
+on EnvVar HMI_OC_P_ORC
+{
+    _mORC_Disp_Stat_AR.OC_P_ORC.phys = getValue(this);
+    _ORC_Disp_Stat_AR_SpontanFlag = 1;
+}
+/*@@end*/
+
+/*@@envVar:HMI_OC_PM_Fast_ORC:*/
+on EnvVar HMI_OC_PM_Fast_ORC
+{
+    _mORC_Disp_Stat_AR.OC_PM_Fast_ORC.phys = getValue(this);
+    _ORC_Disp_Stat_AR_SpontanFlag = 1;
+}
+/*@@end*/
+
+/*@@envVar:HMI_OCM_MsgDisp_Rq:*/
+on EnvVar HMI_OCM_MsgDisp_Rq
+{
+    _mORC_Disp_Stat_AR.OCM_MsgDisp_Rq.phys = getValue(this);
+    _ORC_Disp_Stat_AR_SpontanFlag = 1;
+}
+/*@@end*/
+
+/*@@envVar:HMI_ORC_CrashDet_Flt:*/
+on EnvVar HMI_ORC_CrashDet_Flt
+{
+    _mORC_Disp_Stat_AR.ORC_CrashDet_Flt.phys = getValue(this);
+    _ORC_Disp_Stat_AR_SpontanFlag = 1;
+}
+/*@@end*/
+
+/*@@envVar:HMI_PP_Msg1_Disp_Rq:*/
+on EnvVar HMI_PP_Msg1_Disp_Rq
+{
+    _mORC_Disp_Stat_AR.PP_Msg1_Disp_Rq.phys = getValue(this);
+    _ORC_Disp_Stat_AR_SpontanFlag = 1;
+}
+/*@@end*/
+
+/*@@envVar:HMI_SRS_DtlMsg01_Disp_Rq:*/
+on EnvVar HMI_SRS_DtlMsg01_Disp_Rq
+{
+    _mORC_Disp_Stat_AR.SRS_DtlMsg01_Disp_Rq.phys = getValue(this);
+    _ORC_Disp_Stat_AR_SpontanFlag = 1;
+}
+/*@@end*/
+
+/*@@envVar:HMI_SRS_DtlMsg02_Disp_Rq:*/
+on EnvVar HMI_SRS_DtlMsg02_Disp_Rq
+{
+    _mORC_Disp_Stat_AR.SRS_DtlMsg02_Disp_Rq.phys = getValue(this);
+    _ORC_Disp_Stat_AR_SpontanFlag = 1;
+}
+/*@@end*/
+
+/*@@envVar:HMI_SRS_DtlMsg03_Disp_Rq:*/
+on EnvVar HMI_SRS_DtlMsg03_Disp_Rq
+{
+    _mORC_Disp_Stat_AR.SRS_DtlMsg03_Disp_Rq.phys = getValue(this);
+    _ORC_Disp_Stat_AR_SpontanFlag = 1;
+}
+/*@@end*/
+
+/*@@envVar:HMI_SRS_DtlMsg04_Disp_Rq:*/
+on EnvVar HMI_SRS_DtlMsg04_Disp_Rq
+{
+    _mORC_Disp_Stat_AR.SRS_DtlMsg04_Disp_Rq.phys = getValue(this);
+    _ORC_Disp_Stat_AR_SpontanFlag = 1;
+}
+/*@@end*/
+
+/*@@envVar:HMI_SRS_DtlMsg05_Disp_Rq:*/
+on EnvVar HMI_SRS_DtlMsg05_Disp_Rq
+{
+    _mORC_Disp_Stat_AR.SRS_DtlMsg05_Disp_Rq.phys = getValue(this);
+    _ORC_Disp_Stat_AR_SpontanFlag = 1;
+}
+/*@@end*/
+
+/*@@envVar:HMI_SRS_DtlMsg06_Disp_Rq:*/
+on EnvVar HMI_SRS_DtlMsg06_Disp_Rq
+{
+    _mORC_Disp_Stat_AR.SRS_DtlMsg06_Disp_Rq.phys = getValue(this);
+    _ORC_Disp_Stat_AR_SpontanFlag = 1;
+}
+/*@@end*/
+
+/*@@envVar:HMI_SRS_DtlMsg07_Disp_Rq:*/
+on EnvVar HMI_SRS_DtlMsg07_Disp_Rq
+{
+    _mORC_Disp_Stat_AR.SRS_DtlMsg07_Disp_Rq.phys = getValue(this);
+    _ORC_Disp_Stat_AR_SpontanFlag = 1;
+}
+/*@@end*/
+
+/*@@envVar:HMI_SRS_DtlMsg08_Disp_Rq:*/
+on EnvVar HMI_SRS_DtlMsg08_Disp_Rq
+{
+    _mORC_Disp_Stat_AR.SRS_DtlMsg08_Disp_Rq.phys = getValue(this);
+    _ORC_Disp_Stat_AR_SpontanFlag = 1;
+}
+/*@@end*/
+
+/*@@envVar:HMI_SRS_DtlMsg09_Disp_Rq:*/
+on EnvVar HMI_SRS_DtlMsg09_Disp_Rq
+{
+    _mORC_Disp_Stat_AR.SRS_DtlMsg09_Disp_Rq.phys = getValue(this);
+    _ORC_Disp_Stat_AR_SpontanFlag = 1;
+}
+/*@@end*/
+
+/*@@envVar:HMI_SRS_DtlMsg10_Disp_Rq:*/
+on EnvVar HMI_SRS_DtlMsg10_Disp_Rq
+{
+    _mORC_Disp_Stat_AR.SRS_DtlMsg10_Disp_Rq.phys = getValue(this);
+    _ORC_Disp_Stat_AR_SpontanFlag = 1;
+}
+/*@@end*/
+
+/*@@envVar:HMI_SRS_DtlMsg11_Disp_Rq:*/
+on EnvVar HMI_SRS_DtlMsg11_Disp_Rq
+{
+    _mORC_Disp_Stat_AR.SRS_DtlMsg11_Disp_Rq.phys = getValue(this);
+    _ORC_Disp_Stat_AR_SpontanFlag = 1;
+}
+/*@@end*/
+
+/*@@envVar:HMI_SRS_DtlMsg12_Disp_Rq:*/
+on EnvVar HMI_SRS_DtlMsg12_Disp_Rq
+{
+    _mORC_Disp_Stat_AR.SRS_DtlMsg12_Disp_Rq.phys = getValue(this);
+    _ORC_Disp_Stat_AR_SpontanFlag = 1;
+}
+/*@@end*/
+
+/*@@envVar:HMI_SRS_DtlMsg13_Disp_Rq:*/
+on EnvVar HMI_SRS_DtlMsg13_Disp_Rq
+{
+    _mORC_Disp_Stat_AR.SRS_DtlMsg13_Disp_Rq.phys = getValue(this);
+    _ORC_Disp_Stat_AR_SpontanFlag = 1;
+}
+/*@@end*/
+
+/*@@envVar:HMI_SRS_DtlMsg14_Disp_Rq:*/
+on EnvVar HMI_SRS_DtlMsg14_Disp_Rq
+{
+    _mORC_Disp_Stat_AR.SRS_DtlMsg14_Disp_Rq.phys = getValue(this);
+    _ORC_Disp_Stat_AR_SpontanFlag = 1;
+}
+/*@@end*/
+
+/*@@envVar:HMI_SRS_DtlMsg15_Disp_Rq:*/
+on EnvVar HMI_SRS_DtlMsg15_Disp_Rq
+{
+    _mORC_Disp_Stat_AR.SRS_DtlMsg15_Disp_Rq.phys = getValue(this);
+    _ORC_Disp_Stat_AR_SpontanFlag = 1;
+}
+/*@@end*/
+
+/*@@envVar:HMI_SRS_DtlMsg16_Disp_Rq:*/
+on EnvVar HMI_SRS_DtlMsg16_Disp_Rq
+{
+    _mORC_Disp_Stat_AR.SRS_DtlMsg16_Disp_Rq.phys = getValue(this);
+    _ORC_Disp_Stat_AR_SpontanFlag = 1;
+}
+/*@@end*/
+
+/*@@envVar:HMI_SRS_IndLmp_Rq:*/
+on EnvVar HMI_SRS_IndLmp_Rq
+{
+    _mORC_Disp_Stat_AR.SRS_IndLmp_Rq.phys = getValue(this);
+    _ORC_Disp_Stat_AR_SpontanFlag = 1;
+}
+/*@@end*/
+
+/*@@caplFunc:ORC_Impact_AR_Activity(int):*/
+void ORC_Impact_AR_Activity(int active)
+{
+    if( active)
+    {
+        if( _ORC_Impact_AR_SigActivity == 0 )
+            _ORC_Impact_AR_Cnt = 1;
+        _ORC_Impact_AR_SigActivity++;
+    }
+    else
+    {
+        _ORC_Impact_AR_SigActivity--;
+    }
+}
+/*@@end*/
+
+/*@@caplFunc:ORC_Impact_AR_Change(int,int,int):*/
+int ORC_Impact_AR_Change(int lastValue, int sigValue, int inActValue)
+{
+    bActiveHelper = (sigValue != inActValue);
+      if( !lastValue && bActiveHelper)
+        ORC_Impact_AR_Activity(1 );
+      else if( lastValue && !bActiveHelper)
+        ORC_Impact_AR_Activity(0);
+    return bActiveHelper;
+}
+/*@@end*/
+
+/*@@caplFunc:ORC_Impact_AR_check_output():*/
+ORC_Impact_AR_check_output()
+{
+    if( !getValue( HMI__STMSG_ORC_Impact_AR ) )
+    {
+        // Botschaft ORC_Impact_AR --- Sendeart 2 cyclicIfActive --- 
+        _ORC_Impact_AR_Cnt--;
+        if( _ORC_Impact_AR_Cnt < 1 )
+        {
+            // Zyklus abgelaufen, Nachricht senden
+            ORC_Impact_AR_output();
+            _ORC_Impact_AR_Cnt = _ORC_Impact_AR_SigActivity ? _ORC_Impact_AR_CycleCountFast : _ORC_Impact_AR_CycleCountSlow;
+        }
+    }
+}
+/*@@end*/
+
+/*@@caplFunc:ORC_Impact_AR_init():*/
+ORC_Impact_AR_init ()
+{   /* Botschaft ORC_Impact_AR ID: 117 --- Sendeart 2 cyclicIfActiveFast --- 
+BA_ "ApplMessage" BO_ 117 0;
+BA_ "NmAsrMessage" BO_ 117 0;
+BA_ "GenMsgMinAcceptLength" BO_ 117 8;
+BA_ "GenMsgILSupport" BO_ 117 1;
+BA_ "DiagState" BO_ 117 0;
+BA_ "DiagRequest" BO_ 117 0;
+BA_ "DiagResponse" BO_ 117 0;
+BA_ "GenMsgStartValue" BO_ 117 "0";
+BA_ "GenMsgStartDelayTime" BO_ 117 150;
+BA_ "GenMsgDelayTime" BO_ 117 5;
+BA_ "GenMsgCycleTime" BO_ 117 1000;
+BA_ "GenMsgCycleTimeActive" BO_ 117 20;
+BA_ "GenMsgSendType" BO_ 117 8;
+    */
+    _ORC_Impact_AR_Timebase =         c_tDBKomTimer_20ms;
+//    _ORC_Impact_AR_CycleCount =      20 / _ORC_Impact_AR_Timebase;
+    _ORC_Impact_AR_StartDelay =       0 / _ORC_Impact_AR_Timebase;
+    _ORC_Impact_AR_Cnt = _ORC_Impact_AR_StartDelay;
+    _ORC_Impact_AR_SigActivity = 0;
+
+    putValue( HMI__STMSGSD_ORC_Impact_AR, _ORC_Impact_AR_StartDelay * _ORC_Impact_AR_Timebase );
+
+    _mORC_Impact_AR.Impact_A.phys = getValue( HMI_Impact_A ); _ORC_Impact_AR_Impact_A_LastState = ORC_Impact_AR_Change( _ORC_Impact_AR_Impact_A_LastState, _mORC_Impact_AR.Impact_A, 0 );
+    _mORC_Impact_AR.Impact_B.phys = getValue( HMI_Impact_B ); _ORC_Impact_AR_Impact_B_LastState = ORC_Impact_AR_Change( _ORC_Impact_AR_Impact_B_LastState, _mORC_Impact_AR.Impact_B, 0 );
+    _mORC_Impact_AR.Impact_C.phys = getValue( HMI_Impact_C ); _ORC_Impact_AR_Impact_C_LastState = ORC_Impact_AR_Change( _ORC_Impact_AR_Impact_C_LastState, _mORC_Impact_AR.Impact_C, 0 );
+    _mORC_Impact_AR.Impact_D.phys = getValue( HMI_Impact_D ); _ORC_Impact_AR_Impact_D_LastState = ORC_Impact_AR_Change( _ORC_Impact_AR_Impact_D_LastState, _mORC_Impact_AR.Impact_D, 0 );
+    _mORC_Impact_AR.Impact_E.phys = getValue( HMI_Impact_E ); _ORC_Impact_AR_Impact_E_LastState = ORC_Impact_AR_Change( _ORC_Impact_AR_Impact_E_LastState, _mORC_Impact_AR.Impact_E, 0 );
+    _mORC_Impact_AR.Impact_F.phys = getValue( HMI_Impact_F ); _ORC_Impact_AR_Impact_F_LastState = ORC_Impact_AR_Change( _ORC_Impact_AR_Impact_F_LastState, _mORC_Impact_AR.Impact_F, 0 );
+    _mORC_Impact_AR.Impact_G.phys = getValue( HMI_Impact_G ); _ORC_Impact_AR_Impact_G_LastState = ORC_Impact_AR_Change( _ORC_Impact_AR_Impact_G_LastState, _mORC_Impact_AR.Impact_G, 0 );
+    _mORC_Impact_AR.Impact_H.phys = getValue( HMI_Impact_H ); _ORC_Impact_AR_Impact_H_LastState = ORC_Impact_AR_Change( _ORC_Impact_AR_Impact_H_LastState, _mORC_Impact_AR.Impact_H, 0 );
+    _mORC_Impact_AR.Impact_I.phys = getValue( HMI_Impact_I ); _ORC_Impact_AR_Impact_I_LastState = ORC_Impact_AR_Change( _ORC_Impact_AR_Impact_I_LastState, _mORC_Impact_AR.Impact_I, 0 );
+    _mORC_Impact_AR.Impact_K.phys = getValue( HMI_Impact_K ); _ORC_Impact_AR_Impact_K_LastState = ORC_Impact_AR_Change( _ORC_Impact_AR_Impact_K_LastState, _mORC_Impact_AR.Impact_K, 0 );
+    _mORC_Impact_AR.Impact_L.phys = getValue( HMI_Impact_L ); _ORC_Impact_AR_Impact_L_LastState = ORC_Impact_AR_Change( _ORC_Impact_AR_Impact_L_LastState, _mORC_Impact_AR.Impact_L, 0 );
+    _mORC_Impact_AR.Impact_M.phys = getValue( HMI_Impact_M ); _ORC_Impact_AR_Impact_M_LastState = ORC_Impact_AR_Change( _ORC_Impact_AR_Impact_M_LastState, _mORC_Impact_AR.Impact_M, 0 );
+    _mORC_Impact_AR.Impact_N.phys = getValue( HMI_Impact_N ); _ORC_Impact_AR_Impact_N_LastState = ORC_Impact_AR_Change( _ORC_Impact_AR_Impact_N_LastState, _mORC_Impact_AR.Impact_N, 0 );
+    _mORC_Impact_AR.Impact_O.phys = getValue( HMI_Impact_O ); _ORC_Impact_AR_Impact_O_LastState = ORC_Impact_AR_Change( _ORC_Impact_AR_Impact_O_LastState, _mORC_Impact_AR.Impact_O, 0 );
+    _mORC_Impact_AR.Impact_P.phys = getValue( HMI_Impact_P ); _ORC_Impact_AR_Impact_P_LastState = ORC_Impact_AR_Change( _ORC_Impact_AR_Impact_P_LastState, _mORC_Impact_AR.Impact_P, 0 );
+    _mORC_Impact_AR.Impact_Q.phys = getValue( HMI_Impact_Q ); _ORC_Impact_AR_Impact_Q_LastState = ORC_Impact_AR_Change( _ORC_Impact_AR_Impact_Q_LastState, _mORC_Impact_AR.Impact_Q, 0 );
+    _mORC_Impact_AR.Impact_R.phys = getValue( HMI_Impact_R ); _ORC_Impact_AR_Impact_R_LastState = ORC_Impact_AR_Change( _ORC_Impact_AR_Impact_R_LastState, _mORC_Impact_AR.Impact_R, 0 );
+    _mORC_Impact_AR.Impact_S.phys = getValue( HMI_Impact_S ); _ORC_Impact_AR_Impact_S_LastState = ORC_Impact_AR_Change( _ORC_Impact_AR_Impact_S_LastState, _mORC_Impact_AR.Impact_S, 0 );
+    _mORC_Impact_AR.Impact_T.phys = getValue( HMI_Impact_T ); _ORC_Impact_AR_Impact_T_LastState = ORC_Impact_AR_Change( _ORC_Impact_AR_Impact_T_LastState, _mORC_Impact_AR.Impact_T, 0 );
+    _mORC_Impact_AR.Impact_Tgl.phys = getValue( HMI_Impact_Tgl ); _ORC_Impact_AR_Impact_Tgl_LastState = ORC_Impact_AR_Change( _ORC_Impact_AR_Impact_Tgl_LastState, _mORC_Impact_AR.Impact_Tgl, 0 );
+    _mORC_Impact_AR.Impact_U.phys = getValue( HMI_Impact_U ); _ORC_Impact_AR_Impact_U_LastState = ORC_Impact_AR_Change( _ORC_Impact_AR_Impact_U_LastState, _mORC_Impact_AR.Impact_U, 0 );
+	_mORC_Impact_AR.Impact_V.phys = getValue( HMI_Impact_V ); _ORC_Impact_AR_Impact_V_LastState = ORC_Impact_AR_Change( _ORC_Impact_AR_Impact_V_LastState, _mORC_Impact_AR.Impact_V, 0 );
+    _mORC_Impact_AR.Impact_X.phys = getValue( HMI_Impact_X ); _ORC_Impact_AR_Impact_X_LastState = ORC_Impact_AR_Change( _ORC_Impact_AR_Impact_X_LastState, _mORC_Impact_AR.Impact_X, 0 );
+    _mORC_Impact_AR.Rsrv1_Impact.phys = getValue( HMI_Rsrv1_Impact ); _ORC_Impact_AR_Rsrv1_Impact_LastState = ORC_Impact_AR_Change( _ORC_Impact_AR_Rsrv1_Impact_LastState, _mORC_Impact_AR.Rsrv1_Impact, 0 );
+    _mORC_Impact_AR.Rsrv2_Impact.phys = getValue( HMI_Rsrv2_Impact ); _ORC_Impact_AR_Rsrv2_Impact_LastState = ORC_Impact_AR_Change( _ORC_Impact_AR_Rsrv2_Impact_LastState, _mORC_Impact_AR.Rsrv2_Impact, 0 );
+    _mORC_Impact_AR.Rsrv3_Impact.phys = getValue( HMI_Rsrv3_Impact ); _ORC_Impact_AR_Rsrv3_Impact_LastState = ORC_Impact_AR_Change( _ORC_Impact_AR_Rsrv3_Impact_LastState, _mORC_Impact_AR.Rsrv3_Impact, 0 );
+    _mORC_Impact_AR.Rsrv4_Impact.phys = getValue( HMI_Rsrv4_Impact ); _ORC_Impact_AR_Rsrv4_Impact_LastState = ORC_Impact_AR_Change( _ORC_Impact_AR_Rsrv4_Impact_LastState, _mORC_Impact_AR.Rsrv4_Impact, 0 );
+    _mORC_Impact_AR.SADR_TrgrPrio_ORC.phys = getValue( HMI_SADR_TrgrPrio_ORC ); _ORC_Impact_AR_SADR_TrgrPrio_ORC_LastState = ORC_Impact_AR_Change( _ORC_Impact_AR_SADR_TrgrPrio_ORC_LastState, _mORC_Impact_AR.SADR_TrgrPrio_ORC, 0 );
+    _mORC_Impact_AR.SADR_TrgrTm_ORC.phys = getValue( HMI_SADR_TrgrTm_ORC ); _ORC_Impact_AR_SADR_TrgrTm_ORC_LastState = ORC_Impact_AR_Change( _ORC_Impact_AR_SADR_TrgrTm_ORC_LastState, _mORC_Impact_AR.SADR_TrgrTm_ORC, 0 );
+}
+/*@@end*/
+
+/*@@caplFunc:ORC_Impact_AR_output():*/
+ORC_Impact_AR_output()
+{
+    byte crc;
+    byte SQC_help;
+
+    if( !getValue( HMI_Impact_TglAUTO ) )
+    {
+        // calculate new sequence counter
+        if( _mORC_Impact_AR.Impact_Tgl >= 1 ) _mORC_Impact_AR.Impact_Tgl = 0;
+        else _mORC_Impact_AR.Impact_Tgl++;
+        //putValue(HMI_Impact_Tgl, _mORC_Impact_AR.Impact_Tgl);
+    }
+    else
+          _mORC_Impact_AR.Impact_Tgl = getValue(HMI_Impact_Tgl);
+
+    SQC_help = getValue( HMI_SQC_Impact ); //get copy of actual EnvVar
+    if( !getValue( HMI_SQC_Impact_Auto ) ) // automatic SQC-calculation active ?
+    {
+        if( SQC_help == _ORC_Impact_AR_SQC_TriggPos ) // start injection of error when trigger reached
+        {
+            _ORC_Impact_AR_E2E_Armed = 1;   // run
+            putValue( HMI_E2E_Impact_State, 1 );
+        }
+        // calculate new sequence counter
+        
+        if( ( _ORC_Impact_AR_SQC_WrongSeqJump != 0 ) &&
+            ( _ORC_Impact_AR_E2E_Armed == 1        )    )
+        {
+            SQC_help = SQC_help + 16 + _ORC_Impact_AR_SQC_WrongSeqJump;
+            if( SQC_help > 15 )
+                SQC_help = SQC_help - 16;
+            if( SQC_help > 15 )
+                SQC_help = SQC_help - 16;
+            _ORC_Impact_AR_SQC_WrongSeqJump = 0;
+        }
+        
+        if( ( _ORC_Impact_AR_SQC_RepeatedCnt ) &&
+            ( _ORC_Impact_AR_E2E_Armed == 1  )    )
+        {
+            _ORC_Impact_AR_SQC_RepeatedCnt--;
+        }
+        else
+        {
+            if( SQC_help >= 15 ) SQC_help = 0;
+            else SQC_help++;
+        }
+            
+        putValue( HMI_SQC_Impact, SQC_help );
+    }
+    _mORC_Impact_AR.SQC_Impact = SQC_help;
+
+    if( getValue( HMI_CRC_Impact_Profile_02 ) )
+    {
+        if( !getValue( HMI_CRC_Impact_Auto ) )
+        {   // CRC according Profile_02 ( W213 )
+            // berechne crc
+            crc = 0xFF;
+//          crc = crctable_profile02[ crc ^ _mORC_Impact_AR.byte( 0 ) ];  CRC
+            crc = crctable_profile02[ crc ^ _mORC_Impact_AR.byte( 1 ) ];
+            crc = crctable_profile02[ crc ^ _mORC_Impact_AR.byte( 2 ) ];
+            crc = crctable_profile02[ crc ^ _mORC_Impact_AR.byte( 3 ) ];
+            crc = crctable_profile02[ crc ^ _mORC_Impact_AR.byte( 4 ) ];
+            crc = crctable_profile02[ crc ^ _mORC_Impact_AR.byte( 5 ) ];
+            crc = crctable_profile02[ crc ^ _mORC_Impact_AR.byte( 6 ) ];
+            crc = crctable_profile02[ crc ^ _mORC_Impact_AR.byte( 7 ) ];
+            crc = crctable_profile02[ crc ^ _ORC_Impact_AR_CRC_Offset[ _mORC_Impact_AR.SQC_Impact ] ]; // load offset
+            crc = (crc ^ 0xFF);
+            
+            if( ( _ORC_Impact_AR_CRC_ErrorCnt   && ( _ORC_Impact_AR_E2E_Armed == 1   ) ) ||
+                ( getValue( HMI_CRC_Impact_Invalid )                                         )    )
+            {
+                crc++;
+                if( _ORC_Impact_AR_CRC_ErrorCnt > 0 )
+                    _ORC_Impact_AR_CRC_ErrorCnt--; 
+            }
+            _mORC_Impact_AR.CRC_Impact = crc;
+            putValue( HMI_CRC_Impact, crc );
+        }
+        else
+            _mORC_Impact_AR.CRC_Impact = getValue( HMI_CRC_Impact );
+    }
+    else
+    {
+        if( !getValue( HMI_CRC_Impact_Auto ) )
+        {   // CRC according to SAE1850 ( W222 )
+            // berechne crc
+            crc = 0xFF;
+//            crc = crctable[crc ^ _mORC_Impact_AR.byte( 0 )];  CRC
+            crc = crctable[crc ^ _mORC_Impact_AR.byte( 1 )];
+            crc = crctable[crc ^ _mORC_Impact_AR.byte( 2 )];
+            crc = crctable[crc ^ _mORC_Impact_AR.byte( 3 )];
+            crc = crctable[crc ^ _mORC_Impact_AR.byte( 4 )];
+            crc = crctable[crc ^ _mORC_Impact_AR.byte( 5 )];
+            crc = crctable[crc ^ _mORC_Impact_AR.byte( 6 )];
+            crc = crctable[crc ^ _mORC_Impact_AR.byte( 7 )];
+            crc = (crc ^ 0xFF);
+            if( ( _ORC_Impact_AR_CRC_ErrorCnt   && ( _ORC_Impact_AR_E2E_Armed == 1   ) ) ||
+                ( getValue( HMI_CRC_Impact_Invalid )                                         )    )
+            {
+                crc++;
+                if( _ORC_Impact_AR_CRC_ErrorCnt > 0 )
+                    _ORC_Impact_AR_CRC_ErrorCnt--; 
+            }
+            _mORC_Impact_AR.CRC_Impact = crc;
+            putValue( HMI_CRC_Impact, crc );
+        }
+        else
+            _mORC_Impact_AR.CRC_Impact = getValue( HMI_CRC_Impact );
+    }
+    if( ( _ORC_Impact_AR_MSG_DropCnt > 0 ) &&
+        ( _ORC_Impact_AR_E2E_Armed == 1  )    )
+    {
+        _ORC_Impact_AR_MSG_DropCnt--;  // do not send message
+    }
+    else
+        output( _mORC_Impact_AR );
+        
+    if( _ORC_Impact_AR_E2E_Armed == 1 )
+    {
+        if ( ( _ORC_Impact_AR_MSG_DropCnt == 0      ) &&
+             ( _ORC_Impact_AR_CRC_ErrorCnt == 0     ) &&
+             ( _ORC_Impact_AR_SQC_RepeatedCnt == 0  ) &&
+             ( _ORC_Impact_AR_SQC_WrongSeqJump == 0 )    )
+        {
+            _ORC_Impact_AR_E2E_Armed = 0; // no further influence, injetion completed
+            putValue( HMI_E2E_Impact_State, 0 );
+        }
+    }
+}
+/*@@end*/
+
+/*@@caplFunc:ORC_Impact_AR_saveEnvVars(dword):*/
+void ORC_Impact_AR_saveEnvVars( dword hFile )
+{
+        filePutString("\n// Knoten ORC: ORC_Impact_AR\n", 27, hFile);
+        snprintf(buffer, elcount(buffer), "0.0000 HMI__STMSG_ORC_Impact := %X\n", getValue( HMI__STMSG_ORC_Impact_AR ) );        filePutString (buffer, elcount(buffer), hFile);
+        snprintf(buffer, elcount(buffer), "0.0000 HMI__STMSGT_ORC_Impact := %X\n", getValue( HMI__STMSGT_ORC_Impact_AR ) );        filePutString (buffer, elcount(buffer), hFile);
+        snprintf(buffer, elcount(buffer), "0.0000 HMI_CRC_Impact := %X\n", getValue( HMI_CRC_Impact ) );        filePutString (buffer, elcount(buffer), hFile);
+        snprintf(buffer, elcount(buffer), "0.0000 HMI_CRC_Impact_Auto := %X\n", getValue( HMI_CRC_Impact_Auto ) );        filePutString (buffer, elcount(buffer), hFile);
+        snprintf(buffer, elcount(buffer), "0.0000 HMI_CRC_Impact_Profile_02 := %X\n", getValue( HMI_CRC_Impact_Profile_02 ) );        filePutString (buffer, elcount(buffer), hFile);
+        snprintf(buffer, elcount(buffer), "0.0000 HMI_Impact_A := %X\n", getValue( HMI_Impact_A ) );        filePutString (buffer, elcount(buffer), hFile);
+        snprintf(buffer, elcount(buffer), "0.0000 HMI_Impact_B := %X\n", getValue( HMI_Impact_B ) );        filePutString (buffer, elcount(buffer), hFile);
+        snprintf(buffer, elcount(buffer), "0.0000 HMI_Impact_C := %X\n", getValue( HMI_Impact_C ) );        filePutString (buffer, elcount(buffer), hFile);
+        snprintf(buffer, elcount(buffer), "0.0000 HMI_Impact_D := %X\n", getValue( HMI_Impact_D ) );        filePutString (buffer, elcount(buffer), hFile);
+        snprintf(buffer, elcount(buffer), "0.0000 HMI_Impact_E := %X\n", getValue( HMI_Impact_E ) );        filePutString (buffer, elcount(buffer), hFile);
+        snprintf(buffer, elcount(buffer), "0.0000 HMI_Impact_F := %X\n", getValue( HMI_Impact_F ) );        filePutString (buffer, elcount(buffer), hFile);
+        snprintf(buffer, elcount(buffer), "0.0000 HMI_Impact_G := %X\n", getValue( HMI_Impact_G ) );        filePutString (buffer, elcount(buffer), hFile);
+        snprintf(buffer, elcount(buffer), "0.0000 HMI_Impact_H := %X\n", getValue( HMI_Impact_H ) );        filePutString (buffer, elcount(buffer), hFile);
+        snprintf(buffer, elcount(buffer), "0.0000 HMI_Impact_I := %X\n", getValue( HMI_Impact_I ) );        filePutString (buffer, elcount(buffer), hFile);
+        snprintf(buffer, elcount(buffer), "0.0000 HMI_Impact_K := %X\n", getValue( HMI_Impact_K ) );        filePutString (buffer, elcount(buffer), hFile);
+        snprintf(buffer, elcount(buffer), "0.0000 HMI_Impact_L := %X\n", getValue( HMI_Impact_L ) );        filePutString (buffer, elcount(buffer), hFile);
+        snprintf(buffer, elcount(buffer), "0.0000 HMI_Impact_M := %X\n", getValue( HMI_Impact_M ) );        filePutString (buffer, elcount(buffer), hFile);
+        snprintf(buffer, elcount(buffer), "0.0000 HMI_Impact_N := %X\n", getValue( HMI_Impact_N ) );        filePutString (buffer, elcount(buffer), hFile);
+        snprintf(buffer, elcount(buffer), "0.0000 HMI_Impact_O := %X\n", getValue( HMI_Impact_O ) );        filePutString (buffer, elcount(buffer), hFile);
+        snprintf(buffer, elcount(buffer), "0.0000 HMI_Impact_P := %X\n", getValue( HMI_Impact_P ) );        filePutString (buffer, elcount(buffer), hFile);
+        snprintf(buffer, elcount(buffer), "0.0000 HMI_Impact_Q := %X\n", getValue( HMI_Impact_Q ) );        filePutString (buffer, elcount(buffer), hFile);
+        snprintf(buffer, elcount(buffer), "0.0000 HMI_Impact_R := %X\n", getValue( HMI_Impact_R ) );        filePutString (buffer, elcount(buffer), hFile);
+        snprintf(buffer, elcount(buffer), "0.0000 HMI_Impact_S := %X\n", getValue( HMI_Impact_S ) );        filePutString (buffer, elcount(buffer), hFile);
+        snprintf(buffer, elcount(buffer), "0.0000 HMI_Impact_T := %X\n", getValue( HMI_Impact_T ) );        filePutString (buffer, elcount(buffer), hFile);
+        snprintf(buffer, elcount(buffer), "0.0000 HMI_Impact_Tgl := %X\n", getValue( HMI_Impact_Tgl ) );        filePutString (buffer, elcount(buffer), hFile);
+        snprintf(buffer, elcount(buffer), "0.0000 HMI_Impact_U := %X\n", getValue( HMI_Impact_U ) );        filePutString (buffer, elcount(buffer), hFile);
+		snprintf(buffer, elcount(buffer), "0.0000 HMI_Impact_V := %X\n", getValue( HMI_Impact_V ) );        filePutString (buffer, elcount(buffer), hFile);
+        snprintf(buffer, elcount(buffer), "0.0000 HMI_Impact_X := %X\n", getValue( HMI_Impact_X ) );        filePutString (buffer, elcount(buffer), hFile);
+        snprintf(buffer, elcount(buffer), "0.0000 HMI_Rsrv1_Impact := %X\n", getValue( HMI_Rsrv1_Impact ) );        filePutString (buffer, elcount(buffer), hFile);
+        snprintf(buffer, elcount(buffer), "0.0000 HMI_Rsrv2_Impact := %X\n", getValue( HMI_Rsrv2_Impact ) );        filePutString (buffer, elcount(buffer), hFile);
+        snprintf(buffer, elcount(buffer), "0.0000 HMI_Rsrv3_Impact := %X\n", getValue( HMI_Rsrv3_Impact ) );        filePutString (buffer, elcount(buffer), hFile);
+        snprintf(buffer, elcount(buffer), "0.0000 HMI_Rsrv4_Impact := %X\n", getValue( HMI_Rsrv4_Impact ) );        filePutString (buffer, elcount(buffer), hFile);
+        snprintf(buffer, elcount(buffer), "0.0000 HMI_SADR_TrgrPrio_ORC := %X\n", getValue( HMI_SADR_TrgrPrio_ORC ) );        filePutString (buffer, elcount(buffer), hFile);
+        snprintf(buffer, elcount(buffer), "0.0000 HMI_SADR_TrgrTm_ORC := %X\n", getValue( HMI_SADR_TrgrTm_ORC ) );        filePutString (buffer, elcount(buffer), hFile);
+        snprintf(buffer, elcount(buffer), "0.0000 HMI_SQC_Impact := %X\n", getValue( HMI_SQC_Impact ) );        filePutString (buffer, elcount(buffer), hFile);
+        snprintf(buffer, elcount(buffer), "0.0000 HMI_SQC_Impact_Auto := %X\n", getValue( HMI_SQC_Impact_Auto ) );        filePutString (buffer, elcount(buffer), hFile);
+}
+/*@@end*/
+
+/*@@timer:_tORC_Impact_AR:*/
+on timer _tORC_Impact_AR
+{
+    putValue( HMI__STMSG_ORC_Impact_AR, 0 );
+}
+/*@@end*/
+
+/*@@envVar:HMI__STMSG_ORC_Impact_AR:*/
+on EnvVar HMI__STMSG_ORC_Impact_AR
+{
+    long tDelay;
+    if( getValue( this ) == 2 )
+    {
+        tDelay = getValue( HMI__STMSGT_ORC_Impact_AR );
+        if( tDelay > 0 )
+            setTimer( _tORC_Impact_AR, tDelay );
+        else
+            putValue( HMI__STMSG_ORC_Impact_AR, 0 );
+    }
+}
+/*@@end*/
+
+/*@@envVar:HMI_E2E_Impact_Inject:*/
+on envVar HMI_E2E_Impact_Inject
+{
+    if( getValue( this ) )
+    {
+        _ORC_Impact_AR_CRC_ErrorCnt = getValue( HMI_CRC_Impact_ErrorCount );
+        _ORC_Impact_AR_SQC_TriggPos = getValue( HMI_SQC_Impact_TriggerPosition );
+        _ORC_Impact_AR_SQC_WrongSeqJump = getValue( HMI_SQC_Impact_WrongSeq );
+        _ORC_Impact_AR_SQC_RepeatedCnt = getValue( HMI_SQC_Impact_Repeated );
+        _ORC_Impact_AR_MSG_DropCnt = getValue( HMI_SQC_Impact_MSG_DropCnt );
+        putValue( HMI_E2E_Impact_State, 2 );
+        _ORC_Impact_AR_E2E_Armed = 2;  //armed
+    }
+}
+/*@@end*/
+
+/*@@envVar:HMI__ALLDEF_ORC_Impact_AR:*/
+on EnvVar HMI__ALLDEF_ORC_Impact_AR
+{
+    if( getValue(this))
+    {
+        // alle signale auf default einstellen
+        putValue(HMI_Impact_A, 0 );
+        putValue(HMI_Impact_B, 0 );
+        putValue(HMI_Impact_C, 0 );
+        putValue(HMI_Impact_D, 0 );
+        putValue(HMI_Impact_E, 0 );
+        putValue(HMI_Impact_F, 0 );
+        putValue(HMI_Impact_G, 0 );
+        putValue(HMI_Impact_H, 0 );
+        putValue(HMI_Impact_I, 0 );
+        putValue(HMI_Impact_K, 0 );
+        putValue(HMI_Impact_L, 0 );
+        putValue(HMI_Impact_M, 0 );
+        putValue(HMI_Impact_N, 0 );
+        putValue(HMI_Impact_O, 0 );
+        putValue(HMI_Impact_P, 0 );
+        putValue(HMI_Impact_Q, 0 );
+        putValue(HMI_Impact_R, 0 );
+        putValue(HMI_Impact_S, 0 );
+        putValue(HMI_Impact_X, 0 );
+        putValue(HMI_Rsrv1_Impact, 0 );
+        putValue(HMI_Rsrv2_Impact, 0 );
+        putValue(HMI_Rsrv3_Impact, 0 );
+        putValue(HMI_Rsrv4_Impact, 0 );
+        putValue(HMI_SADR_TrgrPrio_ORC, 0 );
+        putValue(HMI_SADR_TrgrTm_ORC, 0 );
+    }
+}
+/*@@end*/
+
+/*@@envVar:HMI_Impact_A:*/
+on EnvVar HMI_Impact_A
+{
+    _mORC_Impact_AR.Impact_A.phys = getValue(this);
+    _ORC_Impact_AR_Impact_A_LastState = ORC_Impact_AR_Change(_ORC_Impact_AR_Impact_A_LastState, _mORC_Impact_AR.Impact_A, 0 );
+}
+/*@@end*/
+
+/*@@envVar:HMI_Impact_B:*/
+on EnvVar HMI_Impact_B
+{
+    _mORC_Impact_AR.Impact_B.phys = getValue(this);
+    _ORC_Impact_AR_Impact_B_LastState = ORC_Impact_AR_Change(_ORC_Impact_AR_Impact_B_LastState, _mORC_Impact_AR.Impact_B, 0 );
+}
+/*@@end*/
+
+/*@@envVar:HMI_Impact_C:*/
+on EnvVar HMI_Impact_C
+{
+    _mORC_Impact_AR.Impact_C.phys = getValue(this);
+    _ORC_Impact_AR_Impact_C_LastState = ORC_Impact_AR_Change(_ORC_Impact_AR_Impact_C_LastState, _mORC_Impact_AR.Impact_C, 0 );
+} 
+/*@@end*/
+
+/*@@envVar:HMI_Impact_D:*/
+on EnvVar HMI_Impact_D
+{
+    _mORC_Impact_AR.Impact_D.phys = getValue(this);
+    _ORC_Impact_AR_Impact_D_LastState = ORC_Impact_AR_Change(_ORC_Impact_AR_Impact_D_LastState, _mORC_Impact_AR.Impact_D, 0 );
+}
+/*@@end*/
+
+/*@@envVar:HMI_Impact_E:*/
+on EnvVar HMI_Impact_E
+{
+    _mORC_Impact_AR.Impact_E.phys = getValue(this);
+    _ORC_Impact_AR_Impact_E_LastState = ORC_Impact_AR_Change(_ORC_Impact_AR_Impact_E_LastState, _mORC_Impact_AR.Impact_E, 0 );
+}
+/*@@end*/
+
+/*@@envVar:HMI_Impact_F:*/
+on EnvVar HMI_Impact_F
+{
+    _mORC_Impact_AR.Impact_F.phys = getValue(this);
+    _ORC_Impact_AR_Impact_F_LastState = ORC_Impact_AR_Change(_ORC_Impact_AR_Impact_F_LastState, _mORC_Impact_AR.Impact_F, 0 );
+}
+/*@@end*/
+
+/*@@envVar:HMI_Impact_G:*/
+on EnvVar HMI_Impact_G
+{
+    _mORC_Impact_AR.Impact_G.phys = getValue(this);
+    _ORC_Impact_AR_Impact_G_LastState = ORC_Impact_AR_Change(_ORC_Impact_AR_Impact_G_LastState, _mORC_Impact_AR.Impact_G, 0 );
+}
+/*@@end*/
+
+/*@@envVar:HMI_Impact_H:*/
+on EnvVar HMI_Impact_H
+{
+    _mORC_Impact_AR.Impact_H.phys = getValue(this);
+    _ORC_Impact_AR_Impact_H_LastState = ORC_Impact_AR_Change(_ORC_Impact_AR_Impact_H_LastState, _mORC_Impact_AR.Impact_H, 0 );
+}
+/*@@end*/
+
+/*@@envVar:HMI_Impact_I:*/
+on EnvVar HMI_Impact_I
+{
+    _mORC_Impact_AR.Impact_I.phys = getValue(this);
+    _ORC_Impact_AR_Impact_I_LastState = ORC_Impact_AR_Change( _ORC_Impact_AR_Impact_I_LastState, _mORC_Impact_AR.Impact_I, 0 );
+}
+/*@@end*/
+
+/*@@envVar:HMI_Impact_K:*/
+on EnvVar HMI_Impact_K
+{
+    _mORC_Impact_AR.Impact_K.phys = getValue(this);
+    _ORC_Impact_AR_Impact_K_LastState = ORC_Impact_AR_Change(_ORC_Impact_AR_Impact_K_LastState, _mORC_Impact_AR.Impact_K, 0 );
+}
+/*@@end*/
+
+/*@@envVar:HMI_Impact_L:*/
+on EnvVar HMI_Impact_L
+{
+    _mORC_Impact_AR.Impact_L.phys = getValue(this);
+    _ORC_Impact_AR_Impact_L_LastState = ORC_Impact_AR_Change(_ORC_Impact_AR_Impact_L_LastState, _mORC_Impact_AR.Impact_L, 0 );
+}
+/*@@end*/
+
+/*@@envVar:HMI_Impact_M:*/
+on EnvVar HMI_Impact_M
+{
+    _mORC_Impact_AR.Impact_M.phys = getValue(this);
+    _ORC_Impact_AR_Impact_M_LastState = ORC_Impact_AR_Change(_ORC_Impact_AR_Impact_M_LastState, _mORC_Impact_AR.Impact_M, 0 );
+}
+/*@@end*/
+
+/*@@envVar:HMI_Impact_N:*/
+on EnvVar HMI_Impact_N
+{
+    _mORC_Impact_AR.Impact_N.phys = getValue(this);
+    _ORC_Impact_AR_Impact_N_LastState = ORC_Impact_AR_Change(_ORC_Impact_AR_Impact_N_LastState, _mORC_Impact_AR.Impact_N, 0 );
+}
+/*@@end*/
+
+/*@@envVar:HMI_Impact_O:*/
+on EnvVar HMI_Impact_O
+{
+    _mORC_Impact_AR.Impact_O.phys = getValue(this);
+    _ORC_Impact_AR_Impact_O_LastState = ORC_Impact_AR_Change(_ORC_Impact_AR_Impact_O_LastState, _mORC_Impact_AR.Impact_O, 0 );
+}
+/*@@end*/
+
+/*@@envVar:HMI_Impact_P:*/
+on EnvVar HMI_Impact_P
+{
+    _mORC_Impact_AR.Impact_P.phys = getValue(this);
+    _ORC_Impact_AR_Impact_P_LastState = ORC_Impact_AR_Change(_ORC_Impact_AR_Impact_P_LastState, _mORC_Impact_AR.Impact_P, 0 );
+}
+/*@@end*/
+
+/*@@envVar:HMI_Impact_Q:*/
+on EnvVar HMI_Impact_Q
+{
+    _mORC_Impact_AR.Impact_Q.phys = getValue(this);
+    _ORC_Impact_AR_Impact_Q_LastState = ORC_Impact_AR_Change(_ORC_Impact_AR_Impact_Q_LastState, _mORC_Impact_AR.Impact_Q, 0 );
+}
+/*@@end*/
+
+/*@@envVar:HMI_Impact_R:*/
+on EnvVar HMI_Impact_R
+{
+    _mORC_Impact_AR.Impact_R.phys = getValue(this);
+    _ORC_Impact_AR_Impact_R_LastState = ORC_Impact_AR_Change(_ORC_Impact_AR_Impact_R_LastState, _mORC_Impact_AR.Impact_R, 0 );
+}
+/*@@end*/
+
+/*@@envVar:HMI_Impact_S:*/
+on EnvVar HMI_Impact_S
+{
+    _mORC_Impact_AR.Impact_S.phys = getValue(this);
+    _ORC_Impact_AR_Impact_S_LastState = ORC_Impact_AR_Change(_ORC_Impact_AR_Impact_S_LastState, _mORC_Impact_AR.Impact_S, 0 );
+}
+/*@@end*/
+
+/*@@envVar:HMI_Impact_T:*/
+on EnvVar HMI_Impact_T
+{
+    _mORC_Impact_AR.Impact_T.phys = getValue(this);
+    _ORC_Impact_AR_Impact_T_LastState = ORC_Impact_AR_Change(_ORC_Impact_AR_Impact_T_LastState, _mORC_Impact_AR.Impact_T, 0 );
+}
+/*@@end*/
+
+/*@@envVar:HMI_Impact_Tgl:*/
+on EnvVar HMI_Impact_Tgl
+{
+    _mORC_Impact_AR.Impact_Tgl.phys = getValue(this);
+    _ORC_Impact_AR_Impact_Tgl_LastState = ORC_Impact_AR_Change(_ORC_Impact_AR_Impact_Tgl_LastState, _mORC_Impact_AR.Impact_Tgl, 0 );
+}
+/*@@end*/
+
+/*@@envVar:HMI_Impact_U:*/
+on EnvVar HMI_Impact_U
+{
+    _mORC_Impact_AR.Impact_U.phys = getValue(this);
+    _ORC_Impact_AR_Impact_U_LastState = ORC_Impact_AR_Change(_ORC_Impact_AR_Impact_U_LastState, _mORC_Impact_AR.Impact_U, 0 );
+}
+/*@@end*/
+
+/*@@envVar:HMI_Impact_V:*/
+on EnvVar HMI_Impact_V
+{
+    _mORC_Impact_AR.Impact_V.phys = getValue(this);
+    _ORC_Impact_AR_Impact_V_LastState = ORC_Impact_AR_Change(_ORC_Impact_AR_Impact_V_LastState, _mORC_Impact_AR.Impact_V, 0 );
+}
+/*@@end*/
+
+/*@@envVar:HMI_Impact_X:*/
+on EnvVar HMI_Impact_X
+{
+    _mORC_Impact_AR.Impact_X.phys = getValue(this);
+    _ORC_Impact_AR_Impact_X_LastState = ORC_Impact_AR_Change(_ORC_Impact_AR_Impact_X_LastState, _mORC_Impact_AR.Impact_X, 0 );
+}
+/*@@end*/
+
+/*@@envVar:HMI_Rsrv1_Impact:*/
+on EnvVar HMI_Rsrv1_Impact
+{
+    _mORC_Impact_AR.Rsrv1_Impact.phys = getValue(this);
+    _ORC_Impact_AR_Rsrv1_Impact_LastState = ORC_Impact_AR_Change(_ORC_Impact_AR_Rsrv1_Impact_LastState, _mORC_Impact_AR.Rsrv1_Impact, 0 );
+}
+/*@@end*/
+
+/*@@envVar:HMI_Rsrv2_Impact:*/
+on EnvVar HMI_Rsrv2_Impact
+{
+    _mORC_Impact_AR.Rsrv2_Impact.phys = getValue(this);
+    _ORC_Impact_AR_Rsrv2_Impact_LastState = ORC_Impact_AR_Change(_ORC_Impact_AR_Rsrv2_Impact_LastState, _mORC_Impact_AR.Rsrv2_Impact, 0 );
+}
+/*@@end*/
+
+/*@@envVar:HMI_Rsrv3_Impact:*/
+on EnvVar HMI_Rsrv3_Impact
+{
+    _mORC_Impact_AR.Rsrv3_Impact.phys = getValue(this);
+    _ORC_Impact_AR_Rsrv3_Impact_LastState = ORC_Impact_AR_Change(_ORC_Impact_AR_Rsrv3_Impact_LastState, _mORC_Impact_AR.Rsrv3_Impact, 0 );
+}
+/*@@end*/
+
+/*@@envVar:HMI_Rsrv4_Impact:*/
+on EnvVar HMI_Rsrv4_Impact
+{
+    _mORC_Impact_AR.Rsrv4_Impact.phys = getValue(this);
+    _ORC_Impact_AR_Rsrv4_Impact_LastState = ORC_Impact_AR_Change(_ORC_Impact_AR_Rsrv4_Impact_LastState, _mORC_Impact_AR.Rsrv4_Impact, 0 );
+}
+/*@@end*/
+
+/*@@envVar:HMI_SADR_TrgrPrio_ORC:*/
+on EnvVar HMI_SADR_TrgrPrio_ORC
+{
+    _mORC_Impact_AR.SADR_TrgrPrio_ORC.phys = getValue(this);
+    _ORC_Impact_AR_SADR_TrgrPrio_ORC_LastState = ORC_Impact_AR_Change(_ORC_Impact_AR_SADR_TrgrPrio_ORC_LastState, _mORC_Impact_AR.SADR_TrgrPrio_ORC, 0 );
+}
+/*@@end*/
+
+/*@@envVar:HMI_SADR_TrgrTm_ORC:*/
+on EnvVar HMI_SADR_TrgrTm_ORC
+{
+    _mORC_Impact_AR.SADR_TrgrTm_ORC.phys = getValue(this);
+    _ORC_Impact_AR_SADR_TrgrTm_ORC_LastState = ORC_Impact_AR_Change(_ORC_Impact_AR_SADR_TrgrTm_ORC_LastState, _mORC_Impact_AR.SADR_TrgrTm_ORC, 0 );
+}
+/*@@end*/
+
+/*@@caplFunc:ROE_ORC_check_output():*/
+ROE_ORC_check_output()
+{
+    if( !getValue(HMI__STMSG_ROE_ORC ) )
+    {
+        // Botschaft ROE_ORC --- Sendeart 9 cyclicWithRepeatOnDemand --- 
+        if( _ROE_ORC_Cnt > 0 )
+        {
+            _ROE_ORC_Cnt--;
+            if( _ROE_ORC_Cnt < 1 )
+            {
+                // Nachricht wg. abgelaufenem Zyklus ausgeben
+                output( _mROE_ORC );
+                _ROE_ORC_MsgRepetitions--;
+                if( _ROE_ORC_MsgRepetitions > 0 ) _ROE_ORC_Cnt = _ROE_ORC_CycleCount;
+            }
+        }
+    }
+}
+/*@@end*/
+
+/*@@caplFunc:ROE_ORC_init():*/
+ROE_ORC_init()
+{   /* Botschaft ROE_ORC ID: 2565817600 --- Sendeart 9 cyclicWithRepeatOnDemand --- 
+BA_ "ApplMessage" BO_ 2565817600 0;
+BA_ "NmAsrMessage" BO_ 2565817600 0;
+BA_ "GenMsgMinAcceptLength" BO_ 2565817600 8;
+BA_ "GenMsgILSupport" BO_ 2565817600 1;
+BA_ "DiagState" BO_ 2565817600 0;
+BA_ "DiagRequest" BO_ 2565817600 0;
+BA_ "DiagResponse" BO_ 2565817600 0;
+BA_ "GenMsgStartValue" BO_ 2565817600 "0";
+BA_ "GenMsgDelayTime" BO_ 2565817600 5;
+BA_ "GenMsgNrOfRepetitions" BO_ 2565817600 0;
+BA_ "GenMsgCycleTime" BO_ 2565817600 200;
+BA_ "GenMsgSendType" BO_ 2565817600 9;
+    */
+    _ROE_ORC_Timebase =         c_tDBKomTimer_20ms;
+    _ROE_ORC_CycleCount =     200 / _ROE_ORC_Timebase;
+    _ROE_ORC_StartDelay =       5 / _ROE_ORC_Timebase;
+    _ROE_ORC_Cnt = _ROE_ORC_StartDelay;
+    _ROE_ORC_MsgRepetitions = 0;
+
+    putValue( HMI__STMSGSD_ROE_ORC, _ROE_ORC_StartDelay * _ROE_ORC_Timebase );
+
+    _mROE_ORC.ROE_Header_ORC.phys = getValue(HMI_ROE_Header_ORC);
+    _mROE_ORC.ROE_DTC_Stat_ORC.phys = getValue(HMI_ROE_DTC_Stat_ORC);
+    _mROE_ORC.ROE_DTC_ORC.phys = getValue(HMI_ROE_DTC_ORC);
+}
+/*@@end*/
+
+/*@@caplFunc:ROE_ORC_restart(int):*/
+ROE_ORC_restart(int nNumRepetitions)
+{
+    if( nNumRepetitions > _ROE_ORC_MsgRepetitions)
+    {
+        if( _ROE_ORC_MsgRepetitions < 1 )
+            _ROE_ORC_Cnt = 1;
+        _ROE_ORC_MsgRepetitions = nNumRepetitions;
+    }
+}
+/*@@end*/
+
+/*@@caplFunc:ROE_ORC_saveEnvVars(dword):*/
+ROE_ORC_saveEnvVars( dword hFile )
+{
+    filePutString("\n// Knoten ROE_ORC\n", 33, hFile );
+    snprintf(buffer, elcount(buffer), "0.0000 HMI__STMSG_ROE_ORC := %X\n", getValue(HMI__STMSG_ROE_ORC ));		filePutString (buffer, elcount(buffer), hFile);
+    snprintf(buffer, elcount(buffer), "0.0000 HMI__STMSGT_ROE_ORC := %X\n", getValue(HMI__STMSGT_ROE_ORC ));		filePutString (buffer, elcount(buffer), hFile);
+    snprintf(buffer, elcount(buffer), "0.0000 HMI_ROE_Header_ORC := %X\n", getValue( HMI_ROE_Header_ORC ) );		filePutString (buffer, elcount(buffer), hFile);
+    snprintf(buffer, elcount(buffer), "0.0000 HMI_ROE_DTC_Stat_ORC := %X\n", getValue( HMI_ROE_DTC_Stat_ORC ) );		filePutString (buffer, elcount(buffer), hFile);
+    snprintf(buffer, elcount(buffer), "0.0000 HMI_ROE_DTC_ORC := %X\n", getValue( HMI_ROE_DTC_ORC ) );		filePutString (buffer, elcount(buffer), hFile);
+}
+/*@@end*/
+
+/*@@envVar:HMI_ROE_Header_ORC:*/
+on EnvVar HMI_ROE_Header_ORC
+{
+    _mROE_ORC.ROE_Header_ORC.phys = getValue(this);
+    ROE_ORC_restart(1 );
+}
+/*@@end*/
+
+/*@@envVar:HMI_ROE_DTC_Stat_ORC:*/
+on EnvVar HMI_ROE_DTC_Stat_ORC
+{
+    _mROE_ORC.ROE_DTC_Stat_ORC.phys = getValue(this);
+    ROE_ORC_restart(1 );
+}
+/*@@end*/
+
+/*@@envVar:HMI_ROE_DTC_ORC:*/
+on EnvVar HMI_ROE_DTC_ORC
+{
+    _mROE_ORC.ROE_DTC_ORC.phys = getValue(this);
+    ROE_ORC_restart(1 );
+}
+/*@@end*/
+

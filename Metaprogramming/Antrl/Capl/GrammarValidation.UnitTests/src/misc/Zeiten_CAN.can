@@ -1,0 +1,36 @@
+/*@!Encoding:1252*/
+variables
+{
+  msTimer Uhr;
+  long    localtime[9];
+}
+
+on start
+{
+  setTimerCyclic (Uhr, 100);
+}
+
+on timer Uhr
+{
+  if (@Env_time_Zeitmaster == 1)
+  {
+    getLocalTime(localtime);
+    $BasicUTC_Year    = localtime[5]+1900;
+    $BasicUTC_Month   = localtime[4]+1;
+    $BasicUTC_Day     = localtime[3];
+    $BasicUTC_Hour    = localtime[2];
+    $BasicUTC_Minute  = localtime[1];
+    $BasicUTC_Second  = localtime[0];
+  }
+  
+  if (@Env_time_Diagnose_CAN == 1)
+  {
+    getLocalTime(localtime);
+    $UH_Jahr          = localtime[5]+1900;
+    $UH_Monat         = localtime[4]+1;
+    $UH_Tag           = localtime[3];
+    $UH_Stunde        = localtime[2];
+    $UH_Minute        = localtime[1];
+    $UH_Sekunde       = localtime[0];
+  }
+}

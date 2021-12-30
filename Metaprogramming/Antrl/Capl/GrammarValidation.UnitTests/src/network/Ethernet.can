@@ -1,0 +1,208 @@
+/*@!Encoding:1252*/
+variables
+{
+  dword gUdpSocketHandle = 0;
+  dword dwSeqId = 0;
+  char  cSeqId[1400];
+  dword gServerUdpAddress = 0; // Init in "on preStart"
+  dword gServerUdpPort = 4444;
+  CHAR gRxBuffer[1472]; // Max. UDP payload without fragmentation
+  LONG gResult;
+  CHAR gErrorText[200];
+  msTimer NMH_TxCycleTime;
+}
+
+on preStart
+{
+  
+ // CHAR  buf[32];
+
+  //sysGetVariableString( sysvar::Ethernet::ServerAddress, buf, elcount(buf) );
+  //gServerUdpAddress = IpGetAddressAsNumber( buf );
+ //sysGetVariableString( sysvar::Ethernet::Text, text, elcount(text) );
+ gServerUdpAddress = ipGetAddressAsNumber("192.168.250.2");
+}
+
+on start
+{
+  
+  
+  CHAR textData[20] = "Hello UDP Server";
+
+  // Open UDP socket
+  gUdpSocketHandle = UdpOpen(0, 0); // The port parameter is set to zero. => A free local port is selected by the stack.
+
+  // Check for valid socket handle
+  if (gUdpSocketHandle == ~0)
+  {
+    write("<%BASE_FILE_NAME%> UdpOpen failed: Result %d", IpGetLastError());
+  }
+  else // Socket handle valid
+  {
+    // Send UDP data
+    //gResult = UdpSendTo(gUdpSocketHandle, gServerUdpAddress, gServerUdpPort, textData, strlen(textData));
+
+    // Check for error
+    if ( (gResult != 0) && (IpGetLastSocketError(gUdpSocketHandle) != 997) )
+    {
+      IpGetLastSocketErrorAsString(gUdpSocketHandle, gErrorText, elcount(gErrorText) );
+      write( "<%BASE_FILE_NAME%> UdpSendTo failed, %s (Result %d)", gErrorText, IpGetLastSocketError(gUdpSocketHandle) );
+    }
+
+    // Optionally receive answer from UDP server
+    UdpReceiveFrom(gUdpSocketHandle, gRxBuffer, 0); // Set size to 0 to enforce reception in callback only
+
+    // Check for error
+    if ( IpGetLastSocketError(gUdpSocketHandle) != 997 )
+    {
+      IpGetLastSocketErrorAsString(gUdpSocketHandle, gErrorText, elcount(gErrorText));
+      write("<%BASE_FILE_NAME%> UdpReceiveFrom failed, %s (Result %d)", gErrorText, IpGetLastSocketError(gUdpSocketHandle));
+    }
+  }
+}
+
+// Callback function for UDP transmission - check for error
+OnUdpSendTo(dword txSocketHandle, long txResult, char txBuffer[], dword txBufferSize)
+{
+  if ( txResult != 0 )
+  {
+    IpGetLastSocketErrorAsString(txSocketHandle, gErrorText, elcount(gErrorText));
+    write("<%BASE_FILE_NAME%> OnUdpSendTo failed, %s (Result %d)", gErrorText, IpGetLastSocketError(txSocketHandle));
+  }
+}
+
+// Callback function for reception of (optional) answer from UDP server
+OnUdpReceiveFrom(dword rxSocketHandle, long rxResult, dword rxServerIpAddress, dword rxServerUpdPort, char rxBuffer[], dword rxBufferSize)
+{
+  CHAR rxServerIpAddressString[15];
+
+  if ( rxResult == 0 )
+  {
+    write("<%BASE_FILE_NAME%> Answer from UDP server (%d bytes)", rxBufferSize);
+    IpGetAddressAsString(rxServerIpAddress, rxServerIpAddressString, elcount(rxServerIpAddressString));
+    write("<%BASE_FILE_NAME%> Server IP address: %s", rxServerIpAddressString);
+    write("<%BASE_FILE_NAME%> Server UDP port: %d", rxServerUpdPort);
+    // do something with the data
+  }
+  else
+  {
+    IpGetLastSocketErrorAsString(rxSocketHandle, gErrorText, elcount(gErrorText));
+    write("<%BASE_FILE_NAME%> OnUdpReceiveFrom failed, %s (Result %d)", gErrorText, IpGetLastSocketError(rxSocketHandle));
+  }
+
+  // Get next received data
+  UdpReceiveFrom(gUdpSocketHandle, gRxBuffer, 0); // Set size to 0 to enforce reception in callback only
+
+  // Check for error
+  if ( IpGetLastSocketError(gUdpSocketHandle) != 997 )
+  {
+    IpGetLastSocketErrorAsString(gUdpSocketHandle, gErrorText, elcount(gErrorText));
+    write("<%BASE_FILE_NAME%> UdpReceiveFrom failed, %s (Result %d)", gErrorText, IpGetLastSocketError(gUdpSocketHandle));
+  }
+}
+
+on preStop
+{
+  // Close socket
+  gResult = UdpClose(gUdpSocketHandle);
+
+  // Check for error
+  if (gResult != 0)
+  {
+    IpGetLastSocketErrorAsString(gUdpSocketHandle, gErrorText, elcount(gErrorText));
+    write("<%BASE_FILE_NAME%> UdpClose failed, %s (Result %d)", gErrorText, IpGetLastSocketError(gUdpSocketHandle));
+  }
+}
+
+on sysvar sysvar::Ethernet::Ethernet
+{
+  if ((@this == 1))
+  {
+    SendMessage();
+  }
+ }
+   
+
+on sysvar sysvar::Ethernet::Enable
+{
+  if ((@this == 1))
+    
+    
+  {
+    setTimer(NMH_TxCycleTime,@sysvar::Ethernet::CycleTime);
+  }
+  
+  if ((@this == 0))
+  {
+    cancelTimer(NMH_TxCycleTime);
+  }
+ }
+on timer NMH_TxCycleTime
+  {
+    SendMessage(); 
+    setTimer(NMH_TxCycleTime,@sysvar::Ethernet::CycleTime);
+  }
+
+void SendMessage()
+{
+    CHAR text[1440];
+  
+  
+  sysGetVariableString( sysvar::Ethernet::Text, text, elcount(text) );
+  snprintf (text,elcount(text),"%d", dwSeqId);
+    gResult = UdpSendTo(gUdpSocketHandle, gServerUdpAddress, gServerUdpPort, text, 1440);
+  // Check for error
+    if ( (gResult != 0) && (IpGetLastSocketError(gUdpSocketHandle) != 997) )
+    {
+      IpGetLastSocketErrorAsString(gUdpSocketHandle, gErrorText, elcount(gErrorText) );
+      write( "<%BASE_FILE_NAME%> UdpSendTo failed, %s (Result %d)", gErrorText, IpGetLastSocketError(gUdpSocketHandle) );  
+    }
+    dwSeqId++;
+}
+
+on sysvar_update Ethernet::ServerPortNumber
+ { 
+  dword port=0;
+  
+  gResult = UdpClose(gUdpSocketHandle);
+
+  // Check for error
+  if (gResult != 0)
+  {
+    IpGetLastSocketErrorAsString(gUdpSocketHandle, gErrorText, elcount(gErrorText));
+    write("<%BASE_FILE_NAME%> UdpClose failed, %s (Result %d)", gErrorText, IpGetLastSocketError(gUdpSocketHandle));
+  }
+  
+  gServerUdpPort=@sysvar::Ethernet::ServerPortNumber;
+    
+  gUdpSocketHandle = UdpOpen(0, gServerUdpPort); // The port parameter is set to zero. => A free local port is selected by the stack.
+
+  
+  // Check for valid socket handle
+  if (gUdpSocketHandle == ~0)
+  {
+    write("<%BASE_FILE_NAME%> UdpOpen failed: Result %d", IpGetLastError());
+  }
+  else // Socket handle valid
+  {
+    // Send UDP data
+    //gResult = UdpSendTo(gUdpSocketHandle, gServerUdpAddress, gServerUdpPort, textData, strlen(textData));
+
+    // Check for error
+    if ( (gResult != 0) && (IpGetLastSocketError(gUdpSocketHandle) != 997) )
+    {
+      IpGetLastSocketErrorAsString(gUdpSocketHandle, gErrorText, elcount(gErrorText) );
+      write( "<%BASE_FILE_NAME%> UdpSendTo failed, %s (Result %d)", gErrorText, IpGetLastSocketError(gUdpSocketHandle) );
+    }
+
+    // Optionally receive answer from UDP server
+    UdpReceiveFrom(gUdpSocketHandle, gRxBuffer, 0); // Set size to 0 to enforce reception in callback only
+
+    // Check for error
+    if ( IpGetLastSocketError(gUdpSocketHandle) != 997 )
+    {
+      IpGetLastSocketErrorAsString(gUdpSocketHandle, gErrorText, elcount(gErrorText));
+      write("<%BASE_FILE_NAME%> UdpReceiveFrom failed, %s (Result %d)", gErrorText, IpGetLastSocketError(gUdpSocketHandle));
+    }
+  }
+}

@@ -1,0 +1,484 @@
+/*@@var:*/
+variables
+{
+    // TODO: Zugriff auf Timer in RBS_Send incl. Timerroutine
+    msTimer tNMH_TxMsg;
+    const dword  NMH_TxMsgCycleTime = 200;
+
+    // TODO: RX-Bestätigung von RBS_Send
+    const dword NMH_RxID=0x9b; /* NMH_Kombi */
+
+    //Zustaende Automat NMHigh
+    const byte NMH_StatePowerOn = 0;
+    const byte NMH_StateStart = 1;
+    const byte NMH_StateReadyToSleep = 2;
+    const byte NMH_StateNormal = 3;
+    const byte NMH_StatePrepareToSleep = 4;
+    const byte NMH_StateSleep = 5;
+
+    // Werte NM_Gateway_NM_State
+    const byte NM_RM_aus_BSM  = 1; /* Zustand Repeat Message (<= Bus-Sleep Mode) */
+    const byte NM_RM_aus_PBSM = 2; /* Zustand Repeat Message (<=Prepare Bus-Sleep Mode) */
+    const Byte NM_NO_aus_RM   = 4; /* Zustand Normal Operation (<=Repeat Message) */
+    const byte NM_NO_aus_RS   = 8; /* Zustand Normal Operation (<=Ready Sleep) */
+
+    msTimer tNMH_TTimeout;
+    msTimer tNMH_TWaitBusSleep;
+
+    byte    StartCnt;
+
+    //Parameter NMHig
+    const dword TTimeout = 1000;
+    const dword TWaitBusSleep = 750;
+    const dword TMaxRequest = 5000;
+   
+    const byte  nStart = 20;
+
+    byte NMH_Selected_State = 0;
+}
+/*@@end*/
+
+/*@@timer:tNMH_TxMsg:*/
+on timer tNMH_TxMsg
+{
+    if (getValue( eNMHStateMachineState ) == NMH_StateStart)
+    {
+        if( StartCnt )
+        {
+            StartCnt--;
+            if( StartCnt==0 )
+            { // State Start verlassen
+                if( getValue( eNMHControllerNodeAwake ))
+                { // Bus wach halten
+                    ChangeToNormal();
+                }
+                else
+                { // wir können uns schlafen legen
+                  // tTimeout wird retriggert bei Empfang von NMH Botschaften
+                  // bei Ablauf von tTimeout geht es nach PrepareToSleep
+                    if (getValue(eNMHMode))
+                    {
+                        ChangeToReadyToSleep();
+                    }
+                }
+            }
+            else
+            { // weiter mit der Startphase
+                setTimer( tNMH_TxMsg, NMH_TxMsgCycleTime );
+                putValue( eSendAtOnceNMH_Gateway, 1 ); // NM-Nachricht senden
+                //MR 53100 commented for FPK
+		//16Feb2012
+                //putValue( eSendAtOnceNMH_eCall, 1 ); // NM-Nachricht senden
+
+                cancelTimer( tNMH_TTimeout );
+
+                setTimer( tNMH_TTimeout, TTimeout );                
+            }
+        }
+    }
+    else if( getValue( eNMHStateMachineState ) == NMH_StateNormal)
+    {
+        putValue( eSendAtOnceNMH_Gateway, 1 ); // NM-Nachricht senden
+        //MR 53100 commented for FPK
+	//16Feb2012
+        //putValue( eSendAtOnceNMH_eCall, 1 ); // NM-Nachricht senden
+
+        setTimer( tNMH_TxMsg, NMH_TxMsgCycleTime );
+        cancelTimer( tNMH_TTimeout );
+        setTimer( tNMH_TTimeout, TTimeout );        
+    }
+}
+/*@@end*/
+
+/*@@envVar:eNMHStateMachineEnabled:*/
+on envVar eNMHStateMachineEnabled
+{ // NMHigh aktivieren/ deaktivieren
+    if( getValue( this ) == 1 )
+    {
+        putValue( eSendNMH_Gateway, 0 );
+        //MR 53100 commented for FPK
+	//16Feb2012
+        //putValue( eSendNMH_eCall, 0 );
+
+        if( getValue( eNMHStateMachineState ) == NMH_StatePowerOn)
+        { // NMH ist noch anzuschalten
+            ChangeToStart();
+        }
+    }
+    else
+    {
+        SwitchNMHighOff();
+    }
+}
+/*@@end*/
+
+/*@@envVar:eNMHControllerNodeAwake:*/
+on envVar eNMHControllerNodeAwake
+{
+  if( getValue( eNMHStateMachineEnabled ) == 1 ) // NMH freigegeben?
+  {
+    // Status eines aktivierten NMHigh zwischen Sleep und Awake umschalten
+    if( getValue( this ))
+    { // Bus wach halten
+        switch( getValue( eNMHStateMachineState ))
+        {
+        case NMH_StateReadyToSleep:
+            // NMH wieder senden -> nach Normal wechseln
+            ChangeToNormal();
+            break;
+        case NMH_StateStart:
+            // Normal wird automatisch nach Ablauf der Startphase eingenommen
+            break;
+        case NMH_StatePrepareToSleep:
+        case NMH_StateSleep:
+            // Startphase einleiten
+            ChangeToStart();
+            break;
+        }
+    }
+    else
+    { // schlafbereit
+        switch( getValue( eNMHStateMachineState ))
+        {
+        case NMH_StateNormal:
+            // NMH nicht mehr senden
+            ChangeToReadyToSleep();
+            break;
+        case NMH_StateStart:
+            // Normal wird automatisch nach Ablauf der Startphase eingenommen
+            break;
+        }
+    }
+  }
+  else // NMH disabled
+  {
+    // putValue( eNMHStateMachineState, NMH_StateNormal );
+  }
+}
+/*@@end*/
+
+/*@@caplFunc:AllMsgStop():*/
+void AllMsgStop ()
+{ // Stoppen des Versendens alle Nachrichten
+  // Hier die Funktionen eintragen, die das Senden aller Appl.-Botschaften abschalten
+    putValue( eSendEnabled, 0 );
+}
+/*@@end*/
+
+/*@@caplFunc:AllMsgRun():*/
+void AllMsgRun ()
+{ // Starten des Versendens aller Nachrichten
+
+   // Hier die Funktionen eintragen, die das Senden aller Appl.-Botschaften wieder starten
+   if(@PlayReplayblock==0) // @RV only if Replayblock is off
+    putValue( eSendEnabled, 1 );
+}
+/*@@end*/
+
+/*@@msg:CAN1.*:*/
+on message CAN1.*  //@RV
+{  
+    
+    
+    if( getValue( eNMHStateMachineEnabled ))
+    {
+        if( getValue( eNMHStateMachineState ) == NMH_StateSleep)
+        { // bei Empfang beliebiger Botschaft nach State Start wechseln            
+            ChangeToStart();            
+        }
+    }
+    
+}
+/*@@end*/
+
+/*@@msg:CAN1.MQB_KCAN_KMatrix::NMH_Kombi (0x1B000014X):*/
+on message NMH_Kombi
+{
+    if( getValue( eNMHStateMachineEnabled ))
+    {
+       // retrigger tTimeout bei Empfang von NMH Botschaft
+       cancelTimer( tNMH_TTimeout );
+       setTimer( tNMH_TTimeout, TTimeout );      
+       
+       if( getValue( eNMHStateMachineState ) == NMH_StatePrepareToSleep)
+       { // NMH Botschaft empfangen
+           ChangeToStart();
+       }
+    }
+}
+/*@@end*/
+
+/*@@timer:tNMH_TTimeout:*/
+on timer tNMH_TTimeout
+{
+    if (getValue(eNMHMode))
+    {
+        if( getValue( eNMHStateMachineState ) == NMH_StateReadyToSleep)
+        {
+            ChangeToPrepareToSleep();
+        }
+    }
+}
+/*@@end*/
+
+/*@@caplFunc:ChangeToStart():*/
+void ChangeToStart ()
+{ // Wechsel in den Zustand Start
+    switch( getValue( eNMHStateMachineState ))
+    {
+    case NMH_StateReadyToSleep:
+        cancelTimer( tNMH_TWaitBusSleep );
+        putValue( eNM_Gateway_NM_StateS, NM_RM_aus_PBSM ); // Zustand Start (<--Prepare to Sleep)
+        break;
+    default:
+        putValue( eNM_Gateway_NM_StateS, NM_RM_aus_BSM );  // Zustand Start (<--Sleep)
+        break;
+    }
+    putValue( eSendAtOnceNMH_Gateway, 1 ); // NM-Nachricht senden
+    //MR 53100 commented for FPK
+    //16Feb2012
+    //putValue( eSendAtOnceNMH_eCall, 1 ); // NM-Nachricht senden
+
+    StartCnt = nStart;
+    putValue( eNMHStateMachineState, NMH_StateStart );
+    setTimer( tNMH_TxMsg, NMH_TxMsgCycleTime );
+    cancelTimer( tNMH_TTimeout );
+
+    setTimer( tNMH_TTimeout, TTimeout );
+    AllMsgRun(); // alle Botschaften senden
+}
+/*@@end*/
+
+/*@@caplFunc:ChangeToPowerOn():*/
+void ChangeToPowerOn()
+{ // NMHigh wird angeschalten
+    SwitchNMHighOff();
+    ChangeToStart();
+}
+/*@@end*/
+
+/*@@caplFunc:SwitchNMHighOff():*/
+void SwitchNMHighOff ()
+{ // NMHigh wird abgeschalten
+    // alle Timer stoppen
+    cancelTimer( tNMH_TxMsg );
+    cancelTimer( tNMH_TTimeout );
+    cancelTimer( tNMH_TWaitBusSleep );
+    // alle Botschaften wieder senden
+    AllMsgRun();
+    putValue( eNMHStateMachineState, NMH_StatePowerOn );
+}
+/*@@end*/
+
+/*@@timer:tNMH_TWaitBusSleep:*/
+on timer tNMH_TWaitBusSleep
+{
+    if (getValue(eNMHMode))
+    {
+        if( getValue( eNMHStateMachineState ) == NMH_StatePrepareToSleep)
+        {
+            putValue( eNMHStateMachineState, NMH_StateSleep );
+        }
+    }
+}
+/*@@end*/
+
+/*@@caplFunc:ChangeToPrepareToSleep():*/
+void ChangeToPrepareToSleep ()
+{
+    AllMsgStop();    
+    setTimer( tNMH_TWaitBusSleep, TWaitBusSleep );
+    putValue( eNMHStateMachineState, NMH_StatePrepareToSleep );
+}
+/*@@end*/
+
+/*@@caplFunc:ChangeToNormal():*/
+void ChangeToNormal ()
+{
+    switch( getValue( eNMHStateMachineState ))
+    {
+    case NMH_StateStart:
+        putValue( eNM_Gateway_NM_StateS, NM_NO_aus_RM ); // Zustand Normal Mode (<-- Start)
+        break;
+    case NMH_StateReadyToSleep:
+        putValue( eNM_Gateway_NM_StateS, NM_NO_aus_RS ); // Zustand Normal Mode (<-- Ready to Sleep)
+        break;
+    default:
+        putValue( eNM_Gateway_NM_StateS, 0 ); // Zurücksetzen des Status
+    }
+    putValue( eNMHStateMachineState, NMH_StateNormal );
+    putValue( eSendAtOnceNMH_Gateway, 1 );
+    //MR 53100 commented for FPK
+    //16Feb2012
+    //putValue( eSendAtOnceNMH_eCall, 1 );
+    cancelTimer( tNMH_TxMsg );
+    setTimer( tNMH_TxMsg, NMH_TxMsgCycleTime );
+    cancelTimer( tNMH_TTimeout );
+    setTimer( tNMH_TTimeout, TTimeout );
+}
+/*@@end*/
+
+/*@@caplFunc:ChangeToReadyToSleep():*/
+void ChangeToReadyToSleep ()
+{
+    putValue( eNMHStateMachineState, NMH_StateReadyToSleep );
+    cancelTimer( tNMH_TxMsg );
+     //16Feb2012
+    if (getValue(eNMHMode))
+    {
+    putValue(eSendNMH_Gateway,0);
+    }
+
+    AllMsgRun(); // alle Botschaften senden
+}
+/*@@end*/
+
+/*@@startStart:Start:*/
+on start
+{
+    putValue( eNMHStateMachineState, NMH_StatePowerOn + 1 );
+    SwitchNMHighOff();
+
+    if (getValue(eNMHMode))
+    {
+        enableControl ("NMHigh", "EnvVar:eNMHState", 0);   
+        enableControl ("NMHigh", "EnvVar:eNMHControllerNodeAwake", 1);
+    }
+    else
+    {
+        enableControl ("NMHigh", "EnvVar:eNMHState", 1); 
+        enableControl ("NMHigh", "EnvVar:eNMHControllerNodeAwake", 0); 
+    }
+}
+/*@@end*/
+
+/*@@envVar:eNMHStateMachineState:*/
+on EnvVar eNMHStateMachineState
+{
+  switch ( getValue( eNMHStateMachineState ))
+  {
+    case NMH_StatePowerOn        : putValue( eNMHStateMachineStateText, "PowerOn" ); break;
+    case NMH_StateStart          : 
+    {
+        putValue( eNMHStateMachineStateText, "Start" );
+        putValue(eNMHState, NMH_StateStart);
+        putValue(eNMHLastState, NMH_StateStart);        
+        break;
+    }
+    case NMH_StateReadyToSleep   :
+    {
+         putValue( eNMHStateMachineStateText, "ReadyToSleep" );          
+         putValue(eNMHState, NMH_StateReadyToSleep); 
+         putValue(eNMHLastState, NMH_StateReadyToSleep);   
+         break;
+    }
+
+    case NMH_StateNormal         :
+    {
+         putValue( eNMHStateMachineStateText, "Normal" ); 
+         putValue(eNMHState, NMH_StateNormal);
+         putValue(eNMHLastState, NMH_StateNormal);
+
+         break;
+    }
+    case NMH_StatePrepareToSleep : 
+    {
+        putValue( eNMHStateMachineStateText, "PrepareToSleep" ); 
+        putValue(eNMHState, NMH_StatePrepareToSleep);
+        putValue(eNMHLastState, NMH_StatePrepareToSleep);
+        break;
+    }
+    case NMH_StateSleep          : 
+    {
+        putValue( eNMHStateMachineStateText, "Sleep" ); 
+        putValue(eNMHState, NMH_StateSleep);
+        putValue(eNMHLastState, NMH_StateSleep);
+        break;
+    }
+    default                      : putValue( eNMHStateMachineStateText, "!?!" ); break;
+  }
+}
+/*@@end*/
+
+/*@@envVar:eNMHMode:*/
+on envVar eNMHMode
+{
+    if (getValue(this))
+    {
+        enableControl ("NMHigh", "EnvVar:eNMHState", 0);   
+        enableControl ("NMHigh", "EnvVar:eNMHControllerNodeAwake", 1);
+        
+        if (getValue(eNMHControllerNodeAwake) == 1)
+        {
+            putValue(eNMHControllerNodeAwake, 1);
+        }  
+        else
+        {
+            putValue(eNMHControllerNodeAwake, 0);
+        }
+    }
+    else
+    {
+        enableControl ("NMHigh", "EnvVar:eNMHState", 1); 
+        enableControl ("NMHigh", "EnvVar:eNMHControllerNodeAwake", 0); 
+    }
+}
+/*@@end*/
+
+/*@@envVar:eNMHState:*/
+on envVar eNMHState
+{
+    NMH_Selected_State = getValue (this);
+
+    if (NMH_Selected_State != getValue(eNMHLastState ))
+    {
+        switch (NMH_Selected_State)
+        {
+            case NMH_StateStart:
+                ChangeToStart();
+                break;
+            case NMH_StateNormal:
+                ChangeToNormal();
+                break;
+            case NMH_StateReadyToSleep:
+                ChangeToReadyToSleep();
+                break;
+            case NMH_StatePrepareToSleep:
+                ChangeToPrepareToSleep();
+                break;
+            case NMH_StateSleep:
+                ChangeToSleep();
+                break;
+            default:
+                break;
+        }
+    }   
+}
+/*@@end*/
+
+/*@@caplFunc:ChangeToSleep():*///function
+void ChangeToSleep ()
+{
+    AllMsgStop();    
+    putValue( eNMHStateMachineState, NMH_StateSleep );
+}
+/*@@end*/
+
+/*@@key:End:*/
+//MR 53100
+on key End
+{
+putValue(eNMHControllerNodeAwake,1);
+
+}
+/*@@end*/
+
+/*@@envVar:HeadUnit_Present:*/
+//MR60227
+on envVar HeadUnit_Present
+{
+if (getValue(this)==0x01)
+cancelTimer(tNMH_TxMsg);
+}
+/*@@end*/
+

@@ -1,0 +1,1226 @@
+/*@@includes:*/
+includes
+    {
+    #include "..\Includes\VDO_pSyrto_Main.cin"
+    #include "..\Includes\VDO_pSyrto_NodeAC.cin"
+    #include "..\Includes\VDO_pSyrto_NodeGC.cin"
+    }
+/*@@end*/
+
+/*@@var:*/
+variables
+    {
+/* Copyright ( C ) Continental AG 2012
+
+Date of creation :  14.04.2011
+
+Created by :                 Daniel Warnicki
+
+
+Version info
+
+1.0	   10.2013	Inital versioning introduced
+
+*/
+    /*
+    ##############################################################################################################################################
+    function: analyse syrto values (using CAN ID "Meas_IC_5" 0x18EF4108) and display the values to the panels 
+    author  : Daniel Warnicki
+    versions: @DaWa V02.00 27.01.2012
+                    - update to the new message layout
+              @DaWa V03.00 27.04.2012
+                    - switch syrto from Meas_IC_4 to Meas_IC_5
+              @DaWa V03.01 01.06.2012
+                    - all write outputs will be also displayed in SYRTO 7.5 window
+              @DaWa V03.02 05.06.2012
+                    - delete some mistakes regarding array overflow for strings
+                    - add statistics for event calling
+    ##############################################################################################################################################
+    definition of protocol for SYRTO values (using CAN ID "Meas_IC_5" 0x18EF4108)
+
+    byte0, byte1, byte2, byte3, byte4, byte5, byte6, byte7 
+      |      |      |      |      +------+------+------+---> data bytes
+      |      |      |      +-------------------------------> event, see definition of SYRTO_tenTraceEventsTag in "..\Includes\VDO_pSyrto_Main.cin"
+      |      |      +--------------------------------------> bit 0-6 notofier, see definition of SYRTO_tenNotifierTag in "..\Includes\VDO_pSyrto_Main.cin"
+      |      |                                               bit 7 node, see definition of Syrto_tenNodes in "..\Includes\VDO_pSyrto_Main.cin" 
+      |      +---------------------------------------------> timer (high byte) in ms
+      +----------------------------------------------------> timer (low byte) in ms
+    ##############################################################################################################################################
+    */
+    char sCurrentVersion[7]                 = "V3.02";            // define the current version number
+
+    dword dwWriteTab;           		                          // Tab ID for write output
+    byte u8AcConfigurationAvailible;                              // 0x00 = AC conf. not availible / 0x01 = AC conf. availible
+    byte u8GcConfigurationAvailible;                              // 0x00 = GC conf. not availible / 0x01 = GC conf. availible
+    dword CSHDL__u32StateHdlActiveSMs_AC    = 0;
+    dword CSHDL__u32StateHdlTransSMs_AC     = 0;
+    dword oldCSHDL__u32StateHdlActiveSMs_AC = 0;
+    dword oldCSHDL__u32StateHdlTransSMs_AC  = 0;
+    dword CSHDL__u32StateHdlActiveSMs_GC    = 0;
+    dword CSHDL__u32StateHdlTransSMs_GC     = 0;
+    dword oldCSHDL__u32StateHdlActiveSMs_GC = 0;
+    dword oldCSHDL__u32StateHdlTransSMs_GC  = 0;
+    byte boSYRTO_nenCshdlStateChanged1_AC   = 0;                  // trigger marker for AC SYRTO_nenCshdlStateChanged1 Rx
+    byte boSYRTO_nenCshdlStateChanged1_GC   = 0;                  // trigger marker for GC SYRTO_nenCshdlStateChanged1 Rx
+
+    enum Syrto_tenNodes          enTestNode;
+    word                         dwTestNodeTimeStamp;
+    enum SYRTO_tenNotifierTag    enTestNotifier;
+    enum SYRTO_tenTraceEventsTag enTestEvent;
+
+    word u16EventCounter[enNumberOfNodes][SYRTO_nenMessageCount]; // counter array for event count AC/GC
+
+
+    byte boShowEventStatisticOnStop = 0;                          // 0- inactive / 1- active
+    byte boEventStatisticGcAvailible;                             // counter array for every AC event availible (only when configured in SYRTO target)
+    byte boEventStatisticAcAvailible;                             // counter array for every GC event availible (only when configured in SYRTO target)
+    word u16EventStatisticAc[1000];                               // counter array for every AC event (only when configured in SYRTO target)
+    word u16EventStatisticGc[1000];                               // counter array for every GC event (only when configured in SYRTO target)
+
+    byte au8MessageValue[8];
+
+    byte u8DebugMode = 0x00;           		                      // 0x00 = hide debug output
+                                                                  // 0x01 = simple debug output
+                                                                  // 0x02 = detail debug output
+    }
+/*@@end*/
+
+/*@@startStart:Start:*/
+on start
+    {
+    char sTemp[1500];
+
+    boEventStatisticGcAvailible = 0;
+    boEventStatisticAcAvailible = 0;
+
+    snprintf( sTemp, elcount(""), "");
+    snprintf( sTemp, strlen(sTemp)+nMaxStringLength, "%sSyrto %s",sTemp,sCurrentVersion);
+
+	dwWriteTab= writeCreate(sTemp);	                                                                            // create tab
+	writeclear(dwWriteTab);             	                                                                    // clear tab content
+
+    PutValue(Syrto_sRessourceState_AC,"waiting for AC ressource states");                                       // copy to database
+    PutValue(Syrto_sRessourceState_GC,"waiting for GC ressource states");                                       // copy to database
+    PutValue(Syrto_sIcomState,"waiting for ICOM state");                                                        // copy to database
+    PutValue(Syrto_sRequestState_AC,"waiting for AC requests");                                                 // copy to database
+    PutValue(Syrto_sRequestState_GC,"waiting for GC requests");                                                 // copy to database
+    PutValue(Syrto_sVersion,sCurrentVersion);                                                                   // copy to database
+
+    putValueToControl("VDO-Syrto-Panel for V7.5", "cov_sRessourceState_AC", "waiting for AC ressource states"); // copy to panel
+    putValueToControl("VDO-Syrto-Panel for V7.5", "cov_sRessourceState_GC", "waiting for GC ressource states"); // copy to panel
+    putValueToControl("VDO-Syrto-Panel for V7.5", "cov_sRequestState_AC"  , "waiting for AC requests");         // copy to panel
+    putValueToControl("VDO-Syrto-Panel for V7.5", "cov_sRequestState_GC"  , "waiting for GC requests");         // copy to panel
+    putValueToControl("VDO-Syrto-Panel for V7.5", "cov_sWrite"            , "waiting for events");              // copy to panel
+
+    PutValue(Syrto_sSwFrame_AC,sCurrentProjectName_AC);                                                         // copy to database
+    PutValue(Syrto_sSwFrame_GC,sCurrentProjectName_GC);                                                         // copy to database
+
+    if (elcount(sRessourceNames_AC) > 1)                                                                        // check AC configuration (check size of RessourceName array
+        u8AcConfigurationAvailible = 0x01;
+    else
+        u8AcConfigurationAvailible = 0x00;
+
+    if (elcount(sRessourceNames_GC) > 1)                                                                        // check GC configuration (check size of RessourceName array
+        u8GcConfigurationAvailible = 0x01;
+    else
+        u8GcConfigurationAvailible = 0x00;
+
+    }
+/*@@end*/
+
+/*@@preStart:PreStart:*/
+/*@@end*/
+
+/*@@msg:Meas_IC_5 (0x18EF4108X):*/
+// function  	: analyse the received message 
+// parameters	: in  -> this: received message
+//                out -> void
+// author    	: Daniel Warnicki 27.01.2012
+on message Meas_IC_5
+    {
+    enum Syrto_tenNodes             enNode;
+    word                            dwNodeTimeStamp;
+    enum SYRTO_tenNotifierTag       enNotifier;
+    enum SYRTO_tenTraceEventsTag    enEvent;
+    char                            sTemp[1500];
+    dword                           u32ReqHdlRequests;
+
+    dwNodeTimeStamp = (this.BYTE(0) + (this.BYTE(1)<<8));
+    enNode          = (enum Syrto_tenNodes) ((this.BYTE(2) >> 7) & 0x01);// get node
+    enNotifier      = (enum SYRTO_tenNotifierTag)(this.BYTE(2) & 0x7F);
+    enEvent         = (enum SYRTO_tenTraceEventsTag)this.BYTE(3);
+
+    au8MessageValue[0] = this.BYTE(0);
+    au8MessageValue[1] = this.BYTE(1);
+    au8MessageValue[2] = this.BYTE(2);
+    au8MessageValue[3] = this.BYTE(3);
+    au8MessageValue[4] = this.BYTE(4);
+    au8MessageValue[5] = this.BYTE(5);
+    au8MessageValue[6] = this.BYTE(6);
+    au8MessageValue[7] = this.BYTE(7);
+
+/*
+    // generate test values
+    dwTestNodeTimeStamp++;
+    enTestNode     = ((enTestNode+1)     < enNumberOfNodes)         ? ++enTestNode     : enNode_AC;
+    enTestNotifier = ((enTestNotifier+1) < SYRTO_nenNoNotifier+2)   ? ++enTestNotifier : SYRTO_nenNotifierSyrto;
+    enTestEvent    = ((enTestEvent+1)    < SYRTO_nenMessageCount+2) ? ++enTestEvent    : 0;
+
+    dwNodeTimeStamp = dwTestNodeTimeStamp;
+    enNode          = enTestNode;
+    enNotifier      = enTestNotifier;
+    enEvent         = enTestEvent;
+*/
+
+    if (u8DebugMode > 1)
+        {
+        snprintf( sTemp, elcount(""), "");
+        snprintf( sTemp, strlen(sTemp)+nMaxStringLength, "%s\r\nDEBUG: rx Meas_IC_5: 0x%02X 0x%02X 0x%02X 0x%02X 0x%02X 0x%02X 0x%02X 0x%02X ",sTemp,this.BYTE(0),this.BYTE(1),this.BYTE(2),this.BYTE(3),this.BYTE(4),this.BYTE(5),this.BYTE(6),this.BYTE(7));
+        //                                                                           0x11 0x22 0x33 0x44 0x55 0x66 0x77 0x88
+        snprintf( sTemp, strlen(sTemp)+nMaxStringLength, "%s\r\n                      |    |    |    |    +----+----+----+-----> data bytes",sTemp);
+        snprintf( sTemp, strlen(sTemp)+nMaxStringLength, "%s\r\n                      |    |    |    +-------------------------> event",sTemp);
+        snprintf( sTemp, strlen(sTemp)+nMaxStringLength, "%s\r\n                      |    |    +------------------------------> bit 7   node",sTemp);
+        snprintf( sTemp, strlen(sTemp)+nMaxStringLength, "%s\r\n                      |    |                                     bit 0-6 notifier",sTemp);
+        snprintf( sTemp, strlen(sTemp)+nMaxStringLength, "%s\r\n                      |    +-----------------------------------> timer (high byte)",sTemp);
+        snprintf( sTemp, strlen(sTemp)+nMaxStringLength, "%s\r\n                      +----------------------------------------> timer (low byte)",sTemp);
+        snprintf( sTemp, strlen(sTemp)+nMaxStringLength, "%s\r\n       timer       : 0x%08X %ims",sTemp,dwNodeTimeStamp,dwNodeTimeStamp);
+        snprintf( sTemp, strlen(sTemp)+nMaxStringLength, "%s\r\n       node        : 0x%02X %i"    ,sTemp,enNode,enNode);
+        snprintf( sTemp, strlen(sTemp)+nMaxStringLength, "%s\r\n       notifier    : 0x%02X %i"    ,sTemp,(byte)enNotifier,(byte)enNotifier);
+        snprintf( sTemp, strlen(sTemp)+nMaxStringLength, "%s\r\n       event       : 0x%02X %i"    ,sTemp,(byte)enEvent,(byte)enEvent);
+        writetextcolor(dwWriteTab,0x888888,0x888888,0x888888);
+        //writeLineEx(dwWriteTab, 1 , "%s" ,sTemp);     
+        vPrintInWriteOutput(sTemp);
+        writetextcolor(dwWriteTab,0,0,0);
+        putValueToControl("VDO-Syrto-Panel for V7.5", "cov_sWrite", sTemp); // copy to Syrto Panel for V7.5
+        }
+    //-------------------------------------------------------------------------event counter
+    if ((enNode < enNumberOfNodes) && (enEvent < SYRTO_nenMessageCount))
+        {
+        if (u16EventCounter[enNode][enEvent] < 0xFFFF)
+            {
+            u16EventCounter[enNode][enEvent]++;
+            vPrintEventCounter(enNode);
+            }
+        }
+
+    switch(enNode)
+        {
+        //#############################################################################################################################
+        case enNode_AC:// AC
+            switch(enEvent)
+                {
+                case SYRTO_nenCshdlStateChanged1:
+                    boSYRTO_nenCshdlStateChanged1_AC = 0x01;
+                    CSHDL__u32StateHdlActiveSMs_AC = this.BYTE(4) + (this.BYTE(5)<<8) + (this.BYTE(6)<<16) + (this.BYTE(7)<<24);
+                    break;
+                case SYRTO_nenCshdlStateChanged2:
+                    if (boSYRTO_nenCshdlStateChanged1_AC)
+                        {// CSHDL__u32StateHdlActiveSMs_AC available
+                        boSYRTO_nenCshdlStateChanged1_AC = 0x00;
+                        CSHDL__u32StateHdlTransSMs_AC    = this.BYTE(4) + (this.BYTE(5)<<8) + (this.BYTE(6)<<16) + (this.BYTE(7)<<24);
+                        if (   (oldCSHDL__u32StateHdlActiveSMs_AC != CSHDL__u32StateHdlActiveSMs_AC) 
+                            || (oldCSHDL__u32StateHdlTransSMs_AC != CSHDL__u32StateHdlTransSMs_AC))
+                            {// new state detect
+                            vPrintNewCshdlState(enNode_AC,
+                                                CSHDL__u32StateHdlActiveSMs_AC,
+                                                oldCSHDL__u32StateHdlActiveSMs_AC,
+                                                CSHDL__u32StateHdlTransSMs_AC,
+                                                oldCSHDL__u32StateHdlTransSMs_AC,
+                                                dwNodeTimeStamp);
+                            oldCSHDL__u32StateHdlActiveSMs_AC = CSHDL__u32StateHdlActiveSMs_AC;
+                            oldCSHDL__u32StateHdlTransSMs_AC  = CSHDL__u32StateHdlTransSMs_AC;
+                            }
+                        }
+                    else
+                        {// CSHDL__u32StateHdlActiveSMs_AC missing
+                        snprintf( sTemp, elcount(""), "");
+                        snprintf( sTemp, strlen(sTemp)+nMaxStringLength,     "%sERROR: in 'VDO_pSyrto.can' function 'on message Meas_IC_5'",sTemp); 
+                        snprintf( sTemp, strlen(sTemp)+nMaxStringLength, "%s\r\n       Wrong event order from node:AC notifier:%s received!",sTemp,sSYRTO_tenNotifierTag[enNotifier]);
+                        snprintf( sTemp, strlen(sTemp)+nMaxStringLength, "%s\r\n       Event SYRTO_nenCshdlStateChanged2 (0x%02X) reveived before SYRTO_nenCshdlStateChanged2 (0x%02X) was received!",sTemp, SYRTO_nenCshdlStateChanged2,SYRTO_nenCshdlStateChanged1);
+                        snprintf( sTemp, strlen(sTemp)+nMaxStringLength, "%s\r\n       see Meas_IC_5: 0x%02x 0x%02x 0x%02x 0x%02x 0x%02x 0x%02x 0x%02x 0x%02x",sTemp,this.BYTE(0),this.BYTE(1),this.BYTE(2),this.BYTE(3),this.BYTE(4),this.BYTE(5),this.BYTE(6),this.BYTE(7));
+                        //                                                                            0x11 0x22 0x33 0x44 0x55 0x66 0x77 0x88
+                        snprintf( sTemp, strlen(sTemp)+nMaxStringLength, "%s\r\n                       |    |    |    |    +----+----+----+-----> data bytes",sTemp);
+                        snprintf( sTemp, strlen(sTemp)+nMaxStringLength, "%s\r\n                       |    |    |    +-------------------------> event",sTemp);
+                        snprintf( sTemp, strlen(sTemp)+nMaxStringLength, "%s\r\n                       |    |    +------------------------------> bit 7   node",sTemp);
+                        snprintf( sTemp, strlen(sTemp)+nMaxStringLength, "%s\r\n                       |    |                                     bit 0-6 notifier",sTemp);
+                        snprintf( sTemp, strlen(sTemp)+nMaxStringLength, "%s\r\n                       |    +-----------------------------------> timer (high byte)",sTemp);
+                        snprintf( sTemp, strlen(sTemp)+nMaxStringLength, "%s\r\n                       +----------------------------------------> timer (low byte)",sTemp);
+                        writetextcolor(dwWriteTab,0xFFFFFF,0,0xFFFFFF);
+                        //writeLineEx(dwWriteTab, 1 , "%s" ,sTemp);                           // copy to write frame
+                        vPrintInWriteOutput(sTemp);
+                        writetextcolor(dwWriteTab,0,0,0);
+                        putValueToControl("VDO-Syrto-Panel for V7.5", "cov_sWrite", sTemp); // copy to Syrto Panel for V7.5
+                        }
+                    break;
+                case SYRTO_nenIcomStateChanged:
+                    vPrintNewIcomState (enNode, this.BYTE(4), dwNodeTimeStamp);
+                    break;
+                case SYRTO_nenCshdlRqStateChanged:
+                    u32ReqHdlRequests  = au8MessageValue[4];
+                    u32ReqHdlRequests += au8MessageValue[5]<<8;
+                    u32ReqHdlRequests += au8MessageValue[6]<<16;
+                    u32ReqHdlRequests += au8MessageValue[7]<<24;
+                    vPrintNewRessourceRequestState (enNode, u32ReqHdlRequests, dwNodeTimeStamp);
+                    break;
+
+                case SYRTO_nenEvhdEventReceived:
+                    if (boShowEventStatisticOnStop > 0)
+                        {// when enabled
+                        u32ReqHdlRequests  = au8MessageValue[4];
+                        u32ReqHdlRequests += au8MessageValue[5]<<8;
+                        if (u32ReqHdlRequests < elcount(u16EventStatisticAc))
+                            {
+                            u16EventStatisticAc[u32ReqHdlRequests] += 1;
+                            boEventStatisticAcAvailible = 1;
+                            }
+                        else
+                            {
+                            snprintf( sTemp, elcount(""), "");
+                            snprintf( sTemp, strlen(sTemp)+nMaxStringLength,     "%sERROR: in 'VDO_pSyrto.can' function 'on message Meas_IC_5'",sTemp); 
+                            snprintf( sTemp, strlen(sTemp)+nMaxStringLength, "%s\r\n       Wrong event number received from node:AC notifier:%s received!",sTemp,sSYRTO_tenNotifierTag[enNotifier]);
+                            snprintf( sTemp, strlen(sTemp)+nMaxStringLength, "%s\r\n       SYRTO_nenEvhdEventReceived supports only %d events, but now event %04x received!",sTemp,elcount(u16EventStatisticAc),u32ReqHdlRequests);
+                            snprintf( sTemp, strlen(sTemp)+nMaxStringLength, "%s\r\n       see Meas_IC_5: 0x%02x 0x%02x 0x%02x 0x%02x 0x%02x 0x%02x 0x%02x 0x%02x",sTemp,this.BYTE(0),this.BYTE(1),this.BYTE(2),this.BYTE(3),this.BYTE(4),this.BYTE(5),this.BYTE(6),this.BYTE(7));
+                            //                                                                            0x11 0x22 0x33 0x44 0x55 0x66 0x77 0x88
+                            snprintf( sTemp, strlen(sTemp)+nMaxStringLength, "%s\r\n                       |    |    |    |    |    +---------------> event number hight byte byte ",sTemp);
+                            snprintf( sTemp, strlen(sTemp)+nMaxStringLength, "%s\r\n                       |    |    |    |    +--------------------> event number low byte ",sTemp);
+                            snprintf( sTemp, strlen(sTemp)+nMaxStringLength, "%s\r\n                       |    |    |    +-------------------------> event",sTemp);
+                            snprintf( sTemp, strlen(sTemp)+nMaxStringLength, "%s\r\n                       |    |    +------------------------------> bit 7   node",sTemp);
+                            snprintf( sTemp, strlen(sTemp)+nMaxStringLength, "%s\r\n                       |    |                                     bit 0-6 notifier",sTemp);
+                            snprintf( sTemp, strlen(sTemp)+nMaxStringLength, "%s\r\n                       |    +-----------------------------------> timer (high byte)",sTemp);
+                            snprintf( sTemp, strlen(sTemp)+nMaxStringLength, "%s\r\n                       +----------------------------------------> timer (low byte)",sTemp);
+                            writetextcolor(dwWriteTab,0xFFFFFF,0,0xFFFFFF);
+                            //writeLineEx(dwWriteTab, 1 , "%s" ,sTemp);                           // copy to write frame
+                            vPrintInWriteOutput(sTemp);
+                            writetextcolor(dwWriteTab,0,0,0);
+                            putValueToControl("VDO-Syrto-Panel for V7.5", "cov_sWrite", sTemp); // copy to Syrto Panel for V7.5
+                            }
+                        }
+                    break;
+
+                default:// event not defined in detail
+                    vPrintNewEvents(dwNodeTimeStamp,enNode,enNotifier,enEvent);
+                    break;
+                }
+            break;
+        //#############################################################################################################################
+        case enNode_GC:// GC
+            switch(enEvent)
+                {
+                case SYRTO_nenCshdlStateChanged1:
+                    boSYRTO_nenCshdlStateChanged1_GC = 0x01;
+                    CSHDL__u32StateHdlActiveSMs_GC = this.BYTE(4) + (this.BYTE(5)<<8) + (this.BYTE(6)<<16) + (this.BYTE(7)<<24);
+                    break;
+                case SYRTO_nenCshdlStateChanged2:
+                    if (boSYRTO_nenCshdlStateChanged1_GC)
+                        {// CSHDL__u32StateHdlActiveSMs_GC available
+                        boSYRTO_nenCshdlStateChanged1_GC = 0x00;
+                        CSHDL__u32StateHdlTransSMs_GC    = this.BYTE(4) + (this.BYTE(5)<<8) + (this.BYTE(6)<<16) + (this.BYTE(7)<<24);
+                        if (   (oldCSHDL__u32StateHdlActiveSMs_GC != CSHDL__u32StateHdlActiveSMs_GC) 
+                            || (oldCSHDL__u32StateHdlTransSMs_GC != CSHDL__u32StateHdlTransSMs_GC))
+                            {// new state detect
+                            vPrintNewCshdlState(enNode_GC,
+                                                CSHDL__u32StateHdlActiveSMs_GC,
+                                                oldCSHDL__u32StateHdlActiveSMs_GC,
+                                                CSHDL__u32StateHdlTransSMs_GC,
+                                                oldCSHDL__u32StateHdlTransSMs_GC,
+                                                dwNodeTimeStamp);
+                            oldCSHDL__u32StateHdlActiveSMs_GC = CSHDL__u32StateHdlActiveSMs_GC;
+                            oldCSHDL__u32StateHdlTransSMs_GC  = CSHDL__u32StateHdlTransSMs_GC;
+                            }
+                        }
+                    else
+                        {// CSHDL__u32StateHdlActiveSMs_AC missing
+                        snprintf( sTemp, elcount(""), "");
+                        snprintf( sTemp, strlen(sTemp)+nMaxStringLength,     "%sERROR: in 'VDO_pSyrto.can' function 'on message Meas_IC_5'",sTemp); 
+                        snprintf( sTemp, strlen(sTemp)+nMaxStringLength, "%s\r\n       Wrong event order from node:GC notifier:%s received!",sTemp,sSYRTO_tenNotifierTag[enNotifier]);
+                        snprintf( sTemp, strlen(sTemp)+nMaxStringLength, "%s\r\n       Event SYRTO_nenCshdlStateChanged2 (0x%02X) reveived before SYRTO_nenCshdlStateChanged2 (0x%02X) was received!",sTemp, SYRTO_nenCshdlStateChanged2,SYRTO_nenCshdlStateChanged1);
+                        snprintf( sTemp, strlen(sTemp)+nMaxStringLength, "%s\r\n       see Meas_IC_5: 0x%02x 0x%02x 0x%02x 0x%02x 0x%02x 0x%02x 0x%02x 0x%02x",sTemp,this.BYTE(0),this.BYTE(1),this.BYTE(2),this.BYTE(3),this.BYTE(4),this.BYTE(5),this.BYTE(6),this.BYTE(7));
+                        //                                                                            0x11 0x22 0x33 0x44 0x55 0x66 0x77 0x88
+                        snprintf( sTemp, strlen(sTemp)+nMaxStringLength, "%s\r\n                       |    |    |    |    +----+----+----+-----> data bytes",sTemp);
+                        snprintf( sTemp, strlen(sTemp)+nMaxStringLength, "%s\r\n                       |    |    |    +-------------------------> event",sTemp);
+                        snprintf( sTemp, strlen(sTemp)+nMaxStringLength, "%s\r\n                       |    |    +------------------------------> bit 7   node",sTemp);
+                        snprintf( sTemp, strlen(sTemp)+nMaxStringLength, "%s\r\n                       |    |                                     bit 0-6 notifier",sTemp);
+                        snprintf( sTemp, strlen(sTemp)+nMaxStringLength, "%s\r\n                       |    +-----------------------------------> timer (high byte)",sTemp);
+                        snprintf( sTemp, strlen(sTemp)+nMaxStringLength, "%s\r\n                       +----------------------------------------> timer (low byte)",sTemp);
+                        writetextcolor(dwWriteTab,0xFFFFFF,0,0xFFFFFF);
+                        //writeLineEx(dwWriteTab, 1 , "%s" ,sTemp);                           // copy to write frame
+                        vPrintInWriteOutput(sTemp);
+                        writetextcolor(dwWriteTab,0,0,0);
+                        putValueToControl("VDO-Syrto-Panel for V7.5", "cov_sWrite", sTemp); // copy to Syrto Panel for V7.5
+                        }
+                    break;
+                case SYRTO_nenIcomStateChanged:
+                    vPrintNewIcomState (enNode, this.BYTE(4), dwNodeTimeStamp);
+                    break;
+                case SYRTO_nenCshdlRqStateChanged:
+                    u32ReqHdlRequests  = au8MessageValue[4];
+                    u32ReqHdlRequests += au8MessageValue[5]<<8;
+                    u32ReqHdlRequests += au8MessageValue[6]<<16;
+                    u32ReqHdlRequests += au8MessageValue[7]<<24;
+                    vPrintNewRessourceRequestState (enNode, u32ReqHdlRequests, dwNodeTimeStamp);
+                    break;
+                case SYRTO_nenEvhdEventReceived:
+                    if (boShowEventStatisticOnStop > 0)
+                        {// when enabled
+                        u32ReqHdlRequests  = au8MessageValue[4];
+                        u32ReqHdlRequests += au8MessageValue[5]<<8;
+                        if (u32ReqHdlRequests < elcount(u16EventStatisticGc))
+                            {
+                            u16EventStatisticGc[u32ReqHdlRequests] += 1;
+                            boEventStatisticGcAvailible = 1;
+                            }
+                        else
+                            {
+                            snprintf( sTemp, elcount(""), "");
+                            snprintf( sTemp, strlen(sTemp)+nMaxStringLength,     "%sERROR: in 'VDO_pSyrto.can' function 'on message Meas_IC_5'",sTemp); 
+                            snprintf( sTemp, strlen(sTemp)+nMaxStringLength, "%s\r\n       Wrong event number received from node:GC notifier:%s received!",sTemp,sSYRTO_tenNotifierTag[enNotifier]);
+                            snprintf( sTemp, strlen(sTemp)+nMaxStringLength, "%s\r\n       SYRTO_nenEvhdEventReceived supports only %d events, but now event %04x received!",sTemp,elcount(u16EventStatisticGc),u32ReqHdlRequests);
+                            snprintf( sTemp, strlen(sTemp)+nMaxStringLength, "%s\r\n       see Meas_IC_5: 0x%02x 0x%02x 0x%02x 0x%02x 0x%02x 0x%02x 0x%02x 0x%02x",sTemp,this.BYTE(0),this.BYTE(1),this.BYTE(2),this.BYTE(3),this.BYTE(4),this.BYTE(5),this.BYTE(6),this.BYTE(7));
+                            //                                                                            0x11 0x22 0x33 0x44 0x55 0x66 0x77 0x88
+                            snprintf( sTemp, strlen(sTemp)+nMaxStringLength, "%s\r\n                       |    |    |    |    |    +---------------> event number hight byte byte ",sTemp);
+                            snprintf( sTemp, strlen(sTemp)+nMaxStringLength, "%s\r\n                       |    |    |    |    +--------------------> event number low byte ",sTemp);
+                            snprintf( sTemp, strlen(sTemp)+nMaxStringLength, "%s\r\n                       |    |    |    +-------------------------> event",sTemp);
+                            snprintf( sTemp, strlen(sTemp)+nMaxStringLength, "%s\r\n                       |    |    +------------------------------> bit 7   node",sTemp);
+                            snprintf( sTemp, strlen(sTemp)+nMaxStringLength, "%s\r\n                       |    |                                     bit 0-6 notifier",sTemp);
+                            snprintf( sTemp, strlen(sTemp)+nMaxStringLength, "%s\r\n                       |    +-----------------------------------> timer (high byte)",sTemp);
+                            snprintf( sTemp, strlen(sTemp)+nMaxStringLength, "%s\r\n                       +----------------------------------------> timer (low byte)",sTemp);
+                            writetextcolor(dwWriteTab,0xFFFFFF,0,0xFFFFFF);
+                            //writeLineEx(dwWriteTab, 1 , "%s" ,sTemp);                           // copy to write frame
+                            vPrintInWriteOutput(sTemp);
+                            writetextcolor(dwWriteTab,0,0,0);
+                            putValueToControl("VDO-Syrto-Panel for V7.5", "cov_sWrite", sTemp); // copy to Syrto Panel for V7.5
+                            }
+                         }
+                    break;
+                default:// event not defined in detail
+                    vPrintNewEvents(dwNodeTimeStamp,enNode,enNotifier,enEvent);
+                    break;
+                }
+            break;
+        //#############################################################################################################################
+        default:
+            snprintf( sTemp, elcount(""), "");
+            snprintf( sTemp, strlen(sTemp)+nMaxStringLength,     "%sERROR: in 'VDO_pSyrto.can' function 'on message Meas_IC_5'",sTemp); 
+            snprintf( sTemp, strlen(sTemp)+nMaxStringLength, "%s\r\n       Wrong node received! TimeStamp:0x%08X Node:0x%02X Notifier:0x%02X Event:0x%02X",sTemp, dwNodeTimeStamp,enNode,(byte)enNotifier,(byte)enEvent );
+            snprintf( sTemp, strlen(sTemp)+nMaxStringLength, "%s\r\n       Valide node range is %i-%i!",sTemp,enNode_AC,enNumberOfNodes-1);
+            snprintf( sTemp, strlen(sTemp)+nMaxStringLength, "%s\r\n       see Meas_IC_5: 0x%02x 0x%02x 0x%02x 0x%02x 0x%02x 0x%02x 0x%02x 0x%02x",sTemp,this.BYTE(0),this.BYTE(1),this.BYTE(2),this.BYTE(3),this.BYTE(4),this.BYTE(5),this.BYTE(6),this.BYTE(7));
+            //                                                                            0x11 0x22 0x33 0x44 0x55 0x66 0x77 0x88
+            snprintf( sTemp, strlen(sTemp)+nMaxStringLength, "%s\r\n                       |    |    |    |    +----+----+----+-----> data bytes",sTemp);
+            snprintf( sTemp, strlen(sTemp)+nMaxStringLength, "%s\r\n                       |    |    |    +-------------------------> event",sTemp);
+            snprintf( sTemp, strlen(sTemp)+nMaxStringLength, "%s\r\n                       |    |    +------------------------------> bit 7   node",sTemp);
+            snprintf( sTemp, strlen(sTemp)+nMaxStringLength, "%s\r\n                       |    |                                     bit 0-6 notifier",sTemp);
+            snprintf( sTemp, strlen(sTemp)+nMaxStringLength, "%s\r\n                       |    +-----------------------------------> timer (high byte)",sTemp);
+            snprintf( sTemp, strlen(sTemp)+nMaxStringLength, "%s\r\n                       +----------------------------------------> timer (low byte)",sTemp);
+            writetextcolor(dwWriteTab,0xFFFFFF,0,0xFFFFFF);
+            //writeLineEx(dwWriteTab, 1 , "%s" ,sTemp);                           // copy to write frame
+            vPrintInWriteOutput(sTemp);
+            writetextcolor(dwWriteTab,0,0,0);
+            putValueToControl("VDO-Syrto-Panel for V7.5", "cov_sWrite", sTemp); // copy to Syrto Panel for V7.5
+            break;
+        }
+    }
+/*@@end*/
+
+/*@@caplFunc:vPrintNewCshdlState(Syrto_tenNodes,dword,dword,dword,dword,dword):*///function
+// function  	: print CshdlEvents and states to te panel an to the write window
+// parameters	: in  -> enNode                        : Ac/Gc
+//                       CSHDL__u32StateHdlActiveSMs   : cshdl state CSHDL__u32StateHdlActiveSMs
+//                       oldCSHDL__u32StateHdlActiveSMs: old cshdl state CSHDL__u32StateHdlActiveSMs
+//                       CSHDL__u32StateHdlTransSMs    : cshdl state CSHDL__u32StateHdlTransSMs
+//                       oldCSHDL__u32StateHdlTransSMs : cshdl state CSHDL__u32StateHdlTransSMs
+//                       dwNodeTimeStamp               : time stamp
+//                out -> void
+// author    	: Daniel Warnicki 25.01.2012
+void vPrintNewCshdlState (enum Syrto_tenNodes enNode, dword CSHDL__u32StateHdlActiveSMs, dword oldCSHDL__u32StateHdlActiveSMs, dword CSHDL__u32StateHdlTransSMs, dword oldCSHDL__u32StateHdlTransSMs, dword dwNodeTimeStamp)
+    {
+    char  sRessourceState[1500];                   // complete string for all ressource states
+    char  sRessourceName[nMaxStringLength];        // current ressource name
+    char  sCshdlState[nMaxStringLength];           // current Chsdl State
+    char  sChangedRessourceEvent[nMaxStringLength];// current changed ressource name
+    char  sBlanks[nMaxStringLength];               // fill blanks
+    byte  boActive;
+    byte  boTransistion;
+    byte  iCount;
+    dword dwNumberOfRessourceNames;
+    char  sTemp[1500];
+    byte  boFirstCshdlEvent;
+
+
+    boFirstCshdlEvent = 0;
+    if (u8DebugMode > 0)
+        {
+        snprintf( sTemp, elcount(""), "");
+        snprintf( sTemp, strlen(sTemp)+nMaxStringLength, "%s\r\nDEBUG: call vPrintNewCshdlState(...)",sTemp);
+        snprintf( sTemp, strlen(sTemp)+nMaxStringLength, "%s\r\n       enNode                        : 0x%02X",sTemp,enNode);
+        snprintf( sTemp, strlen(sTemp)+nMaxStringLength, "%s\r\n       CSHDL__u32StateHdlActiveSMs   : 0x%08X",sTemp,CSHDL__u32StateHdlActiveSMs);
+        snprintf( sTemp, strlen(sTemp)+nMaxStringLength, "%s\r\n       oldCSHDL__u32StateHdlActiveSMs: 0x%08X",sTemp,oldCSHDL__u32StateHdlActiveSMs);
+        snprintf( sTemp, strlen(sTemp)+nMaxStringLength, "%s\r\n       CSHDL__u32StateHdlTransSMs    : 0x%08X",sTemp,CSHDL__u32StateHdlTransSMs);
+        snprintf( sTemp, strlen(sTemp)+nMaxStringLength, "%s\r\n       oldCSHDL__u32StateHdlTransSMs : 0x%08X",sTemp,oldCSHDL__u32StateHdlTransSMs);
+
+        writetextcolor(dwWriteTab,0x888888,0x888888,0x888888);
+        //writeLineEx(dwWriteTab, 1 , "%s" ,sTemp);                           // copy to write frame
+        vPrintInWriteOutput(sTemp);
+        writetextcolor(dwWriteTab,0,0,0);
+        putValueToControl("VDO-Syrto-Panel for V7.5", "cov_sWrite", sTemp); // copy to Syrto Panel for V7.5
+        }
+    //-------------------------------------------------------------------------------------------------------
+    // ressource state
+    snprintf( sRessourceState, elcount(""), "");
+    snprintf( sBlanks, elcount(""), "");
+
+    if (enNode == enNode_AC)
+        {
+        dwNumberOfRessourceNames = elcount(sRessourceNames_AC);
+
+        if (strlen(sRessourceNames_GC[0]) > strlen(sRessourceNames_AC[0]))
+            snprintf( sBlanks, strlen(sRessourceNames_GC[0])-strlen(sRessourceNames_AC[0])+1, "                                                    ");
+
+        if (strlen(sSYRTO_tenNotifierTag[0])+7 > strlen(sRessourceNames_AC[0])+strlen(sBlanks))
+            snprintf( sBlanks, strlen(sSYRTO_tenNotifierTag[0])+7-strlen(sRessourceNames_AC[0])+strlen(sBlanks)+1, "                                                    ");
+        }
+    if (enNode == enNode_GC)
+        {
+        dwNumberOfRessourceNames = elcount(sRessourceNames_GC);
+
+        if (strlen(sRessourceNames_AC[0]) > strlen(sRessourceNames_GC[0]))
+            snprintf( sBlanks, strlen(sRessourceNames_AC[0])-strlen(sRessourceNames_GC[0])+1, "                                                    ");
+
+        if (strlen(sSYRTO_tenNotifierTag[0])+4 > strlen(sRessourceNames_GC[0])+strlen(sBlanks))
+            snprintf( sBlanks, strlen(sSYRTO_tenNotifierTag[0])+4-strlen(sRessourceNames_GC[0])+strlen(sBlanks)+1, "                                                    ");
+        }
+
+    for (iCount = 0; iCount < 32 ; iCount++)
+        {
+        //..................................................................................
+        // get states from all ressouces
+        if (iCount < dwNumberOfRessourceNames)
+            {
+            boActive      = ((CSHDL__u32StateHdlActiveSMs & (1 << iCount)) != 0);
+            boTransistion = ((CSHDL__u32StateHdlTransSMs  & (1 << iCount)) != 0);
+            // get ressource name
+            if (enNode == enNode_AC)
+                snprintf( sRessourceName,       strlen(sRessourceNames_AC[iCount])+2, "%s",sRessourceNames_AC[iCount] );
+            else if (enNode == enNode_GC)
+                snprintf( sRessourceName, strlen(sRessourceNames_GC[iCount])+2, "%s",sRessourceNames_GC[iCount] );
+
+            if (strlen(sRessourceName) > 0)
+                {// ressource defined
+                if (boActive != 0 ) 
+                    {
+                    if (boTransistion)
+                        { 
+                        snprintf( sRessourceState, strlen(sRessourceState)+strlen(sRessourceName)+strlen(": Deinit")+1, "%s%s: Deinit",sRessourceState, sRessourceName);
+                        snprintf( sCshdlState, nMaxStringLength, "Deinit");
+                        }
+                    else             
+                        {
+                        snprintf( sRessourceState, strlen(sRessourceState)+strlen(sRessourceName)+strlen(": On")+1    , "%s%s: On",sRessourceState, sRessourceName);
+                        snprintf( sCshdlState, nMaxStringLength, "On    ");
+                        }
+                    }
+                if (boActive == 0 ) 
+                    {
+                    if (boTransistion) 
+                        {
+                        snprintf( sRessourceState, strlen(sRessourceState)+strlen(sRessourceName)+strlen(": Init")+1, "%s%s: Init",sRessourceState, sRessourceName);
+                        snprintf( sCshdlState, nMaxStringLength, "Init  ");
+                        }
+                    else
+                        {
+                        snprintf( sRessourceState,strlen(sRessourceState)+strlen(sRessourceName)+strlen(": Off")+1  , "%s%s: Off",sRessourceState, sRessourceName);
+                        snprintf( sCshdlState, nMaxStringLength, "Off   ");
+                        }
+                    }
+                if (iCount < dwNumberOfRessourceNames-1)
+                    snprintf( sRessourceState, strlen(sRessourceState)+strlen("\r\n")+1, "%s\r\n",sRessourceState);
+                //..................................................................................
+                // get states only from changes ressouces
+                if(   ((CSHDL__u32StateHdlActiveSMs ^ oldCSHDL__u32StateHdlActiveSMs) & (1<<iCount)) 
+                   || ((CSHDL__u32StateHdlTransSMs  ^ oldCSHDL__u32StateHdlTransSMs)  & (1<<iCount)))
+                    {
+                    if ((enNode == enNode_AC) && (u8AcConfigurationAvailible > 0x00))
+                        {
+                        if (boFirstCshdlEvent == 0)
+                            {// first CSHDL output for this 
+                            snprintf( sChangedRessourceEvent,nMaxStringLength,"AC-> Time:%05d.%03ds   CshdlState:%s%s   SwichedTo:%s",dwNodeTimeStamp/1000, dwNodeTimeStamp%1000,sRessourceName,sBlanks,sCshdlState);
+                            boFirstCshdlEvent = 1;
+                            }
+                        else // second or more CSHDL outputs
+                            snprintf( sChangedRessourceEvent,nMaxStringLength,"                       CshdlState:%s%s   SwichedTo:%s",sRessourceName,sBlanks,sCshdlState);
+
+                        writetextcolor(dwWriteTab,0,0,0x888888);
+                        //writeLineEx(dwWriteTab, 1 , "%s",sChangedRessourceEvent);
+                        vPrintInWriteOutput(sChangedRessourceEvent);
+                        writetextcolor(dwWriteTab,0,0,0);
+                        //PutValue(Syrto_sEvents_AC,sChangedRessourceEvent);                                   // copy to database
+
+                        snprintf( sChangedRessourceEvent, strlen(sChangedRessourceEvent)+strlen("\r\n")+1,"\r\n%s",sChangedRessourceEvent);
+                        putValueToControl("VDO-Syrto-Panel for V7.5", "cov_sWrite", sChangedRessourceEvent); // copy to panel
+
+                        }
+                    if ((enNode == enNode_GC) && (u8GcConfigurationAvailible > 0x00))
+                        {
+                        if (boFirstCshdlEvent == 0)
+                            {// first CSHDL output for this 
+                            snprintf( sChangedRessourceEvent,nMaxStringLength,"GC-> Time:%05d.%03ds   CshdlState:%s%s   SwichedTo:%s",dwNodeTimeStamp/1000, dwNodeTimeStamp%1000,sRessourceName,sBlanks,sCshdlState);
+                            boFirstCshdlEvent = 1;
+                            }
+                        else // second or more CSHDL outputs
+                            snprintf( sChangedRessourceEvent,nMaxStringLength,"                       CshdlState:%s%s   SwichedTo:%s",sRessourceName,sBlanks,sCshdlState);
+
+                        writetextcolor(dwWriteTab,0x888888,0,0);
+                        //writeLineEx(dwWriteTab, 1 , "%s",sChangedRessourceEvent);
+                        vPrintInWriteOutput(sChangedRessourceEvent);
+                        writetextcolor(dwWriteTab,0,0,0);
+                        //PutValue(Syrto_sEvents_GC,sChangedRessourceEvent);                                   // copy to database
+
+                        snprintf( sChangedRessourceEvent, strlen(sChangedRessourceEvent)+strlen("\r\n")+1,"\r\n%s",sChangedRessourceEvent);
+                        putValueToControl("VDO-Syrto-Panel for V7.5", "cov_sWrite", sChangedRessourceEvent); // copy to panel
+
+                        }
+                    }
+                }
+            }
+        }
+
+    if ((enNode == enNode_AC) && (u8AcConfigurationAvailible > 0x00))
+        {
+        PutValue(Syrto_sRessourceState_AC,sRessourceState);                                       // copy to database
+        putValueToControl("VDO-Syrto-Panel for V7.5", "cov_sRessourceState_AC", sRessourceState); // copy to panel
+        }
+
+    if ((enNode == enNode_GC) && (u8GcConfigurationAvailible > 0x00))
+        {
+        PutValue(Syrto_sRessourceState_GC,sRessourceState);                                       // copy to database
+        putValueToControl("VDO-Syrto-Panel for V7.5", "cov_sRessourceState_GC", sRessourceState); // copy to panel
+        }
+    }
+/*@@end*/
+
+/*@@caplFunc:vPrintNewIcomState(Syrto_tenNodes,byte,dword):*///function
+// function  	: print icom state to te panel an to the write window
+// parameters	: in  -> enNode           : Ac/Gc
+//                       u8NewIcomState   : 0/1 new Icom state
+//                       dwNodeTimeStamp  : time stamp
+//                out -> void
+// author    	: Daniel Warnicki 26.01.2012
+void vPrintNewIcomState (enum Syrto_tenNodes enNode, byte u8NewIcomState, dword dwNodeTimeStamp)
+    {
+    char  sTemp[1500];
+
+    if (enNode == enNode_AC)
+        {
+        snprintf( sTemp, nMaxStringLength,"AC-> Time:%05d.%03ds   ",dwNodeTimeStamp/1000, dwNodeTimeStamp%1000);
+        writetextcolor(dwWriteTab,0,0,0xDDDDDD);
+        }
+    if (enNode == enNode_GC)
+        {
+        snprintf( sTemp, nMaxStringLength,"GC-> Time:%05d.%03ds   ",dwNodeTimeStamp/1000, dwNodeTimeStamp%1000);
+        writetextcolor(dwWriteTab,0xDDDDDD,0,0);
+        }
+    if (u8NewIcomState == 1)
+        {
+        snprintf( sTemp, nMaxStringLength,"%sIcomState :Connected",sTemp);
+        PutValue(Syrto_sIcomState,"Connected");                                      // copy to database
+        putValueToControl("VDO-Syrto-Panel for V7.5", "txt_IcomState", "Connected"); // copy to panel
+        }
+    else
+        {
+        snprintf( sTemp, nMaxStringLength,"%sIcomState :Disonnected",sTemp);
+        PutValue(Syrto_sIcomState,"Disconnected");                                      // copy to database
+        putValueToControl("VDO-Syrto-Panel for V7.5", "txt_IcomState", "Disconnected"); // copy to panel
+        }
+
+    //writeLineEx(dwWriteTab, 1 , "%s",sTemp);
+    vPrintInWriteOutput(sTemp);
+    writetextcolor(dwWriteTab,0,0,0);
+
+    snprintf( sTemp, strlen(sTemp)+strlen("\r\n")+1,"\r\n%s",sTemp);
+    putValueToControl("VDO-Syrto-Panel for V7.5", "cov_sWrite", sTemp); // copy to panel
+    }
+/*@@end*/
+
+/*@@caplFunc:vPrintNewEvents(dword,Syrto_tenNodes,SYRTO_tenNotifierTag,SYRTO_tenTraceEventsTag):*///function
+// function  	: print undefined events
+// parameters	: in  -> dwNodeTimeStamp: timestamp
+//                       enNode         : node
+//                       enNotifier     : notofier
+//                       enEvent        : event
+//                out -> void
+// author    	: Daniel Warnicki 27.01.2012
+void vPrintNewEvents (dword dwNodeTimeStamp, enum Syrto_tenNodes enNode, enum SYRTO_tenNotifierTag enNotifier, enum SYRTO_tenTraceEventsTag enEvent)
+    {
+    char sTemp[1500];
+
+    if (enNode == enNode_AC)
+        {// node AC
+        snprintf( sTemp, nMaxStringLength,"AC-> Time:%05d.%03ds   ",dwNodeTimeStamp/1000, dwNodeTimeStamp%1000);
+        writetextcolor(dwWriteTab,0,0,0xFFFFFF);
+        }
+    if (enNode == enNode_GC)
+        {// node GC
+        snprintf( sTemp, nMaxStringLength,"GC-> Time:%05d.%03ds   ",dwNodeTimeStamp/1000, dwNodeTimeStamp%1000);
+        writetextcolor(dwWriteTab,0xFFFFFF,0,0);
+        }
+
+    if (enNotifier <= SYRTO_nenNoNotifier)
+        {// notofier
+        snprintf( sTemp, nMaxStringLength,"%sNotifier  :(0x%02X) %s   ",sTemp,(byte)enNotifier,sSYRTO_tenNotifierTag[enNotifier]);
+
+        if (enEvent < SYRTO_nenMessageCount)
+            {// event
+            snprintf( sTemp, nMaxStringLength,"%sEvent    :(0x%02X) %s   Data:0x%02X 0x%02X 0x%02X 0x%02X ",sTemp,(byte)enEvent,sSYRTO_tenTraceEventsTag[enEvent],au8MessageValue[4],au8MessageValue[5],au8MessageValue[6],au8MessageValue[7]);
+            }
+        else
+            {// event not defined
+            writetextcolor(dwWriteTab,0xFFFFFF,0,0xFFFFFF);
+            snprintf( sTemp, elcount(""), "");
+            snprintf( sTemp, strlen(sTemp)+nMaxStringLength,     "%sERROR: in 'VDO_pSyrto.can' function 'vPrintNewEvents'",sTemp); 
+            snprintf( sTemp, strlen(sTemp)+nMaxStringLength, "%s\r\n       Wrong event:0x%02X received!",sTemp,(byte)enEvent);
+            snprintf( sTemp, strlen(sTemp)+nMaxStringLength, "%s\r\n       see Meas_IC_5: 0x%02x 0x%02x 0x%02x 0x%02x 0x%02x 0x%02x 0x%02x 0x%02x",sTemp,au8MessageValue[0],au8MessageValue[1],au8MessageValue[2],au8MessageValue[3],au8MessageValue[4],au8MessageValue[5],au8MessageValue[6],au8MessageValue[7]);
+            //                                                                            0x11 0x22 0x33 0x44 0x55 0x66 0x77 0x88
+            snprintf( sTemp, strlen(sTemp)+nMaxStringLength, "%s\r\n                       |    |    |    |    +----+----+----+-----> data bytes",sTemp);
+            snprintf( sTemp, strlen(sTemp)+nMaxStringLength, "%s\r\n                       |    |    |    +-------------------------> event",sTemp);
+            snprintf( sTemp, strlen(sTemp)+nMaxStringLength, "%s\r\n                       |    |    +------------------------------> bit 7   node",sTemp);
+            snprintf( sTemp, strlen(sTemp)+nMaxStringLength, "%s\r\n                       |    |                                     bit 0-6 notifier",sTemp);
+            snprintf( sTemp, strlen(sTemp)+nMaxStringLength, "%s\r\n                       |    +-----------------------------------> timer (high byte)",sTemp);
+            snprintf( sTemp, strlen(sTemp)+nMaxStringLength, "%s\r\n                       +----------------------------------------> timer (low byte)",sTemp);
+            writetextcolor(dwWriteTab,0xFFFFFF,0,0xFFFFFF);
+            }
+        }
+    else
+        {// notifier not defined
+        snprintf( sTemp, elcount(""), "");
+        snprintf( sTemp, strlen(sTemp)+nMaxStringLength,     "%sERROR: in 'VDO_pSyrto.can' function 'vPrintNewEvents'",sTemp); 
+        snprintf( sTemp, strlen(sTemp)+nMaxStringLength, "%s\r\n       Wrong notifier:0x%02X received!",sTemp,(byte)enNotifier);
+        snprintf( sTemp, strlen(sTemp)+nMaxStringLength, "%s\r\n       see Meas_IC_5: 0x%02x 0x%02x 0x%02x 0x%02x 0x%02x 0x%02x 0x%02x 0x%02x",sTemp,au8MessageValue[0],au8MessageValue[1],au8MessageValue[2],au8MessageValue[3],au8MessageValue[4],au8MessageValue[5],au8MessageValue[6],au8MessageValue[7]);
+        //                                                                            0x11 0x22 0x33 0x44 0x55 0x66 0x77 0x88
+        snprintf( sTemp, strlen(sTemp)+nMaxStringLength, "%s\r\n                       |    |    |    |    +----+----+----+-----> data bytes",sTemp);
+        snprintf( sTemp, strlen(sTemp)+nMaxStringLength, "%s\r\n                       |    |    |    +-------------------------> event",sTemp);
+        snprintf( sTemp, strlen(sTemp)+nMaxStringLength, "%s\r\n                       |    |    +------------------------------> bit 7   node",sTemp);
+        snprintf( sTemp, strlen(sTemp)+nMaxStringLength, "%s\r\n                       |    |                                     bit 0-6 notifier",sTemp);
+        snprintf( sTemp, strlen(sTemp)+nMaxStringLength, "%s\r\n                       |    +-----------------------------------> timer (high byte)",sTemp);
+        snprintf( sTemp, strlen(sTemp)+nMaxStringLength, "%s\r\n                       +----------------------------------------> timer (low byte)",sTemp);
+        writetextcolor(dwWriteTab,0xFFFFFF,0,0xFFFFFF);
+        }
+
+    //writeLineEx(dwWriteTab, 1 , "%s",sTemp);
+    vPrintInWriteOutput(sTemp);
+    writetextcolor(dwWriteTab,0,0,0);
+
+    snprintf( sTemp, strlen(sTemp)+strlen("\r\n")+1,"\r\n%s",sTemp);
+    putValueToControl("VDO-Syrto-Panel for V7.5", "cov_sWrite", sTemp); // copy to panel
+
+    }
+/*@@end*/
+
+/*@@caplFunc:vPrintEventCounter(Syrto_tenNodes):*///function
+// function  	: print event Counter
+// parameters	: in  -> enNode : Ac/Gc
+//                out -> void
+// author    	: Daniel Warnicki 25.01.2012
+void vPrintEventCounter(enum Syrto_tenNodes enNode)
+    {
+    char  sTemp[1500];
+    byte  iCount;
+
+    snprintf( sTemp, elcount(""), "");
+    for (iCount = 0; iCount < SYRTO_nenMessageCount ; iCount++)
+        {
+        if (strlen(sTemp))
+            snprintf( sTemp, strlen(sTemp)+nMaxStringLength, "%s\r\n%s:%05d",sTemp,sSYRTO_tenTraceEventsTag[iCount],u16EventCounter[enNode][iCount]);
+        else
+            snprintf( sTemp, strlen(sTemp)+nMaxStringLength,       "%s:%05d",      sSYRTO_tenTraceEventsTag[iCount],u16EventCounter[enNode][iCount]);
+        }
+
+    if (enNode == enNode_AC)
+        {
+        PutValue(Syrto_sEventCount_AC,sTemp);                                       // copy to database
+        putValueToControl("VDO-Syrto-Panel for V7.5", "cov_sEventCount_AC", sTemp); // copy to panel
+        }
+    else if (enNode == enNode_GC)
+        {
+        PutValue(Syrto_sEventCount_GC,sTemp);                                       // copy to database
+        putValueToControl("VDO-Syrto-Panel for V7.5", "cov_sEventCount_GC", sTemp); // copy to panel
+        }
+    }
+/*@@end*/
+
+/*@@caplFunc:<newFunction>:*///function
+// function  	: copy data values to DBC for panel representation
+// parameters	: in  -> enNode    : node number to reperesent
+//                       enFrameSet: frame number to reperesent
+//                out -> void
+// author    	: Daniel Warnicki 31.10.2011
+/*
+void vUpdatePanelValues (enum Syrto__tenNodes enNode, enum Syrto__tenFrameSet  enFrameSet)
+    {
+    dword u32osSystemCounter;
+    byte  bSyrtoTriggerEvent;
+    dword CSHDL__u32StateHdlActiveSMs;
+    dword CSHDL__u32StateHdlTransSMs;
+    dword CSHDL__u32ReqHdlRequests[nSizeOf_SHDL__u32ReqHdlRequests];
+    char  sRessourceState[1500];                   // complete string for all ressource states
+    char  sRessourceRequests[1500];                // complete string for all ressource requests
+    char  sRessourceName[nMaxStringLength];        // current ressource name
+    char  sRessourceRequestName[nMaxStringLength]; // current ressource request name
+    char  sEvent[nMaxStringLength];                // events and counters
+    char  sEventList[1500];                        // list of events and counters
+    char  sSyrtoTriggerEvents[2*nMaxStringLength]; // string for syrto trigger events
+    char  sCurrentIcomState[1500];                 // string icom state
+    byte  boActive;
+    byte  boTransistion;
+    byte  iCount;
+    dword dwCanOeTime;
+    dword dwNumberOfRessourceNames;
+    dword dwNumberOfRessourceRequestNames;
+
+    if (u8DebugMode > 0x00)
+        {
+        writetextcolor(dwWriteTab,0xFFFFFF,0,0xFFFFFF);
+        writeLineEx(dwWriteTab, 1 , "DEBUG: vUpdatePanelValues(enNode:%i,enFrameSet:%i)",enNode,enFrameSet);
+        writetextcolor(dwWriteTab,0,0,0);
+        }
+    switch(enFrameSet)
+        {
+        //#############################################################################################################################
+        case enRessourceState:// ressource state
+            CSHDL__u32StateHdlActiveSMs  = Syrto_bValue[(byte)enNode][(byte)enFrameSet][1];
+            CSHDL__u32StateHdlActiveSMs += Syrto_bValue[(byte)enNode][(byte)enFrameSet][2]<<8;
+            CSHDL__u32StateHdlActiveSMs += Syrto_bValue[(byte)enNode][(byte)enFrameSet][3]<<16;
+            CSHDL__u32StateHdlActiveSMs += Syrto_bValue[(byte)enNode][(byte)enFrameSet][4]<<24;
+            if (u8DebugMode > 0x01)
+                {
+                writetextcolor(dwWriteTab,0xFFFFFF,0,0xFFFFFF);
+                writeLineEx(dwWriteTab, 1 , "       CSHDL__u32StateHdlActiveSMs : 0x%X",CSHDL__u32StateHdlActiveSMs);
+                writetextcolor(dwWriteTab,0,0,0);
+                }
+
+            CSHDL__u32StateHdlTransSMs   = Syrto_bValue[(byte)enNode][(byte)enFrameSet][5];
+            CSHDL__u32StateHdlTransSMs  += Syrto_bValue[(byte)enNode][(byte)enFrameSet][6]<<8;
+            CSHDL__u32StateHdlTransSMs  += Syrto_bValue[(byte)enNode][(byte)enFrameSet][7]<<16;
+            CSHDL__u32StateHdlTransSMs  += Syrto_bValue[(byte)enNode][(byte)enFrameSet][8]<<24;
+            if (u8DebugMode > 0x01)
+                {
+                writetextcolor(dwWriteTab,0xFFFFFF,0,0xFFFFFF);
+                writeLineEx(dwWriteTab, 1 , "       CSHDL__u32StateHdlTransSMs  : 0x%X",CSHDL__u32StateHdlTransSMs);
+                writetextcolor(dwWriteTab,0,0,0);
+                }
+
+            for (iCount = 0; iCount < nSizeOf_SHDL__u32ReqHdlRequests; iCount++)
+                {// get array of SHDL__u32ReqHdlRequests
+                CSHDL__u32ReqHdlRequests[iCount]  = Syrto_bValue[(byte)enNode][(byte)enFrameSet][ 9 + (iCount * 4)];
+                CSHDL__u32ReqHdlRequests[iCount] += Syrto_bValue[(byte)enNode][(byte)enFrameSet][10 + (iCount * 4)]<<8;
+                CSHDL__u32ReqHdlRequests[iCount] += Syrto_bValue[(byte)enNode][(byte)enFrameSet][11 + (iCount * 4)]<<16;
+                CSHDL__u32ReqHdlRequests[iCount] += Syrto_bValue[(byte)enNode][(byte)enFrameSet][12 + (iCount * 4)]<<24;
+                }
+
+            //-------------------------------------------------------------------------------------------------------
+            // test values
+            //CSHDL__u32StateHdlActiveSMs  = 0x12345678;
+            //CSHDL__u32StateHdlTransSMs   = 0x12345678;
+            //CSHDL__u32ReqHdlRequests[0]  = 0x12345678;
+            //-------------------------------------------------------------------------------------------------------
+            // ressource state
+            snprintf( sRessourceState, elcount(""), "");
+            if (enNode == enNode_AC)
+                {
+                dwNumberOfRessourceNames = elcount(sRessourceNames_AC);
+                if (u8DebugMode > 0x01)
+                    {
+                    writetextcolor(dwWriteTab,0xFFFFFF,0,0xFFFFFF);
+                    writeLineEx(dwWriteTab, 1 , "       dwNumberOfRessourceNamesAC: %i",dwNumberOfRessourceNames);
+                    writetextcolor(dwWriteTab,0,0,0);
+                    }
+                }
+            if (enNode == enNode_GC)
+                {
+                dwNumberOfRessourceNames = elcount(sRessourceNames_GC);
+                if (u8DebugMode > 0x01)
+                    {
+                    writetextcolor(dwWriteTab,0xFFFFFF,0,0xFFFFFF);
+                    writeLineEx(dwWriteTab, 1 , "       dwNumberOfRessourceNamesGC: %i",dwNumberOfRessourceNames);
+                    writetextcolor(dwWriteTab,0,0,0);
+                    }
+                }
+            for (iCount = 0; iCount < dwNumberOfRessourceNames ; iCount++)
+                {// get states from all ressouces
+                boActive      = ((CSHDL__u32StateHdlActiveSMs & (1 << iCount)) != 0);
+                boTransistion = ((CSHDL__u32StateHdlTransSMs  & (1 << iCount)) != 0);
+                // get ressource name
+                if (enNode == enNode_AC)
+                    snprintf( sRessourceName, strlen(sRessourceNames_AC[iCount])+2, "%s",sRessourceNames_AC[iCount] );
+                else if (enNode == enNode_GC)
+                    snprintf( sRessourceName, strlen(sRessourceNames_GC[iCount])+2, "%s",sRessourceNames_GC[iCount] );
+
+                if (strlen(sRessourceName) > 0)
+                    {// ressource defined
+                    if (boActive != 0 ) 
+                        {
+                        if (boTransistion) 
+                            snprintf( sRessourceState, strlen(sRessourceState)+strlen(sRessourceName)+strlen(": Deinit")+1, "%s%s: Deinit",sRessourceState, sRessourceName);
+                        else             
+                            snprintf( sRessourceState, strlen(sRessourceState)+strlen(sRessourceName)+strlen(": On")+1    , "%s%s: On",sRessourceState, sRessourceName);
+                        }
+                    if (boActive == 0 ) 
+                        {
+                        if (boTransistion) 
+                            snprintf( sRessourceState, strlen(sRessourceState)+strlen(sRessourceName)+strlen(": Init")+1, "%s%s: Init",sRessourceState, sRessourceName);
+                        else
+                            snprintf( sRessourceState,strlen(sRessourceState)+strlen(sRessourceName)+strlen(": Off")+1  , "%s%s: Off",sRessourceState, sRessourceName);
+                        }
+                    if (iCount < dwNumberOfRessourceNames-1)
+                        snprintf( sRessourceState, strlen(sRessourceState)+strlen("\r\n")+1, "%s\r\n",sRessourceState);
+                    }
+                }
+            if ((enNode == enNode_AC) && (u8AcConfigurationAvailible > 0x00))
+                {
+                PutValue(Syrto_sRessourceState_AC,sRessourceState);                              // copy to database
+                putValueToControl("VDO-Syrto-Panel for V7.5", "cov_sRessourceState_AC", sRessourceState); // copy to panel
+                }
+
+            if ((enNode == enNode_GC) && (u8GcConfigurationAvailible > 0x00))
+                {
+                PutValue(Syrto_sRessourceState_GC,sRessourceState);                              // copy to database
+                putValueToControl("VDO-Syrto-Panel for V7.5", "cov_sRessourceState_GC", sRessourceState); // copy to panel
+                }
+            //-------------------------------------------------------------------------------------------------------
+            // ressource requests
+            snprintf( sRessourceRequests, elcount(""), "");
+            if (enNode == enNode_AC)
+                {
+                dwNumberOfRessourceRequestNames = elcount(sRessourceRequestNames_AC);
+                if (u8DebugMode > 0x01)
+                    {
+                    writetextcolor(dwWriteTab,0xFFFFFF,0,0xFFFFFF);
+                    writeLineEx(dwWriteTab, 1 , "       dwNumberOfRessourceRequestNamesAC: %i",dwNumberOfRessourceRequestNames);
+                    writetextcolor(dwWriteTab,0,0,0);
+                    }
+                }
+            if (enNode == enNode_GC)
+                {
+                dwNumberOfRessourceRequestNames = elcount(sRessourceRequestNames_GC);
+                if (u8DebugMode > 0x01)
+                    {
+                    writetextcolor(dwWriteTab,0xFFFFFF,0,0xFFFFFF);
+                    writeLineEx(dwWriteTab, 1 , "       dwNumberOfRessourceRequestNamesGC: %i",dwNumberOfRessourceRequestNames);
+                    writetextcolor(dwWriteTab,0,0,0);
+                    }
+                }
+            for (iCount = 0; iCount < dwNumberOfRessourceRequestNames ; iCount++)
+                {// get states requests from all ressouces
+                // get ressource request name
+                if (enNode == enNode_AC)
+                    snprintf( sRessourceRequestName, strlen(sRessourceRequestNames_AC[iCount])+1, "%s",sRessourceRequestNames_AC[iCount] );
+                else if (enNode == enNode_GC)
+                    snprintf( sRessourceRequestName, strlen(sRessourceRequestNames_GC[iCount])+1, "%s",sRessourceRequestNames_GC[iCount] );
+
+                if (strlen(sRessourceRequestName) > 0)
+                    {// request defined
+                    if((CSHDL__u32ReqHdlRequests[iCount/32] & (1 << (iCount%32))) != 0 )
+                        {// request active
+                        snprintf( sRessourceRequests, strlen(sRessourceRequests)+strlen(sRessourceRequestName)+1, "%s%s",sRessourceRequests, sRessourceRequestName);
+                        if (iCount < dwNumberOfRessourceRequestNames-1)
+                            snprintf( sRessourceRequests, strlen(sRessourceRequests)+strlen("\r\n")+1, "%s\r\n",sRessourceRequests);
+                        }
+                    }
+                }
+            if ((enNode == enNode_AC) && (u8AcConfigurationAvailible > 0x00))
+                {
+                PutValue(Syrto_sRequestState_AC,sRessourceRequests);                              // copy to database
+                putValueToControl("VDO-Syrto-Panel for V7.5", "cov_sRequestState_AC", sRessourceRequests); // copy to panel
+                }
+            if ((enNode == enNode_GC) && (u8GcConfigurationAvailible > 0x00))
+                {
+                PutValue(Syrto_sRequestState_GC,sRessourceRequests);                              // copy to database
+                putValueToControl("VDO-Syrto-Panel for V7.5", "cov_sRequestState_GC", sRessourceRequests); // copy to panel
+                }
+            break;
+        //#############################################################################################################################
+        case enSyrtoTrigger:// syrto trigger
+            u32osSystemCounter  = Syrto_bValue[(byte)enNode][(byte)enFrameSet][1];
+            u32osSystemCounter += Syrto_bValue[(byte)enNode][(byte)enFrameSet][2]<<8;
+            u32osSystemCounter += Syrto_bValue[(byte)enNode][(byte)enFrameSet][3]<<16;
+            u32osSystemCounter += Syrto_bValue[(byte)enNode][(byte)enFrameSet][4]<<24;
+            bSyrtoTriggerEvent  = Syrto_bValue[(byte)enNode][(byte)enFrameSet][5];
+            //u32osSystemCounter = 0x12345678;
+            //bSyrtoTriggerEvent = 3;
+            dwCanOeTime = timeNow();
+            if ((enNode == enNode_AC) && (u8AcConfigurationAvailible > 0x00))
+                {// values for AC
+                if (bSyrtoTriggerEvent < elcount(sSyrtoEvents_AC))
+                    {
+                    writetextcolor(dwWriteTab,0,0,0xFFFFFF);
+                    snprintf(sRessourceRequestName,dwMaxEventNameLength,"%s%s",sSyrtoEvents_AC[bSyrtoTriggerEvent],sBlankString);
+                    Syrto_dwAcEventCounter[bSyrtoTriggerEvent]++;
+                    snprintf( sSyrtoTriggerEvents, 200, "AC -> %s  Count:%6d  AcOs:%9dms  AcOsDelta:%9dms / CanOe:%9dms  CanOeDelta:%9dms",sRessourceRequestName,Syrto_dwAcEventCounter[bSyrtoTriggerEvent],u32osSystemCounter,u32osSystemCounter-dwLastAcOsTime,dwCanOeTime/100,(dwCanOeTime-dwLastCanOeTime)/100);
+                    writeLineEx(dwWriteTab, 1 , "%s",sSyrtoTriggerEvents);
+                    writetextcolor(dwWriteTab,0,0,0);
+                    PutValue(Syrto_sEvents_AC,sSyrtoTriggerEvents);// copy to database
+
+                    snprintf( sSyrtoTriggerEvents, strlen(sSyrtoTriggerEvents)+strlen("\r\n"),"\r\n%s",sSyrtoTriggerEvents);
+                    putValueToControl("VDO-Syrto-Panel for V7.5", "cov_sWrite", sSyrtoTriggerEvents); // copy to panel
+
+                    snprintf( sEventList, 1, "");
+                    for (iCount = 0; iCount < elcount(sSyrtoEvents_AC) ; iCount++)
+                        {// get states requests from all ressouces
+                        // get ressource request name
+                        snprintf(sRessourceRequestName,dwMaxEventNameLength,"%s%s",sSyrtoEvents_AC[iCount],sBlankString);
+                        snprintf( sEvent, strlen(sRessourceRequestName)+7, "%s:%d",sRessourceRequestName,Syrto_dwAcEventCounter[iCount]);
+                        snprintf( sEventList, strlen(sEventList)+strlen(sEvent)+strlen("\r\n")+1, "%s%s\r\n",sEventList, sEvent);
+                        }
+                    PutValue(Syrto_sTriggerEvents_AC,sEventList);                              // copy to database
+                    putValueToControl("VDO-Syrto-Panel for V7.5", "cov_sTriggerEvents_AC", sEventList); // copy to panel
+                    dwLastAcOsTime = u32osSystemCounter;
+                    }
+                else
+                    {
+                    writetextcolor(dwWriteTab,0xFFFFFF,0,0xFFFFFF);
+                    writeLineEx(dwWriteTab, 1 , "ERROR: in 'VDO_pSyrto.can' function 'vUpdatePanelValues(enNode:%i,enFrameSet:%i)'",enNode,enFrameSet);
+                    writeLineEx(dwWriteTab, 1 , "       Wrong AC trigger event received!");
+                    writeLineEx(dwWriteTab, 1 , "       SyrtoEvent: %i received!",bSyrtoTriggerEvent);
+                    writeLineEx(dwWriteTab, 1 , "       but only %i events defined in CANoe/Includes/VDO_pSyrto_NodeAC.cin!",elcount(sSyrtoEvents_AC));
+                    writetextcolor(dwWriteTab,0,0,0);
+                    }
+                }
+            else if ((enNode == enNode_GC) && (u8GcConfigurationAvailible > 0x00))
+                {// values for GC
+                if (bSyrtoTriggerEvent < elcount(sSyrtoEvents_GC))
+                    {
+                    writetextcolor(dwWriteTab,0xFFFF,0,0);
+                    snprintf(sRessourceRequestName,dwMaxEventNameLength,"%s%s",sSyrtoEvents_GC[bSyrtoTriggerEvent],sBlankString);
+                    Syrto_dwGcEventCounter[bSyrtoTriggerEvent]++;
+                    snprintf( sSyrtoTriggerEvents, 200, "GC -> %s  Count:%6d  GcOs:%9dms  GcOsDelta:%9dms / CanOe:%9dms  CanOeDelta:%9dms",sRessourceRequestName,Syrto_dwGcEventCounter[bSyrtoTriggerEvent],u32osSystemCounter,u32osSystemCounter-dwLastGcOsTime,dwCanOeTime/100,(dwCanOeTime-dwLastCanOeTime)/100);
+                    writeLineEx(dwWriteTab, 1 , "%s",sSyrtoTriggerEvents);
+                    writetextcolor(dwWriteTab,0,0,0);
+                    PutValue(Syrto_sEvents_GC,sSyrtoTriggerEvents);                 // copy to database
+
+                    snprintf( sSyrtoTriggerEvents, strlen(sSyrtoTriggerEvents)+strlen("\r\n"),"\r\n%s",sSyrtoTriggerEvents);
+                    putValueToControl("VDO-Syrto-Panel for V7.5", "cov_sWrite", sSyrtoTriggerEvents); // copy to panel
+
+                    snprintf( sEventList, 1, "");
+                    for (iCount = 0; iCount < elcount(sSyrtoEvents_GC) ; iCount++)
+                        {// get states requests from all ressouces
+                        // get ressource request name
+                        snprintf(sRessourceRequestName,dwMaxEventNameLength,"%s%s",sSyrtoEvents_GC[iCount],sBlankString);
+                        snprintf( sEvent, strlen(sRessourceRequestName)+7, "%s:%d",sRessourceRequestName,Syrto_dwGcEventCounter[iCount]);
+                        snprintf( sEventList, strlen(sEventList)+strlen(sEvent)+strlen("\r\n")+1, "%s%s\r\n",sEventList, sEvent);
+                        }
+                    PutValue(Syrto_sTriggerEvents_GC,sEventList);                              // copy to database
+                    putValueToControl("VDO-Syrto-Panel for V7.5", "cov_sTriggerEvents_GC", sEventList); // copy to panel
+                    dwLastGcOsTime = u32osSystemCounter;
+                    }
+                else
+                    {
+                    writetextcolor(dwWriteTab,0xFFFFFF,0,0xFFFFFF);
+                    writeLineEx(dwWriteTab, 1 , "ERROR: in 'VDO_pSyrto.can' function 'vUpdatePanelValues(enNode:%i,enFrameSet:%i)'",enNode,enFrameSet);
+                    writeLineEx(dwWriteTab, 1 , "       Wrong GC trigger event received!");
+                    writeLineEx(dwWriteTab, 1 , "       SyrtoEvent: %i received!",bSyrtoTriggerEvent);
+                    writeLineEx(dwWriteTab, 1 , "       but only %i events defined in CANoe/Includes/VDO_pSyrto_NodeGC.cin!",elcount(sSyrtoEvents_GC));
+                    writetextcolor(dwWriteTab,0,0,0);
+                    }
+                }
+            dwLastCanOeTime = dwCanOeTime;
+            break;
+        //#############################################################################################################################
+        default:
+            break;
+        }
+    }
+*/
+/*@@end*/
+
+/*@@caplFunc:vPrintNewRessourceRequestState(Syrto_tenNodes,dword,dword):*///function
+// function  	: print ressource request state
+// parameters	: in  -> enNode : Ac/Gc
+//                out -> void
+// author    	: Daniel Warnicki 20.04.2012
+vPrintNewRessourceRequestState (enum Syrto_tenNodes enNode,dword u32ReqHdlRequests, dword dwNodeTimeStamp)
+    {
+    char  sRessourceRequests[3000];                            // complete string for all ressource requests
+    word  u16NumberOfRessourceRequestNames;
+    char  sRessourceRequestName[1500];             // current ressource request name
+    dword CSHDL__u32ReqHdlRequests[nSizeOf_SHDL__u32ReqHdlRequests];
+    word  u16Count;
+    char  sTemp[1500];
+
+    for (u16Count = 0; u16Count < nSizeOf_SHDL__u32ReqHdlRequests; u16Count++)
+        {// get array of SHDL__u32ReqHdlRequests
+        //CSHDL__u32ReqHdlRequests[u16Count]  = Syrto_bValue[(byte)enNode][(byte)enFrameSet][ 9 + (u16Count * 4)];
+        //CSHDL__u32ReqHdlRequests[u16Count] += Syrto_bValue[(byte)enNode][(byte)enFrameSet][10 + (u16Count * 4)]<<8;
+        //CSHDL__u32ReqHdlRequests[u16Count] += Syrto_bValue[(byte)enNode][(byte)enFrameSet][11 + (u16Count * 4)]<<16;
+        //CSHDL__u32ReqHdlRequests[u16Count] += Syrto_bValue[(byte)enNode][(byte)enFrameSet][12 + (u16Count * 4)]<<24;
+        CSHDL__u32ReqHdlRequests[u16Count] = u32ReqHdlRequests;
+        }
+    //-------------------------------------------------------------------------------------------------------
+    // ressource requests
+    if (u8DebugMode > 0)
+        {
+        snprintf( sTemp, elcount(""), "");
+        snprintf( sTemp, strlen(sTemp)+nMaxStringLength, "%s\r\nDEBUG: call vPrintNewRessourceRequestState(...)",sTemp);
+        snprintf( sTemp, strlen(sTemp)+nMaxStringLength, "%s\r\n       enNode            : 0x%02X",sTemp,enNode);
+        snprintf( sTemp, strlen(sTemp)+nMaxStringLength, "%s\r\n       u32ReqHdlRequests : 0x%08X",sTemp,u32ReqHdlRequests);
+        snprintf( sTemp, strlen(sTemp)+nMaxStringLength, "%s\r\n       dwNodeTimeStamp   : 0x%08X",sTemp,dwNodeTimeStamp);
+
+        writetextcolor(dwWriteTab,0x888888,0x888888,0x888888);
+        //writeLineEx(dwWriteTab, 1 , "%s" ,sTemp);                           // copy to write frame
+        vPrintInWriteOutput(sTemp);
+        writetextcolor(dwWriteTab,0,0,0);
+        putValueToControl("VDO-Syrto-Panel for V7.5", "cov_sWrite", sTemp); // copy to Syrto Panel for V7.5
+        }
+
+    snprintf( sRessourceRequests, elcount(""), "");
+    if (enNode == enNode_AC)
+        {
+        u16NumberOfRessourceRequestNames = elcount(sRessourceRequestNames_AC);
+        if (u8DebugMode > 0x01)
+            {
+            snprintf( sTemp, elcount(""), "");
+            snprintf( sTemp, strlen(sTemp)+nMaxStringLength, "%s\r\n       -> u16NumberOfRessourceRequestNamesAC: %i",sTemp,u16NumberOfRessourceRequestNames);
+            writetextcolor(dwWriteTab,0x888888,0x888888,0x888888);
+            //writeLineEx(dwWriteTab, 1 , "%s" ,sTemp);                           // copy to write frame
+            vPrintInWriteOutput(sTemp);
+            writetextcolor(dwWriteTab,0,0,0);
+            putValueToControl("VDO-Syrto-Panel for V7.5", "cov_sWrite", sTemp); // copy to Syrto Panel for V7.5
+            }
+        }
+    else if (enNode == enNode_GC)
+        {
+        u16NumberOfRessourceRequestNames = elcount(sRessourceRequestNames_GC);
+        if (u8DebugMode > 0x01)
+            {
+            snprintf( sTemp, elcount(""), "");
+            snprintf( sTemp, strlen(sTemp)+nMaxStringLength, "%s\r\n       -> u16NumberOfRessourceRequestNamesGC: %i",sTemp,u16NumberOfRessourceRequestNames);
+            writetextcolor(dwWriteTab,0x888888,0x888888,0x888888);
+            //writeLineEx(dwWriteTab, 1 , "%s" ,sTemp);                           // copy to write frame
+            vPrintInWriteOutput(sTemp);
+            writetextcolor(dwWriteTab,0,0,0);
+            putValueToControl("VDO-Syrto-Panel for V7.5", "cov_sWrite", sTemp); // copy to Syrto Panel for V7.5
+            }
+        }
+
+    for (u16Count = 0; u16Count < u16NumberOfRessourceRequestNames ; u16Count++)
+        {// get states requests from all ressouces
+        // get ressource request name
+        if (enNode == enNode_AC)
+            snprintf( sRessourceRequestName, strlen(sRessourceRequestNames_AC[0])+1, "%s",sRessourceRequestNames_AC[u16Count] );
+        else if (enNode == enNode_GC)
+            snprintf( sRessourceRequestName, strlen(sRessourceRequestNames_GC[0])+1, "%s",sRessourceRequestNames_GC[u16Count] );
+
+        if (strlen(sRessourceRequestName) > 0)
+            {// request defined
+            if ((u16Count/32) < nSizeOf_SHDL__u32ReqHdlRequests)
+               {// request active
+               if ((CSHDL__u32ReqHdlRequests[u16Count/32] & (1 << (u16Count%32))) != 0 )
+                  {// request active
+                  }
+               else
+                  {// request inactive
+                  snprintf( sRessourceRequestName, strlen(sRessourceRequestNames_AC[0])+1, "........................................................................");
+                  }
+               snprintf( sRessourceRequests, strlen(sRessourceRequests)+strlen(sRessourceRequestName)+1, "%s%02i:%s",sRessourceRequests,u16Count, sRessourceRequestName);
+               if (((u16Count+1)%2) == 0 )
+                  {// add new line
+                  if (u16Count < 31 )
+                     snprintf( sRessourceRequests, strlen(sRessourceRequests)+strlen("\r\n")+1, "%s\r\n",sRessourceRequests);
+                  }
+               else
+                  {// add space
+                  snprintf( sRessourceRequests, strlen(sRessourceRequests)+strlen("\r\n")+1, "%s ",sRessourceRequests);
+                  }
+               }
+            }
+        }
+
+    if ((enNode == enNode_AC) && (u8AcConfigurationAvailible > 0x00))
+        {
+        PutValue(Syrto_sRequestState_AC,sRessourceRequests);                                       // copy to database
+        putValueToControl("VDO-Syrto-Panel for V7.5", "cov_sRequestState_AC", sRessourceRequests); // copy to panel
+        }
+    if ((enNode == enNode_GC) && (u8GcConfigurationAvailible > 0x00))
+        {
+        PutValue(Syrto_sRequestState_GC,sRessourceRequests);                                       // copy to database
+        putValueToControl("VDO-Syrto-Panel for V7.5", "cov_sRequestState_GC", sRessourceRequests); // copy to panel
+        }
+    }
+/*@@end*/
+
+/*@@envVar:HMI__NM_EIS_ActualState:*/
+// function  	: function to detect bus sleep
+// parameters	: in  -> void
+//                out -> void
+// author    	: Daniel Warnicki 27.04.2012
+on envVar HMI__NM_EIS_ActualState
+    {
+    char sTemp[1500];
+
+    if (getvalue(this) == 1)
+        {
+        snprintf( sTemp, nMaxStringLength,"AC-> NM sleep");
+        writetextcolor(dwWriteTab,0xFFFFFF,0,0xFFFFFF);
+
+        //writeLineEx(dwWriteTab, 1 , "%s",sTemp);
+        vPrintInWriteOutput(sTemp);
+        writetextcolor(dwWriteTab,0,0,0);
+
+        snprintf( sTemp, strlen(sTemp)+strlen("\r\n")+1,"\r\n%s",sTemp);
+        putValueToControl("VDO-Syrto-Panel for V7.5", "cov_sWrite", sTemp); // copy to panel
+        }
+
+    }
+/*@@end*/
+
+/*@@caplFunc:vPrintInWriteOutput(char[]):*///function
+void vPrintInWriteOutput(char sText[])
+    {
+    PutValue(Syrto_sWriteOutput,sText); // copy to database
+    if( getValue( Syrto_boEnableWriteWindowOutput ) )
+        writeLineEx(dwWriteTab, 1 , "%s",sText); // print in write window
+    }
+/*@@end*/
+
+/*@@preStop:PreStop:*/
+on preStop
+    {
+    word iCount;
+    char sTemp[nMaxStringLength];
+
+    if (boShowEventStatisticOnStop > 0)
+        {// when enabled
+        if (boEventStatisticAcAvailible > 0)
+            {// statistic for AC availible
+            writetextcolor(dwWriteTab,0,0,0xFFFFFF);
+            snprintf( sTemp, nMaxStringLength,"AC-> Event  Counter");
+            vPrintInWriteOutput(sTemp);
+            for (iCount = 0; iCount < elcount(u16EventStatisticAc) ; iCount++)
+                {
+                if (u16EventStatisticAc[iCount] > 0)
+                    {
+                    snprintf( sTemp, nMaxStringLength,"AC-> Event  Counter");
+                    snprintf( sTemp, nMaxStringLength,"     %05d   %05d",iCount,u16EventStatisticAc[iCount]);
+                    vPrintInWriteOutput(sTemp);
+                    }
+                }
+            writetextcolor(dwWriteTab,0,0,0);
+            }
+
+        if (boEventStatisticGcAvailible > 0)
+            {// statistic for GC availible
+            writetextcolor(dwWriteTab,0xFFFFFF,0,0);
+            snprintf( sTemp, nMaxStringLength,"GC-> Event  Counter");
+            vPrintInWriteOutput(sTemp);
+            for (iCount = 0; iCount < elcount(u16EventStatisticGc) ; iCount++)
+                {
+                if (u16EventStatisticAc[iCount] > 0)
+                    {
+                    snprintf( sTemp, nMaxStringLength,"GC-> Event  Counter");
+                    snprintf( sTemp, nMaxStringLength,"     %05d   %05d",iCount,u16EventStatisticGc[iCount]);
+                    vPrintInWriteOutput(sTemp);
+                    }
+                }
+            writetextcolor(dwWriteTab,0,0,0);
+            }
+        }
+    }
+/*@@end*/
+

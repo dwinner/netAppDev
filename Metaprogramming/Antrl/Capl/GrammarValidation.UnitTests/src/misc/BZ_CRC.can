@@ -1,0 +1,145 @@
+/*@!Encoding:1252*/
+
+on EnvVar EnvAirbag_01_BZ_Fehler
+{
+  @IL_CAN1::BZ_Disturb::ICAS1_Gateway_Airbag_01 = @this;
+  @IL_CAN1::BZ_NormalOperation::ICAS1_Gateway_Airbag_01 = !@this;
+}
+
+on EnvVar EnvAirbag_01_CRC_Fehler
+{
+  @IL_CAN1::CRC_8_Disturb::ICAS1_Gateway_Airbag_01 = @this;
+  @IL_CAN1::CRC_8_NormalOperation::ICAS1_Gateway_Airbag_01 = !@this;
+}
+
+on EnvVar EnvBEM_06_BZ_Fehler
+{
+  @IL_CAN1::BZ_Disturb::ICAS1_Gateway_BEM_06 = @this;
+  @IL_CAN1::BZ_NormalOperation::ICAS1_Gateway_BEM_06 = !@this;
+}
+
+on EnvVar EnvBEM_06_CRC_Fehler
+{
+  @IL_CAN1::CRC_8_Disturb::ICAS1_Gateway_BEM_06 = @this;
+  @IL_CAN1::CRC_8_NormalOperation::ICAS1_Gateway_BEM_06 = !@this;
+}
+
+on EnvVar EnvBremse_EV_02_CRC_Fehler
+{
+  @IL_CAN1::BZ_Disturb::ICAS1_Gateway_Bremse_EV_02 = @this;
+  @IL_CAN1::BZ_NormalOperation::ICAS1_Gateway_Bremse_EV_02 = !@this;
+}
+
+on EnvVar EnvBremse_EV_02_BZ_Fehler
+{
+  @IL_CAN1::CRC_8_Disturb::ICAS1_Gateway_Bremse_EV_02 = @this;
+  @IL_CAN1::CRC_8_NormalOperation::ICAS1_Gateway_Bremse_EV_02 = !@this;
+}
+
+on EnvVar EnvEPB_03_BZ_Fehler
+{
+  @IL_CAN1::BZ_Disturb::ICAS1_Gateway_EPB_03 = @this;
+  @IL_CAN1::BZ_NormalOperation::ICAS1_Gateway_EPB_03 = !@this;
+}
+
+on EnvVar EnvEPB_03_CRC_Fehler
+{
+  @IL_CAN1::CRC_8_Disturb::ICAS1_Gateway_EPB_03 = @this;
+  @IL_CAN1::CRC_8_NormalOperation::ICAS1_Gateway_EPB_03 = !@this;
+}
+
+on EnvVar EnvESP_21_BZ_Fehler
+{
+  @IL_CAN1::BZ_Disturb::ICAS1_Gateway_ESP_21 = @this;
+  @IL_CAN1::BZ_NormalOperation::ICAS1_Gateway_ESP_21 = !@this;
+}
+
+on EnvVar EnvESP_21_CRC_Fehler
+{
+  @IL_CAN1::CRC_8_Disturb::ICAS1_Gateway_ESP_21 = @this;
+  @IL_CAN1::CRC_8_NormalOperation::ICAS1_Gateway_ESP_21 = !@this;
+}
+
+on EnvVar EnvESP_24_BZ_Fehler
+{
+  @IL_CAN1::BZ_Disturb::ICAS1_Gateway_ESP_24 = @this;
+  @IL_CAN1::BZ_NormalOperation::ICAS1_Gateway_ESP_24 = !@this;
+}
+
+on EnvVar EnvESP_24_CRC_Fehler
+{
+  @IL_CAN1::CRC_8_Disturb::ICAS1_Gateway_ESP_24 = @this;
+  @IL_CAN1::CRC_8_NormalOperation::ICAS1_Gateway_ESP_24 = !@this;
+}
+
+on EnvVar EnvESP_30_BZ_Fehler
+{
+  @IL_CAN1::BZ_Disturb::ICAS1_Gateway_ESP_30 = @this;
+  @IL_CAN1::BZ_NormalOperation::ICAS1_Gateway_ESP_30 = !@this;
+}
+
+on EnvVar EnvESP_30_CRC_Fehler
+{
+  @IL_CAN1::CRC_8_Disturb::ICAS1_Gateway_ESP_30 = @this;
+  @IL_CAN1::CRC_8_NormalOperation::ICAS1_Gateway_ESP_30 = !@this;
+}
+
+//on EnvVar EnvKlemmen_Status_01_BZ_Fehler
+//{
+//  @IL_CAN1::BZ_Disturb::ICAS1_Gateway_Klemmen_Status_01 = @this;
+//  @IL_CAN1::BZ_NormalOperation::ICAS1_Gateway_Klemmen_Status_01 = !@this;
+//}
+//
+//on EnvVar EnvKlemmen_Status_01_CRC_Fehler
+//{
+//  @IL_CAN1::CRC_8_Disturb::ICAS1_Gateway_Klemmen_Status_01 = @this;
+//  @IL_CAN1::CRC_8_NormalOperation::ICAS1_Gateway_Klemmen_Status_01 = !@this;
+//}
+
+on EnvVar EnvGetriebe_16_BZ_Fehler
+{
+  @IL_CAN1::BZ_Disturb::ICAS1_Gateway_Getriebe_16 = @this;
+  @IL_CAN1::BZ_NormalOperation::ICAS1_Gateway_Getriebe_16 = !@this;
+}
+
+on EnvVar EnvGetriebe_16_CRC_Fehler
+{
+  @IL_CAN1::CRC_8_Disturb::ICAS1_Gateway_Getriebe_16 = @this;
+  @IL_CAN1::CRC_8_NormalOperation::ICAS1_Gateway_Getriebe_16 = !@this;
+}
+
+on EnvVar EnvLH_EPS_01_BZ_Fehler
+{
+  @IL_CAN1::BZ_Disturb::ICAS1_Gateway_LH_EPS_01 = @this;
+  @IL_CAN1::BZ_NormalOperation::ICAS1_Gateway_LH_EPS_01 = !@this;
+}
+
+on EnvVar EnvLH_EPS_01_CRC_Fehler
+{
+  @IL_CAN1::CRC_8_Disturb::ICAS1_Gateway_LH_EPS_01 = @this;
+  @IL_CAN1::CRC_8_NormalOperation::ICAS1_Gateway_LH_EPS_01 = !@this;
+}
+
+on EnvVar EnvRLS_02_BZ_Fehler
+{
+  @IL_CAN1::BZ_Disturb::ICAS1_Gateway_RLS_02 = @this;
+  @IL_CAN1::BZ_NormalOperation::ICAS1_Gateway_RLS_02 = !@this;
+}
+
+on EnvVar EnvRLS_02_CRC_Fehler
+{
+  @IL_CAN1::CRC_8_Disturb::ICAS1_Gateway_RLS_02 = @this;
+  @IL_CAN1::CRC_8_NormalOperation::ICAS1_Gateway_RLS_02 = !@this;
+}
+
+on EnvVar EnvWBA_03_BZ_Fehler
+{
+  @IL_CAN1::BZ_Disturb::ICAS1_Gateway_WBA_03 = @this;
+  @IL_CAN1::BZ_NormalOperation::ICAS1_Gateway_WBA_03 = !@this;
+}
+
+on EnvVar EnvWBA_03_CRC_Fehler
+{
+  @IL_CAN1::CRC_8_Disturb::ICAS1_Gateway_WBA_03 = @this;
+  @IL_CAN1::CRC_8_NormalOperation::ICAS1_Gateway_WBA_03 = !@this;
+}

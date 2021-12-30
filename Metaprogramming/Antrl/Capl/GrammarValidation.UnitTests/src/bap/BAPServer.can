@@ -1,0 +1,459 @@
+/*@!Encoding:1252*/
+/*
+TBD:
+long IpJoinMulticastGroup( dword socket, dword ifIndex, dword address )
+ 
+long IpJoinMulticastGroup( dword socket, dword ifIndex, byte ipv6Address[] )
+ */
+
+
+includes
+{
+  
+}
+
+variables
+{
+    const dword IPV6_STR_SIZE_UDP = 40; // IPv6 string size
+  
+    dword gUdpSocketHandlev6 = 0;
+    char ipv6SourceAddrStr2[IPV6_STR_SIZE_UDP] = "fd53:7cb8:383:5::73";//"FD53:7CB8:383:5::73";//fe80::b1a0:9103:1645:37e4
+    //char ipv6DestAddrStr2[IPV6_STR_SIZE_UDP]   = "fe80::7036:55bd:8ea0:5677";
+    char ipv6DestAddrStr2[IPV6_STR_SIZE_UDP]   = "fd53:7cb8:383:5::14";
+    char ipv6DestAddrStr3[IPV6_STR_SIZE_UDP]   = "ff14::1:31";   //ff14::1:31
+  
+    byte ipv6SourceAddr2[16]; //ipv6 ::76
+    byte ipv6DestAddr2[16]; 
+    byte ipv6DestAddr3[16];   
+
+    char textData[20] = "Hello UDP Server";
+    char PduMarshallingData[1452];  
+    word PduReadPtr =0;
+    word PduWritePtr = 0;
+  
+    struct stPduHeadPdu
+    {
+      byte PduID[4];
+      byte PduLen[4];
+      byte PduData[256];
+
+    } tstPduHeadPdu[8];
+    
+    word PduReadOffset =0;
+    word PduWriteOffset = 0;
+    
+    CHAR gRxBuffer[1472]; // Max. UDP payload without fragmentation
+    LONG gResult;
+    CHAR gErrorText[200];
+    
+      // IPv6 address bytes.
+    dword ipv6SourceUdpPort = 42993;//42994;
+    dword ipv6DestinationUdpPort = 42514;//42557;
+    
+    dword ifIdx = 1;
+    
+}
+
+
+//Call in OnUdpReceiveFrom()
+// get the payload of the packet
+
+on start
+{
+  
+    vConvertIPv6toArray(ipv6SourceAddrStr2, ipv6SourceAddr2);
+
+    vConvertIPv6toArray(ipv6DestAddrStr2, ipv6DestAddr2);
+  
+    vConvertIPv6toArray(ipv6DestAddrStr3, ipv6DestAddr3); 
+  
+    vOpenIPv6UdpPort();
+}
+
+word u16GetPduMarshallingUdp(char acData[],dword len)
+{
+
+  BYTE TempPduData[1452];
+  CHAR error[100];
+  
+  long PduLength=0;
+  long u32PkgLenBit =0;
+  
+  long u32PkgLen =0;
+  
+  byte PduCnt = 0;
+  byte MsgCnt = 0;
+  
+  vClearPduRecvBuff();
+
+
+  u32PkgLen = len;
+  
+ // write("Payload length = %d",u32PkgLen);
+  
+  // get udp payload of the receive packet
+  memcpy_off(TempPduData,0,acData,0,u32PkgLen);
+
+
+    PduCnt = 0;
+    // do something with data
+    while(PduReadOffset < u32PkgLen)
+    {
+      //write("Pdu Index = %d",PduCnt);
+      memcpy_off(tstPduHeadPdu[PduCnt].PduID,0,(TempPduData),PduReadOffset,4);
+
+      memcpy_off(tstPduHeadPdu[PduCnt].PduLen,0,(TempPduData),PduReadOffset+4,4);
+      
+      PduLength = 0;
+      
+      PduLength += (long)(tstPduHeadPdu[PduCnt].PduLen[3]&0x000000ff);
+      PduLength = PduLength<<8;
+      PduLength += (long)(tstPduHeadPdu[PduCnt].PduLen[2]&0x000000ff);;
+      PduLength = PduLength<<8;
+      PduLength += (long)(tstPduHeadPdu[PduCnt].PduLen[1]&0x000000ff);;
+      PduLength = PduLength<<8;
+      PduLength += (long)(tstPduHeadPdu[PduCnt].PduLen[0]&0x000000ff);;
+
+      
+      
+     // write("Pdu Length = %d",PduLength);
+      
+      if(PduLength > 255) // Do a PUD length check to confirm whether it is a PDU msg or other format
+      {
+        PduLength = 0;
+        
+        write("Received message is not in PDU format.");
+        
+        return 0;
+        
+      }
+      
+      if(PduLength != 0)
+      {
+          memcpy_off(tstPduHeadPdu[PduCnt].PduData,0,TempPduData,PduReadOffset+8,PduLength);
+          
+          PduReadOffset += PduLength+8;
+         // write("PduReadOffset Length = %d",PduReadOffset);
+                  
+          PduCnt++;
+         // write("PduCnt  = %d",PduCnt);
+        
+         write("<%BASE_FILE_NAME%> Pdu Index=%d, Len=%d, PduReadOffset=%d",PduCnt,PduLength,PduReadOffset);
+
+
+       }
+      
+      
+       else if(u32PkgLen != 0)
+       {
+            write("Pdu Length is 0, msg is not in PDU Marshalling format: ");
+            while(MsgCnt<u32PkgLen)
+            {
+              write("%x ",TempPduData[MsgCnt]);
+              MsgCnt++;
+            }
+              return 1;    
+            
+      }
+      
+      else
+      {
+            return 0;
+      }
+      
+     
+      
+   }
+     write("<%BASE_FILE_NAME%> PDU Marshalling recieve finished...\r");
+    
+    return 0;
+
+
+}
+
+
+//Hence, 1452 bytes per datagram are available for the transmission of signals according to
+//the SoAd-approach
+word u16SetPduMarshallingUdp(long Len,long ID,char Data[])
+ {
+  char PduLen[4]; //Pdu length of the user data in byte according to the data
+  char PduID[4]; 
+
+  
+  PduID[0] = (char)(ID & 0x000000ff);
+  PduID[1] = (char)((ID & 0x0000ff00) >> 8);
+  PduID[2] = (char)((ID & 0x00ff0000) >> 16);
+  PduID[3] = (char)((ID & 0xff000000) >> 24);
+  
+  
+  PduLen[0] = (char)(Len & 0x000000ff);
+  PduLen[1] = (char)((Len & 0x0000ff00) >> 8);
+  PduLen[2] = (char)((Len & 0x00ff0000) >> 16);
+  PduLen[3] = (char)((Len & 0xff000000) >> 24); 
+  
+  write("PDU ID: %d \r",Len);
+  write("%x \r",PduLen[0]);
+  write("%x \r",PduLen[1]);
+  write("%x \r",PduLen[2]);
+  write("%x \r",PduLen[3]);
+  
+  write("PDU Len: %d \r",ID);
+  write("%x \r",PduID[0]);
+  write("%x \r",PduID[1]);
+  write("%x \r",PduID[2]);
+  write("%x \r",PduID[3]);
+   
+  if(1452 <= PduWritePtr) /* Udp Payload is full */
+    return 0;
+  
+
+  memcpy_off( PduMarshallingData,  PduWritePtr + 0, PduID,0,4 );
+  
+  memcpy_off( PduMarshallingData,  PduWritePtr + 4, PduLen,0,4 ); 
+  
+  memcpy_off( PduMarshallingData,  PduWritePtr + 8, Data,0,Len );  
+  
+  PduWritePtr = PduWritePtr + 8 + Len;
+
+  return 0;
+ }
+
+word u16SendIPv6TestMessage()
+{
+  dword result;  
+
+  gResult = UdpSendTo(gUdpSocketHandlev6, ipv6DestAddr2, ipv6DestinationUdpPort, textData, strlen(textData));
+
+  return gResult;
+}
+
+
+
+
+void vOpenIPv6UdpPort()
+{
+    const dword IPV6_STR_SIZE = 40; // IPv6 string size
+    int i;                          // loop variable  
+    dword result,result2;  
+    byte ipv6WildcardAddrArray[16]; /* ipv6  address  Wildcard */
+    char textData[20] = "Hello UDP Server";
+  
+  
+  //wildcard IP binding
+    result = IpGetAddressAsArray("::", ipv6WildcardAddrArray);
+
+    if (result == 0)
+    {
+      // success...
+      write("<%BASE_FILE_NAME%> IpGetAddressAsArray: returned wildcard array with IPv6 bytes:");
+      for ( i=0; i<16; i++)
+      {
+        write("<%BASE_FILE_NAME%> Byte %.2d = 0x%.2x", i, ipv6WildcardAddrArray[i]);
+      }
+    }
+    else
+    {
+      writeLineEx(1, 3, "<%BASE_FILE_NAME%> IpGetAddressAsArray: The wildcard address string was invalid.");
+    }
+ 
+      
+
+
+    // Open UDP socket
+    gUdpSocketHandlev6 = UdpOpen(ipv6SourceAddr2, ipv6SourceUdpPort); // if The port parameter is set to zero. => A free local port is selected by the stack.
+   // gUdpSocketHandlev6 = UdpOpen(ipv6WildcardAddrArray, ipv6SourceUdpPort); // if The port parameter is set to zero. => A free local port is selected by the stack.
+    
+    // Check for valid socket handle
+    if (gUdpSocketHandlev6 == ~0)
+    {
+      write("<%BASE_FILE_NAME%> UdpOpen failed: Result %d", IpGetLastError());
+    }
+    else // Socket handle valid
+    {
+
+      
+      result = IpSetMulticastInterface( gUdpSocketHandlev6, ifIdx );
+      if (result == 0)
+      {
+        write("Socket %d set to send multicast %s on adapter %d.", gUdpSocketHandlev6, ipv6DestAddrStr3, ifIdx);
+        write("Sending some multicast messages to %s:%d ...", ipv6DestAddrStr3, ipv6DestinationUdpPort);
+        
+     
+        result2 = IpJoinMulticastGroup( gUdpSocketHandlev6, ifIdx, ipv6DestAddr3 );
+        if (result2 == 0)
+        {
+          write("<%BASE_FILE_NAME%> successfully joined MultiCast group");
+        }
+        else
+        {
+          writeLineEx(1, 3, "IpJoinMulticastGroup: Error %d", result);
+        }
+                  
+        
+        
+        
+        result = UdpSendTo( gUdpSocketHandlev6, ipv6DestAddr3, ipv6DestinationUdpPort, "a", 1 );
+        UdpSendTo( gUdpSocketHandlev6, ipv6DestAddr3, ipv6DestinationUdpPort, "b", 1 );
+        result2 = UdpSendTo( gUdpSocketHandlev6, ipv6DestAddr3, ipv6DestinationUdpPort, "c", 1 );
+        
+        write("Send to multicast status: 1: %d; 2: %d",result,result2);
+      }
+      else
+      {
+        writeLineEx(1, 3, "IpSetMulticastInterface: Error %d", result);
+      }
+
+      
+      // Send UDP data
+      gResult = UdpSendTo(gUdpSocketHandlev6, ipv6DestAddr3, ipv6DestinationUdpPort, textData, strlen(textData));
+      write( "<%BASE_FILE_NAME%> UdpSendTo to ipv6: ");
+      for ( i=0; i<16; i++)
+      {
+        write("<%BASE_FILE_NAME%> Byte %.2d = 0x%.2x", i, ipv6DestAddr3[i]);
+      }
+      
+ 
+      
+      
+
+      // Check for error
+      if ( (gResult != 0) && (IpGetLastSocketError(gUdpSocketHandlev6) != 997) )
+      {
+        IpGetLastSocketErrorAsString(gUdpSocketHandlev6, gErrorText, elcount(gErrorText) );
+        write( "<%BASE_FILE_NAME%> UdpSendTo failed, %s (Result %d)", gErrorText, IpGetLastSocketError(gUdpSocketHandlev6) );
+      }
+ 
+      // Optionally receive answer from UDP server
+      UdpReceiveFrom(gUdpSocketHandlev6, gRxBuffer, 0); // Set size to 0 to enforce reception in callback only
+
+      // Check for error
+      if ( IpGetLastSocketError(gUdpSocketHandlev6) != 997 )
+      {
+        IpGetLastSocketErrorAsString(gUdpSocketHandlev6, gErrorText, elcount(gErrorText));
+        write("<%BASE_FILE_NAME%> UdpReceiveFrom failed, %s (Result %d)", gErrorText, IpGetLastSocketError(gUdpSocketHandlev6));
+      }
+
+      
+      
+    }
+ }
+
+
+OnUdpReceiveFrom(dword socket, long result, byte ipv6Address[], dword port, char buffer[], dword size)
+{
+  write("<%BASE_FILE_NAME%> Received UDP message from port: %d, size = %d",port,size );
+  
+}
+
+void vSendMessageIPv6(char acData[], word len)
+{
+    CHAR text[200];
+    byte data[40];
+    int i;
+
+    for (i=0;i<40;i++){
+      if(i%2==0)
+        data[i]=0x86;
+      else
+        data[i]=0xDD;
+    }
+
+    sysGetVariableString( sysvar::Ethernet::Text, text, elcount(text) );
+
+    gResult = UdpSendTo(gUdpSocketHandlev6, ipv6DestAddr2, ipv6DestinationUdpPort, acData, len);
+    
+    // Check for error
+      if ( (gResult != 0) && (IpGetLastSocketError(gUdpSocketHandlev6) != 997) )
+      {
+        IpGetLastSocketErrorAsString(gUdpSocketHandlev6, gErrorText, elcount(gErrorText) );
+        write( "<%BASE_FILE_NAME%> UdpSendTo failed, %s (Result %d)", gErrorText, IpGetLastSocketError(gUdpSocketHandlev6) );  
+      }
+}
+
+void vReceivedMessageIPv6()
+{
+ 
+      // Optionally receive answer from UDP server
+      UdpReceiveFrom(gUdpSocketHandlev6, gRxBuffer, 0); // Set size to 0 to enforce reception in callback only
+
+      // Check for error
+      if ( IpGetLastSocketError(gUdpSocketHandlev6) != 997 )
+      {
+        IpGetLastSocketErrorAsString(gUdpSocketHandlev6, gErrorText, elcount(gErrorText));
+        write("<%BASE_FILE_NAME%> UdpReceiveFrom failed, %s (Result %d)", gErrorText, IpGetLastSocketError(gUdpSocketHandlev6));
+      }  
+  
+  
+}
+
+void vSendNMHMessageIPv6Simulation(char abUdpNm[])
+{
+
+    gResult = UdpSendTo(gUdpSocketHandlev6, ipv6DestAddr2, ipv6DestinationUdpPort, abUdpNm, PduWritePtr);
+    // Check for error
+      if ( (gResult != 0) && (IpGetLastSocketError(gUdpSocketHandlev6) != 997) )
+      {
+        IpGetLastSocketErrorAsString(gUdpSocketHandlev6, gErrorText, elcount(gErrorText) );
+        write( "<%BASE_FILE_NAME%> UdpSendTo failed, %s (Result %d)", gErrorText, IpGetLastSocketError(gUdpSocketHandlev6) );  
+      }
+}
+
+void vSendNMHMessageIPv6(char abUdpNm[])
+{
+
+    gResult = UdpSendTo(gUdpSocketHandlev6, ipv6DestAddr3, ipv6DestinationUdpPort, abUdpNm, PduWritePtr);
+    // Check for error
+      if ( (gResult != 0) && (IpGetLastSocketError(gUdpSocketHandlev6) != 997) )
+      {
+        IpGetLastSocketErrorAsString(gUdpSocketHandlev6, gErrorText, elcount(gErrorText) );
+        write( "<%BASE_FILE_NAME%> UdpSendTo failed, %s (Result %d)", gErrorText, IpGetLastSocketError(gUdpSocketHandlev6) );  
+      }
+}
+
+void vConvertIPv6toArray(char acAddrStr[], byte abAddr[])
+{
+     int i; // loop variable 
+  LONG gResult;
+  //1nd IPv6 interface 
+    write("Converting IPv6 Address %s to bytes...", acAddrStr);
+
+    gResult = IpGetAddressAsArray( acAddrStr, abAddr );
+    if (gResult == 0)
+    {
+      // success...
+      write("IpGetAddressAsArray: returned array with IPv6 bytes:");
+      for ( i=0; i<16; i++)
+      {        
+        write("Byte %.2d = 0x%.2x", i, abAddr[i]);
+      }
+    }
+    else
+    {
+      write("Error converting");
+    } 
+    
+  
+}
+
+void vUdpReceiveInternal(dword socket, long result, char buffer[], dword size)
+{
+  write("<%BASE_FILE_NAME%> Received %d bytes: %s", size, buffer);
+  
+  u16GetPduMarshallingUdp(buffer,size);
+  
+   //
+  // Receive next data
+  //
+  vReceivedMessageIPv6();
+  
+}
+
+void vClearPduSendBuff()
+{
+  PduWriteOffset = 0;
+}
+
+void vClearPduRecvBuff()
+{
+  PduReadOffset = 0;
+}

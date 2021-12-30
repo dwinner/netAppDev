@@ -1,0 +1,1498 @@
+/*@@includes:*/
+includes
+{
+
+#include "..\..\COMMON\Main\util.CIN"
+}
+/*@@end*/
+
+/*@@var:*/
+variables
+{
+
+
+char StringBuffer[200];
+
+byte PWR_PowerSupplyUsed=0;
+
+dword PWR_InitValueVolt    =12000;  //Aufloesung 1mV
+dword PWR_InitValueAmpere  =2000; // Aufloesung 1mA
+dword Tnk_InitValue=170;
+word  PWR_AmpVal;
+byte  SW_Handbremse_Init=1;
+byte  SW_Oeldruck_Init=1;
+byte  SW_KL30_Init=1;
+
+byte ComPort=1;
+
+
+byte SW_Handbremse=13;
+byte SW_Oeldruck=11;
+byte SW_KL30=02;
+
+byte SW_Switch1= 16;
+byte SW_Switch2= 17;
+byte SW_Switch3= 18;
+
+
+byte Anz_SwitchModules=3;
+
+byte SwitchBuffer[7]={0x07,0,0,0,0,0,0};
+byte ReferencePotentialBuffer[7]={0x07,0xFF,0xFF,0,0,0,0}; // alles auf Bezugspotential +UB
+byte SwitchModeBuffer[7]={0x00,0x00,0x00,0,0,0,0}; // alles auf Bezugspotential +UB
+
+char PeckIni[30] = "Peckbox\\Main\\Peckbox.ini"; // Name der Ini-Datei der Peckbox
+
+byte Modul_Tank=0x90;
+byte Kanal_Tank1= 0x80;
+byte Kanal_Tank2= 0x40;
+byte Kanal_Tank3= 0xC0;
+
+byte Modul_Tank1=0x91;
+
+byte Kanal_Tank4= 0x40;
+
+
+
+byte RM3_Resolution=2; //2 = 0,5 Ohm , 10 = 0,1 Ohm
+
+
+word LastTxCmd=0;
+byte Com_TxQueueSize=30;
+byte Com_TxDataBuffer[30][30];
+byte Com_TxLenBuffer[30];
+byte Com_TxSGID=0;
+byte ComTxRetryCntr=0;
+const byte ComMaxRetry=10;
+
+byte Com_RxDataBuffer[16];
+byte Com_RxLenBuffer=0;
+
+byte TxResult=0;
+byte Com_QueueOutCntr=0;
+byte Com_QueueInCntr=0;
+
+word Com_QueTransmitTime=500;
+byte Com_RetryCntr=0;
+byte ComState=0;
+
+byte Kl30Preller=0;
+
+word ResetTime=1000;
+
+byte HL_Time_Active=0;
+
+msTimer Reset_Timer;
+
+
+
+msTimer RM3_UpdateTimer;
+msTimer RM3_UpdateTimer1;
+msTimer POW_UpdateTimer;
+msTimer KL30PrellenTimer;
+msTimer SM8_ResetTimer_Sw1;
+msTimer SM8_ResetTimer_Sw2;
+msTimer SM8_ResetTimer_Sw3;
+
+msTimer Hochlauftimer;
+
+const byte nIdle=0;
+const byte nWaitForSleep=1;
+const byte nWaitForKL30=2;
+const byte nTimeout=3;
+
+byte HochlaufState=nIdle;
+
+
+msTimer msDisplayUpdateTimer;
+char CurveTable[20][20];//Vorhalt fuer 20 Spannungskurven
+
+float HL_StartTime=0;
+float HL_StopTime=0;
+
+const byte PECK_nUseNGSM = 1;
+const byte PECK_nUsePECK = 0;
+}
+/*@@end*/
+
+/*@@envVar:ePeck_Oeldruck:*/
+on envVar ePeck_Oeldruck
+{
+  SM8_SetSwitch(SW_Oeldruck,getvalue(ePeck_Oeldruck));
+}
+/*@@end*/
+
+/*@@caplFunc:SM8_SetSwitch(byte,byte):*///function
+/* Funktion setzt eine einzelne Taste oder Switch */
+SM8_SetSwitch (byte ID,byte value)
+{
+  byte i,chksm;
+  byte TxBuffer[6]={0x80,0x06,0x1c,0x24,0x0,0x0};
+  
+
+   if(value) 
+    TxBuffer[3]= 0x24;
+  else
+    TxBuffer[3]= 0x25;
+  TxBuffer[4]= ID; 
+
+  chksm=0;
+  for(i=0;i<5;i++)
+  {
+     chksm^=TxBuffer[i];
+  }
+  TxBuffer[5]=chksm;
+ // write("com Result: %d\n",Result);
+
+  COM_SendData(TxBuffer,6);
+
+}
+/*@@end*/
+
+/*@@envVar:ePeck_Handbremse:*/
+on envVar ePeck_Handbremse
+{
+SM8_SetSwitch(SW_Handbremse,getvalue(ePeck_Handbremse));
+}
+/*@@end*/
+
+/*@@caplFunc:PWR_SetVoltage(word,word):*///function
+PWR_SetVoltage(word volt,word Amp) //Volt Aufloesung 10mV
+{
+  byte i=0,chksm=0;
+  byte TxBuffer[9]={0x80,0x09,0x1c,0x60,0x0,0x0,0x0,0x0,0x0};
+
+  TxBuffer[4]= (volt>>8)&0xFF; 
+  TxBuffer[5]= volt&0xFF;
+  TxBuffer[6]= (Amp>>8)&0xFF; ; 
+  TxBuffer[7]= Amp&0xFF; 
+  chksm=0;
+  for(i=0;i<8;i++)
+  {
+     chksm^=TxBuffer[i];
+
+  }
+  TxBuffer[8]=chksm;
+  COM_SendData(TxBuffer,9);
+   
+  //write("PWR: %d\n",val);
+
+
+}
+/*@@end*/
+
+/*@@envVar:ePeck_Voltage:*/
+on envVar ePeck_Voltage
+{
+//PWR_SetVoltage(getvalue(ePeck_Voltage)*100);
+
+  if(!isTimerActive(POW_UpdateTimer))
+     setTimer(  POW_UpdateTimer,200); //Entprellung von 200ms
+  else
+    {
+     
+     cancelTimer(POW_UpdateTimer); //Timer neu aufziehen
+     setTimer(  POW_UpdateTimer,200); //Entprellung von 200ms
+    }
+
+
+}
+/*@@end*/
+
+/*@@envVar:ePeck_TankVal_1:*/
+on envVar ePeck_TankVal_1
+{
+
+//RM3(getvalue(ePeck_TankVal));
+  if(!isTimerActive(RM3_UpdateTimer))
+     setTimer(  RM3_UpdateTimer,200); //Entprellung von 200ms
+  else
+    {
+     
+     cancelTimer(RM3_UpdateTimer); //Timer neu aufziehen
+     setTimer(  RM3_UpdateTimer,200); //Entprellung von 200ms
+    }
+
+  
+}
+/*@@end*/
+
+/*@@caplFunc:RM3(byte,byte,dword):*///function
+RM3 (byte Modul,byte Channel,dword val)
+{
+  byte i=0,chksm=0;
+
+  byte TxBuffer[9]={0x90,0x09,0x1c,0x40,0x0,0x0,0x0,0x0,0x0};
+
+  TxBuffer[0]=Modul;
+
+  TxBuffer[3]=Channel;
+  TxBuffer[4]= (val>>24)&0xFF; 
+  TxBuffer[5]= (val>>16)&0xFF; 
+  TxBuffer[6]= (val>>8)&0xFF; 
+  TxBuffer[7]= val&0xFF;
+  chksm=0;
+  for(i=0;i<8;i++)
+  {
+     chksm^=TxBuffer[i];
+
+  }
+  TxBuffer[8]=chksm;
+  COM_SendData(TxBuffer,elcount(TxBuffer)); 
+ 
+}
+/*@@end*/
+
+/*@@timer:Reset_Timer:*/
+on timer Reset_Timer
+{
+  cancelTimer(Reset_Timer); 
+  SM8_SetSwitch(SW_KL30,1); 
+  @ePeck_KL30=1;
+
+}
+/*@@end*/
+
+/*@@envVar:ePeck_Reset:*/
+on envVar ePeck_Reset
+{
+ if(@ePeck_Reset)
+ {
+ SM8_SetSwitch(SW_KL30,0);
+ @ePeck_KL30=0;
+ write("Resettime: %d\n", @ePeck_Reset_Time);
+ setTimer(Reset_Timer,@ePeck_Reset_Time);
+ }
+
+}
+/*@@end*/
+
+/*@@envVar:ePeck_Init:*/
+on envVar ePeck_Init
+{
+ 
+
+  Com_QueueOutCntr=0;
+  Com_QueueInCntr=0;
+  Com_RxLenBuffer=0;
+  Com_RetryCntr=0;
+  TxResult=0;
+
+  if(getvalue(ePeck_Init))
+    {
+      RS232Open( ComPort );
+      ComState=RS232Configure(ComPort,19200,8,1,2);
+      if ( 1==RS232Receive(ComPort,Com_RxDataBuffer,8) )
+         write("It works with port 1.");
+      write("Init Comport %d : State = %d\n",ComPort,ComState);
+    
+    putValue(ePeck_Voltage, PWR_InitValueVolt/1000); 
+    putValue(ePeck_Ampere, PWR_InitValueAmpere/1000); 
+    write("Init RM3\n");
+    TNK_SetVal(Tnk_InitValue);    
+    TNK_SetVal1(Tnk_InitValue);    
+    putValue(ePeck_TankVal_1, Tnk_InitValue); 
+    putValue(ePeck_TankVal_3, Tnk_InitValue); 
+
+    putValue(ePeck_Oeldruck, SW_Oeldruck_Init); 
+    putValue(ePeck_Handbremse, SW_Handbremse_Init); 
+    putValue(ePeck_KL30,SW_KL30_Init);
+
+    write("Init Switches\n");
+    SwitchBuffer[1]= SwitchBuffer[1] | (1<<(SW_Oeldruck-8));
+    SwitchBuffer[1]= SwitchBuffer[1] | (1<<(SW_Handbremse-8));
+
+ //   setTimer(SM8_Timer,300);
+    SM8_PutSwitches();
+    write("get  Modes!!");
+    SM8_GetTmpSwitchRef();
+    SM8_GetDefSwitchMode();
+
+    if(PWR_PowerSupplyUsed==PECK_nUsePECK)
+    {
+
+      //ComState=Rs232SetCommState(ComPort,19200,8,0,1);
+      PWR_StopDataGenerator(1); //laufenden Generator stoppen
+      write("Init Power\n");
+      PWR_SetVoltage(PWR_InitValueVolt,PWR_InitValueAmpere);
+    }
+    else
+    {
+    
+      @evNGSM_PowerSwitch=1;
+      //@evNGSM_ActualCurrentDisplay=@ePeck_Ampere;
+      @evNGSM_VoltageSliderControl=@ePeck_Voltage;
+      //@evNGSM_ActualVoltageDisplay=@ePeck_Voltage;
+      
+      setTimer(msDisplayUpdateTimer,1000);
+    }
+
+
+ 
+     }
+
+  else
+    {
+    if(PWR_PowerSupplyUsed==PECK_nUsePECK)
+    {
+     RS232CloseHandle(ComPort);
+     RS232Close(ComPort);
+     ComState=0;
+     }
+     else     
+     {     
+     if(@evNGSM_PowerSwitch==1){
+       @evNGSM_PowerSwitch=0;
+       }
+     }
+   }
+
+
+}
+/*@@end*/
+
+/*@@caplFunc:SM8_PutSwitches():*///function
+SM8_PutSwitches ()
+{
+  byte i=0,chksm=0,TxLen=0;
+  byte TxBuffer[12]={0x80,0x08,0x1c,0x20,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0};
+  
+  TxLen=5+Anz_SwitchModules;
+
+  TxBuffer[0]=0x80;
+  TxBuffer[1]=TxLen;
+  TxBuffer[2]=0x1c;
+  TxBuffer[3]=0x20;
+  TxBuffer[4]=SwitchBuffer[0];
+  TxBuffer[5]=SwitchBuffer[1];  
+  TxBuffer[6]=SwitchBuffer[2];
+  TxBuffer[7]=SwitchBuffer[3];
+  TxBuffer[8]=SwitchBuffer[4];   
+  TxBuffer[9]=SwitchBuffer[5];
+  TxBuffer[10]=SwitchBuffer[6];
+  chksm=0;
+  for(i=0;i<(TxLen);i++)
+  {
+     chksm^=TxBuffer[i];
+  }
+//  write("TxLen: %d Chksm: %X",TxLen,chksm);
+//  write("Data: %X %X %X %X %X %X %X %X",TxBuffer[0],TxBuffer[1],TxBuffer[2],TxBuffer[3],TxBuffer[4],TxBuffer[5],TxBuffer[6],TxBuffer[7]);
+  TxBuffer[TxLen-1]=chksm;
+  COM_SendData(TxBuffer,TxLen);
+
+
+
+
+
+}
+/*@@end*/
+
+/*@@caplFunc:COM_SendData(byte[],byte):*///function
+COM_SendData(byte Buffer[],byte DataLen)
+{
+  byte i=0;
+  //write("Auftrag: Len: %d \n",DataLen);
+  if(ComState==1)//Com aktiv?
+  {
+    for(i=0;i<DataLen;i++)
+      Com_TxDataBuffer[Com_QueueInCntr][i]=Buffer[i];
+    Com_TxLenBuffer[Com_QueueInCntr]=DataLen;
+    Com_QueueInCntr++; 
+    if(Com_QueueInCntr>=Com_TxQueueSize)
+      Com_QueueInCntr=0;
+  
+    Com_SendQueData();
+   }
+  else
+   {
+   write("Tx NotActiv txResult: %d\n",TxResult);
+   }  
+
+
+}
+/*@@end*/
+
+/*@@caplFunc:RS232OnReceive(dword,byte[],dword):*///function
+/* Rx Callbackfunktion wird aufgerufen wen Datenempfang fertig ist*/
+RS232OnReceive(dword port, byte byteData[], dword dirTag)
+
+{
+  byte i=0;
+//  write("RS232-Receive Port: %d",port);
+  if(port==ComPort)
+   {
+//    write("Character received... %x\n",dirTag);
+
+// Daten von der Box empfangen 
+    Com_RxLenBuffer=dirTag;
+    if(Com_RxLenBuffer>=4)
+      {
+       
+       Com_RxLenBuffer=0;
+
+       if((Com_RxDataBuffer[0]=Com_TxSGID)&&(Com_RxDataBuffer[2]==0xA0))
+         {//Acknowledge empfangen -> naechstes Telegramm
+           Com_QueueOutCntr++;
+           if(Com_QueueOutCntr>=Com_TxQueueSize)
+              Com_QueueOutCntr=0;
+           TxResult=0;
+           ComTxRetryCntr=0;
+           Com_SendQueData();
+         }
+       else
+         { 
+           if(ComTxRetryCntr<ComMaxRetry)
+             {
+              ComTxRetryCntr++;
+              write("NotAck received! -> Retry");     
+              TxResult=0;
+              Com_SendQueData();
+             }
+           else
+             {
+              write("Tx not possible abort sending");     
+              TxResult=0;
+              Com_QueueOutCntr=0;
+              ComTxRetryCntr=0;
+              return;
+             }
+         }
+
+
+//       if((Com_RxDataBuffer[0]=Com_TxSGID)&&(Com_RxDataBuffer[2]!=0xA0))
+//         write("NotAck received!");     
+
+       switch(LastTxCmd)
+       {
+        case 0x1b8b: for(i=0;i<Anz_SwitchModules;i++) //SM8_GetTmpSwitchRef
+
+                        ReferencePotentialBuffer[i]=Com_RxDataBuffer[3+i];
+                     LastTxCmd=0;
+                        write("Potential: %x %x %x\n",ReferencePotentialBuffer[0],ReferencePotentialBuffer[1],ReferencePotentialBuffer[2]);
+                     Set_EnvironmentValues();
+                     break;
+        case 0x1b80: for(i=0;i<Anz_SwitchModules;i++) //SM8_GetTmpSwitchMode
+                        SwitchModeBuffer[i]=Com_RxDataBuffer[3+i];
+                      write("Mode: %x %x %x\n",SwitchModeBuffer[0],SwitchModeBuffer[1],SwitchModeBuffer[2]);
+                     LastTxCmd=0;
+                     
+                     break;
+
+        default:     break;
+                                  
+        }
+
+//     else
+     //  write("Ack received!");
+ //   write("Data received! %X %X %X %X\n",Com_RxDataBuffer[0],Com_RxDataBuffer[1],Com_RxDataBuffer[2],Com_RxDataBuffer[3]);
+//      TxResult=0;
+
+      }
+   }
+}
+/*@@end*/
+
+/*@@stop:StopMeasurement:*/
+on stopMeasurement
+{
+//RS232CloseHandle(ComPort);
+   if(PWR_PowerSupplyUsed==PECK_nUseNGSM)
+      @evNGSM_PowerSwitch=0;
+
+   RS232Close(ComPort);
+   ComState=0;  
+  	
+
+}
+/*@@end*/
+
+/*@@caplFunc:Com_SendQueData():*///function
+Com_SendQueData()
+{
+  byte i=0;
+
+  if(ComState==1)
+  {
+    if(TxResult==0)// letzter Sendeauftrag noch aktiv ? 
+      {
+       //write("Que Send InCntr: %d  OutCntr: %d",Com_QueueInCntr,Com_QueueOutCntr);
+      // write("Data Len %X ",Com_TxLenBuffer[Com_QueueOutCntr]);
+      // write("Data send %X %X %X %X %X %X %X %X %X %X\n",Com_TxDataBuffer[Com_QueueOutCntr][0],Com_TxDataBuffer[Com_QueueOutCntr][1],Com_TxDataBuffer[Com_QueueOutCntr][2],Com_TxDataBuffer[Com_QueueOutCntr][3],Com_TxDataBuffer[Com_QueueOutCntr][4],Com_TxDataBuffer[Com_QueueOutCntr][5],Com_TxDataBuffer[Com_QueueOutCntr][6],Com_TxDataBuffer[Com_QueueOutCntr][7],Com_TxDataBuffer[Com_QueueOutCntr][8],Com_TxDataBuffer[Com_QueueOutCntr][9]);
+
+       
+       if(Com_QueueOutCntr!=Com_QueueInCntr)// Daten in der Queue ?
+         {
+          TxResult=1;
+          Com_TxSGID=Com_TxDataBuffer[Com_QueueOutCntr][0];
+          //Rs232WriteBlock(ComPort,Com_TxDataBuffer[Com_QueueOutCntr],Com_TxLenBuffer[Com_QueueOutCntr]); 
+          LastTxCmd= Com_TxDataBuffer[Com_QueueOutCntr][3] | (Com_TxDataBuffer[Com_QueueOutCntr][2]<<8);
+         // write("LastTxCmd: %x\n",LastTxCmd);
+          RS232Send(ComPort,Com_TxDataBuffer[Com_QueueOutCntr],Com_TxLenBuffer[Com_QueueOutCntr]); 
+//          Com_QueueOutCntr++;
+//          if(Com_QueueOutCntr>=Com_TxQueueSize)
+//            Com_QueueOutCntr=0;
+
+
+         }
+      
+      }  
+
+  }
+}
+/*@@end*/
+
+/*@@envVar:ePeck_KL30:*/
+on envVar ePeck_KL30
+{
+  
+  SM8_SetSwitch(SW_KL30,getvalue(ePeck_KL30)); 
+}
+/*@@end*/
+
+/*@@caplFunc:PWR_SetDataSegment(byte,dword,dword,dword,dword):*///function
+PWR_SetDataSegment (byte Segment,dword VoltMin,dword VoltMax,dword Step,dword TimeStep)
+{
+
+  byte i=0,chksm=0;
+  byte TxBuffer[24]={0x80,0x18,0x1c,0x92,0x01,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0};
+
+  //write ("Seg: %d Min: %d Max: %d Step: %d Time: %d",Segment,VoltMin,VoltMax,Step,TimeStep);
+
+  
+  TxBuffer[5]=  01;
+  TxBuffer[6]=  Segment;
+  TxBuffer[7]=  ((VoltMin>>24)&0xFF);
+  TxBuffer[8]=  ((VoltMin>>16)&0xFF);
+  TxBuffer[9]=  ((VoltMin>>8)&0xFF);
+  TxBuffer[10]= (VoltMin&0xFF);
+
+  TxBuffer[11]= ((VoltMax>>24)&0xFF);
+  TxBuffer[12]= ((VoltMax>>16)&0xFF);
+  TxBuffer[13]= ((VoltMax>>8)&0xFF);
+  TxBuffer[14]= (VoltMax&0xFF);
+
+  TxBuffer[15]= ((Step>>24)&0xFF);
+  TxBuffer[16]= ((Step>>16)&0xFF);
+  TxBuffer[17]= ((Step>>8)&0xFF);
+  TxBuffer[18]= (Step&0xFF);
+
+  TxBuffer[19]= ((TimeStep>>24)&0xFF);
+  TxBuffer[20]= ((TimeStep>>16)&0xFF);
+  TxBuffer[21]= ((TimeStep>>8)&0xFF);
+  TxBuffer[22]= (TimeStep&0xFF);
+
+ // write("Tx %X %X %X %X %X %X %X %X %X %X",TxBuffer[7],TxBuffer[8],TxBuffer[9],TxBuffer[10],TxBuffer[11],TxBuffer[12],TxBuffer[13],TxBuffer[14],TxBuffer[15],TxBuffer[16],TxBuffer[17]);
+  chksm=0;
+  for(i=0;i<23;i++)
+  {
+     chksm^=TxBuffer[i];
+
+  }
+  TxBuffer[23]=chksm;
+  COM_SendData(TxBuffer,24);
+
+}
+/*@@end*/
+
+/*@@caplFunc:PWR_StartDataGenerator(byte):*///function
+PWR_StartDataGenerator (byte Kanal)
+{
+  byte i=0,chksm=0;
+  byte TxBuffer[7]={0x80,0x07,0x1c,0x92,0x0,0x0,0x0};
+
+  TxBuffer[4]= 0x10; //PWRStartGenerator
+  TxBuffer[5]= Kanal;
+  chksm=0;
+  for(i=0;i<6;i++)
+  {
+     chksm^=TxBuffer[i];
+
+  }
+  TxBuffer[6]=chksm;
+  COM_SendData(TxBuffer,7);
+
+}
+/*@@end*/
+
+/*@@caplFunc:PWR_StopDataGenerator(byte):*///function
+PWR_StopDataGenerator (byte Kanal)
+{
+  byte i=0,chksm=0;
+  byte TxBuffer[7]={0x80,0x07,0x1c,0x92,0x0,0x0,0x0};
+
+  TxBuffer[4]= 0x11; //PWRStopGenerator
+  TxBuffer[5]= Kanal;
+  chksm=0;
+  for(i=0;i<6;i++)
+  {
+     chksm^=TxBuffer[i];
+
+  }
+  TxBuffer[6]=chksm;
+  COM_SendData(TxBuffer,7);
+
+}
+/*@@end*/
+
+/*@@caplFunc:PWR_SetDataGenerator(byte,byte,dword):*///function
+PWR_SetDataGenerator (byte Kanal, byte Stuetzpunkte,dword Anzahl)
+{
+  byte i=0,chksm=0;
+  byte TxBuffer[12]={0x80,0x0C,0x1c,0x92,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0};
+  TxBuffer[4]=  0; //PWRDefineGenerator
+  TxBuffer[5]=  Kanal; //PWRSetSegment
+  TxBuffer[6]=  Stuetzpunkte;
+  TxBuffer[7]=  ((Anzahl>>24)&0xFF);
+  TxBuffer[8]=  ((Anzahl>>16)&0xFF);
+  TxBuffer[9]=  ((Anzahl>>8)&0xFF);
+  TxBuffer[10]= (Anzahl&0xFF);
+
+
+
+  chksm=0;
+  for(i=0;i<11;i++)
+  {
+     chksm^=TxBuffer[i];
+  }
+  TxBuffer[11]=chksm;
+  //write("%X \n",TxBuffer[11]);
+
+  
+
+  COM_SendData(TxBuffer,12);
+
+}
+/*@@end*/
+
+/*@@caplFunc:PWR_SetData(char[],dword):*///function
+//Funktion liest aus datei POWER.ini die definition der uebergebenen Spannungskurve 
+//und uebergibt diese an die Peckbox
+PWR_SetData (char s[],dword Retry) // Name aus Power.ini = Spannungskurve, Retry = Anzahl der Wiederholungen
+{ 
+
+
+   char Searchstring[40];
+   char Searchstring1[40];
+   char s2[9];
+   byte AnzahlSegmente=0;
+   dword Datasegments[5];
+   byte SegCntr;
+   long DataIn;
+   char SegBuffer[50];
+
+   AnzahlSegmente=0;
+   PWR_StopDataGenerator(1); //laufenden Generator stoppen
+   if(strncmp("Normal",s,strlen(s))==0)
+     write("PowerGenerator off");
+   else
+   {
+
+   strncpy(Searchstring, s, elcount(Searchstring)); 
+   strncat(Searchstring, "_SP", elcount(Searchstring)); // s is "Vector CANoe"
+   
+   AnzahlSegmente = getProFileInt(s,Searchstring, 0 , PeckIni);
+   //write("s1 %s s2 %s Anzseg: %d \n",s,Searchstring,AnzahlSegmente);
+   if(AnzahlSegmente >0)
+   {
+   
+   strncpy(Searchstring1, s, 40); 
+   strncat(Searchstring1, "_DataSegment", elcount(Searchstring1)); // s is "Vector CANoe"
+
+   for(SegCntr=0;SegCntr<AnzahlSegmente;SegCntr++)
+   {
+    strncpy(Searchstring, Searchstring1, elcount(Searchstring)); 
+    ltoa(SegCntr,s2,10);
+    strncat(Searchstring, s2, elcount(Searchstring)); 
+    //write("SegCntr %d AnzahlSegmente %d s1: %s s2 %s",SegCntr,AnzahlSegmente,s, Searchstring);
+    DataIn=getProFileString(s, Searchstring,"dummy", SegBuffer ,elcount(SegBuffer), PeckIni);
+
+    //write("Buffer: %s Datain %d",SegBuffer,DataIn);
+    if(strstr(SegBuffer,"dummy")!=-1)
+      {
+      write("Error String not found!");
+      break;
+      }
+    else
+      {
+       
+       GetDwordArray (DataIn,SegBuffer, Datasegments);
+       //write("Index %d %d %d %d %d ",Datasegments[0],Datasegments[1],Datasegments[2],Datasegments[3],Datasegments[4]);
+       PWR_SetDataSegment((byte)Datasegments[0],Datasegments[1],Datasegments[2],Datasegments[3],Datasegments[4]);
+      }  
+    }
+ 
+     PWR_SetDataGenerator (1,AnzahlSegmente,Retry);
+     PWR_StartDataGenerator(1);
+     }
+     }
+
+}
+/*@@end*/
+
+/*@@envVar:ePeck_PWR_Curve:*/
+on envVar ePeck_PWR_Curve
+{
+  write("PWR_Curve: %s ",CurveTable[@ePeck_PWR_Curve]);
+  PWR_SetData(CurveTable[@ePeck_PWR_Curve],(~@ePeck_PWR_Retry&0x01));
+
+}
+/*@@end*/
+
+/*@@caplFunc:GetDwordArrayOrg(byte,char[],dword[]):*///function
+//Funktion liest aus einem Array von Strings und teilt die mit ',' separierten Werte auf
+// Rückgabe erfolgt über Array RetTable 
+// Konvertierung String -> dword
+GetDwordArrayOrg (byte len,char buffer[],dword RetTable[])
+{
+ byte Arrayindex=0;
+ byte l=0,strcnt=0;
+ char strVal[10];
+ Arrayindex=0;
+ l=0;
+ strcnt=0;
+
+    for(l=0;l<=len;l++)
+       {
+        if((buffer[l] != ',') && (buffer[l] != '\0'))
+          {
+            strVal[strcnt]=buffer[l];
+            strcnt++;
+            }
+        else
+          {
+           strVal[strcnt]='\0';
+           strcnt=0;
+           RetTable[Arrayindex]=(dword)atol(strVal);        
+           Arrayindex++;
+           }
+           
+      }
+
+}
+/*@@end*/
+
+/*@@caplFunc:GetStringArrayOrg(long,char[],char[][]):*///function
+//Funktion liest aus einem Array von Strings und teilt die mit ',' separierten Werte auf
+// Rückgabe erfolgt über Array RetTable 
+
+GetStringArrayOrg (long len,char buffer[],char RetTable[][])
+{
+ byte Arrayindex=0;
+ long l=0;
+ byte strcnt=0;
+ Arrayindex=0;
+ l=0;
+ strcnt=0;
+
+    for(l=0;l<=len;l++)
+       {
+        if((buffer[l] != ',') && (buffer[l] != '\0'))
+          {
+            RetTable[Arrayindex][strcnt]=buffer[l];
+            strcnt++;
+            }
+        else
+          {
+           RetTable[Arrayindex][strcnt]='\0';
+           strcnt=0;
+           Arrayindex++;
+           }
+           
+      }
+
+}
+/*@@end*/
+
+/*@@startStart:Start:*/
+on start
+{
+ char buffer[1024];
+ long DataIn;
+ byte i;
+
+//Namen der Spannungskurven aus Textfile einlesen
+ getProfileStringArray("Kurven", "Kurven_Elemente",CurveTable,PeckIni);
+
+ ComPort=getProfileInt("ComPort", "Peck_Comport", 0, PeckIni);
+ PWR_PowerSupplyUsed=getProfileInt("PowerSupply", "PWR_SupplyUsed", 0, PeckIni);
+ //ComPortNGSM=getProfileInt("NGSM-Comport", "NGSM_Comport", 0, "Peckbox.ini");
+ //PWR_InitValueVolt=getProfileInt("NGSM-Volt", "NGSM_Volt", 0, "Peckbox.ini");
+ //PWR_InitValueAmpere=getProfileInt("NGSM-Ampere", "NGSM_Ampere", 0, "Peckbox.ini");
+
+// for(i=0;i<10;i++)
+//  write("%s",CurveTable[i]);
+
+// Panel mit Werten vorbelegen
+  @ePeck_KL30_Prellen_Anzahl=5;
+  @ePeck_KL30_Prellen_Max=500;
+  @ePeck_KL30_Prellen_Min=100;
+  @ePeck_Reset_Time=ResetTime;
+
+  write ("ComPort: %d",ComPort);
+}
+/*@@end*/
+
+/*@@timer:RM3_UpdateTimer:*/
+on timer RM3_UpdateTimer
+{
+
+  cancelTimer(RM3_UpdateTimer); 
+
+  TNK_SetVal(getvalue(ePeck_TankVal_1));
+}
+/*@@end*/
+
+/*@@timer:POW_UpdateTimer:*/
+on timer POW_UpdateTimer
+{
+  cancelTimer(POW_UpdateTimer); 
+  write("POW-update-Timer @ePeck_Voltage: %d",@ePeck_Voltage);
+  if(PWR_PowerSupplyUsed==PECK_nUsePECK)
+    {
+     PWR_SetVoltage(getvalue(ePeck_Voltage)*100,getvalue(ePeck_Ampere)*100);
+     }     
+  else
+    {
+     if(@evNGSM_PowerSwitch==1)
+      {
+       @evNGSM_SetCurveSelector=20; //Slider Control
+       //@evNGSM_VoltageDisplay = @ePeck_Voltage;
+       @evNGSM_VoltageSliderControl = @ePeck_Voltage;
+       if(isTimerActive(msDisplayUpdateTimer))
+          {
+            cancelTimer(msDisplayUpdateTimer);
+            setTimer(msDisplayUpdateTimer,1000);
+          }
+       }
+      
+    }
+}
+/*@@end*/
+
+/*@@envVar:ePeck_PWR_Set_Curve:*/
+on envVar ePeck_PWR_Set_Curve
+{
+    if(@ePeck_PWR_Set_Curve==0)
+    {
+      @ePeck_PWR_Retry=0;
+      @evNGSM_CurveRetry=0;
+    }
+    if(PWR_PowerSupplyUsed==PECK_nUsePECK)
+      {
+       PWR_SetData(CurveTable[@ePeck_PWR_Set_Curve],(~@ePeck_PWR_Retry&0x01));
+      }
+      else
+        {
+         if(@evNGSM_PowerSwitch==1)	   
+	       @evNGSM_SetCurveSelector=@ePeck_PWR_Set_Curve;	    
+        }
+}
+/*@@end*/
+
+/*@@envVar:ePeck_KL30_Prellen:*/
+on envVar ePeck_KL30_Prellen
+{
+
+  if(@ePeck_KL30_Prellen)
+     {
+       Kl30Preller=0;
+       KL30_Prellen();
+      }
+
+}
+/*@@end*/
+
+/*@@caplFunc:KL30_Prellen():*///function
+KL30_Prellen ()
+{
+  byte randomTime1;
+  
+  if(Kl30Preller<@ePeck_KL30_Prellen_Anzahl)
+    {
+     randomTime1 = random(@ePeck_KL30_Prellen_Max);
+     if(randomTime1<@ePeck_KL30_Prellen_Min)
+      {
+       randomTime1=@ePeck_KL30_Prellen_Min;      
+       }
+     
+     setTimer(  KL30PrellenTimer,randomTime1);
+     Kl30Preller++;
+    }
+  else
+    {
+     @ePeck_KL30=1;
+     SM8_SetSwitch(SW_KL30,@ePeck_KL30); 
+     }
+}
+/*@@end*/
+
+/*@@timer:KL30PrellenTimer:*/
+on timer KL30PrellenTimer
+{
+
+  
+  if( @ePeck_KL30==1)
+    @ePeck_KL30=0;   
+  else
+    @ePeck_KL30=1;
+  SM8_SetSwitch(SW_KL30,@ePeck_KL30); 
+  cancelTimer(KL30PrellenTimer);
+  KL30_Prellen();
+}
+/*@@end*/
+
+/*@@timer:RM3_UpdateTimer1:*/
+on timer RM3_UpdateTimer1
+{
+
+  cancelTimer(RM3_UpdateTimer1); 
+
+  TNK_SetVal1(getvalue(ePeck_TankVal_3));
+}
+/*@@end*/
+
+/*@@caplFunc:TNK_SetVal(dword):*///function
+TNK_SetVal(dword val)
+{
+  byte i=0,chksm=0;
+  dword Kanal_Tank2_Val;
+
+
+  
+  RM3(Modul_Tank,Kanal_Tank1,val*RM3_Resolution);
+  
+// Kanal_Tank2_Val=(290*RM3_Resolution)-val+(50*RM3_Resolution);
+  Kanal_Tank2_Val=(((290-val)+50));
+  write ("Val1: %d Val2: %d\n",val,Kanal_Tank2_Val);
+
+  RM3(Modul_Tank,Kanal_Tank2,Kanal_Tank2_Val*RM3_Resolution);
+  @ePeck_TankVal_2=Kanal_Tank2_Val;
+
+}
+/*@@end*/
+
+/*@@caplFunc:TNK_SetVal1(dword):*///function
+TNK_SetVal1(dword val)
+{
+  byte i=0,chksm=0;
+  dword Kanal_Tank4_Val;
+
+
+
+  RM3(Modul_Tank,Kanal_Tank3,val*RM3_Resolution);
+
+  
+  //Kanal_Tank4_Val=(290*RM3_Resolution)-val+(50*RM3_Resolution);
+  Kanal_Tank4_Val=((290-val)+50);
+
+  RM3(Modul_Tank1,Kanal_Tank4,Kanal_Tank4_Val*RM3_Resolution);
+  @ePeck_TankVal_4=Kanal_Tank4_Val;
+
+}
+/*@@end*/
+
+/*@@envVar:ePeck_TankVal_3:*/
+on envVar ePeck_TankVal_3
+{
+
+//RM3(getvalue(ePeck_TankVal));
+  if(!isTimerActive(RM3_UpdateTimer1))
+     setTimer(  RM3_UpdateTimer1,200); //Entprellung von 200ms
+  else
+    {
+     
+     cancelTimer(RM3_UpdateTimer1); //Timer neu aufziehen
+     setTimer(  RM3_UpdateTimer1,200); //Entprellung von 200ms
+    }
+
+  
+}
+/*@@end*/
+
+/*@@envVar:ePeck_PWR_Retry:*/
+on envVar ePeck_PWR_Retry
+{
+  if(PWR_PowerSupplyUsed==PECK_nUsePECK)
+     PWR_SetData(CurveTable[@ePeck_PWR_Set_Curve],(~@ePeck_PWR_Retry&0x01));
+  else
+     @ePeck_PWR_Retry==@evNGSM_CurveRetry;
+}
+/*@@end*/
+
+/*@@envVar:ePeck_Ampere:*/
+on envVar ePeck_Ampere
+{
+//PWR_SetVoltage(getvalue(ePeck_Voltage)*100);
+//
+//  if(!isTimerActive(POW_UpdateTimer))
+//     setTimer(  POW_UpdateTimer,200); //Entprellung von 200ms
+//  else
+//    {
+//     
+//     cancelTimer(POW_UpdateTimer); //Timer neu aufziehen
+//     setTimer(  POW_UpdateTimer,200); //Entprellung von 200ms
+//    }
+
+
+}
+/*@@end*/
+
+/*@@caplFunc:SM8_SetTmpSwitchRef():*///function
+SM8_SetTmpSwitchRef ()
+{
+  byte i=0,chksm=0,TxLen=0;
+  byte TxBuffer[12]={0x80,0x08,0x1C,0x8B,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0};
+  
+  TxLen=5+Anz_SwitchModules;
+
+  TxBuffer[0]=0x80;
+  TxBuffer[1]=TxLen;
+  TxBuffer[2]=0x1C;
+  TxBuffer[3]=0x8B;
+  TxBuffer[4]=ReferencePotentialBuffer[0]; // KL30-KL15    dont care!!
+  TxBuffer[5]=ReferencePotentialBuffer[1]; // SM8 Modul 1  dont care!!
+  TxBuffer[6]=ReferencePotentialBuffer[2]; // SM8 Modul 2
+  TxBuffer[7]=ReferencePotentialBuffer[3];
+  TxBuffer[8]=ReferencePotentialBuffer[4];   
+  TxBuffer[9]=ReferencePotentialBuffer[5];
+  TxBuffer[10]=ReferencePotentialBuffer[6];
+  chksm=0;
+  for(i=0;i<(TxLen);i++)
+  {
+     chksm^=TxBuffer[i];
+  }
+//  write("TxLen: %d Chksm: %X",TxLen,chksm);
+//  write("Data: %X %X %X %X %X %X %X %X",TxBuffer[0],TxBuffer[1],TxBuffer[2],TxBuffer[3],TxBuffer[4],TxBuffer[5],TxBuffer[6],TxBuffer[7]);
+  TxBuffer[TxLen-1]=chksm;
+  COM_SendData(TxBuffer,TxLen);
+
+
+
+
+
+}
+/*@@end*/
+
+/*@@caplFunc:SM8_GetTmpSwitchRef():*///function
+SM8_GetTmpSwitchRef ()
+{
+  byte i,chksm;
+  byte TxBuffer[5]={0x80,0x05,0x1B,0x8B,0x0};
+  
+  for(i=0;i<4;i++)
+  {
+     chksm^=TxBuffer[i];
+  }
+  TxBuffer[4]=chksm;
+ // write("com Result: %d\n",Result);
+
+  COM_SendData(TxBuffer,5);
+
+}
+/*@@end*/
+
+/*@@caplFunc:SM8_GetDefSwitchMode():*///function
+SM8_GetDefSwitchMode ()
+{
+  byte i,chksm;
+  byte TxBuffer[5]={0x80,0x05,0x1B,0x80,0x0};
+  
+  for(i=0;i<4;i++)
+  {
+     chksm^=TxBuffer[i];
+  }
+  TxBuffer[4]=chksm;
+ // write("com Result: %d\n",Result);
+
+  COM_SendData(TxBuffer,5);
+
+}
+/*@@end*/
+
+/*@@caplFunc:SM8_SetTmpSwitchMode():*///function
+SM8_SetTmpSwitchMode ()
+{
+  byte i=0,chksm=0,TxLen=0;
+  byte TxBuffer[12]={0x80,0x08,0x1C,0x88,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0};
+  
+  TxLen=5+Anz_SwitchModules;
+
+  TxBuffer[0]=0x80;
+  TxBuffer[1]=TxLen;
+  TxBuffer[2]=0x1C;
+  TxBuffer[3]=0x88;
+  TxBuffer[4]=SwitchModeBuffer[0]; // KL30-KL15    dont care!!
+  TxBuffer[5]=SwitchModeBuffer[1]; // SM8 Modul 1  dont care!!
+  TxBuffer[6]=SwitchModeBuffer[2]; // SM8 Modul 2
+  TxBuffer[7]=SwitchModeBuffer[3];
+  TxBuffer[8]=SwitchModeBuffer[4];   
+  TxBuffer[9]=SwitchModeBuffer[5];
+  TxBuffer[10]=SwitchModeBuffer[6];
+  chksm=0;
+  for(i=0;i<(TxLen);i++)
+  {
+     chksm^=TxBuffer[i];
+  }
+//  write("TxLen: %d Chksm: %X",TxLen,chksm);
+//  write("Data: %X %X %X %X %X %X %X %X",TxBuffer[0],TxBuffer[1],TxBuffer[2],TxBuffer[3],TxBuffer[4],TxBuffer[5],TxBuffer[6],TxBuffer[7]);
+  TxBuffer[TxLen-1]=chksm;
+  COM_SendData(TxBuffer,TxLen);
+
+
+
+
+
+}
+/*@@end*/
+
+/*@@envVar:ePeck_Switch1_Konfig:*/
+on envVar ePeck_Switch1_Konfig
+{
+ byte BytePosition=0;
+ byte BitPosition=0;
+ 
+ BytePosition = SW_Switch1/8;
+ BitPosition  = SW_Switch1 - (8*BytePosition);
+
+ if(@ePeck_Switch1_Konfig==1)
+   SwitchModeBuffer[BytePosition] |= 0x01<<BitPosition;
+ else
+   SwitchModeBuffer[BytePosition] &= ~(0x01<<BitPosition);
+
+ //SM8_SetTmpSwitchMode();
+}
+/*@@end*/
+
+/*@@envVar:ePeck_Switch2_Konfig:*/
+on envVar ePeck_Switch2_Konfig
+{
+ byte BytePosition=0;
+ byte BitPosition=0;
+ 
+ BytePosition = SW_Switch2/8;
+ BitPosition  = SW_Switch2 - (8*BytePosition);
+
+ if(@ePeck_Switch2_Konfig==1)
+   SwitchModeBuffer[BytePosition] |= 0x01<<BitPosition;
+ else
+   SwitchModeBuffer[BytePosition] &= ~(0x01<<BitPosition);
+
+ //SM8_SetTmpSwitchMode();
+}
+/*@@end*/
+
+/*@@envVar:ePeck_Switch3_Konfig:*/
+on envVar ePeck_Switch3_Konfig
+{
+ byte BytePosition=0;
+ byte BitPosition=0;
+ 
+ BytePosition = SW_Switch3/8;
+ BitPosition  = SW_Switch3 - (8*BytePosition);
+
+ if(@ePeck_Switch3_Konfig==1)
+   SwitchModeBuffer[BytePosition] |= 0x01<<BitPosition;
+ else
+   SwitchModeBuffer[BytePosition] &= ~(0x01<<BitPosition);
+
+ //SM8_SetTmpSwitchMode();
+}
+/*@@end*/
+
+/*@@envVar:ePeck_Switch1_Potential:*/
+on envVar ePeck_Switch1_Potential
+{
+ byte BytePosition=0;
+ byte BitPosition=0;
+ 
+ BytePosition = SW_Switch1/8;
+ BitPosition  = SW_Switch1 - (8*BytePosition);
+ write("bytepos: %d BitPos: %d\n",BytePosition,BitPosition);
+ if(@ePeck_Switch1_Potential==1)
+   ReferencePotentialBuffer[BytePosition] |= 0x01<<BitPosition;
+ else
+   ReferencePotentialBuffer[BytePosition] &= ~(0x01<<BitPosition);
+
+ //write("Buffer: %x %x %x\n",ReferencePotentialBuffer[0],ReferencePotentialBuffer[1],ReferencePotentialBuffer[2]);
+
+ SM8_SetTmpSwitchRef();
+}
+/*@@end*/
+
+/*@@envVar:ePeck_Switch2_Potential:*/
+on envVar ePeck_Switch2_Potential
+{
+ byte BytePosition=0;
+ byte BitPosition=0;
+ 
+ BytePosition = SW_Switch2/8;
+ BitPosition  = SW_Switch2 - (8*BytePosition);
+
+ if(@ePeck_Switch2_Potential==1)
+   ReferencePotentialBuffer[BytePosition] |= 0x01<<BitPosition;
+ else
+   ReferencePotentialBuffer[BytePosition] &= ~(0x01<<BitPosition);
+
+ SM8_SetTmpSwitchRef();
+}
+/*@@end*/
+
+/*@@envVar:ePeck_Switch3_Potential:*/
+on envVar ePeck_Switch3_Potential
+{
+ byte BytePosition=0;
+ byte BitPosition=0;
+ 
+ BytePosition = SW_Switch3/8;
+ BitPosition  = SW_Switch3 - (8*BytePosition);
+
+ if(@ePeck_Switch3_Potential==1)
+   ReferencePotentialBuffer[BytePosition] |= 0x01<<BitPosition;
+ else
+   ReferencePotentialBuffer[BytePosition] &= ~(0x01<<BitPosition);
+
+ SM8_SetTmpSwitchRef();
+}
+/*@@end*/
+
+/*@@envVar:ePeck_Switch1:*/
+on envVar ePeck_Switch1
+{
+  
+  SM8_SetSwitch(SW_Switch1,getvalue(ePeck_Switch1)); 
+  if(@ePeck_Switch1==1)
+    {
+     if(@ePeck_Switch1_Konfig==1) //Taster?
+        SetTimer(SM8_ResetTimer_Sw1,100); 
+    }
+}
+/*@@end*/
+
+/*@@envVar:ePeck_Switch2:*/
+on envVar ePeck_Switch2
+{
+  
+  SM8_SetSwitch(SW_Switch2,getvalue(ePeck_Switch2)); 
+  if(@ePeck_Switch2==1)
+    {
+     if(@ePeck_Switch2_Konfig==1) //Taster?
+        SetTimer(SM8_ResetTimer_Sw2,100); 
+    }
+}
+/*@@end*/
+
+/*@@envVar:ePeck_Switch3:*/
+on envVar ePeck_Switch3
+{
+  
+  SM8_SetSwitch(SW_Switch3,getvalue(ePeck_Switch3)); 
+  if(@ePeck_Switch3==1)
+    {
+     if(@ePeck_Switch3_Konfig==1) //Taster?
+        SetTimer(SM8_ResetTimer_Sw3,100); 
+    }
+}
+/*@@end*/
+
+/*@@timer:SM8_ResetTimer_Sw1:*/
+on timer SM8_ResetTimer_Sw1
+{
+  cancelTimer(SM8_ResetTimer_Sw1); 
+  SM8_SetSwitch(SW_Switch1,0); 
+  //write("Reset Switch1 ");
+  @ePeck_Switch1=0;
+
+}
+/*@@end*/
+
+/*@@timer:SM8_ResetTimer_Sw2:*/
+on timer SM8_ResetTimer_Sw2
+{
+  cancelTimer(SM8_ResetTimer_Sw2); 
+  SM8_SetSwitch(SW_Switch2,0); 
+  @ePeck_Switch2=0;
+
+}
+/*@@end*/
+
+/*@@timer:SM8_ResetTimer_Sw3:*/
+on timer SM8_ResetTimer_Sw3
+{
+  cancelTimer(SM8_ResetTimer_Sw3); 
+  SM8_SetSwitch(SW_Switch3,0); 
+  @ePeck_Switch3=0;
+
+}
+/*@@end*/
+
+/*@@caplFunc:Set_EnvironmentValues():*///function
+Set_EnvironmentValues ()
+{
+
+  byte BytePosition=0;
+  byte BitPosition=0;
+
+   /*Potential-Anzeige*/
+    BytePosition = SW_Switch1/8;
+    BitPosition  = SW_Switch1 - (8*BytePosition);
+
+    if((ReferencePotentialBuffer[BytePosition] && (0x01<< BitPosition))==(0x01<< BitPosition))
+      @ePeck_Switch1_Potential=1;
+    else
+      @ePeck_Switch1_Potential=0;
+
+   /*Potential-Anzeige*/
+    BytePosition = SW_Switch2/8;
+    BitPosition  = SW_Switch2 - (8*BytePosition);
+    write("BytePos: %d BitPos: %d Val: %d",BytePosition,BitPosition,(ReferencePotentialBuffer[BytePosition] && (0x01<< BitPosition)));
+    if((ReferencePotentialBuffer[BytePosition] && (0x01<< BitPosition))==(0x01<< BitPosition))
+      @ePeck_Switch2_Potential=1;
+    else
+      @ePeck_Switch2_Potential=0;
+
+   /*Potential-Anzeige*/
+    BytePosition = SW_Switch3/8;
+    BitPosition  = SW_Switch3 - (8*BytePosition);
+    write("BytePos: %d BitPos: %d Val: %d",BytePosition,BitPosition,(ReferencePotentialBuffer[BytePosition] && (0x01<< BitPosition)));
+    if((ReferencePotentialBuffer[BytePosition] && (0x01<< BitPosition))==(0x01<< BitPosition))
+      @ePeck_Switch3_Potential=1;
+    else
+      @ePeck_Switch3_Potential=0;
+
+
+}
+/*@@end*/
+
+/*@@envVar:ePeck_ButtonHLTimeKL30:*/
+on envVar ePeck_ButtonHLTimeKL30
+{
+  /*
+   long RetVal;
+   RetVal = TestWaitForSignalAvailable (NM_Kombi_Car_Wakeup, 2000);
+   switch(RetVal)
+   {
+   case 0:  write("Wait state is exited due to a timeout");break;
+
+   case 1:  write("Wait state is exited; signal is available for further tests");break;
+
+   case -1: write("General error, e.g. functionality is unavailable");break;
+
+   case -2: write("Wait state is exited due to a constraint/condition violation");break;
+
+   default: break;
+   }
+
+   */
+   
+   
+   HL_StartTime = timeNow(); //current time in useconds
+   @ePeck_KL30=1;
+   HL_Time_Active=1;
+   
+   setTimer(Hochlauftimer,2000);
+
+
+
+}
+/*@@end*/
+
+/*@@msg:MQB_KCAN_KMatrix::Kombi_01 (0x30B):*/
+on message Kombi_01
+{
+  long HLTime;
+  if(HL_Time_Active>0)
+    {
+      HLTime=2000-timeToElapse(Hochlauftimer);
+
+      HL_StopTime = timeNow(); //current time in useconds
+      cancelTimer(Hochlauftimer);
+      write ("HL_StartTime %f HL_StopTime %f",HL_StartTime,HL_StopTime);
+      if(HL_Time_Active==1){
+      write ("Hochlaufzeit Now KL30: %f ms",(HL_StopTime-HL_StartTime)/100);
+      write ("Hochlaufzeit KL30: %d ms",HLTime);
+      }
+      if(HL_Time_Active==2){
+      write ("Hochlaufzeit Now Wakeup: %f ms",(HL_StopTime-HL_StartTime)/100);
+      write ("Hochlaufzeit Wakeup: %d ms",HLTime);
+      }
+
+      HL_Time_Active=0;
+      }
+
+ 
+}
+/*@@end*/
+
+/*@@timer:Hochlauftimer:*/
+on timer Hochlauftimer
+{
+  cancelTimer(Hochlauftimer);
+  switch(HochlaufState)
+  {
+
+    case nTimeout:   write ("Timeout Hochlaufzeit KL30 ");HL_Time_Active=0;break;
+
+    case nWaitForSleep: //if(@ePeck_Ampere<0.015)
+                           
+    
+    case nWaitForKL30:
+
+    case nIdle: break;
+    }
+   
+}
+/*@@end*/
+
+/*@@envVar:ePeck_ButtonHLTimeWake:*/
+on envVar ePeck_ButtonHLTimeWake
+{
+  HL_StartTime = timeNow(); //current time in useconds
+
+   @eNMHControllerNodeAwake=1;
+   HL_Time_Active=2;
+   setTimer(Hochlauftimer,2000);
+
+
+}
+/*@@end*/
+
+/*@@caplFunc:RS232OnSend(dword,byte[],dword):*///function
+RS232OnSend( dword port, byte buffer[], dword number )
+{
+//TxResult=0;
+//Com_SendQueData();
+
+
+}
+/*@@end*/
+
+/*@@caplFunc:RS232OnError(dword,dword):*///function
+RS232OnError( dword port, dword errorFlags )
+{
+
+  write("Error!! -> Retry Flags: %X",errorFlags);
+
+  TxResult=0; //Timeout
+  Com_RxLenBuffer=0;
+  //Retry!!!
+  if(Com_QueueOutCntr==0)
+    Com_QueueOutCntr=9;
+  else
+    Com_QueueOutCntr--;
+
+  Com_RetryCntr++;
+  Com_SendQueData();
+}
+/*@@end*/
+
+/*@@timer:msDisplayUpdateTimer:*/
+on timer msDisplayUpdateTimer
+{
+
+@ePeck_Ampere  = @evNGSM_ActualCurrentDisplay;
+//@ePeck_Voltage = @evNGSM_ActualVoltageDisplay;
+setTimer(msDisplayUpdateTimer,1000);
+  
+}
+/*@@end*/
+

@@ -1,0 +1,174 @@
+/*@!Encoding:1252*/
+variables
+{
+  const KBI_PT_EVENTLIST_SIZE = 1000;
+  
+  byte Kbi_Pt_LowerLimit = 0;
+  byte Kbi_Pt_UpperLimit = 0;
+  int Kbi_Pt_UpperCounter = 0;
+  int Kbi_Pt_LowerCounter = 0;
+  byte Kbi_Pt_MeasurementInProg = 0;
+  byte Kbi_Pt_EventList[KBI_PT_EVENTLIST_SIZE];
+  int Kbi_Pt_EventListCount = 0;
+  byte Kbi_Pt_CurrentFehlerValue = 0;
+  byte Kbi_Pt_PrevFehlerValue = 0;
+  
+  mstimer KBT_PhotoTransistor_BeepTimer1, KBT_PhotoTransistor_BeepTimer2;
+}
+
+on start
+{
+	putvalue(eKBT_PhotoTransistor_UpperCount, 0);
+	putvalue(eKBT_PhotoTransistor_LowerCount, 0);
+	Kbi_Pt_MeasurementInProg = 0;
+    Kbi_Pt_UpperCounter = 0;
+    Kbi_Pt_LowerCounter = 0;
+	InitList();
+}
+
+InitList()
+{
+  int i;
+  Kbi_Pt_EventListCount = 0;
+  for(i=0; i<KBI_PT_EVENTLIST_SIZE; i++)
+	Kbi_Pt_EventList[i] = ' ';
+	
+  putValue(eKBT_PhotoTransistor_TimeList, Kbi_Pt_EventList);
+}
+
+on envvar eKBT_PhotoTransistor_LowerLimit
+{
+	Kbi_Pt_LowerLimit = getValue(this);
+}
+
+on envVar eKBT_PhotoTransistor_UpperLimit
+{
+	Kbi_Pt_UpperLimit = getValue(this);
+}
+
+on envvar eKBT_PhotoTransistor_Start
+{
+  Kbi_Pt_MeasurementInProg = 1;
+}
+
+on envvar eKBT_PhotoTransistor_Stop
+{
+  Kbi_Pt_MeasurementInProg = 0;
+}
+
+on envvar eKBT_PhotoTransistor_Clear
+{
+  putvalue(eKBT_PhotoTransistor_UpperCount, 0);
+  putvalue(eKBT_PhotoTransistor_LowerCount, 0);
+  Kbi_Pt_UpperCounter = 0;
+  Kbi_Pt_LowerCounter = 0;
+  InitList();
+}
+
+on message Sensorik_Dimmung_01
+{
+    int i;
+	byte Kbi_Pt_CurrentValue;
+	Kbi_Pt_CurrentValue = this.KBI_Phototransistor;
+	
+	if((Kbi_Pt_MeasurementInProg == 1) && (Kbi_Pt_EventListCount < 990))
+	{
+		if(Kbi_Pt_CurrentValue >= Kbi_Pt_UpperLimit)
+		{
+			Kbi_Pt_UpperCounter++;
+			putvalue(eKBT_PhotoTransistor_UpperCount, Kbi_Pt_UpperCounter);
+			KBT_PhotoTransistor_UpdateEventList(1);
+			//beep (400,500);
+      // Standard signal question
+      msgBeep (5);
+		}
+		else if(Kbi_Pt_CurrentValue <= Kbi_Pt_LowerLimit)
+		{
+			Kbi_Pt_LowerCounter++;
+			putvalue(eKBT_PhotoTransistor_LowerCount, Kbi_Pt_LowerCounter);
+			KBT_PhotoTransistor_UpdateEventList(0);
+			//beep (400,500);
+      // Standard signal question
+      msgBeep (5);
+		}
+	}
+}
+
+KBT_PhotoTransistor_UpdateEventList(byte LowOrUp)
+{
+  byte CurrentEventTime[10];
+  byte i;
+  KBT_PhotoTransistor_getTime(CurrentEventTime);
+  if(Kbi_Pt_EventListCount < 990)
+  {
+    for(i=0; i<8; i++)
+    {
+	  Kbi_Pt_EventList[Kbi_Pt_EventListCount++] = CurrentEventTime[i];
+    }
+    Kbi_Pt_EventList[Kbi_Pt_EventListCount++] = ' ';
+    if(LowOrUp == 1)
+	  Kbi_Pt_EventList[Kbi_Pt_EventListCount++] = 'U';
+    else
+	  Kbi_Pt_EventList[Kbi_Pt_EventListCount++] = 'O';
+    
+    putValue(eKBT_PhotoTransistor_TimeList, Kbi_Pt_EventList);
+  }
+}
+
+KBT_PhotoTransistor_getTime(byte CurrentTime[])
+{
+  long LocalTime[9];
+  byte LocalAsciiTime[9];
+  getLocalTime(LocalTime);
+  ConvertToAscii(LocalTime[2], LocalAsciiTime);
+  CurrentTime[0] = LocalAsciiTime[0];
+  CurrentTime[1] = LocalAsciiTime[1];
+  CurrentTime[2] = 0x3A;
+  ConvertToAscii(LocalTime[1], LocalAsciiTime);
+  CurrentTime[3] = LocalAsciiTime[0];
+  CurrentTime[4] = LocalAsciiTime[1];
+  CurrentTime[5] = 0x3A;
+  ConvertToAscii(LocalTime[0], LocalAsciiTime);
+  CurrentTime[6] = LocalAsciiTime[0];
+  CurrentTime[7] = LocalAsciiTime[1];
+}
+
+ConvertToAscii(long Value, byte AsciiValue[])
+{
+  AsciiValue[0] = (Value/10) + 0x30;
+  AsciiValue[1] = (Value%10) + 0x30;
+}
+
+
+on message KN_Kombi_CAN
+{
+	Kbi_Pt_CurrentFehlerValue = this.KBI_KD_Fehler;
+	
+	if(getvalue(eKBT_PhotoTransistor_ErrMonitor) == 1)
+	{
+		if((Kbi_Pt_CurrentFehlerValue == 1) && (Kbi_Pt_PrevFehlerValue == 0))
+		{
+			//beep (400,500);
+      // Standard signal question
+      msgBeep (5);
+			settimer(KBT_PhotoTransistor_BeepTimer1,1000);
+		}
+	}
+	
+	Kbi_Pt_PrevFehlerValue = Kbi_Pt_CurrentFehlerValue;
+}
+
+on timer KBT_PhotoTransistor_BeepTimer1
+{
+	//beep (400,500);
+  // Standard signal question
+  msgBeep (5);
+	settimer(KBT_PhotoTransistor_BeepTimer2,1000);
+}
+
+on timer KBT_PhotoTransistor_BeepTimer2
+{
+	//beep (400,500);
+  // Standard signal question
+  msgBeep (5);
+}

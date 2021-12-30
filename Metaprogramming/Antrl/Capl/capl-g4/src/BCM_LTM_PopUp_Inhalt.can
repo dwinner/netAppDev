@@ -1,0 +1,33 @@
+/*@!Encoding:1252*/
+on envVar EnvBCM_LTM_PopUp_Inhalt_1
+{
+  calculate_value();
+}
+
+on envVar EnvBCM_LTM_PopUp_Inhalt_2
+{
+  calculate_value();
+}
+
+on envVar EnvBCM_LTM_PopUp_Inhalt_3
+{
+  calculate_value();
+}
+
+on envVar EnvBCM_LTM_PopUp_Inhalt_4
+{
+  calculate_value();
+}
+
+calculate_value()
+{
+  $BCM_LTM_PopUp_Inhalt = @EnvBCM_LTM_PopUp_Inhalt_1 * 1 + @EnvBCM_LTM_PopUp_Inhalt_2 * 2 + @EnvBCM_LTM_PopUp_Inhalt_3 * 4 + @EnvBCM_LTM_PopUp_Inhalt_4 * 8;
+}
+
+on message BCM_03
+{
+  @EnvBCM_LTM_PopUp_Inhalt_1 =  this.BCM_LTM_PopUp_Inhalt     & 0x01;
+  @EnvBCM_LTM_PopUp_Inhalt_2 = (this.BCM_LTM_PopUp_Inhalt>>1) & 0x01;
+  @EnvBCM_LTM_PopUp_Inhalt_3 = (this.BCM_LTM_PopUp_Inhalt>>2) & 0x01;
+  @EnvBCM_LTM_PopUp_Inhalt_4 = (this.BCM_LTM_PopUp_Inhalt>>3) & 0x01;
+}

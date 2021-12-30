@@ -1,0 +1,358 @@
+/*@!Encoding:1252*/
+variables
+{
+  float  verbrauch_bms,          verbrauch_bms_summe,            verbrauch_bms_ueberlauf;
+  float  rekuperation_bms,       rekuperation_bms_summe,         rekuperation_bms_ueberlauf;
+  float  verbrauch_dc,           verbrauch_dc_summe,             verbrauch_dc_ueberlauf;
+  float  verbrauch_em_ges,       verbrauch_em_ges_summe,         verbrauch_em_ges_ueberlauf;
+  float  rekuperation_em_ges,    rekuperation_em_ges_summe,      rekuperation_em_ges_ueberlauf;
+  float  verbrauch_thermo_innen, verbrauch_thermo_btl_summe,     verbrauch_thermo_innen_summe;
+  float  verbrauch_thermo_btl,   verbrauch_thermo_btl_ueberlauf, verbrauch_thermo_innen_ueberlauf;
+}
+
+
+
+///////////// BMS /////////////
+
+on message BMS_05
+{
+	if (@Timeout_BMS_05 == 0)
+	{
+    verbrauch_bms       += @Env_Verbrauch_BMS / 20.0;   // Anpassung an Zykluszeit 50ms
+    @Env_Verbrauch_BMS_1 = @Env_Verbrauch_BMS * 1000;
+    @Env_Verbrauch_BMS_2 = @Env_Verbrauch_BMS / 1000;
+  
+    rekuperation_bms       += @Env_Rekuperation_BMS / 20.0;   // Anpassung an Zykluszeit 50ms
+    @Env_Rekuperation_BMS_1 = @Env_Rekuperation_BMS * 1000;
+    @Env_Rekuperation_BMS_2 = @Env_Rekuperation_BMS / 1000;
+  
+    // Überlauf
+    while(verbrauch_bms >= 327671)
+    {
+      verbrauch_bms -= 327671; 
+      $BMS_Verbrauch_Ueberlauf = 1;
+      verbrauch_bms_ueberlauf++;
+    }
+    
+    // Gesammtsumme
+    verbrauch_bms_summe = verbrauch_bms + verbrauch_bms_ueberlauf * 327670;
+    @EnvBMS_Verbrauch_Summe = verbrauch_bms_summe;
+  
+    // Überlauf
+    while(rekuperation_bms >= 327671)
+    {
+      rekuperation_bms -= 327671;
+      $BMS_Rekuperation_Ueberlauf = 1;
+      rekuperation_bms_ueberlauf++;
+    }
+    
+    // Gesammtsumme
+    rekuperation_bms_summe = rekuperation_bms + rekuperation_bms_ueberlauf * 327670;
+    @EnvBMS_Rekuperation_Summe = rekuperation_bms_summe;
+  
+    $BMS_Verbrauch    = verbrauch_bms;
+    $BMS_Rekuperation = rekuperation_bms;
+  }
+}
+
+on EnvVar Env_Verbrauch_BMS_Reset
+{
+  $BMS_Verbrauch           = 0;
+  $BMS_Verbrauch_Ueberlauf = 0;
+  verbrauch_bms_ueberlauf  = 0;
+  verbrauch_bms            = 0;
+}
+
+on envVar Env_Verbrauch_BMS_Abs_Start
+{
+  if(@this == 1)
+    verbrauch_bms = verbrauch_bms + @Env_Verbrauch_BMS_Abs;
+}
+
+on EnvVar Env_Verbrauch_BMS_1
+{
+  @Env_Verbrauch_BMS   = @Env_Verbrauch_BMS_1 / 1000;
+  @Env_Verbrauch_BMS_2 = @Env_Verbrauch_BMS_1 / 1000/1000;
+}
+
+on EnvVar Env_Verbrauch_BMS_2
+{
+  @Env_Verbrauch_BMS   = @Env_Verbrauch_BMS_2 * 1000;
+  @Env_Verbrauch_BMS_1 = @Env_Verbrauch_BMS_2 * 1000*1000;
+}
+
+on EnvVar Env_Rekuperation_BMS_Reset
+{
+  $BMS_Rekuperation           = 0;
+  $BMS_Rekuperation_Ueberlauf = 0;
+  rekuperation_bms_ueberlauf  = 0;
+  rekuperation_bms            = 0;
+}
+
+on envVar Env_Rekuperation_BMS_Abs_Start
+{
+  if(@this == 1)
+    rekuperation_bms = rekuperation_bms + @Env_Rekuperation_BMS_Abs;
+}
+
+on EnvVar Env_Rekuperation_BMS_1
+{
+  @Env_Rekuperation_BMS   = @Env_Rekuperation_BMS_1 / 1000;
+  @Env_Rekuperation_BMS_2 = @Env_Rekuperation_BMS_1 / 1000/1000;
+}
+
+on EnvVar Env_Rekuperation_BMS_2
+{
+  @Env_Rekuperation_BMS   = @Env_Rekuperation_BMS_2 * 1000;
+  @Env_Rekuperation_BMS_1 = @Env_Rekuperation_BMS_2 * 1000*1000;
+}
+
+
+
+
+///////////// DC /////////////
+
+on message DCDC_02 // cycletime: 50 ms
+{
+	if (@Timeout_DCDC_02 == 0)
+	{
+    verbrauch_dc += @Env_Verbrauch_DC / 20.0;   // Anpassung an Zykluszeit
+    @Env_Verbrauch_DC_1 = @Env_Verbrauch_DC * 1000;
+    @Env_Verbrauch_DC_2 = @Env_Verbrauch_DC / 1000;
+    
+    // Überlauf
+    while(verbrauch_dc >= 1024)
+    {
+      verbrauch_dc -= 1024;  // Überlauf verhindern
+      $DC_Verbrauch_Ueberlauf = 1; // Überlauf-Bit setzen
+      verbrauch_dc_ueberlauf++;
+    }
+    // Gesammtsumme
+    verbrauch_dc_summe = verbrauch_dc + verbrauch_dc_ueberlauf * 1023;
+    @EnvDC_Verbrauch_Summe = verbrauch_dc_summe;
+    
+    $DC_Verbrauch = verbrauch_dc;
+  }
+}
+
+on EnvVar Env_Verbrauch_DC_Reset
+{
+  $DC_Verbrauch = 0;
+  $DC_Verbrauch_Ueberlauf = 0;
+  verbrauch_dc_ueberlauf=0;
+  verbrauch_dc=0;
+}
+
+on envVar Env_Verbrauch_DC_Abs_Start
+{
+  if(getValue(this)==1)
+    verbrauch_dc = verbrauch_dc + getValue(Env_Verbrauch_DC_Abs);
+}
+
+on EnvVar Env_Verbrauch_DC_1
+{
+  @Env_Verbrauch_DC   = @Env_Verbrauch_DC_1 / 1000;
+  @Env_Verbrauch_DC_2 = @Env_Verbrauch_DC_1 / 1000 / 1000;
+}
+
+on EnvVar Env_Verbrauch_DC_2
+{
+  @Env_Verbrauch_DC   = @Env_Verbrauch_DC_2 * 1000;
+  @Env_Verbrauch_DC_1 = @Env_Verbrauch_DC_2 * 1000 * 1000;
+}
+
+
+
+
+
+
+
+///////////// EM /////////////
+
+on message Motor_57 // cycletime: 100 ms
+{
+ if (@Timeout_Motor_57 == 0)
+	{
+    verbrauch_em_ges += @Env_Verbrauch_EM_Ges / 10.0; // Anpassung an Zykluszeit
+    @Env_Verbrauch_EM_Ges_1 = @Env_Verbrauch_EM_Ges * 1000;
+    @Env_Verbrauch_EM_Ges_2 = @Env_Verbrauch_EM_Ges / 1000;
+    
+    rekuperation_em_ges += @Env_Rekuperation_EM_Ges / 25.0;
+    @Env_Rekuperation_EM_Ges_1 = @Env_Rekuperation_EM_Ges * 1000;    
+    @Env_Rekuperation_EM_Ges_2 = @Env_Rekuperation_EM_Ges / 1000;
+    
+    // Verbrauch Überlauf
+    while(verbrauch_em_ges >= 327671)
+    {
+      verbrauch_em_ges -= 327671;
+      $MO_Verbrauch_EM_Ges_Ueberlauf = 1;
+      verbrauch_em_ges_ueberlauf++;
+    }
+    
+    // Verbrauch Gesammtsumme
+    verbrauch_em_ges_summe = verbrauch_em_ges + verbrauch_em_ges_ueberlauf * 327670;
+    @EnvMO_Verbrauch_EM_Ges_Summe = verbrauch_em_ges_summe;
+    
+    // Rekuperation Überlauf
+    while(rekuperation_em_ges >= 327671)
+    {
+      rekuperation_em_ges -= 327671;
+      $MO_Rekuperation_EM_Ges_Ueberlauf = 1;
+      rekuperation_em_ges_ueberlauf++;
+    }
+    
+    // Rekuperation Gesammtsumme
+    rekuperation_em_ges_summe = rekuperation_em_ges + rekuperation_em_ges_ueberlauf * 327670;
+    @EnvMO_Rekuperation_EM_Ges_Summe = rekuperation_em_ges_summe;
+    
+    $MO_Verbrauch_EM_Ges    = verbrauch_em_ges;
+    $MO_Rekuperation_Ges_EM = rekuperation_em_ges;
+  }
+}
+
+on EnvVar Env_Verbrauch_EM_Ges_Reset
+{
+  $MO_Verbrauch_EM_Ges = 0;
+  $MO_Verbrauch_EM_Ges_Ueberlauf = 0;
+  verbrauch_em_ges_ueberlauf=0;
+  verbrauch_em_ges=0;
+}
+
+on EnvVar Env_Rekuperation_EM_Ges_Reset
+{
+  $MO_Rekuperation_Ges_EM = 0;
+  $MO_Rekuperation_EM_Ges_Ueberlauf = 0;
+  rekuperation_em_ges_ueberlauf=0;
+  rekuperation_em_ges=0;
+}
+
+on envVar Env_Rekuperation_EM_Ges_Abs_Start
+{
+  if(getValue(this) == 1)
+   rekuperation_em_ges = rekuperation_em_ges + @Env_Rekuperation_EM_Ges_Abs;
+}
+
+on envVar Env_Verbrauch_EM_Ges_Abs_Start
+{
+  if(getValue(this) == 1)
+   verbrauch_em_ges = verbrauch_em_ges + @Env_Verbrauch_EM_Ges_Abs;
+}
+
+on envVar Env_Verbrauch_EM_Ges_1
+{
+  @Env_Verbrauch_EM_Ges   = @Env_Verbrauch_EM_Ges_1 / 1000;
+  @Env_Verbrauch_EM_Ges_2 = @Env_Verbrauch_EM_Ges_1 / 1000 / 1000;
+}
+on envVar Env_Verbrauch_EM_Ges_2
+{
+  @Env_Verbrauch_EM_Ges   = @Env_Verbrauch_EM_Ges_2 * 1000;  
+  @Env_Verbrauch_EM_Ges_1 = @Env_Verbrauch_EM_Ges_2 * 1000 * 1000;
+}
+
+on envVar Env_Rekuperation_EM_Ges_1
+{
+  @Env_Rekuperation_EM_Ges   = @Env_Rekuperation_EM_Ges_1 / 1000;
+  @Env_Rekuperation_EM_Ges_2 = @Env_Rekuperation_EM_Ges_1 / 1000 / 1000;
+}
+
+on envVar Env_Rekuperation_EM_Ges_2
+{
+  @Env_Rekuperation_EM_Ges   = @Env_Rekuperation_EM_Ges_2 * 1000;
+  @Env_Rekuperation_EM_Ges_1 = @Env_Rekuperation_EM_Ges_2 * 1000 * 1000;
+}
+
+
+
+
+
+///////////// Thermo /////////////
+
+on message Thermo_Verbrauch_01 // cycletime: 100 ms
+{
+  verbrauch_thermo_btl += @Env_Verbrauch_Thermo_BTL / 10.0; // Anpassung an Zykluszeit
+  @Env_Verbrauch_Thermo_BTL_1 = @Env_Verbrauch_Thermo_BTL * 1000;
+  @Env_Verbrauch_Thermo_BTL_2 = @Env_Verbrauch_Thermo_BTL / 1000;
+  
+  verbrauch_thermo_innen += @Env_Verbrauch_Thermo_Innen / 10.0; // Anpassung an Zykluszeit
+    @Env_Verbrauch_Thermo_Innen_1 = @Env_Verbrauch_Thermo_Innen * 1000;
+    @Env_Verbrauch_Thermo_Innen_2 = @Env_Verbrauch_Thermo_Innen / 1000;
+    
+  // Thermo_BTL Überlauf
+  while(verbrauch_thermo_btl >= 8192)
+  {
+    verbrauch_thermo_btl -= 8192;
+    $Thermo_Verbrauch_BTL_Ueberlauf = 1;
+    verbrauch_thermo_btl_ueberlauf++;
+  }  
+  
+  // Thermo_BTL Gesammtsumme
+  verbrauch_thermo_btl_summe = verbrauch_thermo_btl + verbrauch_thermo_btl_ueberlauf * 8191;
+  @EnvThermo_Verbrauch_BTL_Summe = verbrauch_thermo_btl_summe;
+  
+  // Thermo_Innen Überlauf
+  while(verbrauch_thermo_innen >= 8192)
+  {
+    verbrauch_thermo_innen -= 8192;
+    $Thermo_Verbrauch_Innen_Ueberlauf = 1;
+    verbrauch_thermo_innen_ueberlauf++;
+  }
+  
+  // Thermo_Innen Gesammtsumme
+  verbrauch_thermo_innen_summe     = verbrauch_thermo_innen + verbrauch_thermo_innen_ueberlauf * 8191;
+  @EnvThermo_Verbrauch_Innen_Summe = verbrauch_thermo_innen_summe;
+  
+  $Thermo_Verbrauch_BTL   = verbrauch_thermo_btl;
+  $Thermo_Verbrauch_Innen = verbrauch_thermo_innen;
+}
+
+on EnvVar Env_Verbrauch_Thermo_BTL_Reset
+{
+  $Thermo_Verbrauch_BTL = 0;
+  $Thermo_Verbrauch_BTL_Ueberlauf = 0;
+  verbrauch_thermo_btl_ueberlauf=0;
+  verbrauch_thermo_btl=0;
+}
+
+on EnvVar Env_Verbrauch_Thermo_Innen_Reset
+{
+  $Thermo_Verbrauch_Innen = 0;
+  $Thermo_Verbrauch_Innen_Ueberlauf = 0;
+  verbrauch_thermo_innen_ueberlauf=0;
+  verbrauch_thermo_innen=0;
+}
+
+on envVar Env_Verbrauch_Thermo_Innen_Abs_Start
+{
+  if(getValue(this)==1)
+    verbrauch_thermo_innen = verbrauch_thermo_innen + @Env_Verbrauch_Thermo_Innen_Abs;
+}
+
+on envVar Env_Verbrauch_Thermo_BTL_Abs_Start
+{
+  if(getValue(this)==1)
+    verbrauch_thermo_btl = verbrauch_thermo_btl + @Env_Verbrauch_Thermo_BTL_Abs;
+}
+
+on envVar Env_Verbrauch_Thermo_BTL_1
+{
+  @Env_Verbrauch_Thermo_BTL   = @Env_Verbrauch_Thermo_BTL_1 / 1000;
+  @Env_Verbrauch_Thermo_BTL_2 = @Env_Verbrauch_Thermo_BTL_1 / 1000 / 1000;
+}
+
+on envVar Env_Verbrauch_Thermo_BTL_2
+{
+  @Env_Verbrauch_Thermo_BTL   = @Env_Verbrauch_Thermo_BTL_2 * 1000;
+  @Env_Verbrauch_Thermo_BTL_1 = @Env_Verbrauch_Thermo_BTL_2 * 1000 * 1000;
+}
+
+on envVar Env_Verbrauch_Thermo_Innen_1
+{
+  @Env_Verbrauch_Thermo_Innen   = @Env_Verbrauch_Thermo_Innen_1 / 1000;
+  @Env_Verbrauch_Thermo_Innen_2 = @Env_Verbrauch_Thermo_Innen_1 / 1000 / 1000;
+}
+
+on envVar Env_Verbrauch_Thermo_Innen_2
+{
+  @Env_Verbrauch_Thermo_Innen   = @Env_Verbrauch_Thermo_Innen_2 * 1000;
+  @Env_Verbrauch_Thermo_Innen_1 = @Env_Verbrauch_Thermo_Innen_2 * 1000 * 1000;
+}

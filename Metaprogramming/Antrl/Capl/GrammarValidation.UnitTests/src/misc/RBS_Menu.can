@@ -1,0 +1,46 @@
+/*@!Encoding:1252*/
+variables
+{
+}
+
+on envVar eTestPanels
+{
+    switch( getValue(this) )
+    {
+        case 0:
+            break;
+        case 1:
+            openPanel("Integration_Test");
+            break;
+        case 2:
+            openPanel("GENERATORS");
+            break;
+        //WFS EMV2 - Jens 21.01.2013 Replacing ImmoTest with ImmoTest_EMV
+        case 3:
+            //openPanel("EMV-Test");
+            break;
+        case 4:
+            openPanel("ISOTP Test");
+            break;
+        case 5:
+            openPanel("Transmit Signal Test");
+            break;
+        //WFS EMV2 - Jens 05.12.2012
+        case 6:
+            openPanel("EMV-Test2");
+            break;
+        case 7: 
+            openPanel("Prueftool Komponentenschutz Typ 010C ISO-TP Version");
+            break;
+        case 8: 
+            openPanel("EMV-Test_Fpke");
+            break;
+        case 9: 
+            openPanel("Test_KBI_PT");
+            break;
+        default:
+            break;
+    }
+}
+
+

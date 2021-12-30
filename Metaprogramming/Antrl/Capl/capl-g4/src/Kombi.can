@@ -1,0 +1,1101 @@
+/*@!Encoding:1252*/
+includes
+{
+    #include "messages\message_FAS_Anzeigen_01.cin"
+    #include "messages\message_FoD_Kombi_Resp.cin"
+    #include "messages\message_ISO_Kombi_Resp.cin"
+    #include "messages\message_ISOx_Kombi_Resp_FD.cin"
+    #include "messages\message_KN_Kombi.cin"
+    #include "messages\message_Kombi_01.cin"
+    #include "messages\message_Kombi_02.cin"
+    #include "messages\message_Kombi_03.cin"
+    #include "messages\message_Kombi_08.cin"
+    #include "messages\message_Kombi_21.cin"
+    #include "messages\message_Kombi_HUD_01.cin"
+    #include "messages\message_KS_Kombi_Resp_FD.cin"
+    #include "messages\message_OBDC_Kombi_Resp_FD.cin"
+
+}
+
+variables
+{
+/*
+Copyright ( C ) Continental AG 2019
+
+
+
+Date of creation :  20.04.2019
+
+Created by :                 Hans Jürgen Hipp
+
+
+Version info
+
+1.0        03.2018      Inital version
+// #VERSION#
+// #VERSION_END#
+*/
+
+
+    const TRUE    = 0xAA;
+    const FALSE   = 0x00;
+    const cManual = 0x00;
+    const cAuto   = 0xAA;
+
+    msTimer t_DBKomTimer_20ms;      // Timer zum zyklischen Aufruf der DBKom-Task
+    int c_tDBKomTimer_20ms = 20;    // msec
+    msTimer t_DBKomTimer_5ms;       // Timer zum zyklischen Aufruf der DBKom-Task
+    int c_tDBKomTimer_5ms = 5;      // msec
+
+
+    // BA_DEF_ BO_  "GenMsgSendType" ENUM
+    //  0 : cyclicX
+    //  1 : none
+    //  2 : none
+    //  3 : none
+    //  4 : none
+    //  5 : none
+    //  6 : none
+    //  7 : IfActive
+    //  8 : NoMsgSendType
+    //  9 : cyclicAndSpontanWithDelay
+    //  10 : none
+
+// #VAR_DEF#
+
+// #VAR_DEF_END#
+
+
+    Timer t_DoorNMCancelTimer;
+    Timer t_KeyInLockNMCancelTimer;
+    Timer t_StWhlButtonNMCancelTimer;
+    Timer t_WakeWarningNMCancelTimer;
+    Timer t_CarClosureNMCancelTimer;
+    Timer t_EPKBWarningNMCancelTimer;
+    Timer t_IlluNMCancelTimer;
+    Timer t_GearIndNMCancelTimer;
+    const byte c_NMCancelTimer_05sec = 5;
+    const byte c_NMCancelTimer_30sec = 30;
+
+    char buffer[1024], stringbuffer[512];
+    int bActiveHelper;    // Hilfsvariable für "Aktive Signale"
+
+//--------------------------------------- AUTOSAR NM ------------------------------------------------
+
+    const byte cAUTO   = 0;
+    const byte cMANUAL = 1;
+
+    msTimer t_NM_Transmit;
+    long  NM_Transmit_Cycle;
+    msTimer t_NM_Wait_Bus_Sleep_Time;
+    const c_NM_Wait_Bus_Sleep_Time = 750;
+//    msTimer t_NM_Remote_Sleep_Ind_Time;
+    const c_NM_Remote_Sleep_Ind_Time = 5000;
+    msTimer t_NM_Repeat_Message_Time;
+    const c_NM_Repeat_Message_Time = 5000;
+    msTimer t_NM_Timeout_Time;
+    const c_NM_Timeout_Time = 1000;
+
+    byte NM_Mode = 0;
+    const byte cNM_Mode_Init = 0;
+    const byte cNM_Mode_Sleep = 1;
+    const byte cNM_Mode_Prepare_Bus_Sleep = 2;
+    const byte cNM_Mode_Ready_Sleep = 3;
+    const byte cNM_Mode_Normal_Operation_State = 4;
+    const byte cNM_Mode_RepeatMsg = 5;
+
+    const byte cCANNormalNetworkLoad = 0;
+    const byte cCANHeavyNetworkLoad = 1;
+    byte bCanLoad = 0;
+    const byte cCANNormalNetworkLoad_SpontanCnt = 1;
+    const byte cCANHeavyNetworkLoad_SpontanCnt = 2;
+    byte bCanLoad_SpontanCnt = 1;
+
+    // Values NM_Gateway_NM_State
+    byte bNM_xxx_NM_State;
+    const byte cNM_RM_aus_BSM  = 1; // State "Repeat Message" entered from "Bus-Sleep Mode"
+    const byte cNM_RM_aus_PBSM = 2; // State "Repeat Message" entered from "Prepare Bus-Sleep Mode"
+    const byte cNM_NO_aus_RM   = 4; // State "Normal Operation" entered from "Repeat Message"
+    const byte cNM_NO_aus_RS   = 8; // State "Normal Operation" entered from "Ready to Sleep"
+
+    byte boCanNM_Rx_Indication = 0;
+    byte boCanNM_Tx_Confirmation = 0;
+    byte boCanNM_WaitBusSleep_Timer_Expired = 0;
+    byte boCanNM_RepeatMessage_Timer_Expired = 0;
+    byte boCanNM_NM_Timeout_Timer_Expired = 0;
+    byte boCanNM_RepeatMessage_Requested = 0;
+
+    const word cFLDoorNMRequest       = 0x0001;
+    const word cFRDoorNMRequest       = 0x0002;
+    const word cRLDoorNMRequest       = 0x0004;
+    const word cRRDoorNMRequest       = 0x0008;
+    const word cAllDoorNMRequest      = 0x000F;
+    const word cIgnitionNMRequest     = 0x0010; // KL_15
+    const word cKeyInLockNMRequest    = 0x0020; // KL_S
+    const word cWakeWarningNMRequest  = 0x0040;
+    const word cEPKBWarningNMRequest  = 0x0080;
+    const word cIlluNMRequest         = 0x0100;
+    const word cCarClosureNMRequest   = 0x0200;
+    const word cGearIndNMRequest      = 0x0400;
+    const word cLowBeamNMRequest      = 0x0800;
+    const word cStWhlButtonNMRequest  = 0x1000;
+
+    const word cManualNMRequest       = 0x8000;
+    const word cAllNMRequest          = 0xFFFF;
+
+    const CanNmNodeId_Base   = 0x1B000000; //     = 0dec
+    const CanNmNodeId_Fahrerdisplay_Kombi = 0x109; //    = 265dec
+            const CanNmNodeId_HUD                 = 0x1b; //    = 27dec
+            const CanNmNodeId_ICAS1_Gateway       = 0x10; //    = 16dec
+            const CanNmNodeId_ICAS3_Gateway       = 0x73; //    = 115dec
+            const CanNmNodeId_Kombi               = 0x14; //    = 20dec
+            const CanNmNodeId_SmartLight_01       = 0x10c; //    = 268dec
+
+    const CanNmNodeDetectionEnabled          = 0; //false
+    const CanNmNodeIdEnabled                 = 1; //true
+    const CanNmUserDataEnabled               = 1; //true;
+    const CanNmUserDataLentgh                = 7;
+    const CanNmRepeatMsgIndEnabled           = 1; //true;
+    const CanNmDevErrorDetect                = 0; //false
+//    const CanNmUserDataEnabled             = 1; //true
+    const CanNmRemoteSleepIndEnabled         = 0; //false
+    const CanNmMsgReducedtime                = 80; //ms
+    const CanNmPduRxIndicationEnabled        = 0; //false
+    const CanNmStateChangeIndEnabled         = 0; //false
+    const CanNmImmediateTxconfEnabled        = 0;// false
+    const CanNmMsgTimeoutTime                = 5000; //ms
+    const CanNmPduNidPosition                = 0; //CANNM_PDU_BYTE_0;
+    const CanNmPduCbvPosition                = 0xFF; //ANNM_PDU_OFF;
+    const CanNmPduLength                     = 8;
+    const cCanNmPassiveModeEnabled           = 0; //false
+    const CanNmBusSynchronizationEnabled     = 0; //false
+    const CanNmBusLoadReductionEnabled       = 0; //false
+//    const CanNmRemoteSleepIndEnabled       = 0; //false
+//    const CanNmNodeDetectionEnabled        = 0; //false
+    const CanNmComControlEnabled             = 1; //true    
+
+    const NmAsrCanMsgStandardCycle           = 200;
+    const NmAsrCanMsgReducedTime_Fahrerdisplay_Kombi = NmAsrCanMsgStandardCycle;
+    const NmAsrCanMsgCycleOffset_Fahrerdisplay_Kombi = 0; 
+    const NmAsrCanMsgReducedTime_HUD = NmAsrCanMsgStandardCycle;
+    const NmAsrCanMsgCycleOffset_HUD                 = 10;
+    const NmAsrCanMsgReducedTime_ICAS1_Gateway = NmAsrCanMsgStandardCycle;
+    const NmAsrCanMsgCycleOffset_ICAS1_Gateway       = 20;
+    const NmAsrCanMsgReducedTime_ICAS3_Gateway = NmAsrCanMsgStandardCycle;
+    const NmAsrCanMsgCycleOffset_ICAS3_Gateway       = 30;
+    const NmAsrCanMsgReducedTime_Kombi = NmAsrCanMsgStandardCycle;
+    const NmAsrCanMsgCycleOffset_Kombi               = 40; 
+    const NmAsrCanMsgReducedTime_SmartLight_01 = NmAsrCanMsgStandardCycle;
+    const NmAsrCanMsgCycleOffset_SmartLight_01       = 50;
+
+    char  gECU[11] = "KCAN_Kombi";
+
+    word  CanNmNodeId            = CanNmNodeId_Kombi;
+    dword NmNodeIdentifier       = CanNmNodeId_Base + CanNmNodeId_Kombi;
+    word  NmAsrCanMsgCycleOffset = NmAsrCanMsgCycleOffset_Kombi;
+    word  NmAsrCanMsgReducedTime = NmAsrCanMsgReducedTime_Kombi;
+    word  NmAsrCanMsgCycleTime   = 200;
+    byte  NM_Repeat_Message_State_Active = 0;
+    byte  NM_AutomaticModeActive = 0;
+
+//  message   NM_xxx_AR --- Sendeart cyclicX --- 
+    message NMH_Kombi _mNM_xxx_AR;
+    byte _mNM_xxx_Transmit_Allowed = 1;
+
+//--------------------------------------- AUTOSAR NM ------------------------------------------------
+
+    byte  crctable[256] = {
+        0x00, 0x2f, 0x5e, 0x71, 0xbc, 0x93, 0xe2, 0xcd, 0x57, 0x78, 0x09, 0x26, 0xeb, 0xc4, 0xb5, 0x9a,
+        0xae, 0x81, 0xf0, 0xdf, 0x12, 0x3d, 0x4c, 0x63, 0xf9, 0xd6, 0xa7, 0x88, 0x45, 0x6a, 0x1b, 0x34,
+        0x73, 0x5c, 0x2d, 0x02, 0xcf, 0xe0, 0x91, 0xbe, 0x24, 0x0b, 0x7a, 0x55, 0x98, 0xb7, 0xc6, 0xe9,
+        0xdd, 0xf2, 0x83, 0xac, 0x61, 0x4e, 0x3f, 0x10, 0x8a, 0xa5, 0xd4, 0xfb, 0x36, 0x19, 0x68, 0x47,
+        0xe6, 0xc9, 0xb8, 0x97, 0x5a, 0x75, 0x04, 0x2b, 0xb1, 0x9e, 0xef, 0xc0, 0x0d, 0x22, 0x53, 0x7c,
+        0x48, 0x67, 0x16, 0x39, 0xf4, 0xdb, 0xaa, 0x85, 0x1f, 0x30, 0x41, 0x6e, 0xa3, 0x8c, 0xfd, 0xd2,
+        0x95, 0xba, 0xcb, 0xe4, 0x29, 0x06, 0x77, 0x58, 0xc2, 0xed, 0x9c, 0xb3, 0x7e, 0x51, 0x20, 0x0f,
+        0x3b, 0x14, 0x65, 0x4a, 0x87, 0xa8, 0xd9, 0xf6, 0x6c, 0x43, 0x32, 0x1d, 0xd0, 0xff, 0x8e, 0xa1,
+        0xe3, 0xcc, 0xbd, 0x92, 0x5f, 0x70, 0x01, 0x2e, 0xb4, 0x9b, 0xea, 0xc5, 0x08, 0x27, 0x56, 0x79,
+        0x4d, 0x62, 0x13, 0x3c, 0xf1, 0xde, 0xaf, 0x80, 0x1a, 0x35, 0x44, 0x6b, 0xa6, 0x89, 0xf8, 0xd7,
+        0x90, 0xbf, 0xce, 0xe1, 0x2c, 0x03, 0x72, 0x5d, 0xc7, 0xe8, 0x99, 0xb6, 0x7b, 0x54, 0x25, 0x0a,
+        0x3e, 0x11, 0x60, 0x4f, 0x82, 0xad, 0xdc, 0xf3, 0x69, 0x46, 0x37, 0x18, 0xd5, 0xfa, 0x8b, 0xa4,
+        0x05, 0x2a, 0x5b, 0x74, 0xb9, 0x96, 0xe7, 0xc8, 0x52, 0x7d, 0x0c, 0x23, 0xee, 0xc1, 0xb0, 0x9f,
+        0xab, 0x84, 0xf5, 0xda, 0x17, 0x38, 0x49, 0x66, 0xfc, 0xd3, 0xa2, 0x8d, 0x40, 0x6f, 0x1e, 0x31,
+        0x76, 0x59, 0x28, 0x07, 0xca, 0xe5, 0x94, 0xbb, 0x21, 0x0e, 0x7f, 0x50, 0x9d, 0xb2, 0xc3, 0xec,
+        0xd8, 0xf7, 0x86, 0xa9, 0x64, 0x4b, 0x3a, 0x15, 0x8f, 0xa0, 0xd1, 0xfe, 0x33, 0x1c, 0x6d, 0x42
+    };
+}
+
+on start
+{
+    putValue( KCAN__NMH_Kombi_NM_Request, 0 );  // reset all requests
+    _NM_Switch_NM_Mode();
+    
+    __Init_Msg();
+    __Startup_Delay();
+    __Reset_E2E_SQC();
+
+    putValue( KCAN__NMH_Kombi_AutomaticModeActive, 0 );
+    putValue( KCAN__NMH_Kombi_AutomaticModeActive, 1 );
+}
+
+
+__Init_Msg()
+{
+// #START_INIT#
+    FAS_Anzeigen_01_init();
+    FoD_Kombi_Resp_init();
+    ISO_Kombi_Resp_init();
+    ISOx_Kombi_Resp_FD_init();
+    KN_Kombi_init();
+    Kombi_01_init();
+    Kombi_02_init();
+    Kombi_03_init();
+    Kombi_08_init();
+    Kombi_21_init();
+    Kombi_HUD_01_init();
+    KS_Kombi_Resp_FD_init();
+    OBDC_Kombi_Resp_FD_init();
+    
+// #START_INIT_END#
+//    APPL_ECU_APM_1_init();
+//    APPL_ECU_APM_2_init();
+//    APPL_ECU_DRVU_1_init();
+//    APPL_ECU_DRVU_2_init();
+//    APPL_ECU_HIL_TO_IC1_init();
+//    APPL_ECU_ORC1_init();
+//    APPL_ECU_RVC_SVS1_init();
+//    APPL_ECU_TGW1_init();
+//    NM_APPL_AR_init();
+    NM_xxx_AR_init();
+//    XCP_Rq_DRVU_1_init();
+//    XCP_Rq_DRVU_2_init();
+//    XCP_Rq_RBTM_FL_init();
+//    XCP_Rq_RBTM_FR_init();
+//    XCP_Rq_RVC_SVS_init();
+//    XCP_Rq_TPM_init();
+}
+
+on envVar KCAN__STOP_All_MESSAGES_DEFAULT_STARTDELAY
+{
+    if( getValue( this ) )
+    {
+        __Init_Msg();
+        __Startup_Delay();
+    }
+}
+
+on envVar KCAN__STOP_All_MESSAGES_SET_STARTDELAY
+{
+    if( getValue( this ) )
+    {
+        __Startup_Delay();
+    }
+}
+
+__Startup_Delay()
+{
+//    write(" Delay setzen :__BCM_Startup_Delay");
+// #START_DELAY#
+    _FAS_Anzeigen_01_Cnt = getValue( KCAN__STMSGSD_FAS_Anzeigen_01 ) / _FAS_Anzeigen_01_Timebase;
+    _FoD_Kombi_Resp_Cnt = getValue( KCAN__STMSGSD_FoD_Kombi_Resp ) / _FoD_Kombi_Resp_Timebase;
+    _ISO_Kombi_Resp_Cnt = getValue( KCAN__STMSGSD_ISO_Kombi_Resp ) / _ISO_Kombi_Resp_Timebase;
+    _ISOx_Kombi_Resp_FD_Cnt = getValue( KCAN__STMSGSD_ISOx_Kombi_Resp_FD ) / _ISOx_Kombi_Resp_FD_Timebase;
+    _KN_Kombi_Cnt = getValue( KCAN__STMSGSD_KN_Kombi ) / _KN_Kombi_Timebase;
+    _Kombi_01_Cnt = getValue( KCAN__STMSGSD_Kombi_01 ) / _Kombi_01_Timebase;
+    _Kombi_02_Cnt = getValue( KCAN__STMSGSD_Kombi_02 ) / _Kombi_02_Timebase;
+    _Kombi_03_Cnt = getValue( KCAN__STMSGSD_Kombi_03 ) / _Kombi_03_Timebase;
+    _Kombi_08_Cnt = getValue( KCAN__STMSGSD_Kombi_08 ) / _Kombi_08_Timebase;
+    _Kombi_21_Cnt = getValue( KCAN__STMSGSD_Kombi_21 ) / _Kombi_21_Timebase;
+    _Kombi_HUD_01_Cnt = getValue( KCAN__STMSGSD_Kombi_HUD_01 ) / _Kombi_HUD_01_Timebase;
+    _KS_Kombi_Resp_FD_Cnt = getValue( KCAN__STMSGSD_KS_Kombi_Resp_FD ) / _KS_Kombi_Resp_FD_Timebase;
+    _OBDC_Kombi_Resp_FD_Cnt = getValue( KCAN__STMSGSD_OBDC_Kombi_Resp_FD ) / _OBDC_Kombi_Resp_FD_Timebase;
+
+// #START_DELAY_END#
+}
+
+__Reset_E2E_SQC()
+{
+
+//    write(" E2E-simu: Reset SQC to 15 ");
+}
+
+
+on Timer t_DBKomTimer_5ms
+{
+// *** DBKom-Sendefunktion ***
+    // timer aufziehen für nächsten Zyklus
+    if( getValue( KCAN__NMH_Kombi_CommActive ) )
+    {
+        setTimer( t_DBKomTimer_5ms, c_tDBKomTimer_5ms );
+    }
+// #CYC_TIMER_5_MS_START#
+    FoD_Kombi_Resp_check_output();
+    ISO_Kombi_Resp_check_output();
+    ISOx_Kombi_Resp_FD_check_output();
+    Kombi_01_check_output();
+    KS_Kombi_Resp_FD_check_output();
+    OBDC_Kombi_Resp_FD_check_output();
+
+    /*
+    _check_output();
+    */
+    
+    
+    
+// #CYC_TIMER_5_MS_END#
+}
+
+on Timer t_DBKomTimer_20ms
+{
+// *** DBKom-Transmit-function ***
+    // rearm timer for the next cycle
+    if( getValue( KCAN__NMH_Kombi_CommActive ) )
+    {
+        setTimer( t_DBKomTimer_20ms, c_tDBKomTimer_20ms );
+    }
+// #CYC_TIMER_20_MS#
+    FAS_Anzeigen_01_check_output();
+    KN_Kombi_check_output();
+    Kombi_02_check_output();
+    Kombi_03_check_output();
+    Kombi_08_check_output();
+    Kombi_21_check_output();
+    Kombi_HUD_01_check_output();
+
+    /*
+    _check_output();
+    */
+    
+// #CYC_TIMER_20_MS_END#
+//    NM_xxx_AR_check_output();
+}
+
+on EnvVar KCAN__SAVE_PANEL_CONFIG
+{
+    dword hFile;
+
+    if( getValue(this) )
+    {
+        write("Saving HMI Panel Variables ...");
+
+        hFile = openFileWrite( "CONFIG\\HMI_PRESETS.ASC", 0 );
+        filePutString( "base hex timestamps absolute\n", 31, hFile );
+
+// #MSG_SAVEENVVAR#
+   //     FAS_Anzeigen_01_saveEnvVars( hFile );
+   //     KN_Kombi_saveEnvVars( hFile );
+   //     Kombi_02_saveEnvVars( hFile );
+   //     Kombi_03_saveEnvVars( hFile );
+   //     Kombi_08_saveEnvVars( hFile );
+   //     Kombi_21_saveEnvVars( hFile );
+   //     Kombi_HUD_01_saveEnvVars( hFile );
+
+
+// #MSG_SAVEENVVAR_END#
+        NM_xxx_AR_saveEnvVars( hFile );
+
+        fileClose(hFile );
+    }
+}
+
+on EnvVar KCAN__STOP_Kombi_MESSAGES_OFF
+{
+    if( getValue(this) )
+    {
+// #MSG_OFF#
+        putValue( KCAN__STMSGT_FAS_Anzeigen_01_CTRL, 4 );
+        putValue( KCAN__STMSGT_KN_Kombi_CTRL, 4 );
+        putValue( KCAN__STMSGT_Kombi_02_CTRL, 4 );
+        putValue( KCAN__STMSGT_Kombi_03_CTRL, 4 );
+        putValue( KCAN__STMSGT_Kombi_08_CTRL, 4 );
+        putValue( KCAN__STMSGT_Kombi_21_CTRL, 4 );
+        putValue( KCAN__STMSGT_Kombi_HUD_01_CTRL, 4 );
+
+        
+
+// #MSG_OFF_END#
+    }
+}
+
+on envVar KCAN__STOP_Kombi_MESSAGES_ON
+{
+    if( getValue(this) )
+    {
+// #MSG_ON#
+        putValue( KCAN__STMSGT_FAS_Anzeigen_01_CTRL, 0 );
+        putValue( KCAN__STMSGT_KN_Kombi_CTRL, 0 );
+        putValue( KCAN__STMSGT_Kombi_02_CTRL, 0 );
+        putValue( KCAN__STMSGT_Kombi_03_CTRL, 0 );
+        putValue( KCAN__STMSGT_Kombi_08_CTRL, 0 );
+        putValue( KCAN__STMSGT_Kombi_21_CTRL, 0 );
+        putValue( KCAN__STMSGT_Kombi_HUD_01_CTRL, 0 );
+
+
+// #MSG_ON_END#
+
+    }
+}
+
+on EnvVar KCAN__STOP_All_MESSAGES_OFF
+{
+    if( getValue(this) )
+    {
+        putValue( KCAN__STOP_Kombi_MESSAGES_OFF, 1 );
+    }
+    else
+    {
+        putValue( KCAN__STOP_Kombi_MESSAGES_OFF, 0 );
+    }
+}
+
+on EnvVar KCAN__STOP_All_MESSAGES_ON
+{
+    if( getValue(this) )
+    {
+        putValue( KCAN__STOP_Kombi_MESSAGES_ON, 1 );
+    }
+    else
+    {
+        putValue( KCAN__STOP_Kombi_MESSAGES_ON, 0 );
+    }
+}
+
+on busOff
+{
+    resetCan();
+    write("CAN has been resetted due to BUSOFF    ( coded version )");
+}
+
+
+on message 0x1B000000x-0x1B00007Fx
+{
+    byte Identifier;
+
+    Identifier = this.byte( 1 );
+
+    if( this.ID == NmNodeIdentifier )    // check, wether the received NM-Frame is an own one
+    {
+        boCanNM_Tx_Confirmation = TRUE;    // so it is a TX-confirmation
+    }
+    else
+    {
+        boCanNM_Rx_Indication = TRUE;     // else it is a NM-Frame from another ECU
+    }
+    _NM_Switch_NM_Mode();     // inform the state-mashine
+}
+
+on timer t_DoorNMCancelTimer
+{
+    if( getValue( KCAN__NMH_Kombi_AutomaticModeActive ) == 1 )
+    {
+        _ReleaseCommRequest( 15 );  // all doors reset their requests
+    }
+}
+
+on timer t_KeyInLockNMCancelTimer
+{
+    if( getValue( KCAN__NMH_Kombi_AutomaticModeActive ) == 1 )
+    {
+        _ReleaseCommRequest( cIgnitionNMRequest );
+    }
+}
+
+on timer t_StWhlButtonNMCancelTimer
+{
+    if( getValue( KCAN__NMH_Kombi_AutomaticModeActive ) == 1 )
+    {
+        _ReleaseCommRequest( cStWhlButtonNMRequest );  // all keys reset their requests
+    }
+}
+
+on timer t_WakeWarningNMCancelTimer
+{
+    if( getValue( KCAN__NMH_Kombi_AutomaticModeActive ) == 1 )
+    {
+        _ReleaseCommRequest( cWakeWarningNMRequest );  // all keys reset their requests
+    }
+}
+
+on timer t_EPKBWarningNMCancelTimer
+{
+    if( getValue( KCAN__NMH_Kombi_AutomaticModeActive ) == 1 )
+    {
+        _ReleaseCommRequest( cEPKBWarningNMRequest );  // all keys reset their requests
+    }
+}
+
+on timer t_IlluNMCancelTimer
+{
+    if( getValue( KCAN__NMH_Kombi_AutomaticModeActive ) == 1 )
+    {
+        _ReleaseCommRequest( cIlluNMRequest );  // all keys reset their requests
+    }
+}
+
+on timer t_CarClosureNMCancelTimer
+{
+    if( getValue( KCAN__NMH_Kombi_AutomaticModeActive ) == 1 )
+    {
+        _ReleaseCommRequest( cCarClosureNMRequest );  // all keys reset their requests
+    }
+}
+
+on timer t_GearIndNMCancelTimer
+{
+    if( getValue( KCAN__NMH_Kombi_AutomaticModeActive ) == 1 )
+    {
+        _ReleaseCommRequest( cGearIndNMRequest );  // all keys reset their requests
+    }
+}
+
+on timer t_NM_Repeat_Message_Time
+{
+    boCanNM_RepeatMessage_Timer_Expired = TRUE;
+    _NM_Switch_NM_Mode();     // inform the state-mashine
+}
+
+on timer t_NM_Timeout_Time
+{
+    boCanNM_NM_Timeout_Timer_Expired = TRUE;
+    _NM_Switch_NM_Mode();     // inform the state-mashine
+}
+
+on timer t_NM_Transmit
+{
+    if( NM_Transmit_Cycle > 1 )
+        setTimer( t_NM_Transmit, NM_Transmit_Cycle );
+    NM_xxx_AR_output();
+}
+
+on timer t_NM_Wait_Bus_Sleep_Time
+{
+    boCanNM_WaitBusSleep_Timer_Expired = TRUE;
+    _NM_Switch_NM_Mode();     // inform the state-mashine
+}
+
+NM_xxx_AR_init()
+{
+    _mNM_xxx_AR.NM_Kombi_CAB_V10.phys = getValue( KCAN_NM_Kombi_CAB_V10 );
+    _mNM_xxx_AR.NM_Kombi_Car_Wakeup.phys = getValue( KCAN_NM_Kombi_Car_Wakeup );
+    _mNM_xxx_AR.NM_Kombi_CBV_AWB.phys = getValue( KCAN_NM_Kombi_CBV_AWB );
+    _mNM_xxx_AR.NM_Kombi_CBV_CRI.phys = getValue( KCAN_NM_Kombi_CBV_CRI );
+    _mNM_xxx_AR.NM_Kombi_NM_aktiv_Buzzer.phys = getValue( KCAN_NM_Kombi_NM_aktiv_Buzzer );
+    _mNM_xxx_AR.NM_Kombi_NM_aktiv_Diagnose.phys = getValue( KCAN_NM_Kombi_NM_aktiv_Diagnose );
+    _mNM_xxx_AR.NM_Kombi_NM_aktiv_KL15.phys = getValue( KCAN_NM_Kombi_NM_aktiv_KL15 );
+    _mNM_xxx_AR.NM_Kombi_NM_aktiv_Schluesselkomm.phys = getValue( KCAN_NM_Kombi_NM_aktiv_Schluesselkomm );
+    _mNM_xxx_AR.NM_Kombi_NM_aktiv_Tmin.phys = getValue( KCAN_NM_Kombi_NM_aktiv_Tmin );
+    _mNM_xxx_AR.NM_Kombi_NM_aktiv_VLW.phys = getValue( KCAN_NM_Kombi_NM_aktiv_VLW );
+    _mNM_xxx_AR.NM_Kombi_NM_State.phys = getValue( KCAN_NM_Kombi_NM_State );
+    _mNM_xxx_AR.NM_Kombi_UDS_CC.phys = getValue( KCAN_NM_Kombi_UDS_CC );
+
+}
+
+NM_xxx_AR_output()
+{
+    _mNM_xxx_AR.byte( 1 ) = CanNmNodeId;
+    putValue( KCAN_NM_Kombi_NM_State, bNM_xxx_NM_State );
+    _mNM_xxx_AR.NM_Kombi_NM_State = bNM_xxx_NM_State;
+
+    if( _mNM_xxx_Transmit_Allowed )
+        output( _mNM_xxx_AR );
+}
+
+NM_xxx_AR_saveEnvVars( dword hFile )
+{
+    filePutString("\n// Knoten NMH_Kombi\n", 33, hFile );
+    snprintf(buffer, elcount(buffer), "0.0000 KCAN__STMSG_NMH_Kombi := %X\n", getValue( KCAN__STMSG_NMH_Kombi ));        filePutString (buffer, elcount(buffer), hFile);
+    snprintf(buffer, elcount(buffer), "0.0000 KCAN__STMSGT_NMH_Kombi := %X\n", getValue( KCAN__STMSGT_NMH_Kombi ));        filePutString (buffer, elcount(buffer), hFile);
+    snprintf(buffer, elcount(buffer), "0.0000 KCAN_NM_Kombi_CAB_V10 := %X\n", getValue( KCAN_NM_Kombi_CAB_V10 ) );        filePutString (buffer, elcount(buffer), hFile);
+    snprintf(buffer, elcount(buffer), "0.0000 KCAN_NM_Kombi_Car_Wakeup := %X\n", getValue( KCAN_NM_Kombi_Car_Wakeup ) );        filePutString (buffer, elcount(buffer), hFile);
+    snprintf(buffer, elcount(buffer), "0.0000 KCAN_NM_Kombi_CBV_AWB := %X\n", getValue( KCAN_NM_Kombi_CBV_AWB ) );        filePutString (buffer, elcount(buffer), hFile);
+    snprintf(buffer, elcount(buffer), "0.0000 KCAN_NM_Kombi_CBV_CRI := %X\n", getValue( KCAN_NM_Kombi_CBV_CRI ) );        filePutString (buffer, elcount(buffer), hFile);
+    snprintf(buffer, elcount(buffer), "0.0000 KCAN_NM_Kombi_NM_aktiv_Buzzer := %X\n", getValue( KCAN_NM_Kombi_NM_aktiv_Buzzer ) );        filePutString (buffer, elcount(buffer), hFile);
+    snprintf(buffer, elcount(buffer), "0.0000 KCAN_NM_Kombi_NM_aktiv_Diagnose := %X\n", getValue( KCAN_NM_Kombi_NM_aktiv_Diagnose ) );        filePutString (buffer, elcount(buffer), hFile);
+    snprintf(buffer, elcount(buffer), "0.0000 KCAN_NM_Kombi_NM_aktiv_KL15 := %X\n", getValue( KCAN_NM_Kombi_NM_aktiv_KL15 ) );        filePutString (buffer, elcount(buffer), hFile);
+    snprintf(buffer, elcount(buffer), "0.0000 KCAN_NM_Kombi_NM_aktiv_Schluesselkomm := %X\n", getValue( KCAN_NM_Kombi_NM_aktiv_Schluesselkomm ) );        filePutString (buffer, elcount(buffer), hFile);
+    snprintf(buffer, elcount(buffer), "0.0000 KCAN_NM_Kombi_NM_aktiv_Tmin := %X\n", getValue( KCAN_NM_Kombi_NM_aktiv_Tmin ) );        filePutString (buffer, elcount(buffer), hFile);
+    snprintf(buffer, elcount(buffer), "0.0000 KCAN_NM_Kombi_NM_aktiv_VLW := %X\n", getValue( KCAN_NM_Kombi_NM_aktiv_VLW ) );        filePutString (buffer, elcount(buffer), hFile);
+    snprintf(buffer, elcount(buffer), "0.0000 KCAN_NM_Kombi_NM_State := %X\n", getValue( KCAN_NM_Kombi_NM_State ) );        filePutString (buffer, elcount(buffer), hFile);
+    snprintf(buffer, elcount(buffer), "0.0000 KCAN_NM_Kombi_UDS_CC := %X\n", getValue( KCAN_NM_Kombi_UDS_CC ) );        filePutString (buffer, elcount(buffer), hFile);
+
+}
+
+on envVar KCAN__STMSG_NMH_Kombi
+{
+    if( getValue( this ) == 0 )
+        _mNM_xxx_Transmit_Allowed = 1;
+    else
+        _mNM_xxx_Transmit_Allowed = 0;    
+}
+
+
+
+on EnvVar KCAN_NM_Kombi_CAB_V10
+{
+    _mNM_xxx_AR.NM_Kombi_CAB_V10.phys = getValue(this);
+}
+
+
+on EnvVar KCAN_NM_Kombi_Car_Wakeup
+{
+    _mNM_xxx_AR.NM_Kombi_Car_Wakeup.phys = getValue(this);
+}
+
+
+on EnvVar KCAN_NM_Kombi_CBV_AWB
+{
+    _mNM_xxx_AR.NM_Kombi_CBV_AWB.phys = getValue(this);
+}
+
+
+on EnvVar KCAN_NM_Kombi_CBV_CRI
+{
+    _mNM_xxx_AR.NM_Kombi_CBV_CRI.phys = getValue(this);
+}
+
+
+on EnvVar KCAN_NM_Kombi_NM_aktiv_Buzzer
+{
+    _mNM_xxx_AR.NM_Kombi_NM_aktiv_Buzzer.phys = getValue(this);
+}
+
+
+on EnvVar KCAN_NM_Kombi_NM_aktiv_Diagnose
+{
+    _mNM_xxx_AR.NM_Kombi_NM_aktiv_Diagnose.phys = getValue(this);
+}
+
+
+on EnvVar KCAN_NM_Kombi_NM_aktiv_KL15
+{
+    _mNM_xxx_AR.NM_Kombi_NM_aktiv_KL15.phys = getValue(this);
+}
+
+
+on EnvVar KCAN_NM_Kombi_NM_aktiv_Schluesselkomm
+{
+    _mNM_xxx_AR.NM_Kombi_NM_aktiv_Schluesselkomm.phys = getValue(this);
+}
+
+
+on EnvVar KCAN_NM_Kombi_NM_aktiv_Tmin
+{
+    _mNM_xxx_AR.NM_Kombi_NM_aktiv_Tmin.phys = getValue(this);
+}
+
+
+on EnvVar KCAN_NM_Kombi_NM_aktiv_VLW
+{
+    _mNM_xxx_AR.NM_Kombi_NM_aktiv_VLW.phys = getValue(this);
+}
+
+
+on EnvVar KCAN_NM_Kombi_NM_State
+{
+    _mNM_xxx_AR.NM_Kombi_NM_State.phys = getValue(this);
+}
+
+
+on EnvVar KCAN_NM_Kombi_UDS_CC
+{
+    _mNM_xxx_AR.NM_Kombi_UDS_CC.phys = getValue(this);
+}
+
+
+/*on EnvVar KCAN_NM_Kombi_Wakeup
+{
+    _mNM_xxx_AR.NM_Kombi_Wakeup.phys = getValue(this);
+}*/
+
+on envVar KCAN__NMH_Kombi_AutomaticModeActive
+{
+    byte temp; // actual NM request status
+
+    if( getValue( this ) )
+    {
+        EnableControl( "Hauptpanel", "EnvVar:HMI__NM_BCM_Manually_Request_NM", 0 );
+
+        temp = getValue( KCAN_ZAS_Kl_15 );
+//        write( "HMI_ISw_Stat is %d", temp );
+        if( temp > 1 ) // IGN not Lock
+        {
+            putValue( KCAN__NMH_Kombi_Manually_Request_NM, 1 );
+            putValue( KCAN__NMH_Kombi_NM_Request, cIgnitionNMRequest );
+            _NM_Switch_NM_Mode();
+        }
+        else
+        {
+            putValue( KCAN__NMH_Kombi_Manually_Request_NM, 0 );
+            _ReleaseCommRequest( cAllNMRequest );  // release all requests
+            _NM_Switch_NM_Mode();
+        }
+    }
+    else
+    {
+        EnableControl( "Hauptpanel", "EnvVar:HMI__NM_BCM_Manually_Request_NM", 1 );
+        if( getValue( KCAN_ZAS_Kl_15 ) > 1 )
+        {
+            _SetCommRequest( cIgnitionNMRequest );
+            _NM_Switch_NM_Mode();
+            putValue( KCAN__NMH_Kombi_Manually_Request_NM, 1 );
+        }
+    }
+    NM_AutomaticModeActive = getValue( this );
+}
+
+on envVar KCAN__NMH_Kombi_Manually_Request_NM
+{
+    if( getValue ( KCAN__NMH_Kombi_AutomaticModeActive ) == 0 )
+    {
+        if( getValue( this ) )
+        {
+            _SetCommRequest( cManualNMRequest );
+        }
+        else
+        {
+            _ReleaseCommRequest( cAllNMRequest );// all
+        }
+    }
+}
+
+_NM_Switch_NM_Mode()
+{
+    byte bOld_NM_Mode;
+    word NM_Request_State;
+
+    bOld_NM_Mode = NM_Mode;
+    NM_Request_State = getValue( KCAN__NMH_Kombi_NM_Request );
+    switch( NM_Mode )
+    {
+        case cNM_Mode_Init:                   _NM_Init();
+                                              NM_Mode = cNM_Mode_Sleep;
+                                              break;
+        case cNM_Mode_Sleep:                  if( boCanNM_Rx_Indication == TRUE )
+                                              {
+                                                  // _NM_NetworkStartIndication();   nothing to do
+                                                  // _NM_PassiveStartUp();    is content of _NM_NetworkMode();
+                                                  setTimer( t_NM_Transmit, NmAsrCanMsgCycleOffset );    // send NM-Frame delayed
+                                                  boCanNM_Rx_Indication = FALSE;
+                                                  cancelTimer( t_NM_Timeout_Time );
+                                                  setTimer( t_NM_Timeout_Time, c_NM_Timeout_Time );
+                                                  setTimer( t_NM_Repeat_Message_Time, c_NM_Repeat_Message_Time );
+                                                  NM_Transmit_Cycle = NmAsrCanMsgStandardCycle;
+                                                  _NM_NetworkMode();
+                                                  NM_Mode = cNM_Mode_RepeatMsg;
+                                                  bNM_xxx_NM_State = cNM_RM_aus_BSM;
+                                              }
+                                              if( NM_Request_State )
+                                              {
+                                                  setTimer( t_NM_Transmit, 1 );    //send NM-Franme immediately
+                                                  NM_Transmit_Cycle = NmAsrCanMsgStandardCycle;
+                                                  cancelTimer( t_NM_Timeout_Time );
+                                                  setTimer( t_NM_Timeout_Time, c_NM_Timeout_Time );
+                                                  setTimer( t_NM_Repeat_Message_Time, c_NM_Repeat_Message_Time );
+                                                  NM_Transmit_Cycle = NmAsrCanMsgStandardCycle;
+                                                  _NM_NetworkMode();
+                                                  NM_Mode = cNM_Mode_RepeatMsg;
+                                                  bNM_xxx_NM_State = cNM_RM_aus_BSM;
+                                              }
+                                              break;
+        case cNM_Mode_Prepare_Bus_Sleep:      if( boCanNM_WaitBusSleep_Timer_Expired == TRUE )
+                                              {
+                                                  _NM_BusSleepModeInd();   // set message startup delay
+                                                  NM_Mode = cNM_Mode_Sleep;
+                                                  boCanNM_WaitBusSleep_Timer_Expired = FALSE;
+                                              }
+                                              if( boCanNM_NM_Timeout_Timer_Expired == TRUE )
+                                                  boCanNM_NM_Timeout_Timer_Expired = FALSE;
+                                              if( ( boCanNM_Rx_Indication == TRUE ) ||  NM_Request_State )
+                                              {
+                                                  boCanNM_Rx_Indication = FALSE;
+                                                  if( NM_Request_State )
+                                                  {
+                                                      setTimer( t_NM_Transmit, 1 );    //send NM-Franme immediately
+                                                  }
+                                                  cancelTimer( t_NM_Timeout_Time );
+                                                  setTimer( t_NM_Timeout_Time, c_NM_Timeout_Time );
+                                                  setTimer( t_NM_Repeat_Message_Time, c_NM_Repeat_Message_Time );
+                                                  _NM_NetworkMode();
+                                                  NM_Transmit_Cycle = NmAsrCanMsgStandardCycle;
+                                                  NM_Mode = cNM_Mode_RepeatMsg;
+                                                  bNM_xxx_NM_State = cNM_RM_aus_PBSM;
+                                              }
+                                              break;
+        case cNM_Mode_Ready_Sleep:            if( boCanNM_Rx_Indication == TRUE )
+                                              {
+                                                  cancelTimer( t_NM_Timeout_Time );
+                                                  setTimer( t_NM_Timeout_Time, c_NM_Timeout_Time );
+                                                  boCanNM_Rx_Indication = FALSE;
+                                              }
+                                              if( boCanNM_Tx_Confirmation == TRUE )
+                                              {
+                                                  cancelTimer( t_NM_Timeout_Time );
+                                                  setTimer( t_NM_Timeout_Time, c_NM_Timeout_Time );
+                                                  boCanNM_Tx_Confirmation = FALSE;
+                                              }
+                                              if( NM_Request_State )
+                                              {
+                                                  setTimer( t_NM_Transmit, 1 );    //send NM-Franme immediately
+                                                  cancelTimer( t_NM_Timeout_Time );
+                                                  setTimer( t_NM_Timeout_Time, c_NM_Timeout_Time );
+                                                  if( CanNmBusLoadReductionEnabled )
+                                                      NM_Transmit_Cycle = NmAsrCanMsgReducedTime;
+                                                  else
+                                                      NM_Transmit_Cycle = NmAsrCanMsgStandardCycle;
+                                                  NM_Mode = cNM_Mode_Normal_Operation_State;
+                                                  bNM_xxx_NM_State = cNM_NO_aus_RS;
+                                              }
+                                              if( boCanNM_RepeatMessage_Requested == TRUE )
+                                              {
+                                                  setTimer( t_NM_Transmit, NmAsrCanMsgCycleOffset );    // send NM-Frame delayed
+                                                  cancelTimer( t_NM_Timeout_Time );
+                                                  setTimer( t_NM_Timeout_Time, c_NM_Timeout_Time );
+                                                  setTimer( t_NM_Repeat_Message_Time, c_NM_Repeat_Message_Time );
+                                                  NM_Transmit_Cycle = NmAsrCanMsgStandardCycle;
+                                                  boCanNM_RepeatMessage_Requested = FALSE;
+                                                  NM_Mode = cNM_Mode_RepeatMsg;
+                                              }
+                                              if( boCanNM_NM_Timeout_Timer_Expired == TRUE )
+                                              {
+                                                  setTimer( t_NM_Wait_Bus_Sleep_Time, c_NM_Wait_Bus_Sleep_Time );
+                                                  _NM_PrepareBusSleepModeInd();    // here t_DBKonTimer is stopped
+                                                  NM_Mode = cNM_Mode_Prepare_Bus_Sleep;
+                                                  boCanNM_NM_Timeout_Timer_Expired = FALSE;
+                                              }
+                                              break;
+        case cNM_Mode_Normal_Operation_State: if( boCanNM_NM_Timeout_Timer_Expired == TRUE )
+                                              {
+                                                  setTimer( t_NM_Timeout_Time, c_NM_Timeout_Time );
+                                                  // _NM_TimeoutExeption();    // no action to be done
+                                                  boCanNM_NM_Timeout_Timer_Expired = FALSE;
+                                              }
+                                              if( boCanNM_Rx_Indication == TRUE )
+                                              {
+                                                  cancelTimer( t_NM_Timeout_Time );
+                                                  setTimer( t_NM_Timeout_Time, c_NM_Timeout_Time );
+                                                  if( CanNmBusLoadReductionEnabled )
+                                                  {
+                                                      cancelTimer( t_NM_Transmit );
+                                                      setTimer( t_NM_Transmit, NmAsrCanMsgReducedTime );
+                                                  }
+                                                  else
+                                                  {
+                                                  //    cancelTimer( t_NM_Transmit );
+                                                  //    setTimer( t_NM_Transmit, NmAsrCanMsgStandardCycle );;
+                                                  }
+                                                  boCanNM_Rx_Indication = FALSE;
+                                              }
+                                              if( boCanNM_Tx_Confirmation == TRUE )
+                                              {
+                                                  cancelTimer( t_NM_Timeout_Time );
+                                                  setTimer( t_NM_Timeout_Time, c_NM_Timeout_Time );
+                                                  cancelTimer( t_NM_Transmit );
+                                                  setTimer( t_NM_Transmit, NmAsrCanMsgStandardCycle );
+                                                  boCanNM_Tx_Confirmation = FALSE;
+                                              }
+                                              if( NM_Request_State == 0 )    //no network requested
+                                              {
+                                                  cancelTimer( t_NM_Transmit );    // stop NM-Franme immediately
+                                                  NM_Mode = cNM_Mode_Ready_Sleep;
+                                              }
+                                              if( boCanNM_RepeatMessage_Requested == TRUE )
+                                              {
+                                                  setTimer( t_NM_Transmit, NmAsrCanMsgCycleOffset );    // send NM-Frame delayed
+                                                  cancelTimer( t_NM_Timeout_Time );
+                                                  setTimer( t_NM_Timeout_Time, c_NM_Timeout_Time );
+                                                  setTimer( t_NM_Repeat_Message_Time, c_NM_Repeat_Message_Time );
+                                                  boCanNM_RepeatMessage_Requested = FALSE;
+                                                  NM_Transmit_Cycle = NmAsrCanMsgStandardCycle;
+                                                  NM_Mode = cNM_Mode_RepeatMsg;
+                                              }
+                                              break;
+        case cNM_Mode_RepeatMsg:              if( boCanNM_NM_Timeout_Timer_Expired == TRUE )
+                                              {
+                                                  setTimer( t_NM_Timeout_Time, c_NM_Timeout_Time );
+                                                  boCanNM_NM_Timeout_Timer_Expired = FALSE;
+                                              }
+                                              if( boCanNM_Rx_Indication == TRUE )
+                                              {
+                                                  cancelTimer( t_NM_Timeout_Time );
+                                                  setTimer( t_NM_Timeout_Time, c_NM_Timeout_Time );
+                                                  boCanNM_Rx_Indication = FALSE;
+                                              }
+                                              if( boCanNM_Tx_Confirmation == TRUE )
+                                              {
+                                                  cancelTimer( t_NM_Timeout_Time );
+                                                  setTimer( t_NM_Timeout_Time, c_NM_Timeout_Time );
+                                                  boCanNM_Tx_Confirmation = FALSE;
+                                              }
+                                              if( boCanNM_RepeatMessage_Timer_Expired == TRUE )
+                                              {
+                                                  boCanNM_RepeatMessage_Timer_Expired = FALSE;
+                                                  if( NM_Request_State )
+                                                  {
+                                                      NM_Mode = cNM_Mode_Normal_Operation_State;
+                                                  if( CanNmBusLoadReductionEnabled )
+                                                      NM_Transmit_Cycle = NmAsrCanMsgReducedTime;
+                                                  else
+                                                      NM_Transmit_Cycle = NmAsrCanMsgStandardCycle;
+                                                      bNM_xxx_NM_State = cNM_NO_aus_RM;
+                                                  }
+                                                  else
+                                                  {
+                                                      cancelTimer( t_NM_Transmit );    // stop NM-Franme immediately
+                                                      NM_Mode = cNM_Mode_Ready_Sleep;
+                                                  }
+                                              }
+                                              break;
+    }
+    if( bOld_NM_Mode != NM_Mode )
+    {
+        _Nm_StateChangeNotification( bOld_NM_Mode, NM_Mode );    // does the Trace
+        putValue( KCAN__NMH_Kombi_ActualState, NM_Mode );
+    }
+}
+
+_NM_Init()
+{
+    NM_Transmit_Cycle = NmAsrCanMsgStandardCycle;
+}
+
+_NM_NetworkMode()
+{
+    setTimer( t_DBKomTimer_5ms, 1 ); //  ms     start CAN-communication immediately
+    setTimer( t_DBKomTimer_20ms, 2 ); //  ms     start CAN-communication immediately
+    putValue( KCAN__NMH_Kombi_CommActive, 1 );
+}
+
+_Nm_BusSleepModeInd()
+{
+//    write( "_Nm_BusSleepModeInd: Sleep Mode active");
+    __Startup_Delay();
+    __Reset_E2E_SQC();
+}
+
+void _Nm_PrepareBusSleepModeInd()
+{
+//    _Trace( "Nm_PrepareBusSleepModeInd", "Prepare Sleep Mode active");
+    putValue( KCAN__NMH_Kombi_CommActive, 0 );
+    cancelTimer( t_DBKomTimer_5ms );
+    cancelTimer( t_DBKomTimer_20ms );
+}
+
+_Nm_StateChangeNotification( byte previousState, byte currentState )
+{
+/*
+    char line[50];
+
+    snprintf( line, elcount(line ), "Transition from %d to %d", previousState, currentState );
+    _Trace( "Nm_StateChangeNotification", "", line );
+*/
+}
+
+on EnvVar KCAN__HeavyBusload
+{
+    if( getValue( this ) )
+    {
+        bCanLoad            = cCANHeavyNetworkLoad;
+        bCanLoad_SpontanCnt = cCANHeavyNetworkLoad_SpontanCnt;
+        write("CANHeavyNetworkLoad");
+    }
+    else
+    {
+        bCanLoad            = cCANNormalNetworkLoad;
+        bCanLoad_SpontanCnt = cCANNormalNetworkLoad_SpontanCnt;
+        write("CANNormalNetworkLoad");
+    }
+}
+
+_ReleaseCommRequest( word RequestID )
+{
+    word temp; // actual NM request status
+
+    temp = getValue( KCAN__NMH_Kombi_NM_Request );
+    temp &= ~RequestID; // reset NM request 
+    putValue( KCAN__NMH_Kombi_NM_Request, temp );
+    _NM_Switch_NM_Mode();
+}
+
+_SetCommRequest( word RequestID )
+{
+    word temp; // actual NM request status
+
+    temp = getValue( KCAN__NMH_Kombi_NM_Request );
+    temp |= RequestID; // set NM request 
+    putValue( KCAN__NMH_Kombi_NM_Request, temp );
+    _NM_Switch_NM_Mode();
+}
+
+on envVar KCAN__NMH_Kombi_Remote_SetCommRequest
+{
+    word temp; // actual NM request status
+
+if( getValue( this ) )
+    {
+        temp = getValue( KCAN__NMH_Kombi_NM_Request );
+        temp |= getValue( KCAN__NMH_Kombi_RequestID ); // set NM request 
+        putValue( KCAN__NMH_Kombi_NM_Request, temp );
+        _NM_Switch_NM_Mode();
+        putValue( KCAN__NMH_Kombi_Remote_SetCommRequest, 0 );
+    }
+}
+
+on envVar KCAN__NMH_Kombi_Remote_ReleaseCommRequest
+{
+    word temp, temp2; // actual NM request status
+
+if( getValue( this ) )
+    {
+        temp = getValue( KCAN__NMH_Kombi_NM_Request );
+        temp2 = getValue( KCAN__NMH_Kombi_RequestID );
+        temp &= ~temp2; // reset NM request    
+        putValue( KCAN__NMH_Kombi_NM_Request, temp );
+        _NM_Switch_NM_Mode();
+        putValue( KCAN__NMH_Kombi_Remote_ReleaseCommRequest, 0 );
+    }
+}
+
+
+void _TraceCall( char functionName[], long callResult )
+{
+    char line[100];
+
+    if( callResult == 1 )
+        snprintf( line, elcount(line ), "calling %s", functionName );
+    else
+        snprintf( line, elcount(line ), "call to %s failed - wrong state?", functionName );
+    _Trace( "", "", line );
+}
+
+void _Trace( char functionName[], char info[])
+{
+    _Trace( functionName, info, "");
+}
+
+void _Trace( char functionName[], char info[], char verbose[], long argument )
+{
+    char line[100];
+
+    snprintf( line, elcount(line ), verbose, argument );
+    _Trace( functionName, info, line );
+}
+
+void _Trace( char functionName[], char info[], char verbose[])
+{
+  char sep[2] = "/";
+  sep[0] = functionName[0] ? '/' : 0;
+  if( verbose[0])
+  {
+    write( "[%.3f]%s%s%s: %s", timeNow()/100000.0, gECU
+           , sep
+           , functionName
+           , verbose
+           );
+  } else
+  {
+    write( "[%.3f]%s%s%s: %s", timeNow()/100000.0, gECU
+           , sep
+           , functionName
+           , info
+           );
+  }
+}

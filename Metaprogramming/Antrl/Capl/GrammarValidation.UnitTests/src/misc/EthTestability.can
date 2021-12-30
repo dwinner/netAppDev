@@ -1,0 +1,1476 @@
+/*@!Encoding:1252*/
+includes
+{
+  #include "EthTestability.cin"
+  
+ //#pragma library ("..\..\Ethernet_IL.dll") 
+}
+
+variables
+{
+    // type of test currently running
+    enum TestType tTestType;
+
+    //mac address
+    byte srcmac[6] = {0x02,0x84,0xCF,0x3B,0xBE,0x02};
+    byte dstmac[6] = {0x00,0x54,0xAF,0x86,0x02,0xF9};
+    //ipv6  
+    const dword IPV6_STR_SIZE = 40; // IPv6 string size
+    char ipv6SourceAddrStr[IPV6_STR_SIZE] = "fd53:7cb8:383:5::73";
+    char ipv6DestAddrStr[IPV6_STR_SIZE]   = "fd53:7cb8:383:5::14"; 
+    byte ipv6SourceAddr[16];              // IPv6 address bytes. 
+    byte ipv6DestAddr[16];
+    byte TC4_Count = 0;
+    dword ipv6SourceUdpPort = 0xA7F2;//42994;
+    dword ipv6DestinationUdpPort = 0xA63D;//42557;
+    dword gIUTPortUnderTest;  // IUT port under test
+    dword gLTPortUnderTest;  // Lower Tester port under test
+    dword gSocketUnderTest;  // socket under test
+    dword gClientLowerTesterSocket, gServerSocket;  // The client and server socket
+    dword gClientTestSystemSocket = 0;
+    dword gclientHandle;
+  
+    CHAR kPanelName[32] = "EthTestability";
+    CHAR gErrorText[200];
+    CHAR gRxBuffer[1472]; // Max. UDP payload without fragmentation
+    CHAR error[100]; 
+  
+    dword gUdpSocketHandle = 0;
+  
+    msTimer tReceiveAndForward;
+    msTimer tListenAndAccept;  
+    msTimer tSendData;
+    msTimer tCreateAndBind;
+}
+
+on preStart
+{
+  //EthReceivePacket( "OnEthPacket");
+  BYTE emptyMacAddress[6] = { 0x00,0x00,0x00,0x00,0x00, 0x00};
+  EthReceiveRawPacket( 0x7, emptyMacAddress, emptyMacAddress, 0x0000, "OnEthRawPacket" );
+}
+
+void vConvertIPv6toArray(char acAddrStr[], byte abAddr[])
+{
+  int i; // loop variable
+  LONG gResult;
+  //1nd IPv6 interface
+    write("Converting IPv6 Address %s to bytes...", acAddrStr);
+
+    gResult = IpGetAddressAsArray( acAddrStr, abAddr );
+    if( gResult == 0)
+    {
+      // success...
+      //write("IpGetAddressAsArray: returned array with IPv6 bytes:");
+      //for ( i=0; i<16; i++)
+      //{      
+      //  write("Byte %.2d = 0x%.2x", i, abAddr[i]);
+      //}
+    }
+    else
+    {
+      write("Error converting");
+    }   
+}
+
+on sysvar EthTestability::BtnUDPTransmitStart
+{
+    if( @this)
+    {
+    tTestType = UDPTransmit;
+    TestabilityUDPTransmitStart();
+    }
+}
+
+on sysvar EthTestability::BtnUDPReceiveCountStart
+{
+    if( @this)
+    {
+    tTestType = UDPReceiveAndCount;
+    TestabilityUDPReceiveCountStart();
+    }
+}
+
+on sysvar EthTestability::BtnTCPServerStart
+{
+    if( @this)
+    {
+    tTestType = TCPServerTransmit;
+    TestabilityTCPServerTransmitStart();
+    }
+}
+
+on sysvar EthTestability::BtnTCPClientReceiveForward
+{
+    if( @this)
+    {
+    tTestType = TCPClientReceiveAndForward;
+    TestabilityTCPClientReceiveAndForwardStart();
+    }
+}
+
+on sysvar EthTestability::BtnStartTest
+{
+    if( @this)
+    {
+    tTestType = none;
+    vSendGeneralStartTest();
+    }
+}
+
+on sysvar EthTestability::BtnGetVersion
+{
+    if( @this)
+    {  
+    vSendGeneralGetVersion();
+    }
+}
+
+on sysvar EthTestability::BtnEndTest
+{
+    if( @this)
+    {  
+    vSendGeneralEndTest(0x05, "Custom Test Ended");
+    }
+}
+
+on sysvar EthTestability::BtnClearNDPCache
+{
+    if( @this)
+    {  
+    vSendClearNDPCache();
+    }
+}
+
+
+void TestabilityUDPTransmitStart()
+{
+  vSendGeneralStartTest();
+}
+
+void TestabilityUDPReceiveCountStart()
+{
+  vSendGeneralStartTest(); 
+}
+
+void TestabilityTCPServerTransmitStart()
+{
+  vSendGeneralStartTest(); 
+}
+
+void TestabilityTCPClientReceiveAndForwardStart()
+{
+    vSendGeneralStartTest(); 
+}  
+
+void vSendGeneralStartTest()
+{
+    LONG packetHandle;
+    byte TestabilityProtocol[16];
+
+    vConvertIPv6toArray(ipv6SourceAddrStr, ipv6SourceAddr);
+    vConvertIPv6toArray(ipv6DestAddrStr, ipv6DestAddr);
+
+    // create ipv6 packet
+    packetHandle = EthInitPacket("ipv6");
+
+    // init udp protocol inside ipv6 packet
+    EthInitProtocol(packetHandle, "udp" );
+
+    // Add token for VLAN field
+    EthAddToken( packetHandle, "eth", "vlanTpid");
+    EthAddToken( packetHandle, "eth", "vlanTci" );
+
+    if( EthGetLastError() == 0)
+    {
+      // set ETH protocol fields
+      EthSetTokenData( packetHandle, "eth", "destination", 6,dstmac );
+      EthSetTokenData( packetHandle, "eth", "source", 6, srcmac);
+      EthSetTokenInt( packetHandle, "eth", "vlantpid", 0x8100 );
+      EthSetTokenInt( packetHandle, "eth", "vlanTci", 0x0005 );
+  
+      // set IPv6 protocol fields
+      EthSetTokenData( packetHandle, "ipv6", "source", 16, ipv6SourceAddr );
+      EthSetTokenData( packetHandle, "ipv6", "destination", 16, ipv6DestAddr );  
+  
+      // set UDP protocol fields
+      EthSetTokenInt( packetHandle, "udp", "source", SourcePort );
+      EthSetTokenInt( packetHandle, "udp", "destination", Testa_ControlPort );
+
+      // Construct UDP payload (testability protocol)
+      TestabilityProtocol[0] = 0x01;
+      TestabilityProtocol[1] = 0x05;
+      TestabilityProtocol[2] = GID_General;
+      TestabilityProtocol[3] = SP_StartTest;
+      TestabilityProtocol[7] = 0x8; //LEN
+      TestabilityProtocol[12] = 0x01;
+      TestabilityProtocol[13] = 0x01;
+      TestabilityProtocol[14] = TID_Request;  // request message
+      TestabilityProtocol[15] = 0x0;  // result ID (not used)
+      EthResizeToken( packetHandle, "udp", "data", elcount(TestabilityProtocol)*8 /*bits*/ );
+      EthSetTokenData( packetHandle, "udp", "data", elcount(TestabilityProtocol), TestabilityProtocol );
+
+        // Complete and send packet
+      EthCompletePacket( packetHandle );
+      EthOutputPacket( packetHandle );
+
+      // release packet
+      EthReleasePacket( packetHandle );
+      putValueToControl( kPanelName, "TestabilityOutput", "send: general.start_test() \n ");
+    }
+    else
+    {
+      EthGetLastErrorText( elCount(error), error );
+      write("Error: %s", error );
+    }
+
+    if( gClientTestSystemSocket == 0)
+    {
+    //Set Tester as client for Data port, so IUT can forward the data to tester. this should be open forever
+    gClientTestSystemSocket = ClientStart(Testa_DataPort);    // send TCP connect from lower tester
+    }
+
+}
+
+//OnUdpReceiveFrom(dword socket, long result, byte ipv6Address[], dword port, char buffer[], dword size)
+//on ethernetPacket Ethernet.*
+//void OnEthPacket( LONG channel, LONG dir, LONG packet )
+void OnEthRawPacket( LONG channel, LONG dir, LONG packet )
+{
+  byte ipLength, ipProtocol, DataOffset;
+  byte TestaRcvBuff[100];
+  byte i;
+  dword DestPort, SrcPort, Length;
+  dword PacketType;
+  BYTE rx_data[500];
+  LONG rx_length;
+  char TcpRcvBuff[100] = "\0",UdpRcvBuff[20] = "\0";
+  char sDebug[255], StringBuff[40];
+
+  // get the payload of the packet
+  rx_length = EthGetThisData( 0, elCount(rx_data), rx_data );
+  PacketType = (((rx_data[16]<<8) & 0xff00) | (rx_data[17] & 0x00ff));
+  gLTPortUnderTest = @sysvar::EthTestability::LTTestPort;
+
+  switch(PacketType)
+    {
+    case 0x86DD: // IPv6
+      ipLength = rx_data[23]; //IP total length - used for TCP length calculation
+      ipProtocol = rx_data[24];  // read payload protocol type. For testability it must be UDP
+    
+      if( ipProtocol == UDP_protocol)
+      {
+          SrcPort = (((rx_data[58]<<8) & 0xff00) | (rx_data[59] & 0x00ff));
+          DestPort = (((rx_data[60]<<8) & 0xff00) | (rx_data[61] & 0x00ff));
+          Length = (((rx_data[62]<<8) & 0xff00) | (rx_data[63] & 0x00ff));
+                  
+          if( DestPort == gLTPortUnderTest)
+          {
+            //Copy UDP payload to receive buffer
+            for(i=0;i<(Length-8);i++)
+            {
+              UdpRcvBuff[i] =  rx_data[66+i];
+            }
+            snprintf(sDebug, elcount(sDebug)," Recv: UDP transmission with payload: ", UdpRcvBuff);
+            putValueToControl( kPanelName, "TestabilityOutput", sDebug);
+            snprintf(sDebug, Length-7, "%s", UdpRcvBuff);
+            putValueToControl( kPanelName, "TestabilityOutput", sDebug);
+            putValueToControl( kPanelName, "TestabilityOutput", "\n");         
+          
+            cancelTimer(tSendData);          
+          }      
+          else if((SrcPort == Testa_ControlPort) ||  (SrcPort == Testa_DataPort))//Only if it is msg from the testability port
+          {
+            //Copy UDP payload to receive buffer
+            for(i=0;i<(Length-8);i++)
+            {
+              TestaRcvBuff[i] =  rx_data[66+i];
+            }          
+            vParseTestabilityPacket(TestaRcvBuff, Length);
+    
+          }
+      }
+      else if( ipProtocol == TCP_protocol)
+      {
+          SrcPort = (((rx_data[58]<<8) & 0xff00) | (rx_data[59] & 0x00ff));
+          DestPort = (((rx_data[60]<<8) & 0xff00) | (rx_data[61] & 0x00ff));
+      
+          //The data offset field stores the total size of a TCP header in multiples of four bytes.
+          DataOffset = ((rx_data[70]>>4) & 0x0f)*4;
+          Length = ipLength - DataOffset;
+      
+          //snprintf(sDebug, elcount(sDebug)," TCP: SrcPort: %d DestPort: %d DataOffset: %d Length: %d\n", SrcPort, DestPort, DataOffset, Length );
+          //putValueToControl( kPanelName, "TestabilityOutput", sDebug);       
+       
+                  
+          if( (SrcPort == Testa_DataPort) && (Length>0))
+          {
+            cancelTimer(tReceiveAndForward);
+          
+            //Copy UDP payload to receive buffer
+            for(i=0;i<Length;i++)
+            {
+              TcpRcvBuff[i] =  rx_data[58+DataOffset+i];
+            }
+          
+            vParseTestabilityTCPPacket(TcpRcvBuff, Length);
+            if( TC4_Count)
+            {
+              TC4_Count=0;
+             
+
+              strncpy(StringBuff,TCPRcvFwd_ETString,elcount(StringBuff));
+              vSendGeneralEndTest(0x04, StringBuff);
+            }
+            else{
+              TC4_Count++;
+        
+              vTcpTransmission(gclientHandle, "Test34567");
+              setTimer(tReceiveAndForward, 200); // set 200ms timer to wait for Receive_and_forward event             
+            }
+          }      
+     
+      }
+    break;
+    default:
+    break;
+    }
+}
+
+void vParseTestabilityTCPPacket(char TestaRcvBuff[], dword PayloadLen)
+{
+    dword TestaLen;
+    char sDebug[255], TestaBuff[20];
+    byte i;
+
+    //calculate true testability payload length
+    TestaLen = (((TestaRcvBuff[16]<<8) & 0xff00) | (TestaRcvBuff[17] & 0x00ff));
+    snprintf(sDebug, 33," Recv: TCP packet with length: %d ", TestaLen);
+    putValueToControl( kPanelName, "TestabilityOutput", sDebug);
+  
+    //print payload
+    //Copy testa payload to receive buffer
+    for(i=0;i<PayloadLen-18;i++)
+    {
+      TestaBuff[i] =  TestaRcvBuff[18+i];
+    }          
+    snprintf(sDebug, 11+(PayloadLen-18)," payload: %s", TestaBuff);
+    putValueToControl( kPanelName, "TestabilityOutput", sDebug);
+    putValueToControl( kPanelName, "TestabilityOutput", "\n"); 
+  
+
+}
+
+void vParseTestabilityPacket(byte TestaRcvBuff[], dword PayloadLen)
+{
+  char StringBuff[30];
+  dword Len, Port, SocketId;
+  dword majorVer, minorVer, patchVer;
+  byte boBindPort;
+  char sDebug[255];
+
+  boBindPort = @sysvar::EthTestability::boBindPort;
+  gIUTPortUnderTest = @sysvar::EthTestability::IUTTestPort;
+  gLTPortUnderTest = @sysvar::EthTestability::LTTestPort;
+
+  switch(TestaRcvBuff[2])
+    {
+    case GID_General:
+      // check service primitive. TID must be Response & RID must be E_OK
+      if((TestaRcvBuff[3]==SP_StartTest) && (TestaRcvBuff[14]==TID_Response) && (TestaRcvBuff[15]==E_OK)){
+        putValueToControl( kPanelName, "TestabilityOutput", " Recv: general.start_test():E_OK. \n ");
+        if( tTestType == UDPTransmit){
+          vCreateAndBind(GID_UDP, boBindPort, gIUTPortUnderTest, ipv6DestAddr);    // send udp.create_and_bind(false, 10000)        
+        }
+        else if( tTestType == UDPReceiveAndCount){
+          vCreateAndBind(GID_UDP, boBindPort, gIUTPortUnderTest, ipv6DestAddr);    // send udp.create_and_bind(true, 10500)            
+        }           
+        else if( tTestType == TCPServerTransmit){
+          vCreateAndBind(GID_TCP, boBindPort, gIUTPortUnderTest, ipv6DestAddr);    // send tcp.create_and_bind(true, 20500)
+        }
+        else if( tTestType == TCPClientReceiveAndForward){
+          vCreateAndBind(GID_TCP, boBindPort, gIUTPortUnderTest, ipv6DestAddr);    // send tcp.create_and_bind(true, 20500)          
+        }
+        setTimer(tCreateAndBind, 200);
+      }          
+      else if(TestaRcvBuff[3]==SP_EndTest){
+        putValueToControl( kPanelName, "TestabilityOutput", "Recv: general.end_test(). \n ");
+        if( tTestType == UDPTransmit){
+          putValueToControl( kPanelName, "TestabilityOutput", "UDPTransmit test finished. \n\n ");
+        }
+        else if( tTestType == UDPReceiveAndCount){
+          putValueToControl( kPanelName, "TestabilityOutput", "UDPReceiveAndCount test finished. \n\n ");           
+        }           
+        else if( tTestType == TCPServerTransmit){
+          putValueToControl( kPanelName, "TestabilityOutput", "TCPServerTransmit test finished. \n\n ");
+        }
+        else if( tTestType == TCPClientReceiveAndForward){
+          putValueToControl( kPanelName, "TestabilityOutput", "TCPClientReceiveAndForward test finished. \n\n ");
+        }      
+      }
+      else if( TestaRcvBuff[3]==SP_Get_Version){
+        majorVer = (((TestaRcvBuff[16]<<8) & 0xff00) | (TestaRcvBuff[17] & 0x00ff));
+        minorVer = (((TestaRcvBuff[18]<<8) & 0xff00) | (TestaRcvBuff[19] & 0x00ff));
+        patchVer = (((TestaRcvBuff[20]<<8) & 0xff00) | (TestaRcvBuff[21] & 0x00ff));
+        snprintf(sDebug, elcount(sDebug)," Recv: general.get_version(majorVer: %d minorVer: %d patchVer: %d):E_OK \n", majorVer, minorVer, patchVer );
+        putValueToControl( kPanelName, "TestabilityOutput", sDebug);       
+         
+      }
+      else{
+        putValueToControl( kPanelName, "TestabilityOutput", "ERR General: wrong resultID or ServicePrimitive Received. \n ");
+      }
+      break;
+    case GID_UDP:
+      // check service primitive. TID must be Response & RID must be E_OK
+      if((TestaRcvBuff[3]==SP_CreateAndBind) && (TestaRcvBuff[14]==TID_Response)){
+        cancelTimer(tCreateAndBind);
+        gSocketUnderTest = (((TestaRcvBuff[16]<<8) & 0xff00) | (TestaRcvBuff[17] & 0x00ff));
+        snprintf(sDebug, elcount(sDebug)," Recv: udp.create_and_bind(SocketId: %d): RID=%d \n", gSocketUnderTest, TestaRcvBuff[15] );
+        putValueToControl( kPanelName, "TestabilityOutput", sDebug);
+      
+        if( tTestType == UDPTransmit){
+          vSendData(GID_UDP, gSocketUnderTest, gLTPortUnderTest);    // send udp.send_data to trigger UDP transmission from cluster()
+          setTimer(tSendData, 200);   // set timer to wait for UDP transmission
+        }
+        else if( tTestType == UDPReceiveAndCount){        
+          vReceiveAndForward(GID_UDP, gSocketUnderTest, 0xFF, 0xFFFF); // send udp.receive_and_forward()
+        }
+    
+      }
+      else if((TestaRcvBuff[3]==SP_SendData) && (TestaRcvBuff[14]==TID_Response)){
+        snprintf(sDebug, elcount(sDebug)," Recv: udp.send_data(): RID=%d \n", TestaRcvBuff[15] );
+        putValueToControl( kPanelName, "TestabilityOutput", sDebug);       
+
+        strncpy(StringBuff,UDPTransmit_ETString,elcount(StringBuff));
+        vSendGeneralEndTest(0x01, StringBuff);      
+      }
+      else if((TestaRcvBuff[3]==SP_ReceiveAndForward) && (TestaRcvBuff[14]==TID_Response) && (TestaRcvBuff[15]==0x00)){
+        snprintf(sDebug, elcount(sDebug)," Recv: udp.receive_and_forward(dropCnt: %d):E_OK \n", TestaRcvBuff[17] );
+        putValueToControl( kPanelName, "TestabilityOutput", sDebug);
+      
+        vUdpTransmission(gIUTPortUnderTest); //Send UDP trasmission from lower tester
+        setTimer(tReceiveAndForward, 200); // set 200ms timer to wait for Receive_and_forward event
+      }
+      else if((TestaRcvBuff[3]==SP_ReceiveAndForward) && (TestaRcvBuff[14]==TID_Event) && (TestaRcvBuff[15]==0x00)){
+        cancelTimer(tReceiveAndForward);
+        // parse the payload
+        Len = (((TestaRcvBuff[16]<<8) & 0xff00) | (TestaRcvBuff[17] & 0x00ff));
+        Port = (((TestaRcvBuff[18]<<8) & 0xff00) | (TestaRcvBuff[19] & 0x00ff));
+      
+        if((Len==0x07) && (Port==UDP_port)){   //string tested is "test123", so len is 7
+          putValueToControl( kPanelName, "TestabilityOutput", "TEST OK. \n ");
+        }
+        else {
+          putValueToControl( kPanelName, "TestabilityOutput", "TEST NOK. \n ");
+        }
+        snprintf(sDebug, elcount(sDebug)," Recv: Event udp.receive_and_forward(Len: %d, SrcPort: %d) \n", Len, Port );
+        putValueToControl( kPanelName, "TestabilityOutput", sDebug);      
+      
+        strncpy(StringBuff,UDPReceiveCnt_ETString,elcount(StringBuff));
+        vSendGeneralEndTest(0x02, StringBuff);       
+      }    
+      else{
+        putValueToControl( kPanelName, "TestabilityOutput", "ERR UDP: wrong resultID or ServicePrimitive Received. \n ");
+      }
+      break;
+    case GID_TCP:
+      // check service primitive. TID must be Response & RID must be E_OK
+      if((TestaRcvBuff[3]==SP_CreateAndBind) && (TestaRcvBuff[14]==TID_Response) && (TestaRcvBuff[15]==0x00)){
+      
+        cancelTimer(tCreateAndBind);       
+        gSocketUnderTest = (((TestaRcvBuff[16]<<8) & 0xff00) | (TestaRcvBuff[17] & 0x00ff)); 
+        snprintf(sDebug, elcount(sDebug)," Recv: tcp.create_and_bind(SocketId: %d):E_OK \n", gSocketUnderTest );
+        putValueToControl( kPanelName, "TestabilityOutput", sDebug);
+      
+        if( tTestType == TCPServerTransmit){
+          vTcpListenAndAccept(gSocketUnderTest);    // send tcp.listen_and_accept()
+        }
+        else if( tTestType == TCPClientReceiveAndForward){        
+          ServerStart(gLTPortUnderTest);    // listen and prepare to accept connection
+          vTcpConnect(gSocketUnderTest, gLTPortUnderTest, ipv6SourceAddr);  // we want cluster to connect to LT
+        }       
+     
+      }
+      else if( (TestaRcvBuff[3]==SP_ListenAndAccept) && (TestaRcvBuff[14]==TID_Response) && (TestaRcvBuff[15]==0x00)){
+        putValueToControl( kPanelName, "TestabilityOutput", " Recv: tcp.listen_and_accept():E_OK. \n ");
+        setTimer(tListenAndAccept, 200); // set 200ms timer to wait for event
+      
+        //TCP connect with Lower Tester
+        gClientLowerTesterSocket = ClientStart(gIUTPortUnderTest);    // send TCP connect from lower tester
+      }
+      else if( (TestaRcvBuff[3]==SP_ListenAndAccept) && (TestaRcvBuff[14]==TID_Event) && (TestaRcvBuff[15]==0x00)){
+        putValueToControl( kPanelName, "TestabilityOutput", " Recv: Event tcp.listen_and_accept(). \n ");
+        cancelTimer(tListenAndAccept);
+        SocketId = (((TestaRcvBuff[18]<<8) & 0xff00) | (TestaRcvBuff[19] & 0x00ff));
+        Port = (((TestaRcvBuff[20]<<8) & 0xff00) | (TestaRcvBuff[21] & 0x00ff));
+        vSendData(GID_TCP, SocketId, Port);    // send tcp.send_data() to newly created socket and port
+      }
+      else if( (TestaRcvBuff[3]==SP_SendData) && (TestaRcvBuff[14]==TID_Response) && (TestaRcvBuff[15]==0x00)){
+        putValueToControl( kPanelName, "TestabilityOutput", " Recv: tcp.send_data():E_OK. \n ");
+        ClientStop(gClientLowerTesterSocket);
+        strncpy(StringBuff,TCPServerTransmit_ETString,elcount(StringBuff));
+        vSendGeneralEndTest(0x03, StringBuff);      
+      }
+      else if( (TestaRcvBuff[3]==SP_Connect) && (TestaRcvBuff[14]==TID_Response)){
+        snprintf(sDebug, elcount(sDebug)," Recv: tcp.connect(): RID=%d \n", TestaRcvBuff[15] );
+        putValueToControl( kPanelName, "TestabilityOutput", sDebug);
+        if( TestaRcvBuff[15]==0x00){
+          // only send receive and forward if response is OK
+          vReceiveAndForward(GID_TCP, gSocketUnderTest, 5, 10);
+        }
+        else{
+          putValueToControl( kPanelName, "TestabilityOutput", " FAILED. Received response E_NOK \n ");
+          // proceed to send general.end_test()
+          strncpy(StringBuff,TCPRcvFwd_ETString,elcount(StringBuff));
+          vSendGeneralEndTest(0x04, StringBuff);         
+        }
+      }
+      else if( (TestaRcvBuff[3]==SP_ReceiveAndForward) && (TestaRcvBuff[14]==TID_Response)){
+        snprintf(sDebug, elcount(sDebug)," Recv: tcp.Receive_And_Forward(): RID=%d \n", TestaRcvBuff[15] );
+        putValueToControl( kPanelName, "TestabilityOutput", sDebug);
+      
+        vTcpTransmission(gclientHandle, "Test234");
+        setTimer(tReceiveAndForward, 200); // set 200ms timer to wait for Receive_and_forward event      
+      }
+      else if((TestaRcvBuff[3]==SP_ReceiveAndForward) && (TestaRcvBuff[14]==TID_Event) && (TestaRcvBuff[15]==0x00)){
+        //putValueToControl( kPanelName, "TestabilityOutput", " Recv: Event tcp.receive_and_forward():E_OK. \n ");
+      
+        //cancelTimer(tReceiveAndForward);
+           
+      
+      }
+      break;
+    case GID_NDP:
+      if( (TestaRcvBuff[3]==SP_NDP) && (TestaRcvBuff[14]==TID_Response) && (TestaRcvBuff[15]==0x00)){
+        putValueToControl( kPanelName, "TestabilityOutput", " Recv: CLEAR_NDP_CACHE: E_OK \n ");
+      }
+      break;
+    default:
+      putValueToControl( kPanelName, "TestabilityOutput", " wrong message received \n ");
+      break;
+    }        
+}
+
+void vCreateAndBind(byte GID, byte doBind, dword localPort, byte ipv6DestAddress[])
+{
+    LONG packetHandle;
+    byte TestabilityProtocol[37];
+    byte localPortHi, localPortLo;
+    char sDebug[255];
+
+    localPortLo = localPort & 0x00FF;
+    localPortHi = (localPort >> 8) & 0x00FF;
+
+    vConvertIPv6toArray(ipv6SourceAddrStr, ipv6SourceAddr);
+    vConvertIPv6toArray(ipv6DestAddrStr, ipv6DestAddr);
+
+    // create ipv6 packet
+    packetHandle = EthInitPacket("ipv6");
+
+    // init udp protocol inside ipv6 packet
+    EthInitProtocol(packetHandle, "udp" );
+
+    // Add token for VLAN field
+    EthAddToken( packetHandle, "eth", "vlanTpid");
+    EthAddToken( packetHandle, "eth", "vlanTci" ); 
+
+    if( EthGetLastError() == 0)
+    {
+      // set ETH protocol fields
+      EthSetTokenData( packetHandle, "eth", "destination", 6,dstmac );
+      EthSetTokenData( packetHandle, "eth", "source", 6, srcmac);
+      EthSetTokenInt( packetHandle, "eth", "vlantpid", 0x8100 );
+      EthSetTokenInt( packetHandle, "eth", "vlanTci", 0x0005 );
+  
+      // set IPv6 protocol fields
+      EthSetTokenData( packetHandle, "ipv6", "source", 16, ipv6SourceAddr );
+      EthSetTokenData( packetHandle, "ipv6", "destination", 16, ipv6DestAddr ); // FF02:0:0:0:0:1:FF00:0000 + 24 bits low order 
+  
+      // set UDP protocol fields
+      EthSetTokenInt( packetHandle, "udp", "source", SourcePort );
+      EthSetTokenInt( packetHandle, "udp", "destination", Testa_ControlPort );
+  
+      // Construct UDP payload (testability protocol)
+      TestabilityProtocol[0] = 0x01;
+      TestabilityProtocol[1] = 0x05;
+      TestabilityProtocol[2] = GID;
+      TestabilityProtocol[3] = SP_CreateAndBind;
+      TestabilityProtocol[7] = elcount(TestabilityProtocol) - 8; //LEN - 4 byte
+      TestabilityProtocol[12] = 0x01;
+      TestabilityProtocol[13] = 0x01;
+      TestabilityProtocol[14] = TID_Request;  // request message
+      TestabilityProtocol[15] = 0x0;  // result ID (not used for request msg)
+      // Testability payload
+      TestabilityProtocol[16] = doBind;
+      TestabilityProtocol[17] = localPortHi;
+      TestabilityProtocol[18] = localPortLo;
+      TestabilityProtocol[19] = 0x0;    //IPv6 (2 bytes LEN field)
+      TestabilityProtocol[20] = 0x10;
+      memcpy_off(TestabilityProtocol, 21, ipv6DestAddress,0, elcount(ipv6DestAddress)); 
+    
+      EthResizeToken( packetHandle, "udp", "data", elcount(TestabilityProtocol)*8 /*bits*/ );
+      EthSetTokenData( packetHandle, "udp", "data", elcount(TestabilityProtocol), TestabilityProtocol );      
+
+      // Complete and send packet
+      EthCompletePacket( packetHandle );
+      EthOutputPacket( packetHandle );
+
+      // release packet
+      EthReleasePacket( packetHandle );  
+      if( GID == GID_UDP)
+        snprintf(sDebug, elcount(sDebug),"send: udp.create_and_bind(doBind: %d localPort: %d) \n", doBind, localPort);
+      else if( GID == GID_TCP)
+        snprintf(sDebug, elcount(sDebug),"send: tcp.create_and_bind(doBind: %d localPort: %d) \n", doBind, localPort);
+      putValueToControl( kPanelName, "TestabilityOutput", sDebug);
+    }
+    else
+    {
+      EthGetLastErrorText( elCount(error), error );
+      write("Error: %s", error );
+    }   
+}
+
+void vSendData(byte GID, dword SocketId, dword port)
+{
+    LONG packetHandle;
+    byte TestabilityProtocol[47];
+    byte SocketIdLo, SocketIdHi, portLo, portHi;
+    char sDebug[255];
+
+    SocketIdLo = SocketId & 0x00FF;
+    SocketIdHi = (SocketId >> 8) & 0x00FF;
+    portLo = port & 0x00FF;
+    portHi = (port >> 8) & 0x00FF; 
+
+    vConvertIPv6toArray(ipv6SourceAddrStr, ipv6SourceAddr);
+    vConvertIPv6toArray(ipv6DestAddrStr, ipv6DestAddr);
+
+    // create ipv6 packet
+    packetHandle = EthInitPacket("ipv6");
+
+    // init udp protocol inside ipv6 packet
+    EthInitProtocol(packetHandle, "udp" );
+
+    // Add token for VLAN field
+    EthAddToken( packetHandle, "eth", "vlanTpid");
+    EthAddToken( packetHandle, "eth", "vlanTci" ); 
+
+    if( EthGetLastError() == 0)
+    {
+      // set ETH protocol fields
+      EthSetTokenData( packetHandle, "eth", "destination", 6,dstmac );
+      EthSetTokenData( packetHandle, "eth", "source", 6, srcmac);
+      EthSetTokenInt( packetHandle, "eth", "vlantpid", 0x8100 );
+      EthSetTokenInt( packetHandle, "eth", "vlanTci", 0x0005 );
+  
+      // set IPv6 protocol fields
+      EthSetTokenData( packetHandle, "ipv6", "source", 16, ipv6SourceAddr );
+      EthSetTokenData( packetHandle, "ipv6", "destination", 16, ipv6DestAddr ); // FF02:0:0:0:0:1:FF00:0000 + 24 bits low order 
+  
+      // set UDP protocol fields
+      EthSetTokenInt( packetHandle, "udp", "source", SourcePort );
+      EthSetTokenInt( packetHandle, "udp", "destination", Testa_ControlPort );
+  
+      // Construct UDP payload (testability protocol)
+      TestabilityProtocol[0] = 0x01;
+      TestabilityProtocol[1] = 0x05;
+      TestabilityProtocol[2] = GID;
+      TestabilityProtocol[3] = SP_SendData;
+      TestabilityProtocol[7] = elcount(TestabilityProtocol) - 8; //LEN
+      TestabilityProtocol[12] = 0x01;
+      TestabilityProtocol[13] = 0x01;
+      TestabilityProtocol[14] = TID_Request;  // request message
+      TestabilityProtocol[15] = 0x0;  // result ID (not used for request msg)
+      // Testability payload
+      TestabilityProtocol[16] = SocketIdHi;
+      TestabilityProtocol[17] = SocketIdLo;
+      TestabilityProtocol[18] = 0;      //Total LEN
+      TestabilityProtocol[19] = 10;
+      TestabilityProtocol[20] = portHi;   //Dest Port
+      TestabilityProtocol[21] = portLo;
+      TestabilityProtocol[22] = 0;      //IPv6
+      TestabilityProtocol[23] = 0x10;   //16
+      memcpy_off(TestabilityProtocol, 24, ipv6SourceAddr,0, elcount(ipv6SourceAddr));   //IP address of lower tester. We use MainUnit address
+      //TestabilityProtocol[40] = 0;      //flag is not used in 1.1
+      memcpy_off(TestabilityProtocol, 40, "Test123",0, 7);
+    
+      EthResizeToken( packetHandle, "udp", "data", elcount(TestabilityProtocol)*8 /*bits*/ );
+      EthSetTokenData( packetHandle, "udp", "data", elcount(TestabilityProtocol), TestabilityProtocol );      
+
+      // Complete and send packet
+      EthCompletePacket( packetHandle );
+      EthOutputPacket( packetHandle );
+
+      // release packet
+      EthReleasePacket( packetHandle );
+      if( GID == GID_UDP)
+        snprintf(sDebug, elcount(sDebug),"send: udp.send_data(SocketId: %d destPort: %d data: %s) \n", SocketId, port, "'Test123'");
+      else if( GID == GID_TCP)
+        snprintf(sDebug, elcount(sDebug),"send: tcp.send_data(SocketId: %d destPort: %d data: %s) \n", SocketId, port, "'Test123'");
+      putValueToControl( kPanelName, "TestabilityOutput", sDebug);
+    }
+    else
+    {
+      EthGetLastErrorText( elCount(error), error );
+      write("Error: %s", error );
+    }    
+
+}
+
+void vReceiveAndForward(byte GID, dword SocketId, dword MaxFwd, dword MaxLen)
+{
+  LONG packetHandle;
+  byte TestabilityProtocol[22];
+  char sDebug[255];
+
+  vConvertIPv6toArray(ipv6SourceAddrStr, ipv6SourceAddr);
+  vConvertIPv6toArray(ipv6DestAddrStr, ipv6DestAddr);
+
+  // create ipv6 packet
+  packetHandle = EthInitPacket("ipv6");
+
+  // init udp protocol inside ipv6 packet
+  EthInitProtocol(packetHandle, "udp" );
+
+  // Add token for VLAN field
+  EthAddToken( packetHandle, "eth", "vlanTpid");
+  EthAddToken( packetHandle, "eth", "vlanTci" ); 
+
+    if( EthGetLastError() == 0)
+    {
+      // set ETH protocol fields
+      EthSetTokenData( packetHandle, "eth", "destination", 6,dstmac );
+      EthSetTokenData( packetHandle, "eth", "source", 6, srcmac);
+      EthSetTokenInt( packetHandle, "eth", "vlantpid", 0x8100 );
+      EthSetTokenInt( packetHandle, "eth", "vlanTci", 0x0005 );
+  
+      // set IPv6 protocol fields
+      EthSetTokenData( packetHandle, "ipv6", "source", 16, ipv6SourceAddr );
+      EthSetTokenData( packetHandle, "ipv6", "destination", 16, ipv6DestAddr ); // FF02:0:0:0:0:1:FF00:0000 + 24 bits low order 
+  
+      // set UDP protocol fields
+      EthSetTokenInt( packetHandle, "udp", "source", SourcePort );
+      EthSetTokenInt( packetHandle, "udp", "destination", Testa_ControlPort );
+  
+      // Construct UDP payload (testability protocol)
+      TestabilityProtocol[0] = 0x01;
+      TestabilityProtocol[1] = 0x05;
+      TestabilityProtocol[2] = GID;
+      TestabilityProtocol[3] = SP_ReceiveAndForward;
+      TestabilityProtocol[7] = 14; //LEN
+      TestabilityProtocol[12] = 0x01;
+      TestabilityProtocol[13] = 0x01;
+      TestabilityProtocol[14] = TID_Request;  // request message
+      TestabilityProtocol[15] = 0x0;  // result ID (not used for request msg)
+      // Testability payload
+      TestabilityProtocol[16] = (SocketId >> 8) & 0x00FF;
+      TestabilityProtocol[17] = SocketId & 0x00FF;
+      TestabilityProtocol[18] = (MaxFwd >> 8) & 0x00FF;
+      TestabilityProtocol[19] = MaxFwd & 0x00FF;  
+      TestabilityProtocol[20] = (MaxLen >> 8) & 0x00FF;
+      TestabilityProtocol[21] = MaxLen & 0x00FF; 
+  
+      EthResizeToken( packetHandle, "udp", "data", elcount(TestabilityProtocol)*8 /*bits*/ );
+      EthSetTokenData( packetHandle, "udp", "data", elcount(TestabilityProtocol), TestabilityProtocol );      
+
+      // Complete and send packet
+      EthCompletePacket( packetHandle );
+      EthOutputPacket( packetHandle );
+
+      // release packet
+      EthReleasePacket( packetHandle ); 
+      snprintf(sDebug, elcount(sDebug),"send: receive_and_forward(SocketId: %d maxFwd: %d maxLen: %d) \n", SocketId, MaxFwd, MaxLen);
+      putValueToControl( kPanelName, "TestabilityOutput", sDebug);    
+    }
+    else
+    {
+      EthGetLastErrorText( elCount(error), error );
+      write("Error: %s", error );
+    }    
+}
+
+void vTcpListenAndAccept(dword SocketId)
+{
+  LONG packetHandle;
+  byte TestabilityProtocol[20];
+  char sDebug[255];
+
+  vConvertIPv6toArray(ipv6SourceAddrStr, ipv6SourceAddr);
+  vConvertIPv6toArray(ipv6DestAddrStr, ipv6DestAddr);
+
+  // create ipv6 packet
+  packetHandle = EthInitPacket("ipv6");
+
+  // init udp protocol inside ipv6 packet
+  EthInitProtocol(packetHandle, "udp" );
+
+  // Add token for VLAN field
+  EthAddToken( packetHandle, "eth", "vlanTpid");
+  EthAddToken( packetHandle, "eth", "vlanTci" ); 
+
+    if( EthGetLastError() == 0)
+    {
+      // set ETH protocol fields
+      EthSetTokenData( packetHandle, "eth", "destination", 6,dstmac );
+      EthSetTokenData( packetHandle, "eth", "source", 6, srcmac);
+      EthSetTokenInt( packetHandle, "eth", "vlantpid", 0x8100 );
+      EthSetTokenInt( packetHandle, "eth", "vlanTci", 0x0005 );
+  
+      // set IPv6 protocol fields
+      EthSetTokenData( packetHandle, "ipv6", "source", 16, ipv6SourceAddr );
+      EthSetTokenData( packetHandle, "ipv6", "destination", 16, ipv6DestAddr ); // FF02:0:0:0:0:1:FF00:0000 + 24 bits low order 
+  
+      // set UDP protocol fields
+      EthSetTokenInt( packetHandle, "udp", "source", SourcePort );
+      EthSetTokenInt( packetHandle, "udp", "destination", Testa_ControlPort );
+  
+      // Construct UDP payload (testability protocol)
+      TestabilityProtocol[0] = 0x01;
+      TestabilityProtocol[1] = 0x05;
+      TestabilityProtocol[2] = GID_TCP;
+      TestabilityProtocol[3] = SP_ListenAndAccept;
+      TestabilityProtocol[7] = 12; //LEN
+      TestabilityProtocol[12] = 0x01;
+      TestabilityProtocol[13] = 0x01;
+      TestabilityProtocol[14] = TID_Request;  // request message
+      TestabilityProtocol[15] = 0x0;  // result ID (not used for request msg)
+      // Testability payload
+      TestabilityProtocol[16] = (SocketId >> 8) & 0x00FF;
+      TestabilityProtocol[17] = SocketId & 0x00FF;  
+      TestabilityProtocol[18] = 0;
+      TestabilityProtocol[19] = 1;
+  
+      EthResizeToken( packetHandle, "udp", "data", elcount(TestabilityProtocol)*8 /*bits*/ );
+      EthSetTokenData( packetHandle, "udp", "data", elcount(TestabilityProtocol), TestabilityProtocol );      
+
+      // Complete and send packet
+      EthCompletePacket( packetHandle );
+      EthOutputPacket( packetHandle );
+
+      // release packet
+      EthReleasePacket( packetHandle );  
+      snprintf(sDebug, elcount(sDebug),"send: tcp.listen_and_accept(Socket: %d maxCon: %d) \n", SocketId, TestabilityProtocol[19]);
+      putValueToControl( kPanelName, "TestabilityOutput", sDebug);    
+    }
+    else
+    {
+      EthGetLastErrorText( elCount(error), error );
+      write("Error: %s", error );
+    }      
+}
+
+void vTcpConnect(dword SocketId, dword PortNr, byte ipv6LTAddress[])
+{
+    LONG packetHandle;
+    byte TestabilityProtocol[100];
+    char sDebug[255];
+
+    vConvertIPv6toArray(ipv6SourceAddrStr, ipv6SourceAddr);
+    vConvertIPv6toArray(ipv6DestAddrStr, ipv6DestAddr);
+
+    // create ipv6 packet
+    packetHandle = EthInitPacket("ipv6");
+
+    // init udp protocol inside ipv6 packet
+    EthInitProtocol(packetHandle, "udp" );
+
+    // Add token for VLAN field
+    EthAddToken( packetHandle, "eth", "vlanTpid");
+    EthAddToken( packetHandle, "eth", "vlanTci" );  
+
+    if( EthGetLastError() == 0)
+    {
+      // set ETH protocol fields
+      EthSetTokenData( packetHandle, "eth", "destination", 6,dstmac );
+      EthSetTokenData( packetHandle, "eth", "source", 6, srcmac);
+      EthSetTokenInt( packetHandle, "eth", "vlantpid", 0x8100 );
+      EthSetTokenInt( packetHandle, "eth", "vlanTci", 0x0005 );
+  
+      // set IPv6 protocol fields
+      EthSetTokenData( packetHandle, "ipv6", "source", 16, ipv6SourceAddr );
+      EthSetTokenData( packetHandle, "ipv6", "destination", 16, ipv6DestAddr ); // FF02:0:0:0:0:1:FF00:0000 + 24 bits low order 
+  
+      // set UDP protocol fields
+      EthSetTokenInt( packetHandle, "udp", "source", SourcePort );
+      EthSetTokenInt( packetHandle, "udp", "destination", Testa_ControlPort );
+
+      // Construct UDP payload (testability protocol)
+      TestabilityProtocol[0] = 0x01;
+      TestabilityProtocol[1] = 0x05;
+      TestabilityProtocol[2] = GID_TCP;
+      TestabilityProtocol[3] = SP_Connect;
+      TestabilityProtocol[7] = 8+6+16; //LEN
+      TestabilityProtocol[12] = 0x01;
+      TestabilityProtocol[13] = 0x01;
+      TestabilityProtocol[14] = TID_Request;  // request message
+      TestabilityProtocol[15] = 0x0;  // result ID (not used)
+      // Testability payload
+      TestabilityProtocol[16] = (SocketId >> 8) & 0x00FF;
+      TestabilityProtocol[17] = SocketId & 0x00FF;
+      TestabilityProtocol[18] = (PortNr >> 8) & 0x00FF; // port of the remote destination
+      TestabilityProtocol[19] = PortNr & 0x00FF;
+      TestabilityProtocol[20] = 0x0;    //IPv6 (2 bytes LEN field)
+      TestabilityProtocol[21] = 0x10;
+      // remote destination is the lower tester/simulation, so we set our IP here
+      memcpy_off(TestabilityProtocol, 22, ipv6LTAddress,0, elcount(ipv6LTAddress));   
+  
+      EthResizeToken( packetHandle, "udp", "data", (16+6+16)*8 /*bits*/ );
+      EthSetTokenData( packetHandle, "udp", "data", (16+6+16), TestabilityProtocol );  
+  
+        // Complete and send packet
+      EthCompletePacket( packetHandle );
+      EthOutputPacket( packetHandle );
+
+      // release packet
+      EthReleasePacket( packetHandle );
+      snprintf(sDebug, elcount(sDebug),"send: tcp.connect(Socket: %d port: %d) \n", SocketId, PortNr);
+      putValueToControl( kPanelName, "TestabilityOutput", sDebug);
+    }
+    else
+    {
+      EthGetLastErrorText( elCount(error), error );
+      write("Error: %s", error );
+    }  
+
+
+}
+
+void vSendGeneralGetVersion()
+{
+    LONG packetHandle;
+    byte TestabilityProtocol[100];
+
+    vConvertIPv6toArray(ipv6SourceAddrStr, ipv6SourceAddr);
+    vConvertIPv6toArray(ipv6DestAddrStr, ipv6DestAddr);
+
+    // create ipv6 packet
+    packetHandle = EthInitPacket("ipv6");
+
+    // init udp protocol inside ipv6 packet
+    EthInitProtocol(packetHandle, "udp" );
+
+    // Add token for VLAN field
+    EthAddToken( packetHandle, "eth", "vlanTpid");
+    EthAddToken( packetHandle, "eth", "vlanTci" );
+
+    if( EthGetLastError() == 0)
+    {
+      // set ETH protocol fields
+      EthSetTokenData( packetHandle, "eth", "destination", 6,dstmac );
+      EthSetTokenData( packetHandle, "eth", "source", 6, srcmac);
+      EthSetTokenInt( packetHandle, "eth", "vlantpid", 0x8100 );
+      EthSetTokenInt( packetHandle, "eth", "vlanTci", 0x0005 );
+  
+      // set IPv6 protocol fields
+      EthSetTokenData( packetHandle, "ipv6", "source", 16, ipv6SourceAddr );
+      EthSetTokenData( packetHandle, "ipv6", "destination", 16, ipv6DestAddr ); // FF02:0:0:0:0:1:FF00:0000 + 24 bits low order 
+  
+      // set UDP protocol fields
+      EthSetTokenInt( packetHandle, "udp", "source", SourcePort );
+      EthSetTokenInt( packetHandle, "udp", "destination", Testa_ControlPort );
+
+      // Construct UDP payload (testability protocol)
+      TestabilityProtocol[0] = 0x01;
+      TestabilityProtocol[1] = 0x05;
+      TestabilityProtocol[2] = GID_General;
+      TestabilityProtocol[3] = SP_Get_Version;
+      TestabilityProtocol[7] = 8; //LEN
+      TestabilityProtocol[12] = 0x01;
+      TestabilityProtocol[13] = 0x01;
+      TestabilityProtocol[14] = TID_Request;  // request message
+      TestabilityProtocol[15] = 0x0;  // result ID (not used)
+
+      EthResizeToken( packetHandle, "udp", "data", 16*8 /*bits*/ );
+      EthSetTokenData( packetHandle, "udp", "data", 16, TestabilityProtocol );  
+  
+        // Complete and send packet
+      EthCompletePacket( packetHandle );
+      EthOutputPacket( packetHandle );
+
+      // release packet
+      EthReleasePacket( packetHandle );  
+      putValueToControl( kPanelName, "TestabilityOutput", "send: general.get_version() \n ");
+    }
+    else
+    {
+      EthGetLastErrorText( elCount(error), error );
+      write("Error: %s", error );
+    }          
+}
+
+void vSendGeneralEndTest(byte tcId, char tsName[])
+{
+    LONG packetHandle;
+    byte TestabilityProtocol[100];
+
+    vConvertIPv6toArray(ipv6SourceAddrStr, ipv6SourceAddr);
+    vConvertIPv6toArray(ipv6DestAddrStr, ipv6DestAddr);
+
+    // create ipv6 packet
+    packetHandle = EthInitPacket("ipv6");
+
+    // init udp protocol inside ipv6 packet
+    EthInitProtocol(packetHandle, "udp" );
+
+    // Add token for VLAN field
+    EthAddToken( packetHandle, "eth", "vlanTpid");
+    EthAddToken( packetHandle, "eth", "vlanTci" );  
+
+    if( EthGetLastError() == 0)
+    {
+      // set ETH protocol fields
+      EthSetTokenData( packetHandle, "eth", "destination", 6,dstmac );
+      EthSetTokenData( packetHandle, "eth", "source", 6, srcmac);
+      EthSetTokenInt( packetHandle, "eth", "vlantpid", 0x8100 );
+      EthSetTokenInt( packetHandle, "eth", "vlanTci", 0x0005 );
+  
+      // set IPv6 protocol fields
+      EthSetTokenData( packetHandle, "ipv6", "source", 16, ipv6SourceAddr );
+      EthSetTokenData( packetHandle, "ipv6", "destination", 16, ipv6DestAddr ); // FF02:0:0:0:0:1:FF00:0000 + 24 bits low order 
+  
+      // set UDP protocol fields
+      EthSetTokenInt( packetHandle, "udp", "source", SourcePort );
+      EthSetTokenInt( packetHandle, "udp", "destination", Testa_ControlPort );
+
+      // Construct UDP payload (testability protocol)
+      TestabilityProtocol[0] = 0x01;
+      TestabilityProtocol[1] = 0x05;
+      TestabilityProtocol[2] = GID_General;
+      TestabilityProtocol[3] = SP_EndTest;
+      TestabilityProtocol[7] = 8+2+elcount(tsName); //LEN
+      TestabilityProtocol[12] = 0x01;
+      TestabilityProtocol[13] = 0x01;
+      TestabilityProtocol[14] = TID_Request;  // request message
+      TestabilityProtocol[15] = 0x0;  // result ID (not used)
+      // Testability payload
+      TestabilityProtocol[16] = 0x00;
+      TestabilityProtocol[17] = tcId;
+      memcpy_off(TestabilityProtocol, 18, tsName,0, elcount(tsName));
+  
+      EthResizeToken( packetHandle, "udp", "data", (16+2+elcount(tsName))*8 /*bits*/ );
+      EthSetTokenData( packetHandle, "udp", "data", (16+2+elcount(tsName)), TestabilityProtocol );  
+  
+        // Complete and send packet
+      EthCompletePacket( packetHandle );
+      EthOutputPacket( packetHandle );
+
+      // release packet
+      EthReleasePacket( packetHandle );  
+      putValueToControl( kPanelName, "TestabilityOutput", "send: general.end_test() \n ");
+    }
+    else
+    {
+      EthGetLastErrorText( elCount(error), error );
+      write("Error: %s", error );
+    }    
+}
+
+void vUdpTransmission(dword PortNumber)
+{
+  LONG packetHandle;
+  char buf[40];
+
+  // create ipv6 packet
+  packetHandle = EthInitPacket("ipv6");
+
+  // init udp protocol inside ipv6 packet
+  EthInitProtocol(packetHandle, "udp" );
+
+  EthAddToken( packetHandle, "eth", "vlanTpid");
+  EthAddToken( packetHandle, "eth", "vlanTci" );
+
+    if( EthGetLastError() == 0)
+    {
+      // set ETH protocol fields
+      EthSetTokenData( packetHandle, "eth", "destination", 6,dstmac );
+      EthSetTokenData( packetHandle, "eth", "source", 6, srcmac);
+      EthSetTokenInt( packetHandle, "eth", "vlantpid", 0x8100 );
+      EthSetTokenInt( packetHandle, "eth", "vlanTci", 0x0005 );
+  
+      // set IPv6 protocol fields
+      EthSetTokenData( packetHandle, "ipv6", "source", 16, ipv6SourceAddr );
+      EthSetTokenData( packetHandle, "ipv6", "destination", 16, ipv6DestAddr );
+
+      EthSetTokenInt( packetHandle, "udp", "source", UDP_port );
+      EthSetTokenInt( packetHandle, "udp", "destination", PortNumber );  
+      EthResizeToken( packetHandle, "udp", "data", 7*8 /*bits*/ );
+      EthSetTokenData( packetHandle,"udp", "data", 7,"Test123");
+    
+      // Complete and send packet
+      EthCompletePacket( packetHandle );
+      EthOutputPacket( packetHandle );
+
+      // release packet
+      EthReleasePacket( packetHandle );
+    }
+    else
+    {
+      EthGetLastErrorText( elCount(error), error );
+      write("Error: %s", error );
+    }     
+    putValueToControl( kPanelName, "TestabilityOutput", " upd transmission 'Test123'. \n ");  
+}
+
+void vTcpTransmission (dword socket, char databuffer[] )
+{
+  long result;
+  dword size;
+  char sDebug[255];
+
+  size = elcount(databuffer);
+  result = TcpSend(socket, databuffer, size-1);
+    if( result == 0)
+    {
+    // sending took place immediately.
+    // => OnTcpSend is NOT called.
+    snprintf(sDebug, elcount(sDebug),"tcp transmission with payload: %s. \n", databuffer);
+    putValueToControl( kPanelName, "TestabilityOutput", sDebug); 
+    }
+    else
+    {
+    if( result == -1)
+    {
+      result = IpGetLastSocketError(socket);
+      if( result == 997)
+      {
+        // sending is done asynchronously.
+        // => OnTcpSend is called when done sending.
+      }
+      else
+      {
+        writeLineEx( 1, 3, " [ sendTcpData: Error sending data. (%d) ]", result);
+      }
+    }
+    else
+    {
+      writeLineEx( 1, 3, " [ sendTcpData: Error sending data. (%d) ]", result);
+    }
+    }
+}
+
+void vTCPReceiveInternal ( dword socket, long result, char buffer[], dword size)
+{
+  char StringBuff[35];
+  result = TcpReceive( socket, buffer, elcount(buffer) );
+  write( "<%BASE_FILE_NAME%> TCP received %d bytes, socket 0x%x", size, socket );
+    if( result == 0)
+    {
+//    putValueToControl( kPanelName, "TestabilityOutput", " Recv: Event tcp.receive_and_forward():E_OK. \n ");     
+//    cancelTimer(tReceiveAndForward);
+//  
+//    if( !count)
+//    {
+//      count++;
+//      vTcpTransmission(gclientHandle, "Test34567");
+//      setTimer(tReceiveAndForward, 200); // set 200ms timer to wait for Receive_and_forward event
+//    }
+//    else
+//    {
+//      count = 0;
+//      strncpy(StringBuff,TCPRcvFwd_ETString,elcount(StringBuff));
+//      vSendGeneralEndTest(0x03, StringBuff);
+//    } 
+    }
+    else
+    {
+//    // failure
+//    writeLIneEx( 1, 3, "TcpReceive error %d", result);
+    }
+
+
+}
+
+void OnTcpReceive( dword socket, long result, dword address, dword port, char buffer[], dword size)
+{
+  vTCPReceiveInternal( socket, result, buffer, size);
+
+  // To receive more data, we have to call ReceiveFrom again.
+  TcpReceive( socket, buffer, elcount(buffer) );
+}
+
+
+on timer tReceiveAndForward
+{
+  char StringBuff[30];
+
+    if(tTestType == UDPReceiveAndCount)
+    {
+    putValueToControl( kPanelName, "TestabilityOutput", "  FAILED test, udp.receive_and_forward is not received within 200ms \n");
+    // proceed to send general.end_test()
+    strncpy(StringBuff,UDPReceiveCnt_ETString,elcount(StringBuff));
+    vSendGeneralEndTest(0x02, StringBuff);  
+    }
+    else if(tTestType == TCPClientReceiveAndForward)
+    {
+    putValueToControl( kPanelName, "TestabilityOutput", "  FAILED test, tcp.receive_and_forward is not received within 200ms \n");
+    // proceed to send general.end_test()
+    strncpy(StringBuff,TCPRcvFwd_ETString,elcount(StringBuff));
+    vSendGeneralEndTest(0x04, StringBuff);  
+    }
+}
+
+on timer tListenAndAccept
+{
+  char StringBuff[30];
+
+    if(tTestType == TCPServerTransmit)
+    {
+    putValueToControl( kPanelName, "TestabilityOutput", "  FAILED test, tcp.listen_and_accept is not received within 200ms \n");
+    // proceed to send general.end_test()
+    strncpy(StringBuff,TCPServerTransmit_ETString,elcount(StringBuff));
+    vSendGeneralEndTest(0x03, StringBuff);  
+    }
+}
+
+on timer tSendData
+{
+  char StringBuff[30];
+
+  putValueToControl( kPanelName, "TestabilityOutput", "  FAILED test, UDP/TCP transmission is not received within 200ms \n");
+    if(tTestType == UDPReceiveAndCount)
+    {  
+    // proceed to send general.end_test()
+    strncpy(StringBuff,UDPReceiveCnt_ETString,elcount(StringBuff));
+    vSendGeneralEndTest(0x02, StringBuff);  
+    }
+    else if( tTestType == TCPServerTransmit)
+    {
+    strncpy(StringBuff,TCPServerTransmit_ETString,elcount(StringBuff));
+    vSendGeneralEndTest(0x03, StringBuff);   
+    }
+}
+
+on timer tCreateAndBind
+{
+  char StringBuff[30];
+
+  putValueToControl( kPanelName, "TestabilityOutput", "  FAILED test, No response to create and bind. Socket cannot be created \n");
+    if(tTestType == UDPReceiveAndCount)
+    {  
+    // proceed to send general.end_test()
+    strncpy(StringBuff,UDPReceiveCnt_ETString,elcount(StringBuff));
+    vSendGeneralEndTest(0x02, StringBuff);  
+    }
+    else if( tTestType == TCPServerTransmit)
+    {
+    strncpy(StringBuff,TCPServerTransmit_ETString,elcount(StringBuff));
+    vSendGeneralEndTest(0x03, StringBuff);   
+    }
+    else if(tTestType == TCPClientReceiveAndForward)
+    {
+    // proceed to send general.end_test()
+    strncpy(StringBuff,TCPRcvFwd_ETString,elcount(StringBuff));
+    vSendGeneralEndTest(0x04, StringBuff);  
+    }
+
+}
+
+// Start Client and connect to server
+int ClientStart(dword TcpServerPort)
+{
+  byte  remoteAddressIPv6[16];
+  byte  localAddressIPv6[16];
+  CHAR  errorText[200];
+  CHAR  buf[32];
+  long  result;
+  dword LocalSocket;
+
+    if( ipGetAddressAsArray(ipv6DestAddrStr, remoteAddressIPv6) == 0 )  // copy cluster IP as remote address
+    {
+    ipGetAddressAsArray("::", localAddressIPv6);
+    LocalSocket= TcpOpen( localAddressIPv6, 0 );
+  
+    if( IpGetLastSocketError(LocalSocket) != 0)
+    {
+      IpGetLastSocketErrorAsString( LocalSocket, errorText, elcount(errorText) );
+      write( "$$  <%BASE_FILE_NAME%> TcpSocket::open IPv6 failed, %s (Result %d)", errorText, IpGetLastSocketError(LocalSocket) );
+      return -1;
+    }
+  
+    result = TcpConnect( LocalSocket, remoteAddressIPv6, TcpServerPort );
+    if( result != 0 && ipGetLastSocketError(LocalSocket) != 10035 ) // WSAEWOULDBLOCK
+    {
+      IpGetLastSocketErrorAsString(LocalSocket, errorText, elcount(errorText) );
+      write( "$$  <%BASE_FILE_NAME%> TcpSocket::connect IPv6 failed, %s (Result %d)", errorText,IpGetLastSocketError(LocalSocket) );
+      return -1;
+    }
+    }
+  write( "$$  <%BASE_FILE_NAME%> TCP Client connecting to port: %d, from Socket: 0x%x", TcpServerPort,LocalSocket  );
+  return LocalSocket;
+}
+
+/*   Stop Client and close connection to server */
+int ClientStop(dword ClosedSocket)
+{
+  //CHAR errorText[200];
+
+  // Close socket
+  TcpClose(ClosedSocket);
+  //gClientSocket = 0;
+
+  return 0;
+
+}
+
+// Start  Server and listen for incomming connections
+int ServerStart(dword LTTestPort)
+{
+  CHAR errorText[200];
+  BYTE v6Address[16];
+  long result;
+  CHAR  buf[32];
+  byte ServerPort;
+
+  // Setup Panel Data
+  write( "# <%BASE_FILE_NAME%> TCP server openning started");
+
+
+   ipGetAddressAsArray(ipv6SourceAddrStr, v6Address);
+
+  // Create TCP socket and listen for IPv6
+
+  gServerSocket = TcpOpen( v6Address, LTTestPort );
+
+    if( IpGetLastSocketError(gServerSocket) != 0)
+    {
+    IpGetLastSocketErrorAsString( gServerSocket, errorText, elcount(errorText) );
+    write( "# <%BASE_FILE_NAME%> TcpSocket::open for IPv6 failed, %s (Result %d)", errorText, IpGetLastSocketError(gServerSocket) );
+    return -1;
+    }
+
+  result = TcpListen(gServerSocket);
+
+    if( result != 0 || IpGetLastSocketError(gServerSocket) != 0)
+    {
+    IpGetLastSocketErrorAsString( gServerSocket, errorText, elcount(errorText) );
+    write( "# <%BASE_FILE_NAME%> TcpSocket::listen for IPv6 failed, %s (Result %d)", errorText, IpGetLastSocketError(gServerSocket) );
+    return -1;
+    }                   
+
+  //return socket fd    
+  return gServerSocket;
+}
+
+/*
+  Stop Chat Server and close connection to clients
+*/
+int ServerStop(dword LTTestPort)
+{
+  CHAR errorText[200];
+  LONG result;
+
+  result = TcpClose(LTTestPort);
+
+    if( result != 0)
+    {
+    IpGetLastSocketErrorAsString( gServerSocket, errorText, elcount(errorText) );
+    write( "# <%BASE_FILE_NAME%> TcpSocket::close for IPv6 failed, %s (Result %d)", errorText, result );
+    return -1;
+    }
+
+  return 0;
+}
+
+/*
+  Callback OnTcpListen is called on incoming connect request. This function is called, if a client
+  wants to connect to the server. The server must accept the connection and add the
+  client to the client list.
+
+  socket - The socket handle of the server
+  result - Result of the operation, 0 on success
+*/
+void OnTcpListen( dword socket, long result)
+{
+  CHAR  errorText[200];
+  long ServerPortIndex;
+  long au32LastConnection [5] = {0, 0, 0, 0, 0};
+
+
+    if(socket == gServerSocket)
+    {
+    write("Tcp client trying to connected to port 0x%x ",gServerSocket);
+
+    // Accept the connection
+    gclientHandle = TcpAccept( socket );
+
+     // to receive data from the socket, we have to call TCPReceive.
+     TcpReceive( gclientHandle, errorText, elcount(errorText) );   
+ 
+    if( IpGetLastSocketError(socket) != 0)
+    {
+    IpGetLastSocketErrorAsString(socket, errorText, elcount(errorText) );
+    write( "# <%BASE_FILE_NAME%> TcpSocket::accept failed, %s (Result %d)", errorText, IpGetLastSocketError(socket) );
+    }
+   }
+    
+    
+}
+
+void vSendClearNDPCache(void)
+{
+    LONG packetHandle;
+    byte TestabilityProtocol[16];
+
+    vConvertIPv6toArray(ipv6SourceAddrStr, ipv6SourceAddr);
+    vConvertIPv6toArray(ipv6DestAddrStr, ipv6DestAddr);
+
+    // create ipv6 packet
+    packetHandle = EthInitPacket("ipv6");
+
+    // init udp protocol inside ipv6 packet
+    EthInitProtocol(packetHandle, "udp" );
+
+    // Add token for VLAN field
+    EthAddToken( packetHandle, "eth", "vlanTpid");
+    EthAddToken( packetHandle, "eth", "vlanTci" );
+
+    if( EthGetLastError() == 0)
+    {
+      // set ETH protocol fields
+      EthSetTokenData( packetHandle, "eth", "destination", 6,dstmac );
+      EthSetTokenData( packetHandle, "eth", "source", 6, srcmac);
+      EthSetTokenInt( packetHandle, "eth", "vlantpid", 0x8100 );
+      EthSetTokenInt( packetHandle, "eth", "vlanTci", 0x0005 );
+  
+      // set IPv6 protocol fields
+      EthSetTokenData( packetHandle, "ipv6", "source", 16, ipv6SourceAddr );
+      EthSetTokenData( packetHandle, "ipv6", "destination", 16, ipv6DestAddr );  
+  
+      // set UDP protocol fields
+      EthSetTokenInt( packetHandle, "udp", "source", SourcePort );
+      EthSetTokenInt( packetHandle, "udp", "destination", Testa_ControlPort );
+
+      // Construct UDP payload (testability protocol)
+      TestabilityProtocol[0] = 0x01;
+      TestabilityProtocol[1] = 0x05;
+      TestabilityProtocol[2] = GID_NDP;
+      TestabilityProtocol[3] = SP_NDP;
+      TestabilityProtocol[7] = 0x8; //LEN
+      TestabilityProtocol[12] = 0x01;
+      TestabilityProtocol[13] = 0x01;
+      TestabilityProtocol[14] = TID_Request;  // request message
+      TestabilityProtocol[15] = 0x0;  // result ID (not used)
+      EthResizeToken( packetHandle, "udp", "data", elcount(TestabilityProtocol)*8 /*bits*/ );
+      EthSetTokenData( packetHandle, "udp", "data", elcount(TestabilityProtocol), TestabilityProtocol );  
+  
+        // Complete and send packet
+      EthCompletePacket( packetHandle );
+      EthOutputPacket( packetHandle );
+
+      // release packet
+      EthReleasePacket( packetHandle );  
+      putValueToControl( kPanelName, "TestabilityOutput", "send: NDP.clear_cache() \n ");
+    }
+    else
+    {
+      EthGetLastErrorText( elCount(error), error );
+      write("Error: %s", error );
+    }   
+}
+
+void OnTcpClose( dword socket, long result)
+{
+  //writeLineEx(1, 1, " [ OnTcpClose called. (socket: %d, result: %d) ]", socket, result);
+  // TCP close is called
+  TcpClose(socket);
+}

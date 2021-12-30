@@ -1,0 +1,639 @@
+/*@!Encoding:1252*/
+
+variables
+{
+  int  i;
+  int  length;
+  byte function;
+  byte frame_counter;
+  byte frame_counter_max;
+  byte data[1770];
+  byte warping_buffer[1770];
+  char data_string[62];
+  
+  msTimer Flow_Control;
+  
+  msTimer timeout;
+  
+  message ARC_HUD_Req_FD  mARC_HUD_Req_FD;
+  message ARC_HUD_Resp_FD mARC_HUD_Resp_FD;
+  message HUD_ARC_Req_FD  mHUD_ARC_Req_FD;
+  message HUD_ARC_Resp_FD mHUD_ARC_Resp_FD;
+  
+  mstimer HID_Warping_00_FetchAll_Get_reset;
+}
+
+on start
+{
+  setControlVisibility ("HID_Warping", "HID_ON_OFF",    !@Konfig::MIB3);
+  setControlVisibility ("HID_Warping", "Get_Button",    !@Konfig::MIB3);
+  setControlVisibility ("HID_Warping", "SetGet_Button", !@Konfig::MIB3);
+  setControlVisibility ("HID_Warping", "Timeout",       !@Konfig::MIB3);
+  @HID_Warping_ON_OFF = 0;
+  clear_panel();
+  function_available();
+}
+
+on envVar Env_GlobalAppl
+{
+  if (@this == 1)
+  {
+    @HID_Warping_00_FetchAll_Get = 1;
+    setTimer (HID_Warping_00_FetchAll_Get_reset, 5);
+  }
+}
+
+on timer HID_Warping_00_FetchAll_Get_reset
+{
+  @HID_Warping_00_FetchAll_Get = 0;
+}
+
+on envVar HID_Warping_00_FetchAll_Get
+{
+  if (@this == 1 && @Konfig::MIB3 == 0)
+    get_req (0x00);
+}
+
+on envVar HID_Warping_ON_OFF
+{
+  if (@this == 0)
+    clear_panel();
+}
+
+on message HUD_ARC_Req_FD
+{
+  byte segmentation_flag; // 0: keine Segmentierung / 1: Segmentierung, 1 Frame / 2: Segmentierung, weitere Frames
+  
+  if ( ((@HID_Warping_ON_OFF == 1) || (@Konfig::MIB3 == 1)) && this.dir == RX )
+  {
+    cancelTimer (timeout);
+    @HID_Warping_Timeout = 0;
+    
+    segmentation_flag = (this.byte(0)&0xF0)>>4;
+    
+    switch (segmentation_flag)
+    {
+      case 0: // keine Segmentierung
+    
+        // data Array leeren
+        for (i=0;i<62;i++)
+          data[i] = 0;
+        
+        // Data <= 8
+        if (this.byte(0) != 0)
+        {
+          length   = this.byte(0);
+          function = this.byte(1);
+          
+          for (i=0;i<length-1;i++)
+            data[i] = this.byte(i+2);
+        }
+        
+        // Data > 8
+        if (this.byte(0) == 0)
+        {
+          length   = this.byte(1);
+          function = this.byte(2);
+          
+          for (i=0;i<length-1;i++)
+            data[i] = this.byte(i+3);
+        }
+        
+      break;
+    
+    
+      case 1: // Segmentierung, 1 Frame
+        
+        length = ((this.byte(0)&0x0F) * 256) + this.byte(1);
+        function = this.byte(2);
+        
+        frame_counter = 0;
+        frame_counter_max = (length/63);
+                
+        // data Array leeren
+        for (i=0;i<length-1;i++)
+          data[i] = 0;
+        
+        for (i=0;i<61;i++)
+          data[i] = this.byte(i+3);
+        
+        settimer(Flow_Control,10);
+        
+      break;
+        
+       
+      case 2: // Segmentierung, weitere Frames
+
+        frame_counter++;
+        
+        if (frame_counter < frame_counter_max) // passt in den Frame
+        {
+          for (i=0;i<63;i++)
+          {
+            data[i + (63*frame_counter)-2] = this.byte(i+1);
+          }
+        }
+        
+        if (frame_counter == frame_counter_max) // letzter Frame
+        {
+          for (i=0;i<length-(63*frame_counter)+2;i++)
+          {
+            data[i + (63*frame_counter)-2] = this.byte(i+1);
+          }
+        }
+        
+         // nach allen vielfachen von 8 ein FlowControl senden
+        if ((frame_counter%8) == 0)
+          settimer(Flow_Control, 10);
+        
+      break;
+    }
+    check_rx_Data();
+  }
+}
+
+on timer Flow_Control
+{
+  mHUD_ARC_Resp_FD.dlc     = 8;
+  mHUD_ARC_Resp_FD.byte(0) = 0x30;
+  mHUD_ARC_Resp_FD.byte(1) = 0x08;
+  mHUD_ARC_Resp_FD.byte(2) = 0x05;
+  mHUD_ARC_Resp_FD.byte(3) = 0x55;
+  mHUD_ARC_Resp_FD.byte(4) = 0x55;
+  mHUD_ARC_Resp_FD.byte(5) = 0x55;
+  mHUD_ARC_Resp_FD.byte(6) = 0x55;
+  mHUD_ARC_Resp_FD.byte(7) = 0x55;
+  output (mHUD_ARC_Resp_FD);
+}
+
+/*on message ARC_HUD_Resp_FD
+{
+  if ( (@HID_Warping_ON_OFF == 1) || (@Konfig::MIB3 == 1) )
+  {
+    cancelTimer (timeout);
+    @HID_Warping_Timeout = 0;
+    
+    // data Array leeren
+    for (i=0;i<62;i++)
+      data[i] = 0;
+    
+    // Data <= 8
+    if (this.byte(0) != 0)
+    {
+      length   = this.byte(0);
+      function = this.byte(1);
+      
+      for (i=0;i<length-1;i++)
+        data[i] = this.byte(i+2);
+    }
+    
+    // Data > 8
+    if (this.byte(0) == 0)
+    {
+      length   = this.byte(1);
+      function = this.byte(2);
+      
+      for (i=0;i<length-1;i++)
+        data[i] = this.byte(i+4);
+    }
+
+    check_rx_Data();
+  }
+}*/
+
+check_rx_Data()
+{
+  switch (function)
+  {
+    case 0x01: // DataDefinition
+      @HID_Warping_01_DataDefinition_Major_version  = data[0];
+      @HID_Warping_01_DataDefinition_Minor_version  = data[1];
+      @HID_Warping_01_DataDefinition_Bugfix_version = data[2];
+    break;
+      
+    case 0x02: // Command Support
+      @HID_Warping_02_CommandSupport_00_FetchAll_Reset               =  data[0]     & 0x01;
+      @HID_Warping_02_CommandSupport_01_DataDefinition               = (data[0]>>1) & 0x01;
+      @HID_Warping_02_CommandSupport_02_CommandSupport               = (data[0]>>2) & 0x01;
+      @HID_Warping_02_CommandSupport_10_BacklashOffset               =  data[2]     & 0x01;
+      @HID_Warping_02_CommandSupport_11_BrightnessAR                 = (data[2]>>1) & 0x01;
+      @HID_Warping_02_CommandSupport_12_BrightnessStatic             = (data[2]>>2) & 0x01;
+      @HID_Warping_02_CommandSupport_13_LookDownAngle                = (data[2]>>3) & 0x01;
+      @HID_Warping_02_CommandSupport_14_ViewPortCenterPositionAR     = (data[2]>>4) & 0x01;
+      @HID_Warping_02_CommandSupport_15_ViewPortCenterPositionStatic = (data[2]>>5) & 0x01;
+      @HID_Warping_02_CommandSupport_20_WarpingMatrixInformation     =  data[4]     & 0x01;
+      @HID_Warping_02_CommandSupport_21_WarpingMatrixShortAR         = (data[4]>>1) & 0x01;
+      @HID_Warping_02_CommandSupport_22_WarpingMatrixShortStatic     = (data[4]>>2) & 0x01;
+      @HID_Warping_02_CommandSupport_23_WarpingMatrixNormalAR        = (data[4]>>3) & 0x01;
+      @HID_Warping_02_CommandSupport_24_WarpingMatrixNormalStatic    = (data[4]>>4) & 0x01;
+      @HID_Warping_02_CommandSupport_25_WarpingMatrixTallAR          = (data[4]>>5) & 0x01;
+      @HID_Warping_02_CommandSupport_26_WarpingMatrixTallStatic      = (data[4]>>6) & 0x01;
+      @HID_Warping_02_CommandSupport_27_PixelShift                   = (data[4]>>7) & 0x01;
+      @HID_Warping_02_CommandSupport_28_VehiclePlatform              =  data[5]     & 0x01;
+      @HID_Warping_02_CommandSupport_40_ORPProductionPosition        =  data[8]     & 0x01;
+      @HID_Warping_02_CommandSupport_41_ORPSupplierPosition          = (data[8]>>1) & 0x01;
+      @HID_Warping_02_CommandSupport_42_ExtendTilt                   = (data[8]>>2) & 0x01;
+      @HID_Warping_02_CommandSupport_43_InitNVM                      = (data[8]>>3) & 0x01;
+      @HID_Warping_02_CommandSupport_50_FactoryReset                 =  data[10]    & 0x01;
+      
+      function_available();
+    break;
+      
+    case 0x10: // BacklashOffset
+      @HID_Warping_10_BacklashOffset_BacklashOffset = data[0] * 256 + data[1];
+    break;
+      
+    case 0x11: // BrightnessAR
+      @HID_Warping_11_BrightnessAR_BrightnessAR = data[0];
+    break;
+      
+    case 0x12: // BrightnessStatic
+      @HID_Warping_12_BrightnessStatic_BrightnessStatic = data[0];
+    break;
+      
+    case 0x13: // LookDownAngle
+      @HID_Warping_13_LookDownAngle_LookDownAngleShort_roh  = data[0] * 256 + data[1];
+      @HID_Warping_13_LookDownAngle_LookDownAngleShort      = (@HID_Warping_13_LookDownAngle_LookDownAngleShort_roh  / 100.0) - 15.0;
+      @HID_Warping_13_LookDownAngle_LookDownAngleNormal_roh = data[2] * 256 + data[3];
+      @HID_Warping_13_LookDownAngle_LookDownAngleNormal     = (@HID_Warping_13_LookDownAngle_LookDownAngleNormal_roh / 100.0) - 15.0;
+      @HID_Warping_13_LookDownAngle_LookDownAngleTall_roh   = data[4] * 256 + data[5];
+      @HID_Warping_13_LookDownAngle_LookDownAngleTall       = (@HID_Warping_13_LookDownAngle_LookDownAngleTall_roh   / 100.0) - 15.0;
+    break;
+      
+    case 0x14: // ViewPortCenterPositionAR
+      @HID_Warping_14_ViewPortCenterPositionAR_X_axis_roh  = data[0] * 65536 + data[1] * 256 + data[2];
+      @HID_Warping_14_ViewPortCenterPositionAR_X_axis      = @HID_Warping_14_ViewPortCenterPositionAR_X_axis_roh / 100000.0;
+      @HID_Warping_14_ViewPortCenterPositionAR_Y_axis_roh  = data[3] * 65536 + data[4] * 256 + data[5];
+      @HID_Warping_14_ViewPortCenterPositionAR_Y_axis      = @HID_Warping_14_ViewPortCenterPositionAR_Y_axis_roh / 100000.0;
+    break;
+      
+    case 0x15: // ViewPortCenterPositionStatic
+      @HID_Warping_15_ViewPortCenterPositionStatic_X_axis_roh  = data[0] * 65536 + data[1] * 256 + data[2];
+      @HID_Warping_15_ViewPortCenterPositionStatic_X_axis      = @HID_Warping_15_ViewPortCenterPositionStatic_X_axis_roh / 100000.0;
+      @HID_Warping_15_ViewPortCenterPositionStatic_Y_axis_roh  = data[3] * 65536 + data[4] * 256 + data[5];
+      @HID_Warping_15_ViewPortCenterPositionStatic_Y_axis      = @HID_Warping_15_ViewPortCenterPositionStatic_Y_axis_roh / 100000.0;
+    break;
+      
+    case 0x20: // WarpingMatrixInformation
+      @HID_Warping_20_WarpingMatrixInformation_WarpingVersion      = data[0];
+      @HID_Warping_20_WarpingMatrixInformation_ReleaseDateDay      = data[1];
+      @HID_Warping_20_WarpingMatrixInformation_ReleaseDateMonth    = data[2];
+      @HID_Warping_20_WarpingMatrixInformation_ReleaseDateYear     = data[3] + 2000;
+      @HID_Warping_20_WarpingMatrixInformation_ReleaseDateYear_roh = data[3];
+      @HID_Warping_20_WarpingMatrixInformation_CRC16ARShort        = data[4]  * 256 + data[5];
+      @HID_Warping_20_WarpingMatrixInformation_CRC16StaticShort    = data[6]  * 256 + data[7];
+      @HID_Warping_20_WarpingMatrixInformation_CRC16ARNormal       = data[8]  * 256 + data[9];
+      @HID_Warping_20_WarpingMatrixInformation_CRC16StaticNormal   = data[10] * 256 + data[11];
+      @HID_Warping_20_WarpingMatrixInformation_CRC16ARTall         = data[12] * 256 + data[13];
+      @HID_Warping_20_WarpingMatrixInformation_CRC16StaticTall     = data[14] * 256 + data[15];
+    break;
+      
+    case 0x21: // WarpingMatrixShortAR
+     
+      for (i=0; i<=1763; i++)
+        warping_buffer[i] = data[i];
+      putvalue(HID_Warping_21_WarpingMatrixShortAR_WarpingTableData, warping_buffer);
+      
+      @HID_Warping_21_WarpingMatrixShortAR_PIDHigh = data[1764];
+      @HID_Warping_21_WarpingMatrixShortAR_PIDLow  = data[1765];
+      @HID_Warping_21_WarpingMatrixShortAR_IdkWM   = data[1766];
+      @HID_Warping_21_WarpingMatrixShortAR_CRC16   = data[1767] * 256 + data[1768];
+    break;
+      
+    case 0x22: // WarpingMatrixShortStatic
+      for (i=0; i<=1763; i++)
+        warping_buffer[i] = data[i];
+      putvalue(HID_Warping_22_WarpingMatrixShortStatic_WarpingTableData, warping_buffer);
+      
+      @HID_Warping_22_WarpingMatrixShortStatic_PIDHigh = data[1764];
+      @HID_Warping_22_WarpingMatrixShortStatic_PIDLow  = data[1765];
+      @HID_Warping_22_WarpingMatrixShortStatic_IdkWM   = data[1766];
+      @HID_Warping_22_WarpingMatrixShortStatic_CRC16   = data[1767] * 256 + data[1768];
+    break;
+      
+    case 0x23: // WarpingMatrixNormalAR
+      for (i=0; i<=1763; i++)
+        warping_buffer[i] = data[i];
+      putvalue(HID_Warping_23_WarpingMatrixNormalAR_WarpingTableData, warping_buffer);
+      
+      @HID_Warping_23_WarpingMatrixNormalAR_PIDHigh = data[1764];
+      @HID_Warping_23_WarpingMatrixNormalAR_PIDLow  = data[1765];
+      @HID_Warping_23_WarpingMatrixNormalAR_IdkWM   = data[1766];
+      @HID_Warping_23_WarpingMatrixNormalAR_CRC16   = data[1767] * 256 + data[1768];
+    break;
+      
+    case 0x24: // WarpingMatrixNormalStatic
+      for (i=0; i<=1763; i++)
+        warping_buffer[i] = data[i];
+      putvalue(HID_Warping_24_WarpingMatrixNormalStatic_WarpingTableData, warping_buffer);
+      
+      @HID_Warping_24_WarpingMatrixNormalStatic_PIDHigh = data[1764];
+      @HID_Warping_24_WarpingMatrixNormalStatic_PIDLow  = data[1765];
+      @HID_Warping_24_WarpingMatrixNormalStatic_IdkWM   = data[1766];
+      @HID_Warping_24_WarpingMatrixNormalStatic_CRC16   = data[1767] * 256 + data[1768];
+    break;
+      
+    case 0x25: // WarpingMatrixTallAR
+      for (i=0; i<=1763; i++)
+        warping_buffer[i] = data[i];
+      putvalue(HID_Warping_25_WarpingMatrixTallAR_WarpingTableData, warping_buffer);
+      
+      @HID_Warping_25_WarpingMatrixTallAR_PIDHigh = data[1764];
+      @HID_Warping_25_WarpingMatrixTallAR_PIDLow  = data[1765];
+      @HID_Warping_25_WarpingMatrixTallAR_IdkWM   = data[1766];
+      @HID_Warping_25_WarpingMatrixTallAR_CRC16   = data[1767] * 256 + data[1768];
+    break;
+      
+    case 0x26: // WarpingMatrixTallStatic
+      for (i=0; i<=1763; i++)
+        warping_buffer[i] = data[i];
+      putvalue(HID_Warping_26_WarpingMatrixTallStatic_WarpingTableData, warping_buffer);
+      
+      @HID_Warping_26_WarpingMatrixTallStatic_PIDHigh = data[1764];
+      @HID_Warping_26_WarpingMatrixTallStatic_PIDLow  = data[1765];
+      @HID_Warping_26_WarpingMatrixTallStatic_IdkWM   = data[1766];
+      @HID_Warping_26_WarpingMatrixTallStatic_CRC16   = data[1767] * 256 + data[1768];
+    break;
+      
+    case 0x27: // PixelShift
+      @HID_Warping_27_PixelShift_CMode     = data[0];
+      @HID_Warping_27_PixelShift_AR        = data[1];
+      @HID_Warping_27_PixelShift_Indicator = data[2];
+    break;
+      
+    case 0x28: // VehiclePlatform
+      @HID_Warping_28_VehiclePlatform_VehiclePlatform   = data[0];
+      @HID_Warping_28_VehiclePlatform_VariantByPlatform = data[1];
+    break;
+      
+    case 0x40: // ORPProductionPosition
+      @HID_Warping_40_ORPProductionPosition_ORPProductionPosition = data[0] * 256 + data[1];
+    break;
+      
+    case 0x41: // ORPSupplierPosition
+      @HID_Warping_41_ORPSupplierPosition_ORPSupplierPosition = data[0] * 256 + data[1];
+    break;
+      
+    case 0x42: // ExtendTilt
+      @HID_Warping_42_ExtendTilt_ETMode = data[0];
+    break;
+
+    case 0x43: // InitNVM
+      @HID_Warping_43_InitNVM_InitNVM = data[0];
+    break;
+      
+    case 0x50: // FactoryReset
+      @HID_Warping_50_FactoryReset_FactoryReset = data[0];
+    break;
+  }
+}
+
+on envVar HID_Warping_02_CommandSupport_10_BacklashOffset               { function_available(); }
+on envVar HID_Warping_02_CommandSupport_11_BrightnessAR                 { function_available(); }
+on envVar HID_Warping_02_CommandSupport_12_BrightnessStatic             { function_available(); }
+on envVar HID_Warping_02_CommandSupport_13_LookDownAngle                { function_available(); }
+on envVar HID_Warping_02_CommandSupport_14_ViewPortCenterPositionAR     { function_available(); }
+on envVar HID_Warping_02_CommandSupport_15_ViewPortCenterPositionStatic { function_available(); }
+on envVar HID_Warping_02_CommandSupport_20_WarpingMatrixInformation     { function_available(); }
+on envVar HID_Warping_02_CommandSupport_21_WarpingMatrixShortAR         { function_available(); }
+on envVar HID_Warping_02_CommandSupport_22_WarpingMatrixShortStatic     { function_available(); }
+on envVar HID_Warping_02_CommandSupport_23_WarpingMatrixNormalAR        { function_available(); }
+on envVar HID_Warping_02_CommandSupport_24_WarpingMatrixNormalStatic    { function_available(); }
+on envVar HID_Warping_02_CommandSupport_25_WarpingMatrixTallAR          { function_available(); }
+on envVar HID_Warping_02_CommandSupport_26_WarpingMatrixTallStatic      { function_available(); }
+on envVar HID_Warping_02_CommandSupport_27_PixelShift                   { function_available(); }
+on envVar HID_Warping_02_CommandSupport_28_VehiclePlatform              { function_available(); }
+on envVar HID_Warping_02_CommandSupport_40_ORPProductionPosition        { function_available(); }
+on envVar HID_Warping_02_CommandSupport_41_ORPSupplierPosition          { function_available(); }
+on envVar HID_Warping_02_CommandSupport_42_ExtendTilt                   { function_available(); }
+on envVar HID_Warping_02_CommandSupport_43_InitNVM                      { function_available(); }
+on envVar HID_Warping_02_CommandSupport_50_FactoryReset                 { function_available(); }
+
+function_available()
+{
+  enableControl("HID_Warping" , "0x01_DataDefinition",                                                                                 !@Konfig::MIB3);
+  enableControl("HID_Warping" , "0x02_CommandSupport",                                                                                 !@Konfig::MIB3);
+  enableControl("HID_Warping" , "0x10_BacklashOffset",               @HID_Warping_02_CommandSupport_10_BacklashOffset               && !@Konfig::MIB3);
+  enableControl("HID_Warping" , "0x11_BrightnessAR",                 @HID_Warping_02_CommandSupport_11_BrightnessAR                 && !@Konfig::MIB3);
+  enableControl("HID_Warping" , "0x12_BrightnessStatic",             @HID_Warping_02_CommandSupport_12_BrightnessStatic             && !@Konfig::MIB3);
+  enableControl("HID_Warping" , "0x13_LookDownAngle",                @HID_Warping_02_CommandSupport_13_LookDownAngle                && !@Konfig::MIB3);
+  enableControl("HID_Warping" , "0x14_ViewPortCenterPositionAR",     @HID_Warping_02_CommandSupport_14_ViewPortCenterPositionAR     && !@Konfig::MIB3);
+  enableControl("HID_Warping" , "0x15_ViewPortCenterPositionStatic", @HID_Warping_02_CommandSupport_15_ViewPortCenterPositionStatic && !@Konfig::MIB3);
+  enableControl("HID_Warping" , "0x20_WarpingMatrixInformation",     @HID_Warping_02_CommandSupport_20_WarpingMatrixInformation     && !@Konfig::MIB3);
+  enableControl("HID_Warping" , "0x21_WarpingMatrixShortAR",         @HID_Warping_02_CommandSupport_21_WarpingMatrixShortAR         && !@Konfig::MIB3);
+  enableControl("HID_Warping" , "0x22_WarpingMatrixShortStatic",     @HID_Warping_02_CommandSupport_22_WarpingMatrixShortStatic     && !@Konfig::MIB3);
+  enableControl("HID_Warping" , "0x23_WarpingMatrixNormalAR",        @HID_Warping_02_CommandSupport_23_WarpingMatrixNormalAR        && !@Konfig::MIB3);
+  enableControl("HID_Warping" , "0x24_WarpingMatrixNormalStatic",    @HID_Warping_02_CommandSupport_24_WarpingMatrixNormalStatic    && !@Konfig::MIB3);
+  enableControl("HID_Warping" , "0x25_WarpingMatrixTallAR",          @HID_Warping_02_CommandSupport_25_WarpingMatrixTallAR          && !@Konfig::MIB3);
+  enableControl("HID_Warping" , "0x26_WarpingMatrixTallStatic",      @HID_Warping_02_CommandSupport_26_WarpingMatrixTallStatic      && !@Konfig::MIB3);
+  enableControl("HID_Warping" , "0x27_PixelShift",                   @HID_Warping_02_CommandSupport_27_PixelShift                   && !@Konfig::MIB3);
+  enableControl("HID_Warping" , "0x28_VehiclePlatform",              @HID_Warping_02_CommandSupport_28_VehiclePlatform              && !@Konfig::MIB3);
+  enableControl("HID_Warping" , "0x40_ORPProductionPosition",        @HID_Warping_02_CommandSupport_40_ORPProductionPosition        && !@Konfig::MIB3);
+  enableControl("HID_Warping" , "0x41_ORPSupplierPosition",          @HID_Warping_02_CommandSupport_41_ORPSupplierPosition          && !@Konfig::MIB3);
+  enableControl("HID_Warping" , "0x42_ExtendTilt",                   @HID_Warping_02_CommandSupport_42_ExtendTilt                   && !@Konfig::MIB3);
+  enableControl("HID_Warping" , "0x43_InitNVM",                      @HID_Warping_02_CommandSupport_43_InitNVM                      && !@Konfig::MIB3);
+  enableControl("HID_Warping" , "0x50_FactoryReset",                 @HID_Warping_02_CommandSupport_50_FactoryReset                 && !@Konfig::MIB3);
+}
+
+clear_panel()
+{
+  @HID_Warping_01_DataDefinition_Major_version                   = 0;
+  @HID_Warping_01_DataDefinition_Minor_version                   = 0;
+  @HID_Warping_01_DataDefinition_Bugfix_version                  = 0;
+  @HID_Warping_02_CommandSupport_00_FetchAll_Reset               = 0;
+  @HID_Warping_02_CommandSupport_01_DataDefinition               = 0;
+  @HID_Warping_02_CommandSupport_02_CommandSupport               = 0;
+  @HID_Warping_02_CommandSupport_10_BacklashOffset               = 0;
+  @HID_Warping_02_CommandSupport_11_BrightnessAR                 = 0;
+  @HID_Warping_02_CommandSupport_12_BrightnessStatic             = 0;
+  @HID_Warping_02_CommandSupport_13_LookDownAngle                = 0;
+  @HID_Warping_02_CommandSupport_14_ViewPortCenterPositionAR     = 0;
+  @HID_Warping_02_CommandSupport_15_ViewPortCenterPositionStatic = 0;
+  @HID_Warping_02_CommandSupport_20_WarpingMatrixInformation     = 0;
+  @HID_Warping_02_CommandSupport_21_WarpingMatrixShortAR         = 0;
+  @HID_Warping_02_CommandSupport_22_WarpingMatrixShortStatic     = 0;
+  @HID_Warping_02_CommandSupport_23_WarpingMatrixNormalAR        = 0;
+  @HID_Warping_02_CommandSupport_24_WarpingMatrixNormalStatic    = 0;
+  @HID_Warping_02_CommandSupport_25_WarpingMatrixTallAR          = 0;
+  @HID_Warping_02_CommandSupport_26_WarpingMatrixTallStatic      = 0;
+  @HID_Warping_02_CommandSupport_27_PixelShift                   = 0;
+  @HID_Warping_02_CommandSupport_28_VehiclePlatform              = 0;
+  @HID_Warping_02_CommandSupport_40_ORPProductionPosition        = 0;
+  @HID_Warping_02_CommandSupport_41_ORPSupplierPosition          = 0;
+  @HID_Warping_02_CommandSupport_42_ExtendTilt                   = 0;
+  @HID_Warping_02_CommandSupport_43_InitNVM                      = 0;
+  @HID_Warping_02_CommandSupport_50_FactoryReset                 = 0;
+  @HID_Warping_10_BacklashOffset_BacklashOffset                  = 0;
+  @HID_Warping_11_BrightnessAR_BrightnessAR                      = 0;
+  @HID_Warping_12_BrightnessStatic_BrightnessStatic              = 0;
+  @HID_Warping_13_LookDownAngle_LookDownAngleShort_roh           = 0;
+  @HID_Warping_13_LookDownAngle_LookDownAngleNormal_roh          = 0;
+  @HID_Warping_13_LookDownAngle_LookDownAngleTall_roh            = 0;
+  @HID_Warping_14_ViewPortCenterPositionAR_X_axis_roh            = 0;
+  @HID_Warping_14_ViewPortCenterPositionAR_Y_axis_roh            = 0;
+  @HID_Warping_15_ViewPortCenterPositionStatic_X_axis_roh        = 0;
+  @HID_Warping_15_ViewPortCenterPositionStatic_Y_axis_roh        = 0;
+  @HID_Warping_20_WarpingMatrixInformation_WarpingVersion        = 0;
+  @HID_Warping_20_WarpingMatrixInformation_ReleaseDateDay        = 0;
+  @HID_Warping_20_WarpingMatrixInformation_ReleaseDateMonth      = 0;
+  @HID_Warping_20_WarpingMatrixInformation_ReleaseDateYear_roh   = 0;
+  @HID_Warping_20_WarpingMatrixInformation_CRC16ARShort          = 0;
+  @HID_Warping_20_WarpingMatrixInformation_CRC16StaticShort      = 0;
+  @HID_Warping_20_WarpingMatrixInformation_CRC16ARNormal         = 0;
+  @HID_Warping_20_WarpingMatrixInformation_CRC16StaticNormal     = 0;
+  @HID_Warping_20_WarpingMatrixInformation_CRC16ARTall           = 0;
+  @HID_Warping_20_WarpingMatrixInformation_CRC16StaticTall       = 0;
+  @HID_Warping_21_WarpingMatrixShortAR_PIDHigh                   = 0;
+  @HID_Warping_21_WarpingMatrixShortAR_PIDLow                    = 0;
+  @HID_Warping_21_WarpingMatrixShortAR_IdkWM                     = 0;
+  @HID_Warping_21_WarpingMatrixShortAR_CRC16                     = 0;
+  @HID_Warping_22_WarpingMatrixShortStatic_PIDHigh               = 0;
+  @HID_Warping_22_WarpingMatrixShortStatic_PIDLow                = 0;
+  @HID_Warping_22_WarpingMatrixShortStatic_IdkWM                 = 0;
+  @HID_Warping_22_WarpingMatrixShortStatic_CRC16                 = 0;
+  @HID_Warping_23_WarpingMatrixNormalAR_PIDHigh                  = 0;
+  @HID_Warping_23_WarpingMatrixNormalAR_PIDLow                   = 0;
+  @HID_Warping_23_WarpingMatrixNormalAR_IdkWM                    = 0;
+  @HID_Warping_23_WarpingMatrixNormalAR_CRC16                    = 0;
+  @HID_Warping_24_WarpingMatrixNormalStatic_PIDHigh              = 0;
+  @HID_Warping_24_WarpingMatrixNormalStatic_PIDLow               = 0;
+  @HID_Warping_24_WarpingMatrixNormalStatic_IdkWM                = 0;
+  @HID_Warping_24_WarpingMatrixNormalStatic_CRC16                = 0;
+  @HID_Warping_25_WarpingMatrixTallAR_PIDHigh                    = 0;
+  @HID_Warping_25_WarpingMatrixTallAR_PIDLow                     = 0;
+  @HID_Warping_25_WarpingMatrixTallAR_IdkWM                      = 0;
+  @HID_Warping_25_WarpingMatrixTallAR_CRC16                      = 0;
+  @HID_Warping_26_WarpingMatrixTallStatic_PIDHigh                = 0;
+  @HID_Warping_26_WarpingMatrixTallStatic_PIDLow                 = 0;
+  @HID_Warping_26_WarpingMatrixTallStatic_IdkWM                  = 0;
+  @HID_Warping_26_WarpingMatrixTallStatic_CRC16                  = 0;
+  @HID_Warping_27_PixelShift_CMode                               = 0;
+  @HID_Warping_27_PixelShift_AR                                  = 0;
+  @HID_Warping_27_PixelShift_Indicator                           = 0;
+  @HID_Warping_28_VehiclePlatform_VehiclePlatform                = 0;
+  @HID_Warping_28_VehiclePlatform_VariantByPlatform              = 0;
+  @HID_Warping_40_ORPProductionPosition_ORPProductionPosition    = 0;
+  @HID_Warping_41_ORPSupplierPosition_ORPSupplierPosition        = 0;
+  @HID_Warping_42_ExtendTilt_ETMode                              = 0;
+  @HID_Warping_43_InitNVM_InitNVM                                = 0;
+  @HID_Warping_50_FactoryReset_FactoryReset                      = 0;
+}
+
+
+on envVar HID_Warping_01_DataDefinition_Get               { if (@this == 1)    get_req (0x001); }
+on envVar HID_Warping_02_CommandSupport_Get               { if (@this == 1)    get_req (0x002); }
+on envVar HID_Warping_10_BacklashOffset_Get               { if (@this == 1)    get_req (0x010); }
+on envVar HID_Warping_11_BrightnessAR_Get                 { if (@this == 1)    get_req (0x011); }
+on envVar HID_Warping_12_BrightnessStatic_Get             { if (@this == 1)    get_req (0x012); }
+on envVar HID_Warping_13_LookDownAngle_Get                { if (@this == 1)    get_req (0x013); }
+on envVar HID_Warping_14_ViewPortCenterPositionAR_Get     { if (@this == 1)    get_req (0x014); }
+on envVar HID_Warping_15_ViewPortCenterPositionStatic_Get { if (@this == 1)    get_req (0x015); }
+on envVar HID_Warping_20_WarpingMatrixInformation_Get     { if (@this == 1)    get_req (0x020); }
+on envVar HID_Warping_21_WarpingMatrixShortAR_Get         { if (@this == 1)    get_req (0x021); }
+on envVar HID_Warping_22_WarpingMatrixShortStatic_Get     { if (@this == 1)    get_req (0x022); }
+on envVar HID_Warping_23_WarpingMatrixNormalAR_Get        { if (@this == 1)    get_req (0x023); }
+on envVar HID_Warping_24_WarpingMatrixNormalStatic_Get    { if (@this == 1)    get_req (0x024); }
+on envVar HID_Warping_25_WarpingMatrixTallAR_Get          { if (@this == 1)    get_req (0x025); }
+on envVar HID_Warping_26_WarpingMatrixTallStatic_Get      { if (@this == 1)    get_req (0x026); }
+on envVar HID_Warping_27_PixelShift_Get                   { if (@this == 1)    get_req (0x027); }
+on envVar HID_Warping_28_VehiclePlatform_Get              { if (@this == 1)    get_req (0x028); }
+on envVar HID_Warping_40_ORPProductionPosition_Get        { if (@this == 1)    get_req (0x040); }
+on envVar HID_Warping_41_ORPSupplierPosition_Get          { if (@this == 1)    get_req (0x041); }
+on envVar HID_Warping_42_ExtendTilt_Get                   { if (@this == 1)    get_req (0x042); }
+on envVar HID_Warping_43_InitNVM_Get                      { if (@this == 1)    get_req (0x043); }
+on envVar HID_Warping_50_FactoryReset_Get                 { if (@this == 1)    get_req (0x050); }
+
+on envVar HID_Warping_10_BacklashOffset_SetGet            { if (@this == 1) setget_req (0x010); }
+on envVar HID_Warping_11_BrightnessAR_SetGet              { if (@this == 1) setget_req (0x011); }
+on envVar HID_Warping_12_BrightnessStatic_SetGet          { if (@this == 1) setget_req (0x012); }
+on envVar HID_Warping_40_ORPProductionPosition_SetGet     { if (@this == 1) setget_req (0x040); }
+on envVar HID_Warping_41_ORPSupplierPosition_SetGet       { if (@this == 1) setget_req (0x041); }
+on envVar HID_Warping_42_ExtendTilt_SetGet                { if (@this == 1) setget_req (0x042); }
+on envVar HID_Warping_43_InitNVM_SetGet                   { if (@this == 1) setget_req (0x043); }
+on envVar HID_Warping_50_FactoryReset_SetGet              { if (@this == 1) setget_req (0x050); }
+
+
+
+get_req (byte command)
+{
+  mARC_HUD_Req_FD.byte(0) = 1;
+  mARC_HUD_Req_FD.byte(1) = command;
+  mARC_HUD_Req_FD.byte(2) = 0xAA;
+  mARC_HUD_Req_FD.byte(3) = 0xAA;
+  mARC_HUD_Req_FD.byte(4) = 0xAA;
+  mARC_HUD_Req_FD.byte(5) = 0xAA;
+  mARC_HUD_Req_FD.byte(6) = 0xAA;
+  mARC_HUD_Req_FD.byte(7) = 0xAA;
+  mARC_HUD_Req_FD.DLC     = 8;
+  
+  settimer (timeout, 100);
+  output (mARC_HUD_Req_FD);
+}
+
+setget_req (byte command)
+{
+  for (i=0;i<8;i++)
+    mARC_HUD_Req_FD.byte(i) = 0xAA;
+  mARC_HUD_Req_FD.DLC       = 8;
+  
+  switch (command)
+  {
+    case 0x10:
+      mARC_HUD_Req_FD.byte(0) = 3;
+      mARC_HUD_Req_FD.byte(1) = 0x10;
+      mARC_HUD_Req_FD.byte(2) = (@HID_Warping_10_BacklashOffset_BacklashOffset>>8) & 0x00FF;
+      mARC_HUD_Req_FD.byte(3) =  @HID_Warping_10_BacklashOffset_BacklashOffset     & 0x00FF;
+    break;
+      
+    case 0x11:
+      mARC_HUD_Req_FD.byte(0) = 2;
+      mARC_HUD_Req_FD.byte(1) = 0x11;
+      mARC_HUD_Req_FD.byte(2) = @HID_Warping_11_BrightnessAR_BrightnessAR;
+    break;
+      
+    case 0x12:
+      mARC_HUD_Req_FD.byte(0) = 2;
+      mARC_HUD_Req_FD.byte(1) = 0x12;
+      mARC_HUD_Req_FD.byte(2) = @HID_Warping_12_BrightnessStatic_BrightnessStatic;
+    break;
+      
+    case 0x40:
+      mARC_HUD_Req_FD.byte(0) = 3;
+      mARC_HUD_Req_FD.byte(1) = 0x40;
+      mARC_HUD_Req_FD.byte(2) = (@HID_Warping_40_ORPProductionPosition_ORPProductionPosition>>8) & 0x00FF;
+      mARC_HUD_Req_FD.byte(3) =  @HID_Warping_40_ORPProductionPosition_ORPProductionPosition     & 0x00FF;
+    break;
+      
+    case 0x41:
+      mARC_HUD_Req_FD.byte(0) = 3;
+      mARC_HUD_Req_FD.byte(1) = 0x41;
+      mARC_HUD_Req_FD.byte(2) = (@HID_Warping_41_ORPSupplierPosition_ORPSupplierPosition>>8) & 0x00FF;
+      mARC_HUD_Req_FD.byte(3) =  @HID_Warping_41_ORPSupplierPosition_ORPSupplierPosition     & 0x00FF;
+    break;
+      
+    case 0x42:
+      mARC_HUD_Req_FD.byte(0) = 2;
+      mARC_HUD_Req_FD.byte(1) = 0x42;
+      mARC_HUD_Req_FD.byte(2) = @HID_Warping_42_ExtendTilt_ETMode;
+    break;
+      
+    case 0x43:
+      mARC_HUD_Req_FD.byte(0) = 2;
+      mARC_HUD_Req_FD.byte(1) = 0x43;
+      mARC_HUD_Req_FD.byte(2) = @HID_Warping_43_InitNVM_InitNVM;
+    break;
+      
+    case 0x50:
+      mARC_HUD_Req_FD.byte(0) = 2;
+      mARC_HUD_Req_FD.byte(1) = 0x50;
+      mARC_HUD_Req_FD.byte(2) = @HID_Warping_50_FactoryReset_FactoryReset;
+    break;
+  }
+  settimer (timeout, 100);
+  output (mARC_HUD_Req_FD);
+}
+
+on timer timeout
+{
+  @HID_Warping_Timeout = 1;
+}

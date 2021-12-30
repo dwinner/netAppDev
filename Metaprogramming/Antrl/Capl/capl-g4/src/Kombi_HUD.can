@@ -1,0 +1,192 @@
+/*@!Encoding:1252*/
+
+
+on envVar EnvKBI_HUD_Data_01
+{
+  if (@Konfig::Kombi == 1)
+    $KBI_HUD_Data_01 = getvalue(this);
+  
+  if (@Konfig::Kombi == 0)
+    @EnvKBI_HUD_Data_MUX = @this;
+}
+
+on envVar EnvKBI_HUD_Data_02
+{
+  if (@Konfig::Kombi == 1)
+    $KBI_HUD_Data_02 = getvalue(this);
+  
+  if (@Konfig::Kombi == 0)
+    @EnvKBI_HUD_Data_FrameID = @this;
+}
+
+on envVar EnvKBI_HUD_Data_03
+{
+  if (@Konfig::Kombi == 1)
+    $KBI_HUD_Data_03 = getvalue(this);
+  
+  if (@Konfig::Kombi == 0)
+    @EnvKBI_HUD_Data_FrameInhalt = @this;
+}
+
+on envVar EnvKBI_HUD_Data_04
+{
+  if (@Konfig::Kombi == 1)
+    $KBI_HUD_Data_04 = getvalue(this);
+  
+  if (@Konfig::Kombi == 0)
+  {
+    @EnvKBI_HUD_Data_KBI_Laptimer_aktiv = @this     & 0x01;
+    @EnvKBI_HUD_Data_KBI_Variante_USA =  (@this>>1) & 0x01;
+    @EnvKBI_HUD_Data_KBI_LT_Zeitformat = (@this>>2) & 0x01;
+    @EnvKBI_HUD_Data_KBI_Blinktakt =     (@this>>4) & 0x01;
+    @EnvKBI_HUD_Data_KBI_LT_Zustand =    (@this>>5) & 0x07;
+  }
+}
+
+on envVar EnvKBI_HUD_Data_05
+{
+  if (@Konfig::Kombi == 1)
+    $KBI_HUD_Data_05 = getvalue(this);
+  
+  if (@Konfig::Kombi == 0)
+    @EnvKBI_HUD_Data_KBI_LT_Zeit = @EnvKBI_HUD_Data_05 + (@EnvKBI_HUD_Data_06 * 256) + ((@EnvKBI_HUD_Data_07 & 0x3F) * 65536);
+}
+
+on envVar EnvKBI_HUD_Data_06
+{
+  if (@Konfig::Kombi == 1)
+    $KBI_HUD_Data_06 = getvalue(this);
+  
+  if (@Konfig::Kombi == 0)
+    @EnvKBI_HUD_Data_KBI_LT_Zeit = @EnvKBI_HUD_Data_05 + (@EnvKBI_HUD_Data_06 * 256) + ((@EnvKBI_HUD_Data_07 & 0x3F) * 65536);
+}
+
+on envVar EnvKBI_HUD_Data_07
+{
+  if (@Konfig::Kombi == 1)
+    $KBI_HUD_Data_07 = getvalue(this);
+  
+  if (@Konfig::Kombi == 0)
+  {
+    @EnvKBI_HUD_Data_KBI_LT_Zeit = @EnvKBI_HUD_Data_05 + (@EnvKBI_HUD_Data_06 * 256) + ((@EnvKBI_HUD_Data_07 & 0x3F) * 65536);
+    @EnvKBI_HUD_Data_KBI_LT_Vorzeichen = (@this>>6) & 0x01;
+    @EnvKBI_HUD_Data_KBI_LT_Zeittyp =    (@this>>7) & 0x01;
+  }
+}
+
+on envVar EnvKBI_HUD_Data_08
+{
+  if (@Konfig::Kombi == 1)
+    $KBI_HUD_Data_08 = getvalue(this);
+}
+
+
+on message Kombi_HUD_01
+{
+  if (@Konfig::Kombi == 0)
+  {
+  	@EnvKBI_HUD_Data_01 = $KBI_HUD_Data_01;
+    @EnvKBI_HUD_Data_02 = $KBI_HUD_Data_02;
+    @EnvKBI_HUD_Data_03 = $KBI_HUD_Data_03;
+    @EnvKBI_HUD_Data_04 = $KBI_HUD_Data_04;
+    @EnvKBI_HUD_Data_05 = $KBI_HUD_Data_05;
+    @EnvKBI_HUD_Data_06 = $KBI_HUD_Data_06;
+    @EnvKBI_HUD_Data_07 = $KBI_HUD_Data_07;
+    @EnvKBI_HUD_Data_08 = $KBI_HUD_Data_08;
+  }
+}
+
+on envVar EnvKBI_HUD_Data_MUX
+{
+  if (@Konfig::Kombi == 1)
+  {
+  	@EnvKBI_HUD_Data_01 = @this;
+  }
+}
+on envVar EnvKBI_HUD_Data_FrameID
+{
+  if (@Konfig::Kombi == 1)
+  {
+  	@EnvKBI_HUD_Data_02 = @this;
+  }
+}
+
+on envVar EnvKBI_HUD_Data_FrameInhalt
+{
+  if (@Konfig::Kombi == 1)
+  {
+  	@EnvKBI_HUD_Data_03 = @this;
+  }
+}
+on envVar EnvKBI_HUD_Data_KBI_Blinktakt
+{
+  if (@Konfig::Kombi == 1)
+  {
+  	@EnvKBI_HUD_Data_04 = @EnvKBI_HUD_Data_KBI_Laptimer_aktiv + (@EnvKBI_HUD_Data_KBI_Variante_USA * 2) + (@EnvKBI_HUD_Data_KBI_LT_Zeitformat * 4) + (@EnvKBI_HUD_Data_KBI_Blinktakt * 16) + (@EnvKBI_HUD_Data_KBI_LT_Zustand * 32);
+  }
+}
+on envVar EnvKBI_HUD_Data_KBI_Variante_USA
+{
+  if (@Konfig::Kombi == 1)
+  {
+  	@EnvKBI_HUD_Data_04 = @EnvKBI_HUD_Data_KBI_Laptimer_aktiv + (@EnvKBI_HUD_Data_KBI_Variante_USA * 2) + (@EnvKBI_HUD_Data_KBI_LT_Zeitformat * 4) + (@EnvKBI_HUD_Data_KBI_Blinktakt * 16) + (@EnvKBI_HUD_Data_KBI_LT_Zustand * 32);
+ 
+  }  
+ }
+on envVar EnvKBI_HUD_Data_KBI_Laptimer_aktiv
+{
+  if (@Konfig::Kombi == 1)
+  {
+  	@EnvKBI_HUD_Data_04 = @EnvKBI_HUD_Data_KBI_Laptimer_aktiv + (@EnvKBI_HUD_Data_KBI_Variante_USA * 2) + (@EnvKBI_HUD_Data_KBI_LT_Zeitformat * 4) + (@EnvKBI_HUD_Data_KBI_Blinktakt * 16) + (@EnvKBI_HUD_Data_KBI_LT_Zustand * 32);
+  }
+}
+on envVar EnvKBI_HUD_Data_KBI_LT_Zeitformat
+{
+  if (@Konfig::Kombi == 1)
+  {
+  	@EnvKBI_HUD_Data_04 = @EnvKBI_HUD_Data_KBI_Laptimer_aktiv + (@EnvKBI_HUD_Data_KBI_Variante_USA * 2) + (@EnvKBI_HUD_Data_KBI_LT_Zeitformat * 4) + (@EnvKBI_HUD_Data_KBI_Blinktakt * 16) + (@EnvKBI_HUD_Data_KBI_LT_Zustand * 32);
+  }
+}
+on envVar EnvKBI_HUD_Data_KBI_LT_Zustand
+{
+  if (@Konfig::Kombi == 1)
+  {
+  	@EnvKBI_HUD_Data_04 = @EnvKBI_HUD_Data_KBI_Laptimer_aktiv + (@EnvKBI_HUD_Data_KBI_Variante_USA * 2) + (@EnvKBI_HUD_Data_KBI_LT_Zeitformat * 4) + (@EnvKBI_HUD_Data_KBI_Blinktakt * 16) + (@EnvKBI_HUD_Data_KBI_LT_Zustand * 32);
+  }
+}
+
+on envVar EnvKBI_HUD_Data_KBI_LT_Zeit
+{
+  if (@Konfig::Kombi == 1)
+  {
+  	@EnvKBI_HUD_Data_05 =   @EnvKBI_HUD_Data_KBI_LT_Zeit      & 0x0000FF;
+    @EnvKBI_HUD_Data_06 =  (@EnvKBI_HUD_Data_KBI_LT_Zeit>>8)  & 0x0000FF;
+    @EnvKBI_HUD_Data_07 = ((@EnvKBI_HUD_Data_KBI_LT_Zeit>>16) & 0x00003F) + (@EnvKBI_HUD_Data_KBI_LT_Vorzeichen * 64) + (@EnvKBI_HUD_Data_KBI_LT_Zeittyp * 128);
+  }
+    @EnvKBI_HUD_Data_KBI_LT_Msek = (@EnvKBI_HUD_Data_KBI_LT_Zeit%10);
+    @EnvKBI_HUD_Data_KBI_LT_Sek  =  @EnvKBI_HUD_Data_KBI_LT_Zeit/10;
+    @EnvKBI_HUD_Data_KBI_LT_Min  =  @EnvKBI_HUD_Data_KBI_LT_Zeit/600;
+    @EnvKBI_HUD_Data_KBI_LT_Std  =  @EnvKBI_HUD_Data_KBI_LT_Zeit/36000;
+    
+    if (@EnvKBI_HUD_Data_KBI_LT_Sek >= 60)
+      @EnvKBI_HUD_Data_KBI_LT_Sek = @EnvKBI_HUD_Data_KBI_LT_Sek - (60*@EnvKBI_HUD_Data_KBI_LT_Min);
+    
+    if (@EnvKBI_HUD_Data_KBI_LT_Min >= 60)
+      @EnvKBI_HUD_Data_KBI_LT_Min = @EnvKBI_HUD_Data_KBI_LT_Min - (60*@EnvKBI_HUD_Data_KBI_LT_Std);
+}
+
+on envVar EnvKBI_HUD_Data_KBI_LT_Zeittyp
+{
+  if (@Konfig::Kombi == 1)
+  {
+  	@EnvKBI_HUD_Data_07 = ((@EnvKBI_HUD_Data_KBI_LT_Zeit>>16) & 0x00003F) + (@EnvKBI_HUD_Data_KBI_LT_Vorzeichen * 64) + (@EnvKBI_HUD_Data_KBI_LT_Zeittyp * 128);
+  }
+}
+
+on envVar EnvKBI_HUD_Data_KBI_LT_Vorzeichen
+{
+  if (@Konfig::Kombi == 1)
+  {
+  	@EnvKBI_HUD_Data_07 = ((@EnvKBI_HUD_Data_KBI_LT_Zeit>>16) & 0x00003F) + (@EnvKBI_HUD_Data_KBI_LT_Vorzeichen * 64) + (@EnvKBI_HUD_Data_KBI_LT_Zeittyp * 128);
+  }
+}

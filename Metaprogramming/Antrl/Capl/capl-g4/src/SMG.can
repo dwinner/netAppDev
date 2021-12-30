@@ -1,0 +1,714 @@
+variables
+{
+
+     
+byte SMRES_Active15_AC         ;//0
+byte SMRES_ActiveDisplay_AC    ;//1
+byte SMRES_ActiveCtr_AC        ;//2    
+byte SMRES_ActiveHardware_AC   ;//3
+byte SMRES_ActiveICOM_AC       ;//4    
+byte SMRES_ActiveMostHW_AC     ;//5    
+byte SMRES_ActiveNm_AC         ;//6     
+byte SMRES_ActivePower_AC      ;//7 
+byte SMRES_Eco_AC              ;//8         
+byte SMRES_ExtendedWakeUp_AC   ;//9
+byte SMRES_ForkSync_AC         ;//10   
+byte SMRES_GRAPower_AC         ;//11    
+byte SMRES_HoldCommunication_AC;//12
+byte SMRES_PrepareBusSleep_AC  ;//13
+byte SMRES_PrepareCtrSleep_AC ; //14
+byte SMRES_StandbyRun_AC      ; //15    
+byte SMRES_TXMute_AC          ; //16
+byte SMRES_Unused_AC=17;           //17
+byte SelResources=0;
+
+  
+  
+/*
+SMRES_Active15_GC           = 0;            
+SMRES_Active15HMI_GC        = 1;            
+SMRES_ActiveCtr_GC          = 2;           
+SMRES_ActiveDisplay_GC      = 3;       
+SMRES_ActiveHardware_GC     = 4;      
+SMRES_ActiveICOM_GC         = 5;          
+SMRES_ActiveMost_GC         = 6;          
+SMRES_ActiveMostHardware_GC = 7;  
+SMRES_ActiveNm_GC           = 8;            
+SMRES_ApiMgr_Hmi_GC         = 9;          
+SMRES_ApiMgr_System_GC      = 10;      
+SMRES_Boot                  = 11;
+SMRES_Eco_GC                = 12;                
+SMRES_ForkSync_GC           = 13;           
+SMRES_GraphicsHMI_GC        = 14;        
+SMRES_HMIFunction_GC        = 15;        
+SMRES_HoldCommunication_GC  = 16;  
+SMRES_HoldDisplay_GC        = 17;        
+SMRES_HoldMost_GC           = 18;           
+SMRES_Mmi_GC                = 19;               
+SMRES_PrepareBusSleep_GC    = 20;   
+SMRES_PrepareCtrSleep_GC    = 21;   
+SMRES_StandbyRun_GC         = 22;        
+SMRES_StoreWakeUpData_GC    = 23;   
+SMRES_SyncHMI_GC            = 24;           
+SMRES_TXMute_GC             = 25;            
+SMRES_Warnings_GC           = 26;  
+ 
+*/
+
+byte SMRES_Active15_GC;              //0 
+byte SMRES_Active15HMI_GC;           //1 
+byte SMRES_ActiveCtr_GC;             //2 
+byte SMRES_ActiveDisplay_GC;         //3 
+byte SMRES_ActiveHardware_GC;        //4 
+byte SMRES_ActiveICOM_GC;            //5 
+byte SMRES_ActiveMost_GC;            //6 
+byte SMRES_ActiveMostHardware_GC;    //7 
+byte SMRES_ActiveNm_GC;              //8 
+byte SMRES_ApiMgr_Hmi_GC;            //9 
+byte SMRES_ApiMgr_System_GC;         //10 
+byte SMRES_Boot_GC;                  //11
+byte SMRES_DataRecovery_GC;          //12 
+byte SMRES_Eco_GC;                   //13 
+byte SMRES_ForkSync_GC;              //14 
+byte SMRES_GraphicsHMI_GC;           //15 
+byte SMRES_GraphicsIntern_GC;        //16 
+byte SMRES_HMIFunction_GC;           //17 
+byte SMRES_HoldCommunication_GC;     //18 
+byte SMRES_HoldDisplay_GC;           //19 
+byte SMRES_HoldMost_GC;              //20 
+byte SMRES_Mmi_GC;                   //21 
+byte SMRES_PrepareBusSleep_GC;       //22 
+byte SMRES_PrepareCtrSleep_GC;       //23 
+byte SMRES_StandbyRun_GC;            //24 
+byte SMRES_StoreWakeUpData_GC;       //25 
+byte SMRES_SyncBoot_GC;              //26 
+byte SMRES_SyncHMI_GC;               //27
+byte SMRES_TXMute_GC;                //28
+byte SMRES_Warnings_GC;              //29
+byte SMRES_Unused_GC=30;                //30
+
+
+
+
+
+
+byte TimeoutFlag_AC=0;
+byte TimeoutFlag_GC=0;
+
+msTimer TimeoutTimer_AC;
+msTimer TimeoutTimer_GC;
+}
+
+
+
+on message AC_SmgAlive
+{
+  dword ActiveSM=0,tmp=0;
+  byte result=0,i;
+
+  TimeoutFlag_AC=0;
+  
+  
+  @KL15State_AC  = this.biKL15State;
+  //@NetRequest_GC = this.biNetRequest_GC;    
+  @NetRequest_AC = this.biNetRequest;
+  @ComReq_AC     = this.biComReq;
+  
+  @ActiveCtr_Request_AC = this.biActiveCtr_Request;
+  @ActiveMost_Request_AC= this.biActiveMost_Request;
+  @ActiveNM_Request_AC  = this.biActiveNM_Request;
+  @Active15_Request_AC  = this.biActive15_Request;
+  @HoldCom_Request_AC   = this.biHoldCom_Request;
+  @ActiveDisplay_Request_AC     = this.biActiveDisplay_Request;
+  @ActiveHw_Request_AC  = this.biActiveHw_Request;
+  @TxMute_Request_AC    = this.biTxMute_Request;
+  
+  
+  
+  @u32CSHDLActiveSMs_AC  =this.u32CSHDLActiveSMs;
+  
+  if((this.u32CSHDLActiveSMs & (1 << SMRES_Active15_AC)) == (1 << SMRES_Active15_AC)) 
+    @RES_Active15_AC=1;    
+  else 
+    @RES_Active15_AC=0;
+
+  if((this.u32CSHDLActiveSMs & (1 << SMRES_ActiveCtr_AC)) == (1 << SMRES_ActiveCtr_AC))
+    @RES_ActiveCtr_AC=1;
+  else
+    @RES_ActiveCtr_AC=0;
+
+  if((this.u32CSHDLActiveSMs & (1 << SMRES_ActiveHardware_AC)) == (1 << SMRES_ActiveHardware_AC))
+    @RES_ActiveHardware_AC=1;
+  else
+    @RES_ActiveHardware_AC=0;
+
+  if((this.u32CSHDLActiveSMs & (1 << SMRES_ActiveICOM_AC)) == (1 << SMRES_ActiveICOM_AC))
+    @RES_ActiveICOM_AC=1;
+  else
+    @RES_ActiveICOM_AC=0;
+
+  if((this.u32CSHDLActiveSMs & (1 << SMRES_ActiveMostHW_AC)) == (1 << SMRES_ActiveMostHW_AC))
+    @RES_ActiveMostHardware_AC=1;
+  else
+    @RES_ActiveMostHardware_AC=0;
+
+  if((this.u32CSHDLActiveSMs & (1 << SMRES_ActiveNm_AC)) == (1 << SMRES_ActiveNm_AC))
+    @RES_ActiveNm_AC=1;
+  else
+    @RES_ActiveNm_AC=0;
+
+  if((this.u32CSHDLActiveSMs & (1 << SMRES_ActivePower_AC)) == (1 << SMRES_ActivePower_AC))
+    @RES_ActivePower_AC=1;
+  else
+    @RES_ActivePower_AC=0;
+
+  if((this.u32CSHDLActiveSMs & (1 << SMRES_GRAPower_AC)) == (1 << SMRES_GRAPower_AC))
+    @RES_GRAPower_AC=1;
+  else
+    @RES_GRAPower_AC=0;
+
+  if((this.u32CSHDLActiveSMs & (1 << SMRES_ForkSync_AC)) == (1 << SMRES_ForkSync_AC))
+    @RES_ForkSync_AC=1;
+  else
+    @RES_ForkSync_AC=0;
+
+  if((this.u32CSHDLActiveSMs & (1 << SMRES_HoldCommunication_AC)) == (1 << SMRES_HoldCommunication_AC))
+    @RES_HoldCommunication_AC=1;
+  else
+    @RES_HoldCommunication_AC=0;
+
+  if((this.u32CSHDLActiveSMs & (1 << SMRES_PrepareBusSleep_AC)) == (1 << SMRES_PrepareBusSleep_AC))
+    @RES_PrepareBusSleep_AC=1;
+  else
+    @RES_PrepareBusSleep_AC=0;
+
+  if((this.u32CSHDLActiveSMs & (1 << SMRES_PrepareCtrSleep_AC)) == (1 << SMRES_PrepareCtrSleep_AC))
+    @RES_PrepareCtrSleep_AC=1;
+  else
+    @RES_PrepareCtrSleep_AC=0;
+
+  if((this.u32CSHDLActiveSMs & (1 << SMRES_StandbyRun_AC)) == (1 << SMRES_StandbyRun_AC))
+    @RES_StandbyRun_AC=1;
+  else
+    @RES_StandbyRun_AC=0;
+
+  if((this.u32CSHDLActiveSMs & (1 << SMRES_ActiveDisplay_AC)) == (1 << SMRES_ActiveDisplay_AC))
+    @RES_ActiveDisplay_AC=1;
+  else
+    @RES_ActiveDisplay_AC=0;
+  
+}
+
+
+on message GC_SmgAlive
+{
+  TimeoutFlag_GC=0;
+  @KL15State_GC  = this.biKL15State;
+  @NetRequest_GC = this.biNetRequest;    
+  //@NetRequest_AC = this.biNetRequest_AC;
+  @ComReq_GC     = this.biComReq;
+  @ActiveCtr_Request_GC = this.biActiveCtr_Request;
+  @ActiveMost_Request_GC= this.biActiveMost_Request;
+  @ActiveNM_Request_GC  = this.biActiveNM_Request;
+  @Active15_Request_GC  = this.biActive15_Request;
+  @HoldCom_Request_GC   = this.biHoldCom_Request;
+  @ActiveDisplay_Request_GC     = this.biActiveDisplay_Request;
+  @ActiveHw_Request_GC  = this.biActiveHw_Request;
+  @TxMute_Request_GC    = this.biTxMute_Request;
+  
+
+  
+  @u32CSHDLActiveSMs_GC  =this.u32CSHDLActiveSMs;
+  
+  if((this.u32CSHDLActiveSMs & (1 << SMRES_Active15_GC)) == (1 << SMRES_Active15_GC))
+    @RES_Active15_GC=1;
+  else
+    @RES_Active15_GC=0;
+
+  if((this.u32CSHDLActiveSMs & (1 << SMRES_Active15HMI_GC)) == (1 << SMRES_Active15HMI_GC))
+    @RES_Active15HMI_GC=1;
+  else
+    @RES_Active15HMI_GC=0;
+
+  if((this.u32CSHDLActiveSMs & (1 << SMRES_ActiveCtr_GC)) == (1 << SMRES_ActiveCtr_GC))
+    @RES_ActiveCtr_GC=1;
+  else
+    @RES_ActiveCtr_GC=0;
+
+  if((this.u32CSHDLActiveSMs & (1 << SMRES_ActiveDisplay_GC)) == (1 << SMRES_ActiveDisplay_GC))
+    @RES_ActiveDisplay_GC=1;
+  else
+    @RES_ActiveDisplay_GC=0;
+
+  if((this.u32CSHDLActiveSMs & (1 << SMRES_ActiveHardware_GC)) == (1 << SMRES_ActiveHardware_GC))
+    @RES_ActiveHardware_GC=1;
+  else
+    @RES_ActiveHardware_GC=0;
+
+  if((this.u32CSHDLActiveSMs & (1 << SMRES_ActiveICOM_GC)) == (1 << SMRES_ActiveICOM_GC))
+    @RES_ActiveICOM_GC=1;
+  else
+    @RES_ActiveICOM_GC=0;
+
+  if((this.u32CSHDLActiveSMs & (1 << SMRES_ActiveMost_GC)) == (1 << SMRES_ActiveMost_GC))
+    @RES_ActiveMost_GC=1;
+  else
+    @RES_ActiveMost_GC=0;
+
+  if((this.u32CSHDLActiveSMs & (1 << SMRES_ActiveMostHardware_GC)) == (1 << SMRES_ActiveMostHardware_GC))
+    @RES_ActiveMostHardware_GC=1;
+  else
+    @RES_ActiveMostHardware_GC=0;
+
+  if((this.u32CSHDLActiveSMs & (1 << SMRES_ActiveNm_GC)) == (1 << SMRES_ActiveNm_GC))
+    @RES_ActiveNm_GC=1;
+  else
+    @RES_ActiveNm_GC=0;
+
+  if((this.u32CSHDLActiveSMs & (1 << SMRES_ApiMgr_Hmi_GC)) == (1 << SMRES_ApiMgr_Hmi_GC))
+    @RES_ApiMgr_Hmi_GC=1;
+  else
+    @RES_ApiMgr_Hmi_GC=0;
+
+  if((this.u32CSHDLActiveSMs & (1 << SMRES_ApiMgr_System_GC)) == (1 << SMRES_ApiMgr_System_GC))
+    @RES_ApiMgr_System_GC=1;
+  else
+    @RES_ApiMgr_System_GC=0;
+
+  if((this.u32CSHDLActiveSMs & (1 << SMRES_Boot_GC)) == (1 << SMRES_Boot_GC))
+    @RES_Boot_GC=1;
+  else
+    @RES_Boot_GC=0;
+
+  if((this.u32CSHDLActiveSMs & (1 << SMRES_ForkSync_GC)) == (1 << SMRES_ForkSync_GC))
+    @RES_ForkSync_GC=1;
+  else
+    @RES_ForkSync_GC=0;
+
+  if((this.u32CSHDLActiveSMs & (1 << SMRES_GraphicsHMI_GC)) == (1 << SMRES_GraphicsHMI_GC))
+    @RES_GraphicsHMI_GC=1;
+  else
+    @RES_GraphicsHMI_GC=0;
+
+  if((this.u32CSHDLActiveSMs & (1 << SMRES_HMIFunction_GC)) == (1 << SMRES_HMIFunction_GC))
+    @RES_HMIFunction_GC=1;
+  else
+    @RES_HMIFunction_GC=0;
+
+  if((this.u32CSHDLActiveSMs & (1 << SMRES_HoldCommunication_GC)) == (1 << SMRES_HoldCommunication_GC))
+    @RES_HoldCommunication_GC=1;
+  else
+    @RES_HoldCommunication_GC=0;
+
+   if((this.u32CSHDLActiveSMs & (1 << SMRES_HoldDisplay_GC)) == (1 << SMRES_HoldDisplay_GC))
+    @RES_HoldDisplay_GC=1;
+  else
+    @RES_HoldDisplay_GC=0;
+
+  if((this.u32CSHDLActiveSMs & (1 << SMRES_HoldMost_GC)) == (1 << SMRES_HoldMost_GC))
+    @RES_HoldMost_GC=1;
+  else
+    @RES_HoldMost_GC=0;
+
+  if((this.u32CSHDLActiveSMs & (1 << SMRES_Mmi_GC)) == (1 << SMRES_Mmi_GC))
+    @RES_Mmi_GC=1;
+  else
+    @RES_Mmi_GC=0;
+
+  if((this.u32CSHDLActiveSMs & (1 << SMRES_PrepareBusSleep_GC)) == (1 << SMRES_PrepareBusSleep_GC))
+    @RES_PrepareBusSleep_GC=1;
+  else
+    @RES_PrepareBusSleep_GC=0;
+
+  if((this.u32CSHDLActiveSMs & (1 << SMRES_PrepareCtrSleep_GC)) == (1 << SMRES_PrepareCtrSleep_GC))
+    @RES_PrepareCtrSleep_GC=1;
+  else
+    @RES_PrepareCtrSleep_GC=0;
+     
+  if((this.u32CSHDLActiveSMs & (1 << SMRES_StandbyRun_GC)) == (1 << SMRES_StandbyRun_GC))
+    @RES_StandbyRun_GC=1;
+  else
+    @RES_StandbyRun_GC=0;
+
+  if((this.u32CSHDLActiveSMs & (1 << SMRES_StoreWakeUpData_GC)) == (1 << SMRES_StoreWakeUpData_GC))
+    @RES_StoreWakeUpData_GC=1;
+  else
+    @RES_StoreWakeUpData_GC=0;
+
+ 
+  if((this.u32CSHDLActiveSMs & (1 << SMRES_SyncHMI_GC)) == (1 << SMRES_SyncHMI_GC))
+    @RES_SyncHMI_GC=1;
+  else
+    @RES_SyncHMI_GC=0;
+
+  if((this.u32CSHDLActiveSMs & (1 << SMRES_Warnings_GC)) == (1 << SMRES_Warnings_GC))
+    @RES_Warnings_GC=1;
+  else
+    @RES_Warnings_GC=0;
+ 
+  if((this.u32CSHDLActiveSMs & (1 << SMRES_SyncBoot_GC)) == (1 << SMRES_SyncBoot_GC))
+    @RES_SyncBoot_GC=1;
+  else
+    @RES_SyncBoot_GC=0;
+ 
+  if((this.u32CSHDLActiveSMs & (1 << SMRES_DataRecovery_GC)) == (1 << SMRES_DataRecovery_GC))
+    @RES_DataRecovery_GC=1;
+  else
+    @RES_DataRecovery_GC=0;
+
+  if((this.u32CSHDLActiveSMs & (1 << SMRES_GraphicsIntern_GC)) == (1 << SMRES_GraphicsIntern_GC))
+    @RES_GraphicsIntern_GC=1;
+  else
+    @RES_GraphicsIntern_GC=0;
+
+  
+  
+}
+
+on start
+{
+ setTimer(TimeoutTimer_AC,200);
+ setTimer(TimeoutTimer_GC,200);
+  
+ closePanel("Resources_E260");	  
+ closePanel("Resources_E270");	    
+ SelResources=0;
+ SetResources();
+}
+
+void SetResources()
+{
+ switch (SelResources)
+   {
+    case 1:
+     write("SelResources: %d\n",SelResources);
+     //FAC
+     SMRES_Active15_AC          = 0;   
+     SMRES_ActiveCtr_AC         = 1;  
+     SMRES_ActiveDisplay_AC     =  99;      
+     SMRES_ActiveHardware_AC    = 2;    
+     SMRES_ActiveICOM_AC        = 3;        
+     SMRES_ActiveMostHW_AC      = 4;        
+     SMRES_ActiveNm_AC          = 5;          
+     SMRES_ActivePower_AC       = 6;       
+     SMRES_Eco_AC               = 7;               
+     SMRES_ExtendedWakeUp_AC    = 8;    
+     SMRES_ForkSync_AC          = 9;         
+     SMRES_GRAPower_AC          = 10;         
+     SMRES_HoldCommunication_AC = 11;
+     SMRES_PrepareBusSleep_AC   = 12;  
+     SMRES_PrepareCtrSleep_AC   = 13;  
+     SMRES_StandbyRun_AC        = 14;       
+     SMRES_TXMute_AC            = 15;  
+    
+     SMRES_Active15_GC           = 0;            
+     SMRES_Active15HMI_GC        = 1;            
+     SMRES_ActiveCtr_GC          = 2;           
+     SMRES_ActiveDisplay_GC      = 3;       
+     SMRES_ActiveHardware_GC     = 4;      
+     SMRES_ActiveICOM_GC         = 5;          
+     SMRES_ActiveMost_GC         = 6;          
+     SMRES_ActiveMostHardware_GC = 7;  
+     SMRES_ActiveNm_GC           = 8;            
+     SMRES_ApiMgr_Hmi_GC         = 9;          
+     SMRES_ApiMgr_System_GC      = 10;      
+     SMRES_Boot_GC               = 11;
+     SMRES_Eco_GC                = 12;                
+     SMRES_ForkSync_GC           = 13;           
+     SMRES_GraphicsHMI_GC        = 14;        
+     SMRES_HMIFunction_GC        = 15;        
+     SMRES_HoldCommunication_GC  = 16;  
+     SMRES_HoldDisplay_GC        = 17;        
+     SMRES_HoldMost_GC           = 18;           
+     SMRES_Mmi_GC                = 19;               
+     SMRES_PrepareBusSleep_GC    = 20;   
+     SMRES_PrepareCtrSleep_GC    = 21;   
+     SMRES_StandbyRun_GC         = 22;        
+     SMRES_StoreWakeUpData_GC    = 23;   
+     SMRES_SyncHMI_GC            = 24;           
+     SMRES_TXMute_GC             = 25;            
+     SMRES_Warnings_GC           = 26;     
+     /* unused */
+     SMRES_SyncBoot_GC           = 27;
+     SMRES_DataRecovery_GC       = 28;
+     SMRES_GraphicsIntern_GC     = 29;
+     break;
+  case 2:
+     write("SelResources: %d\n",SelResources);
+     //FAC
+     SMRES_Active15_AC          = 0;   
+     SMRES_ActiveCtr_AC         = 1; 
+     SMRES_ActiveDisplay_AC     =  99;      
+     SMRES_ActiveHardware_AC    = 2;    
+     SMRES_ActiveICOM_AC        = 3;        
+     SMRES_ActiveMostHW_AC      = 4;        
+     SMRES_ActiveNm_AC          = 5;          
+     SMRES_ActivePower_AC       = 6;       
+     SMRES_Eco_AC               = 7;               
+     SMRES_ExtendedWakeUp_AC    = 8;    
+     SMRES_ForkSync_AC          = 9;         
+     SMRES_GRAPower_AC          = 10;         
+     SMRES_HoldCommunication_AC = 11;
+     SMRES_PrepareBusSleep_AC   = 12;  
+     SMRES_PrepareCtrSleep_AC   = 13;  
+     SMRES_StandbyRun_AC        = 14;       
+     SMRES_TXMute_AC            = 15;  
+    
+     SMRES_Active15_GC           = 0;
+     SMRES_Active15HMI_GC        = 1;
+     SMRES_ActiveCtr_GC          = 2;
+     SMRES_ActiveDisplay_GC      = 3;
+     SMRES_ActiveHardware_GC     = 4;
+     SMRES_ActiveICOM_GC         = 5;
+     SMRES_ActiveMost_GC         = 6;
+     SMRES_ActiveMostHardware_GC = 7;
+     SMRES_ActiveNm_GC           = 8;
+     SMRES_ApiMgr_Hmi_GC         = 9;
+     SMRES_ApiMgr_System_GC      = 10;
+     SMRES_Boot_GC               = 11;
+     SMRES_DataRecovery_GC       = 12;
+     SMRES_Eco_GC                = 13;
+     SMRES_ForkSync_GC           = 14;
+     SMRES_GraphicsHMI_GC        = 15;
+     SMRES_GraphicsIntern_GC     = 16;
+     SMRES_HMIFunction_GC        = 17;
+     SMRES_HoldCommunication_GC  = 18;
+     SMRES_HoldDisplay_GC        = 19;
+     SMRES_HoldMost_GC           = 20;
+     SMRES_Mmi_GC                = 21;
+     SMRES_PrepareBusSleep_GC    = 22;
+     SMRES_PrepareCtrSleep_GC    = 23;
+     SMRES_StandbyRun_GC         = 24;
+     SMRES_StoreWakeUpData_GC    = 25;
+     SMRES_SyncBoot_GC           = 26;
+     SMRES_SyncHMI_GC            = 27;
+     SMRES_TXMute_GC             = 28;
+     /* unused */
+     SMRES_Warnings_GC           = 29;             
+     break;
+  case 3:
+     write("Resources 2\n");
+     //FAC
+     SMRES_Active15_AC          = 0;   
+     SMRES_ActiveCtr_AC         = 1;         
+     SMRES_ActiveDisplay_AC     = 2;      
+     SMRES_ActiveHardware_AC    = 3;    
+     SMRES_ActiveICOM_AC        = 4;        
+     SMRES_ActiveMostHW_AC      = 5;        
+     SMRES_ActiveNm_AC          = 6;          
+     SMRES_ActivePower_AC       = 7;       
+     SMRES_Eco_AC               = 8;               
+     SMRES_ExtendedWakeUp_AC    = 9;    
+     SMRES_ForkSync_AC          = 10;         
+     SMRES_GRAPower_AC          = 11;         
+     SMRES_HoldCommunication_AC = 12;
+     SMRES_PrepareBusSleep_AC   = 13;  
+     SMRES_PrepareCtrSleep_AC   = 14;  
+     SMRES_StandbyRun_AC        = 15;       
+     SMRES_TXMute_AC            = 16;  
+    
+     SMRES_Active15_GC           = 0;
+     SMRES_Active15HMI_GC        = 1;
+     SMRES_ActiveCtr_GC          = 2;
+     SMRES_ActiveDisplay_GC      = 3;
+     SMRES_ActiveHardware_GC     = 4;
+     SMRES_ActiveICOM_GC         = 5;
+     SMRES_ActiveMost_GC         = 6;
+     SMRES_ActiveMostHardware_GC = 7;
+     SMRES_ActiveNm_GC           = 8;
+     SMRES_ApiMgr_Hmi_GC         = 9;
+     SMRES_ApiMgr_System_GC      = 10;
+     SMRES_Boot_GC               = 11;
+     SMRES_DataRecovery_GC       = 12;
+     SMRES_Eco_GC                = 13;
+     SMRES_ForkSync_GC           = 14;
+     SMRES_GraphicsHMI_GC        = 15;
+     SMRES_GraphicsIntern_GC     = 16;
+     SMRES_HMIFunction_GC        = 17;
+     SMRES_HoldCommunication_GC  = 18;
+     SMRES_HoldDisplay_GC        = 19;
+     SMRES_HoldMost_GC           = 20;
+     SMRES_Mmi_GC                = 21;
+     SMRES_PrepareBusSleep_GC    = 22;
+     SMRES_PrepareCtrSleep_GC    = 23;
+     SMRES_StandbyRun_GC         = 24;
+     SMRES_StoreWakeUpData_GC    = 25;
+     SMRES_SyncBoot_GC           = 26;
+     SMRES_SyncHMI_GC            = 27;
+     SMRES_TXMute_GC             = 28;
+     /* unused */
+     SMRES_Warnings_GC           = 29;             
+    break;
+  default: 
+    
+     SMRES_Active15_AC          = SMRES_Unused_AC;   
+     SMRES_ActiveCtr_AC         = SMRES_Unused_AC;       
+     SMRES_ActiveDisplay_AC     = SMRES_Unused_AC;    
+     SMRES_ActiveHardware_AC    = SMRES_Unused_AC;  
+     SMRES_ActiveICOM_AC        = SMRES_Unused_AC;      
+     SMRES_ActiveMostHW_AC      = SMRES_Unused_AC;      
+     SMRES_ActiveNm_AC          = SMRES_Unused_AC;        
+     SMRES_ActivePower_AC       = SMRES_Unused_AC;     
+     SMRES_Eco_AC               = SMRES_Unused_AC;             
+     SMRES_ExtendedWakeUp_AC    = SMRES_Unused_AC;  
+     SMRES_ForkSync_AC          = SMRES_Unused_AC;        
+     SMRES_GRAPower_AC          = SMRES_Unused_AC;        
+     SMRES_HoldCommunication_AC = SMRES_Unused_AC;
+     SMRES_PrepareBusSleep_AC   = SMRES_Unused_AC; 
+     SMRES_PrepareCtrSleep_AC   = SMRES_Unused_AC; 
+     SMRES_StandbyRun_AC        = SMRES_Unused_AC;      
+     SMRES_TXMute_AC            = SMRES_Unused_AC; 
+    
+     SMRES_Active15_GC           = SMRES_Unused_GC;
+     SMRES_Active15HMI_GC        = SMRES_Unused_GC;
+     SMRES_ActiveCtr_GC          = SMRES_Unused_GC;
+     SMRES_ActiveDisplay_GC      = SMRES_Unused_GC;
+     SMRES_ActiveHardware_GC     = SMRES_Unused_GC;
+     SMRES_ActiveICOM_GC         = SMRES_Unused_GC;
+     SMRES_ActiveMost_GC         = SMRES_Unused_GC;
+     SMRES_ActiveMostHardware_GC = SMRES_Unused_GC;
+     SMRES_ActiveNm_GC           = SMRES_Unused_GC;
+     SMRES_ApiMgr_Hmi_GC         = SMRES_Unused_GC;
+     SMRES_ApiMgr_System_GC      = SMRES_Unused_GC;
+     SMRES_Boot_GC               = SMRES_Unused_GC;
+     SMRES_DataRecovery_GC       = SMRES_Unused_GC;
+     SMRES_Eco_GC                = SMRES_Unused_GC;
+     SMRES_ForkSync_GC           = SMRES_Unused_GC;
+     SMRES_GraphicsHMI_GC        = SMRES_Unused_GC;
+     SMRES_GraphicsIntern_GC     = SMRES_Unused_GC;
+     SMRES_HMIFunction_GC        = SMRES_Unused_GC;
+     SMRES_HoldCommunication_GC  = SMRES_Unused_GC;
+     SMRES_HoldDisplay_GC        = SMRES_Unused_GC;
+     SMRES_HoldMost_GC           = SMRES_Unused_GC;
+     SMRES_Mmi_GC                = SMRES_Unused_GC;
+     SMRES_PrepareBusSleep_GC    = SMRES_Unused_GC;
+     SMRES_PrepareCtrSleep_GC    = SMRES_Unused_GC;
+     SMRES_StandbyRun_GC         = SMRES_Unused_GC;
+     SMRES_StoreWakeUpData_GC    = SMRES_Unused_GC;
+     SMRES_SyncBoot_GC           = SMRES_Unused_GC;
+     SMRES_SyncHMI_GC            = SMRES_Unused_GC;
+     SMRES_TXMute_GC             = SMRES_Unused_GC;
+     SMRES_Warnings_GC           = SMRES_Unused_GC;             
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    break;
+  }
+}
+
+
+on envVar RES_E260
+{
+  SelResources=1;
+  SetResources();
+  openPanel("Resources_E260");
+//  write("En260\n");
+	
+}
+
+on envVar RES_E270
+{
+  if(@this)
+  {
+  SelResources=2;
+  SetResources();
+  openPanel("Resources_E270");	
+  write("En270\n");
+  }
+}
+
+on envVar RES_E315
+{
+  if(@this)
+  {
+  SelResources=3;
+  SetResources();
+  openPanel("Resources_E315");	
+  write("En315\n");
+  }
+}
+
+
+on timer TimeoutTimer_AC
+{
+  if(TimeoutFlag_AC)
+  {
+    @Timeout_AC=1;
+    @RES_Active15_AC=0;   
+    @RES_ActiveDisplay_AC=0;
+    @RES_ActiveCtr_AC=0;                
+    @RES_ActiveHardware_AC=0;      
+    @RES_ActiveICOM_AC=0;              
+    @RES_ActiveMostHardware_AC;
+    @RES_ActiveNm_AC=0;                  
+    @RES_ActivePower_AC=0;            
+    @RES_Eco_AC=0;                            
+    @RES_ExtendedWakeUp_AC=0;      
+    @RES_ForkSync_AC=0;                 
+    @RES_GRAPower_AC=0;                  
+    @RES_HoldCommunication_AC=0;
+    @RES_PrepareBusSleep_AC=0;    
+    @RES_PrepareCtrSleep_AC=0;    
+    @RES_StandbyRun_AC=0;              
+    @RES_TxMute_AC=0;
+  }
+  else
+    @Timeout_AC=0;
+
+  TimeoutFlag_AC=1;
+
+  setTimer(TimeoutTimer_AC,300);
+}
+
+on timer TimeoutTimer_GC
+{
+  if(TimeoutFlag_GC)
+  {
+    @Timeout_GC=1;
+    @RES_Active15_GC=0;          
+    @RES_Active15HMI_GC=0;       
+    @RES_ActiveCtr_GC=0;         
+    @RES_ActiveDisplay_GC=0;     
+    @RES_ActiveHardware_GC=0;    
+    @RES_ActiveICOM_GC=0;        
+    @RES_ActiveMost_GC=0;        
+    @RES_ActiveMostHardware_GC=0;
+    @RES_ActiveNm_GC=0;          
+    @RES_ApiMgr_Hmi_GC=0;        
+    @RES_ApiMgr_System_GC=0;     
+    @RES_Boot_GC=0;              
+    @RES_DataRecovery_GC=0;      
+    @RES_Eco_GC=0;               
+    @RES_ForkSync_GC=0;          
+    @RES_GraphicsHMI_GC=0;       
+    @RES_GraphicsIntern_GC=0;    
+    @RES_HMIFunction_GC=0;       
+    @RES_HoldCommunication_GC=0; 
+    @RES_HoldDisplay_GC=0;       
+    @RES_HoldMost_GC=0;          
+    @RES_Mmi_GC=0;               
+    @RES_PrepareBusSleep_GC=0;   
+    @RES_PrepareCtrSleep_GC=0;   
+    @RES_StandbyRun_GC=0;        
+    @RES_StoreWakeUpData_GC=0;   
+    @RES_SyncBoot_GC=0;          
+    @RES_SyncHMI_GC=0;           
+    @RES_TxMute_GC=0;            
+    @RES_Warnings_GC=0;   
+    }
+  else
+    @Timeout_GC=0;
+
+  TimeoutFlag_GC=1;
+
+  setTimer(TimeoutTimer_GC,300);
+}
+

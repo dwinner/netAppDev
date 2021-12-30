@@ -1,0 +1,126 @@
+/*@@var:*/
+variables
+{
+// This node blocks all BAP messages with Opcode "HeartbeatStatus"
+
+//Methods
+const FctID_DialNumber		                    	=0x1A;
+const FctID_DialService		                    	=0x1B;
+const FctID_ConfirmEmergencyCall                    =0x1C;
+const FctID_HangupCall		                    	=0x1D;
+const FctID_AcceptCall		                    	=0x1E;
+const FctID_CallHold		                    	=0x1F;
+const FctID_ResumeCall		                    	=0x20;
+const FctID_MPReleaseActiveCallAcceptWaitingCall	=0x23;
+const FctID_MPSwap									=0x24;
+const FctID_MPCallHoldAcceptWaitingCall				=0x25;
+const FctID_MPReleaseAllCallsAcceptWaitingCall		=0x26;
+const FctID_MPSetWaitingCallOnHold      			=0x27;
+const FctID_CCJoin									=0x28;
+const FctID_CCSplit									=0x29;
+const FctID_CallStackDeleteAll        			    =0x32;
+const FctID_PbSpeller                   			=0x35;
+const FctID_GetNextListPos              			=0x36;
+
+//Arrays
+const FctID_MissedCalls        			            =0x2E;
+const FctID_ReceivedCalls        			        =0x2F;
+const FctID_DialedNumbers        			        =0x30;
+const FctID_CombinedNumbers        			        =0x31;
+const FctID_Phonebook                   			=0x34;
+}
+/*@@end*/
+
+/*@@startStart:Start:*/
+on start
+{
+}
+/*@@end*/
+
+/*@@caplFunc:Name:*/
+/*on bapMessage *
+{
+    if(this.Opcode==0x3)        //Opcode 0x3 = HeartbeatStatus/Processing/ChangedArray
+    {
+        switch(this.FctID)      //output only for Processing- and ChangedArray-Messages
+        {
+            //Methods
+            case FctID_DialNumber:
+                output(this);
+                break;
+            case FctID_DialService:
+                output(this);
+                break;
+            case FctID_ConfirmEmergencyCall:
+                output(this);
+                break;
+            case FctID_HangupCall:
+                output(this);
+                break;
+            case FctID_AcceptCall:
+                output(this);
+                break;
+            case FctID_CallHold:
+                output(this);
+                break;
+            case FctID_ResumeCall:
+                output(this);
+                break;
+            case FctID_MPReleaseActiveCallAcceptWaitingCall:
+                output(this);
+                break;
+            case FctID_MPSwap:
+                output(this);
+                break;
+            case FctID_MPCallHoldAcceptWaitingCall:
+                output(this);
+                break;
+            case FctID_MPReleaseAllCallsAcceptWaitingCall:
+                output(this);
+                break;
+            case FctID_MPSetWaitingCallOnHold:
+                output(this);
+                break;
+            case FctID_CCJoin:
+                output(this);
+                break;
+            case FctID_CCSplit:
+                output(this);
+                break;
+            case FctID_CallStackDeleteAll:
+                output(this);
+                break;
+            case FctID_PbSpeller:
+                output(this);
+                break;
+            case FctID_GetNextListPos:
+                output(this);
+                break;
+
+            //Arrays
+            case FctID_MissedCalls:
+                output(this);
+                break;
+            case FctID_ReceivedCalls:
+                output(this);
+                break;
+            case FctID_DialedNumbers:
+                output(this);
+                break;
+            case FctID_CombinedNumbers:
+                output(this);
+                break;
+            case FctID_Phonebook:
+                output(this);
+                break;
+
+            //Properties
+            default:
+                break;//block all HeartbeatStatus
+        }
+    }     
+    else    //output all messages except Opcode 0x3
+        output(this);
+}*/
+/*@@end*/
+

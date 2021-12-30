@@ -1,0 +1,202 @@
+includes
+{
+  
+}
+
+variables
+{
+  // Sleep test LED states
+  enum TVTest_LEDState
+  {
+    LEDState_Off = 2, // red/orange
+    LEDState_Running = 1, // green
+    LEDState_reserved = 0   // yellow
+  };  
+  
+  /* Sleep Test duration */
+  long KL15ONDuration;
+  long KL15OFFDuration;
+  long MOSTONDuration;
+  long MOSTOFFDuration;
+  long NMHONDuration;
+  long NMHOFFDuration;
+  
+  /* Sleep Test Timer */
+  msTimer tKL15_ON;
+  msTimer tKL15_OFF;
+  msTimer tMOST_ON;
+  msTimer tMOST_OFF;
+  msTimer tNMH_ON;
+  msTimer tNMH_OFF;
+  
+  // Variable indicating sleep test run status
+  byte bSleepTestStatus = 0;
+}
+
+on sysvar RELTEST::SleepTest_StartStop
+{
+  if (@this == 0)
+    return;
+ 
+  if(bSleepTestStatus == 0)
+  {  
+    bSleepTestStatus = 1;
+    
+    /* Take parameter value */
+    KL15ONDuration = @RELTEST::KL15_ON * 1000;
+    KL15OFFDuration = @RELTEST::KL15_OFF * 1000;
+    MOSTONDuration = @RELTEST::MOST_ON * 1000;
+    MOSTOFFDuration = @RELTEST::MOST_OFF * 1000;
+    NMHONDuration = @RELTEST::NMH_ON * 1000;
+    NMHOFFDuration = @RELTEST::NMH_OFF * 1000;
+    
+    /* Initialize LED */
+    @RELTEST::NMH_OFF_LED = LEDState_Off;
+    @RELTEST::KL15_ON_LED = LEDState_Off;
+    @RELTEST::KL15_OFF_LED = LEDState_Off;
+    @RELTEST::MOST_ON_LED = LEDState_Off;
+    @RELTEST::MOST_OFF_LED = LEDState_Off;
+    
+    /* Start Sleep Test */
+    SwitchNMH(1);
+    setTimer(tNMH_ON, NMHONDuration);
+    @RELTEST::NMH_ON_LED = LEDState_Running;
+  }
+  else
+  {
+    bSleepTestStatus = 0;
+    cancelTimer(tKL15_ON);
+    cancelTimer(tKL15_OFF);
+    cancelTimer(tMOST_ON);
+    cancelTimer(tMOST_OFF);
+    cancelTimer(tNMH_ON);
+    cancelTimer(tNMH_OFF);
+  }
+}
+
+on timer tNMH_ON
+{
+  SwitchKl15(1);
+  setTimer(tKL15_ON, KL15ONDuration);
+  @RELTEST::NMH_ON_LED = LEDState_Off;
+  @RELTEST::KL15_ON_LED = LEDState_Running;
+  
+}
+
+on timer tKL15_ON
+{
+  SwitchMostTxLight(1);
+  setTimer(tMOST_ON, MOSTONDuration);
+  @RELTEST::KL15_ON_LED = LEDState_Off;
+  @RELTEST::MOST_ON_LED = LEDState_Running;   
+}
+
+on timer tMOST_ON
+{  
+  SwitchMostTxLight(0);
+  setTimer(tMOST_OFF, MOSTOFFDuration);
+  @RELTEST::MOST_ON_LED = LEDState_Off;
+  @RELTEST::MOST_OFF_LED = LEDState_Running; 
+}  
+
+on timer tMOST_OFF
+{
+  SwitchKl15(0);
+  setTimer(tKL15_OFF, KL15OFFDuration); 
+  @RELTEST::MOST_OFF_LED = LEDState_Off;
+  @RELTEST::KL15_OFF_LED = LEDState_Running;    
+}
+
+on timer tKL15_OFF
+{
+  SwitchNMH(0);
+  setTimer(tNMH_OFF, NMHOFFDuration);
+  @RELTEST::KL15_OFF_LED = LEDState_Off;
+  @RELTEST::NMH_OFF_LED = LEDState_Running; 
+}
+
+on timer tNMH_OFF
+{
+  /* Restart Sleep Test */
+  SwitchNMH(1);
+  setTimer(tNMH_ON, NMHONDuration);
+  @RELTEST::NMH_OFF_LED = LEDState_Off;
+  @RELTEST::NMH_ON_LED = LEDState_Running;  
+}
+
+SwitchKl15 (int State)
+{
+   /* if( INTEGR_LogFileHandle != 0)
+    {
+        snprintf( INTEGR_cLogBuffer, elcount( INTEGR_cLogBuffer ), "INTEGR: INTEGR_vSwitchKl15 state = %d\n", State );
+        filePutString( INTEGR_cLogBuffer, elCount( INTEGR_cLogBuffer ), INTEGR_LogFileHandle );
+    }
+
+    // always stop a running toggle timer
+    if( isTimerActive( INTEGR_vToggleKl15_timer ) )
+    {
+        cancelTimer( INTEGR_vToggleKl15_timer );
+    }*/
+
+	switch( State )
+	{
+    	case 0:
+            putValue(eZAS_Kl_15S, 0);
+		    break;
+	
+        default:
+            putValue(eZAS_Kl_15S, 1);
+		    break;
+	}
+}
+
+SwitchNMH( int State )
+{
+    /*if( INTEGR_LogFileHandle != 0)
+    {
+        snprintf( INTEGR_cLogBuffer, elcount( INTEGR_cLogBuffer ), "INTEGR: SwitchNmh state = %d\n", State );
+        filePutString( INTEGR_cLogBuffer, elCount( INTEGR_cLogBuffer ), INTEGR_LogFileHandle );
+    }
+
+    // always stop a running toggle timer
+    if( isTimerActive( INTEGR_vToggleNMH_timer ) )
+    {
+        cancelTimer( INTEGR_vToggleNMH_timer );
+    }*/
+
+	switch( State )
+	{
+	case 0:
+      putValue(eNMHControllerNodeAwake, 0);
+ 		break;
+	case 1:
+      putValue(eNMHControllerNodeAwake, 1);
+ 		break;
+
+	default:
+        putValue(eNMHControllerNodeAwake, 0);
+		break;
+	}
+}
+
+// Switch MOST Tx light
+SwitchMostTxLight(int State)
+{
+  
+	switch( State )
+	{
+	  case 0:  
+      // Switch OFF MOST light
+      //MostSetTxLight(mostGetChannel(), 0);
+      putValue(env_RadioButton_MOSTLight_On_Off,0);
+      break;
+    case 1:  
+      // Switch ON MOST light
+      //MostSetTxLight(mostGetChannel(), 1);
+      putValue(env_RadioButton_MOSTLight_On_Off,1);
+      break;
+    default:
+    
+      break;
+  }
+}

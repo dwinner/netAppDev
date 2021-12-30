@@ -1,0 +1,1810 @@
+/*@!Encoding:1252*/
+variables
+{
+    byte utf08Table[1024][7];
+    byte utf16Table[1024][2];
+
+    byte gCurrentPanel;
+
+    byte firstByteMark[7] = { 0x00, 0x00, 0xC0, 0xE0, 0xF0, 0xF8, 0xFC };
+    byte gPhoneBookAndTelNumberPictures=18;
+    byte gCombinedNumbersPictures=19;
+    byte gPhonebookArrayPictures=13;
+    byte gSeqNo;
+    
+    byte gSendFrame;
+
+    char gFolderName[50]="Utf8Output";
+
+    dword gCombinedNumbersRX_ID;
+
+}
+
+on envVar ed_FilePath
+{
+    char path[256];
+    if(getvalue(this,path)==0) return;
+
+    putvalue(ed_TotalLines,0);
+
+    updateTables(path);
+}
+
+void updateTables(char def_path[])
+{
+     int index=0,counter,subIndex;
+     char path[255],folder_path[255],file_path[255];
+
+     dword fileHandlerUTF8;
+     dword fileHandlerUTF16;
+
+     byte byteUtf8[2],byteUtf16[6];
+
+     strncpy(path,def_path,255); counter=0;
+     //-------------------------------------------------------------------------------------------------
+                     strncpy(folder_path,path,255);
+
+                     while(counter<200&&strlen(folder_path)>0&&folder_path[strlen(folder_path)-1]!='\\'){
+                        counter++;
+                        snprintf(file_path,255,"%c%s",folder_path[strlen(folder_path)-1],file_path);
+                        folder_path[strlen(folder_path)-1]='\0';
+                     }
+                     snprintf(file_path,255,"\\%s",file_path);
+                     setFilePath(folder_path,0);
+     //-------------------------------------------------------------------------------------------------
+     fileHandlerUTF8=0; fileHandlerUTF16=0;
+     fileHandlerUTF8=openFileRead(file_path,1);
+     if(!fileHandlerUTF8){write("Unable to open file:%s",path); return;}
+     
+     
+     if(strlen(file_path)>4){ 
+        file_path[strlen(file_path)-4]='\0';
+        strncat(file_path,"_utf16.txt",255);
+     }
+     fileHandlerUTF16=openFileRead(file_path,1);
+     if(!fileHandlerUTF16){write("Unable to open second file:%s",file_path); fileclose(fileHandlerUTF8); return;}
+     
+     index=0;
+     subIndex=0;
+
+//reading first 2 bytes of the UTF16 file
+     fileGetBinaryBlock(byteUtf16,2,fileHandlerUTF16);
+
+
+     while(fileGetBinaryBlock(byteUtf8,1,fileHandlerUTF8)){
+        
+        if(byteUtf8[0]!=0x0A){
+            utf08Table[index][subIndex+1]=byteUtf8[0]; subIndex++;
+        }else{
+
+            utf08Table[index][0]=subIndex;
+            while(subIndex<6){
+                utf08Table[index][subIndex+1]=0; subIndex++;
+            }
+            subIndex=0; 
+
+            fileGetBinaryBlock(byteUtf16,6,fileHandlerUTF16);
+            utf16Table[index][0]=byteUtf16[0];
+            utf16Table[index][1]=byteUtf16[1];
+
+            index++; 
+        }
+
+     }
+
+     putvalue(ed_TotalLines,index);
+     
+     fileClose(fileHandlerUTF16);
+     fileClose(fileHandlerUTF8);
+}
+
+on envVar ed_CurrentLine
+{
+    int maxValue,oldCurrentValue,currentValue;
+    byte text[4096],i;
+    int index_1,index_2,characters;
+    int length;
+
+    maxValue=getvalue(ed_TotalLines);
+    currentValue=getvalue(this);
+    characters=getvalue(ed_DisplayedCharsNo);
+
+    if(currentValue>maxValue||currentValue<=0) return;
+    
+    length=0; oldCurrentValue=currentValue;
+    currentValue--; index_2=0;
+
+    for(index_1=0;index_1<characters&&currentValue<maxValue;index_1++){
+            
+        for(i=0;i<utf08Table[currentValue][0];i++){
+            text[index_2]=utf08Table[currentValue][i+1]; index_2++;
+        }
+
+        currentValue++;    
+    }
+    putvalue(ed_text_utf8,text,index_2);
+ 
+ 
+    length=0; currentValue=oldCurrentValue;
+    
+    currentValue--; index_2=0;  
+    for(index_1=0;index_1<characters&&currentValue<maxValue;index_1++){
+          
+        text[index_2]  =utf16Table[currentValue][0];
+        text[index_2+1]=utf16Table[currentValue][1];
+                    
+        currentValue++; index_2+=2;    
+    }
+
+    putvalue(ed_text_utf16,text,index_2);
+    
+    
+    createHeader();
+    setPicture();
+}
+
+on start
+{
+    setPicture();
+    setCombinedNumbers_Blank(); 
+    setPhonebookArray_Blank();
+    
+    setPhonePicture_Blank(0);
+    setPhonePicture_Blank(1);
+    setPhonePicture_Blank(2);
+    setPhonePicture_Blank(3);
+    setPhonePicture_Blank(4);
+    setPhonePicture_Blank(5);
+    setPhonePicture_Blank(6);
+
+
+    closeCurrentPanel(5);
+    closeCurrentPanel(6);
+    closeCurrentPanel(7);
+}
+
+void createHeader()
+{
+   int channel,length,maxValue,increment,currentValue;
+   int index,headerLength;
+
+   word value,aux;
+   byte header[8];
+
+   channel=getvalue(ed_Channel); increment=getvalue(ed_DisplayedCharsNo); 
+   maxValue=getvalue(ed_TotalLines);
+
+   if(getvalue(ed_CurrentLine)<=0) return;
+
+   switch(getvalue(ed_header)){
+   
+   case 0:
+        headerLength=0;
+   break;
+   case 1: //TTI no SP
+
+        currentValue=getvalue(ed_CurrentLine); length=0;
+         
+        for(index=0;currentValue<=maxValue&&index<increment;index++)
+        {
+            length+=utf08Table[currentValue-1][0];
+            currentValue++;
+        }
+
+        if(length==0) return;
+
+        length=length+1; //byte size for TTI information
+        
+        length=length+1; //byte size for SP information
+        
+        length=length+1; //byte for SP information (!=0x21 (hex))
+
+        //|---------------------------------------------------
+        //|    inserting channel and  start of frame
+        //|---------------------------------------------------
+        /*|*/   value=2; value=value<<14;
+        /*|*/
+        /*|*/   aux=channel-1; aux=aux<<12; value=value|aux;
+        //|---------------------------------------------------
+        //|---------------------------------------------------
+        //|    inserting length                      
+        //|---------------------------------------------------
+        /*|*/   value=value|length;
+        //|---------------------------------------------------
+        //|---------------------------------------------------
+        //|    create frame header                   
+        //|---------------------------------------------------
+        /*|*/   header[1]=(byte) value%256;
+        /*|*/
+        /*|*/   value=value/256; 
+        /*|*/   header[0]=(byte) value%256;
+        /*|*/
+        /*|*/
+        /*|*/   header[2]=0x4C;
+        /*|*/   header[3]=0x94;
+        //|---------------------------------------------------
+
+        headerLength=4;
+              
+   break;
+
+   case 2: //SPI no TTI
+
+        currentValue=getvalue(ed_CurrentLine); length=0;
+ 
+        length=length+1; //byte size for TTI information
+
+        length=length+1; //byte for TTI information (!=0x21 (hex))
+        
+        for(index=0;currentValue<=maxValue&&index<increment;index++)
+        {
+            length+=utf08Table[currentValue-1][0];
+            currentValue++;
+        }
+
+        if(length==2) return;
+        
+        length=length+1; //byte size for SP information
+
+        //|---------------------------------------------------
+        //|    inserting channel and  start of frame
+        //|---------------------------------------------------
+        /*|*/   value=2; value=value<<14;
+        /*|*/
+        /*|*/   aux=channel-1; aux=aux<<12; value=value|aux;
+        //|---------------------------------------------------
+        //|---------------------------------------------------
+        //|    inserting length                      
+        //|---------------------------------------------------
+        /*|*/   value=value|length;
+        //|---------------------------------------------------
+        //|---------------------------------------------------
+        //|    create frame header                   
+        //|---------------------------------------------------
+        /*|*/   header[1]=(byte) value%256;
+        /*|*/
+        /*|*/   value=value/256; 
+        /*|*/   header[0]=(byte) value%256;
+        /*|*/
+        /*|*/
+        /*|*/   header[2]=0x4C;
+        /*|*/   header[3]=0x94;
+        //|---------------------------------------------------
+        
+        headerLength=4;
+   break;
+
+   case 3: //CPI
+
+        currentValue=getvalue(ed_CurrentLine); length=0;
+       
+        for(index=0;currentValue<=maxValue&&index<increment;index++)
+        {
+            length+=utf08Table[currentValue-1][0];
+            currentValue++;
+        }
+
+        if(length==0) return;
+        
+        length=length+1; //byte size for SP information
+
+        //|---------------------------------------------------
+        //|    inserting channel and  start of frame
+        //|---------------------------------------------------
+        /*|*/   value=2; value=value<<14;
+        /*|*/
+        /*|*/   aux=channel-1; aux=aux<<12; value=value|aux;
+        //|---------------------------------------------------
+        //|---------------------------------------------------
+        //|    inserting length                      
+        //|---------------------------------------------------
+        /*|*/   value=value|length;
+        //|---------------------------------------------------
+        //|---------------------------------------------------
+        //|    create frame header                   
+        //|---------------------------------------------------
+        /*|*/   header[1]=(byte) value%256;
+        /*|*/
+        /*|*/   value=value/256; 
+        /*|*/   header[0]=(byte) value%256;
+        /*|*/
+        /*|*/
+        /*|*/   header[2]=0x4C;
+        /*|*/   header[3]=0x93;
+        //|---------------------------------------------------
+
+        headerLength=4;
+   break;
+
+   case 4: //TMC
+        currentValue=getvalue(ed_CurrentLine); length=0;
+       
+        for(index=0;currentValue<=maxValue&&index<increment;index++)
+        {
+            length+=utf08Table[currentValue-1][0];
+            currentValue++;
+        }
+        if(length==0) return;
+
+        length=length*3; // there are three sets of entries
+        
+        length=length+1; //byte size for entry 1 information
+
+        length=length+1; //byte size for entry 2 information
+
+        length=length+1; //byte size for entry 3 information
+        
+        length=length+1; //message status
+        
+        length=length+1; //message wait
+                
+        length=length+1; //priority
+                
+        length=length+1; //validity
+        
+        length=length+4; //length
+        
+        length=length+1; //length unit
+        //|---------------------------------------------------
+        //|    inserting channel and  start of frame
+        //|---------------------------------------------------
+        /*|*/   value=2; value=value<<14;
+        /*|*/
+        /*|*/   aux=channel-1; aux=aux<<12; value=value|aux;
+        //|---------------------------------------------------
+        //|---------------------------------------------------
+        //|    inserting length                      
+        //|---------------------------------------------------
+        /*|*/   value=value|length;
+        //|---------------------------------------------------
+        //|---------------------------------------------------
+        //|    create frame header                   
+        //|---------------------------------------------------
+        /*|*/   header[1]=(byte) value%256;
+        /*|*/
+        /*|*/   value=value/256; 
+        /*|*/   header[0]=(byte) value%256;
+        /*|*/
+        /*|*/
+        /*|*/   header[2]=0x4C;
+        /*|*/   header[3]=0x99;
+        /*|*/   header[4]=0x01; // Message status
+        /*|*/   header[5]=0x01; // Message wait
+        /*|*/   header[6]=0x00; // Priority
+        //|---------------------------------------------------
+
+        headerLength=7;
+   break;
+
+   }
+
+   putvalue(ed_frameHeader,header,0);
+   putvalue(ed_frameHeader,header,headerLength);
+}
+
+void createMessage()
+{
+   byte msg[4096];
+   byte buffer[6],seqNo;
+   int currentValue,oldCurrentValue,index_1,index_2,msgLength,characters;
+   int maxValue,textLength;
+
+   msgLength=0;
+
+   currentValue=getvalue(ed_CurrentLine)-1; msgLength=getvalue(ed_frameHeader,msg); characters=getvalue(ed_DisplayedCharsNo);
+   maxValue=getvalue(ed_TotalLines); msgLength=getvalue(ed_frameHeader,msg);
+
+   if(currentValue<0||currentValue>=maxValue) return;
+   
+   oldCurrentValue=currentValue;
+
+   switch(getvalue(ed_header)){
+   
+   case 0: return;
+   case 1: //TTI no SP
+         textLength=0;
+         for(index_1=0;index_1<characters&&currentValue<maxValue;index_1++)
+         {
+            textLength+=utf08Table[currentValue][0];
+            currentValue++;
+         }
+         currentValue=oldCurrentValue;
+         seqNo=0;
+        //|---------------------------------------------------
+        //|    inserting length                      
+        //|---------------------------------------------------
+        /*|*/ msg[msgLength]=textLength; msgLength++;
+        /*|*/
+        //|---------------------------------------------------
+        //|---------------------------------------------------
+        //|    inserting deta                      
+        //|---------------------------------------------------
+        /*|*/ for(index_1=0;index_1<characters&&currentValue<maxValue;index_1++){
+        /*|*/    for(index_2=1;index_2<=utf08Table[currentValue][0];index_2++){
+        /*|*/            msg[msgLength]=utf08Table[currentValue][index_2]; msgLength++;
+        /*|*/            if(msgLength%8==0){
+        /*|*/               msg[msgLength]=getSeqNo(seqNo); seqNo++; msgLength++;
+        /*|*/            }
+        /*|*/    }
+        /*|*/    currentValue++;
+        /*|*/ }
+        //|---------------------------------------------------
+         
+         msg[msgLength]=0x01; msgLength++; // adding SP byte  size
+         if(msgLength%8==0){
+            msg[msgLength]=getSeqNo(seqNo); seqNo++; msgLength++;
+         }
+         msg[msgLength]=0x21; msgLength++; // adding SP value byte
+         if(msgLength%8==0){
+            msg[msgLength]=getSeqNo(seqNo); seqNo++; msgLength++;
+         }
+             
+   break;
+   case 2: //SP no TTI
+         textLength=0;
+         for(index_1=0;index_1<characters&&currentValue<maxValue;index_1++)
+         {
+            textLength+=utf08Table[currentValue][0];
+            currentValue++;
+         }
+         currentValue=oldCurrentValue;
+         seqNo=0;
+
+         msg[msgLength]=0x01; msgLength++; // adding TTI byte  size
+         if(msgLength%8==0)
+         {
+            msg[msgLength]=getSeqNo(seqNo); seqNo++; msgLength++;
+         }
+
+         msg[msgLength]=0x21; msgLength++; // adding TTI value byte
+         if(msgLength%8==0)
+         {
+            msg[msgLength]=getSeqNo(seqNo); seqNo++; msgLength++;
+         }
+
+        //|---------------------------------------------------
+        //|    inserting length                      
+        //|---------------------------------------------------
+        /*|*/ msg[msgLength]=textLength; msgLength++;
+        /*|*/
+        //|---------------------------------------------------
+        //|---------------------------------------------------
+        //|    inserting deta                      
+        //|---------------------------------------------------
+        /*|*/ for(index_1=0;index_1<characters&&currentValue<maxValue;index_1++){
+        /*|*/    for(index_2=1;index_2<=utf08Table[currentValue][0];index_2++){
+        /*|*/            msg[msgLength]=utf08Table[currentValue][index_2]; msgLength++;
+        /*|*/            if(msgLength%8==0){
+        /*|*/               msg[msgLength]=getSeqNo(seqNo); seqNo++; msgLength++;
+        /*|*/            }
+        /*|*/    }
+        /*|*/    currentValue++;
+        /*|*/ }
+        //|---------------------------------------------------
+                      
+   break;
+   case 3: //CPI
+         textLength=0;
+         for(index_1=0;index_1<characters&&currentValue<maxValue;index_1++)
+         {
+            textLength+=utf08Table[currentValue][0];
+            currentValue++;
+         }
+         currentValue=oldCurrentValue;
+         seqNo=0;
+
+        //|---------------------------------------------------
+        //|    inserting length                      
+        //|---------------------------------------------------
+        /*|*/ msg[msgLength]=textLength; msgLength++;
+        /*|*/
+        //|---------------------------------------------------
+        //|---------------------------------------------------
+        //|    inserting deta                      
+        //|---------------------------------------------------
+        /*|*/ for(index_1=0;index_1<characters&&currentValue<maxValue;index_1++){
+        /*|*/    for(index_2=1;index_2<=utf08Table[currentValue][0];index_2++){
+        /*|*/            msg[msgLength]=utf08Table[currentValue][index_2]; msgLength++;
+        /*|*/            if(msgLength%8==0){
+        /*|*/               msg[msgLength]=getSeqNo(seqNo); seqNo++; msgLength++;
+        /*|*/            }
+        /*|*/    }
+        /*|*/    currentValue++;
+        /*|*/ }
+        //|---------------------------------------------------
+                      
+   break;
+
+
+   case 4: //TMC
+         textLength=0;
+         for(index_1=0;index_1<characters&&currentValue<maxValue;index_1++)
+         {
+            textLength+=utf08Table[currentValue][0];
+            currentValue++;
+         }
+         currentValue=oldCurrentValue;
+         seqNo=0;
+
+        //|----------------------------------------------------------------------------------
+        //|    inserting length for entry 1                      
+        //|----------------------------------------------------------------------------------
+        /*|*/ msg[msgLength]=textLength; msgLength++;
+        /*|*/
+        /*|*/ if(msgLength%8==0){
+        /*|*/    msg[msgLength]=getSeqNo(seqNo); seqNo++; msgLength++;
+        /*|*/ }
+        //|----------------------------------------------------------------------------------
+        //|----------------------------------------------------------------------------------
+        //|    inserting deta for entry 1                     
+        //|----------------------------------------------------------------------------------
+        /*|*/ for(index_1=0;index_1<characters&&currentValue<maxValue;index_1++){
+        /*|*/    for(index_2=1;index_2<=utf08Table[currentValue][0];index_2++){
+        /*|*/            msg[msgLength]=utf08Table[currentValue][index_2]; msgLength++;
+        /*|*/            if(msgLength%8==0){
+        /*|*/               msg[msgLength]=getSeqNo(seqNo); seqNo++; msgLength++;
+        /*|*/            }
+        /*|*/    }
+        /*|*/    currentValue++;
+        /*|*/ }
+        //|----------------------------------------------------------------------------------
+        //|----------------------------------------------------------------------------------
+        //|    inserting length for entry 2                      
+        //|----------------------------------------------------------------------------------
+        /*|*/ currentValue=oldCurrentValue;
+        /*|*/ msg[msgLength]=textLength; msgLength++;
+        /*|*/
+        /*|*/ if(msgLength%8==0){
+        /*|*/    msg[msgLength]=getSeqNo(seqNo); seqNo++; msgLength++;
+        /*|*/ }
+        //|----------------------------------------------------------------------------------
+        //|----------------------------------------------------------------------------------
+        //|    inserting deta for entry 2                     
+        //|----------------------------------------------------------------------------------
+        /*|*/ for(index_1=0;index_1<characters&&currentValue<maxValue;index_1++){
+        /*|*/    for(index_2=1;index_2<=utf08Table[currentValue][0];index_2++){
+        /*|*/            msg[msgLength]=utf08Table[currentValue][index_2]; msgLength++;
+        /*|*/            if(msgLength%8==0){
+        /*|*/               msg[msgLength]=getSeqNo(seqNo); seqNo++; msgLength++;
+        /*|*/            }
+        /*|*/    }
+        /*|*/    currentValue++;
+        /*|*/ }
+        //|----------------------------------------------------------------------------------                      
+        //|----------------------------------------------------------------------------------
+        //|    inserting length for entry 3                      
+        //|----------------------------------------------------------------------------------
+        /*|*/ msg[msgLength]=textLength; msgLength++;
+        /*|*/
+        /*|*/ if(msgLength%8==0){
+        /*|*/    msg[msgLength]=getSeqNo(seqNo); seqNo++; msgLength++;
+        /*|*/ }
+        //|----------------------------------------------------------------------------------
+        //|----------------------------------------------------------------------------------
+        //|    inserting deta for entry 3                     
+        //|----------------------------------------------------------------------------------
+        /*|*/ currentValue=oldCurrentValue;
+        /*|*/ for(index_1=0;index_1<characters&&currentValue<maxValue;index_1++){
+        /*|*/    for(index_2=1;index_2<=utf08Table[currentValue][0];index_2++){
+        /*|*/            msg[msgLength]=utf08Table[currentValue][index_2]; msgLength++;
+        /*|*/            if(msgLength%8==0){
+        /*|*/               msg[msgLength]=getSeqNo(seqNo); seqNo++; msgLength++;
+        /*|*/            }
+        /*|*/    }
+        /*|*/    currentValue++;
+        /*|*/ }
+        //|----------------------------------------------------------------------------------                      
+        //|    inserting validity                     
+        //|----------------------------------------------------------------------------------
+        /*|*/ msg[msgLength]=0x01; msgLength++; //validity
+        /*|*/ if(msgLength%8==0){
+        /*|*/     msg[msgLength]=getSeqNo(seqNo); seqNo++; msgLength++;
+        /*|*/ }
+        //|----------------------------------------------------------------------------------                      
+        //|    inserting length value                     
+        //|----------------------------------------------------------------------------------
+        /*|*/ for(index_1=0;index_1<4;index_1++){
+        /*|*/     msg[msgLength]=0x00; msgLength++;
+        /*|*/     if(msgLength%8==0){
+        /*|*/          msg[msgLength]=getSeqNo(seqNo); seqNo++; msgLength++;
+        /*|*/     }
+        /*|*/ }
+        //|----------------------------------------------------------------------------------                      
+        //|    inserting length unit                     
+        //|----------------------------------------------------------------------------------
+        /*|*/ msg[msgLength]=0x00; msgLength++;
+
+   break;
+   }
+   
+   putvalue(ed_frame,msg,msgLength);
+}
+
+on envVar ed_header
+{
+   byte header[256];
+   int value;
+   
+   value=getvalue(this);
+
+
+   if(value<5){
+    createHeader(); return;
+   }
+  
+   gCurrentPanel=value; openCurrentPanel();
+
+
+}
+
+byte getSeqNo(byte SeqNo)
+{
+    byte value,channel;
+     
+    value=3;
+    channel=getvalue(ed_Channel)-1;
+    channel=channel<<4;
+
+    value=value<<6; value=value|channel; 
+
+    if(SeqNo<0xF)
+    {
+        value=value|SeqNo;
+    }
+
+    return value;
+
+}
+
+on envVar ed_OutputMsg
+{
+    if(!getvalue(this)) return;
+    outputMessage();
+}
+
+void outputMessage()
+{
+
+      qword msgID; 
+      message * freeTelegram;
+      byte buffer[1024],i;
+      int index=0,length;
+
+      if(getvalue(ed_Channel)!=1) return;
+      
+      msgID=getvalue(ed_frameID);
+
+
+      if(getValue(ed_extendedID))
+      {
+        freeTelegram.ID=mkExtId(msgID);
+      }else{
+        freeTelegram.ID=msgID;
+      }
+
+      freeTelegram.DLC=8;
+
+      length=getvalue(ed_frame,buffer);
+      
+      index=0;
+      do
+      {
+        for(i=0;i<8&index<length;i++)
+        {
+            freeTelegram.BYTE(i)=buffer[index];
+            index++;
+        }
+
+        for(;i<8;i++){
+            freeTelegram.BYTE(i)=0xAA;
+
+        }
+        output(freeTelegram);
+      }
+      while(index<length);
+}
+
+on preStart
+{
+  putvalue(ed_CurrentLine,1);
+  putvalue(ed_TotalLines,0);
+}
+
+on envVar ed_createHeader
+{
+    if(!getvalue(this)) return;
+    
+    
+}
+
+void setPicture ()
+{
+
+ /*  int maxValue,currentValue;
+   int maxPictures=6;
+   int index,pictures;
+
+   char path[256];
+
+   pictures=getvalue(ed_DisplayedCharsNo);
+   snprintf(path,256,"..\\blank.png");
+   
+   for(index=0;index<6;index++)
+   {
+       switch(index)
+       {
+       case 0:
+               setPictureBoxImage("BAP Transmitter","PictureBox_0",path);
+       break;
+
+       case 1:
+               setPictureBoxImage("BAP Transmitter","PictureBox_1",path);
+       break;
+       case 2:
+               setPictureBoxImage("BAP Transmitter","PictureBox_2",path);
+       break;
+               
+       case 3:
+               setPictureBoxImage("BAP Transmitter","PictureBox_3",path);
+       break;
+       case 4:
+               setPictureBoxImage("BAP Transmitter","PictureBox_4",path);
+       break;
+
+       case 5:
+               setPictureBoxImage("BAP Transmitter","PictureBox_5",path);
+       break;
+       }
+   }
+    
+   maxValue=getvalue(ed_TotalLines);
+   currentValue=getvalue(ed_CurrentLine);
+
+   if(currentValue>maxValue||currentValue<=0) return;
+   currentValue--;
+   
+   for(index=0;index<pictures&&index<6&&currentValue<maxValue;index++)
+   {
+       snprintf(path,256,"\\..\\Resource\\%02X%02X.png",utf16Table[currentValue][0],utf16Table[currentValue][1]);
+
+       switch(index)
+       {
+       case 0:
+               setPictureBoxImage("BAP Transmitter","PictureBox_0",path);
+       break;
+
+       case 1:
+               setPictureBoxImage("BAP Transmitter","PictureBox_1",path);
+       break;
+       case 2:
+               setPictureBoxImage("BAP Transmitter","PictureBox_2",path);
+       break;
+               
+       case 3:
+               setPictureBoxImage("BAP Transmitter","PictureBox_3",path);
+       break;
+       case 4:
+               setPictureBoxImage("BAP Transmitter","PictureBox_4",path);
+       break;
+
+       case 5:
+               setPictureBoxImage("BAP Transmitter","PictureBox_5",path);
+       break;
+       }
+
+       currentValue++;
+   }
+    */   
+}
+
+on envVar ed_frameHeader
+{
+   createMessage();
+}
+
+void openCurrentPanel()
+{
+    int oldPanel=0;
+    
+    if(oldPanel!=gCurrentPanel&&gCurrentPanel!=0)
+    {
+     closeCurrentPanel(oldPanel); 
+     oldPanel=gCurrentPanel;
+    }
+    switch(gCurrentPanel)
+    {
+        case 5: 
+                openPanel("PhoneBook&TelephoneNumber"); 
+        break;
+        case 6:
+               initCombinedNumbers(); openPanel("CombinedNumbers"); 
+        break;
+        case 7:
+               initPhonebookArray();  openPanel("PhonebookArray");
+        break;
+    }
+}
+
+void closeCurrentPanel(int panel)
+{
+    switch(panel){
+        case 5: closePanel("PhoneBook&TelephoneNumber"); break;
+        case 6: closePanel("CombinedNumbers"); break; 
+        case 7: closePanel("PhonebookArray"); break; 
+    }
+}
+
+dword convertUTF16toUTF8 (word ch)
+{
+    
+   dword target_ch;
+
+   byte bytesToWrite = 0;
+   byte byteMask = 0xBF;
+   byte byteMark = 0x80; 
+   
+   byte b3,b2,b1;
+   if (ch <0x80)          {bytesToWrite = 1;
+   } else if (ch <0x800)  {bytesToWrite = 2;
+   } else if (ch <0x10000){bytesToWrite = 3;
+   }
+   
+   target_ch=0;
+   switch (bytesToWrite) 
+   { /* note: everything falls through. */
+       case 3: b3= ((ch | byteMark) & byteMask); ch >>= 6;
+       case 2: b2= ((ch | byteMark) & byteMask); ch >>= 6;
+       case 1: b1= (ch | firstByteMark[bytesToWrite]);
+   }
+
+
+   switch (bytesToWrite)
+   {
+       case 1: target_ch=b1; break;
+       case 2: target_ch=b2+(b1<<8); break;
+       case 3: target_ch=b3+(b2<<8)+(b1<<16); break;
+   }
+
+   return target_ch;
+}
+
+void setPhonePicture_Blank (int callID)
+{ 
+  /* char path[255];
+   char controlName[20];
+
+   byte index;
+
+   snprintf(path,255,"..\\blank.png");
+   
+   for(index=0;index<gPhoneBookAndTelNumberPictures;index++)
+   {
+        snprintf(controlName,20,"CallID_%d_PhBook_%d",callID,index);
+
+        setPictureBoxImage("PhoneBook&TelephoneNumber",controlName,path);
+   }
+   */
+}
+
+on envVar ed_PhoneBookTelNum_CreateFrame
+{
+     if(!getvalue(this)) return;
+     
+     createPhoneBookHeader();
+     createPhoneBookFrame();
+}
+
+on envVar ed_PhoneBookTelNum_OutputFrame
+{
+    if(!getvalue(this)) return;
+    outputMessage();
+}
+
+void createPhoneBookFrame()
+{
+
+    int index,i,dataLength;
+    long insertMode,useCallID,nullST;
+    byte inputPhoneBook[255] ,inputTelephoneNumber[255];
+    byte outputPhoneBook[255],outputTelephoneNumber[255];
+    byte tempBuffer[5],tempBufferLength,charaterLength;
+    char envName[50],envName2[50];
+    byte bapFrame[4096],bapHeader[10];
+    int bapFrameLength,bapHeaderLength,lengthPos,pictureIndex;
+    
+    word utf16;
+    dword utf8;
+    byte value;
+
+    bapFrameLength=0; bapFrameLength=4; gSeqNo=0;
+    for(index=0;index<7;index++)
+    {
+        snprintf(envName,50,"ed_PhoneBookTelNum_Active_%d",index);      useCallID=atol(envName);
+        snprintf(envName,50,"ed_PhoneBookTelNum_Insert_Mode_%d",index); insertMode=atol(envName);
+        
+        setPhonePicture_Blank(index);
+        if(useCallID==0)
+        {
+            bapFrameLength=insertElementIntoBuffer(bapFrame,bapFrameLength,0);
+            bapFrameLength=insertElementIntoBuffer(bapFrame,bapFrameLength,0);
+            bapFrameLength=insertElementIntoBuffer(bapFrame,bapFrameLength,0);
+        }
+        else
+        {         
+            snprintf(envName ,50,"ed_PhoneBookTelNum_PhoneBook_%d",index); 
+            snprintf(envName2,50,"ed_PhoneBookTelNum_Telephone_%d",index); 
+            if(insertMode==1)
+            {
+                snprintf(envName ,50,"ed_PhoneBookTelNum_PhoneBook_%d",index); 
+                snprintf(envName2,50,"ed_PhoneBook_NULLST_%d",index); nullST=atol(envName2);    
+                
+                if(nullST==0)
+                { 
+                    dataLength=insertFromFileInput(envName,outputPhoneBook);
+                    bapFrameLength=insertElementIntoBuffer(bapFrame,bapFrameLength,dataLength);
+                    for(i=0;i<dataLength;i++)
+                    {
+                        bapFrameLength=insertElementIntoBuffer(bapFrame,bapFrameLength,outputPhoneBook[i]);  
+                    }
+
+                    dataLength=getvalue(envName,inputPhoneBook);
+                    
+                    pictureIndex=setPhonePicture (index,inputPhoneBook,dataLength,1,0);
+                }
+                else
+                {
+                    bapFrameLength=insetNULLString(bapFrame,bapFrameLength);  
+                }
+                
+
+                snprintf(envName2,50,"ed_TelephoneNumber_NULLST_%d",index); nullST=atol(envName2);
+                snprintf(envName,50,"ed_PhoneBookTelNum_Telephone_%d",index); 
+                if(nullST==0)
+                {
+                    dataLength=insertFromFileInput(envName,outputTelephoneNumber);
+                    bapFrameLength=insertElementIntoBuffer(bapFrame,bapFrameLength,dataLength);
+                    for(i=0;i<dataLength;i++)
+                    {
+                        bapFrameLength=insertElementIntoBuffer(bapFrame,bapFrameLength,outputTelephoneNumber[i]); 
+                    }
+                    
+
+                    dataLength=getvalue(envName,inputTelephoneNumber);
+                    pictureIndex=setPhonePicture (index,inputTelephoneNumber,dataLength,1,pictureIndex+1);
+
+                }
+                else
+                {
+                    bapFrameLength=insetNULLString(bapFrame,bapFrameLength); 
+                      
+                }
+                bapFrameLength=insertElementIntoBuffer(bapFrame,bapFrameLength,0); 
+                        
+            }else{
+                snprintf(envName ,50,"ed_PhoneBookTelNum_PhoneBook_%d",index); 
+                snprintf(envName2,50,"ed_PhoneBook_NULLST_%d",index); nullST=atol(envName2);
+
+                if(nullST==0)
+                { 
+                    dataLength=insertFromManualInput(envName,outputPhoneBook);
+                    
+                    bapFrameLength=insertElementIntoBuffer(bapFrame,bapFrameLength,dataLength);               
+                    for(i=0;i<dataLength;i++)
+                    {
+                        bapFrameLength=insertElementIntoBuffer(bapFrame,bapFrameLength,outputPhoneBook[i]); 
+                    }
+                    dataLength=getvalue(envName,inputPhoneBook);
+                    setPhonePicture_Blank(index);
+                    pictureIndex=setPhonePicture (index,inputPhoneBook,dataLength,2,0);
+
+                }else{
+                    bapFrameLength=insetNULLString(bapFrame,bapFrameLength);  
+                }
+              
+                snprintf(envName2,50,"ed_TelephoneNumber_NULLST_%d",index); nullST=atol(envName2);
+                snprintf(envName,50,"ed_PhoneBookTelNum_Telephone_%d",index); 
+                if(nullST==0)
+                {
+                    dataLength=insertFromManualInput(envName,outputTelephoneNumber);
+                    bapFrameLength=insertElementIntoBuffer(bapFrame,bapFrameLength,dataLength);
+
+                    for(i=0;i<dataLength;i++)
+                    {
+                        bapFrameLength=insertElementIntoBuffer(bapFrame,bapFrameLength,outputTelephoneNumber[i]); 
+                    }                           
+
+                    dataLength=getvalue(envName,inputTelephoneNumber);
+                    pictureIndex=setPhonePicture (index,inputTelephoneNumber,dataLength,2,pictureIndex+1);
+
+                }
+                else
+                {
+                    bapFrameLength=insetNULLString(bapFrame,bapFrameLength);   
+                }
+
+                bapFrameLength=insertElementIntoBuffer(bapFrame,bapFrameLength,0); 
+            }
+        }
+    }
+    bapHeaderLength=getvalue(ed_frameHeader,bapHeader);    
+    bapFrameLength-=(4+gSeqNo);
+    bapHeader[1]=bapFrameLength%256;
+    
+    for(index=0;index<bapHeaderLength;index++)
+    {
+        bapFrame[index]=bapHeader[index];
+    }
+ 
+    bapFrameLength+=(5+gSeqNo+1);  
+
+    putvalue(ed_frame,bapFrame,bapFrameLength);
+    putvalue(ed_frameHeader,bapHeader,bapHeaderLength);
+
+    
+
+  
+}
+
+byte getLengthFromFile(int index){
+    return 0;
+}
+
+void createPhoneBookHeader()
+{
+    dword value,aux;
+    byte bapHeader[5];
+
+    value=2; value=value<<6; 
+    aux=getvalue(ed_Channel)-1; aux=aux<<4; 
+
+    value=value|aux; 
+
+    bapHeader[0]=value; bapHeader[2]=0x4A; bapHeader[3]=0x17;
+
+    bapHeader[1]=0;
+
+    putvalue(ed_frameHeader,bapHeader,4); 
+}
+
+int insertFromManualInput(char envName[],byte bapFrame[])
+{
+    int i,lengthPos;
+    
+    dword utf8;               
+    word utf16;
+    
+    word value;
+    byte tempBuffer[255],tempBufferLength,bapFrameLength;
+
+
+    bapFrameLength = 0;
+
+    value=getvalue(envName ,tempBuffer);
+    i=0; 
+    while(i<value)
+    {
+        utf16=tempBuffer[i]*256;
+        if(i+1<value){
+            utf16+=tempBuffer[i+1];
+        }
+        i+=2;
+        utf8=convertUTF16toUTF8(utf16);
+        
+        tempBufferLength=0;
+        while(utf8){
+            tempBuffer[tempBufferLength++]=utf8%256; utf8=utf8/256;   
+        }
+ 
+        while(tempBufferLength){
+            bapFrame[bapFrameLength]=tempBuffer[--tempBufferLength]; bapFrameLength++;
+        }
+    }    
+    return bapFrameLength;
+    
+}
+
+int insetNULLString (byte bapFrame[],int bapFrameLength)
+{
+    if(bapFrameLength%8==0){bapFrame[bapFrameLength]=getSeqNo(gSeqNo); gSeqNo++; bapFrameLength++;}
+    bapFrame[bapFrameLength]=0x01; bapFrameLength++;
+
+    if(bapFrameLength%8==0){bapFrame[bapFrameLength]=getSeqNo(gSeqNo); gSeqNo++; bapFrameLength++;}
+    bapFrame[bapFrameLength]=0x00; bapFrameLength++;
+    
+    return bapFrameLength;   
+}
+
+int setPhonePicture (int callID,byte UTF16[],int length,int mode,int startPoz)
+{
+
+ /*  int index,index2,i,tempLength;
+   char path[255],picture[10],fullpath[255];
+   dword fileHandler,element;
+   char controlName[20];
+
+   snprintf(path,255,"\\%s\\Resource\\",gFolderName); i=0;
+   getAbsFilePath(path,path,255);
+
+   tempLength=length;
+   for(index=startPoz;index<gPhoneBookAndTelNumberPictures&&i<tempLength;index++){
+      if(mode==2){
+          if(i+1<tempLength){
+             snprintf(picture,10,"%02X%02X.PNG",UTF16[i],UTF16[i+1]);
+          }else{
+             snprintf(picture,10,"%02X00.PNG",UTF16[i]);
+          }
+          
+          
+          strncat(fullpath,path,255);
+          strncat(fullpath,picture,255);
+
+          snprintf(controlName,20,"CallID_%d_PhBook_%d",callID,index);
+          setPictureBoxImage("PhoneBook&TelephoneNumber",controlName,fullpath);
+
+          fullpath[0]='\0'; picture[0]='\0';
+      }
+
+      if(mode==1){
+        if(i+1<length){
+                element=UTF16[i]*256+UTF16[i+1];
+                
+          }else{
+               element=UTF16[i]*256;
+          }
+
+          snprintf(picture,10,"%02X%02X.PNG",utf16Table[element][0],utf16Table[element][1]);
+
+          strncat(fullpath,path,255);
+          strncat(fullpath,picture,255);
+
+          snprintf(controlName,20,"CallID_%d_PhBook_%d",callID,index);
+          setPictureBoxImage("PhoneBook&TelephoneNumber",controlName,fullpath);
+          
+          fullpath[0]='\0'; picture[0]='\0';
+        
+      }
+      i+=2;
+   }
+
+   return index; 
+   */
+
+   return 0;
+}
+
+int insertFromFileInput(char envName[],byte bapFrame[])
+{
+    int i,lengthPos;
+    int j;
+
+    dword utf8;               
+    word utf16;
+    
+    word value;
+    byte tempBuffer[255],tempBufferLength,bapFrameLength,element;
+
+    bapFrameLength=0;
+
+    value=getvalue(envName ,tempBuffer);
+    for(i=0;i<value;i=i+2)
+    {
+        element=tempBuffer[i]*256;
+        if(i+1<value)
+        {
+            element+=tempBuffer[i+1];
+        }
+        if(element<1024&&element<getvalue(ed_TotalLines))
+        {
+            for(j=0;j<utf08Table[element][0]&&j<7;j++)
+            {
+                bapFrame[bapFrameLength++]=utf08Table[element][j+1];
+            }
+        }
+    }
+    return bapFrameLength;
+    
+}
+
+void createCombinedNumbersHeader( int step )
+{
+    dword value, aux;
+    byte bapHeader[5];
+
+    value = 2;
+    value = value << 6; 
+    aux = getvalue( ed_Channel ) - 1;
+    aux = aux << 4; 
+
+    value = value | aux; 
+
+    bapHeader[0] = value; 
+
+    if( step==1 )
+    {
+        bapHeader[1] = 0x05;
+        bapHeader[2] = 0x3A;
+        bapHeader[3] = 0x31;
+    }
+    else
+    {
+        bapHeader[1] = 0x00;
+        bapHeader[2] = 0x4A;
+        bapHeader[3] = 0x31;
+    }
+    putvalue( ed_frameHeader, bapHeader, 4 ); 
+}
+
+void initCombinedNumbers()
+{
+    byte buffer[2]={0x1A,0x31};
+    
+    gCombinedNumbersRX_ID=mkExtId(0x17332800);
+    
+    putvalue(ed_CombinedNumbers_RX_ID,0x17332800);
+    putvalue(ed_CombinedNumbers_RX_Ext,1);
+    putvalue(ed_CombinedNumbers_Resp_Header,buffer,2);
+}
+
+on message *
+{
+    byte header[5];
+    byte op;
+
+    if( this.id != gCombinedNumbersRX_ID || gSendFrame == 0 ) return;
+
+    op = getvalue( ed_header );
+    if( op == 6 )
+    {
+        getvalue(ed_CombinedNumbers_Resp_Header,header);
+        if( this.byte(2) != header[0] || this.byte(3) != header[1] )
+            return;
+
+        createCombinedNumbersFrame(this.byte(4)&0x0F); return;
+    }
+    if( op == 7 )
+    {
+       getvalue(ed_PhonebookArray_RX_Resp_Header,header);
+       if(this.byte(2)!=header[0]||
+          this.byte(3)!=header[1]
+         ) return;
+         
+       createPhonebookArrayFrame(this.byte(4)&0x0F); return;
+    }
+}
+
+void createCombinedNumbersFrame(byte TAID)
+{
+    char envName[50],envName2[50];
+    byte inputPhoneBook[255] ,inputTelephoneNumber[255];
+    byte outputPhoneBook[255],outputTelephoneNumber[255];
+    byte insertMode,nullST;
+    byte bapFrame[4096],bapHeader[10];
+    int bapFrameLength,bapHeaderLength,pictureIndex;
+    int dataLength,i;
+    byte callMode;
+
+    createCombinedNumbersHeader(2);
+    insertMode=getvalue(ed_CombinedNumbers_InsertMode);
+    bapFrameLength=4;
+    gSeqNo=0; TAID=0x10|(TAID%0x10);
+
+    bapFrameLength=insertElementIntoBuffer(bapFrame,bapFrameLength,TAID);
+    bapFrameLength=insertElementIntoBuffer(bapFrame,bapFrameLength,0x01);
+
+    bapFrameLength=insertElementIntoBuffer(bapFrame,bapFrameLength,0x00);
+    bapFrameLength=insertElementIntoBuffer(bapFrame,bapFrameLength,0x00);
+    bapFrameLength=insertElementIntoBuffer(bapFrame,bapFrameLength,0x01);
+    
+    setCombinedNumbers_Blank();
+    if(insertMode==2){
+        nullST=getvalue(ed_CombinedNumbers_PhoneB_NULLST);    
+        
+        if(nullST==0){ 
+            dataLength=insertFromManualInput("ed_CombinedNumbers_PhoneBook",outputPhoneBook);
+            
+            bapFrameLength=insertElementIntoBuffer(bapFrame,bapFrameLength,dataLength);
+            for(i=0;i<dataLength;i++){
+                bapFrameLength=insertElementIntoBuffer(bapFrame,bapFrameLength,outputPhoneBook[i]);
+            }
+        }else{
+            bapFrameLength=insertElementIntoBuffer(bapFrame,bapFrameLength,0x01);
+            bapFrameLength=insertElementIntoBuffer(bapFrame,bapFrameLength,0x00);
+        }
+
+        dataLength=getvalue(ed_CombinedNumbers_PhoneBook,inputPhoneBook);
+
+        pictureIndex=setCombinedNumbers(inputPhoneBook,dataLength,2,0);
+        
+        callMode=getvalue(ed_CombinedNumbers_CallMode)%0x100;
+        bapFrameLength=insertElementIntoBuffer(bapFrame,bapFrameLength,callMode);
+
+        nullST=getvalue(ed_CombinedNumbers_Teleph_NULLST);    
+        
+        if(nullST==0){ 
+            dataLength=insertFromManualInput("ed_CombinedNumbers_Telephone",outputTelephoneNumber);
+            
+            bapFrameLength=insertElementIntoBuffer(bapFrame,bapFrameLength,dataLength);
+            for(i=0;i<dataLength;i++){
+                bapFrameLength=insertElementIntoBuffer(bapFrame,bapFrameLength,outputTelephoneNumber[i]);
+            }
+        }else{
+            bapFrameLength=insertElementIntoBuffer(bapFrame,bapFrameLength,0x01);
+            bapFrameLength=insertElementIntoBuffer(bapFrame,bapFrameLength,0x00);
+        }
+
+        dataLength=getvalue(ed_CombinedNumbers_Telephone,inputTelephoneNumber);
+        setCombinedNumbers_Blank();
+        pictureIndex=setCombinedNumbers(inputPhoneBook,dataLength,2,pictureIndex+1);
+
+        
+    }else{
+        nullST=getvalue(ed_CombinedNumbers_PhoneB_NULLST);    
+        
+        if(nullST==0){ 
+            dataLength=insertFromFileInput("ed_CombinedNumbers_PhoneBook",outputPhoneBook);
+            
+            bapFrameLength=insertElementIntoBuffer(bapFrame,bapFrameLength,dataLength);
+            for(i=0;i<dataLength;i++){
+                bapFrameLength=insertElementIntoBuffer(bapFrame,bapFrameLength,outputPhoneBook[i]);
+            }
+        }else{
+            bapFrameLength=insertElementIntoBuffer(bapFrame,bapFrameLength,0x01);
+            bapFrameLength=insertElementIntoBuffer(bapFrame,bapFrameLength,0x00);
+        }
+
+        dataLength=getvalue(ed_CombinedNumbers_PhoneBook,inputPhoneBook);
+        setCombinedNumbers_Blank();
+        pictureIndex=setCombinedNumbers(inputPhoneBook,dataLength,2,0);
+
+        callMode=getvalue(ed_CombinedNumbers_CallMode)%0x100;
+        bapFrameLength=insertElementIntoBuffer(bapFrame,bapFrameLength,callMode);
+
+        nullST=getvalue(ed_CombinedNumbers_Teleph_NULLST);    
+        
+        if(nullST==0){ 
+            dataLength=insertFromFileInput("ed_CombinedNumbers_Telephone",outputTelephoneNumber);
+            
+            bapFrameLength=insertElementIntoBuffer(bapFrame,bapFrameLength,dataLength);
+            for(i=0;i<dataLength;i++){
+                bapFrameLength=insertElementIntoBuffer(bapFrame,bapFrameLength,outputTelephoneNumber[i]);
+            }
+        }else{
+            bapFrameLength=insertElementIntoBuffer(bapFrame,bapFrameLength,0x01);
+            bapFrameLength=insertElementIntoBuffer(bapFrame,bapFrameLength,0x00);
+        }
+        
+        dataLength=getvalue(ed_CombinedNumbers_Telephone,inputTelephoneNumber);
+        setCombinedNumbers_Blank();
+        pictureIndex=setCombinedNumbers(inputPhoneBook,dataLength,2,pictureIndex+1);    
+    } 
+    
+    bapFrameLength=insertElementIntoBuffer(bapFrame,bapFrameLength,0x00);
+    bapFrameLength=insertElementIntoBuffer(bapFrame,bapFrameLength,0x00);
+    bapFrameLength=insertElementIntoBuffer(bapFrame,bapFrameLength,0x00);
+    bapFrameLength=insertElementIntoBuffer(bapFrame,bapFrameLength,0x00);
+    bapFrameLength=insertElementIntoBuffer(bapFrame,bapFrameLength,0x00);
+    bapFrameLength=insertElementIntoBuffer(bapFrame,bapFrameLength,0x00);
+    
+    bapHeaderLength=getvalue(ed_frameHeader,bapHeader);    
+    bapFrameLength-=(5+gSeqNo+1);
+    bapHeader[1]=bapFrameLength%256;
+    
+    for(i=0;i<bapHeaderLength;i++){
+        bapFrame[i]=bapHeader[i];
+    }
+ 
+    bapFrameLength+=(5+gSeqNo+1);  
+
+    putvalue(ed_frame,bapFrame,bapFrameLength);
+    putvalue(ed_frameHeader,bapHeader,bapHeaderLength); 
+    
+    outputMessage();
+    putvalue(env_FSG_CN_Timeout,1);
+    gSendFrame=1;  
+}
+
+int insertElementIntoBuffer (byte buffer[],int bufferLength,byte Value)
+{
+    if(bufferLength%8==0){buffer[bufferLength]=getSeqNo(gSeqNo); gSeqNo++; bufferLength++;}
+    buffer[bufferLength]=Value; bufferLength++;
+
+    return bufferLength;
+}
+
+void sendCombinedNumbersStatus()
+{
+    byte bapFrame[4096],bapHeader[10];
+    int bapFrameLength,bapHeaderLength,i;
+
+    gSeqNo=0;   
+    putvalue(env_FSG_CN_Timeout,1);
+
+    createCombinedNumbersHeader(1);
+    bapFrameLength=4;
+
+    bapFrameLength=insertElementIntoBuffer(bapFrame,bapFrameLength,0xC0);
+    bapFrameLength=insertElementIntoBuffer(bapFrame,bapFrameLength,0x00);
+    bapFrameLength=insertElementIntoBuffer(bapFrame,bapFrameLength,0x00);
+    bapFrameLength=insertElementIntoBuffer(bapFrame,bapFrameLength,0x00);
+    bapFrameLength=insertElementIntoBuffer(bapFrame,bapFrameLength,0xFF);
+    bapHeaderLength=getvalue(ed_frameHeader,bapHeader);    
+
+
+    for(i=0;i<bapHeaderLength;i++){
+        bapFrame[i]=bapHeader[i];
+    }
+    putvalue(ed_frame,bapFrame,bapFrameLength);
+    outputMessage();      
+}
+
+on envVar ed_CombinedNumbers_Output_Frame
+{  
+    if(!getvalue(this)) return;
+    
+    gSendFrame=1;
+    sendCombinedNumbersStatus();
+}
+
+void setCombinedNumbers_Blank ()
+{ 
+   /*char path[255];
+   char controlName[30];
+
+   byte index;
+
+   snprintf(path,255,"..\\blank.png");
+   
+   for(index=0;index<gCombinedNumbersPictures;index++){
+        snprintf(controlName,30,"CallID_0_CombinedNumbers_%d",index);
+
+        setPictureBoxImage("CombinedNumbers",controlName,path);
+   }
+   
+   */
+}
+
+int setCombinedNumbers (byte UTF16[],int length,int mode,int startPoz)
+{
+
+ /*  int index,index2,i,tempLength;
+   char path[255],picture[10],fullpath[255];
+   dword fileHandler,element;
+   char controlName[20];
+
+   snprintf(path,255,"\\%s\\Resource\\",gFolderName); i=0;
+   getAbsFilePath(path,path,255);
+
+   tempLength=length;
+   for(index=startPoz;index<gCombinedNumbersPictures&&i<tempLength;index++){
+      if(mode==2){
+          if(i+1<tempLength){
+             snprintf(picture,10,"%02X%02X.PNG",UTF16[i],UTF16[i+1]);
+          }else{
+             snprintf(picture,10,"%02X00.PNG",UTF16[i]);
+          }
+          
+          
+          strncat(fullpath,path,255);
+          strncat(fullpath,picture,255);
+
+          snprintf(controlName,20,"CallID_0_CombinedNumbers_%d",index);
+          setPictureBoxImage("CombinedNumbers",controlName,fullpath);
+
+          fullpath[0]='\0'; picture[0]='\0';
+      }
+
+      if(mode==1){
+        if(i+1<length){
+                element=UTF16[i]*256+UTF16[i+1];
+                
+          }else{
+               element=UTF16[i]*256;
+          }
+
+          snprintf(picture,10,"%02X%02X.PNG",utf16Table[element][0],utf16Table[element][1]);
+
+          strncat(fullpath,path,255);
+          strncat(fullpath,picture,255);
+
+          snprintf(controlName,20,"CallID_0_CombinedNumbers_%d",index);
+          setPictureBoxImage("CombinedNumbers",controlName,fullpath);
+          
+          fullpath[0]='\0'; picture[0]='\0';
+        
+      }
+      i+=2;
+   }
+
+   return index;
+   */
+
+   return 0;
+}
+
+void initPhonebookArray()
+{
+     byte buffer[2]={0x1A,0x34};
+    
+    gCombinedNumbersRX_ID=mkExtId(0x17332801);
+    
+    putvalue(ed_PhonebookArray_RX_ID,0x17332801);
+    putvalue(ed_PhonebookArray_RX_Ext,1);
+    putvalue(ed_PhonebookArray_RX_Resp_Header,buffer,2);   
+}
+
+void sendPhoneBookArrayStatus()
+{
+    byte bapFrame[4096],bapHeader[10];
+    int bapFrameLength,bapHeaderLength,i;
+
+    gSeqNo=0;   
+    putvalue(env_FSG_Phonebook_Timeout,1);
+
+    createPhoneBookArrayHeader(1);
+    bapFrameLength=4;
+
+//    bapFrameLength=insertElementIntoBuffer(bapFrame,bapFrameLength,0xC0);
+//    bapFrameLength=insertElementIntoBuffer(bapFrame,bapFrameLength,0x00);
+    bapFrameLength=insertElementIntoBuffer(bapFrame,bapFrameLength,0x00);
+    bapFrameLength=insertElementIntoBuffer(bapFrame,bapFrameLength,0x00);
+    bapFrameLength=insertElementIntoBuffer(bapFrame,bapFrameLength,0xFF);
+    bapHeaderLength=getvalue(ed_frameHeader,bapHeader);    
+
+
+    for(i=0;i<bapHeaderLength;i++){
+        bapFrame[i]=bapHeader[i];
+    }
+    putvalue(ed_frame,bapFrame,bapFrameLength);
+    outputMessage();      
+}
+
+void createPhoneBookArrayHeader(int step)
+{
+    dword value,aux;
+    byte bapHeader[5];
+
+    value=2; value=value<<6; 
+    aux=getvalue(ed_Channel)-1; aux=aux<<4; 
+
+    value=value|aux; 
+
+    bapHeader[0]=value; 
+
+    if(step==1){bapHeader[1]=0x03; bapHeader[2]=0x3A; bapHeader[3]=0x34;}
+    else{bapHeader[1]=0x00; bapHeader[2]=0x4A; bapHeader[3]=0x34;}
+
+    
+
+    putvalue(ed_frameHeader,bapHeader,4); 
+}
+
+on envVar ed_PhonebookArray_Output
+{
+    if(!getvalue(this)) return;
+    
+    gSendFrame=1;
+    sendPhoneBookArrayStatus();
+}
+
+void createPhoneBookArrayFrame (byte TAID)
+{
+    char envName[50],envName2[50];
+    byte inputPhoneBook[255] ,inputTelephoneNumber[255];
+    byte outputPhoneBook[255],outputTelephoneNumber[255];
+    byte insertMode,nullST;
+    byte bapFrame[4096],bapHeader[10];
+    int dataLength,i,index;
+    int bapFrameLength,bapHeaderLength;
+    
+    byte storage,anyVoiceTag;
+    byte quantity;
+    
+    byte voiceTag,numberType;
+
+    createPhonebookArrayHeader(2);
+    bapFrameLength=4;
+    gSeqNo=0; TAID=0x10|(TAID%0x10);
+
+    bapFrameLength=insertElementIntoBuffer(bapFrame,bapFrameLength,TAID);
+    
+  //  bapFrameLength=insertElementIntoBuffer(bapFrame,bapFrameLength,0x00);
+    bapFrameLength=insertElementIntoBuffer(bapFrame,bapFrameLength,0x01);
+    bapFrameLength=insertElementIntoBuffer(bapFrame,bapFrameLength,0x00);
+
+
+    bapFrameLength=insertElementIntoBuffer(bapFrame,bapFrameLength,0x41);
+    bapFrameLength=insertElementIntoBuffer(bapFrame,bapFrameLength,0x00);
+
+    bapFrameLength=insertElementIntoBuffer(bapFrame,bapFrameLength,0x01);
+
+    bapFrameLength=insertElementIntoBuffer(bapFrame,bapFrameLength,0x00);
+    
+    insertMode=getvalue(ed_PhonebookArray_PhBk_INSERT);
+    setPhonebookArray_Blank();
+
+    if(insertMode==1){
+        nullST=getvalue(ed_PhonebookArray_PhBook_NULLST);    
+        
+        if(nullST==0){ 
+            dataLength=insertFromFileInput("ed_PhonebookArray_PhoneBook",outputPhoneBook);
+            
+            bapFrameLength=insertElementIntoBuffer(bapFrame,bapFrameLength,dataLength);
+            for(i=0;i<dataLength;i++){
+                bapFrameLength=insertElementIntoBuffer(bapFrame,bapFrameLength,outputPhoneBook[i]);
+            }
+
+            dataLength=getvalue(ed_PhonebookArray_PhoneBook,inputPhoneBook);
+            setPhonebookArrayPicture (inputPhoneBook,dataLength,1);
+
+        }else{
+            bapFrameLength=insertElementIntoBuffer(bapFrame,bapFrameLength,0x01);
+//            bapFrameLength=insertElementIntoBuffer(bapFrame,bapFrameLength,0x10);
+            bapFrameLength=insertElementIntoBuffer(bapFrame,bapFrameLength,0x00);
+        }
+   }else{
+        nullST=getvalue(ed_PhonebookArray_PhBook_NULLST);    
+        
+        if(nullST==0){ 
+            dataLength=insertFromManualInput("ed_PhonebookArray_PhoneBook",outputPhoneBook);
+            
+            bapFrameLength=insertElementIntoBuffer(bapFrame,bapFrameLength,dataLength);
+            for(i=0;i<dataLength;i++){
+                bapFrameLength=insertElementIntoBuffer(bapFrame,bapFrameLength,outputPhoneBook[i]);
+            }
+
+            dataLength=getvalue(ed_PhonebookArray_PhoneBook,inputPhoneBook);
+            setPhonebookArrayPicture (inputPhoneBook,dataLength,2);
+
+        }else{
+            bapFrameLength=insertElementIntoBuffer(bapFrame,bapFrameLength,0x01);
+//            bapFrameLength=insertElementIntoBuffer(bapFrame,bapFrameLength,0x10);
+            bapFrameLength=insertElementIntoBuffer(bapFrame,bapFrameLength,0x00);
+        }
+   }
+
+   storage=getvalue(ed_PhonebookArray_Storage)%0x100; anyVoiceTag=getvalue(ed_PhonebookArray_AnyVoiceTag)%0x10;
+
+   bapFrameLength=insertElementIntoBuffer(bapFrame,bapFrameLength,storage);
+   bapFrameLength=insertElementIntoBuffer(bapFrame,bapFrameLength,anyVoiceTag*16+0);
+/*   
+   for(index=0;index<quantity&index<10;index++){
+         snprintf(envName,50,"ed_PhonebookArray_TelNo_INSERT_%d",index); insertMode=getvalue(envName);
+         write("envName=%s insertMode=%d",envName,insertMode);
+         if(insertMode==1){
+            snprintf(envName,50,"ed_PhonebookArray_Tel_%d_NULLST",index);
+            nullST=getvalue(envName);    
+        
+            if(nullST==0){
+                snprintf(envName,50,"ed_PhonebookArray_Tel_%d",index); 
+                dataLength=insertFromFileInput(envName,outputPhoneBook);
+            
+                bapFrameLength=insertElementIntoBuffer(bapFrame,bapFrameLength,dataLength);
+                for(i=0;i<dataLength;i++){
+                    bapFrameLength=insertElementIntoBuffer(bapFrame,bapFrameLength,outputPhoneBook[i]);
+                }
+            }else{
+                bapFrameLength=insertElementIntoBuffer(bapFrame,bapFrameLength,0x02);
+                bapFrameLength=insertElementIntoBuffer(bapFrame,bapFrameLength,0x10);
+                bapFrameLength=insertElementIntoBuffer(bapFrame,bapFrameLength,0x00);
+            }
+       }else{
+            nullST=getvalue(ed_PhonebookArray_PhBook_NULLST);    
+        
+            if(nullST==0){ 
+                snprintf(envName,50,"ed_PhonebookArray_Tel_%d",index); 
+                dataLength=insertFromManualInput(envName,outputPhoneBook);
+                 
+                bapFrameLength=insertElementIntoBuffer(bapFrame,bapFrameLength,dataLength);
+                for(i=0;i<dataLength;i++){
+                    bapFrameLength=insertElementIntoBuffer(bapFrame,bapFrameLength,outputPhoneBook[i]);
+                }
+            }else{
+                bapFrameLength=insertElementIntoBuffer(bapFrame,bapFrameLength,0x02);
+                bapFrameLength=insertElementIntoBuffer(bapFrame,bapFrameLength,0x10);
+                bapFrameLength=insertElementIntoBuffer(bapFrame,bapFrameLength,0x00);
+            }
+       }
+        
+       snprintf(envName,50,"ed_PhonebookArray_VoiceTag_%d",index);
+       voiceTag=getvalue(envName); voiceTag=voiceTag%10;
+       
+       bapFrameLength=insertElementIntoBuffer(bapFrame,bapFrameLength,voiceTag*16+0);
+       snprintf(envName,50,"ed_PhonebookArray_NumberType_%d",index);
+
+       numberType=getvalue(envName);
+       bapFrameLength=insertElementIntoBuffer(bapFrame,bapFrameLength,numberType);
+   }
+*/
+
+   bapFrameLength=insertElementIntoBuffer(bapFrame,bapFrameLength,0x00);
+   bapHeaderLength=getvalue(ed_frameHeader,bapHeader);    
+   bapHeader[1]=(bapFrameLength-gSeqNo-4)%256;
+    
+   for(i=0;i<bapHeaderLength;i++){
+        bapFrame[i]=bapHeader[i];
+   }
+ 
+   putvalue(ed_frame,bapFrame,bapFrameLength);
+   putvalue(ed_frameHeader,bapHeader,bapHeaderLength); 
+    
+   outputMessage();
+   putvalue(env_FSG_Phonebook_Timeout,1);
+   gSendFrame=0; 
+}
+
+void setPhonebookArray_Blank ()
+{ 
+  /* char path[255];
+   char controlName[30];
+
+   byte index;
+
+   snprintf(path,255,"..\\blank.png");
+   
+   for(index=0;index<gPhonebookArrayPictures;index++){
+        snprintf(controlName,30,"PhoneBookArray_%d",index);
+
+        setPictureBoxImage("PhonebookArray",controlName,path);
+   }
+
+   */
+}
+
+int setPhonebookArrayPicture (byte UTF16[],int length,int mode)
+{
+
+/*   int index,index2,i,tempLength;
+   char path[255],picture[10],fullpath[255];
+   dword fileHandler,element;
+   char controlName[20];
+
+   snprintf(path,255,"\\%s\\Resource\\",gFolderName); i=0;
+   getAbsFilePath(path,path,255);
+
+   tempLength=length;
+   for(index=0;index<gPhonebookArrayPictures&&i<tempLength;index++){
+      if(mode==2){
+          if(i+1<tempLength){
+             snprintf(picture,10,"%02X%02X.PNG",UTF16[i],UTF16[i+1]);
+          }else{
+             snprintf(picture,10,"%02X00.PNG",UTF16[i]);
+          }
+          
+          
+          strncat(fullpath,path,255);
+          strncat(fullpath,picture,255);
+
+          snprintf(controlName,20,"PhoneBookArray_%d",index);
+          setPictureBoxImage("PhonebookArray",controlName,fullpath);
+
+          fullpath[0]='\0'; picture[0]='\0';
+      }
+
+      if(mode==1){
+        if(i+1<length){
+                element=UTF16[i]*256+UTF16[i+1];
+                
+          }else{
+               element=UTF16[i]*256;
+          }
+
+          snprintf(picture,10,"%02X%02X.PNG",utf16Table[element][0],utf16Table[element][1]);
+
+          strncat(fullpath,path,255);
+          strncat(fullpath,picture,255);
+
+          snprintf(controlName,20,"PhoneBookArray_%d",index);
+          setPictureBoxImage("PhoneBookArray",controlName,fullpath);
+          
+          fullpath[0]='\0'; picture[0]='\0';
+        
+      }
+      i+=2;
+   }
+
+   return index;
+   */
+
+   return 0;
+}
+

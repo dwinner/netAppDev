@@ -1,0 +1,243 @@
+/*@!Encoding:1252*/
+variables
+{
+  byte  i, j, k;
+   
+  char  buffer_MAC_char[18];
+  qword buffer_MAC_qword;
+  dword buffer_MAC_qword_low;
+  dword buffer_MAC_qword_high;
+  byte  buffer_ipv6[16];
+  byte  npd_buffer[28];
+  
+  long packet = 0;
+}
+
+on start
+{
+  putValue (NDP_EthernetPacket_MAC_Source_ICAS1Gateway,         "02:7D:FA:00:10:00");
+  putValue (NDP_EthernetPacket_MAC_Destination,                 "02:7D:FA:01:08:00");
+  @NDP_EthernetPacket_VLAN_TPID                                 = 0x8100;
+  @NDP_EthernetPacket_VLAN_TCI                                  = 0x0003;
+  @NDP_EthernetPacket_Type                                      = 0x86DD; // IPv6
+  
+  @NDP_IPv6Packet_Version                                       = 6;
+  @NDP_IPv6Packet_Traffic_Class                                 = 0;
+  @NDP_IPv6Packet_Flow_Label                                    = 0;
+  @NDP_IPv6Packet_Payload_Length                                = 64; // wird automatisch berechnet
+  @NDP_IPv6Packet_Next_Header                                   = 58; // ICMPv6
+  @NDP_IPv6Packet_Hop_Limit                                     = 255;
+  @NDP_IPv6Packet_IP_Destination_01                             = 0xFD53; // "fd53:7cb8:383:3::108"
+  @NDP_IPv6Packet_IP_Destination_02                             = 0x7CB8;
+  @NDP_IPv6Packet_IP_Destination_03                             = 0x0383;
+  @NDP_IPv6Packet_IP_Destination_04                             = 0x0003;
+  @NDP_IPv6Packet_IP_Destination_05                             = 0x0000;
+  @NDP_IPv6Packet_IP_Destination_06                             = 0x0000;
+  @NDP_IPv6Packet_IP_Destination_07                             = 0x0000;
+  @NDP_IPv6Packet_IP_Destination_08                             = 0x0108;
+  @NDP_IPv6Packet_IP_Source_ICAS1Gateway_01                     = 0xFD53; // "fd53:7cb8:383:3::10"
+  @NDP_IPv6Packet_IP_Source_ICAS1Gateway_02                     = 0x7CB8;
+  @NDP_IPv6Packet_IP_Source_ICAS1Gateway_03                     = 0x0383;
+  @NDP_IPv6Packet_IP_Source_ICAS1Gateway_04                     = 0x0003;
+  @NDP_IPv6Packet_IP_Source_ICAS1Gateway_05                     = 0x0000;
+  @NDP_IPv6Packet_IP_Source_ICAS1Gateway_06                     = 0x0000;
+  @NDP_IPv6Packet_IP_Source_ICAS1Gateway_07                     = 0x0000;
+  @NDP_IPv6Packet_IP_Source_ICAS1Gateway_08                     = 0x0010;
+  
+  @NDP_ICMPv6Packet_Type                                        = 135; // Neighbor Solicitation
+  @NDP_ICMPv6Packet_Code                                        = 0;
+  
+  @NDP_NDPPacket_Flags_Router_Flag                              = 0;
+  @NDP_NDPPacket_Flags_Solicited_Flag                           = 1;
+  @NDP_NDPPacket_Flags_Override_Flag                            = 1;
+  @NDP_NDPPacket_IP_Target_ICAS1Gateway_01                      = 0xFD53; // "fd53:7cb8:383:3::10"
+  @NDP_NDPPacket_IP_Target_ICAS1Gateway_02                      = 0x7CB8;
+  @NDP_NDPPacket_IP_Target_ICAS1Gateway_03                      = 0x0383;
+  @NDP_NDPPacket_IP_Target_ICAS1Gateway_04                      = 0x0003;
+  @NDP_NDPPacket_IP_Target_ICAS1Gateway_05                      = 0x0000;
+  @NDP_NDPPacket_IP_Target_ICAS1Gateway_06                      = 0x0000;
+  @NDP_NDPPacket_IP_Target_ICAS1Gateway_07                      = 0x0000;
+  @NDP_NDPPacket_IP_Target_ICAS1Gateway_08                      = 0x0010;
+  
+  callAllOnEnvVar();
+}
+
+
+NDP_ICAS1Gateway()
+{
+  ethernetPacket EthPaket;
+
+  // Ethernet Packet - MAC Source address
+  getvalue (NDP_EthernetPacket_MAC_Source_ICAS1Gateway, buffer_MAC_char);
+  //EthPaket.source.ParseAddress ( buffer_MAC_char );
+  EthPaket.source = ethGetMacAddressAsNumber (buffer_MAC_char);
+  
+  // Ethernet Packet - MAC Destination address
+  getvalue (NDP_EthernetPacket_MAC_Destination, buffer_MAC_char);
+  //EthPaket.destination.ParseAddress ( buffer_MAC_char );
+  EthPaket.destination = ethGetMacAddressAsNumber (buffer_MAC_char);
+  
+  // Ethernet Packet - VLAN
+  EthPaket.SetVlan (@NDP_EthernetPacket_VLAN_TPID, @NDP_EthernetPacket_VLAN_TCI);
+  
+  // Ethernet Packet - Type
+  EthPaket.type = @NDP_EthernetPacket_Type;
+  if (@NDP_EthernetPacket_Type == 0x86DD) EthPaket.ipv6.Init();
+  
+  
+  // IPv6 Packet - Version
+  EthPaket.ipv6.version = @NDP_IPv6Packet_Version;
+
+  // IPv6 Packet - Traffic Class
+  EthPaket.ipv6.class = @NDP_IPv6Packet_Traffic_Class;
+  
+  // IPv6 Packet - Flow Label
+  EthPaket.ipv6.flow = @NDP_IPv6Packet_Flow_Label;
+  
+  // IPv6 Packet - Payload_Length
+  EthPaket.ipv6.length = @NDP_IPv6Packet_Payload_Length;
+  
+  // IPv6 Packet - Next Header
+  EthPaket.ipv6.next = @NDP_IPv6Packet_Next_Header;
+  if (@NDP_IPv6Packet_Next_Header == 6) EthPaket.tcp.Init();
+  if (@NDP_IPv6Packet_Next_Header == 17) EthPaket.udp.Init();
+  if (@NDP_IPv6Packet_Next_Header == 58) EthPaket.icmpv6.Init();
+  
+  // IPv6 Packet - Hop Limit
+  EthPaket.ipv6.hopLimit = @NDP_IPv6Packet_Hop_Limit;
+
+  // IPv6 Packet - IPv6 Destination address    // TODO: char array zu byte array
+  buffer_ipv6[0]  = @NDP_IPv6Packet_IP_Destination_01>>8 & 0xFF;
+  buffer_ipv6[1]  = @NDP_IPv6Packet_IP_Destination_01    & 0xFF;
+  buffer_ipv6[2]  = @NDP_IPv6Packet_IP_Destination_02>>8 & 0xFF;
+  buffer_ipv6[3]  = @NDP_IPv6Packet_IP_Destination_02    & 0xFF;
+  buffer_ipv6[4]  = @NDP_IPv6Packet_IP_Destination_03>>8 & 0xFF;
+  buffer_ipv6[5]  = @NDP_IPv6Packet_IP_Destination_03    & 0xFF;
+  buffer_ipv6[6]  = @NDP_IPv6Packet_IP_Destination_04>>8 & 0xFF;
+  buffer_ipv6[7]  = @NDP_IPv6Packet_IP_Destination_04    & 0xFF;
+  buffer_ipv6[8]  = @NDP_IPv6Packet_IP_Destination_05>>8 & 0xFF;
+  buffer_ipv6[9]  = @NDP_IPv6Packet_IP_Destination_05    & 0xFF;
+  buffer_ipv6[10] = @NDP_IPv6Packet_IP_Destination_06>>8 & 0xFF;
+  buffer_ipv6[11] = @NDP_IPv6Packet_IP_Destination_06    & 0xFF;
+  buffer_ipv6[12] = @NDP_IPv6Packet_IP_Destination_07>>8 & 0xFF;
+  buffer_ipv6[13] = @NDP_IPv6Packet_IP_Destination_07    & 0xFF;
+  buffer_ipv6[14] = @NDP_IPv6Packet_IP_Destination_08>>8 & 0xFF;
+  buffer_ipv6[15] = @NDP_IPv6Packet_IP_Destination_08    & 0xFF;
+  EthPaket.ipv6.destination.SetData ( 0, buffer_ipv6, elcount(buffer_ipv6) );
+
+  // IPv6 Packet - IPv6 Source address    // TODO: char array zu byte array
+  buffer_ipv6[0]  = @NDP_IPv6Packet_IP_Source_ICAS1Gateway_01>>8 & 0xFF;
+  buffer_ipv6[1]  = @NDP_IPv6Packet_IP_Source_ICAS1Gateway_01    & 0xFF;
+  buffer_ipv6[2]  = @NDP_IPv6Packet_IP_Source_ICAS1Gateway_02>>8 & 0xFF;
+  buffer_ipv6[3]  = @NDP_IPv6Packet_IP_Source_ICAS1Gateway_02    & 0xFF;
+  buffer_ipv6[4]  = @NDP_IPv6Packet_IP_Source_ICAS1Gateway_03>>8 & 0xFF;
+  buffer_ipv6[5]  = @NDP_IPv6Packet_IP_Source_ICAS1Gateway_03    & 0xFF;
+  buffer_ipv6[6]  = @NDP_IPv6Packet_IP_Source_ICAS1Gateway_04>>8 & 0xFF;
+  buffer_ipv6[7]  = @NDP_IPv6Packet_IP_Source_ICAS1Gateway_04    & 0xFF;
+  buffer_ipv6[8]  = @NDP_IPv6Packet_IP_Source_ICAS1Gateway_05>>8 & 0xFF;
+  buffer_ipv6[9]  = @NDP_IPv6Packet_IP_Source_ICAS1Gateway_05    & 0xFF;
+  buffer_ipv6[10] = @NDP_IPv6Packet_IP_Source_ICAS1Gateway_06>>8 & 0xFF;
+  buffer_ipv6[11] = @NDP_IPv6Packet_IP_Source_ICAS1Gateway_06    & 0xFF;
+  buffer_ipv6[12] = @NDP_IPv6Packet_IP_Source_ICAS1Gateway_07>>8 & 0xFF;
+  buffer_ipv6[13] = @NDP_IPv6Packet_IP_Source_ICAS1Gateway_07    & 0xFF;
+  buffer_ipv6[14] = @NDP_IPv6Packet_IP_Source_ICAS1Gateway_08>>8 & 0xFF;
+  buffer_ipv6[15] = @NDP_IPv6Packet_IP_Source_ICAS1Gateway_08    & 0xFF;
+  EthPaket.ipv6.source.SetData ( 0, buffer_ipv6, elcount(buffer_ipv6) );
+  
+  // ICMPv6 Packet - Type
+  EthPaket.icmpv6.type = @NDP_ICMPv6Packet_Type;
+  
+  // ICMPv6 Packet - Code
+  EthPaket.icmpv6.code = @NDP_ICMPv6Packet_Code;
+  
+  // NDP Packet
+  //EthPaket.ndp.neighborSolicitation.Init();
+  EthPaket.ndp.neighborAdvertisement.Init();
+  EthPaket.ipv6.ResizeData (32);
+  
+  // NDP Packet - Flags
+  EthPaket.ndp.routerFlag    = @NDP_NDPPacket_Flags_Router_Flag;
+  EthPaket.ndp.solicitedFlag = @NDP_NDPPacket_Flags_Solicited_Flag;
+  EthPaket.ndp.overrideFlag  = @NDP_NDPPacket_Flags_Override_Flag;
+  
+  // NDP Packet - Destination IP
+  buffer_ipv6[0]  = @NDP_NDPPacket_IP_Target_ICAS1Gateway_01>>8 & 0xFF;
+  buffer_ipv6[1]  = @NDP_NDPPacket_IP_Target_ICAS1Gateway_01    & 0xFF;
+  buffer_ipv6[2]  = @NDP_NDPPacket_IP_Target_ICAS1Gateway_02>>8 & 0xFF;
+  buffer_ipv6[3]  = @NDP_NDPPacket_IP_Target_ICAS1Gateway_02    & 0xFF;
+  buffer_ipv6[4]  = @NDP_NDPPacket_IP_Target_ICAS1Gateway_03>>8 & 0xFF;
+  buffer_ipv6[5]  = @NDP_NDPPacket_IP_Target_ICAS1Gateway_03    & 0xFF;
+  buffer_ipv6[6]  = @NDP_NDPPacket_IP_Target_ICAS1Gateway_04>>8 & 0xFF;
+  buffer_ipv6[7]  = @NDP_NDPPacket_IP_Target_ICAS1Gateway_04    & 0xFF;
+  buffer_ipv6[8]  = @NDP_NDPPacket_IP_Target_ICAS1Gateway_05>>8 & 0xFF;
+  buffer_ipv6[9]  = @NDP_NDPPacket_IP_Target_ICAS1Gateway_05    & 0xFF;
+  buffer_ipv6[10] = @NDP_NDPPacket_IP_Target_ICAS1Gateway_06>>8 & 0xFF;
+  buffer_ipv6[11] = @NDP_NDPPacket_IP_Target_ICAS1Gateway_06    & 0xFF;
+  buffer_ipv6[12] = @NDP_NDPPacket_IP_Target_ICAS1Gateway_07>>8 & 0xFF;
+  buffer_ipv6[13] = @NDP_NDPPacket_IP_Target_ICAS1Gateway_07    & 0xFF;
+  buffer_ipv6[14] = @NDP_NDPPacket_IP_Target_ICAS1Gateway_08>>8 & 0xFF;
+  buffer_ipv6[15] = @NDP_NDPPacket_IP_Target_ICAS1Gateway_08    & 0xFF;
+  //EthPaket.ndp.neighborSolicitation.target.SetData ( 0, buffer_ipv6, elcount(buffer_ipv6) );
+  EthPaket.ndp.neighborAdvertisement.target.SetData ( 0, buffer_ipv6, elcount(buffer_ipv6) );
+  
+  // NDP Packet - Option Source-Link-Layer Address
+  npd_buffer[0] = @NDP_NDPPacket_IP_Target_ICAS1Gateway_08    & 0xFF;; // letztes Byte von Target Adress, sonst lässt sich die Option nicht setzen
+  
+  getvalue (NDP_EthernetPacket_MAC_Source_ICAS1Gateway, buffer_MAC_char);
+  buffer_MAC_qword = ethGetMacAddressAsNumber (buffer_MAC_char);
+  
+  buffer_MAC_qword_low  = buffer_MAC_qword     & 0x00000000FFFFFFFF;
+  buffer_MAC_qword_high = buffer_MAC_qword>>32 & 0x00000000FFFFFFFF;
+ 
+  npd_buffer[1] = 0x02; // Target Link-Layer Address
+  npd_buffer[2] = 0x01; 
+  npd_buffer[3] = buffer_MAC_qword_low      & 0xFF;
+  npd_buffer[4] = buffer_MAC_qword_low>>8   & 0xFF;
+  npd_buffer[5] = buffer_MAC_qword_low>>16  & 0xFF;
+  npd_buffer[6] = buffer_MAC_qword_low>>24  & 0xFF;
+  npd_buffer[7] = buffer_MAC_qword_high     & 0xFF;
+  npd_buffer[8] = buffer_MAC_qword_high>>8  & 0xFF;
+  
+  //EthPaket.ndp.neighborSolicitation.SetData ( 19, npd_buffer, 9 ); 
+  EthPaket.ndp.neighborAdvertisement.SetData ( 19, npd_buffer, 9 ); 
+  
+  // calculate checksums and send Ethernet packet
+  EthPaket.CompletePacket();
+  output( EthPaket );
+}
+
+
+
+
+on envVar NDP_EthernetPacket_VLAN_TCI
+{
+  @NDP_EthernetPacket_VLAN_TCI_Prio = @this>>13 & 0x0003;
+  @NDP_EthernetPacket_VLAN_TCI_CFI  = @this>>12 & 0x0001;
+  @NDP_EthernetPacket_VLAN_TCI_ID   = @this     & 0x0FFF;
+}
+
+on envVar NDP_EthernetPacket_VLAN_TCI_Prio { build_VLAN_TCI(); }
+on envVar NDP_EthernetPacket_VLAN_TCI_CFI  { build_VLAN_TCI(); }
+on envVar NDP_EthernetPacket_VLAN_TCI_ID   { build_VLAN_TCI(); }
+
+build_VLAN_TCI()
+{
+  @NDP_EthernetPacket_VLAN_TCI = @NDP_EthernetPacket_VLAN_TCI_ID + @NDP_EthernetPacket_VLAN_TCI_CFI * 4096 + @NDP_EthernetPacket_VLAN_TCI_Prio * 8192;
+}
+
+on ethernetPacket *
+{
+  if (this.type == 0x86DD && this.dir == RX) // IPv6
+  {
+    if (this.ipv6.next == 0x3A) // ICMPv6
+    {
+      if (this.icmpv6.type == 0x87) // Neighbor Solicitation
+      {
+        this.ndp.target.GetData (0, buffer_ipv6, 16);
+        
+        if (buffer_ipv6[14] == 0x00 & buffer_ipv6[15] == 0x10)
+          NDP_ICAS1Gateway();
+      }
+    }
+  }
+}

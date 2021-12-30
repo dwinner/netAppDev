@@ -1,0 +1,239 @@
+/*@@var:*/
+/*
+Copyright ( C ) Continental AG 2012
+
+Date of creation :  14.04.2011
+
+Created by :                 Hans Jürgen Hipp
+
+
+Version info
+
+1.00	   10.2013	Inital versioning introduced
+1.1	04.11.2013	HMI_2013_42a database
+
+*/
+
+
+variables
+{
+    char sActiveReplay[32];
+    dword activeReplayHandle;
+
+// Tracing
+
+    char configTracingIniFileName[100] = "CONFIG\\Tracing.ini";
+    char configTracingSectionProject[30] = "Project";
+
+    char configTracingEntryGcFrameDir[30] = "GC_Frame_Dir";
+    char defGC_Frame_Dir[100] = "D:\\casdev\\br213";
+
+    char configTracingEntryClusterVBlank[30] = "ClusterVBlank";
+    int defClusterVBlank = 50;
+}
+/*@@end*/
+
+/*@@preStart:PreStart:*/
+on preStart
+{
+}
+/*@@end*/
+
+/*@@startStart:Start:*/
+on start
+{
+    putValue(Env_TEST_Replay_Trigger, 0);
+    putValue(Env_TEST_Loop_Countdown, 0);
+//    writeLineEx(dwWriteSinkSimu, dwWriteSeverityInfo, "      read Tracing data INI-file");
+    Tracing__iniReadAll();
+	
+}
+/*@@end*/
+
+/*@@caplFunc:Tracing__iniReadAll():*/
+Tracing__iniReadAll()
+{
+	char valueStr[250];
+	int valueInt;
+
+	getProfileString( configTracingSectionProject, configTracingEntryGcFrameDir, defGC_Frame_Dir, valueStr, elcount(valueStr), configTracingIniFileName );
+    putvalue(Env_TEST_GC_Frame_Dir, valueStr);
+
+	valueInt = getProfileInt(configTracingSectionProject, configTracingEntryClusterVBlank, defClusterVBlank, configTracingIniFileName);
+    putvalue(Env_TEST_ClusterVBlank, valueInt);
+}
+/*@@end*/
+
+/*@@caplFunc:Tracing__iniWriteAll():*/
+Tracing__iniWriteAll()
+{
+	char value[250];
+	getValue(Env_TEST_GC_Frame_Dir, value);
+	writeProfileString(configTracingSectionProject, configTracingEntryGcFrameDir, value, configTracingIniFileName);
+	writeProfileInt(configTracingSectionProject, configTracingEntryClusterVBlank, getValue(Env_TEST_ClusterVBlank), configTracingIniFileName);
+}
+/*@@end*/
+
+/*@@caplFunc:Time_GetPC_Time():*///function
+Time_GetPC_Time()
+{
+    int i;
+    char temp[64];
+    byte bLength;
+    byte bResult;
+    byte acLineData[40];
+
+    long tm[9];
+    getLocalTime(tm);
+// now tm contains the following entries:
+// tm[0] = 3; (seconds)
+// tm[1] = 51; (minutes)
+// tm[2] = 16; (hours)
+// tm[3] = 21; (day of month)
+// tm[4] = 7; (month stating with 0)
+// tm[5] = 98; (year)
+// tm[6] = 5; (weekday)
+// tm[7] = 232;(day of year)
+// tm[8] = 1; (Summer time)
+    putValue( Env_PC_Time_Second, tm[0] );
+    putValue( Env_PC_Time_Minute, tm[1] );
+    putValue( Env_PC_Time_Hour,   tm[2] );
+    putValue( Env_PC_Time_Day,    tm[3] );
+    putValue( Env_PC_Time_Month,  tm[4] + 1 );
+    putValue( Env_PC_Time_Year,   tm[5] + 1900 );
+//    putValue( Env_PC_Time_Update_IPC, 1 );
+    //putValue( Env_PC_Time_Update_IPC, 0 );
+}
+/*@@end*/
+
+/*@@envVar:Env_TEST_Trace_Rec_Stop:*/
+on envVar Env_TEST_Trace_Rec_Stop
+{
+    char Toollink[500];
+    char path[250];
+    char param[250];
+
+    if( getValue( this ) )
+    {
+        getAbsFilePath("Test_GC\\\\Trace_Rec_Stop.bat", Toollink, elcount(Toollink));
+		getValue(Env_TEST_GC_Frame_Dir, path);
+        snprintf(param, elcount(param), "%s %u", path, getValue(Env_TEST_Actual_Replay));
+        write("Executing external tool:\n   %s %s", Toollink, param); 
+        sysExec( Toollink, param );
+    }
+    putValue( this, 0 );
+}
+/*@@end*/
+
+/*@@envVar:Env_TEST_Trace_Rec_Start:*/
+on envVar Env_TEST_Trace_Rec_Start
+{
+    char Toollink[270];
+    char param[250];
+
+    if( getValue( this ) )
+    {
+        getAbsFilePath("Test_GC\\\\HL\\\\Trace_Rec_Start.bat", Toollink, elcount(Toollink));
+		getValue(Env_TEST_GC_Frame_Dir, param);
+        write("Executing external tool:\n   %s %s", Toollink, param); 
+        sysExec( Toollink, param);
+    }
+    putValue( this, 0 );
+}
+/*@@end*/
+
+/*@@envVar:Env_TEST_Start_Post_Processing:*/
+on envVar Env_TEST_Start_Post_Processing
+{
+    char Toollink[270];
+    char param[250];
+
+    if( getValue( this ) )
+    {
+        getAbsFilePath("Test_GC\\\\HL\\\\post_Process.bat", Toollink, elcount(Toollink));
+		getValue(Env_TEST_GC_Frame_Dir, param);
+        write("Executing external tool:\n   %s %s", Toollink, param); 
+        sysExec( Toollink, param );
+    }
+    putValue( this, 0 );
+}
+/*@@end*/
+
+/*@@envVar:Env_TEST_Replay_Trigger:*/
+on envVar Env_TEST_Replay_Trigger
+{
+    if( getValue( this ) )
+    {
+        if(  getValue( Env_TEST_Loop_Countdown) > 0) {
+            if( (getValue(Env_TEST_Loop_Mode) == 0) || ((getValue(Env_TEST_Loop_Mode) == 1) && (getValue(Env_TEST_Actual_Replay) == 0)))
+	    {
+                putValue(Env_TEST_Loop_Countdown, getValue(Env_TEST_Loop_Countdown) - 1);
+            }
+        }
+        snprintf(sActiveReplay, elcount(sActiveReplay), "Traces\\%dhz\\Test_Trace_%03u.asc", 
+			getValue(Env_TEST_ClusterVBlank), getValue(Env_TEST_Actual_Replay));
+        putValue(Env_TEST_Replay_Running, 1);
+        activeReplayHandle = StartReplayFile(sActiveReplay);
+    }
+    else
+    {
+        StopReplayFile(activeReplayHandle);
+    }
+}
+/*@@end*/
+
+/*@@envVar:Env_TEST_Replay_Running:*/
+on envVar Env_TEST_Replay_Running 
+{
+    if (!getValue(this)) 
+    {
+        putValue(Env_TEST_Replay_Trigger, 0);
+        switch (getValue(Env_TEST_Loop_Mode)) 
+	{
+            case 0:
+                if (getValue(Env_TEST_Loop_Countdown) > 0) 
+		{
+                    putValue(Env_TEST_Replay_Trigger, 1);
+                }
+                break;
+            case 1:
+                switch (getValue(Env_TEST_Actual_Replay)) 
+		{
+                    case 6:
+                        putValue(Env_TEST_Actual_Replay, 8);
+                        break;
+                    case 26:
+                        putValue(Env_TEST_Actual_Replay, 28);
+                        break;
+                    case 29:
+                        putValue(Env_TEST_Actual_Replay, 31);
+                        break;
+                    case 60:
+                        putValue(Env_TEST_Actual_Replay, 0);
+                        break;
+                    default:
+                        putValue(Env_TEST_Actual_Replay, getValue(Env_TEST_Actual_Replay) + 1);
+                        break;
+                }
+                if ((getValue(Env_TEST_Loop_Countdown) > 0) || (getValue(Env_TEST_Actual_Replay) != 0)) 
+		{
+                    putValue(Env_TEST_Replay_Trigger, 0);
+                    putValue(Env_TEST_Replay_Trigger, 1);
+                }
+                break;
+        }
+    }
+}
+/*@@end*/
+
+/*@@envVar:Env_TEST_SaveParameters:*/
+on envVar Env_TEST_SaveParameters {
+    if( getValue( this ) )
+    {
+		write("Env_TEST_SaveParameters");
+		Tracing__iniWriteAll();
+	}
+    putValue( this, 0 );
+}
+/*@@end*/
+

@@ -1,0 +1,1189 @@
+//-----------------------------------------------------------------------------
+//  Copyright (C) Continental Automotive All Right Reserved
+//            File        : HeadUnit.can
+//            Author      : Ratheesh
+//            Environment : CAPL
+//-----------------------------------------------------------------------------
+//  Type        : CAPL script
+//  Description : This file contains the PCI Card & Streaming Functionality
+//  Code Status : Not tested
+//  Reference   : 
+//-----------------------------------------------------------------------------
+//  Revision History
+//  Version     Modified by         Date            Description
+//  1.0         Sebastian           25-May-2014     Initial version
+//-----------------------------------------------------------------------------
+includes
+{ 
+
+}
+
+variables
+{
+  // TCP Socket
+  dword dwMBI_Socket;
+  // TCP receive data;
+  char abMBI_RxData[2048];
+  
+  // MBI FBlockIDs
+  const byte bMBI_FBlockID_NetServices                    = 0x01;
+  const byte bMBI_FBlockID_MHP                            = 0x02;
+  const byte bMBI_FBlockID_Platform                       = 0x07;
+  const byte bMBI_FBlockID_Server                         = 0x08;
+  const byte bMBI_FBlockID_Generic                        = 0x80;
+  // MBI function IDs
+  const word wMBI_FuncID_StartUp                          = 0x0100;
+  const word wMBI_FuncID_DeviceMode                       = 0x020D;
+  const word wMBI_FuncID_MediaStreamConnInfo              = 0x11FF;
+  const word wMBI_FuncID_MediaConnInIsochronousStream     = 0x11FA;
+  const word wMBI_FuncID_MediaConnInIsochronousStreamExt  = 0x11F8;
+  const word wMBI_FuncID_MediaConnOutIsochronousStream    = 0x11FC;
+  const word wMBI_FuncID_MediaConnOutIsochronousStreamExt = 0x11F7;
+  const word wMBI_FuncID_MediaDisconnectStream            = 0x11FE;
+  const word wMBI_FuncID_NetworkState                     = 0x0150;
+  // MBI command error codes
+  const long lMbiCmdOk      = 0;
+  const long lMbiCmdErr     = 1;
+  const long lMbiCmdInvalid = 2;
+  // MBI message
+  struct MbiMsg
+  {
+    char cDeviceClass;
+    char cInstance;
+    char cFBlock;
+    char cInstId;
+    dword dwTimeStamp;
+    char cTimeResolution;
+    dword dwLength;
+    word wFunctionID;
+    char cOperation;
+    char abData[255];
+    word wMOST_SrcAdr;
+    dword dwMOST_FBlockID;
+    word wMOST_InstID;
+    word wMOST_FuncID;
+    word wMOST_OpState;
+    dword dwMOST_UserHandle;
+    char abMOST_Payload[255];
+    
+  };
+  // Flag indicating streaming status
+  byte bMBI_IsStreaming = 0;
+  // Streaming connection id
+  byte gbMBI_ConnId;
+  // Values obtained from VieoStream
+  word gwSTREAM_ConnectionLabel = 0;
+  word gwSTREAM_BlockWidth = 0;
+  
+  // MBI commands
+  enum MbiCmd
+  {
+    en_MbiCmd_Startup,
+    en_MbiCmd_DeviceMode,
+    en_MbiCmd_NBMINMode,
+    en_MbiCmd_MediaStreamConnInfo,
+    en_MbiCmd_MediaConnInIsochroStreamExt,
+    en_MbiCmd_MediaConnOutIsochroStreamExt,
+    en_MbiCmd_MediaDisconnStream
+  };
+  
+  char PCICard_Panel[256] = "H264_Videostreaming";
+  char PCICard_PanelControl[256] = "PCICardLog";
+  
+  byte gbPCICardConnected = 0;
+  byte gbSINK_FpkStreamConnected = 0;
+  byte gbSINK_ConResAckProc = 0;
+  byte gbSINK_DisConResAckProc = 0;
+  byte gbSINK_DataRate = 0;
+  byte gbForceStreaming = 1;
+  byte gbActiveStreaming = 0;
+  byte gbConvertVideoToMPEG_TS = 0;
+  byte gbDisplayVideo = 0;
+  byte gbCaptureVideo = 0;
+  byte gbCaptureInProcess = 0;
+}
+
+//---------------------------------------------------------------------------------
+//                           Panel Interface
+//---------------------------------------------------------------------------------
+
+on preStart
+{
+  /* Reset TCP Socket for MOST PCI Card */
+  dwMBI_Socket = 0; 
+  /* Try to Connect to PCI Card */
+  MBI_vPCICardConnect();
+}
+
+on stopMeasurement
+{
+  if(gbActiveStreaming)
+  {
+    STREAM_vStopStreamingInterface();
+    gbActiveStreaming = 0;
+  }
+  if(gbDisplayVideo)
+  {
+    sysExec("taskkill", "/f /im MostVideoViewer.exe");
+    gbDisplayVideo = 0;
+  }
+  
+  if(gbCaptureVideo)
+  {
+    sysExec("taskkill", "/f /im mbtest.exe");
+    gbCaptureVideo = 0;
+    gbCaptureInProcess = 0;
+  }
+  
+  MBI_vPCICardDisconnect();
+}
+on start
+{
+
+}
+
+// Function to log messages in output view of panel
+void StreamingLog(char buf[])
+{
+  long tm[9];
+  dword d;
+  word ms, us, ns;
+  char tempBuf[256];
+  byte h, m, s;
+  char str[256];
+
+  /* Get date and time */
+  getLocalTime(tm);
+  convertTimestampNS(timeNowNS(), d, h, m, s, ms, us, ns);
+  /* Prepare string */
+  snprintf(tempBuf, elcount(tempBuf),
+    "%.2d:%.2d:%.2d:%.3d - %s\n",
+    tm[2], tm[1], tm[0], ms, buf);
+  putValueToControl(PCICard_Panel, PCICard_PanelControl, tempBuf);
+}
+
+on sysvar VIDEO::Button_PCICard_Connect
+{
+  if (@this == 0)
+    return;
+
+  enableControl("H264_Videostreaming", "Button_PCI_Card_Connect", 0);
+  MBI_vPCICardConnect();
+}
+
+on sysvar VIDEO::Button_PCICard_Disconnect
+{
+  if (@this == 0)
+    return;
+
+  enableControl("H264_Videostreaming", "Button_PCI_Card_Disconnect", 0);
+  MBI_vPCICardDisconnect();
+}
+
+on sysvar VIDEO::Button_Streaming_TS
+{
+    if (@this == 0)
+    return;
+    if((mostGetNodeAdr(mostGetChannel()) == 0x100) && gbPCICardConnected)
+    {
+      enableControl("H264_Videostreaming", "Button Stream TS", 0);
+      enableControl("H264_Videostreaming", "Button Stream NonTS", 0);
+      enableControl("H264_Videostreaming", "Button Source Stop Streaming", 1);
+      gbConvertVideoToMPEG_TS = 0;
+      STREAM_lUploadTransportStream();
+    }
+}
+
+on sysvar VIDEO::Button_Streaming_NonTS
+{
+    if (@this == 0)
+    return;
+    if((mostGetNodeAdr(mostGetChannel()) == 0x100) && gbPCICardConnected)
+    {
+      enableControl("H264_Videostreaming", "Button Stream TS", 0);
+      enableControl("H264_Videostreaming", "Button Stream NonTS", 0);
+      enableControl("H264_Videostreaming", "Button Source Stop Streaming", 1);
+      gbConvertVideoToMPEG_TS = 1;
+      STREAM_lUploadTransportStream();
+    }
+}
+
+on sysvar VIDEO::Button_Streaming_Stop
+{
+    if (@this == 0)
+    return;
+    
+    if((mostGetNodeAdr(mostGetChannel()) == 0x100) && gbPCICardConnected)
+    {
+      enableControl("H264_Videostreaming", "Button Stream TS", 1);
+      enableControl("H264_Videostreaming", "Button Stream NonTS", 1);
+      enableControl("H264_Videostreaming", "Button Source Stop Streaming", 0);
+    
+      gbForceStreaming = 0;
+      gbConvertVideoToMPEG_TS = 0;
+      STREAM_vStopStreamingInterface();
+    }
+}
+
+on sysvar VIDEO::Button_Sniffer_DisplayVideo
+{
+  if((mostGetNodeAdr(mostGetChannel()) != 0x100) && gbPCICardConnected)
+  {
+    /* Trigger a Get to check if Stream is allocated by PCI Card on MOST */
+    MBI_lSend(en_MbiCmd_MediaStreamConnInfo);
+  }
+}
+
+on sysvar VIDEO::Button_Sniffer_CaptureVideo
+{
+  if((mostGetNodeAdr(mostGetChannel()) != 0x100) && gbPCICardConnected)
+  {
+    gbCaptureVideo = 1;
+    /* Trigger a Get to check if Stream is allocated by PCI Card on MOST */
+    MBI_lSend(en_MbiCmd_MediaStreamConnInfo);
+  }
+}
+
+on sysvar VIDEO::Button_Sniffer_Stop
+{
+  long lRet;
+   // Close PCI card applications
+  if(gbDisplayVideo)
+  {
+    lRet = sysExec("taskkill", "/f /im MostVideoViewer.exe");
+    if(lRet == 0)
+      StreamingLog("Streaming: Faild to kill MostVideoViewer.exe"); 
+    //else
+    //{
+      gbDisplayVideo = 0;
+      enableControl("H264_Videostreaming", "Button Sink Display Video", 1);
+      enableControl("H264_Videostreaming", "Button Sink Capture Video", 1);
+      enableControl("H264_Videostreaming", "Button Sink Stop Sniffer", 0);
+    //}
+  }
+  
+  if(gbCaptureVideo)
+  {
+    lRet = sysExec("taskkill", "/f /im mbtest.exe");
+    if(lRet == 0)
+      StreamingLog("Streaming: Faild to kill mbtest.exe"); 
+    //else
+    gbCaptureVideo = 0;
+    gbCaptureInProcess = 0;
+  }
+}
+
+//---------------------------------------------------------------------------------
+//                         GfxStreamSink Interface
+//---------------------------------------------------------------------------------
+
+OnMostAllocTable()
+{
+  long numEntries, labelWidth, label, i;
+  char sDebug[255];
+  if((mostGetNodeAdr(mostGetChannel()) != 0x100) && gbPCICardConnected)
+  {
+    numEntries = mostAllocTableGetSize(mostEventChannel());
+    snprintf(sDebug, elcount(sDebug),"Number of allocated labels: %d", numEntries);
+    StreamingLog(sDebug);
+    
+    for(i = 0; i < numEntries; ++i)
+    {
+      label =  mostAllocTableGetCL(mostEventChannel(), i);
+      labelWidth = mostAllocTableGetWidth(mostEventChannel(), i);
+      snprintf(sDebug, elcount(sDebug)," Label: 0x%x Width: %d", label, labelWidth);
+      StreamingLog(sDebug);
+      if((label == 0xAF) && (labelWidth == 32))
+      {
+        /* MIB VIdeostream allocated, connect it to PCI Card */
+        MBI_lSend(wMBI_FuncID_MediaConnOutIsochronousStreamExt);   
+        /* Trigger a Get to check if Stream is allocated by PCI Card on MOST */
+        //MBI_lSend(en_MbiCmd_MediaStreamConnInfo);
+      }
+    }
+  }
+}
+
+on mostMessage NetworkMaster.Configuration.Status
+{
+  byte bCount;
+  long lErr = 0;
+  
+  if(this.Most_IsSpy == 1)
+    return;
+
+  if( (1 ==mostGetRxLight(1)) && (1 == mostGetLock(1)))
+  {
+    switch (this.BYTE(0))
+    {
+      /* Configuration.Status = OK, light, lock */
+      case 1:
+          if(mostGetNodeAdr(mostGetChannel()) == 0x100)
+          {
+            if(gbForceStreaming && !gbActiveStreaming && gbPCICardConnected)
+            {
+                enableControl("H264_Videostreaming", "Button Stream TS", 0);
+                enableControl("H264_Videostreaming", "Button Stream NonTS", 0);
+                enableControl("H264_Videostreaming", "Button Source Stop Streaming", 1);
+                STREAM_lUploadTransportStream();
+            }
+           }
+        break;
+        
+      /* Configuration.Status = Invalid, light, lock */
+      case 2:
+        bCount = 1;
+        do {
+          switch(this.BYTE(bCount))
+          {
+            case 0xD6:
+              /* GfxStreamSink becomes Invalid */
+              gbSINK_FpkStreamConnected = 0;
+              gbSINK_ConResAckProc = 0;
+              gbSINK_DisConResAckProc = 0;
+              gbSINK_DataRate = 0;
+              break;
+              
+            case 0x06:
+              /* Cluster Reset */
+
+              break;
+          }
+          bCount += 2;
+        }while(bCount < this.DLC);
+        break;
+        
+      /* Configuration.Status = NewExt, light, lock */
+      case 4:
+        if(this.DLC > 1)
+        {
+          bCount = 3;
+          do {
+            switch(this.BYTE(bCount))
+            {
+              case 0xD6:
+                /* GfxStreamSink becomes Registered */
+                break;
+                
+              case 0x06:
+                /* Diagnosis becomes Registered */
+                break;
+            }
+            bCount += 4;
+          }while(bCount < this.DLC);
+         }
+        break;
+    }
+   }
+}
+
+on mostMessage GfxStreamSink.DataRate.Status
+{
+  if(this.Most_IsSpy == 1)
+    return;
+  
+  switch(this.BYTE(0))
+  {
+  /* DataRate Off */
+  case 0: 
+    if((this.BYTE(0)) != (gbSINK_DataRate))
+    {
+      GfxStreamSinkDisconnect();
+    }
+    gbSINK_DataRate = this.BYTE(0); 
+    break;
+  /* DataRate Reduced */
+  case 1:
+  /* DataRate Full */
+  case 2:
+      gbSINK_DataRate = this.BYTE(0); 
+      /* Trigger a Get to check if Stream is allocated by PCI Card on MOST */
+      MBI_lSend(en_MbiCmd_MediaStreamConnInfo);
+    break;
+      
+  default:
+      break;
+  }
+}
+
+void GfxStreamSinkConnect(word wConLabel, word wBlockWidth)
+{
+  long lReg = 0; 
+  char sDebug[255];
+  
+  lReg = IsFBlockRegistered(0xD6);
+  //snprintf(sDebug, elcount(sDebug),"[lReg = 0x%x; Con = 0x%x; Proc = 0x%x]", lReg, gbSINK_FpkStreamConnected, gbSINK_ConResAckProc);
+  //  StreamingLog(sDebug);
+  if((0 != lReg) && (!gbSINK_FpkStreamConnected) && (!gbSINK_ConResAckProc))
+  {
+    //snprintf(sDebug, elcount(sDebug),"[DataRate = 0x%x; Label = 0x%x; Width = 0x%x]", gbSINK_DataRate, wConLabel, wBlockWidth);
+    //StreamingLog(sDebug);
+
+    if( (gbSINK_DataRate != 0) && (wConLabel != 0) && (wBlockWidth != 0))
+    {
+      // we need to send a connect
+      mostAMSMessage GfxStreamSink.Connect.StartResultAck msg;
+      gbSINK_ConResAckProc = 1;
+      // Prepare message
+      msg.DA = 0x517;
+      msg.MsgChannel = mostGetChannel();
+      msg.InstanceId = 0x01;
+      msg.SenderHandle = 0;
+      msg.SinkNr = 0x14;
+      msg.BlockWidth = wBlockWidth;
+      msg.ConnectionLabel = wConLabel;
+      StreamingLog("Tx: GfxStreamSink.Connect.StartResultAck...");
+      output(msg);
+    }
+   }
+}
+
+on mostMessage GfxStreamSink.Connect.ResultAck
+{
+ if(this.Most_IsSpy == 1)
+  return;
+    
+  StreamingLog("Rx: GfxStreamSink.Connect.ResultAck...");
+  gbSINK_FpkStreamConnected = 1;
+  gbSINK_ConResAckProc = 0;
+}
+
+on mostMessage GfxStreamSink.Connect.ErrorAck
+{
+  if(this.Most_IsSpy == 1)
+    return;
+  gbSINK_ConResAckProc = 0;
+}
+
+void GfxStreamSinkDisconnect(void)
+{
+  if(0 != IsFBlockRegistered(0xD6) && (gbSINK_FpkStreamConnected == 1) && (!gbSINK_DisConResAckProc))
+  {
+      if((gwSTREAM_ConnectionLabel != 0) && (gwSTREAM_BlockWidth != 0))
+      {
+        // we need to send a connect
+        mostAMSMessage GfxStreamSink.Disconnect.StartResultAck msg;
+        gbSINK_DisConResAckProc = 1;
+        // Prepare message
+        msg.DA = 0x517;
+        msg.MsgChannel = mostGetChannel();
+        msg.InstanceId = 0x01;
+        msg.SenderHandle = 0;
+        msg.SinkNr = 0x14;
+        StreamingLog("Tx: GfxStreamSink.Disconnect.StartResultAck...");
+        output(msg);
+       }
+   }
+}
+
+on mostMessage GfxStreamSink.Disconnect.ResultAck
+{
+  if(this.Most_IsSpy == 1)
+    return;
+  StreamingLog("Rx: GfxStreamSink.Disconnect.ResultAck...");
+  gbSINK_FpkStreamConnected = 0;
+  gbSINK_DisConResAckProc = 0;
+}
+
+on mostMessage GfxStreamSink.Disconnect.ErrorAck
+{
+  if(this.Most_IsSpy == 1)
+    return;
+  
+  StreamingLog("Rx: GfxStreamSink.Disconnect.ErrorAck...");
+  gbSINK_DisConResAckProc = 0;
+}
+
+
+long IsFBlockRegistered(byte bFBlock)
+{
+  long lRet = 0;
+  byte bRegCount;
+  
+  for(bRegCount =0; bRegCount < mostAsRgGetSize(2); bRegCount++)
+  {
+    if(mostAsRgGetFBlockID(2, bRegCount) == bFBlock)
+    {
+      lRet = 1;
+    }
+  }
+  return lRet;
+}
+
+on MsgChannel1.mostLightLockError
+{
+  if(0 == mostGetLockEx(mostGetChannel()))
+  {
+    /* Unlock */
+    if(gbActiveStreaming)
+    {
+      enableControl("H264_Videostreaming", "Button Stream TS", 1);
+      enableControl("H264_Videostreaming", "Button Stream NonTS", 1);
+      enableControl("H264_Videostreaming", "Button Source Stop Streaming", 0);
+      STREAM_vStopStreamingInterface();
+      gwSTREAM_ConnectionLabel = 0;
+      gwSTREAM_BlockWidth = 0;
+      gbSINK_FpkStreamConnected = 0;
+      gbSINK_DataRate = 0;
+      gbSINK_DisConResAckProc = 0;
+      gbSINK_ConResAckProc = 0;
+      StreamingLog("Streaming: Unlock");
+    }
+  }
+}
+
+
+//---------------------------------------------------------------------------------
+//                           Streaming Interface
+//---------------------------------------------------------------------------------
+
+// Return 1 - if file exist
+// Return 0 - if file not exist
+long STREAM__lIsFileExist(char sPath[])
+{
+  long lRet;
+  dword fileHandle;
+
+  fileHandle = openFileRead(sPath, 1);
+  if (fileHandle == 0)
+  {
+    lRet = 0;
+  }
+  else
+  {
+    lRet = 1;
+    fileClose(fileHandle);
+  }
+  return lRet;
+}
+
+// Return 1 - Success
+//        0 - Failure
+long STREAM_lUploadTransportStream(void)
+{
+  char sFile[255];
+  char sPath[255];
+  char sTempPath[255];
+  char sRootDir[255];
+  char sWorkDir[255];
+  long lRet;
+  long lStat;
+  long lErr;
+
+  gbActiveStreaming = 1;
+  
+  /* Get video file path from panel */
+  if(!gbConvertVideoToMPEG_TS)
+    sysGetVariableString(sysvar::VIDEO::TSFile_Path, sFile, elcount(sFile));
+  else
+    sysGetVariableString(sysvar::VIDEO::H264File_Path, sFile, elcount(sFile));
+
+  /* Prepare parameters */
+  getAbsFilePath(".\\", sRootDir, 256);
+  getAbsFilePath("MOST\\Exec32", sWorkDir, 256);
+  snprintf(sPath, elcount(sPath),"\"%sMOST\\Video\\Example\\%s\"", sRootDir, sFile);
+
+  setFilePath("MOST\\Video\\Example\\", 0);
+  lStat = STREAM__lIsFileExist(sFile);
+  if (lStat == 1)
+  {
+    if(!gbConvertVideoToMPEG_TS)
+      lStat = sysExecCmd("VideoStreamStartDef.bat", sPath, sWorkDir);
+    else 
+    {
+       lStat = sysExecCmd("VideoStreamStart.bat", sPath, sWorkDir);
+    }
+    if (lStat == 0)
+     {
+      gbActiveStreaming =0;
+      StreamingLog("Streaming: Failed sysExec");
+      write("%FILE_NAME%: VideoStreamingStartWithDefParam(): Failed sysExec");
+     }
+     else
+     {
+        /* trigger isoch, packet transmission */
+        STREAM_vTriggerIsoOut();
+     }
+     lRet = 1;
+  }
+  else
+  {
+    StreamingLog("Streaming: File not exist");
+    gbActiveStreaming =0;
+    write("%FILE_NAME%: VideoStreamingStartWithDefParam(): Could not found file out.ts in default path");
+    lRet = 0;
+  }
+  return lRet;
+}
+
+void STREAM_vStopStreamingInterface(void)
+{
+  long lRet;
+  // Disconnect streaming connection
+  lRet = MBI_lSend(en_MbiCmd_MediaDisconnStream);
+  if(lRet == lMbiCmdOk)
+  {
+    StreamingLog("Streaming: Isochronous stream disconnected succesfull");
+    gbActiveStreaming = 0;
+  }
+  else
+    StreamingLog("Streaming: Faild to disconnect isochronous stream");
+  // Close PCI card applications
+  lRet = sysExec("taskkill", "/f /im mbstream.exe");
+  if(lRet == 0)
+    StreamingLog("Streaming: Faild to kill mbstream.exe");
+}
+
+void STREAM_vTriggerIsoOut(void)
+{
+  long lErr;
+  long IsoPacketsPerBuffer = 32;
+  char sBuff1[255] = ">02000700000000000100000511f80000";
+  char sTempBuff1[255];
+  char sBuff2[255] = ">02000700000000000100000711f70000";
+  char sTempBuff2[255];
+  char sIsoPktPerBuf[10];
+  
+  snprintf(sIsoPktPerBuf, elcount(sIsoPktPerBuf), "%.4X", IsoPacketsPerBuffer);
+  strncpy(sTempBuff1, sBuff1, elcount(sTempBuff1));
+  strncat(sTempBuff1, sIsoPktPerBuf, elcount(sTempBuff1));
+  strncat(sTempBuff1, "00BC\r\n", elcount(sTempBuff1));
+  lErr = TcpSend( dwMBI_Socket, sTempBuff1, strlen(sTempBuff1));
+  if (lErr != 0)
+          StreamingLog("PCICard: Streaming ... Failed to start isochronous packet transmission");
+  else
+  {
+    gbForceStreaming = 1;
+    /* Trigger a Get to check if Stream is allocated by PCI Card on MOST */
+    MBI_lSend(en_MbiCmd_MediaStreamConnInfo);
+   }
+}
+
+//---------------------------------------------------------------------------------
+//                             MBI Interface
+//---------------------------------------------------------------------------------
+
+void MBI_vPCICardConnect(void)
+{
+  long lIPErr;
+  if (dwMBI_Socket == 0)
+  {
+    // Create TCP socket
+    dwMBI_Socket = TcpOpen(0,0);
+    if (dwMBI_Socket == 0)
+    {
+      lIPErr = IpGetLastError();
+      StreamingLog("PCICardConnect: TcpOpen Error");
+      write("%FILE_NAME%: PCICardConnect: TcpOpen Error - %d", lIPErr); 
+    }
+    else
+    {
+      // Establish connection with PCI card
+      lIPErr = TcpConnect(dwMBI_Socket, 0x0100007F, 27999);
+      if (lIPErr != 0)
+      {
+        lIPErr = IpGetLastSocketError(dwMBI_Socket);
+        if (lIPErr != 10035)
+        {
+          StreamingLog("PCICardConnect: TcpConnect Error");
+          write("%FILE_NAME%: PCICardConnect: TcpConnect Error - %d", lIPErr);
+          TcpClose(dwMBI_Socket);
+          dwMBI_Socket = 0;
+        }
+      }
+    }
+  }
+}
+
+void MBI_vPCICardDisconnect(void)
+{
+  long lIPErr;
+
+  if (dwMBI_Socket != 0)
+  {
+    lIPErr = TcpClose(dwMBI_Socket);
+    if (lIPErr != 0)
+    {
+      StreamingLog("PCICardDisconnect: TcpClose Error");
+      write("%FILE_NAME%: PCICardDisconnect: TcpClose Error - %d", lIPErr);
+    }
+    else
+    {
+      gbPCICardConnected = 0;
+      enableControl("H264_Videostreaming", "Button_PCI_Card_Connect", 1);
+      StreamingLog("PCICard: Connection closed...");
+    }
+    dwMBI_Socket = 0;
+  }
+}
+
+OnTcpConnect(dword socket, long result)
+{
+  long lErr;
+
+  // set buffer to receive data from socket
+  TcpReceive( socket, abMBI_RxData, 2048);
+
+  // Check whether the right connection
+  if ((dwMBI_Socket == socket) && (result == 0))
+  {
+    gbPCICardConnected = 1;
+    StreamingLog("PCICard: Connection established... [PCI Card available] ");
+    StreamingLog("PCICard: Configuration in progress...");
+    lErr = MBI_lSend(en_MbiCmd_NBMINMode);
+    if (lErr != lMbiCmdOk)
+      write("%FILE_NAME%: OnTcpConnect: MBICmdSend(en_MbiCmd_NBMINMode) Error = %d", lErr);
+    else
+    {
+      StreamingLog("PCICard: Configuration ... [NB_Min = On]");
+      lErr = MBI_lSend(en_MbiCmd_DeviceMode);
+      if (lErr != lMbiCmdOk)
+      {
+        write("%FILE_NAME%: OnTcpConnect: MBICmdSend(en_MbiCmd_DeviceMode) Error = %d", lErr);
+      }
+      else
+      {
+        StreamingLog("PCICard: Configuration ... [DeviceMode = Slave]");
+        StreamingLog("PCICard: Configuration succesfull");
+        enableControl("H264_Videostreaming", "Button_PCI_Card_Disconnect", 1);
+        enableControl("H264_Videostreaming", "Button_PCI_Card_Connect", 0);
+      }
+    }
+    
+    if(lErr != lMbiCmdOk)
+    {
+        enableControl("H264_Videostreaming", "Button_PCI_Card_Connect", 1);
+        enableControl("H264_Videostreaming", "Button_PCI_Card_Disconnect", 0);
+        StreamingLog("PCICard: Configuration not succesfull");
+    }
+  }
+  else
+  {
+    TcpClose(dwMBI_Socket);
+    dwMBI_Socket = 0;
+    enableControl("H264_Videostreaming", "Button_PCI_Card_Connect", 1);
+    enableControl("H264_Videostreaming", "Button_PCI_Card_Disconnect", 0);
+    StreamingLog("PCICardConnect: PCICard not available!");
+    write("%FILE_NAME%: OnTcpConnect: Invalid connection, socket = %d result = %d", socket, result);
+  }
+}
+
+OnTcpReceive( dword socket, long result, dword address, dword port, char buffer[], dword size)
+{
+  MBI_vReceive(buffer,size);
+  // provide buffer for next TCP data
+  TcpReceive( socket, abMBI_RxData, 2048);
+}
+
+void MBI_vReceive(char abMBData[], dword dwSize)
+{
+  dword dwPos = 0;
+  dword dwCnt;
+  struct MbiMsg st_MbiMsg;
+  
+  dwPos = 0;
+  do 
+  {
+    /* TODO: Check this "magic" condition, do we lost messages here? */
+    if ((abMBData[dwPos] != '<') && (33 >(dwSize - dwPos)))
+    {
+      // Invalid MBI Message
+      dwPos++;
+    }
+    else
+    {
+      st_MbiMsg.cDeviceClass = a2i(abMBData[dwPos + 1]) << 4;
+      st_MbiMsg.cDeviceClass |= a2i(abMBData[dwPos + 2]);
+      st_MbiMsg.cInstance = a2i(abMBData[dwPos + 3]) << 4;
+      st_MbiMsg.cInstance |= a2i(abMBData[dwPos + 4]);
+      st_MbiMsg.cFBlock = a2i(abMBData[dwPos + 5]) << 4;
+      st_MbiMsg.cFBlock |= a2i(abMBData[dwPos + 6]);
+      st_MbiMsg.cInstId = a2i(abMBData[dwPos + 7]) << 4;
+      st_MbiMsg.cInstId |= a2i(abMBData[dwPos + 8]);
+      st_MbiMsg.dwTimeStamp = a2i(abMBData[dwPos + 9]) << 28;
+      st_MbiMsg.dwTimeStamp |= a2i(abMBData[dwPos + 10]) << 24;
+      st_MbiMsg.dwTimeStamp |= a2i(abMBData[dwPos + 11]) << 20;
+      st_MbiMsg.dwTimeStamp |= a2i(abMBData[dwPos + 12]) << 16;
+      st_MbiMsg.dwTimeStamp |= a2i(abMBData[dwPos + 13]) << 12;
+      st_MbiMsg.dwTimeStamp |= a2i(abMBData[dwPos + 14]) << 8;
+      st_MbiMsg.dwTimeStamp |= a2i(abMBData[dwPos + 15]) << 4;
+      st_MbiMsg.dwTimeStamp |= a2i(abMBData[dwPos + 16]);
+      st_MbiMsg.cTimeResolution = a2i(abMBData[dwPos + 17]) << 4;
+      st_MbiMsg.cTimeResolution |= a2i(abMBData[dwPos + 18]);
+      st_MbiMsg.dwLength = a2i(abMBData[dwPos + 19]) << 20;
+      st_MbiMsg.dwLength |= a2i(abMBData[dwPos + 20]) << 16;
+      st_MbiMsg.dwLength |= a2i(abMBData[dwPos + 21]) << 12;
+      st_MbiMsg.dwLength |= a2i(abMBData[dwPos + 22]) << 8;
+      st_MbiMsg.dwLength |= a2i(abMBData[dwPos + 23]) << 4;
+      st_MbiMsg.dwLength |= a2i(abMBData[dwPos + 24]);
+      st_MbiMsg.wFunctionID = a2i(abMBData[dwPos + 25]) << 12;
+      st_MbiMsg.wFunctionID |= a2i(abMBData[dwPos + 26]) << 8;
+      st_MbiMsg.wFunctionID |= a2i(abMBData[dwPos + 27]) << 4;
+      st_MbiMsg.wFunctionID |= a2i(abMBData[dwPos + 28]);
+      st_MbiMsg.cOperation = a2i(abMBData[dwPos + 29]) << 4;
+      st_MbiMsg.cOperation |= a2i(abMBData[dwPos + 30]);
+    
+      if (dwSize > (dwPos + 31 + (st_MbiMsg.dwLength * 2)))
+      {
+        for (dwCnt = 0; dwCnt < st_MbiMsg.dwLength; dwCnt++)
+        {
+           st_MbiMsg.abData[dwCnt]  =  a2i(abMBData[dwPos + 31 + (dwCnt * 2)]) << 4;
+           st_MbiMsg.abData[dwCnt] |= a2i(abMBData[dwPos + 31 + (dwCnt * 2) + 1]);
+        }
+        MBI_vCallFunctionCatalog(st_MbiMsg, dwCnt);
+      }
+      else
+      {
+        //stream invalid skip it
+        dwPos = dwSize;
+      }
+      dwPos = dwPos + 31 + (dwCnt * 2) + 2;
+    }
+    //write("Pos %x::%x",dwPos, dwSize);
+  }
+  while (dwPos < dwSize);
+}
+
+long MBI_lSend(long u32_Cmd)
+{
+  long lErr = lMbiCmdOk;
+  long lRet;
+
+  switch(u32_Cmd)
+  {
+    
+    case en_MbiCmd_NBMINMode:
+      /* set NBMIN to On */
+      lRet = TcpSend( dwMBI_Socket, ">02000100000000000100000104000001\r\n", 35);
+    break;
+      
+    break;
+    case en_MbiCmd_DeviceMode:
+    {
+      /* Master Configuration (currently no usage for FPK) */
+      //lRet = TcpSend( dwMBI_Socket, ">020001000000000001000001020D0001\r\n", 35);
+      /* Slave Configuration */
+      lRet = TcpSend( dwMBI_Socket, ">020001000000000001000001020D0000\r\n", 35);                              
+      if (lRet != 0)
+      {
+        write("%FILE_NAME%: MBICmdSend: TcpSend() error = %d", lRet);
+        lErr = lMbiCmdErr;
+      }
+    }
+    break;
+    case en_MbiCmd_MediaStreamConnInfo:
+    {
+      lRet = TcpSend( dwMBI_Socket, ">02000700000000000100000011ff01\r\n", 33);
+      if (lRet != 0)
+      {
+        write("%FILE_NAME%: MBICmdSend: TcpSend() error = %d", lRet);
+        lErr = lMbiCmdErr;
+      }
+    }
+    break;
+    case wMBI_FuncID_MediaConnOutIsochronousStreamExt:
+    {
+      lRet = TcpSend( dwMBI_Socket, ">02000700000000000100000711f70000002000af00bc\r\n", 47);
+      if (lRet != 0)
+      {
+        write("%FILE_NAME%: MBICmdSend: TcpSend() error = %d", lRet);
+        lErr = lMbiCmdErr;
+      }      
+    }
+    break;
+    case en_MbiCmd_MediaDisconnStream:
+    {
+      char sBuff2[255];
+      char sBuff[255] = ">02000700000000000100000111fe00";
+      char sTemp[255];
+
+      strncpy(sBuff2, sBuff, elcount(sBuff2));
+      snprintf(sTemp, elcount(sTemp), "%.2X\r\n", gbMBI_ConnId);
+      strncat(sBuff2, sTemp, elcount(sBuff2));
+      lRet = TcpSend(dwMBI_Socket, sBuff2, strlen(sBuff2));
+      if (lRet != 0)
+      {
+        write("%FILE_NAME%: MBICmdSend: TcpSend() error = %d", lRet);
+        lErr = lMbiCmdErr;
+      }
+    }
+    break;
+    default:
+    {
+      lErr = lMbiCmdInvalid;
+    }
+    break;
+  }
+  return lErr;
+}
+
+void MBI_vCallFunctionCatalog(struct MBIMsg st_Msg, dword dwSize)
+{
+  dword dwCnt;
+  switch (st_Msg.cFBlock)
+  {
+    case bMBI_FBlockID_NetServices:
+    {
+      if(st_Msg.wFunctionID == 0x141)
+      {
+        /***** MOST Part ******/
+        /* SrcAdr */
+        st_Msg.wMOST_SrcAdr   = st_Msg.abData[0]<<8;
+        st_Msg.wMOST_SrcAdr  |= st_Msg.abData[1];
+        /* FBlockID */
+        st_Msg.dwMOST_FBlockID  = st_Msg.abData[2];
+        /* InstID */
+        st_Msg.wMOST_InstID = st_Msg.abData[3];
+        /* FuncID */
+        st_Msg.wMOST_FuncID   = st_Msg.abData[4]<<8;
+        st_Msg.wMOST_FuncID  |= st_Msg.abData[5];
+        /* OpState */
+        st_Msg.wMOST_OpState  = st_Msg.abData[6];
+        /* ReceiveType*/
+        st_Msg.dwMOST_UserHandle = st_Msg.abData[7];
+        /* 3 Bytes Reserved*/
+        /* Payload*/
+        for (dwCnt = 0; dwCnt < (dwSize-11); dwCnt++)
+        {
+          st_Msg.abMOST_Payload[dwCnt] =  st_Msg.abData[11 + dwCnt];
+        }
+        MBI_vCallFBlock_NetServices(st_Msg);   
+      }
+    }
+    break;
+    case bMBI_FBlockID_MHP:
+    {
+      MBI_vCallFBlock_HighProtocol(st_Msg);
+    }
+    break;
+    case bMBI_FBlockID_Platform:
+    {
+      MBI_vCallFBlock_PlatformSpecific(st_Msg);
+    }
+    break;
+    case bMBI_FBlockID_Server:
+    {
+      MBI_vCallFBlock_Server(st_Msg);
+    }
+    break;
+    case bMBI_FBlockID_Generic:
+    {
+      MBI_vCallFBlock_Generic(st_Msg);
+    }
+    break;
+    default:
+    {
+      // Do nothing
+    }
+    break;
+  }
+}
+
+MBI_vCallFBlock_NetServices(struct MBIMsg st_Msg)
+{
+    switch (st_Msg.dwMOST_FBlockID)
+    {
+      /* NetBlock */
+      case 0x01:
+        /* FunctionIds */
+        switch(st_Msg.wMOST_FuncID)
+        {
+          /* Network State */
+          case 0x0150:
+            if (st_Msg.wMOST_OpState == 0x0C)
+            {
+              if(st_Msg.abData[0] == 0x05)
+              {
+
+              }
+              else
+              {
+
+              }
+            }
+            break;
+            
+            default:
+              break;
+        }
+        default:
+          break;
+    }
+}
+
+MBI_vCallFBlock_HighProtocol(struct MBIMsg st_Msg)
+{
+  // Do nothing
+}
+
+MBI_vCallFBlock_PlatformSpecific(struct MBIMsg st_Msg)
+{
+  mostAMSMessage GfxStreamSink.DataRate.Get msg;
+  long lStat;
+  char sWorkDir[255];
+
+  switch (st_Msg.wFunctionID)
+  {
+    case wMBI_FuncID_MediaStreamConnInfo:
+    {
+      if (st_Msg.cOperation == 0x0c)
+      {
+        word wLabel;
+        word wWidth;
+        char sDebug[255];
+        if(st_Msg.dwLength != 0)
+        {
+          gbMBI_ConnId = st_Msg.abData[0];
+          if(st_Msg.abData[1] == 0x02)
+          {
+            // Isochronous stream IN --> send video to most
+            gbActiveStreaming = 1;
+          }
+          else if(st_Msg.abData[1] == 0x03)
+          {
+            // Isochronous stream Out --> recieve video from most
+          }
+
+          wLabel = (byte)st_Msg.abData[5]<<8 | (byte)st_Msg.abData[6];
+          wWidth = (byte)st_Msg.abData[3]<<8 | (byte)st_Msg.abData[4];
+          snprintf(sDebug, elcount(sDebug),"MediaStreamConnectionInfo: Stream allocated [StreamType = 0x%x; Label = 0x%x; Width = 0x%x]", st_Msg.abData[1], wLabel, wWidth);
+          StreamingLog(sDebug);
+          
+          if((0 != wWidth) && (0 != wLabel) && (gbSINK_DataRate != 0))
+          {
+            //StreamingLog(" Try to Connect the Stream");
+            /* Try to Connect the Stream */
+            GfxStreamSinkConnect(wLabel, wWidth);
+          }
+          
+          /* Store Last ConLabel and BlockWidth */
+          gwSTREAM_ConnectionLabel = wLabel;
+          gwSTREAM_BlockWidth = wWidth;
+                    
+          if ((st_Msg.abData[1]== 0x03) && (!gbDisplayVideo))
+          {
+            getAbsFilePath("MOST\\Exec32", sWorkDir, 256);
+            // we have an isochronus stream OUT
+            lStat = sysExecCmd("VideoViewer.bat", "", sWorkDir);
+            if (lStat == 0)
+            {
+              StreamingLog("Streaming: Failed to open MostVideoViewer.exe");
+            }
+            else
+            {
+              enableControl("H264_Videostreaming", "Button Sink Display Video", 0);
+              enableControl("H264_Videostreaming", "Button Sink Capture Video", 0);
+              enableControl("H264_Videostreaming", "Button Sink Stop Sniffer", 1);
+              gbDisplayVideo = 1;
+            }
+          }
+          
+          if(gbCaptureVideo && gbDisplayVideo && !gbCaptureInProcess)
+          {
+            char sRootDir[255];
+            char sPath[255];
+            char sFile[255];
+            
+            sysGetVariableString(sysvar::VIDEO::CaptureFile_Path, sFile, elcount(sFile));
+            
+            getAbsFilePath(".\\", sRootDir, 256);
+            getAbsFilePath("MOST\\Exec32", sWorkDir, 256);
+            snprintf(sPath, elcount(sPath),"\"%sMOST\\Video\\Capture\\%s\"", sRootDir, sFile);
+            lStat = sysExecCmd("VideoCapture.bat", sPath, sWorkDir);
+            if (lStat == 0)
+            {
+              StreamingLog("Streaming: Failed to open mbtest.exe");
+            }
+            else
+            {
+              enableControl("H264_Videostreaming", "Button Sink Display Video", 0);
+              enableControl("H264_Videostreaming", "Button Sink Capture Video", 0);
+              enableControl("H264_Videostreaming", "Button Sink Stop Sniffer", 1);
+              gbCaptureInProcess = 1;
+            }
+          }
+        }
+        else
+        {
+          StreamingLog("MediaStreamConnectionInfo: No Stream allocated");
+          gwSTREAM_ConnectionLabel = 0;
+          gwSTREAM_BlockWidth = 0;
+          gbSINK_FpkStreamConnected = 0;
+        }
+      }
+    }
+    break;
+
+    default:
+    {
+      // Do nothing
+    }
+    break;
+  }
+}
+
+MBI_vCallFBlock_Server(struct MBIMsg st_Msg)
+{
+  // Do nothing
+}
+
+MBI_vCallFBlock_Generic(struct MBIMsg st_Msg)
+{
+  // Do nothing
+}
+
+//---------------------------------------------------------------------------------
+//                             Misc.
+//---------------------------------------------------------------------------------
+
+char a2i(char cASCII)
+{
+  char bValue;
+  switch (cASCII)
+  {
+    case 0x30: case 0x31: case 0x32: case 0x33: case 0x34:
+    case 0x35: case 0x36: case 0x37: case 0x38: case 0x39:
+    {
+      bValue = cASCII - 0x30;
+    }
+    break;
+    case 'A': case 'a':
+    {
+      bValue = 10;
+    }
+    break;
+    case 'B': case 'b':
+    {
+      bValue = 11;
+    }
+    break;
+    case 'C': case 'c':
+    {
+      bValue = 12;
+    }
+    break;
+    case 'D': case 'd':
+    {
+      bValue = 13;
+    }
+    break;
+    case 'E': case 'e':
+    {
+      bValue = 14;
+    }
+    break;
+    case 'F': case 'f':
+    {
+      bValue = 15;
+    }
+    break;
+    default:
+    {
+      bValue = 0xFF;
+    }
+    break;
+  }
+  return (bValue);
+}
+
+

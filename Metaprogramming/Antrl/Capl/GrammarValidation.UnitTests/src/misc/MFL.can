@@ -1,0 +1,611 @@
+/*@!Encoding:1252*/
+variables
+{
+  message MFL_Tasten_Kon_01 mMFL_Tasten_Kon_01;
+  
+  mstimer MFL_Taste_long_press_1;
+  mstimer MFL_Taste_long_press_2;
+  mstimer MFL_Taste_long_press_3;
+  
+  //mstimer MFL_Nachlauf;
+  //const   MFL_Nachlaufzeit = 1000;
+  //byte    Nachlauf_counter;
+  //const   Nachlauf_counter_max = 5;
+  
+  mstimer wait_GEM;
+  mstimer wait_GEM2;
+  
+  mstimer KeyRelease;
+  
+  mstimer doubleklick_reset;
+  byte    doubleklick_flag = 0;
+
+  mstimer Walze_reset;
+}
+
+on start
+{
+  @EnvTasteWalzeRunterLinks_Ticks  = 1;
+  @EnvTasteWalzeHochLinks_Ticks    = 1;
+  
+  openPanel ("MFL");
+  @EnvMFL_Marke    = 0x01; //Audi
+  @EnvMFL_Variante = 0x01;
+}
+
+on stopMeasurement
+{
+  closePanel ("MFL");
+}
+
+
+
+on envVar EnvTasteMenu
+{
+  byte tastencode = 0x01;
+  
+  if (@this == 1)
+    MFL_Tasten_check (tastencode, 1);
+  else
+    MFL_Tasten_check (tastencode, 0); 
+}
+
+on envVar EnvTasteRechts
+{
+  byte tastencode = 0x02;
+  
+  if (@this == 1)
+    MFL_Tasten_check (tastencode, 1);
+  else
+    MFL_Tasten_check (tastencode, 0); 
+}
+
+on envVar  EnvTasteLinks
+{
+  byte tastencode = 0x03;
+  
+  if (@this == 1)
+    MFL_Tasten_check (tastencode, 1);
+  else
+    MFL_Tasten_check (tastencode, 0); 
+}
+
+on envVar EnvTasteWalzeHochLinks
+{
+  byte tastencode_vw = 0x04;
+  byte tastencode = 0x06;
+  
+  if (mMFL_Tasten_Kon_01.MFL_Marke == 0) // VW
+  {
+    if (@this == 1)
+      MFL_Tasten_check(tastencode_vw, 1);
+    else
+      MFL_Tasten_check(tastencode_vw, 0); 
+  }
+  
+  else // Audi, etc
+  {
+    if (@this == 1)
+      MFL_Walze_check(tastencode, @EnvTasteWalzeHochLinks_Ticks, 1);
+    else
+      MFL_Walze_check(tastencode, 0, 1);
+  }
+}
+
+on envVar EnvTasteWalzeHochLinks_Ticks
+{
+  if (@this > 7)
+    @this = 7;
+}
+
+on envVar EnvTasteWalzeRunterLinks
+{
+  byte tastencode_vw = 0x05;
+  byte tastencode = 0x06;
+  
+  if (mMFL_Tasten_Kon_01.MFL_Marke == 0) // VW
+  {
+    if (@this == 1)
+      MFL_Tasten_check(tastencode_vw, 1);
+    else
+      MFL_Tasten_check(tastencode_vw, 0); 
+  }
+  
+  else // Audi, etc
+  {
+    if (@this == 1)
+      MFL_Walze_check(tastencode, @EnvTasteWalzeRunterLinks_Ticks, 2);
+    else
+      MFL_Walze_check(tastencode, 0, 2);
+  }
+}
+
+on envVar EnvTasteWalzeRunterLinks_Ticks
+{
+  if (@this > 7)
+    @this = 7;
+}
+
+on envVar EnvTasteWalzeLinks
+{
+  byte tastencode = 0x07;
+  
+  if (@this == 1)
+    MFL_Tasten_check (tastencode, 1);
+  else
+    MFL_Tasten_check (tastencode, 0); 
+}
+
+on envVar EnvTasteZurueck
+{
+  byte tastencode = 0x08;
+  
+  if (@this == 1)
+    MFL_Tasten_check (tastencode, 1);
+  else
+    MFL_Tasten_check (tastencode, 0); 
+}
+
+on envVar EnvTasteMenuLinks
+{
+  byte tastencode = 0x0A;
+  
+  if (@this == 1)
+    MFL_Tasten_check (tastencode, 1);
+  else
+    MFL_Tasten_check (tastencode, 0); 
+}
+
+on envVar EnvTasteMenuRechts
+{
+  byte tastencode = 0x0B;
+  
+  if (@this == 1)
+    MFL_Tasten_check (tastencode, 1);
+  else
+    MFL_Tasten_check (tastencode, 0); 
+}
+
+on envVar EnvTasteWalzeHochRechts
+{
+  byte tastencode = 0x12;
+  
+  if (@this == 1)
+    MFL_Walze_check(tastencode, 1, 1);
+}
+
+on envVar EnvTasteWalzeRunterRechts
+{
+  byte tastencode = 0x12;
+  
+  if (@this == 1)
+    MFL_Walze_check(tastencode, 1, 2);
+}
+
+on envVar EnvTasteSkipVor
+{
+  byte tastencode = 0x15;
+  
+  if (@this == 1)
+    MFL_Tasten_check (tastencode, 1);
+  else
+    MFL_Tasten_check (tastencode, 0); 
+}
+
+on envVar EnvTasteSkipZur
+{
+  byte tastencode = 0x16;
+  
+  if (@this == 1)
+    MFL_Tasten_check (tastencode, 1);
+  else
+    MFL_Tasten_check (tastencode, 0); 
+}
+
+on envVar EnvTasteSDS
+{
+  byte tastencode = 0x19;
+  
+  if (@this == 1)
+    MFL_Tasten_check (tastencode, 1);
+  else
+    MFL_Tasten_check (tastencode, 0); 
+}
+
+on envVar EnvTasteINav
+{
+  byte tastencode = 0x1B;
+  
+  if (@this == 1)
+    MFL_Tasten_check (tastencode, 1);
+  else
+    MFL_Tasten_check (tastencode, 0); 
+}
+
+on envVar EnvTasteTel
+{
+  byte tastencode = 0x1C;
+  
+  if (@this == 1)
+    MFL_Tasten_check (tastencode, 1);
+  else
+    MFL_Tasten_check (tastencode, 0); 
+}
+
+on envVar EnvTasteWalzeRechts
+{
+  byte tastencode = 0x20;
+  
+  if (@this == 1)
+    MFL_Tasten_check (tastencode, 1);
+  else
+    MFL_Tasten_check (tastencode, 0); 
+}
+
+on envVar EnvTasteJoker
+{
+  byte tastencode = 0x21;
+  
+  if (@this == 1)
+    MFL_Tasten_check (tastencode, 1);
+  else
+    MFL_Tasten_check (tastencode, 0); 
+}
+
+on envVar EnvTasteView
+{
+  byte tastencode = 0x23;
+  
+  if (@this == 1)
+    MFL_Tasten_check (tastencode, 1);
+  else
+    MFL_Tasten_check (tastencode, 0); 
+}
+
+
+
+
+MFL_Tasten_check (byte tastencode, byte press)
+{
+  if (@Env_AB_CAN_active == 1)
+  {
+    //Nachlauftimer abbrechen
+    //canceltimer (MFL_Nachlauf);
+    //Nachlauf_counter = 0;
+    
+    // Taste 1 wird gedrückt
+    if (press == 1 && mMFL_Tasten_Kon_01.MFL_Tastencode_1 == 0x00 || mMFL_Tasten_Kon_01.MFL_Tastencode_1 == 0xF0)
+    {
+      mMFL_Tasten_Kon_01.MFL_Tastencode_1 = tastencode;
+      if (doubleklick_flag == 0) mMFL_Tasten_Kon_01.MFL_Eventcode_1 = press;
+      if (doubleklick_flag == 1) mMFL_Tasten_Kon_01.MFL_Eventcode_1 = 0x03;
+      
+      output (mMFL_Tasten_Kon_01);
+      
+      // Longpress Timer starten
+      settimer (MFL_Taste_long_press_1, 800);
+      
+      //Doppelklick-Timer starten
+      doubleklick_flag = 1;
+      settimer (doubleklick_reset, 250);
+    }
+  }
+    
+  // Taste 1 losgelassen
+  if (press == 0 && mMFL_Tasten_Kon_01.MFL_Eventcode_1 != 0x00)
+  {
+    mMFL_Tasten_Kon_01.MFL_Tastencode_1 = 0x00;
+    mMFL_Tasten_Kon_01.MFL_Eventcode_1  = 0x00;
+    
+    canceltimer(MFL_Taste_long_press_1);
+    canceltimer(MFL_Taste_long_press_2);
+    canceltimer(MFL_Taste_long_press_3);
+    
+    output(mMFL_Tasten_Kon_01);
+    //settimer(MFL_Nachlauf,MFL_Nachlaufzeit); -> Nachlauf laut K-Matrix nicht mehr vorhanden
+  }
+}
+
+on timer doubleklick_reset
+{
+  doubleklick_flag = 0;
+}
+
+MFL_Walze_check (byte tastencode, float Ticks, byte Richtung)
+{
+  if (@Env_AB_CAN_active == 1)
+  {
+    //Nachlauftimer abbrechen
+    //canceltimer (MFL_Nachlauf);
+    //Nachlauf_counter = 0;
+    
+    // Walze hoch oder runter
+    if (Ticks != 0 && (mMFL_Tasten_Kon_01.MFL_Tastencode_1 == 0x00 || mMFL_Tasten_Kon_01.MFL_Tastencode_1 == 0xF0))
+    {
+      if (Richtung == 1) // plus
+      {
+        mMFL_Tasten_Kon_01.MFL_Tastencode_1 = tastencode;
+        mMFL_Tasten_Kon_01.MFL_Eventcode_1  = Ticks;
+        
+        output (mMFL_Tasten_Kon_01);
+      }
+      
+      if (Richtung == 2) // minus
+      {
+        mMFL_Tasten_Kon_01.MFL_Tastencode_1 = tastencode;
+        mMFL_Tasten_Kon_01.MFL_Eventcode_1  = 16-Ticks;
+        
+        output (mMFL_Tasten_Kon_01);
+      }
+    }
+    
+    if (Ticks == 0)
+    {
+      mMFL_Tasten_Kon_01.MFL_Tastencode_1 = 0x00;
+      mMFL_Tasten_Kon_01.MFL_Eventcode_1  = 0x00;
+      
+      canceltimer(MFL_Taste_long_press_1);
+      canceltimer(MFL_Taste_long_press_2);
+      canceltimer(MFL_Taste_long_press_3);
+      
+      output(mMFL_Tasten_Kon_01);
+      //settimer(MFL_Nachlauf,MFL_Nachlaufzeit);
+    }
+    setTimer (Walze_reset, 100);
+  }
+}
+
+on timer Walze_reset
+{
+  mMFL_Tasten_Kon_01.MFL_Tastencode_1 = 0x00;
+  mMFL_Tasten_Kon_01.MFL_Eventcode_1  = 0x00;
+    
+  //settimer (MFL_Nachlauf, MFL_Nachlaufzeit);
+}
+
+/*on timer MFL_Nachlauf
+{
+  if (Nachlauf_counter < Nachlauf_counter_max)
+  {
+    mMFL_Tasten_Kon_01.MFL_Tastencode_1 = 0x00;
+    mMFL_Tasten_Kon_01.MFL_Tastencode_2 = 0x00;
+    mMFL_Tasten_Kon_01.MFL_Eventcode_1  = 0x00;
+    mMFL_Tasten_Kon_01.MFL_Eventcode_2  = 0x00;
+    output (mMFL_Tasten_Kon_01);
+    
+    Nachlauf_counter++;
+    
+    settimer (MFL_Nachlauf, MFL_Nachlaufzeit);
+  }
+}*/
+
+
+on envVar EnvMFL_Tastencode_1
+{
+  mMFL_Tasten_Kon_01.MFL_Tastencode_1 = getvalue(this);
+}
+
+on envVar EnvMFL_Tastencode_2
+{
+  mMFL_Tasten_Kon_01.MFL_Tastencode_2 = getvalue(this);
+}
+
+on envVar EnvMFL_Eventcode_1
+{
+  mMFL_Tasten_Kon_01.MFL_Eventcode_1 = getvalue(this);
+}
+
+on envVar EnvMFL_Eventcode_2
+{
+  mMFL_Tasten_Kon_01.MFL_Eventcode_2 = getvalue(this);
+}
+
+on envVar EnvMFL_Marke
+{
+  mMFL_Tasten_Kon_01.MFL_Marke = getvalue(this);
+}
+
+on envVar EnvMFL_Variante
+{
+  mMFL_Tasten_Kon_01.MFL_Variante = getvalue(this);
+}
+
+
+
+on timer MFL_Taste_long_press_1
+{
+  mMFL_Tasten_Kon_01.MFL_Eventcode_1 = 0x04;
+  output (mMFL_Tasten_Kon_01);
+  
+  settimer (MFL_Taste_long_press_2, 1200);
+}
+
+on timer MFL_Taste_long_press_2
+{
+  mMFL_Tasten_Kon_01.MFL_Eventcode_1 = 0x05;
+  output (mMFL_Tasten_Kon_01);
+  
+  settimer (MFL_Taste_long_press_3, 1000);
+}
+
+on timer MFL_Taste_long_press_3
+{
+  mMFL_Tasten_Kon_01.MFL_Eventcode_1 = 0x06;
+  output (mMFL_Tasten_Kon_01);
+  
+  settimer (MFL_Taste_long_press_3, 1000);
+}
+
+
+
+
+
+
+
+///////// GEM /////////
+
+on envVar EnvTasteGEM
+{
+  if ((getValue(this)) == 0)
+  {
+    mMFL_Tasten_Kon_01.MFL_Tastencode_1 = 0x02;
+    mMFL_Tasten_Kon_01.MFL_Eventcode_1  = 0x01;
+    mMFL_Tasten_Kon_01.MFL_Tastencode_2 = 0x07;
+    mMFL_Tasten_Kon_01.MFL_Eventcode_2  = 0x01;
+    output (mMFL_Tasten_Kon_01);
+    setTimer (wait_GEM, 1000);
+  }
+}
+
+on Timer wait_GEM
+{
+  mMFL_Tasten_Kon_01.MFL_Tastencode_1 = 0x02;
+  mMFL_Tasten_Kon_01.MFL_Eventcode_1  = 0x06;
+  mMFL_Tasten_Kon_01.MFL_Tastencode_2 = 0x07;
+  mMFL_Tasten_Kon_01.MFL_Eventcode_2  = 0x06;
+  output (mMFL_Tasten_Kon_01);
+  setTimer (wait_GEM2, 1000);
+}
+
+on Timer wait_GEM2
+{
+  mMFL_Tasten_Kon_01.MFL_Tastencode_1 = 0x00;
+  mMFL_Tasten_Kon_01.MFL_Eventcode_1  = 0x00;
+  mMFL_Tasten_Kon_01.MFL_Tastencode_2 = 0x00;
+  mMFL_Tasten_Kon_01.MFL_Eventcode_2  = 0x00;
+  output (mMFL_Tasten_Kon_01);
+}
+
+
+
+
+
+///// Keys //////
+
+on key CursorLeft // Pfeil links
+{
+  @EnvTasteLinks = 1;
+  settimer (KeyRelease, 100);
+}
+
+on key ctrlCursorLeft // STRG + Pfeil links
+{
+  @EnvTasteMenuLinks = 1;
+  settimer (KeyRelease, 100);
+} 
+
+on key CursorRight // Pfeil rechts
+{
+  @EnvTasteRechts = 1;
+  settimer (KeyRelease, 100);
+}
+
+on key ctrlCursorRight // STRG + Pfeil rechts
+{
+  @EnvTasteMenuRechts = 1;
+  settimer (KeyRelease, 100);
+} 
+
+on key CursorUp // Pfeil hoch
+{
+  @EnvTasteWalzeHochLinks = 1;
+  settimer (KeyRelease, 100);
+}
+
+on key CursorDown // Pfeil runter
+{
+  @EnvTasteWalzeRunterLinks = 1;
+  settimer (KeyRelease, 100);
+}
+
+on key 0x08 // Backspace
+{
+  @EnvTasteZurueck = 1;
+  settimer (KeyRelease, 100);
+}
+
+on key 0x0D // Enter
+{
+  @EnvTasteWalzeLinks = 1;
+  settimer (KeyRelease, 100);
+}
+
+on key 'v'
+{
+  @EnvTasteView = 1;
+  settimer (KeyRelease, 100);
+}
+
+on key 'm'
+{
+  @EnvTasteMenu = 1;
+  settimer (KeyRelease, 100);
+}
+
+on key 'j'
+{
+  @EnvTasteJoker = 1;
+  settimer (KeyRelease, 100);
+}
+
+on key 't'
+{
+  @EnvTasteTel = 1;
+  settimer (KeyRelease, 100);
+}
+
+on key 'g'
+{
+  @EnvTasteGEM = 1;
+  settimer (KeyRelease, 100);
+}
+
+
+on timer KeyRelease
+{
+  @EnvTasteLinks            = 0;
+  @EnvTasteRechts           = 0;
+  @EnvTasteWalzeHochLinks   = 0;
+  @EnvTasteWalzeRunterLinks = 0;
+  @EnvTasteWalzeLinks       = 0;
+  @EnvTasteZurueck          = 0;
+  @EnvTasteMenuLinks        = 0;
+  @EnvTasteMenuRechts       = 0;
+  @EnvTasteContextMenu      = 0;
+  @EnvTasteView             = 0;
+  @EnvTasteMenu             = 0;
+  @EnvTasteJoker            = 0;
+  @EnvTasteTel              = 0;
+  @EnvTasteGEM              = 0;
+}
+
+check_output()
+{
+  output (mMFL_Tasten_Kon_01);
+}
+
+on envVar Env_MFL_Shortcuts
+{
+  if (@this == 1)
+  {
+    write("******************** MFL Shortcuts ********************");
+    write("*                Cursor up:  Walze links hoch         *");
+    write("*              Cursor down:  Walze links runter       *");
+    write("*              Cursor left:  MFL links                *");
+    write("*             Cursor right:  MFL rechts               *");
+    write("*  STRG/CTRL + Cursor left:  Seitenmenu links         *");
+    write("* STRG/CTRL + Cursor right:  Seitenmenu rechts        *");
+    write("*                    Enter:  Walze links press        *");
+    write("*                Backspace:  Zurück                   *");
+    write("*                        m:  Menu                     *");
+    write("*                        v:  View                     *");
+    write("*                        j:  Joker                    *");
+    write("*                        t:  Telefon                  *");
+    write("*                        g:  Green Enginerring Menu   *");
+    write("*                        k:  HUD Eyebox entgegen UZR  *");
+    write("*                        l:  HUD-Taster               *");
+    write("*                        ö:  HUD Eyebox in UZR        *");
+    write("*                        c:  Logging starten/stoppen  *");
+    write("*******************************************************");
+  }
+}

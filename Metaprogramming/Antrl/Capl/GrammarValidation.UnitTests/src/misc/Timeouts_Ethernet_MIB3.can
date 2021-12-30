@@ -1,0 +1,82 @@
+/*@!Encoding:1252*/
+variables
+{
+  msTimer EthStatus;  
+}
+
+on preStart
+{
+  EthControlInit ();
+  EthControlStart ();
+}
+
+on start
+{
+  // SOME/IP & AMP PDUs deaktivieren
+  @IL_ETH1::PDU_FIEnableTXofPDU::ETH_Cluster_MEB_ICAS3_Sys_IVI_01_SimulatedPeerNodes_RTP_Rueckkanal_AMP_XIX_E3V_VLAN_Infotainment                  = 0;
+  @IL_ETH1::PDU_FIEnableTXofPDU::ETH_Cluster_MEB_ICAS3_Sys_IVI_01_SimulatedPeerNodes_RTP_CenterChannel_AMP_XIX_E3V_VLAN_Infotainment               = 0;
+  @IL_ETH1::PDU_FIEnableTXofPDU::ETH_Cluster_MEB_ICAS3_Sys_IVI_01_SimulatedPeerNodes_RTCP_Rueckkanal_AMP_XIX_E3V_VLAN_Infotainment                 = 0;
+  @IL_ETH1::PDU_FIEnableTXofPDU::ETH_Cluster_MEB_ICAS3_Sys_IVI_01_SimulatedPeerNodes_RTCP_CenterChannel_AMP_XIX_E3V_VLAN_Infotainment              = 0;
+  @IL_ETH1::PDU_FIEnableTXofPDU::ETH_Cluster_MEB_ICAS3_Sys_IVI_01_SimulatedPeerNodes_ServiceDiscoverySomeIP_ICAS1Gateway_XIX_E3V_VLAN_Infotainment = 0;
+  
+  Global_IL_Timeout(0);
+  Global_IL_Timeout(1);
+  
+  @Timeout::Mainunit = 1;
+  
+  settimercyclic (EthStatus, 100);
+}
+
+on timer EthStatus
+{
+  if ( EthGetAdapterStatus() == 2 )
+    @Env_Ethernet_active = 1;
+  else
+    @Env_Ethernet_active = 0;
+  
+    
+//  switch (EthGetAdapterStatus())
+//  {
+//    case 0: write("Adapter status unknown"); break;
+//    case 1: write("Adapter is not connected"); break;
+//    case 2: write("Adapter is connected"); break;
+//  }
+}
+
+
+on envVar Env_GlobalAppl
+{
+  if ( (@Env_GlobalAppl == 1) || (@Env_GlobalNMH == 1) )
+    Global_IL_Timeout(0);
+  else
+    Global_IL_Timeout(1);
+}
+
+on envVar Env_GlobalNMH
+{
+  if ( (@Env_GlobalAppl == 1) || (@Env_GlobalNMH == 1) )
+    Global_IL_Timeout(0);
+  else
+    Global_IL_Timeout(1);
+}
+
+Global_IL_Timeout(byte timeout)
+{
+  byte info;
+
+  @IL_ETH1::EnableNode::ICAS3_Sys_IVI_01_SimulatedPeerNodes                     = !timeout;
+  //@_NMControl::ETH_Cluster_MEB::Nodes::ICAS3_Sys_IVI_01_SimulatedPeerNodes::RequestIL      = !timeout;
+  @NM_ETH1::ICAS3_Sys_IVI_01_SimulatedPeerNodes::DeactivateNM                   =  timeout;
+  @EnvKlemme15                                                                  = !timeout;
+
+  
+  if (timeout == 0)
+  {
+    EthControlStart ();
+  }
+
+  if (timeout == 1)
+  {
+    EthControlStop ();
+  }
+}

@@ -1,0 +1,1346 @@
+/*@@var:*/
+/**************************/
+/*  VW MQB                */
+/*  August 2010           */
+/**************************/
+
+
+variables
+{
+	msTimer ToggleWarnings_timer;
+  	int ToggleWarnings_cycle = 1000;
+  	int ToggleWarnings_state;
+    int ToggleWarnings_ctr;
+
+	msTimer ToggleKl15_timer;
+  	int ToggleKl15_cycle = 3000;
+  	int ToggleKl15_state = 0; 
+    
+    /*
+	msTimer ToggleNmh_timer;
+  	int ToggleNmh_cycle = 3000;
+  	int ToggleNmh_state = 0;
+    */
+
+	msTimer MoveMfl_timer;
+  	int MoveMfl_cycle = 1000;
+  	int MoveMfl_state = 0;
+
+    const int NUM_WARNINGS = 69;
+    const int MAX_LENGTH = 100;
+    
+    
+    mstimer AutoTest_timer;
+    long AutoTest_cycle = 60000; 
+    int AutoTest_State;
+    
+
+    // Warnings List
+    char All_Warnings[NUM_WARNINGS][MAX_LENGTH] = {"eLV_Standlicht_AnzeigeS", "eLV_Abblendlicht_AnzeigeS",
+    "eLV_Fernlicht_AnzeigeS", "eLV_Nebellicht_AnzeigeS", "eLV_Nebelschlusslicht_AnzeigeS", "eLV_Tagfahrlicht_AnzeigeS",
+    "eLV_AFL_aktiv_AnzeigeS", "eLV_AFL_defektS", "eLV_Blinker_li_defS", "eLV_Blinker_re_defS", "eLV_Standlicht_li_defS",
+    "eLV_Standlicht_re_defS", "eLV_Abblendlicht_li_defS", "eLV_Abblendlicht_re_defS", "eLV_Fernlicht_li_defS",
+    "eLV_Fernlicht_re_defS", "eLV_Nebellicht_li_defS","eLV_Nebellicht_re_defS", "eLV_Blk_li_Seite_defS", "eLV_Blk_re_Seite_defS", 
+    "eLV_Tagfahrlicht_li_defS","eLV_Tagfahrlicht_re_defS", "eLV_Abblendlicht_TFL_li_defS", "eLV_Abblendlicht_TFL_re_defS",
+    "eLV_Nebellicht_TFL_li_defS", "eLV_Nebellicht_TFL_re_defS", "eLV_Standlicht_li_defS", "eLV_Standlicht_re_defS", 
+    "eLV_Abblend_Fernlicht_li_defS", "eLV_Abblend_Fernlicht_re_defS", "eLH_Blinker_li_defS", "eLH_Blinker_re_defS",
+    "eLH_Schlusslicht_li_defS", "eLH_Schlusslicht_re_defS", "eBlinken_li_Kombi_TaktS", 
+    "eBlinken_re_Kombi_TaktS", "eAAG_Blinker_H_aktivS", "eLH_Rueckf_li_defS", "eLH_Rueckf_re_defS", "eLH_Nebel_li_defS", 
+    "eLH_Nebel_re_defS", "eLH_Schluss_Brems_li_defS", "eLH_Schluss_Brems_re_defS", "eLH_Schluss_Brems_Nebel_li_defS", 
+    "eLH_Schluss_Brems_Nebel_re_defS", "eLH_Schluss_Nebel_li_defS", "eLH_Schluss_Nebel_re_defS", "eLH_SL_BRL_BLK_li_defS",
+    "eLH_SL_BRL_BLK_re_defS", "eLH_Brems_Blk_li_defS", "eLH_Brems_Blk_re_defS", "eAAG_Blinker_HL_defS", "eAAG_Blinker_HR_defS",
+    "eAAG_Schlusslicht_HL_defS", "eAAG_Schlusslicht_HR_defS", "eAFS_LampeS", "eLWR_LampeS", 
+    "eAFS_LED_BlinkmodeS", "eLV_FLA_aktiv_AnzeigeS", "eLV_FLA_defektS", "eLV_FLA_Sensor_blockiertS",
+    "eLV_Aussenlicht_defS", "eLH_Aussenlicht_defS", "eLH_Kennzl_defS", "eLH_3_Bremsl_defS", "eLH_Nebel_mi_defS",
+    "eLH_Rueckf_mi_defS", "eBCM1_Licht_WarnS", "eBCM_Waschwasser_SensorS"};
+
+    // For Pointer Sweep: Tacho
+    long Drehzahl_ud;
+    mstimer SweepPointer_timer;
+    int Otto_Diesel;
+
+    // For Pointer Sweep: Speedo
+    long Speedo_steps;
+    long Speedo_max = 45;
+
+    // For Pointer Sweep: Temp
+    long Temp_steps;
+    long Temp_max = 142.5;
+    long Temp_min = -47.25;
+
+    
+    // FakeNmhOff: this is a patch and to be removed after NMH is working
+	/*msTimer Kl15Off_timer; 
+    int Kl15Off_event = 0;                
+    int WeckleitungOff_event = 0; 
+    */
+
+    // For eInputSelection case 3: file mode
+    //msTimer FileMode_timer;
+    int FileMode_cycle = 100;
+    const int NUM_TESTS = 12;
+    int Test_Options[NUM_TESTS] = {64,30,31,32,33,
+    34,35,36,37,38,39,61};
+
+}
+/*@@end*/
+
+/*@@envVar:eTestStates:*/
+on envVar eTestStates
+{
+    if (getValue(eInputSelection) != 0)
+    {
+    switch(getValue(This))
+	{
+	
+    // case 0: Reserved to disable eTestStates radio button
+    
+    case 1: // Kl15 on, can load off, voltage 12V, NMH on
+        
+        StopAllTimedFunctions();
+        SwitchKl15(1);        
+		break;
+    case 2: // Kl15 off, can load off, voltage 12V, NMH off
+        StopAllTimedFunctions();
+        //SwitchNmh(0);
+		break;
+	case 3: // Kl15 on, can load on, voltage 12V, NMH on
+        // Always reset for each eTestState before running specific test
+        StopAllTimedFunctions();
+        SwitchKl15(1);
+        SwitchCanLoad(1);
+        break;
+	case 4: // toggeling Kl15, can load on, voltage 12V, NMH on
+        StopAllTimedFunctions();
+        ToggleKl15(1);
+        SwitchCanLoad(1);
+		break;
+	case 5: // Kl15 on, can load on, voltage curves, NMH on
+        StopAllTimedFunctions();
+        SwitchKl15(1);
+        SwitchCanLoad(1);
+		break;
+	case 6: // toggeling Kl15, can load on, voltage curves, NMH on
+        StopAllTimedFunctions();
+        ToggleKl15(1);
+        SwitchCanLoad(1);
+		break;
+	case 7: // Kl15 off, can load off, voltage curves, NMH on
+        StopAllTimedFunctions();
+        SwitchKl15(0);
+		break;
+	case 8: // Kl15 off, can load off, voltage curves, toggeling NMH
+        StopAllTimedFunctions();
+        SwitchKl15(0);
+		break;
+	case 9: // Kl15 off, can load off, voltage curves, NMH off
+        StopAllTimedFunctions();
+        SwitchKl15(0);
+        //SwitchNmh(0);
+		break;
+	case 10: // Kl15 off, can load off, voltage 12V, NMH on
+        StopAllTimedFunctions();
+        SwitchKl15(0);
+		break;
+	case 11: // Kl15 off, can load off, voltage 12V, toggeling NMH 
+        StopAllTimedFunctions();
+        SwitchKl15(0);
+        ToggleWarnings(0);
+		break;
+	case 12: // Kl15 on, can load on, voltage SSI4b, NMH on
+        StopAllTimedFunctions();
+        SwitchKl15(1);
+        SwitchCanLoad(1);
+		break;
+    default:
+        break;
+
+    }
+    }
+}   
+/*@@end*/
+
+/*@@timer:ToggleWarnings_timer:*/
+on timer ToggleWarnings_timer
+{
+	char temp[MAX_LENGTH], temp2[MAX_LENGTH], temp3[MAX_LENGTH];
+    long result;
+    
+    switch(ToggleWarnings_state) /*admin*/
+	{
+	case 0: // 1 Warning, ON
+        //strncpy(temp, All_Warnings[ToggleWarnings_ctr],MAX_LENGTH);
+        //putvalue(temp,1);
+        SetWarnings(ToggleWarnings_ctr);
+        ToggleWarnings_state = 1;
+		break;
+
+	case 1: // 1 Warning, OFF
+        //strncpy(temp, All_Warnings[ToggleWarnings_ctr],MAX_LENGTH);
+        //putvalue(temp,0);
+         ClearWarnings(ToggleWarnings_ctr);
+
+        ToggleWarnings_ctr++;
+        if(ToggleWarnings_ctr == NUM_WARNINGS)
+        {
+            ToggleWarnings_state = 2;
+            ToggleWarnings_ctr = 0;
+        }
+        else
+        {
+            ToggleWarnings_state = 0;
+        }
+        break;
+
+    case 2: // 2 Warnings, ON
+        //strncpy(temp, All_Warnings[ToggleWarnings_ctr],MAX_LENGTH);
+        //putvalue(temp,1);
+        SetWarnings(ToggleWarnings_ctr);
+
+        if (ToggleWarnings_ctr+1 < NUM_WARNINGS)
+        {
+            //strncpy(temp2, All_Warnings[ToggleWarnings_ctr+1],MAX_LENGTH);
+            //putvalue(temp2,1);
+            SetWarnings(ToggleWarnings_ctr+1);
+        }
+        else
+        {
+            //strncpy(temp2, All_Warnings[0],MAX_LENGTH);
+            //putvalue(temp2,1);
+            SetWarnings(0);
+        }
+
+        ToggleWarnings_state = 3;
+		break;
+
+    case 3: // 2 Warnings, OFF
+        //strncpy(temp, All_Warnings[ToggleWarnings_ctr],MAX_LENGTH);
+        //putvalue(temp,0);
+        ClearWarnings(ToggleWarnings_ctr);
+        
+        if (ToggleWarnings_ctr+1 < NUM_WARNINGS)
+        {
+            //strncpy(temp2, All_Warnings[ToggleWarnings_ctr+1],MAX_LENGTH);
+            //putvalue(temp2,0);
+            ClearWarnings(ToggleWarnings_ctr+1);
+
+            ToggleWarnings_ctr = ToggleWarnings_ctr + 2;
+            ToggleWarnings_state = 2;            
+        }
+        else
+        {
+            //strncpy(temp2, All_Warnings[0],MAX_LENGTH);
+            //putvalue(temp2,0);
+            ClearWarnings(0);
+
+            ToggleWarnings_state = 4;
+            ToggleWarnings_ctr = 0;
+        }
+        break;
+        
+	case 4: // 3 Warnings, ON
+    
+        // Warn1
+        //strncpy(temp, All_Warnings[ToggleWarnings_ctr],MAX_LENGTH);
+        //putvalue(temp,1);
+         SetWarnings(ToggleWarnings_ctr);
+        
+        // Warn2
+        if (ToggleWarnings_ctr+1 < NUM_WARNINGS)
+        {
+            //strncpy(temp2, All_Warnings[ToggleWarnings_ctr+1],MAX_LENGTH);
+            //putvalue(temp2,1);
+             SetWarnings(ToggleWarnings_ctr+1);
+        }
+        else
+        {
+            //strncpy(temp2, All_Warnings[0],MAX_LENGTH);
+            //putvalue(temp2,1);
+            SetWarnings(0);
+        }
+
+        // Warn3
+        if (ToggleWarnings_ctr+2 < NUM_WARNINGS)
+        {
+            //strncpy(temp3, All_Warnings[ToggleWarnings_ctr+2],MAX_LENGTH);
+            //putvalue(temp3,1);
+            SetWarnings(ToggleWarnings_ctr+2);
+        }
+        else
+        {
+            //strncpy(temp3, All_Warnings[1],MAX_LENGTH);
+            //putvalue(temp3,1);
+            SetWarnings(1);
+        }
+
+        ToggleWarnings_state = 5;
+		break;
+    
+    case 5: // 3 Warnings, OFF
+        
+        //strncpy(temp, All_Warnings[ToggleWarnings_ctr],MAX_LENGTH);
+        //putvalue(temp,0);
+        ClearWarnings(ToggleWarnings_ctr);
+
+        if (ToggleWarnings_ctr+1 < NUM_WARNINGS)
+        {
+            //strncpy(temp2, All_Warnings[ToggleWarnings_ctr+1],MAX_LENGTH);
+            //putvalue(temp2,0);
+            ClearWarnings(ToggleWarnings_ctr+1);
+        
+        }
+        else 
+        {
+            //strncpy(temp2, All_Warnings[0],MAX_LENGTH);
+            //putvalue(temp2,0);
+            ClearWarnings(0);
+        }
+
+        if (ToggleWarnings_ctr+2 < NUM_WARNINGS)
+        {
+            //strncpy(temp3, All_Warnings[ToggleWarnings_ctr+2],MAX_LENGTH);
+            //putvalue(temp3,0);
+            ClearWarnings(ToggleWarnings_ctr+2);
+            
+            if (ToggleWarnings_ctr+3 < NUM_WARNINGS)
+            {
+                ToggleWarnings_ctr = ToggleWarnings_ctr + 3;
+                ToggleWarnings_state = 4;
+            }
+            else
+            {
+                ToggleWarnings_state = 0;
+                ToggleWarnings_ctr = 0;
+            }
+            
+        }    
+    default:
+        break;
+
+        
+	}
+    setTimer(ToggleWarnings_timer, ToggleWarnings_cycle);/*admin*/
+}
+/*@@end*/
+
+/*@@timer:ToggleKl15_timer:*/
+
+on timer ToggleKl15_timer
+{
+    
+    switch(ToggleKl15_state) 
+	{
+	case 0:
+        putValue(eZAS_Kl_15S,1);
+        ToggleKl15_state = 1;
+        break;
+
+    case 1:
+        putValue(eZAS_Kl_15S,0);
+        ToggleKl15_state = 0;
+		break;
+
+    default:
+        break;
+    
+    }
+
+    ToggleKl15_cycle = ToggleKl15_cycle - 100;
+    if (ToggleKl15_cycle == 100)
+    {
+        ToggleKl15_cycle = 3000;
+    }
+    setTimer(ToggleKl15_timer, ToggleKl15_cycle); 
+} 
+
+
+
+
+ 
+/*@@end*/
+
+/*@@caplFunc:ToggleWarnings(int):*///function
+ToggleWarnings (int state)
+{
+	switch(state)
+	{
+	case 0:
+        SwitchAllWarnings(0);
+        cancelTimer(ToggleWarnings_timer);
+		break;
+	
+    default:
+        ToggleWarnings_state = 0;
+        ToggleWarnings_ctr = 0;
+        setTimer(ToggleWarnings_timer, 1); 
+		break;
+	}
+}
+/*@@end*/
+
+/*@@caplFunc:ToggleKl15(int):*///function
+ToggleKl15 (int state)
+{
+	switch(state)
+	{
+	case 0:
+        Switchkl15(0);
+        cancelTimer(ToggleKl15_timer);
+		break;
+	
+    default:
+        setTimer(ToggleKl15_timer, 1); 
+		break;
+	}
+}
+/*@@end*/
+
+/*@@caplFunc:SwitchAllWarnings(int):*///function
+SwitchAllWarnings(int state)
+{
+    int val,i;
+    char temp[MAX_LENGTH];
+
+	switch(state)
+	{
+	case 0:
+        val = 0;
+        for (i=0; i < NUM_WARNINGS; i++)
+        {
+            strncpy(temp, All_Warnings[i], MAX_LENGTH);
+            // [30.08.2013]:: conflict with CANeasy conversion 4.0.12; - no Envar 'temp'; value is not being used
+            /*if (getvalue(temp) != val)
+            {
+                putvalue(temp,val);
+            }*/
+            
+        }
+        break;
+	
+    default:
+        val = 1;
+        for (i=0; i < NUM_WARNINGS; i++)
+        {
+            strncpy(temp, All_Warnings[i], MAX_LENGTH);
+            // [30.08.2013]:: conflict with CANeasy conversion 4.0.12; - no Envar 'temp'; value is not being used
+            /*if (getvalue(temp) != val)
+            {
+                putvalue(temp,val);
+            }*/
+        }
+        break;
+	}
+}
+/*@@end*/
+
+/*@@caplFunc:SwitchKl15(int):*///function
+SwitchKl15 (int state)
+{
+	switch(state)
+	{
+	case 0:
+        putValue(eZAS_Kl_15S, 0);
+		break;
+	
+    default:
+        putValue(eZAS_Kl_15S, 1);
+		break;
+	}
+}
+/*@@end*/
+
+/*@@timer:MoveMfl_timer:*/
+on timer MoveMfl_timer
+{
+    int WaitShort = 1000;
+
+	switch(MoveMfl_state)
+	{
+	case 1: 
+        putValue(eKeyMenuState,1);
+        MoveMfl_cycle = WaitShort;
+        break;
+    case 2: 
+        putValue(eKeyMenuState,0);
+        MoveMfl_cycle = WaitShort;
+        break;
+	case 3: 
+        putValue(eKeyMenuUpState,1);
+        MoveMfl_cycle = WaitShort;
+        break;
+    case 4: 
+        putValue(eKeyMenuUpState,0);
+        MoveMfl_cycle = WaitShort;
+        break;
+	case 5: 
+        putValue(eKeyMenuDownState,1);
+        MoveMfl_cycle = WaitShort;
+        break;
+   	case 6: 
+        putValue(eKeyMenuDownState,0);
+        MoveMfl_cycle = WaitShort;
+        break;
+   	case 7: 
+        putValue(eKeyUpState,1);
+        MoveMfl_cycle = WaitShort;
+        break;
+    case 8: 
+        putValue(eKeyUpState,0);
+        MoveMfl_cycle = WaitShort;
+        break;
+	case 9: 
+        putValue(eKeyDownState,1);
+        MoveMfl_cycle = WaitShort;
+        break;
+    case 10: 
+        putValue(eKeyDownState,0);
+        MoveMfl_cycle = WaitShort;
+        break;
+    default:
+        //MoveMfl_state = -1; /* with this line
+        MoveMfl_state = 0; /* with this line
+        ** the number of states must not be configured */
+        break;
+	}
+   
+    MoveMfl_state ++;
+    setTimer(MoveMfl_timer, MoveMfl_cycle);
+    //write("IntTest: MoveMfl_state = %d", MoveMfl_state);
+}
+/*@@end*/
+
+/*@@caplFunc:VoltageCurves(int):*///function
+VoltageCurves (int state)
+{
+	switch(state)
+	{
+	case 0:
+        /* @TO BE DONE
+        ** set Kl30-voltage to 12V using VoltControl.dll
+        ** (in the VoltControl-GUI: predefined action = voltage mode)
+        ** see path: \\bbuv040a\did35226\VW_TOOLS\DeviceControl */ 
+		break;
+	
+    default:
+        /* @TO BE DONE
+        ** apply different voltage curves to Kl30 using VoltControl.dll
+        ** (in the VoltControl-GUI: predefined action = automatic mode)
+        ** see path: \\bbuv040a\did35226\VW_TOOLS\DeviceControl */ 
+		break;
+	}
+}
+/*@@end*/
+
+/*@@caplFunc:MoveMfl(int):*///function
+MoveMfl (int state)
+{
+	switch(state)
+	{
+	case 0:
+        
+        cancelTimer(MoveMfl_timer);
+        // set all MFLs to off
+		putValue(eKeyMenuState,0);
+        putValue(eKeyUpState,0);
+		putValue(eKeyDownState,0);
+		putValue(eKeyMenuUpState,0);
+		putValue(eKeyMenuDownState,0);
+		break;
+	
+    default:
+        MoveMfl_state = 0;
+        setTimer(MoveMfl_timer, 1000); 
+		break;
+	}
+}
+/*@@end*/
+
+/*@@caplFunc:SweepPointer(int):*///function
+SweepPointer (int state)
+{
+	switch(state)
+	{
+	case 0:
+        canceltimer(SweepPointer_timer);
+        putvalue(eMO_AnzeigedrehzS,0);
+        putvalue(eSpeed,0);
+        putvalue(eMO_Kuehlmittel_TempS,0);
+        break;
+	
+    default:
+        canceltimer(SweepPointer_timer);
+        
+        // For Tachometer
+        putvalue(eMO_AnzeigedrehzS,0);
+		Drehzahl_ud=-1000;
+		
+        // For Speedometer
+        putvalue(eSpeed,0);
+        Speedo_steps = -5;
+
+        // For Temperature
+        putvalue(eMO_Kuehlmittel_TempS,0);
+        Temp_steps = 35;
+
+        setTimer(SweepPointer_timer,1000);
+        break;
+	}
+}
+/*@@end*/
+
+/*@@key:'2':*/
+on key '2'
+{
+    if (getValue(eInputSelection) == 1)
+    {    
+        putValue(eTestStates, 2);
+    }
+}
+/*@@end*/
+
+/*@@key:'3':*/
+on key '3'
+{
+    if (getValue(eInputSelection) == 1)
+    {    
+        putValue(eTestStates, 3);
+    }
+}
+/*@@end*/
+
+/*@@key:'4':*/
+on key '4'
+{
+    if (getValue(eInputSelection) == 1)
+    {    
+        putValue(eTestStates, 4);
+    }
+}
+/*@@end*/
+
+/*@@key:'5':*/
+on key '5'
+{
+    if (getValue(eInputSelection) == 1)
+    {    
+        putValue(eTestStates, 5);
+    }
+}
+/*@@end*/
+
+/*@@key:'6':*/
+on key '6'
+{
+    if (getValue(eInputSelection) == 1)
+    {    
+        putValue(eTestStates, 6);
+    }
+}
+/*@@end*/
+
+/*@@key:'7':*/
+on key '7'
+{
+    if (getValue(eInputSelection) == 1)
+    {    
+        putValue(eTestStates, 7);
+    }
+}
+/*@@end*/
+
+/*@@key:'8':*/
+on key '8'
+{
+    if (getValue(eInputSelection) == 1)
+    {    
+        putValue(eTestStates, 8);
+    }
+}
+/*@@end*/
+
+/*@@key:'9':*/
+on key '9'
+{
+    if (getValue(eInputSelection) == 1)
+    {    
+        putValue(eTestStates, 9);
+    }
+}
+/*@@end*/
+
+/*@@envVar:eInputSelection:*/
+on envVar eInputSelection
+{
+    switch(getValue(This))
+	{
+	
+    case 0: // OFF
+        StopAllTimedFunctions();
+        StartAutoTest(0);
+        putvalue(eTestStates,0);
+        break;
+	
+    case 1: // Manual mode
+        StopAllTimedFunctions();
+        StartAutoTest(0);
+        break;
+       
+	case 2: // Automatic mode
+        StopAllTimedFunctions();
+        StartAutoTest(1);
+        break;
+    
+    default:
+        break;
+	}
+}
+/*@@end*/
+
+/*@@timer:AutoTest_timer:*/
+on timer AutoTest_timer
+{
+    switch(AutoTest_State)
+    {
+    
+    case 1:
+        putvalue(eTestStates,1);
+        break;
+    case 2:
+        putvalue(eTestStates,2);
+        break;
+    case 3:
+        putvalue(eTestStates,3);
+        break;
+    case 4:
+        putvalue(eTestStates,4);
+        break;
+    case 5:
+        putvalue(eTestStates,5);
+        break;
+    case 6:
+        putvalue(eTestStates,6);
+        break;
+    case 7:
+        putvalue(eTestStates,7);
+        break;
+    case 8:
+        putvalue(eTestStates,8);
+        break;
+    case 9:
+        putvalue(eTestStates,9);
+        break;
+    case 10:
+        putvalue(eTestStates,10);
+        break;
+    case 11:
+        putvalue(eTestStates,11);
+        break;
+    case 12:
+        putvalue(eTestStates,12);
+        break;
+    
+    default:
+        // do same action like in the first case
+        // and reset state variable
+        putvalue(eTestStates,1);
+        AutoTest_State = 0;
+        break;
+     
+    }  
+
+    AutoTest_State++;
+    settimer(AutoTest_timer,AutoTest_cycle);
+}
+/*@@end*/
+
+/*@@caplFunc:StopAllTimedFunctions():*///function
+StopAllTimedFunctions ()
+{
+    SwitchCanLoad(0);
+    ToggleKl15(0);
+}
+/*@@end*/
+
+/*@@caplFunc:StartAutoTest(int):*///function
+StartAutoTest(int state)
+{
+	switch(state)
+	{
+	case 0:
+        cancelTimer(AutoTest_timer);
+		break;
+	
+    case 1:
+        setTimer(AutoTest_timer, 1); 
+		break;
+
+    default:
+        break;
+	}
+}
+/*@@end*/
+
+/*@@timer:SweepPointer_timer:*/
+on timer SweepPointer_timer
+{
+    // Code re-used from Tacho Sweep function in MOTOR_AB2_ver41.cnp
+	long Drehzahl;
+    long Speedo_val;
+    long Temp_val;	
+
+   
+	//Otto - Diesel - Abfrage neu starten
+	//if(getValue(EnvMFN_Verbrenn_Typ) == 0)
+	//	{Otto_Diesel = 6000;}
+	//else
+		Otto_Diesel = 8000;
+
+    setTimer(SweepPointer_timer,2000);
+    
+    // Sweep Tachometer
+    Drehzahl=getvalue(eMO_AnzeigedrehzS);
+    if(Drehzahl<=0 || Drehzahl >= Otto_Diesel)
+    {
+        Drehzahl_ud=-Drehzahl_ud;
+    }
+    putvalue(eMO_AnzeigedrehzS,Drehzahl+Drehzahl_ud);
+
+    // Sweep Speedo
+    Speedo_val = getvalue(eSpeed);
+    if(Speedo_val <=0 || Speedo_val >= Speedo_max)
+    {
+		Speedo_steps=-Speedo_steps;
+    }
+    
+    putvalue(eSpeed,Speedo_val+Speedo_steps);
+    
+    
+    
+    // Sweep Temp
+    Temp_val = getvalue(eMO_Kuehlmittel_TempS);
+    if(Temp_val <=Temp_min || Temp_val >= Temp_max)
+	{
+        Temp_steps=-Temp_steps;
+    }
+    
+    if (Temp_val+Temp_steps > Temp_max)
+    {
+        putvalue(eMO_Kuehlmittel_TempS,Temp_max);
+    }
+    else
+    {    
+        putvalue(eMO_Kuehlmittel_TempS,Temp_val+Temp_steps);
+    }
+    
+
+}
+/*@@end*/
+
+/*@@caplFunc:SwitchCanLoad(int):*///function
+SwitchCanLoad (int state)
+{
+	switch(state)
+	{
+	case 0:
+        SwitchAllWarnings(0);
+		break;
+	
+    default:
+		break;
+	}
+    MoveMfl(state); 
+    ToggleWarnings(state);
+    SweepPointer(state);
+}
+/*@@end*/
+
+/*@@caplFunc:SwitchNmh(int):*///function
+SwitchNmh (int state)
+{
+/*	switch(state)
+	{
+	case 0:
+        putvalue(SIM_Weckleitung, 0);
+ 		break;
+	default:
+        putvalue(SIM_Weckleitung, 1);
+		break;
+	}*/
+}
+/*@@end*/
+
+/*@@startStart:Start:*/
+/*@@end*/
+
+/*@@caplFunc:SetWarnings(int):*///function
+SetWarnings (int warning_index)
+{
+    switch (warning_index)
+    {
+        case 0:
+            putValue (eLV_Standlicht_AnzeigeS, 1);
+            break;
+        case 1:
+            putValue (eLV_Abblendlicht_AnzeigeS, 1);
+            break;     
+        case 2:
+            putValue (eLV_Fernlicht_AnzeigeS, 1);
+            break;   
+        case 3:
+            putValue (eLV_Nebellicht_AnzeigeS, 1);
+            break;   
+        case 4:
+            putValue (eLV_Nebelschlusslicht_AnzeigeS, 1);
+            break;   
+        case 5:
+            putValue (eLV_Tagfahrlicht_AnzeigeS, 1);
+            break;  
+        case 6:
+            putValue (eLV_AFL_aktiv_AnzeigeS, 1);
+            break;
+        case 7:
+            putValue (eLV_AFL_defektS, 1);
+            break;
+        case 8:
+            putValue (eLV_Blinker_li_defS, 1);
+            break;
+        case 9:
+            putValue (eLV_Blinker_re_defS, 1);
+            break;
+        case 10:
+            putValue (eLV_Standlicht_li_defS, 1);
+            break;
+        case 11:
+            putValue (eLV_Standlicht_re_defS, 1);
+            break;
+        case 12:
+            putValue (eLV_Abblendlicht_li_defS, 1);
+            break;
+        case 13:
+            putValue (eLV_Abblendlicht_re_defS, 1);
+            break;
+        case 14:
+            putValue (eLV_Fernlicht_li_defS, 1);
+            break;
+        case 15:
+            putValue (eLV_Fernlicht_re_defS, 1);
+            break;
+        case 16:
+            putValue (eLV_Nebellicht_li_defS, 1);
+            break;
+        case 17:
+            putValue (eLV_Nebellicht_re_defS, 1);
+            break;
+        case 18:
+            putValue (eLV_Blk_li_Seite_defS, 1);
+            break;
+        case 19:
+            putValue (eLV_Blk_re_Seite_defS, 1);
+            break;
+        case 20:
+            putValue (eLV_Tagfahrlicht_li_defS, 1);
+            break;
+        case 21:
+            putValue (eLV_Tagfahrlicht_re_defS, 1);
+            break;
+        case 22:
+            putValue (eLV_Abblendlicht_TFL_li_defS, 1);
+            break;
+        case 23:
+            putValue (eLV_Abblendlicht_TFL_re_defS, 1);
+            break;
+        case 24:
+            putValue (eLV_Nebellicht_TFL_li_defS, 1);
+            break;
+        case 25:
+            putValue (eLV_Nebellicht_TFL_re_defS, 1);
+            break;
+        case 26:
+            putValue (eLV_Standlicht_li_defS, 1);
+            break;
+        case 27:
+            putValue (eLV_Standlicht_re_defS, 1);
+            break;
+        case 28:
+            putValue (eLV_Abblend_Fernlicht_li_defS, 1);
+            break;
+        case 29:
+            putValue (eLV_Abblend_Fernlicht_re_defS, 1);
+            break;
+        case 30:
+            putValue (eLH_Blinker_li_defS, 1);
+            break;
+        case 31:
+            putValue (eLH_Blinker_re_defS, 1);
+            break;
+        case 32:
+            putValue (eLH_Schlusslicht_li_defS, 1);
+            break;
+        case 33:
+            putValue (eLH_Schlusslicht_re_defS, 1);
+            break;
+        case 34:
+            putValue (eBlinken_li_Kombi_TaktS, 1);
+            break;
+        case 35:
+            putValue (eBlinken_re_Kombi_TaktS, 1);
+            break;
+        case 36:
+            putValue (eAAG_Blinker_H_aktivS, 1);
+            break;
+        case 37:
+            putValue (eLH_Rueckf_li_defS, 1);
+            break;
+        case 38:
+            putValue (eLH_Rueckf_re_defS, 1);
+            break;
+        case 39:
+            putValue (eLH_Nebel_li_defS, 1);
+            break;
+        case 40:
+            putValue (eLH_Nebel_re_defS, 1);
+            break;
+        case 41:
+            putValue (eLH_Schluss_Brems_li_defS, 1);
+            break;
+        case 42:
+            putValue (eLH_Schluss_Brems_re_defS, 1);
+            break;
+        case 43:
+            putValue (eLH_Schluss_Brems_Nebel_li_defS, 1);
+            break;
+        case 44:
+            putValue (eLH_Schluss_Brems_Nebel_re_defS, 1);
+            break;
+        case 45:
+            putValue (eLH_Schluss_Nebel_li_defS, 1);
+            break;
+        case 46:
+            putValue (eLH_Schluss_Nebel_re_defS, 1);
+            break;
+        case 47:
+            putValue (eLH_SL_BRL_BLK_li_defS, 1);
+            break;
+        case 48:
+            putValue (eLH_SL_BRL_BLK_re_defS, 1);
+            break;
+        case 49:
+            putValue (eLH_Brems_Blk_li_defS, 1);
+            break;
+        case 50:
+            putValue (eLH_Brems_Blk_re_defS, 1);
+            break;
+        case 51:
+            putValue (eAAG_Blinker_HL_defS, 1);
+            break;
+        case 52:
+            putValue (eAAG_Blinker_HR_defS, 1);
+            break;
+        case 53:
+            putValue (eAAG_Schlusslicht_HL_defS, 1);
+            break;
+        case 54:
+            putValue (eAAG_Schlusslicht_HR_defS, 1);
+            break;
+        case 55:
+            putValue (eAFS_LampeS, 1);
+            break;
+        case 56:
+            putValue (eLWR_LampeS, 1);
+            break;
+        case 57:
+            putValue (eAFS_LED_BlinkmodeS, 1);
+            break;
+        case 58:
+            putValue (eLV_FLA_aktiv_AnzeigeS, 1);
+            break;
+        case 59:
+            putValue (eLV_FLA_defektS, 1);
+            break;
+        case 60:
+            putValue (eLV_FLA_Sensor_blockiertS, 1);
+            break;
+        case 61:
+            putValue (eLV_Aussenlicht_defS, 1);
+            break;
+        case 62:
+            putValue (eLH_Aussenlicht_defS, 1);
+            break;
+        case 63:
+            putValue (eLH_Kennzl_defS, 1);
+            break;
+        case 64:
+            putValue (eLH_3_Bremsl_defS, 1);
+            break;
+        case 65:
+            putValue (eLH_Nebel_mi_defS, 1);
+            break;
+        case 66:
+            putValue (eLH_Rueckf_mi_defS, 1);
+            break;
+        case 67:
+            putValue (eBCM1_Licht_WarnS, 1);
+            break;
+        case 68:
+            putValue (eBCM_Waschwasser_SensorS, 1);
+            break;
+    }
+}
+/*@@end*/
+
+/*@@caplFunc:ClearWarnings(int):*///function
+ClearWarnings (int warning_index)
+{
+    switch (warning_index)
+    {
+        case 0:
+            putValue (eLV_Standlicht_AnzeigeS, 0);
+            break;
+        case 1:
+            putValue (eLV_Abblendlicht_AnzeigeS, 0);
+            break;     
+        case 2:
+            putValue (eLV_Fernlicht_AnzeigeS, 0);
+            break;   
+        case 3:
+            putValue (eLV_Nebellicht_AnzeigeS, 0);
+            break;   
+        case 4:
+            putValue (eLV_Nebelschlusslicht_AnzeigeS, 0);
+            break;   
+        case 5:
+            putValue (eLV_Tagfahrlicht_AnzeigeS, 0);
+            break;  
+        case 6:
+            putValue (eLV_AFL_aktiv_AnzeigeS, 0);
+            break;
+        case 7:
+            putValue (eLV_AFL_defektS, 0);
+            break;
+        case 8:
+            putValue (eLV_Blinker_li_defS, 0);
+            break;
+        case 9:
+            putValue (eLV_Blinker_re_defS, 0);
+            break;
+        case 10:
+            putValue (eLV_Standlicht_li_defS, 0);
+            break;
+        case 11:
+            putValue (eLV_Standlicht_re_defS, 0);
+            break;
+        case 12:
+            putValue (eLV_Abblendlicht_li_defS, 0);
+            break;
+        case 13:
+            putValue (eLV_Abblendlicht_re_defS, 0);
+            break;
+        case 14:
+            putValue (eLV_Fernlicht_li_defS, 0);
+            break;
+        case 15:
+            putValue (eLV_Fernlicht_re_defS, 0);
+            break;
+        case 16:
+            putValue (eLV_Nebellicht_li_defS, 0);
+            break;
+        case 17:
+            putValue (eLV_Nebellicht_re_defS, 0);
+            break;
+        case 18:
+            putValue (eLV_Blk_li_Seite_defS, 0);
+            break;
+        case 19:
+            putValue (eLV_Blk_re_Seite_defS, 0);
+            break;
+        case 20:
+            putValue (eLV_Tagfahrlicht_li_defS, 0);
+            break;
+        case 21:
+            putValue (eLV_Tagfahrlicht_re_defS, 0);
+            break;
+        case 22:
+            putValue (eLV_Abblendlicht_TFL_li_defS, 0);
+            break;
+        case 23:
+            putValue (eLV_Abblendlicht_TFL_re_defS, 0);
+            break;
+        case 24:
+            putValue (eLV_Nebellicht_TFL_li_defS, 0);
+            break;
+        case 25:
+            putValue (eLV_Nebellicht_TFL_re_defS, 0);
+            break;
+        case 26:
+            putValue (eLV_Standlicht_li_defS, 0);
+            break;
+        case 27:
+            putValue (eLV_Standlicht_re_defS, 0);
+            break;
+        case 28:
+            putValue (eLV_Abblend_Fernlicht_li_defS, 0);
+            break;
+        case 29:
+            putValue (eLV_Abblend_Fernlicht_re_defS, 0);
+            break;
+        case 30:
+            putValue (eLH_Blinker_li_defS, 0);
+            break;
+        case 31:
+            putValue (eLH_Blinker_re_defS, 0);
+            break;
+        case 32:
+            putValue (eLH_Schlusslicht_li_defS, 0);
+            break;
+        case 33:
+            putValue (eLH_Schlusslicht_re_defS, 0);
+            break;
+        case 34:
+            putValue (eBlinken_li_Kombi_TaktS, 0);
+            break;
+        case 35:
+            putValue (eBlinken_re_Kombi_TaktS, 0);
+            break;
+        case 36:
+            putValue (eAAG_Blinker_H_aktivS, 0);
+            break;
+        case 37:
+            putValue (eLH_Rueckf_li_defS, 0);
+            break;
+        case 38:
+            putValue (eLH_Rueckf_re_defS, 0);
+            break;
+        case 39:
+            putValue (eLH_Nebel_li_defS, 0);
+            break;
+        case 40:
+            putValue (eLH_Nebel_re_defS, 0);
+            break;
+        case 41:
+            putValue (eLH_Schluss_Brems_li_defS, 0);
+            break;
+        case 42:
+            putValue (eLH_Schluss_Brems_re_defS, 0);
+            break;
+        case 43:
+            putValue (eLH_Schluss_Brems_Nebel_li_defS, 0);
+            break;
+        case 44:
+            putValue (eLH_Schluss_Brems_Nebel_re_defS, 0);
+            break;
+        case 45:
+            putValue (eLH_Schluss_Nebel_li_defS, 0);
+            break;
+        case 46:
+            putValue (eLH_Schluss_Nebel_re_defS, 0);
+            break;
+        case 47:
+            putValue (eLH_SL_BRL_BLK_li_defS, 0);
+            break;
+        case 48:
+            putValue (eLH_SL_BRL_BLK_re_defS, 0);
+            break;
+        case 49:
+            putValue (eLH_Brems_Blk_li_defS, 0);
+            break;
+        case 50:
+            putValue (eLH_Brems_Blk_re_defS, 0);
+            break;
+        case 51:
+            putValue (eAAG_Blinker_HL_defS, 0);
+            break;
+        case 52:
+            putValue (eAAG_Blinker_HR_defS, 0);
+            break;
+        case 53:
+            putValue (eAAG_Schlusslicht_HL_defS, 0);
+            break;
+        case 54:
+            putValue (eAAG_Schlusslicht_HR_defS, 0);
+            break;
+        case 55:
+            putValue (eAFS_LampeS, 0);
+            break;
+        case 56:
+            putValue (eLWR_LampeS, 0);
+            break;
+        case 57:
+            putValue (eAFS_LED_BlinkmodeS, 0);
+            break;
+        case 58:
+            putValue (eLV_FLA_aktiv_AnzeigeS, 0);
+            break;
+        case 59:
+            putValue (eLV_FLA_defektS, 0);
+            break;
+        case 60:
+            putValue (eLV_FLA_Sensor_blockiertS, 0);
+            break;
+        case 61:
+            putValue (eLV_Aussenlicht_defS, 0);
+            break;
+        case 62:
+            putValue (eLH_Aussenlicht_defS, 0);
+            break;
+        case 63:
+            putValue (eLH_Kennzl_defS, 0);
+            break;
+        case 64:
+            putValue (eLH_3_Bremsl_defS, 0);
+            break;
+        case 65:
+            putValue (eLH_Nebel_mi_defS, 0);
+            break;
+        case 66:
+            putValue (eLH_Rueckf_mi_defS, 0);
+            break;
+        case 67:
+            putValue (eBCM1_Licht_WarnS, 0);
+            break;
+        case 68:
+            putValue (eBCM_Waschwasser_SensorS, 0);
+            break;
+    }
+}
+/*@@end*/
+
+/*@@key:'1':*/
+on key '1'
+{
+    if (getValue(eInputSelection) == 1)
+    {    
+        putValue(eTestStates, 1);
+    }
+}
+/*@@end*/
+
+/*@@key:'a':*/
+on key 'a'
+{
+    if (getValue(eInputSelection) == 1)
+    {    
+        putValue(eTestStates, 10);
+    }
+}
+/*@@end*/
+
+/*@@key:'b':*/
+on key 'b'
+{
+    if (getValue(eInputSelection) == 1)
+    {    
+        putValue(eTestStates, 11);
+    }
+}
+/*@@end*/
+
+/*@@key:'c':*/
+on key 'c'
+{
+    if (getValue(eInputSelection) == 1)
+    {    
+        putValue(eTestStates, 12);
+    }
+}
+/*@@end*/
+

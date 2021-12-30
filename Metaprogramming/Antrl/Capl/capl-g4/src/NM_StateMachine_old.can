@@ -1,0 +1,1817 @@
+/*@!Encoding:1252*/
+includes
+{
+  #include "UdpIPv6Handling.cin"
+  #include "Encoding.cin"
+}
+
+variables
+{
+    // TODO: Zugriff auf Timer in RBS_Send incl. Timerroutine
+    msTimer tNMH_TxMsg;
+    const dword  NMH_TxMsgCycleTime = 200;
+
+    msTimer t_BAPTxMsg;
+    const dword  BAPTxMsgCycleTime = 3000;
+
+    msTimer t_ICMPMsg;
+    dword  ICMPMsgTime = 1000;
+    long gICMP_SendCnt = 0; // sent counter
+    long gICMP_RecvCnt = 0; // rcv counter
+    long gICMP_LostCnt = 0; // lost counter
+    long gICMP_cnt = 0;    // counter for number of consecutive Ping-requests
+    msTimer tPing_Timeout;
+
+    // TODO: RX-Best?tigung von RBS_Send
+    const dword NMH_RxID=0x9b; /* NMH_Kombi */
+
+    //Zustaende Automat NMHigh
+    const byte NMH_StatePowerOn = 0;
+    const byte NMH_StateStart = 1;
+    const byte NMH_StateReadyToSleep = 2;
+    const byte NMH_StateNormal = 3;
+    const byte NMH_StatePrepareToSleep = 4;
+    const byte NMH_StateSleep = 5;
+
+    // Werte NM_Gateway_NM_State
+    const byte NM_RM_aus_BSM  = 1; /* Zustand Repeat Message (<= Bus-Sleep Mode) */
+    const byte NM_RM_aus_PBSM = 2; /* Zustand Repeat Message (<=Prepare Bus-Sleep Mode) */
+    const Byte NM_NO_aus_RM   = 4; /* Zustand Normal Operation (<=Repeat Message) */
+    const byte NM_NO_aus_RS   = 8; /* Zustand Normal Operation (<=Ready Sleep) */
+
+    msTimer tNMH_TTimeout;
+    msTimer tNMH_TWaitBusSleep;
+
+    byte    StartCnt;
+
+    //Parameter NMHig
+    const dword TTimeout = 1000;
+    const dword TWaitBusSleep = 750;
+    const dword TMaxRequest = 5000;
+
+    const byte  nStart = 20;
+
+    byte NMH_Selected_State = 0;
+
+    //Ethernet Configuration
+    dword gUdpSocketHandle = 0;
+
+
+    dword gServerUdpAddress = 0; // Init in "on preStart"
+    dword gServerUdpPort = 42557;
+    char gRxBuffer[1472]; // Max. UDP payload without fragmentation
+    long gResult;
+    char gErrorText[200];
+
+    //ipv6
+    //const byte ipv6_enable = 1;
+    const dword IPV6_STR_SIZE = 40; // IPv6 string size
+
+    char ipv6SourceAddrStr[IPV6_STR_SIZE] = "fd53:7cb8:383:5::10";//"FD53:7CB8:383:5::73";//fe80::b1a0:9103:1645:37e4
+    char ipv6SourceAddrStr2[IPV6_STR_SIZE] = "fd53:7cb8:383:5::73";//"FD53:7CB8:383:5::73";//fe80::b1a0:9103:1645:37e4
+
+    char ipv6DestAddrStr[IPV6_STR_SIZE]   = "ff14::5";
+
+    byte ipv6SourceAddr[16];              // IPv6 address bytes.
+
+    byte ipv6DestAddr[16];
+  // IPv6 address bytes.
+    dword ipv6SourceUdpPort = 0xA7F2;//42994;
+    dword ipv6DestinationUdpPort = 0xA63D;//42557;
+
+    long packetHandle;
+    char error[100];
+
+    char gICMP_DstMac[6] = {0,0,0,0,0,0};
+
+    char gSignalData[256];
+
+    struct stPduHead
+    {
+      byte PduID[4];
+      byte PduLen[4];
+      byte PduData[256];
+
+    } tstPduHead[8];
+
+    struct stBAPPduHead
+    {
+      byte PduID[4];
+      byte PduLen[4];
+      byte PduData[256];
+
+    } tstBAPPduHead[8];
+
+    word NM_PduReadOffset =0;
+    word NM_PduWriteOffset = 0;
+
+    word BAP_PduReadOffset =0;
+    word BAP_PduWriteOffset = 0;
+
+    byte gBAP_Send_State;
+
+    byte ICMP_abSrcIP[16];
+    byte ICMP_abDstIP[16];
+	
+	byte UDP_abSrcIP[16];
+    byte UDP_abDstIP[16];
+
+    byte ICMP_abSrcIP_Rcv[16];
+    byte ICMP_abDstIP_Rcv[16];
+	
+	byte UDP_abSrcIP_Rcv[16];
+    byte UDP_abDstIP_Rcv[16];
+
+    byte boPingOnProcess = 0;
+    byte boWaitForReply = 0;  // flag to indicate that we are waiting for ping reply
+    dword gTTL_Start;
+    char kPanelName[32] = "ParallelTest";
+
+    byte ipv6MainUnit2[16]; //ipv6 ::76
+    msTimer tLinkStatus;
+
+    dword file_handle;
+    char  date[30];
+    long  local_tm [9];
+    dword boResumeLog = 0;
+
+    char sActiveReplay[32];
+    byte bVideoPlaying;
+}
+
+on sysvar_update ETHPing::Ping_Duration
+{
+    if( @ETHPing::Ping_Duration )
+        ICMPMsgTime = @ETHPing::Ping_Duration;
+    else
+        ICMPMsgTime = 1000;
+}
+
+/// <Ethernet_Packet>
+void Ethernet_UDP4()
+{
+    long packetHandle;
+
+    // create packet
+    packetHandle = EthInitPacket("ipv4");
+
+    // init UDP protocol
+    EthInitProtocol(packetHandle, "udp" );
+
+    // set protocol fields
+    EthSetTokenInt( packetHandle, "ipv4", "source", 0xC0A80001 ); // 192.168.0.1
+    EthSetTokenInt( packetHandle, "ipv4", "destination", 0xFFFFFFFF ); // 255.255.255.255
+    EthSetTokenInt( packetHandle, "udp", "source", 23 );
+    EthSetTokenInt( packetHandle, "udp", "destination", 23 );
+
+    // set UDP payload
+    EthResizeToken( packetHandle, "udp", "data", 5*8 /*bits*/ );
+    EthSetTokenData( packetHandle, "udp", "data", 5, "Hello" );
+
+    // Complete and send packet
+    EthCompletePacket( packetHandle );
+    EthOutputPacket( packetHandle );
+
+    // release packet
+    EthReleasePacket( packetHandle );
+}
+
+
+
+on envVar ENV_NMHControllerNodeAwake
+{
+    if(( @ENV_NMHControllerNodeAwake == 1 ) && ( @ENV_UDPNM_CouplewithCANNM == 1 ))
+    {
+        @ENV_UDPNMHControllerNodeAwake = 1;
+    }
+    else if(( @ENV_NMHControllerNodeAwake == 0 )&& ( @ENV_UDPNM_CouplewithCANNM == 1 ))
+    {
+        @ENV_UDPNMHControllerNodeAwake = 0;
+    }
+}
+
+/// <Ethernet_Packet>
+void Ethernet_UDP4_2()
+{
+    LONG packetHandle;
+    CHAR error[100];
+
+    // create packet
+    packetHandle = EthInitPacket("udp");
+
+    if( EthGetLastError() == 0 )
+    {
+      // set protocol fields
+      EthSetTokenInt( packetHandle, "ipv4", "source", 0xC0A80002 ); // 192.168.0.2
+      EthSetTokenInt( packetHandle, "ipv4", "destination", 0xFFFFFFFF ); // 255.255.255.255
+      EthSetTokenInt( packetHandle, "udp", "source", 23 );
+      EthSetTokenInt( packetHandle, "udp", "destination", 23 );
+
+      // set UDP payload
+      EthResizeToken( packetHandle, "udp", "data", 5*8 /*bits*/ );
+      EthSetTokenData( packetHandle, "udp", "data", 5, "Hello" );
+
+      // Complete and send packet
+      EthCompletePacket( packetHandle );
+      EthOutputPacket( packetHandle );
+
+      // release packet
+      EthReleasePacket( packetHandle );
+    }
+    else
+    {
+      EthGetLastErrorText( elCount(error), error );
+      write("Error: %s", error );
+    }
+
+}
+
+/// <Ethernet_Packet>
+void Ethernet_DHCP_AddToken()
+{
+    LONG packetHandle;
+    BYTE snameSize = 64;
+    BYTE fileSize = 128;
+    BYTE data[4];
+
+    // create packet
+    packetHandle = EthInitPacket( "ipv4" );
+
+    // init dhcpv4 protocol
+    EthInitProtocol( packetHandle, "dhcpv4" );
+
+    // add tokens
+    EthAddToken( packetHandle, "dhcpv4", "serverName" );
+    EthAddToken( packetHandle, "dhcpv4", "file" );
+    EthAddToken( packetHandle, "dhcpv4", "magicCookie" );
+    EthAddToken(packetHandle, "dhcpv4", "option53" ) ;
+    EthAddToken( packetHandle, "dhcpv4", "option55" ) ;
+    EthAddToken( packetHandle, "dhcpv4", "option50" ) ;
+    EthAddToken( packetHandle, "dhcpv4", "option0" ) ;
+
+    // set value of option 53
+    data[0] = 3;
+    EthSetTokenData( packetHandle, "dhcpv4", "option55.data", 1, data );
+
+    // set IP address of option 55
+    data[0] = 10;
+    data[1] = 15;
+    data[2] = 16;
+    data[3] = 17;
+    EthSetTokenData( packetHandle, "dhcpv4", "option50.data", 4, data );
+
+    // complete and send packet
+    EthCompletePacket( packetHandle );
+    EthOutputPacket( packetHandle );
+
+    // remove a token
+    EthRemoveToken( packetHandle, "dhcpv4", "option50" ) ;
+
+    // complete and send packet again
+    EthCompletePacket( packetHandle );
+    EthOutputPacket( packetHandle );
+
+    // release packet
+    EthReleasePacket( packetHandle );
+
+}
+
+on preStart
+{
+    char buf[40];
+	byte i;
+    const dword IPV6_STR_SIZE = 40;   // IPv6 string size
+    char ipv6AddrStr[IPV6_STR_SIZE];  // an IPv6Addr string buffer
+
+    gServerUdpAddress = ipGetAddressAsNumber( "192.168.1.32" );
+    vConvertIPv6toArray( ipv6SourceAddrStr, ipv6SourceAddr );
+    vConvertIPv6toArray( ipv6DestAddrStr, ipv6DestAddr );
+    vConvertIPv6toArray( ipv6MainUnitStr, ipv6MainUnit );
+    vConvertIPv6toArray( ipv6KombiStr, ipv6Kombi );
+    vConvertIPv6toArray( ipv6NM_MulticastGrpStr, ipv6NM_MulticastGrp );
+    vConvertIPv6toArray( ipv6BAP_AudioMulticastGrpStr, ipv6BAP_AudioMulticastGrp );
+    vConvertIPv6toArray( ipv6BAP_MulticastGrpStr[0], ipv6BAP_MulticastGrp[0] );
+    vConvertIPv6toArray( ipv6BAP_MulticastGrpStr[1], ipv6BAP_MulticastGrp[1] );
+    vConvertIPv6toArray( ipv6BAP_MulticastGrpStr[2], ipv6BAP_MulticastGrp[2] );
+    vConvertIPv6toArray( ipv6BAP_MulticastGrpStr[3], ipv6BAP_MulticastGrp[3] );
+    vConvertIPv6toArray( ipv6BAP_MulticastGrpStr[4], ipv6BAP_MulticastGrp[4] );
+
+    InitIPV6data();
+
+    if( @ENV_NMHControllerNodeAwake == 1 )
+    {
+        @ENV_UDPNMHControllerNodeAwake = 1;
+    }
+    else if( @ENV_NMHControllerNodeAwake == 0 )
+    {
+        @ENV_UDPNMHControllerNodeAwake = 0;
+    }
+    @ETHPing::SendCount    = gICMP_SendCnt;
+    @ETHPing::ReceiveCount = gICMP_RecvCnt;
+    @ETHPing::LostCount    = gICMP_LostCnt;
+
+    bVideoPlaying = 0;
+	
+	// TODO: find a better place for that
+	// Prepare UDP_abSrcIP to hold IP address of a cluster
+	// for BVT test functionality, requiring NM message counter
+	sysGetVariableString( sysvar::ETHPing::DstIP, buf, elcount(buf) );
+	vConvertIPv6toArray(buf,UDP_abSrcIP);
+	
+	// Reset buffer
+	for( i = 0; i < elcount(buf) ;i++ ) 
+    {
+	    buf[i] =  0; 
+    }
+	
+	// Prepare UDP_abDstIP to hold multicast IP address 
+	// NM data is transmitted to by a cluster.
+	// Required for BVT test to implement NM message counter
+    sysGetVariableString( sysvar::ETHPing::MulticastNMMessageIPBVT, buf, elcount(buf) );
+    vConvertIPv6toArray(buf,UDP_abDstIP);
+}
+
+on timer tNMH_TxMsg
+{
+    if( getValue( ENV_UDPNMHStateMachineState ) == NMH_StateStart )
+    {
+        if( StartCnt )
+        {
+            StartCnt--;
+            if( StartCnt==0 )
+            { // State Start verlassen
+                if( getValue( ENV_UDPNMHControllerNodeAwake ))
+                { // Bus wach halten
+                    ChangeToNormal();
+                }
+                else
+                { // wir k?nnen uns schlafen legen
+                  // tTimeout wird retriggert bei Empfang von NMH Botschaften
+                  // bei Ablauf von tTimeout geht es nach PrepareToSleep
+                    if( getValue( ENV_UDPNMHMode ))
+                    {
+                        ChangeToReadyToSleep();
+                    }
+                }
+            }
+            else
+            { // weiter mit der Startphase
+                setTimer( tNMH_TxMsg, NMH_TxMsgCycleTime );
+                //SendNMHMessage();// NM-Nachricht senden
+                SendIPV6data();// NM-Nachricht senden
+                //putValue( eSendAtOnceNMH_Gateway, 1 ); // NM-Nachricht senden
+                //MR 53100 commented for FPK
+        //16Feb2012
+                //putValue( eSendAtOnceNMH_eCall, 1 ); // NM-Nachricht senden
+
+                cancelTimer( tNMH_TTimeout );
+
+                setTimer( tNMH_TTimeout, TTimeout );
+            }
+        }
+    }
+    else if( getValue( ENV_UDPNMHStateMachineState ) == NMH_StateNormal )
+    {
+        //SendNMHMessage();// NM-Nachricht senden
+        SendIPV6data();// NM-Nachricht senden
+        //putValue( eSendAtOnceNMH_Gateway, 1 ); // NM-Nachricht senden
+        //MR 53100 commented for FPK
+    //16Feb2012
+        //putValue( eSendAtOnceNMH_eCall, 1 ); // NM-Nachricht senden
+
+        setTimer( tNMH_TxMsg, NMH_TxMsgCycleTime );
+        cancelTimer( tNMH_TTimeout );
+        setTimer( tNMH_TTimeout, TTimeout );
+    }
+}
+
+on envVar ENV_UDPNMHStateMachineEnabled
+{ // NMHigh aktivieren/ deaktivieren
+    if( getValue( this ) == 1 )
+    {
+        putValue( ENV_UDPSendNMH_Gateway, 0 );
+        //MR 53100 commented for FPK
+    //16Feb2012
+        //putValue( eUDPSendNMH_eCall, 0 );
+        putValue( ON_OFF_FSG50_0, 1 );
+        if( getValue( ENV_UDPNMHStateMachineState ) == NMH_StatePowerOn )
+        { // NMH ist noch anzuschalten
+            ChangeToStart();
+        }
+    }
+    else
+    {
+        SwitchNMHighOff();
+        putValue( ON_OFF_FSG50_0, 0 );
+        @ETHPing::VideoPlayReplayblock_ETH1 = 0;
+        @ETHPing::Send = 0;
+    }
+}
+
+on envVar ENV_UDPNMHControllerNodeAwake
+{
+  if( getValue( ENV_UDPNMHStateMachineEnabled ) == 1 ) // NMH freigegeben?
+  {
+    // Status eines aktivierten NMHigh zwischen Sleep und Awake umschalten
+    if( getValue( this ))
+    { // Bus wach halten
+        switch( getValue( ENV_UDPNMHStateMachineState ))
+        {
+        case NMH_StateReadyToSleep:
+            // NMH wieder senden -> nach Normal wechseln
+            ChangeToNormal();
+            break;
+        case NMH_StateStart:
+            // Normal wird automatisch nach Ablauf der Startphase eingenommen
+            break;
+        case NMH_StatePrepareToSleep:
+        case NMH_StateSleep:
+            // Startphase einleiten
+            ChangeToStart();
+            break;
+        }
+    }
+    else
+    { // schlafbereit
+        switch( getValue( ENV_UDPNMHStateMachineState ))
+        {
+        case NMH_StateNormal:
+            // NMH nicht mehr senden
+            ChangeToReadyToSleep();
+            break;
+        case NMH_StateStart:
+            // Normal wird automatisch nach Ablauf der Startphase eingenommen
+            break;
+        }
+    }
+  }
+  else // NMH disabled
+  {
+    // putValue( eUDPNMHStateMachineState, NMH_StateNormal );
+  }
+}
+
+/// <NM>
+void AllMsgStop ()
+{ // Stoppen des Versendens alle Nachrichten
+  // Hier die Funktionen eintragen, die das Senden aller Appl.-Botschaften abschalten
+    putValue( ENV_UDPSendEnabled, 0 );
+}
+
+/// <NM>
+void AllMsgRun ()
+{ // Starten des Versendens aller Nachrichten
+
+   // Hier die Funktionen eintragen, die das Senden aller Appl.-Botschaften wieder starten
+   //if(@PlayReplayblock==0) // @RV only if Replayblock is off
+    putValue( ENV_UDPSendEnabled, 1 );
+}
+
+on ethernetPacket Ethernet.*  //@RV
+{
+ //ZJ: Only change to start if confirmed it is a UDP NM message, or else ignore it, Moved to UDP receive event
+
+//    if( getValue( eUDPNMHStateMachineEnabled ))
+//    {
+//        if( getValue( eUDPNMHStateMachineState ) == NMH_StateSleep)
+//        { // bei Empfang beliebiger Botschaft nach State Start wechseln
+//            ChangeToStart();
+//        }
+//    }
+//  //   write("Ethernet packet received...\r");
+
+    dword ipHeaderLength, ipPayloadLength;
+    byte ipProtocol, ipTTL;
+    byte icmpType;
+    byte i;
+    byte cmpResult;
+    byte cmpResult2;
+    byte cmpResult3;
+    int result;
+    char buf[40], sPrintbuf[255];
+	char memcmpResult;
+	dword counterIncrement;
+
+    //Type Ethertype byte 12-13 , 16-17 if with VLAN
+    switch( this.type )
+    {
+        case 0x0800: // IPv4
+                      break;
+
+
+        case 0x86DD: // IPv6
+
+                     // Type Ethertype byte 12-13 , 16-17 if with VLAN
+                     ipHeaderLength = (this.Byte(0) & 0x0F) * 4;
+                     ipPayloadLength = this.Byte(5);
+                     ipProtocol = this.Byte(6); //byte 0 = 14, + 6 = byte 20
+                     ipTTL = this.Byte(7);
+					 
+                     switch(ipProtocol)
+                     {
+					     case 17: //UDP = 17
+                                  // Read source IPv6 address from header
+								  for( i = 0; i < 16 ;i++ )
+                                  {
+                                      UDP_abSrcIP_Rcv[i] =  this.Byte( 8 + i );
+                                  }
+								  
+								  // Read destination IPv6 address from header
+                                  for( i = 0; i < 16 ;i++ )
+                                  {
+                                      UDP_abDstIP_Rcv[i] =  this.Byte( 24 + i );
+                                  }
+								  
+								  // Message counter will only be incremented if:
+								  // 1. Source IP address matches the IP address of a cluster
+								  // 2. Destination IP address matches multicast IP address used by cluster to send NM data
+								  memcmpResult = memcmp(UDP_abSrcIP, UDP_abSrcIP_Rcv, 16);
+								  memcmpResult |= memcmp(UDP_abDstIP, UDP_abDstIP_Rcv, 16);
+
+								  if( memcmpResult == 0 )
+								  {
+								      counterIncrement = getValue(ENV_UDPNM_Message_Counter_BVT) + 1;
+									  if( counterIncrement > 65535 )
+									  {
+									      counterIncrement = 1;
+									  }
+									  
+								      // Increment message counter.
+									  // Required for BVT test
+								      putValue(ENV_UDPNM_Message_Counter_BVT, counterIncrement);
+								  }
+                         case 58: //ICMP = 58
+                                  // byte(x) Message data byte (unsigned 8 bit); Offset 0 is the byte directly after the Ethertype.
+                                  icmpType = this.Byte(40); //byte 0 = 14, + 40 = byte 54
+                                  //    write("<%BASE_FILE_NAME%>[ICMP] Received ICMP Message of type: %d",icmpType);
+                                  for( i = 0; i < 16 ;i++ )
+                                  {
+                                      ICMP_abSrcIP_Rcv[i] =  this.Byte(  8 + i );
+                                  }
+                                  for( i = 0; i < 16 ;i++ )
+                                  {
+                                      ICMP_abDstIP_Rcv[i] =  this.Byte( 24 + i );
+                                  }
+
+                                  cmpResult = u8IPv6Compare(ICMP_abSrcIP_Rcv,ipv6MainUnit); //source = own?
+                                  cmpResult2 = u8IPv6Compare(ICMP_abDstIP_Rcv,ipv6MainUnit);// dst = own ? this message is to me
+              //                    if( cmpResult2 == 0 ) //not a loop back packet
+                                  {
+
+                                      if( icmpType == 128 ) //128 = echo request, 129 = echo reply
+                                      {
+    //                                      write("<%BASE_FILE_NAME%>[ICMP] Received ICMP Message request type: %d",icmpType);
+                                          //   Ethernet_ReplyICMP6( this, ICMP_abSrcIP_Rcv, ICMP_abDstIP_Rcv );
+
+                                      }
+                                      else if(icmpType == 129) //128 = echo request, 129 = echo reply
+                                      {
+    //                                      write("<%BASE_FILE_NAME%>[ICMP] Received ICMP Message Reply type: %d",icmpType);
+                                          sysgetVariableString( sysvar::ETHPing::DstIP, buf, elcount(buf) );
+
+                                          gICMP_RecvCnt++;
+                                          cancelTimer( tPing_Timeout );
+                                          boWaitForReply = 0;
+                                          @ETHPing::LEDPingError = 0;
+
+                                          snprintf(sPrintbuf, elcount(sPrintbuf),"[ETH01] Reply from %s: bytes=%d TTL= %d.\n", buf, (ipPayloadLength - 8), ipTTL);
+                                          putValueToControl( kPanelName, "PingOutput", sPrintbuf);
+                                      }
+
+                                      else if( icmpType == 136 ) //128 = Neighbor Advertisement, we need dst MAC here
+                                      {
+                                           // ethGetMacAddressAsString(this.source,gICMP_DstMac,6);
+                                           gICMP_DstMac[0] = (this.source & 0x0000000000ff);
+                                           gICMP_DstMac[1] = (this.source>>8) & 0x0000000000ff;
+                                           gICMP_DstMac[2] = (this.source>>16) & 0x0000000000ff;
+                                           gICMP_DstMac[3] = (this.source>>24) & 0x0000000000ff;
+                                           gICMP_DstMac[4] = (this.source>>32) & 0x0000000000ff;
+                                           gICMP_DstMac[5] = (this.source>>40) & 0x0000000000ff;
+
+   //                                        write("<%BASE_FILE_NAME%>[NDP]MAC at 136 is %s",gICMP_DstMac);
+                                           if( boPingOnProcess )
+                                           {
+                                               gICMP_cnt = 1;
+                                               settimer( t_ICMPMsg, 1 );
+                                           }
+                                      }
+                                  }
+                                  break;
+                     }
+                     break;
+    }
+}
+
+void NDP_Send_Request()
+{
+    char buf[40];
+
+    sysGetVariableString( sysvar::ETHPing::SrcIP, buf, elcount(buf) );
+    vConvertIPv6toArray( buf,ICMP_abSrcIP);
+
+    sysGetVariableString( sysvar::ETHPing::DstIP, buf, elcount(buf) );
+    vConvertIPv6toArray( buf,ICMP_abDstIP);
+
+    Ethernet_RequestNDP( ICMP_abSrcIP, ICMP_abDstIP );
+}
+
+void ICMPv6_Send_PingRequest()
+{
+    char buf[40];
+    word wTime;
+
+    sysGetVariableString( sysvar::ETHPing::SrcIP, buf, elcount(buf) );
+    vConvertIPv6toArray( buf, ICMP_abSrcIP );
+
+    sysGetVariableString( sysvar::ETHPing::DstIP, buf, elcount(buf) );
+    vConvertIPv6toArray( buf, ICMP_abDstIP );
+
+    Ethernet_RequestICMP6( ICMP_abSrcIP, ICMP_abDstIP );
+    
+    if( ( ICMPMsgTime - 5 ) > 0 )
+        wTime = ICMPMsgTime - 5; // set timeout to be 5 msec before next Ping is send
+    setTimer( tPing_Timeout, wTime );
+ //   write(" set Ping_Timeout to %d", wTime );
+}
+
+on timer tPing_Timeout
+{
+
+    gICMP_LostCnt++;
+    @ETHPing::LEDPingError = 1;
+    boWaitForReply = 0;
+    putValueToControl( kPanelName, "PingOutput", "[ETH01] Request timed out. \n");
+    @ETHPing::LostCount    = gICMP_LostCnt;
+    ExportLogFile(0);
+  //  write(" Ping_Timeout-timer elapsed" );
+    if( boPingOnProcess )
+        setTimer( tPing_Timeout, ICMPMsgTime );
+  putValue(ENV_ETHPingSendCnt, gICMP_SendCnt);
+  putValue(ENV_ETHPingRecvCnt, gICMP_RecvCnt);
+  putValue(ENV_ETHPingLostCnt, gICMP_LostCnt);
+  @ETHPing::SendCount    = gICMP_SendCnt;
+  @ETHPing::ReceiveCount = gICMP_RecvCnt;
+  @ETHPing::LostCount    = gICMP_LostCnt;
+}
+        
+/**
+on message NMH_Kombi
+{
+    if( getValue( eUDPNMHStateMachineEnabled ))
+    {
+       // retrigger tTimeout bei Empfang von NMH Botschaft
+       cancelTimer( tNMH_TTimeout );
+       setTimer( tNMH_TTimeout, TTimeout );
+
+       if( getValue( eUDPNMHStateMachineState ) == NMH_StatePrepareToSleep)
+       { // NMH Botschaft empfangen
+           ChangeToStart();
+       }
+    }
+}
+**/
+on timer tNMH_TTimeout
+{
+    if( getValue(ENV_UDPNMHMode))
+    {
+        if( getValue( ENV_UDPNMHStateMachineState ) == NMH_StateReadyToSleep)
+        {
+            ChangeToPrepareToSleep();
+        }
+    }
+}
+
+/// <NM>
+void ChangeToStart()
+{ // Wechsel in den Zustand Start
+    switch( getValue( ENV_UDPNMHStateMachineState ))
+    {
+    case NMH_StateReadyToSleep:
+        cancelTimer( tNMH_TWaitBusSleep );
+        putValue( ENV_UDPNM_Gateway_NM_StateS, NM_RM_aus_PBSM ); // Zustand Start (<--Prepare to Sleep)
+        break;
+    default:
+        putValue( ENV_UDPNM_Gateway_NM_StateS, NM_RM_aus_BSM );  // Zustand Start (<--Sleep)
+        break;
+    }
+    SendIPV6data();
+    //putValue( eSendAtOnceNMH_Gateway, 1 ); // NM-Nachricht senden
+    //MR 53100 commented for FPK
+    //16Feb2012
+    //putValue( eSendAtOnceNMH_eCall, 1 ); // NM-Nachricht senden
+
+    StartCnt = nStart;
+    putValue( ENV_UDPNMHStateMachineState, NMH_StateStart );
+    setTimer( tNMH_TxMsg, NMH_TxMsgCycleTime );
+    cancelTimer( tNMH_TTimeout );
+
+    setTimer( tNMH_TTimeout, TTimeout );
+    AllMsgRun(); // alle Botschaften senden
+}
+
+/// <NM>
+void ChangeToPowerOn()
+{ // NMHigh wird angeschalten
+    SwitchNMHighOff();
+    ChangeToStart();
+}
+
+/// <NM>
+void SwitchNMHighOff ()
+{ // NMHigh wird abgeschalten
+    // alle Timer stoppen
+    cancelTimer( tNMH_TxMsg );
+    cancelTimer( tNMH_TTimeout );
+    cancelTimer( tNMH_TWaitBusSleep );
+    // alle Botschaften wieder senden
+    AllMsgRun();
+    putValue( ENV_UDPNMHStateMachineState, NMH_StatePowerOn );
+}
+
+on timer tNMH_TWaitBusSleep
+{
+    if( getValue(ENV_UDPNMHMode))
+    {
+        if( getValue( ENV_UDPNMHStateMachineState ) == NMH_StatePrepareToSleep)
+        {
+            putValue( ENV_UDPNMHStateMachineState, NMH_StateSleep );
+        }
+    }
+}
+
+/// <NM>
+void ChangeToPrepareToSleep ()
+{
+    AllMsgStop();
+    setTimer( tNMH_TWaitBusSleep, TWaitBusSleep );
+    putValue( ENV_UDPNMHStateMachineState, NMH_StatePrepareToSleep );
+}
+
+on sysvar BAP::BAPMulticast
+{
+   gBAP_Send_State = @this;
+}
+
+// Used by BVT
+on envVar ENV_ETHPingStartStop
+{
+    if( getValue(this) )
+    {
+        vStartPing();
+    }
+    else
+    {
+        vStopPing();
+    }
+}
+
+// Used by Simulation Panel
+on sysvar ETHPing::Send
+{
+    if( @this )
+    {
+        if( !boPingOnProcess )
+        {
+            vStartPing();
+        }
+    }
+    else
+    {
+        cancelTimer( t_ICMPMsg );
+        cancelTimer( tPing_Timeout );
+        vStopPing();
+    }
+}
+
+void vStartPing()
+{
+    char buf[40];
+    char buf2[40];
+
+    // ping start
+    boPingOnProcess = 1;
+
+    sysGetVariableString( sysvar::ETHPing::SrcIP, buf, elcount(buf) );
+    vConvertIPv6toArray(buf,ICMP_abSrcIP);
+
+    sysGetVariableString( sysvar::ETHPing::DstIP, buf2, elcount(buf) );
+    vConvertIPv6toArray(buf2,ICMP_abDstIP);
+
+    Ethernet_RequestNDP( ICMP_abSrcIP, ICMP_abDstIP );
+
+    // set timer for next ping request
+    ICMPMsgTime = @ETHPing::Ping_Duration;
+    gICMP_cnt = @sysvar::ETHPing::Ping_Count;
+
+    putValueToControl( kPanelName, "PingOutput", "[ETH01] Pinging cluster [ ");
+    putValueToControl( kPanelName, "PingOutput", buf2 );
+    putValueToControl( kPanelName, "PingOutput"," ] with 17 bytes of data: \r\n");
+
+    StartWriteLog();
+
+    filePutString ("[ETH01] Pinging cluster [", elCount("[ETH01] Pinging cluster ["), file_handle);
+    filePutString( buf2, elCount(buf2), file_handle );
+    filePutString( " ] with 17 bytes of data: \r\n", elCount(" ] with 17 bytes of data: \r\n"), file_handle );
+}
+
+void vStopPing()
+{
+    char buf[40];
+    char sPrint[255];
+    char sent_buf[10];
+    char received_buf[10];
+    char lost_buf[10];
+    char lossperc_buf[10];
+
+    dword Percent_result;
+
+    // ping stop
+    boPingOnProcess = 0;
+    if(boWaitForReply)
+    {
+        if( gICMP_SendCnt > 0 )
+            gICMP_SendCnt--;
+    }
+    boWaitForReply = 0;
+    cancelTimer( t_ICMPMsg);
+  //  cancelTimer( tPing_Timeout);
+
+    sysGetVariableString( sysvar::ETHPing::DstIP, buf, elcount(buf) );
+    vConvertIPv6toArray(buf,ICMP_abDstIP);
+
+  putValueToControl( kPanelName, "PingOutput", "[ETH01] Ping statistics for ");
+  putValueToControl( kPanelName, "PingOutput", buf );
+  putValueToControl( kPanelName, "PingOutput",": \n");
+
+    if( gICMP_SendCnt > 0 )
+        Percent_result = 100 * gICMP_LostCnt / gICMP_SendCnt;
+    else
+        Percent_result = 100;
+
+  snprintf(sPrint, elcount(sPrint),"[ETH01] Packets: Sent = %d, Received = %d, Lost = %d (%d %% loss).\n", gICMP_SendCnt, gICMP_RecvCnt, gICMP_LostCnt, Percent_result );
+  putValueToControl( kPanelName, "PingOutput", sPrint);
+
+  ltoa(gICMP_SendCnt, sent_buf, 10);
+  ltoa(gICMP_RecvCnt, received_buf, 10);
+  ltoa(gICMP_LostCnt, lost_buf, 10);
+  ltoa((Percent_result), lossperc_buf, 10);
+
+  ExportLogFile(2);
+  filePutString ("[ETH01] Packets: Sent = ", elCount("[ETH01] Packets: Sent = "), file_handle);
+  filePutString( sent_buf, elCount(sent_buf), file_handle );
+  filePutString( ", Received = ", elCount(", Received = "), file_handle );
+  filePutString( received_buf, elCount(received_buf), file_handle );
+  filePutString( ", Lost = ", elCount(", Lost = "), file_handle );
+  filePutString( lost_buf, elCount(lost_buf), file_handle );
+  filePutString( "(", elCount("("), file_handle );
+  filePutString( lossperc_buf, elCount(lossperc_buf), file_handle );
+  filePutString( "% loss)", elCount("% loss)"), file_handle );
+  StopWriteLog();
+
+  // save value to environment variable. will be used for BVT
+  putValue(ENV_ETHPingSendCnt, gICMP_SendCnt);
+  putValue(ENV_ETHPingRecvCnt, gICMP_RecvCnt);
+  putValue(ENV_ETHPingLostCnt, gICMP_LostCnt);
+  @ETHPing::SendCount    = gICMP_SendCnt;
+  @ETHPing::ReceiveCount = gICMP_RecvCnt;
+  @ETHPing::LostCount    = gICMP_LostCnt;
+
+  // reset counter
+  gICMP_SendCnt = 0;
+  gICMP_RecvCnt = 0;
+  gICMP_LostCnt = 0;
+}
+
+/// <NM>
+void ChangeToNormal ()
+{
+    switch( getValue( ENV_UDPNMHStateMachineState ))
+    {
+    case NMH_StateStart:
+        putValue( ENV_UDPNM_Gateway_NM_StateS, NM_NO_aus_RM ); // Zustand Normal Mode (<-- Start)
+        break;
+    case NMH_StateReadyToSleep:
+        putValue( ENV_UDPNM_Gateway_NM_StateS, NM_NO_aus_RS ); // Zustand Normal Mode (<-- Ready to Sleep)
+        break;
+    default:
+        putValue( ENV_UDPNM_Gateway_NM_StateS, 0 ); // Zur?cksetzen des Status
+    }
+    putValue( ENV_UDPNMHStateMachineState, NMH_StateNormal );
+    SendIPV6data();
+    //putValue( eSendAtOnceNMH_Gateway, 1 );
+    //MR 53100 commented for FPK
+    //16Feb2012
+    //putValue( eSendAtOnceNMH_eCall, 1 );
+    cancelTimer( tNMH_TxMsg );
+    setTimer( tNMH_TxMsg, NMH_TxMsgCycleTime );
+    cancelTimer( tNMH_TTimeout );
+    setTimer( tNMH_TTimeout, TTimeout );
+}
+
+/// <NM>
+void ChangeToReadyToSleep ()
+{
+    putValue( ENV_UDPNMHStateMachineState, NMH_StateReadyToSleep );
+    cancelTimer( tNMH_TxMsg );
+     //16Feb2012
+    if( getValue(ENV_UDPNMHMode))
+    {
+    putValue(ENV_UDPSendNMH_eCall,0);
+    putValue(ENV_UDPSendNMH_Gateway,0);
+    }
+
+    AllMsgRun(); // alle Botschaften senden
+}
+
+void StartWriteLog(void)
+{
+    //Date
+    getLocalTime(local_tm);
+    // now tm contains the following entries:
+    // tm[0] = 3; (seconds)
+    // tm[1] = 51; (minutes)
+    // tm[2] = 16; (hours)
+    // tm[3] = 21; (day of month)
+    // tm[4] = 7; (month stating with 0)
+    // tm[5] = 98; (year)
+    // tm[6] = 5; (weekday)
+    // tm[7] = 232;(day of year)
+    // tm[8] = 1; (Summer time)
+    //30.11.2017 13:00:20;Eth1;PING timeout
+    //writeToLogEx("%d.%d.%d %d:%d:%d;Eth1;PING timeout",tm[3],tm[4]+1,tm[5]+1900,tm[2],tm[1],tm[0]);
+    snprintf(date, elCount(date), "Logs\\\\PingTest_ETH01_%d-%d-%d.txt", local_tm[5]+1900, local_tm[4]+1,local_tm[3]);
+    putValueToControl( kPanelName, "PingOutput", date );
+    file_handle = openFileWrite( date, 2 );
+    //StopWriteLog();
+    //file_handle = openFileWrite( "Logs\\Test1.txt", 2 );
+
+    if( file_handle != 0 )
+    {
+        //12.12.2017 21:10:55;ETH01;PING timeout        
+        putValueToControl( kPanelName, "PingOutput", "[ETH01] File loading successful. \n" );           
+        filePutString( "DATE | TIME | Ethernet # | PING Timeout\n", elCount("DATE | TIME | Ethernet # | PING Timeout\n"), file_handle);
+        filePutString( "----------------------------------\n", elCount("----------------------------------\n"), file_handle);
+        if( !boResumeLog )
+        {
+            ExportLogFile(1);
+        }
+        else
+        {
+            boResumeLog = 0;
+        }
+    }
+    else
+    {
+        putValueToControl( kPanelName, "PingOutput", "[ETH01]File loading unsuccessful. \n");
+    }
+}
+
+void StopWriteLog(void)
+{
+    fileClose( file_handle );
+
+    if( CheckDate() )
+    {
+        boResumeLog = 1;
+        StartWriteLog();
+        StopWriteLog();
+    }
+}
+
+int CheckDate(void)
+{
+   /*** Checking whether the date is expired ***/
+    long tm [9];
+
+    getLocalTime(tm);
+  // now tm contains the following entries:
+  // tm[0] = 3; (seconds)
+  // tm[1] = 51; (minutes)
+  // tm[2] = 16; (hours)
+  // tm[3] = 21; (day of month)
+  // tm[4] = 7; (month stating with 0)
+  // tm[5] = 98; (year)
+  // tm[6] = 5; (weekday)
+  // tm[7] = 232;(day of year)
+  // tm[8] = 1; (Summer time)
+  //30.11.2017 13:00:20;Eth1;PING timeout
+  //writeToLogEx("%d.%d.%d %d:%d:%d;Eth1;PING timeout",tm[3],tm[4]+1,tm[5]+1900,tm[2],tm[1],tm[0]);
+  //snprintf(date, elCount(date), "Logs\\\\PingTest%d-%d-%d.txt", tm[5]+1900, tm[4]+1,tm[3]);
+
+  if( local_tm[5] == tm[5] && local_tm[4] == tm[4] && local_tm[3] == tm[3] )
+  {
+      return 0;
+  }else{
+      return 1;
+  }
+}
+void ExportLogFile(dword boInitLogFile)
+{
+  long tm [9];
+  char tm0_str[10];
+  char tm1_str[10];
+  char tm2_str[10];
+  char tm3_str[10];
+  char tm4_str[10];
+  char tm5_str[10];
+
+  getLocalTime(tm);
+  // now tm contains the following entries:
+  // tm[0] = 3; (seconds)
+  // tm[1] = 51; (minutes)
+  // tm[2] = 16; (hours)
+  // tm[3] = 21; (day of month)
+  // tm[4] = 7; (month stating with 0)
+  // tm[5] = 98; (year)
+  // tm[6] = 5; (weekday)
+  // tm[7] = 232;(day of year)
+  // tm[8] = 1; (Summer time)
+  //30.11.2017 13:00:20;Eth1;PING timeout
+  //writeToLogEx("%d.%d.%d %d:%d:%d;Eth1;PING timeout",tm[3],tm[4]+1,tm[5]+1900,tm[2],tm[1],tm[0]);
+
+  ltoa(tm[0], tm0_str, 10);
+  ltoa(tm[1], tm1_str, 10);
+  ltoa(tm[2], tm2_str, 10);
+  ltoa(tm[3], tm3_str, 10);
+  ltoa(tm[4]+1, tm4_str, 10);
+  ltoa(tm[5]+1900, tm5_str, 10);
+
+  StopWriteLog();
+  file_handle = openFileWrite (date, 2);
+  //filePutString ("%d.%d.%d %d:%d:%d;Eth1;PING timeout", elCount(tm[3])+elCount(tm[4])+elCount(tm[5]+1900)+elCount(tm[2])+elCount(tm[1])+elCount(tm[0]), file_handle);
+  filePutString (tm3_str, elCount(tm3_str) , file_handle);
+  filePutString (".", elCount(".") , file_handle);
+  filePutString (tm4_str, elCount(tm4_str) , file_handle);
+  filePutString (".", elCount(".") , file_handle);
+  filePutString (tm5_str, elCount(tm5_str) , file_handle);
+  filePutString (" ", elCount(" ") , file_handle);
+  filePutString (tm2_str, elCount(tm2_str) , file_handle);
+  filePutString (":", elCount(":") , file_handle);
+  filePutString (tm1_str, elCount(tm1_str) , file_handle);
+  filePutString (":", elCount(":") , file_handle);
+  filePutString (tm0_str, elCount(tm0_str) , file_handle);
+  if(!boInitLogFile){
+    filePutString (";ETH01;PING timeout", elCount(";ETH01;PING timeout") , file_handle);
+  }else if( boInitLogFile==1){
+    filePutString ("[ETH01] Starting PING test ... ", elCount("[ETH01] Starting PING test ... ") , file_handle);
+  }else if( boInitLogFile==2){
+    filePutString ("[ETH01] PING test is ended.", elCount("[ETH01] PING test is ended.") , file_handle);
+  }
+  filePutString ("\n", elCount("\n") , file_handle);
+
+}
+
+void ExportLogFileWithTimeString(void)
+{
+  /**
+    char timeBuffer[64];
+    getLocalTimeString(timeBuffer);
+    @ETHPing::LogFile = 1;
+    writeToLogEx("%s;Eth1;PING timeout, %d",timeBuffer,@ETHPing::LogFile);
+  **/
+  long tm [9];
+
+  getLocalTime(tm);
+  // now tm contains the following entries:
+  // tm[0] = 3; (seconds)
+  // tm[1] = 51; (minutes)
+  // tm[2] = 16; (hours)
+  // tm[3] = 21; (day of month)
+  // tm[4] = 7; (month stating with 0)
+  // tm[5] = 98; (year)
+  // tm[6] = 5; (weekday)
+  // tm[7] = 232;(day of year)
+  // tm[8] = 1; (Summer time)
+  //30.11.2017 13:00:20;Eth1;PING timeout
+  //writeToLogEx("%d.%d.%d %d:%d:%d;ETH01;PING timeout",tm[3],tm[4]+1,tm[5]+1900,tm[2],tm[1],tm[0]);
+}
+
+on start
+{
+    const dword STR_SIZE = 256; // string buffer size
+    char ifDescr[STR_SIZE];     // Interface description string.
+    dword ifIdx;                // interface index
+    long result;                // function result.
+    byte index;
+
+  //NM Multicast UDP socket
+    NM_vOpenIPv6MulticastUdpPort(ipv6MainUnit,ipv6NM_SrcPort,ipv6NM_MulticastGrp,ipv6NM_DstPort);
+
+    NM_vJoinIPv6MulticastGrp(ipv6NM_MulticastGrp,ipv6NM_DstPort);
+
+  //BAP Multicast UDP socket
+
+  /* ZJ: Disable Audio port and use VW release */
+ //  BAP_vOpenIPv6MulticastUdpPort(ipv6MainUnit,ipv6BAP_SrcPort,ipv6BAP_MulticastGrp[gnBapAudio],ipv6BAP_DstPort);
+    gUdpSocketHandleBAPStartIndex = 0; //start from index 1
+ // BAP_vOpenIPv6MulticastUdpPort(ipv6MainUnit,ipv6BAP_SrcPort,ipv6BAP_MulticastGrp[gnBapNav],ipv6BAP_DstPort);
+ // BAP_vOpenIPv6MulticastUdpPort(ipv6MainUnit,ipv6BAP_SrcPort,ipv6BAP_MulticastGrp[gnBapSDS],ipv6BAP_DstPort);
+    BAP_vOpenIPv6MulticastUdpPort(ipv6MainUnit,ipv6BAP_SrcPort,ipv6BAP_MulticastGrp[gnBapTelefon],ipv6BAP_DstPort);
+    BAP_vOpenIPv6MulticastUdpPort(ipv6MainUnit,ipv6BAP_SrcPort,ipv6BAP_MulticastGrp[gnBapTelefon2],ipv6BAP_DstPort);
+
+   /* ZJ: Disable Audio port and use VW release */
+  //  BAP_vJoinIPv6MulticastGrp(ipv6BAP_MulticastGrp[gnBapAudio],ipv6BAP_DstPort,gnBapAudio);
+ // BAP_vJoinIPv6MulticastGrp(ipv6BAP_MulticastGrp[gnBapNav],ipv6BAP_DstPort,gnBapNav);
+ //  BAP_vJoinIPv6MulticastGrp(ipv6BAP_MulticastGrp[gnBapSDS],ipv6BAP_DstPort,gnBapSDS);
+    BAP_vJoinIPv6MulticastGrp(ipv6BAP_MulticastGrp[gnBapTelefon],ipv6BAP_DstPort,gnBapTelefon);
+    BAP_vJoinIPv6MulticastGrp(ipv6BAP_MulticastGrp[gnBapTelefon2],ipv6BAP_DstPort,gnBapTelefon2);
+
+    setTimer( t_BAPTxMsg, BAPTxMsgCycleTime );
+
+    putValue( ENV_UDPNMHStateMachineState, NMH_StatePowerOn + 1 );
+    SwitchNMHighOff();
+
+    if( getValue( ENV_UDPNMHMode ))
+    {
+        enableControl ("UDP_NMHigh", "EnvVar:eUDPNMHState", 0);
+        enableControl ("UDP_NMHigh", "EnvVar:eUDPNMHControllerNodeAwake", 1);
+    }
+    else
+    {
+        enableControl ("UDP_NMHigh", "EnvVar:eUDPNMHState", 1);
+        enableControl ("UDP_NMHigh", "EnvVar:eUDPNMHControllerNodeAwake", 0);
+    }
+
+  for (ifIdx = 1; ifIdx <= IpGetAdapterCount(); ifIdx++)
+  {
+    result = IpGetAdapterDescription( ifIdx, ifDescr, elcount(ifDescr) );
+    if( result == 0 )
+    {
+      // success.
+//      write("IpGetAdapterDescription for adapter %d returned: %s", ifIdx, ifDescr);
+    }
+    else
+    {
+      writeLineEx(1, 3, "IpGetAdapterDescription: Error %d", result);
+    }
+  }
+
+    EthReceivePacket( "OnEthPacket" );
+
+    @ETHPing::LEDPingError = 0;
+    setTimer(tLinkStatus, 1000);    //check link status every second
+
+    @ETHPing::Send = 0;
+    @ETHPing::VideoPlayReplayblock_ETH1 = 0;
+}
+
+on timer t_ICMPMsg
+{
+    // check if we are still waiting for reply from previous ping
+    if( boWaitForReply )
+    {
+        // we are waiting for reply but did not receive it. Request time out.
+        gICMP_LostCnt++;
+        @ETHPing::LEDPingError = 1;
+
+        putValueToControl( kPanelName, "PingOutput", "[ETH01] Request timed out. \n");
+        ExportLogFile(0);
+    }
+    if( gICMP_cnt )
+    {
+        ICMPv6_Send_PingRequest();
+        setTimer( t_ICMPMsg, ICMPMsgTime ); // set timer for next ping request
+        setTimer( tPing_Timeout, ICMPMsgTime - 5 ); // set timer for next ping drop out detection
+        gICMP_cnt--;
+    }
+    else
+    {
+        setTimer( tPing_Timeout, ICMPMsgTime - 5 ); // set timer for next ping drop out detection
+        if( boPingOnProcess )
+            NDP_Send_Request();
+    }
+    /*** Parallel Test ***/
+    // Update Panel
+    putValue(ENV_ETHPingSendCnt, gICMP_SendCnt);
+    putValue(ENV_ETHPingRecvCnt, gICMP_RecvCnt);
+    putValue(ENV_ETHPingLostCnt, gICMP_LostCnt);
+    @ETHPing::SendCount    = gICMP_SendCnt;
+    @ETHPing::ReceiveCount = gICMP_RecvCnt;
+    @ETHPing::LostCount    = gICMP_LostCnt;
+}
+
+on timer t_BAPTxMsg
+{
+    if( gBAP_Send_State )
+    {
+      /* ZJ: Disable Audio port and use VW release */
+      /* BAP_u16SendIPv6BAPAudioMulticastCastMessage(BAP_PduMarshallingData); */
+        BAP_u16SendIPv6BAPNavMulticastCastMessage(BAP_PduMarshallingData);
+        BAP_u16SendIPv6BAPSDSMulticastCastMessage(BAP_PduMarshallingData);
+        BAP_u16SendIPv6BAPTelefonMulticastCastMessage(BAP_PduMarshallingData);
+        BAP_u16SendIPv6BAPTelefon2MulticastCastMessage(BAP_PduMarshallingData);
+    }
+  setTimer( t_BAPTxMsg, BAPTxMsgCycleTime );
+}
+
+on timer tLinkStatus
+{
+    if( ethGetLinkStatus(1) )
+    {
+        putValue(ENV_EthernetLEDLinkStatus,1);
+    }
+    else
+    {
+        putValue( ENV_EthernetLEDLinkStatus, 0 );
+    }
+    setTimer(tLinkStatus, 1000);
+}
+
+on EnvVar ENV_UDPNMHStateMachineState
+{
+    switch ( getValue( ENV_UDPNMHStateMachineState ))
+    {
+        case NMH_StatePowerOn        : putValue( ENV_UDPNMHStateMachineStateText, "PowerOn" ); break;
+        case NMH_StateStart          :
+    {
+        putValue( ENV_UDPNMHStateMachineStateText, "Start" );
+        putValue(ENV_UDPNMHState, NMH_StateStart);
+        putValue(ENV_UDPNMHLastState, NMH_StateStart);
+        break;
+    }
+    case NMH_StateReadyToSleep   :
+    {
+         putValue( ENV_UDPNMHStateMachineStateText, "ReadyToSleep" );
+         putValue(ENV_UDPNMHState, NMH_StateReadyToSleep);
+         putValue(ENV_UDPNMHLastState, NMH_StateReadyToSleep);
+         break;
+    }
+
+    case NMH_StateNormal         :
+    {
+         putValue( ENV_UDPNMHStateMachineStateText, "Normal" );
+         putValue(ENV_UDPNMHState, NMH_StateNormal);
+         putValue(ENV_UDPNMHLastState, NMH_StateNormal);
+
+         break;
+    }
+    case NMH_StatePrepareToSleep :
+    {
+        putValue( ENV_UDPNMHStateMachineStateText, "PrepareToSleep" );
+        putValue(ENV_UDPNMHState, NMH_StatePrepareToSleep);
+        putValue(ENV_UDPNMHLastState, NMH_StatePrepareToSleep);
+        break;
+    }
+    case NMH_StateSleep          :
+    {
+        putValue( ENV_UDPNMHStateMachineStateText, "Sleep" );
+        putValue(ENV_UDPNMHState, NMH_StateSleep);
+        putValue(ENV_UDPNMHLastState, NMH_StateSleep);
+        break;
+    }
+    default                      : putValue( ENV_UDPNMHStateMachineStateText, "!?!" ); break;
+  }
+}
+
+on envVar ENV_UDPNMHMode
+{
+    if( getValue(this))
+    {
+        enableControl ("UDP_NMHigh", "EnvVar:eUDPNMHState", 0);
+        enableControl ("UDP_NMHigh", "EnvVar:eUDPNMHControllerNodeAwake", 1);
+
+        if( getValue(ENV_UDPNMHControllerNodeAwake) == 1)
+        {
+            putValue(ENV_UDPNMHControllerNodeAwake, 1);
+        }
+        else
+        {
+            putValue(ENV_UDPNMHControllerNodeAwake, 0);
+        }
+    }
+    else
+    {
+        enableControl ("UDP_NMHigh", "EnvVar:eUDPNMHState", 1);
+        enableControl ("UDP_NMHigh", "EnvVar:eUDPNMHControllerNodeAwake", 0);
+    }
+}
+
+on envVar ENV_UDPNMHState
+{
+    NMH_Selected_State = getValue (this);
+
+    if( NMH_Selected_State != getValue(ENV_UDPNMHLastState ))
+    {
+        switch (NMH_Selected_State)
+        {
+            case NMH_StateStart:
+                ChangeToStart();
+                break;
+            case NMH_StateNormal:
+                ChangeToNormal();
+                break;
+            case NMH_StateReadyToSleep:
+                ChangeToReadyToSleep();
+                break;
+            case NMH_StatePrepareToSleep:
+                ChangeToPrepareToSleep();
+                break;
+            case NMH_StateSleep:
+                ChangeToSleep();
+                break;
+            default:
+                break;
+        }
+    }
+}
+
+/// <NM>
+void ChangeToSleep ()
+{
+    AllMsgStop();
+    putValue( ENV_UDPNMHStateMachineState, NMH_StateSleep );
+}
+
+//MR 53100
+on key End
+{
+    putValue(ENV_UDPNMHControllerNodeAwake,1);
+}
+
+on envVar ENV_UDPSendEnabled
+{
+  //if(@this)
+    //SendMessage(); Do nthg
+}
+
+on envVar ENV_UDPSendAtOnceNMH_Gateway
+{
+  //if(@this)
+    //SendNMHMessage();
+}
+
+/// <Communication>
+void OnEthPacket( LONG channel, LONG dir, LONG packetHandle2 )
+{
+//  write("Upd Pakcet received.\r");
+
+}
+
+/// <Communication>
+OnUdpReceiveFrom(dword socket, long result, byte ipv6Address[], dword port, char buffer[], dword size)
+{
+
+  if(port == ipv6NM_DstPort) //Only if it is msg from the UDPNM channel
+  {
+    if( getValue( ENV_UDPNMHStateMachineEnabled ))
+    {
+        if( getValue( ENV_UDPNMHStateMachineState ) == NMH_StateSleep)
+        { // bei Empfang beliebiger Botschaft nach State Start wechseln
+            ChangeToStart();
+            write("UDP NM packet received, Node will wake Up from sleep...\r");
+        }
+    }
+   }
+   vUdpReceiveInternal( socket,result,ipv6Address,buffer,size);
+}
+
+/// <Communication>
+void NM_vSetSignalSize(Long PkgHdl,long DLC)
+{
+   EthResizeToken( PkgHdl, "udp", "data", DLC*8 /*bits*/ );
+}
+
+/// <Communication>
+void NM_vConvertSignaltoByte(Long PkgHdl, long DLC, long ID, char acSignalData[])
+{
+    EthGetTokenData(packetHandle, "udp","data",DLC,acSignalData);
+}
+
+/// <Communication>
+NM_u8BuildNM_Info_EIData(char acSignalData[])
+{
+  int value;
+
+    NM_vClearPduSendBuff();
+    NM_vSetSignalSize(packetHandle,NM_Info_El.DLC);
+
+ //  value  = $NM_Info_El::NM_Info_El_SNI;
+
+    EthSetTokenSignalValue( packetHandle, NM_Info_El::NM_Info_El_SNI, 155 ); //9B
+    EthSetTokenSignalValue( packetHandle, NM_Info_El::NM_Info_El_Wakeup, 1);  //01
+
+    EthSetTokenSignalValue( packetHandle, NM_Info_El::NM_Info_El_NM_aktiv_KL15, 1); //0F->1
+    EthSetTokenSignalValue( packetHandle, NM_Info_El::NM_Info_El_NM_aktiv_Diagnose, 1); //0F->2
+    EthSetTokenSignalValue( packetHandle, NM_Info_El::NM_Info_El_NM_aktiv_Tmin, 1);//0F->4
+    EthSetTokenSignalValue( packetHandle, NM_Info_El::NM_Info_El_NM_aktiv_MIBCAN, 1 );//0F->8
+
+    EthSetTokenSignalValue( packetHandle, NM_Info_El::NM_Info_El_NL_MMI_ON, 1);//1F
+    EthSetTokenSignalValue( packetHandle, NM_Info_El::NM_Info_El_NL_ICAN, 1);
+    EthSetTokenSignalValue( packetHandle, NM_Info_El::NM_Info_El_NL_SWDL, 1 );
+    EthSetTokenSignalValue( packetHandle, NM_Info_El::NM_Info_El_NL_Dimmung, 1);
+    EthSetTokenSignalValue( packetHandle, NM_Info_El::NM_Info_El_NL_MMI_Standby, 1);
+
+    EthSetTokenSignalValue( packetHandle, NM_Info_El::NM_Info_El_UDS_CC, 1);//80
+
+    NM_vConvertSignaltoByte(packetHandle, NM_Info_El.DLC,NM_Info_El.id, acSignalData);
+
+    write("%s",gSignalData);
+}
+
+/// <Communication>
+NM_u8BuildKN_Info_EIData(char acSignalData[])
+{
+    NM_vClearPduSendBuff();
+
+    NM_vSetSignalSize(packetHandle,KN_Info_El.DLC);
+
+    EthSetTokenSignalValue( packetHandle, KN_Info_El::Info_El_KompSchutz, 1 ); //1
+    EthSetTokenSignalValue( packetHandle, KN_Info_El::Info_El_Abschaltstufe, 1);  //1
+    EthSetTokenSignalValue( packetHandle, KN_Info_El::Info_El_Transport_Mode, 1); //1
+    EthSetTokenSignalValue( packetHandle, KN_Info_El::Info_El_Nachlauftyp, 1); //4
+    EthSetTokenSignalValue( packetHandle, KN_Info_El::Info_El_SNI, 1);//8
+    EthSetTokenSignalValue( packetHandle, KN_Info_El::KN_Info_El_BusKnockOutTimer, 1 );//8
+
+    EthSetTokenSignalValue( packetHandle, KN_Info_El::KN_Info_El_DiagPfad, 1);//1
+    EthSetTokenSignalValue( packetHandle, KN_Info_El::Info_El_KD_Fehler, 1);//1
+
+    NM_vConvertSignaltoByte(packetHandle, KN_Info_El.DLC,KN_Info_El.id, acSignalData);
+
+    write("%s",gSignalData);
+}
+
+/// <Communication>
+void InitIPV6data()
+{
+  //LONG packetHandle;
+  //CHAR error[100];
+  //LONG len = 0;
+
+  char NM_PduData[256];
+  char BAP_PduData[256];
+  char c8Data[1];
+
+  // create packet
+  packetHandle = EthInitPacket("ipv6");
+
+  // init UDP protocol
+  EthInitProtocol(packetHandle, "udp" );
+
+  if( EthGetLastError() == 0)
+  {
+    // set protocol fields
+    EthSetTokenData( packetHandle, "ipv6", "source", 16, ipv6SourceAddr ); // 255.255.255.255
+    EthSetTokenData( packetHandle, "ipv6", "destination", 16, ipv6DestAddr ); // 255.255.255.255
+    EthSetTokenInt( packetHandle, "udp", "source", ipv6SourceUdpPort );
+    EthSetTokenInt( packetHandle, "udp", "destination", ipv6DestinationUdpPort );
+
+    // set UDP payload
+
+    NM_vClearPduSendBuff();
+
+    //PDU1
+    NM_u8BuildKN_Info_EIData(gSignalData);
+
+    NM_u16SetPduMarshallingUdp(KN_Info_El.DLC,KN_Info_El.id,gSignalData);    
+
+    //PDU2
+    NM_u8BuildNM_Info_EIData(gSignalData);
+
+    NM_u16SetPduMarshallingUdp(NM_Info_El.DLC,NM_Info_El.id,gSignalData);
+
+ #if 0   //Test PDU Area
+    /* JuZh, Test data arrya 3 - 4 has to be removed for real UdpNm msg */
+
+     /* Test data array 2 */
+    NM_u16SetPduMarshallingUdp(NM_Info_El.DLC,NM_Info_El.id,SignalData);
+
+    /* Test data array 3 */
+    memcpy(NM_PduData,"12345678",8);
+    NM_u16SetPduMarshallingUdp(8,0x10,NM_PduData);
+    /* Test data array 4 */
+
+    memcpy(NM_PduData,"ABCDEFGHIJILKMNO",16);
+    NM_u16SetPduMarshallingUdp(16,0x20,NM_PduData);
+#endif
+
+    // Complete and send packet
+    EthCompletePacket( packetHandle );
+    //EthOutputPacket( packetHandle );
+
+    // release packet
+    //EthReleasePacket( packetHandle );
+
+    memcpy_off(BAP_PduData,0,"A BAP Message. ",0,16);
+    BAP_u16SetPduMarshallingUdp(16,0x38003102,BAP_PduData);
+  }
+  else
+  {
+    EthGetLastErrorText( elCount(error), error );
+    write("Error: %s", error );
+  }
+}
+
+/// <Ethernet_Packet>
+void Ethernet_RequestNDP( byte srcIP[], byte dstIP[] )
+{
+    LONG packetHdl;
+    char buf[40];
+    byte srcmac[6] =   { 0x02,0x84,0xCF,0x3B,0xBE,0x02 };
+    byte dstmac[6] =   { 0x02,0x7d,0xfa,0x00,0x14,0x00 };
+    byte Bcastmc[6] =  { 0x33,0x33,0xff,0x00,0x00,0x14 };
+    byte PCmc[6] =     {0xEC,0x8E,0xB5,0x3C,0xBB,0x17}; //EC:8E:B5:3C:BB:17
+    char BCastDstIPStr[40] = "FF02:0:0:0:0:1:FF00:0000" ;
+    byte BCastDstIP[16];
+    char option0Code[1] =  0x1;
+    char option0Length[1] = 1;
+    char acDstIP[16];
+    char acSrcmac[6] = {0x20,0x54,0x15,0x1C,0x26,0x00};
+    byte hoplimit[1] = 255;
+
+    // create packet
+    packetHdl = EthInitPacket("ipv6");
+  /* If no packet type designator is used during initialization of the Packet API (EthInitPacket or EthInitProtocol),
+  the type 35 and the NDP header length of 8 byte are used
+  . Otherwise the ICMPv6 mode and the appropriate NDP header length are set.*/
+
+    // init ICMP6 protocol
+    EthInitProtocol( packetHdl, "ndp" );
+
+    EthAddToken( packetHdl, "eth", "vlanTpid" );
+    EthAddToken( packetHdl, "eth", "vlanTci" );
+
+    sysGetVariableString( sysvar::ETHPing::DstIP, buf, elcount(buf) );
+
+    vConvertIPv6toArray(buf,ICMP_abDstIP);
+    vConvertIPv6toArray(BCastDstIPStr,BCastDstIP);
+
+    memcpy(acDstIP,ICMP_abDstIP,16);
+
+    //RFC 4291 section 2.7.1
+    /*  A solicited-node multicast address is formed by taking the low-order 24 bits of an address (unicast or anycast)
+    and appending those bits to the prefix FF02:0:0:0:0:1:FF00::/104 resulting in a multicast address in the range */
+    /* 33 33 ff = IP6MCast_ff ,eg. + 24 bits of low order = 00 00 14*/
+    Bcastmc[3] = ICMP_abDstIP[13];
+    Bcastmc[4] = ICMP_abDstIP[14];
+    Bcastmc[5] = ICMP_abDstIP[15];
+
+    BCastDstIP[13] = ICMP_abDstIP[13];
+    BCastDstIP[14] = ICMP_abDstIP[14];
+    BCastDstIP[15] = ICMP_abDstIP[15];
+
+    if( EthGetLastError() == 0)
+    {
+        // set protocol fields
+        EthSetTokenData( packetHdl, "ipv6", "source", 16, srcIP ); // 255.255.255.255
+        EthSetTokenData( packetHdl, "ipv6", "destination", 16, ICMP_abDstIP ); // FF02:0:0:0:0:1:FF00:0000 + 24 bits low order
+
+        EthSetTokenInt( packetHdl, "eth", "vlantpid", 0x8100 );
+        EthSetTokenInt( packetHdl, "eth", "vlanTci", 0x0003 );
+    //  EthSetTokenData( packetHdl, "eth", "destination", 6,dstmac );
+        EthSetTokenData( packetHdl, "eth", "destination", 6,dstmac );//0x33,0x33,0xff,0x00,0x00,0x14 + 24 bits low order
+        EthSetTokenData( packetHdl, "eth", "source", 6, srcmac);
+
+        EthSetTokenData( packetHdl, "ipv6", "hopLimit", 1, hoplimit);
+
+        EthSetTokenInt( packetHdl, "icmpv6", "type", 135 ); //neighborSolicitation
+
+        EthSetTokenData(packetHdl,"ndp", "target", 16, acDstIP );
+
+        EthAddToken( packetHdl, "ndp", "option1" );
+
+   //   EthSetToken( packetHdl, "ndp", "option0_1" );
+        EthSetTokenData( packetHdl, "ndp", "option1", 1, option0Code );
+
+      //EthSetTokenData( packetHdl, "ndp", "option0_1.length", 1,option0Length );
+        EthSetTokenData( packetHdl, "ndp", "option1.data", 6, srcmac );
+
+     // EthResizeToken( packetHdl, "icmpv6", "data", 5*8 /*bits*/ );
+     // EthSetTokenData(packetHdl,"icmpv6","data",5,"Hello");
+
+        EthCompletePacket( packetHdl ); // Complete packet
+        EthOutputPacket( packetHdl );   // Send packet
+        EthReleasePacket( packetHdl ); // release packet
+    }
+    else
+    {
+        EthGetLastErrorText( elCount(error), error );
+        write("Error: %s", error );
+    }
+ //   write("ICMP Sent...");
+    sysgetVariableString( sysvar::ETHPing::DstIP, buf, elcount(buf) );
+}
+
+/// <Ethernet_Packet>
+void Ethernet_RequestICMP6( byte srcIP[], byte dstIP[] )
+{
+  LONG packetHdl;
+  char buf[40];
+  byte srcmac[6] =  {0x02,0x84,0xCF,0x3B,0xBE,0x01};
+  byte dstmac[6] =  {0x02,0x7d,0xfa,0x00,0x14,0x00};
+  byte Bcastmc[6] = {0x33,0x33,0xff,0x00,0x00,0x14}; //Solicited-node multicast address for "fd53:7cb8:383:5::14"
+  byte PCmc[6] =    {0xEC,0x8E,0xB5,0x3C,0xBB,0x17}; //EC:8E:B5:3C:BB:17
+
+//  sysGetVariableString( sysvar::ETHPing::DstIP, buf, elcount(buf) );
+//  vConvertIPv6toArray(buf,ICMP_abDstIP);
+//  //RFC 4291 section 2.7.1
+//  /*
+//  A solicited-node multicast address is formed by taking the low-order 24 bits of an address (unicast or anycast)
+//  and appending those bits to the prefix FF02:0:0:0:0:1:FF00::/104 resulting in a multicast address in the range
+//  */
+//  /* 33 33 ff = IP6MCast_ff ,eg. + 24 bits of low order = 00 00 14*/
+//  dstmac[3] = ICMP_abDstIP[13];
+//  dstmac[4] = ICMP_abDstIP[14];
+//  dstmac[5] = ICMP_abDstIP[15];
+
+    // create packet
+    packetHdl = EthInitPacket("ipv6");
+
+    // init ICMP6 protocol
+    EthInitProtocol( packetHdl, "icmpv6" );
+
+    EthAddToken( packetHdl, "eth", "vlanTpid" );
+    EthAddToken( packetHdl, "eth", "vlanTci" );
+    if( EthGetLastError() == 0 )
+    {
+        // set protocol fields
+        EthSetTokenData( packetHdl, "ipv6", "source", 16, srcIP ); // 255.255.255.255
+        EthSetTokenData( packetHdl, "ipv6", "destination", 16, dstIP ); // 255.255.255.255
+
+        EthSetTokenInt( packetHdl, "eth", "vlantpid", 0x8100 );
+        EthSetTokenInt( packetHdl, "eth", "vlanTci", 0x0003 );
+    //  EthSetTokenData( packetHdl, "eth", "destination", 6,dstmac );
+        EthSetTokenData( packetHdl, "eth", "destination", 6,dstmac );
+        EthSetTokenData( packetHdl, "eth", "source", 6, srcmac);
+
+
+        EthSetTokenInt( packetHdl, "icmpv6", "type", 128 ); //echo reply
+        EthSetTokenInt( packetHdl, "icmpv6", "code", 0 );
+
+        EthResizeToken( packetHdl, "icmpv6", "data", 17*8 /*bits*/ );
+        EthSetTokenData( packetHdl, "icmpv6", "data", 17, "Hello Continental" );
+
+        EthCompletePacket( packetHdl ); // Complete and send packet
+        EthOutputPacket( packetHdl );
+
+        EthReleasePacket( packetHdl ); // release packet
+    }
+    else
+    {
+      EthGetLastErrorText( elCount(error), error );
+      write("Error: %s", error );
+    }
+    boWaitForReply = 1;
+    gICMP_SendCnt++;
+ //   write("ICMP Sent... Ethernet_RequestICMP6 ");
+
+    sysgetVariableString( sysvar::ETHPing::DstIP, buf, elcount(buf) );
+}
+
+/// <Ethernet_Packet>
+void Ethernet_ReplyICMP6(ethernetPacket * pkt, byte srcIP[],byte dstIP[] )
+{
+    long packetHdl;
+    char error[100];
+    byte srcmac[6] = {0x20,0x54,0x15,0x1C,0x26,0x00};
+    byte dstmac[6] = {0x00,0x54,0xAF,0x86,0x02,0xF9};
+    byte Bcastmc[6] = {0x33,0x33,0xff,0x00,0x00,0x14};
+
+    packetHdl = EthInitPacket( "ipv6" );  // create packet
+    EthInitProtocol(packetHdl, "icmpv6" );  // init UDP protocol
+    if( EthGetLastError() == 0)
+    {
+        // set protocol fields
+      EthSetTokenData( packetHdl, "ipv6", "source", 16, dstIP ); // 255.255.255.255
+      EthSetTokenData( packetHdl, "ipv6", "destination", 16, srcIP  ); // 255.255.255.255
+
+      EthAddToken( packetHdl, "eth", "vlanTpid" );
+      EthAddToken( packetHdl, "eth", "vlanTci" );
+      EthSetTokenInt( packetHdl, "eth", "vlantpid", 0x8100 );
+      EthSetTokenInt( packetHdl, "eth", "vlanTci", 0x0005 );
+     // EthSetTokenData( packetHdl, "eth", "destination", 6,  dstmac);
+      EthSetTokenData( packetHdl, "eth", "destination", 6,  Bcastmc);
+      EthSetTokenData( packetHdl, "eth", "source", 6,srcmac );
+
+
+     // EthSetTokenInt( packetHdl, "udp", "source", 23 );
+     // EthSetTokenInt( packetHdl, "udp", "destination", 23 );
+     EthSetTokenInt( packetHdl, "icmpv6", "type", 129 );  //echo reply
+    EthSetTokenInt( packetHdl, "icmpv6", "code", 0 );
+
+      EthResizeToken( packetHdl, "icmpv6", "data", 5*8 /*bits*/ );
+      EthSetTokenData(packetHdl,"icmpv6","data",5,"Hello");
+
+      EthCompletePacket( packetHdl ); // Complete and send packet
+      EthOutputPacket( packetHdl );
+
+      EthReleasePacket( packetHdl ); // release packet
+    }
+    else
+    {
+      EthGetLastErrorText( elCount(error), error );
+      write("Error: %s", error );
+    }
+
+  write("<%BASE_FILE_NAME%> ICMP Sent Reply...");
+}
+
+/// <Ethernet_Packet>
+void Ethernet_UDP6()
+{
+    long packetHdl;
+    char ICMP_ipv6SourceAddrStr[IPV6_STR_SIZE] = "fd53:7cb8:383:5::10";//"FD53:7CB8:383:5::73";//fe80::b1a0:9103:1645:37e4
+    char ICMP_ipv6DestAddrStr[IPV6_STR_SIZE]   = "fd53:7cb8:383:5::14";
+    byte ICMP_ipv6SourceAddr[16];              // IPv6 address bytes.
+    byte ICMP_ipv6DestAddr[16];
+    char error[100];
+
+    vConvertIPv6toArray( ICMP_ipv6SourceAddrStr, ICMP_ipv6SourceAddr );
+    vConvertIPv6toArray( ICMP_ipv6DestAddrStr, ICMP_ipv6DestAddr );
+    packetHdl = EthInitPacket( "ipv6" ); // create packet
+    EthInitProtocol(packetHdl, "udp" ); // init UDP protocol
+    if( EthGetLastError() == 0 )
+    {
+        // set protocol fields
+        EthSetTokenData( packetHdl, "ipv6", "source", 16, ICMP_ipv6SourceAddr ); // 255.255.255.255
+        EthSetTokenData( packetHdl, "ipv6", "destination", 16, ICMP_ipv6DestAddr ); // 255.255.255.255
+        EthSetTokenInt( packetHdl, "udp", "source", 23 );
+        EthSetTokenInt( packetHdl, "udp", "destination", 23 );
+
+        EthResizeToken( packetHdl, "udp", "data", 5*8 /*bits*/ );
+        EthSetTokenData(packetHdl,"udp","data",5,"Hello");
+
+        EthCompletePacket( packetHdl ); // Complete and send packet
+        EthOutputPacket( packetHdl );
+
+        EthReleasePacket( packetHdl ); // release packet
+    }
+    else
+    {
+        EthGetLastErrorText( elCount(error), error );
+        write( "Error: %s", error );
+    }
+
+    write( "ICMP Sent..." );
+}
+
+/// <Communication>
+void SendIPV6data()
+{
+
+  /* Send to ff14::05 */
+    NM_u16SendIPv6NMMulticastCastMessage(NM_PduMarshallingData);
+
+  /* Send to simulation Test node */
+  //vSendNMHMessageIPv6Simulation(NM_PduMarshallingData);
+
+    putValue( ENV_UDPSendKombiSimulationNMMsg, 1 );
+}
+
+on sysvar ETHPing::VideoPlayReplayblock_ETH1
+{
+    if( @ETHPing::VideoPlayReplayblock_ETH1 == 1 )
+    {
+        if( getValue( ENV_UDPNMHStateMachineEnabled ))
+        {
+            if( ethGetLinkStatus(1) == 1 )
+            {
+                if( getValue( ENV_VideoType_Ch01 ) ) // 1: Stress, 0: visual inspection
+                {
+                    strncpy( sActiveReplay, "Tst_V_17MBit_Eth_01", elcount(sActiveReplay) );
+                }
+                else
+                {
+                    strncpy( sActiveReplay, "Jelly_03MBit_Eth_01", elcount(sActiveReplay) );
+                }
+                ReplayStart( sActiveReplay );
+                bVideoPlaying = 1;
+                write("Start Replayblock ! ");
+            }
+            else
+            {
+                @ETHPing::VideoPlayReplayblock_ETH1 = 0;
+                putValueToControl( kPanelName, "PingOutput","[ETH01] The link is down. \r\n");
+            }
+        }
+        else
+        {
+            ReplayStop( sActiveReplay );
+            bVideoPlaying = 0;
+            @ETHPing::VideoPlayReplayblock_ETH1 = 0;
+            putValueToControl( kPanelName, "PingOutput","[ETH01] Please switch on the UDPNM. \r\n");
+        }
+    }
+    else
+    {
+        ReplayStop( sActiveReplay );
+        bVideoPlaying = 0;
+    }
+}
+
+on envVar ENV_VideoType_Ch01
+{
+    if( bVideoPlaying )
+    {
+        ReplayStop( sActiveReplay );
+        if( getValue( this ) ) // 1: Stress, 0: visual inspection
+        {
+            strncpy( sActiveReplay, "Tst_V_17MBit_Eth_01", elcount(sActiveReplay) );
+        }
+        else
+        {
+            strncpy( sActiveReplay, "Jelly_03MBit_Eth_01", elcount(sActiveReplay) );
+        }
+        ReplayStart( sActiveReplay );
+    }
+}
+

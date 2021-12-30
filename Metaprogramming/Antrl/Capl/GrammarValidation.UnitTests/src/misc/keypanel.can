@@ -1,0 +1,371 @@
+/*@@var:*/
+variables
+{
+    message CAN1.MIB_MIBCAN_KMatrix_V707E_2011051::HID_BT_1_ZR_Req msg_keypanel;
+}
+/*@@end*/
+
+/*@@envVar:EnvReturn:*/
+on envVar EnvReturn
+{
+    if (@EnvReturn == 1)
+        msg_keypanel.HID_BT_1_ZR_Req_Data.phys = 0x10F3003;
+    else
+        msg_keypanel.HID_BT_1_ZR_Req_Data.phys = 0x00F3003;
+
+    output (msg_keypanel); 
+}
+/*@@end*/
+
+/*@@envVar:EnvDDS_links:*/
+on envVar EnvDDS_links
+{
+    if (@EnvDDS_links == 1)
+    {
+        msg_keypanel.HID_BT_1_ZR_Req_Data.phys = 0xFF024803;
+        output (msg_keypanel); 
+    }
+}
+/*@@end*/
+
+/*@@envVar:EnvDDS_rechts:*/
+on envVar EnvDDS_rechts
+{
+    if (@EnvDDS_rechts == 1)
+    {
+        msg_keypanel.HID_BT_1_ZR_Req_Data.phys = 0x01024803;
+        output (msg_keypanel); 
+    }
+}
+/*@@end*/
+
+/*@@envVar:EnvDDS_press:*/
+on envVar EnvDDS_press
+{
+    if (@EnvDDS_press == 1)
+        msg_keypanel.HID_BT_1_ZR_Req_Data.phys = 0x01013003;
+    else
+        msg_keypanel.HID_BT_1_ZR_Req_Data.phys = 0x00013003;
+
+    output (msg_keypanel);
+}
+/*@@end*/
+
+/*@@envVar:EnvPower_press:*/
+on envVar EnvPower_press
+{
+ 
+    if (@EnvPower_press == 1)
+        msg_keypanel.HID_BT_1_ZR_Req_Data.phys = 0x01383003;
+    else
+        msg_keypanel.HID_BT_1_ZR_Req_Data.phys = 0x00383003;
+
+    output (msg_keypanel);
+}
+/*@@end*/
+
+/*@@envVar:EnvPower_links:*/
+on envVar EnvPower_links
+{
+    if (@EnvPower_links == 1)
+    {
+        msg_keypanel.HID_BT_1_ZR_Req_Data.phys = 0xFF014803;
+        output (msg_keypanel);
+    }
+}
+/*@@end*/
+
+/*@@envVar:EnvPower_rechts:*/
+on envVar EnvPower_rechts
+{
+    if (@EnvPower_rechts == 1)
+    {
+        msg_keypanel.HID_BT_1_ZR_Req_Data.phys = 0x01014803;
+        output (msg_keypanel);
+        write("function called");
+    }
+}
+/*@@end*/
+
+/*@@envVar:EnvMedia:*/
+on envVar EnvMedia
+{
+    if (@EnvMedia == 1)
+        msg_keypanel.HID_BT_1_ZR_Req_Data.phys = 0x01023003;
+    else
+        msg_keypanel.HID_BT_1_ZR_Req_Data.phys = 0x00023003;
+
+    output (msg_keypanel);
+}
+/*@@end*/
+
+/*@@envVar:EnvName:*/
+on envVar EnvName
+{
+    if (@EnvName == 1)
+        msg_keypanel.HID_BT_1_ZR_Req_Data.phys = 0x01033003;
+    else
+        msg_keypanel.HID_BT_1_ZR_Req_Data.phys = 0x00033003;
+
+    output (msg_keypanel);
+}
+/*@@end*/
+
+/*@@envVar:EnvTel:*/
+on envVar EnvTel
+{
+    if (@EnvTel == 1)
+        msg_keypanel.HID_BT_1_ZR_Req_Data.phys = 0x01043003;
+
+
+
+    else
+        msg_keypanel.HID_BT_1_ZR_Req_Data.phys = 0x00043003;
+
+
+    output (msg_keypanel);
+}
+/*@@end*/
+
+/*@@envVar:EnvNav:*/
+on envVar EnvNav
+{
+    if (@EnvNav == 1)
+        msg_keypanel.HID_BT_1_ZR_Req_Data.phys = 0x01053003;
+    else
+        msg_keypanel.HID_BT_1_ZR_Req_Data.phys = 0x00053003;
+
+    output (msg_keypanel);
+}
+/*@@end*/
+
+/*@@envVar:EnvInfo:*/
+on envVar EnvInfo
+{
+    if (@EnvInfo == 1)
+        msg_keypanel.HID_BT_1_ZR_Req_Data.phys = 0x01063003;
+    else
+        msg_keypanel.HID_BT_1_ZR_Req_Data.phys = 0x00063003;
+
+    output (msg_keypanel);
+}
+/*@@end*/
+
+/*@@envVar:EnvCAR:*/
+on envVar EnvCAR
+{
+    if (@EnvCAR == 1)
+        msg_keypanel.HID_BT_1_ZR_Req_Data.phys = 0x01073003;
+    else
+        msg_keypanel.HID_BT_1_ZR_Req_Data.phys = 0x00073003;
+
+    output (msg_keypanel);
+}
+/*@@end*/
+
+/*@@envVar:EnvSetup:*/
+on envVar EnvSetup
+{
+    if (@EnvSetup == 1)
+        msg_keypanel.HID_BT_1_ZR_Req_Data.phys = 0x01083003;
+    else
+        msg_keypanel.HID_BT_1_ZR_Req_Data.phys = 0x00083003;
+
+    output (msg_keypanel);
+}
+/*@@end*/
+
+/*@@envVar:EnvRadio:*/
+on envVar EnvRadio
+{
+    if (@EnvRadio == 1)
+        msg_keypanel.HID_BT_1_ZR_Req_Data.phys = 0x01183003;
+    else
+        msg_keypanel.HID_BT_1_ZR_Req_Data.phys = 0x00183003;
+
+    output (msg_keypanel);
+}
+/*@@end*/
+
+/*@@envVar:EnvSK_NW:*/
+on envVar EnvSK_NW
+{
+    if (@EnvSK_NW == 1)
+        msg_keypanel.HID_BT_1_ZR_Req_Data.phys = 0x010A3003;
+    else
+        msg_keypanel.HID_BT_1_ZR_Req_Data.phys = 0x000A3003;
+
+    output (msg_keypanel);
+}
+/*@@end*/
+
+/*@@envVar:EnvSK_SW:*/
+on envVar EnvSK_SW
+{
+    if (@EnvSK_SW == 1)
+        msg_keypanel.HID_BT_1_ZR_Req_Data.phys = 0x010B3003;
+    else
+        msg_keypanel.HID_BT_1_ZR_Req_Data.phys = 0x000B3003;
+
+    output (msg_keypanel);
+}
+/*@@end*/
+
+/*@@envVar:EnvPfeil_links:*/
+on envVar EnvPfeil_links
+{
+    if (@EnvPfeil_links == 1)
+        msg_keypanel.HID_BT_1_ZR_Req_Data.phys = 0x010C3003;
+    else
+        msg_keypanel.HID_BT_1_ZR_Req_Data.phys = 0x000C3003;
+
+    output (msg_keypanel);
+}
+/*@@end*/
+
+/*@@envVar:EnvPfeil_rechts:*/
+on envVar EnvPfeil_rechts
+{
+    if (@EnvPfeil_rechts == 1)
+        msg_keypanel.HID_BT_1_ZR_Req_Data.phys = 0x01103003;
+    else
+        msg_keypanel.HID_BT_1_ZR_Req_Data.phys = 0x00103003;
+
+    output (msg_keypanel);
+}
+/*@@end*/
+
+/*@@envVar:EnvSK_NO:*/
+on envVar EnvSK_NO
+{
+    if (@EnvSK_NO == 1)
+        msg_keypanel.HID_BT_1_ZR_Req_Data.phys = 0x010D3003;
+    else
+        msg_keypanel.HID_BT_1_ZR_Req_Data.phys = 0x000D3003;
+
+    output (msg_keypanel);
+    write ("function called");
+}
+/*@@end*/
+
+/*@@envVar:EnvSK_SO:*/
+on envVar EnvSK_SO
+{
+    if (@EnvSK_SO == 1)
+        msg_keypanel.HID_BT_1_ZR_Req_Data.phys = 0x010E3003;
+    else
+        msg_keypanel.HID_BT_1_ZR_Req_Data.phys = 0x000E3003;
+
+    output (msg_keypanel);
+}
+/*@@end*/
+
+/*@@envVar:EnvRedMenue:*/
+on envVar EnvRedMenue
+{
+    msg_keypanel.HID_BT_1_ZR_Req_Data.phys = 0x010A3003;
+    output (msg_keypanel);
+    msg_keypanel.HID_BT_1_ZR_Req_Data.phys = 0x010F3003;
+    output (msg_keypanel);
+}
+/*@@end*/
+
+/*@@envVar:EnvStart_convert:*/
+on envVar EnvStart_convert
+{
+    byte hex_coding_value[25];
+    byte para_byte_start;
+    byte para_byte_stop;
+    byte para_bit_start;
+    byte para_bit_stop;
+    byte parameter_value_coding;
+    byte parameter_value_file;
+    dword FileHandle=0;
+    char file_string[255];
+    char temp_string[255];
+    char parameter_name[255];
+
+      
+    if (@EnvStart_convert == 1)
+    {
+        
+        FileHandle = OpenFileRead ("Coding.txt",0);
+        getvalue (EnvHex_coding_value, hex_coding_value);
+
+        //execute until end of file
+        while (fileGetString(file_string,elcount(file_string),FileHandle)!=0)
+        {
+                        
+            // search for parameter in file
+            if (strstr( file_string, "[]") > -1 )
+            {
+
+                    //write ("search for parameter");
+                    //Get name and position (byte start, byte stop, bit start, bit stop of the parameter
+                    substr_cpy_off (file_string, 0, file_string, 2, -1, elcount(file_string));
+                    substr_cpy_off (parameter_name, 0, file_string, 0, strstr(file_string, ","), elcount(file_string));
+                    substr_cpy_off (file_string, 0, file_string, strstr(file_string, ",") + 1, -1, elcount(file_string));
+                
+                    substr_cpy_off(temp_string,0,file_string,0,(strstr(file_string, ",") + 1),elcount(file_string));
+                    para_byte_start = atol (temp_string);
+                    substr_cpy_off (file_string, 0, file_string, strstr(file_string, ",") + 1, -1, elcount(file_string));
+
+                    substr_cpy_off(temp_string,0,file_string,0,(strstr(file_string, ",") + 1),elcount(file_string));
+                    para_bit_start = atol (temp_string);
+                    substr_cpy_off (file_string, 0, file_string, strstr(file_string, ",") + 1, -1, elcount(file_string));
+
+                    substr_cpy_off(temp_string,0,file_string,0,(strstr(file_string, ",") + 1),elcount(file_string));
+                    para_byte_stop = atol (temp_string);
+
+                    substr_cpy_off (file_string, 0, file_string, strstr(file_string, ",") + 1, -1, elcount(file_string));
+                    para_bit_stop = atol (file_string);
+
+
+                    //Get value for current parameter from hexadecimal coding string
+                    parameter_value_coding = hex_coding_value[para_byte_start] << (7 - para_bit_stop);
+                    parameter_value_coding = parameter_value_coding >> (para_bit_start + (7 - para_bit_stop));
+
+                    write ("%s : %X", parameter_name,parameter_value_coding);
+
+            }
+                
+            // search for parameter value in file after parameter has been found
+            else 
+            {
+            
+                //ignore empty lines
+                if (strlen(file_string) >1)
+                {            
+                    strncpy (temp_string,"0x",3);
+                
+                    substr_cpy_off (temp_string, 2, file_string, 0, strstr(file_string,":"),30);
+                    parameter_value_file = atol(temp_string);
+
+                    if (parameter_value_file == parameter_value_coding)
+                    {
+                        //substr_cpy_off (parameter_name, 0, file_string, 0, strstr(file_string, ","), elcount(file_string));
+                        substr_cpy_off (temp_string, 0, file_string, strstr(file_string,":") +1,-1, elcount(file_string));
+                        write("        %s", temp_string);
+                    }
+                }
+            }
+        }
+
+        fileClose (FileHandle);
+    }
+}
+/*@@end*/
+
+/*@@startStart:Start:*/
+on start
+{
+msg_keypanel.can =1;
+}
+/*@@end*/
+
+/*@@msg:CAN1.MIB_MIBCAN_KMatrix_V707E_2011051::HID_BT_1_ZR_Req (0x17F8F073X):*/
+on message HID_BT_1_ZR_Req
+{
+}
+/*@@end*/
+

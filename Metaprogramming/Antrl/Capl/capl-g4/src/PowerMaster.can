@@ -1,0 +1,285 @@
+//-----------------------------------------------------------------------------
+//  Copyright (C) Continental Automotive All Right Reserved
+//            File        : PowerMaster.can
+//            Author      : Ratheesh
+//            Environment : CAPL
+//-----------------------------------------------------------------------------
+//  Type        : CAPL script
+//  Description : This file contains the PowerMaster implementation
+//  Code Status : Not tested
+//  Reference   : MIB_MOST_KMatrix_V1.13.00F_20121108_MT.html
+//-----------------------------------------------------------------------------
+//  Revision History
+//  Version     Modified by         Date            Description
+//  1.0         Ratheesh            18-Dec-2012     Initial version
+//  1.1         Ratheesh            09-Sep-2014     Shutdown/Wakeup improved
+//-----------------------------------------------------------------------------
+
+includes
+{
+  #include "MostDefs.cin"
+  #include "FCatDefs.cin"
+}
+
+//
+// PowerMaster implementation
+// Abbreviations
+// PM - PowerMaster
+//
+variables
+{
+  // Shutdown Mode
+  const byte kShutdownMode_Nil    = 0x00;
+  const byte kShutdownMode_Normal = 0x01;
+  const byte kShutdownMode_Device = 0x02;
+
+  // Current shutdown mode
+  byte gShutdownMode = kShutdownMode_Nil;
+
+  // Timers
+  msTimer tWaitSuspend;
+  msTimer tShutDownWait;
+  msTimer tSSO_Shutdown;
+  msTimer tRetryShutDown;
+
+  // Timeout
+  const long ktWaitSuspendDelay   = ktSuspend;
+  const long ktShutdownWaitDelay  = ktShutDownWait;
+  const long ktSSO_ShutdownDelay  = 100;
+  const long ktRetryShutdowndelay = ktRetryShutDown;
+
+  // Shutdown flag
+  byte gShutdownFlag = 0x00;
+}
+
+on start
+{
+  putValue(env_RadioButton_MOSTLight_On_Off, 1);
+  putValue(env_RadioButton_Shutdown_Wakeup, 1);
+}
+
+// Handling of NetBlock.Shutdown.Result message
+on mostAMSMessage NetBlock.ShutDown.Result
+{
+  // Validate length
+  if (!CheckValidReceptionAndLength(this, 1))
+    return;
+
+  // If ShutdownSuspend
+  if (this.Control == kShutdownCntrl_Suspend)
+  {
+    // Check whether shutdown is in progress
+    if (gShutdownMode != kShutdownMode_Nil)
+    {
+      // Cancel tSuspend timer
+      cancelTimer(tWaitSuspend);
+
+      // Start timer tRetryShutDown
+      setTimer(tRetryShutDown, ktRetryShutdowndelay);
+    }
+    else
+    {
+      // Do nothing
+    }
+  }
+  // If TemperatureShutdown
+  else if (this.Control == kShutdownCntrl_TemperatureShutdown)
+  {
+    // After receiving NetBlock.Shutdown.Result with parameter 0x03 (Temperature Shutdown) from the
+    // Slave that experiences the over-temperature condition, the PowerMaster may execute the standard
+    // shutdown procedure
+    PmNormalShutdown();
+  }
+  else
+  {
+    // Do nothing
+  }
+}
+
+on timer tWaitSuspend
+{
+  mostAMSMessage NetBlock.ShutDown.Start msg;
+
+  putValue(env_ShutdownExecuteSendFlag, 1);
+  msg.DA = kAdrBroadcast;
+  msg.MsgChannel = mostGetChannel();
+  msg.DLC = 0x01;
+  msg.BYTE(0) = 0x02; // Execute
+  output(msg);
+
+  if (gShutdownMode == kShutdownMode_Normal)
+  {
+    // Start timer tShutDownWait
+    setTimer(tShutDownWait, ktShutdownWaitDelay);
+  }
+  else
+  {
+    // Reset the shutdown mode
+    gShutdownMode = kShutdownMode_Nil;
+  }
+}
+
+on timer tShutDownWait
+{
+  // Set shutdown flag
+  gShutdownFlag = 0x01; // :TBD: Where to reset shutdown flag
+
+  // Start timer tSSO_Shutdown
+  setTimer(tSSO_Shutdown, ktSSO_ShutdownDelay);
+}
+
+on timer tSSO_Shutdown
+{
+  if (@PM::Wakeup_Active == 0)
+  {
+    mostShutdown(mostGetChannel());
+    putValue(env_ShutdownExecuteSendFlag, 0); // clear flag, shutdown process completed
+  }
+  if(1 == getValue(env_WakeupRequestInQueueFlag))
+  {
+    putValue(env_WakeupRequestInQueueFlag, 0);
+    // Activate MOST Wakeup
+    @PM::Wakeup_Active = 1;  
+  }
+
+  // Reset the shutdown mode
+  gShutdownMode = kShutdownMode_Nil;
+}
+
+on timer tRetryShutDown
+{
+  // Send shutdown query message
+  SendShutdownQuery();
+}
+
+// Function to send NetBlock.Shutdown.Start(Query)
+void SendShutdownQuery(void)
+{
+  mostAMSMessage NetBlock.ShutDown.Start msg;
+
+  msg.MsgChannel = mostGetChannel();
+  msg.DA = kAdrBroadcast;
+  msg.DLC = 0x01;
+  msg.Control = kShutdownCntrl_Query;
+  output(msg);
+
+  //Start timer tWaitSuspend
+  setTimer(tWaitSuspend, ktWaitSuspendDelay);
+}
+
+// Switch off the Tx light
+void PmMostTxLightOff(void)
+{
+  // Switch off MOST light
+  MostSetTxLight(mostGetChannel(), 0);
+}
+
+// Switch on the Tx light
+void PmMostTxLightOn(void)
+{
+  // Switch ON MOST light
+  MostSetTxLight(mostGetChannel(), 1);
+}
+
+long PmNormalShutdown(void)
+{
+  // Exit if shutdown is in progress
+  if(gShutdownMode != kShutdownMode_Nil)
+    return -1;
+
+  // Send shutdown query message
+  SendShutdownQuery();
+
+  // Set shutdown mode as normal shutdown
+  gShutdownMode = kShutdownMode_Normal;
+
+  return 0;
+}
+
+// Function to invoke device shutdown
+long PmDeviceShutdown(void)
+{
+  // Exit if shutdown is in progress
+  if(gShutdownMode != kShutdownMode_Nil)
+    return -1;
+
+  // Send shutdown query message
+  SendShutdownQuery();
+
+  // Set shutdown mode as device shutdown
+  gShutdownMode = kShutdownMode_Device;
+
+  return 0;
+}
+
+// Function to invoke WakeFromDeviceShutdown
+long PmWakeFromDevShutdown(void)
+{
+  mostAMSMessage NetBlock.ShutDown.Start msg;
+
+  msg.MsgChannel = mostGetChannel();
+  msg.DA = kAdrBroadcast;
+  msg.DLC = 0x01;
+  msg.Control = kShutdownCntrl_WakeFromDeviceShutdown;
+  output(msg);
+
+  return 0;
+}
+
+//Shutdown/Wakeup
+on envVar env_RadioButton_Shutdown_Wakeup
+{
+  if(0 == getValue(env_RadioButton_Shutdown_Wakeup))
+  {
+    //Disable MOST Wakeup
+    @PM::Wakeup_Active = 0;
+    PmNormalShutdown();
+  }
+  else if(1 == getValue(env_RadioButton_Shutdown_Wakeup))
+  {
+    // Activate MOST Wakeup
+    @PM::Wakeup_Active = 1;    
+    cancelTimer(tWaitSuspend);
+    cancelTimer(tShutDownWait);
+    cancelTimer(tSSO_Shutdown);
+    cancelTimer(tRetryShutDown);
+    // Reset the shutdown mode
+    gShutdownMode = kShutdownMode_Nil;
+  }
+}
+
+// MOST light on off control
+on envVar env_RadioButton_MOSTLight_On_Off
+{
+  if(0 == getValue(env_RadioButton_MOSTLight_On_Off))
+  {
+    PmMostTxLightOff();
+  }
+  else if (1 == getValue(env_RadioButton_MOSTLight_On_Off))
+  {
+    PmMostTxLightOn();
+  }
+  else
+  {
+    // Do nothing
+  }
+}
+
+// Wakeup trigger from panel "PowerMaster"
+on sysvar PM::Button_Shutdown
+{
+  if (@this == 0)
+    return;
+  putValue(env_RadioButton_Shutdown_Wakeup, 0);
+}
+
+// Shutdown trigger from panel "PowerMaster"
+on sysvar PM::Button_Wakeup
+{
+  if(@this == 0)
+    return;
+  if (0 == getValue(env_ShutdownExecuteSendFlag))
+  {
+    putValue(env_RadioButton_Shutdown_Wakeup, 1);
+  }
+}

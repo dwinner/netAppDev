@@ -1,0 +1,1172 @@
+/*@!Encoding:1252*/
+includes
+{
+    #pragma library ("dll\PowerSupply.dll")
+}
+
+// NGSM: Rohde&Schwarz power supply type NGSM 32-10
+// Supports: - power supply ON/OFF
+//           - voltage control by a slider
+//           - voltage curve selection via radio buttons
+//           - limiting output current
+//           - display of actual output current and voltage
+//           - direct output control (ON/OFF
+// Rev: 
+// HeWi: 01.03.2011: functionality adaptation from Juergen Vonderheits pre-implementation   
+// HeWi: 13.07.2011: if NGSM Power Supply not connected to COM port the environment var 
+//                   ENV_NGSM_PowerSwitch is set to 0 (prevents cyclic re-connect)
+// RueVo: 13.07.2011: Update to new Dll with new Function NGSM_POWER_iSetIniPath
+//                    add two new Curves "Warmstartpulse / User "
+//                    change handling of the Slider Control
+variables
+{
+    // the ini file name
+    char NGSM_cIniFileName[ 32 ]   = "Models\\Powersupply\\Ngsm.ini";
+    // a handle to this file
+    dword NGSM_IniFileHandle = 0;
+
+    // boolean
+    const FALSE                 = 0;
+    const TRUE                  = 1;
+
+    // - a variable that determines whether them NGSM support is allowed or not
+    // - the variable will be overwritten by ini file entry at 'on start' 
+    // 0: NGSM node is NOT initialized
+    // 1: a DC Power Supply will not be supported by the NGSM panel
+    //    connection state is set to 'not connected' 
+    // 2: a DC Power Supply may be supported by the NGSM panel
+    // NGSM configuration, related to ENV_NGSM_Support (see also NgsmSupport in NGSM.ini)
+    const NGSM_CONTROL_PANEL_NOT_INITIALIZED  = 0;  // NGSM panel is not initialized
+    const NGSM_CONTROL_DISABLED               = 1;  // disable, no support from NGSM panel, no modification of the DC Power Supply
+    const NGSM_CONTROL_ENABLED                = 2;  // enable, full support from NGSM panel, the DC Power Supply is controlled by the NGSM panel
+    int iNGSMSupport                          = NGSM_CONTROL_PANEL_NOT_INITIALIZED;
+
+    // connection to RS232 port
+    const NOT_CONNECTED         = 0;
+    const CONNECTED             = 1;
+    byte boNgsmConnectionState  = NOT_CONNECTED;
+    
+    // NGSM state, related to ENV_NGSM_PowerSupplyState
+    const NGSM_OFF              = 0;    // NGSM not connected and not initialized
+    const NGSM_DE_INIT          = 1;    // NGSM is de-initialized, but it is connected to com port
+    const NGSM_INIT_NOK         = 2;    // NGSM power switch is ON, connected to com port, but NGSM not initialized
+    const NGSM_INIT_OK          = 3;    // NGSM is well initialized, do all the cyclic job
+
+    // the power switch state
+    const NGSM_POWER_SWITCH_IDLE = 0;
+    const NGSM_POWER_SWITCH_PROCCESSING = 1;
+    byte boNgsmPowerSwitchState = NGSM_POWER_SWITCH_IDLE;
+
+    // init values will be overwritten by the ini-file NGSM.ini
+    // voltage output should be enabled
+    const NGSM_DEFAULT_OUTPUT_STATE = TRUE;
+    // default output voltage
+    const NGSM_DEFAULT_OUTPUT_VOLTAGE = 12.00;
+    // RS232 port, connected to NGSM power supply, 1 := COM01
+    int   iNGSMComPort = 1;
+    int   iNGSMChannel = 1;
+    // activate 'OUTPUT ON' directly when started
+    int   iNGSMStartOutput = TRUE;
+    // initial voltage
+    float fNGSMVoltageInit = NGSM_DEFAULT_OUTPUT_VOLTAGE*1000;
+    // max current in mA
+    int   iNGSMMaxCurrentInit = 2000;
+
+    // NGSM supports 2 current ranges: 0 := for A, 1 := for mA
+    int   iNGSMCurrentRange;
+    // if the current range switch is in progress
+    int   iNGSMCurrentRangeChanging;
+
+    // timing parameters
+    // cyclic timer
+    const CYCLIC_TIMER_NORMAL_REFRESH_TIME = 1000;      /* ms */
+    // restart cyclic timer after init
+    const CYCLIC_TIMER_AFTER_INIT_TIME     = 4000;      /* ms */
+    // restart cyclic timer after de-init
+    const CYCLIC_TIMER_AFTER_DEINT_TIME    = 4000;      /* ms */
+    // while this time is active the output voltage will not read 
+    const PREVENT_VOLTAGE_DISPLAY_REFRESH_TIME = 500;  /* ms */
+
+    // cyclic trigger of update functions: dll relevant
+    msTimer msCyclicTriggerTimer;
+    // set voltage
+    msTimer msVoltageSetTimer;
+    // timer functions locking update of 'Voltage Display'
+    msTimer msVoltageDisplayTimer;
+    // timer functions for delay of 'Output OFF', waiting for finishing former command
+    msTimer msDelayOutputOffTimer;
+    // timer functions for delay of 'Power OFF', waiting for finishing former command
+    msTimer msDelayPowerOffTimer;
+
+    // power curve selection, must be the same as in power.h from Rohde&Schwarz dll
+    const NGSM_OUTPUT_12000_CONST    = 0;   // const
+    const NGSM_OUTPUT_SSI4B          = 1;
+    const NGSM_OUTPUT_SSIB4B2        = 2;
+    const NGSM_OUTPUT_WAIT           = 3;
+    const NGSM_OUTPUT_VOLTAGE_BOUNCE = 4;
+    const NGSM_OUTPUT_MICRO_PULSE    = 5;
+    const NGSM_OUTPUT_LOW_BATTERY    = 6;
+    const NGSM_OUTPUT_VW80101_7      = 7;
+    const NGSM_OUTPUT_OVERVOLTAGE_A  = 8;
+    const NGSM_OUTPUT_OVERVOLTAGE_B  = 9;
+    const NGSM_OUTPUT_WARMSTARTPULSE = 10;
+    const NGSM_OUTPUT_USER1          = 11;
+    const NGSM_OUTPUT_USER2          = 12;
+    const NGSM_OUTPUT_5000_CONST     = 13;  // const
+    const NGSM_OUTPUT_7500_CONST     = 14;  // const
+    const NGSM_OUTPUT_17000_CONST    = 15;  // const
+    const NGSM_OUTPUT_18500_CONST    = 16;  // const
+    const NGSM_OUTPUT_21000_CONST    = 17;  // const
+    const NGSM_OUTPUT_SLIDER_CONTROL = 20;
+    
+    const NGSM_WriteOutput = 1;
+    
+}
+
+on envVar ENV_NGSM_PowerSwitch
+{
+    // Event: power switch is ON or OFF
+    // a first try to synchronize the power on- and off-sequence without overrunning the states 
+    // (if fast switch ON OFF sequences)
+    // hint: perhaps it is better to run this in the cyclic timer and not as an event.
+
+    // NGSM support test
+    if( @ENV_NGSM_Support == NGSM_CONTROL_DISABLED )
+    {
+        return; // NGSM support disabled
+    }
+
+    if( @ENV_NGSM_PowerSwitch == TRUE )
+    {
+        //write("NGSM: ENV_NGSM_PowerSwitch is TRUE" );
+
+        // As long the NGSM power switch is proccessed a power switch change will not accepted
+        // because 'power ON' and 'power OFF' sequences should be proccessed synchronously.
+        // This protects overrunning the com port.
+        if( boNgsmPowerSwitchState == NGSM_POWER_SWITCH_IDLE )
+        {
+            //write("NGSM: NGSM_POWER_SWITCH_IDLE" );
+ 
+            // lock it until power switch ON has been proccessed
+            boNgsmPowerSwitchState = NGSM_POWER_SWITCH_PROCCESSING;
+
+            // stop the cyclic refresh
+            cancelTimer( msCyclicTriggerTimer );
+
+            // as long as the NGSM power switch in ON
+            putValue( ENV_NGSM_HelpDisplay, "Power supply switch is ON" );
+
+            // switch ON the NGSM power supply if it is in the OFF state
+            // this prevents overrunning the NGSM com port by unsynchronized ON-OFF sequences
+            if( ( @ENV_NGSM_PowerSupplyState == NGSM_OFF ) || ( @ENV_NGSM_PowerSupplyState == NGSM_DE_INIT ) ) 
+            {
+                // try to connect the NGSM to com port (RS232)
+                // perhaps the connection to the com port is still established
+                if( boNgsmConnectionState == NOT_CONNECTED )
+                {
+                    if(NGSM_WriteOutput==1)write("ENV_NGSM_PowerSwitch: try to connect" );
+                    if( ( boNgsmConnectionState = NGSM_boSetConnection() ) == CONNECTED )
+                    {
+                        // - initialize
+                        // - set max current
+                        // - set output voltage = 0 V
+                        // - activate output
+                        if(NGSM_WriteOutput==1)write("NGSM: connected, try init" );
+                        NGSM_PowerSupplyInit();
+                    }
+                    else
+                    {
+                        // do not re-connect
+                        if(NGSM_WriteOutput==1)write( "ENV_NGSM_PowerSwitch: not connected" );
+                        putValue( ENV_NGSM_PowerSwitch, 0 );
+                    }
+                }
+                else
+                {
+                    // connection is still established -> initializes NGSM
+                    if(NGSM_WriteOutput==1)write("NGSM: connected, try init" );
+                    NGSM_PowerSupplyInit();
+                }
+            }
+            else
+            {
+                // cyclic wait for NGSM_DE_INIT, maybe the NGSM power supply hasn't finished the OFF seuqence
+                // to do 
+            }
+
+            // even if the NGSM couldn't connected to com port
+            // the NGSM cyclic trigger update will be started
+            setTimer( msCyclicTriggerTimer, CYCLIC_TIMER_AFTER_INIT_TIME );
+
+            // unlock because power switch ON has been proccessed
+            boNgsmPowerSwitchState = NGSM_POWER_SWITCH_IDLE;
+        }
+        else
+        {
+            // locked because power switch is still proccessing
+            write("NGSM: NGSM_POWER_SWITCH_PROCCESSING" );
+        }
+    }
+    else
+    {
+        if(NGSM_WriteOutput==1)write("NGSM: PowerSwitch = FALSE" );
+
+        // As long the NGSM power switch is proccessed a power switch change will not accepted
+        // because 'power ON' and 'power OFF' sequences should be proccessed synchronously.
+        // This protects overrunning the com port.
+        if( boNgsmPowerSwitchState == NGSM_POWER_SWITCH_IDLE )
+        {
+            // lock it until power switch ON has been proccessed
+            boNgsmPowerSwitchState = NGSM_POWER_SWITCH_PROCCESSING;
+
+            // stop the cyclic refresh
+            cancelTimer( msCyclicTriggerTimer );
+
+            if(NGSM_WriteOutput==1)write("NGSM: power switch is OFF" );
+            // switch OFF the NGSM power supply if it is in the ON state
+            putValue( ENV_NGSM_HelpDisplay, "Power supply switch is OFF" );
+
+            // switch NGSM off:
+            // - output voltage = 0
+            // - output control OFF, disconnect output
+            NGSM_PowerSupplyDeInit();
+
+            if( isTimerActive( msCyclicTriggerTimer ) )
+            {
+                cancelTimer( msCyclicTriggerTimer );
+            }
+            // the NGSM cyclic trigger update will be started
+            setTimer( msCyclicTriggerTimer, CYCLIC_TIMER_AFTER_DEINT_TIME );
+        
+            // unlock because power switch ON has been proccessed
+            boNgsmPowerSwitchState = NGSM_POWER_SWITCH_IDLE;
+        }
+        else
+        {
+            // locked because power switch is still proccessing
+        }
+    }
+}
+
+on envVar ENV_NGSM_VoltageSliderControl
+{
+    // type: float
+
+    // supports voltage slider
+    // read voltage from 'Votage Control' slider
+    // set the NGSM output
+    // display value in the 'VoltageDisplay' right from slider
+    // prevent update the 'VoltageDisplay' for some 100 ms by readback the NGSM output
+
+    // NGSM support test
+    if( @ENV_NGSM_Support == NGSM_CONTROL_DISABLED )
+    {
+        return; // NGSM support disabled
+    }
+
+    if( boNgsmConnectionState == CONNECTED )
+    {
+        // write("NGSM: ENV_NGSMVoltage: calling");
+
+        //if( @ENV_NGSM_SetCurveSelector == NGSM_OUTPUT_SLIDER_CONTROL )
+        //{
+            // output voltage is under slider control
+            // the slider will be moved by hand
+      
+            // allways when voltage is under slider control reset the curve selector
+            //@ENV_NGSM_SetCurveSelector = NGSM_OUTPUT_SLIDER_CONTROL;
+             @ENV_NGSM_SetCurveSelector = NGSM_OUTPUT_SLIDER_CONTROL;
+            // setting output every 500 ms
+            if( isTimerActive( msVoltageSetTimer ) )
+            {
+                // (display voltage will be delayed for a longer time, see msVoltageDisplayTimer
+
+                @ENV_NGSM_VoltageDisplay = @ENV_NGSM_VoltageSliderControl/1000;
+                cancelTimer( msVoltageSetTimer );
+            }
+            setTimer( msVoltageSetTimer, CYCLIC_TIMER_NORMAL_REFRESH_TIME /* ms */ );
+        //}
+        //else
+        //{
+            // output voltage is NOT under curve selection control
+            // but track the output voltage to the slider 'Voltage Control'
+        //    @ENV_NGSM_VoltageDisplay = @ENV_NGSM_VoltageSliderControl;
+        //}
+    }
+    else
+    {
+        write( "ENV_NGSM_VoltageSliderControl: ERROR: NGSM power supply not connected" );
+    }
+}
+
+on preStart
+{
+    // only text info
+    if(NGSM_WriteOutput==1)write("NGSM: on preStart");
+}
+
+on start
+{
+    write("NGSM: ini file: %s",NGSM_cIniFileName);
+    // continue only if enable by the environment variable 'ENV_NGSM_OnStartEnable'
+    if( getValue( ENV_NGSM_OnStartEnable ) == 0 ) // ENV_NGSM_OnStartEnable = 1 when environment will be initialized
+    {
+         write("NGSM: 'on start' disabled by ENV_NGSM_OnStartEnable");
+         return;
+    }
+    
+    // get parameters from ini-file : NGSM.ini
+    // After a CANoe simulation STOPPED and STARTED cycle the new parameters are active
+
+    if(NGSM_WriteOutput==1)write("NGSM: on start");
+
+    // open the INI file
+    NGSM_IniFileHandle = openFileRead( NGSM_cIniFileName, 0 /* ASCCII */ );
+    if( NGSM_IniFileHandle == 0 )
+    {
+        write("NGSM: ERROR: cannot open File %s",NGSM_cIniFileName);
+        putValue( ENV_NGSM_HelpDisplay, "ERROR: cannot open NGSM.ini" );
+        SetControlBackColor( "NGSM", "EnvVar:ENV_NGSM_HelpDisplay", MakeRGB( 255, 0, 0 ) );
+        fileClose( NGSM_IniFileHandle );
+    }
+    else
+    {
+        // it's open
+    }
+
+    // init text
+    putValue( ENV_NGSM_HelpDisplay, "Setup NGSM Power supply" );
+
+    // read the pre-defined parameters
+    if( NGSM_IniFileHandle != 0 )
+    {
+        // disable7enable NGSM support
+        iNGSMSupport = getProfileInt( "NGSM_SUPPORT", "NgsmSupport", 0, "Models\\Powersupply\\NGSM.ini" );
+        // RS232 COM port: NGSM connection
+        iNGSMComPort = getProfileInt( "NGSM_COMPORT", "NgsmComPort", 0, "Models\\Powersupply\\NGSM.ini" );
+        // enables output directly when started
+        iNGSMStartOutput = getProfileInt( "NGSM_PON_STATE", "NgsmPoOnState", 0, "Models\\Powersupply\\NGSM.ini" );
+        // start with first voltage
+        fNGSMVoltageInit = getProfileFloat( "NGSM_PON_VOLT", "NgsmPoOnVolt", 0, "Models\\Powersupply\\NGSM.ini" )*1000;
+        // start with max current
+        iNGSMMaxCurrentInit = getProfileInt( "NGSM_PON_AMPERE", "NgsmPoOnAmpere", 0, "Models\\Powersupply\\NGSM.ini" );
+        // channel to be used on multi channel supplies
+        iNGSMChannel = getProfileInt( "NGSM_CHANNEL", "NgsmChannel", 0, "Models\\Powersupply\\NGSM.ini" );
+    }
+    else
+    {
+        // without an ini-file we use the definitions in the variables area
+    }
+
+    // print the variables influenced by the ini file
+    if(NGSM_WriteOutput==1)write( "NGSM: on start: iNGSMSupport %d", iNGSMSupport );
+    if(NGSM_WriteOutput==1)write( "NGSM: on start: iNGSMComPort %d", iNGSMComPort );
+    if(NGSM_WriteOutput==1)write( "NGSM: on start: iNGSMStartOutput %d", iNGSMStartOutput );
+    if(NGSM_WriteOutput==1)write( "NGSM: on start: fNGSMVoltageInit %d", fNGSMVoltageInit );
+    if(NGSM_WriteOutput==1)write( "NGSM: on start: iNGSMMaxCurrentInit %d", iNGSMMaxCurrentInit );
+
+    // set the environment variable for NGSM support, other CANoe nodes will get an access to the state of NGSM
+    @ENV_NGSM_Support = iNGSMSupport;
+
+    // resets the internal states
+    // set the NGSM power supply state, it's public for other nodes
+    putValue(ENV_NGSM_PowerSwitch, NGSM_OFF); /* set the connection switch to OFF */
+
+    @ENV_NGSM_PowerSupplyState = NGSM_OFF;
+    
+    // not connected to com port
+    boNgsmConnectionState = NOT_CONNECTED;
+    // power switch is in idle state
+    boNgsmPowerSwitchState = NGSM_POWER_SWITCH_IDLE;
+    // reminder for the 'Output' state, environ variable need also by other CANoe nodes
+    putValue( ENV_NGSM_OutputState, FALSE );
+    if(NGSM_WriteOutput==1)write( "NGSM: on start: ENV_NGSM_OutputState is FALSE" );
+
+    // NGSM status text
+    switch( @ENV_NGSM_Support )
+    {
+        case NGSM_CONTROL_DISABLED:
+            putValue( ENV_NGSM_HelpDisplay, "Power supply is DISABLED (see NGSM.ini file)" );
+            break;
+
+        case NGSM_CONTROL_ENABLED:
+            putValue( ENV_NGSM_HelpDisplay, "Power supply is ENABLED (see NGSM.ini file)" );
+            break;
+
+        default: // a problem, either the NGSM node couldn't be initialized or wrong value returned 
+            putValue( ENV_NGSM_HelpDisplay, "Power supply is NOT initialized, problem while reading ini file or deactivated)" );
+            break;
+    }
+
+    // ´gray OFF' to 'Output Control' status field
+    putValue( ENV_NGSM_OutputControlDisplay, "?" );
+    
+    // gray background of button 'Output Control'
+    SetControlBackColor( "NGSM", "EnvVar:ENV_NGSM_OutputControlDisplay", MakeRGB( 192, 192, 192 ) );
+    // and background of the slider voltage control       
+    SetControlBackColor( "NGSM", "EnvVar:ENV_NGSM_VoltageSliderControl", MakeRGB( 192, 192, 192 ) );
+    // and background of the outbox 'VoltageDisplay'  gray      
+    SetControlBackColor( "NGSM", "EnvVar:ENV_NGSM_VoltageDisplay", MakeRGB( 192, 192, 192  ) );
+
+    // run all envVar's (are not automatically called when environment variables are written while in Start context) 
+    CallAllOnEnvVar(); 
+}
+on preStop
+{
+    NGSM_POWER_vDeInit();
+    
+    write ("NGSM: disconnected");
+}
+on stopMeasurement
+{
+    // continue only if enable by the environment variable 'ENV_NGSM_OnStopEnable'
+    if( getValue( ENV_NGSM_OnStopEnable ) == 0 )  // ENV_NGSM_OnStopEnable = 1 when environment will be initialized
+    {
+         if(NGSM_WriteOutput==1)write("NGSM: 'on stopMeasurement' disabled by ENV_NGSM_OnStopEnable");
+         return;
+    }
+
+    if(NGSM_WriteOutput==1)write("NGSM: on stopMeasurement");
+
+    // close Parameter input file, if present
+    if( NGSM_IniFileHandle != 0 )
+    {
+        fileClose( NGSM_IniFileHandle );
+    }
+
+    if( boNgsmConnectionState == CONNECTED )
+    {
+//       NGSM_POWER_vDeInit();
+//       write ("NGSM: disconnected");
+    }
+    else
+    {
+        // otherwise no connection to Rohde&Schwarz NGSM
+    }
+}
+
+on timer msVoltageSetTimer
+{
+    // read voltage from 'Votage Control' slider
+    // set the NGSM output
+    // display value in the 'VoltageDisplay' right from slider
+    // prevent update the 'VoltageDisplay' for some 100 ms by readback the NGSM output
+    int iVal;
+
+    //write( "NGSM: msVoltageSetTimer: Set Voltage: %d", val );
+    if( boNgsmConnectionState == CONNECTED )
+    {
+        //write("NGSM: msVoltageSetTimer: boConnected = 1");
+
+        // stops the running 'Voltage Display' preventing timer
+        if( isTimerActive( msVoltageDisplayTimer ) )
+        {
+            cancelTimer( msVoltageDisplayTimer );
+        }
+
+        //iVal = @ENV_NGSM_VoltageSliderControl * 1000;  // V to mV conversion
+        iVal = @ENV_NGSM_VoltageSliderControl;
+        if(NGSM_WriteOutput==1)write("msVoltageSetTimer: set Uout %d mV", iVal );
+        NGSM_POWER_vSetUOut_mV( iVal );              // send to NGSM, int data type
+
+        // display the voltage in the 'VoltageDisplay'
+        //write("NGSM: msVoltageSetTimer: ENV_NGSM_VoltageSliderControl = %f", @ENV_NGSM_VoltageSliderControl );
+        @ENV_NGSM_VoltageDisplay = @ENV_NGSM_VoltageSliderControl/1000;
+
+        // prevents refreshing 'VoltageDisplay'
+        setTimer( msVoltageDisplayTimer, PREVENT_VOLTAGE_DISPLAY_REFRESH_TIME );
+    }
+}
+
+on envVar ENV_NGSM_OutputControl
+{
+	// char temp[50];
+
+    // supports 'output control' switch: enables voltage output
+    // realized as a Push-Button, therefore we change the state after each operation
+
+    // NGSM support test
+    if( @ENV_NGSM_Support == NGSM_CONTROL_DISABLED )
+    {
+        return; // NGSM support disabled
+    }
+   
+    if( boNgsmConnectionState == CONNECTED )
+    {
+        if( @ENV_NGSM_OutputControl == TRUE )
+        { 
+            // only in case of pressing the 'Output Control' button 
+            // a action on the NGSM output will be performed (like a toggle)
+
+            // actual state of the 'Output'
+            if( @ENV_NGSM_OutputState == FALSE )
+            {
+                // NGSM output is disabled -> must be enabled
+                NGSM_SetOutputControl( TRUE );    // enable NGSM output
+                if (NGSM_POWER_boGetPowerState() == 1)
+                {
+                  @ENV_NGSM_PowerSupplyState = TRUE;
+                  if(NGSM_WriteOutput==1)write( "ENV_NGSM_PowerSupplyState: ON");
+                }
+                else
+                {
+                  @ENV_NGSM_PowerSupplyState = NGSM_OFF;
+                  if(NGSM_WriteOutput==1)write( "ENV_NGSM_PowerSupplyState: OFF");
+                }
+            }
+            else
+            {
+                // NGSM output is enabled -> must be disabled
+                NGSM_SetOutputControl( FALSE );    // disable NGSM output
+            }
+        }
+        else
+        {
+            // event when 'Output Control' button has been released
+            // nothing todo
+        }
+    }
+    else
+    {
+        // if the NGSM is not connected (after NGSM power switch is switched OFF)
+        // the MGSM output should also be disabled 
+        NGSM_SetOutputControl( FALSE );       // disable NGSM output
+        write( "NGSM: Not connected -> Output is OFF" );
+    }
+}
+
+on envVar ENV_NGSM_SetCurveSelector
+{
+    // supports 'curve selector' buttons
+
+    byte  bCurveSelector;        // type of voltage curve
+    int   iConstVoltage;
+
+    iConstVoltage = 0;
+    bCurveSelector = @ENV_NGSM_SetCurveSelector;
+    
+    // NGSM support test
+    if( @ENV_NGSM_Support == NGSM_CONTROL_DISABLED )
+    {
+        return; // NGSM support disabled
+    }
+
+    // write("NGSM: SetCurveSelector: mode %d", bCurveSelector);
+
+    if( boNgsmConnectionState == CONNECTED )
+    {
+        switch( bCurveSelector )  // selects curve 0... 
+        {
+            case NGSM_OUTPUT_5000_CONST:
+                putValue( ENV_NGSM_HelpDisplay, "NGSM: set Curve Type: Normal = 5.0 V" );
+                iConstVoltage = 5000;
+                break;
+            case NGSM_OUTPUT_7500_CONST:
+                putValue( ENV_NGSM_HelpDisplay, "NGSM: set Curve Type: Normal = 7.5 V" );
+                iConstVoltage = 7500;
+                break;
+            case NGSM_OUTPUT_12000_CONST:
+                putValue( ENV_NGSM_HelpDisplay, "NGSM: set Curve Type: Normal = 12.0 V" );
+                iConstVoltage = 12000;
+                break;
+            case NGSM_OUTPUT_17000_CONST:
+                putValue( ENV_NGSM_HelpDisplay, "NGSM: set Curve Type: Normal = 17.0 V" );
+                iConstVoltage = 17000;
+                break;
+            case NGSM_OUTPUT_18500_CONST:
+                putValue( ENV_NGSM_HelpDisplay, "NGSM: set Curve Type: Normal = 18.5 V" );
+                iConstVoltage = 18500;
+                break;
+            case NGSM_OUTPUT_21000_CONST:
+                putValue( ENV_NGSM_HelpDisplay, "NGSM: set Curve Type: Normal = 21.0 V" );
+                iConstVoltage = 21000;
+                break;
+            case NGSM_OUTPUT_SSI4B:
+                putValue( ENV_NGSM_HelpDisplay, "NGSM: set Curve Type: SSI4B Pulse" );
+                break;
+            case NGSM_OUTPUT_SSIB4B2:
+                putValue( ENV_NGSM_HelpDisplay, "NGSM: set Curve Type: SSI4B2 Pulse" );
+                break;
+            case NGSM_OUTPUT_WAIT:
+                putValue( ENV_NGSM_HelpDisplay, "NGSM: set Curve Type: Wait" );
+                break;
+            case NGSM_OUTPUT_VOLTAGE_BOUNCE:
+                putValue( ENV_NGSM_HelpDisplay, "NGSM: set Curve Type: VoltageBounce" );
+                break;
+            case NGSM_OUTPUT_MICRO_PULSE:
+                putValue( ENV_NGSM_HelpDisplay, "NGSM: set Curve Type: MicroPulse" );
+                break;
+            case NGSM_OUTPUT_LOW_BATTERY:
+                putValue( ENV_NGSM_HelpDisplay, "NGSM: set Curve Type: LowBattery" );
+                break;
+            case NGSM_OUTPUT_VW80101_7:
+                putValue( ENV_NGSM_HelpDisplay, "NGSM: set Curve Type: VW80101_7" );
+                break;
+            case NGSM_OUTPUT_OVERVOLTAGE_A:
+                putValue( ENV_NGSM_HelpDisplay, "NGSM: set Curve Type: Overvoltage A" );
+                break;
+            case NGSM_OUTPUT_OVERVOLTAGE_B:
+                putValue( ENV_NGSM_HelpDisplay, "NGSM: set Curve Type: Overvoltage B" );
+                break;
+            case NGSM_OUTPUT_WARMSTARTPULSE:
+                putValue( ENV_NGSM_HelpDisplay, "NGSM: set Curve Type: Warmstartpulse" );
+                break;
+            case NGSM_OUTPUT_USER1:
+                putValue( ENV_NGSM_HelpDisplay, "NGSM: set Curve Type: USER1" );
+                break;
+            case NGSM_OUTPUT_USER2:
+                putValue( ENV_NGSM_HelpDisplay, "NGSM: set Curve Type: USER2" );
+                break;
+            case NGSM_OUTPUT_SLIDER_CONTROL:
+                //write("NGSM: set Curve Type: slider control");
+                putValue( ENV_NGSM_HelpDisplay, "NGSM: set Curve Type: slider control" );
+                // background of the slider selector       
+                SetControlBackColor( "NGSM", "EnvVar:ENV_NGSM_SetCurveSelector_20", MakeRGB( 0, 255, 0 ) );
+                // and background of the slider voltage control       
+                SetControlBackColor( "NGSM", "EnvVar:ENV_NGSM_VoltageSliderControl", MakeRGB( 0, 255, 0 ) );
+                // and background of the outbox 'VoltageDisplay' weis       
+                SetControlBackColor( "NGSM", "EnvVar:ENV_NGSM_VoltageDisplay", MakeRGB( 255, 255, 255 ) );
+                // refresh NGSM output, use last slider value
+                if( isTimerActive( msVoltageSetTimer ) )
+                {
+                    // (display voltage will be delayed for a longer time, see msVoltageDisplayTimer
+                    cancelTimer( msVoltageSetTimer );
+                }
+                setTimer( msVoltageSetTimer, 500 /* ms */ );
+                break;
+
+            default:
+                //write("NGSM: ERROR: Curve type not selected, wrong selector");
+                putValue( ENV_NGSM_HelpDisplay, "NGSM: ERROR: set Curve Type unknown!" );
+                bCurveSelector = NGSM_OUTPUT_SLIDER_CONTROL; // Slider controlled voltage
+                break;
+        }  // end switch
+
+        if( bCurveSelector < NGSM_OUTPUT_SLIDER_CONTROL )  // only if new curve has been selected
+        {  
+            // not when under 'slider control' -> prevents refreshing 'VoltageDisplay'
+            if( isTimerActive( msVoltageDisplayTimer ) )
+            {
+                cancelTimer( msVoltageDisplayTimer );
+            }
+            setTimer( msVoltageDisplayTimer, PREVENT_VOLTAGE_DISPLAY_REFRESH_TIME );
+  
+            // background of the slider selector       
+            SetControlBackColor( "NGSM", "EnvVar:ENV_NGSM_SetCurveSelector_20", MakeRGB( 255, 255, 255 ) );
+            // and background of the slider voltage control       
+            SetControlBackColor( "NGSM", "EnvVar:ENV_NGSM_VoltageSliderControl", MakeRGB( 192, 192, 192 ) );
+            // background of the outbox 'VoltageDisplay' grayed       
+            SetControlBackColor( "NGSM", "EnvVar:ENV_NGSM_VoltageDisplay", MakeRGB( 192, 192, 192 ) );
+
+            // voltage curves and contant voltage
+            if( ( bCurveSelector < NGSM_OUTPUT_SSI4B ) || ( bCurveSelector > NGSM_OUTPUT_USER2 ) )
+            {
+                // constant voltage
+                NGSM_POWER_vSetUOut_mV( iConstVoltage );
+            }
+            else
+            {
+                // output new voltage curve    
+                if(NGSM_WriteOutput==1)write( "NGSM: vSendKurve %d", bCurveSelector );
+                NGSM_POWER_vSendKurve( bCurveSelector );
+            }
+        }
+    }
+    else
+    {
+        write("ENV_NGSM_SetCurveSelector: ERROR: NGSM power supply not connected");
+    }
+}
+
+on timer msVoltageDisplayTimer
+{
+   // as long as this timer is running reading output voltage and 
+   // display refresh is NOT allowed
+}
+
+on envVar ENV_NGSM_MaxCurrent
+{
+    // sets the maximum output current, up tp 10 A within 0...32 V range
+
+    // NGSM support test
+    if( @ENV_NGSM_Support == NGSM_CONTROL_DISABLED )
+    {
+        return; // NGSM support disabled
+    }
+
+   if( boNgsmConnectionState == CONNECTED )
+   {
+      //write( "NGSM: new max output current %d", @ENV_NGSM_MaxCurrent );
+
+      if( ( @ENV_NGSM_MaxCurrent >= 0 ) && 
+          ( @ENV_NGSM_MaxCurrent <= 10000 ) )  // limit is 10,0 A
+      {
+         if(NGSM_WriteOutput==1)write( "NGSM: set max output current %d", @ENV_NGSM_MaxCurrent );
+         NGSM_POWER_vSetIOutMax_mA( @ENV_NGSM_MaxCurrent );
+      }
+      else
+      {
+         // wrong setting, set to 0 mA
+         if(NGSM_WriteOutput==1)write( "NGSM: clear max output current" );
+         @ENV_NGSM_MaxCurrent = 0;
+      }
+   }
+   else
+   {
+      write("ENV_NGSM_MaxCurrent: ERROR: NGSM power supply not connected");
+   }
+}
+
+on timer msCyclicTriggerTimer
+{
+    // do here the cyclic job
+
+    int     iVal = 0;       // read voltage from NGSM
+    float   fVal = 0.0;     // read current from NGSM
+
+    //write( "msCyclicTriggerTimer: state %d", @ENV_NGSM_PowerSupplyState );
+
+    switch( @ENV_NGSM_PowerSupplyState )
+    {   
+        case NGSM_OFF:  // NGSM not connected and not initialized
+            // if NGSM power supply switch (panel) is ON, than try connecting to com port
+            if( @ENV_NGSM_PowerSwitch == TRUE )
+            {
+                // perhaps the connection to  the com port is still established
+                if( boNgsmConnectionState == NOT_CONNECTED )
+                {
+                    // try to connect
+                    if(NGSM_WriteOutput==1)write( "msCyclicTriggerTimer: NGSM_OFF: try to connect" );
+                    if( ( boNgsmConnectionState = NGSM_boSetConnection() ) == CONNECTED )
+                    {
+                        // and initializes NGSM
+                        NGSM_PowerSupplyInit();
+                    }
+                    else
+                    {
+                        // do not re-connect
+                        if(NGSM_WriteOutput==1)write( "msCyclicTriggerTimer: NGSM_OFF: not connected" );
+                        putValue( ENV_NGSM_PowerSwitch, 0 );
+                    }
+                }
+                else
+                {
+                    // connection is still established -> initializes NGSM
+                    NGSM_PowerSupplyInit();
+                }
+
+                // **** restart as long NGSM power supply switch (panel) is ON
+                setTimer( msCyclicTriggerTimer, CYCLIC_TIMER_NORMAL_REFRESH_TIME );
+            }
+            else
+            {
+                // NGSM power supply switch (panel) is OFF
+                // noting to do -> no restart of this cyclic timer
+            }
+
+            break;
+
+        case NGSM_DE_INIT:  // NGSM is de-initialized, but it is connected to com port
+            // we are waiting for some 100 ms and than we will check if he NGSM power supply switch
+            // (panel) is still ON.
+            // its the same as for NGSM_OFF, but leave the code here (it can be easier updated if
+            // needed for Power OFF sequence)
+            // the connection to com port is still working and will NOT terminated 
+            if( @ENV_NGSM_PowerSwitch == TRUE )
+            {
+                // perhaps the connection to  the com port is still established
+                if( boNgsmConnectionState == NOT_CONNECTED )
+                {
+                    if(NGSM_WriteOutput==1)write( "msCyclicTriggerTimer: NGSM_DE_INIT: try to connect" );
+                    if( ( boNgsmConnectionState = NGSM_boSetConnection() ) == CONNECTED )
+                    {
+                        // and initializes NGSM
+                        NGSM_PowerSupplyInit();
+                    }
+                    else
+                    {
+                        // do not re-connect
+                        if(NGSM_WriteOutput==1)write( "msCyclicTriggerTimer: NGSM_DE_INIT: not connected" );
+                        putValue( ENV_NGSM_PowerSwitch, 0 );
+                    }
+                }
+                else
+                {
+                    // connection is still established -> initializes NGSM
+                    NGSM_PowerSupplyInit();
+                }
+            }
+            else
+            {
+                // NGSM power supply switch (panel) is OFF
+            }
+
+            // **** restart, the cycle may be longer
+            setTimer( msCyclicTriggerTimer, 2 * CYCLIC_TIMER_NORMAL_REFRESH_TIME );
+
+            break;
+
+        case NGSM_INIT_NOK:     // NGSM power switch is ON, connected to com port, but NGSM not initialized
+            putValue( ENV_NGSM_HelpDisplay, "Try to initialize Power Supply" );
+
+            // if the NGSM is connected to the com port
+            // try to initializes NGSM
+            NGSM_PowerSupplyInit();
+
+            // **** restart
+            setTimer( msCyclicTriggerTimer, CYCLIC_TIMER_NORMAL_REFRESH_TIME );
+
+            break;
+
+        case NGSM_INIT_OK:  // NGSM is well initialized, do all the cyclic job
+            // **** cyclic update: reads voltage and current from NGSM output
+            //write( "NGSM: cyclic OK" );
+            // command to read read current and voltage internal in NGSM dll
+            NGSM_POWER_vTriggerUpdate();
+
+            // read back the NGSM voltage output from NGSM dll internal variable (refreshed by NGSM_POWER_vTriggerUpdate())
+            iVal = NGSM_POWER_iGetUOut_mV(); // in int
+            @ENV_NGSM_ActualVoltageDisplay = (float)( (float)iVal / 1000 );  // mV to V conversion 
+
+            // read back NGSM current output from NGSM dll
+            // dll returns 'usigned long' type and resolution of 1uA, resize to mA
+            fVal = (float)((float)NGSM_POWER_u32GetIOut_uA() / 1000 ); // in mA
+            //write( "NGSM: fVal = %f", fVal );
+
+            // wait for valid values after a range change, this needs some seconds
+            if( iNGSMCurrentRangeChanging > 0 )
+            {
+                // value instable, wait for next cycle
+                iNGSMCurrentRangeChanging--;
+            }
+            else
+            {
+                // Current range check for accuraccy
+                // if the output current is 0.0 (overflow or error while reading) or greater than 150 mA
+                // the range should be A, otherwise set it to mA.
+                if( ( fVal == 0.0 ) || ( fVal > 150.0 ) )
+                {
+                    // 0 mA or > 150 mA
+                    if( iNGSMCurrentRange != 0 )    // if not A
+                    {   
+                        // range select needed
+                        iNGSMCurrentRange = 0;   // A
+                        //write( "NGSM: new Range is A" );
+                        NGSM_POWER_vSetIRange( iNGSMCurrentRange );
+                        iNGSMCurrentRangeChanging = 1;
+                        //write( "NGSM: -> A range" );
+                    }
+                }
+                else
+                {
+                    // 1 microA to 150 mA
+                    if( iNGSMCurrentRange != 1 )    // if not mA
+                    {
+                        // range select needed
+                        iNGSMCurrentRange = 1;   // mA
+                        //write( "NGSM: new Range is mA" );
+                        NGSM_POWER_vSetIRange( iNGSMCurrentRange );
+                        iNGSMCurrentRangeChanging = 1;
+                        //write( "NGSM: -> mA range" );
+                    }
+                }
+
+                // valid measurement
+                // current display format is x.xxxx A 
+                @ENV_NGSM_ActualCurrentDisplay = fVal / 1000;   // mA to A conversion
+            }
+
+            // **** read back voltage output to display the current voltage settings
+            //      and tracking the slider control and display
+            if( isTimerActive( msVoltageDisplayTimer ) )
+            {
+                // timer is running -> prevents update of 'Voltage Display' from output
+                // because voltage output is not stable
+                //write( "NGSM: 'Voltage control' display prevented" );
+            }
+            else
+            {
+                //write( "NGSM: update 'Voltage control' display" );
+                // read back voltage output now from global var (refreshed by NGSM_POWER_vTriggerUpdate())
+                // reading back the NGSM output needs few seconds
+                //write( "NGSM: readback voltage" );
+                iVal = NGSM_POWER_iGetUOut_mV(); // in int
+
+                    // refresh 'VoltageDisplay'
+                @ENV_NGSM_VoltageDisplay = (float)( (float)iVal / 1000 );  // mV to V conversion 
+                    if(NGSM_WriteOutput==2)write( "msCyclicTriggerTimer: refresh voltage %d", iVal );
+
+            }
+
+            // **** restart this function
+            setTimer( msCyclicTriggerTimer, CYCLIC_TIMER_NORMAL_REFRESH_TIME );
+            break;
+
+        default:
+            write( "NGSM: this state %d is unknown", @ENV_NGSM_PowerSupplyState ); 
+            break;
+    }
+}
+
+on timer msDelayOutputOffTimer
+{
+    NGSM_SetOutputControl( FALSE );    // disable NGSM output
+
+    putValue( ENV_NGSM_HelpDisplay, "Power supply output is OFF" );
+}
+
+on timer msDelayPowerOffTimer
+{
+    if( boNgsmConnectionState == CONNECTED )
+    {
+        // ResetEvent, g_boTerminateThread, close the com port
+        NGSM_POWER_vDeInit();
+   
+        // NGSM not longer available
+        boNgsmConnectionState = NOT_CONNECTED;
+
+        @ENV_NGSM_PowerSupplyState = NGSM_DE_INIT;
+        if(NGSM_WriteOutput==1)write( "ENV_NGSM_PowerSupplyState: NGSM_DE_INIT" );
+        putValue( ENV_NGSM_HelpDisplay, "Power supply de-initialized" );
+    }
+}
+
+NGSM_PowerSupplyInit()
+{
+    // initializese the NGSM power supply
+
+    // NGSM support test
+    if( @ENV_NGSM_Support == NGSM_CONTROL_DISABLED )
+    {
+        return; // NGSM support disabled
+    }
+
+    if( boNgsmConnectionState == CONNECTED )
+    {
+        // stops refreshing voltage display (reading from output) until NGSM output has been stabilized
+        setTimer( msVoltageDisplayTimer, 2 * PREVENT_VOLTAGE_DISPLAY_REFRESH_TIME );
+         
+        // sets the output to a start value from NGSM.ini
+        //NGSM_POWER_vSetUOut_mV( fNGSMVoltageInit * 1000 ); // V to mV, data type int
+        NGSM_POWER_vSetUOut_mV( fNGSMVoltageInit); 
+        // initial values for slider 'Voltage Control' and outbox 'VoltageDisplay'
+        @ENV_NGSM_VoltageSliderControl = fNGSMVoltageInit;
+        @ENV_NGSM_VoltageDisplay = fNGSMVoltageInit/1000;
+
+        // select the 'Curve Selection' to 'Normal control'
+        // this will also affect the background color of 'Voltage control' and 'Curve Selection'
+        @ENV_NGSM_SetCurveSelector = NGSM_OUTPUT_12000_CONST;
+        // background of the slider selector       
+        SetControlBackColor( "NGSM", "EnvVar:ENV_NGSM_SetCurveSelector_20", MakeRGB( 255, 255, 255 ) );
+        // and background of the slider voltage control       
+        SetControlBackColor( "NGSM", "EnvVar:ENV_NGSM_VoltageSliderControl", MakeRGB( 192, 192, 192 ) );
+        // and background of the outbox 'VoltageDisplay' weis       
+        SetControlBackColor( "NGSM", "EnvVar:ENV_NGSM_VoltageDisplay", MakeRGB( 255, 255, 255  ) );
+         
+        // sets the output to max current from NGSM.ini 
+        @ENV_NGSM_MaxCurrent = iNGSMMaxCurrentInit;
+        NGSM_POWER_vSetIOutMax_mA( @ENV_NGSM_MaxCurrent );
+
+        // set the current range to A
+        iNGSMCurrentRange = 0;
+        NGSM_POWER_vSetIRange( iNGSMCurrentRange );
+        // wait until measurement vale is stable
+        iNGSMCurrentRangeChanging = 1;
+
+        // activate output directly from start
+        if( iNGSMStartOutput == TRUE )
+        {
+            // NGSM 'output ON' control: output will be activated
+            NGSM_SetOutputControl( TRUE );    // enable NGSM output
+        }
+
+        // NGSM is initialized
+        @ENV_NGSM_PowerSupplyState = NGSM_INIT_OK;
+        if(NGSM_WriteOutput==1)write( "ENV_NGSM_PowerSupplyState: NGSM_INIT_OK" );
+        putValue( ENV_NGSM_HelpDisplay, "Power supply initialized" );
+    }
+    else
+    {
+        write( "NGSM: ERROR: check RS232 connection, NGSM power on switch and COMPORT" );
+        // NGSM couldn't be initialized because of not existing com connection
+        @ENV_NGSM_PowerSupplyState = NGSM_INIT_NOK;
+        write( "ENV_NGSM_PowerSupplyState: NGSM_INIT_NOK" );
+        putValue( ENV_NGSM_HelpDisplay, "NGSM ERROR: init is NOT OK" );
+    }
+}
+
+NGSM_PowerSupplyDeInit()
+{
+    // de-initialize the NGSM power supply
+    // the NGSM controls ('Output Control', 'Curve Selection', ...) will be NOT reset
+
+    if( boNgsmConnectionState == CONNECTED )
+    {
+        // stop all timer
+        //cancelTimer( msCyclicTriggerTimer );
+        cancelTimer( msVoltageSetTimer );
+        cancelTimer( msVoltageDisplayTimer );
+        cancelTimer( msDelayOutputOffTimer );
+        cancelTimer( msDelayPowerOffTimer );
+        // no timer is running now
+
+        // synchronize 'power off', this will also close the comport (started after 400 ms)
+        if(NGSM_WriteOutput==1)write( "NGSM: switches the NGSM OFF" );
+        setTimer( msDelayPowerOffTimer, 400 );
+
+        // status text
+        putValue( ENV_NGSM_HelpDisplay, "Power supply switch is OFF" );
+    }
+}
+
+byte NGSM_boSetConnection()
+{
+    char configDir[1024];
+    char absPath[256];
+    // set a connection to com port (RS2323)
+    byte    boConnection;
+
+    // NGSM support test
+    if( @ENV_NGSM_Support == NGSM_CONTROL_DISABLED )
+    {
+        return NOT_CONNECTED; // NGSM support disabled
+    }
+
+    if(NGSM_WriteOutput==1)write("NGSM: used comport = %d", iNGSMComPort );
+
+    // detects open COM ports
+    // set COM_PORT_ID = iNGSMComPort - 1 if ComPort available and not used
+    switch( NGSM_POWER_iSetComport( iNGSMComPort ) )  // Comport from NGSM.ini
+    {
+        case 0: // com port not available
+            // no connection to NGSM, initializing NGSM makes no sense
+            boConnection = NOT_CONNECTED; 
+            write("NGSM_boSetConnection: ERROR: com port not available" );
+            putValue( ENV_NGSM_HelpDisplay, "ERROR: com port not available" );
+            break;
+
+        case 1: // com port available
+            // initialize NGSM
+            //  Set Path to the Waveform Ini-File
+            getAbsFilePath("", configDir, elcount(configDir)); // Get Path from Simulation
+            getAbsFilePath("NGSM.can", absPath, 256);
+            write ("NODE PATH: %s\n",absPath);
+            write ("DBG-DLL PATH: %s\n",configDir);
+            strncat(configDir,"Models\\Powersupply",elcount(configDir));
+
+            write ("DBG-DLL PATH: %s\n",configDir);
+
+            NGSM_POWER_iSetIniPath(configDir);
+            NGSM_Power_vSetChannel(iNGSMChannel);
+
+            // returns 1 if NGSM power supply has been initialized (and therefore connected),
+            // but this is not a gerantee that the NGSM is (physically) switched ON
+            if( ( boConnection = NGSM_Power_boInit() ) == CONNECTED )
+            {
+                if(NGSM_WriteOutput==1)write("NGSM: connected" );
+                putValue( ENV_NGSM_HelpDisplay, "Power supply connected" );
+            }
+            else
+            {
+                write("NGSM: NOT connected" );
+                putValue( ENV_NGSM_HelpDisplay, "Power supply NOT connected" );
+            }
+            break;
+
+        case 2: // com port available but in use
+            boConnection = NOT_CONNECTED; 
+            write("NGSM: ERROR: com port is in use" );
+            putValue( ENV_NGSM_HelpDisplay, "ERROR: com port is in use" );
+            break;
+
+        default:
+            boConnection = NOT_CONNECTED; 
+            write("NGSM: ERROR: unknown com port state" );
+            putValue( ENV_NGSM_HelpDisplay, "ERROR: unknown com port state" );
+            break;
+    }
+
+    return( boConnection );
+}
+
+NGSM_SetOutputControl( byte boON_OFF )
+{
+    // supports 'output control' switch: enables voltage output
+
+    // NGSM support test
+    if( @ENV_NGSM_Support == NGSM_CONTROL_DISABLED )
+    {
+        return; // NGSM support disabled
+    }
+   
+    if( boON_OFF == TRUE )
+    { 
+        // NGSM output must be enabled
+        NGSM_POWER_vOn();
+
+        // reminder for the 'Output' state, environvariable need also by other CANoe nodes
+        putValue( ENV_NGSM_OutputState, TRUE );
+
+        // ´green ON' to status field
+        putValue( ENV_NGSM_OutputControlDisplay, "ON" );
+        SetControlBackColor( "NGSM", "EnvVar:ENV_NGSM_OutputControlDisplay", MakeRGB( 0, 255, 0 ) );
+        if(NGSM_WriteOutput==1)write( "NGSM: OUTPUT_ON is ON" );
+    }
+    else
+    {
+        // NGSM output must be disabled
+        NGSM_POWER_vOff();
+        // reminder for the 'Output' state, environvariable need also by other CANoe nodes
+        putValue( ENV_NGSM_OutputState, FALSE );
+
+        // gray OFF' to status field
+        putValue( ENV_NGSM_OutputControlDisplay, "OFF" );
+        SetControlBackColor( "NGSM", "EnvVar:ENV_NGSM_OutputControlDisplay", MakeRGB( 192, 192, 192 ) );
+        if(NGSM_WriteOutput==1)write( "NGSM: OUTPUT_ON is OFF" );
+    }
+}
+
+on envVar ENV_NGSM_CurveRetry
+{
+ if(@ENV_NGSM_CurveRetry==1)
+   {
+   NGSM_POWER_vSetRetry(1);
+   if(NGSM_WriteOutput==1)write("NGSM: SetRetry 1");
+   }
+ else
+ {
+  NGSM_POWER_vSetRetry(0);
+  if(NGSM_WriteOutput==1)write("NGSM: SetRetry 0");
+  }
+}
+
+on key 'q'
+{
+    if(NGSM_WriteOutput==1)write( "NGSM: 5.0 V const" );
+    putValue( ENV_NGSM_SetCurveSelector, 13 );
+}
+
+on key 't'
+{
+    if(NGSM_WriteOutput==1)write( "NGSM: 18.5 V const" );
+    putValue( ENV_NGSM_SetCurveSelector, 16 );
+}
+
+on key 'r'
+{
+    if(NGSM_WriteOutput==1)write( "NGSM: 17.0 V const" );
+    putValue( ENV_NGSM_SetCurveSelector, 15 );
+}
+
+on key 'e'
+{
+    if(NGSM_WriteOutput==1)write( "NGSM: 12.0 V const" );
+    putValue( ENV_NGSM_SetCurveSelector, 0 );
+}
+
+on key 'w'
+{
+    if(NGSM_WriteOutput==1)write( "NGSM: 7.5 V const" );
+    putValue( ENV_NGSM_SetCurveSelector, 14 );
+}
+

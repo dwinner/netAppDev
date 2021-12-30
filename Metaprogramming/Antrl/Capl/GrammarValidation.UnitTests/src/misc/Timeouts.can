@@ -1,0 +1,1419 @@
+/*@!Encoding:1252*/
+includes
+{
+  #include "../Lib/Checksum.cin"
+}
+
+variables
+{
+  message Klemmen_Status_01 mKlemmen_Status_01;
+  msTimer tKlemmen_Status_01;
+  const   Klemmen_Status_01CycleTime = 100;
+  byte	  cntKlemmen_Status_01;
+  byte    S_PDU_Klemmen_Status_01[16] = { 0xc3,0xc3,0xc3,0xc3,0xc3,0xc3,0xc3,0xc3,0xc3,0xc3,0xc3,0xc3,0xc3,0xc3,0xc3,0xc3 };
+  
+  message NMH_DispKBI_FS mNMH_DispKBI_FS;
+  msTimer tNMH_DispKBI_FS;
+  const   NMH_DispKBI_FSCycleTime = 200;
+
+  message NMH_Gateway mNMH_Gateway;
+  msTimer tNMH_Gateway;
+  const   NMH_GatewayCycleTime = 100;
+  
+  message NMH_HUD mNMH_HUD;
+  msTimer tNMH_HUD;
+  const   NMH_HUDCycleTime = 200;
+  
+  message NMH_Info_El mNMH_Info_El;
+  msTimer tNMH_Info_El;
+  const   NMH_Info_ElCycleTime = 200;
+  
+  message NMH_Kombi mNMH_Kombi;
+  msTimer tNMH_Kombi;
+  const   NMH_KombiCycleTime = 200;
+
+  message NMH_SmLi_01 mNMH_SmLi_01;
+  msTimer tNMH_SmLi_01;
+  const   NMH_SmLi_01CycleTime = 200;
+  
+  msTimer NM_Timer;
+  byte    Kommunikationsbedarf = 0;
+  msTimer Kommunikationsbedarf_reset;
+  byte    NM_Kommunikation = 0;
+  msTimer NM_Kommunikation_reset;
+  byte    NM_Zustand = 0; // 0 = Bus Sleep Mode / 1 = Repeat Message / 2 = Normal Operation / 3 = Ready Sleep / 4 = Prepare Bus-Sleep Mode
+  mstimer T_aktiv_min;
+  byte    T_aktiv_min_lock = 0;
+  mstimer T_Timeout;
+  byte    T_Timeout_lock;
+  int     T_Timeout_counter;
+  mstimer T_WaitBusSleep;
+  byte    T_WaitBusSleep_lock;
+  int     T_WaitBusSleep_counter;
+  
+  mstimer Busruhe;
+}
+
+on preStart
+{
+  callAllOnEnvVar();
+  
+  @Env_GlobalAppl                                                                 = 0;
+  @Env_GlobalNMH                                                                  = 0;
+  @EnvZAS_Kl_15                                                                   = 0;
+  @EnvZAS_Kl_S                                                                    = 0;
+  @EnvStartWithoutSending                                                         = 1;
+  Unused_Timeout();
+  Global_IL_Timeout(1);
+  
+  send_check_Appl(0);
+}
+
+
+Unused_Timeout()
+{
+  @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_BCM_04                            = 0;
+  @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_BCM_Taster_02                     = 0;
+  @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_BCM_Taster_03                     = 0;
+  @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_Daempfer_05                       = 0;
+  @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_DiETa_01                          = 0;
+  @IL_CAN1::Message_EnableCyclic::ICAS3_Gateway_Display_1_03                      = 0;
+  @IL_CAN1::Message_EnableCyclic::Fahrerdisplay_Kombi_DispKBI_FS_01               = 0;
+  @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_EML_06                            = 0;
+  @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_ESP_10                            = 0;
+  @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_FoD_01                            = 0;
+  @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_Gateway_71                        = 0;
+  @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_Kessy_04                          = 0;
+  @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_Klemmen_Status_01                 = 0; // wird manuell gesendet
+  @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_Klemmen_Status_02                 = 0;
+  @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_Klima_16                          = 0;
+  @IL_CAN1::Message_EnableCyclic::Fahrerdisplay_Kombi_KN_DispKBI_FS               = 0;
+  @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_KN_Gateway                        = 0;
+  @IL_CAN1::Message_EnableCyclic::ICAS3_Gateway_KN_Info_El                        = 0;
+  @IL_CAN1::Message_EnableCyclic::ZR_MIB_TOP_ab_Gen3_KN_Info_El                   = 0;
+  @IL_CAN1::Message_EnableCyclic::SmartLight_01_KN_SmLi_1                         = 0;
+  @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_LiSi_01                           = 0;
+  @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_LWI_01                            = 0;
+  @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_MFL_02                            = 0;
+  @IL_CAN1::Message_EnableCyclic::ICAS3_Gateway_MFL_Anf_01                        = 0;
+  @IL_CAN1::Message_EnableCyclic::ICAS3_Gateway_NavData_04                        = 0;
+  @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_NFC_01                            = 0;
+  @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_NFC_MiKo_01                       = 0;
+  @IL_CAN1::Message_EnableCyclic::ICAS3_Gateway_PSD_04                            = 0;
+  @IL_CAN1::Message_EnableCyclic::ICAS3_Gateway_PSD_05                            = 0;
+  @IL_CAN1::Message_EnableCyclic::ICAS3_Gateway_PSD_LR_01                         = 0;
+  @IL_CAN1::Message_EnableCyclic::ICAS3_Gateway_Radio_01                          = 0;
+  @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_Rear_View_04                      = 0;
+  @IL_CAN1::Message_EnableCyclic::Kombi_Sensorik_Dimmung_01                       = 0;
+  @IL_CAN1::Message_EnableCyclic::SmartLight_01_SmaLi_Response_Frame_01           = 0;
+  @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_Temperaturen_01                   = 0;
+  @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_VIN_01                            = 0;
+  @IL_CAN1::Message_EnableCyclic::Fahrerdisplay_Kombi_WFS_Transponder_Status_02   = 0;
+  @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_WLC1_01                           = 0;
+  @IL_CAN1::Message_EnableCyclic::ICAS3_Gateway_WLC1_01                           = 0;
+  @IL_CAN1::Message_EnableCyclic::ZR_MIB_TOP_ab_Gen3_WLC1_01                      = 0;
+  @IL_CAN1::Message_EnableCyclic::ICAS3_Gateway_Zentralrechner_01                 = 0;
+}
+
+on start
+{
+  
+  settimer (Busruhe,2000); // Bus Ruhe
+  
+  KBI_Panel_Access (@Konfig::Kombi);
+  HUD_Panel_Access (@Konfig::HUD);
+  
+  // Default-Werte ---> wird alles im Knoten Variablenmapping gesetzt
+  
+  @EnvKlemme15 = 1;
+  
+  NM_Zustand = 0;
+  T_aktiv_min_lock = 0;
+  
+  GW_on_off (@Timeout::Gateway);
+  MU_on_off (@Timeout::Mainunit);
+  
+  setTimerCyclic (NM_Timer, 1);
+  setTimerCyclic (tKlemmen_Status_01, Klemmen_Status_01CycleTime);
+  setTimerCyclic (tNMH_DispKBI_FS, NMH_DispKBI_FSCycleTime);
+  setTimerCyclic (tNMH_Gateway, NMH_GatewayCycleTime);
+  setTimerCyclic (tNMH_HUD, NMH_HUDCycleTime);
+  setTimerCyclic (tNMH_Info_El, NMH_Info_ElCycleTime);
+  setTimerCyclic (tNMH_Kombi, NMH_KombiCycleTime);
+  setTimerCyclic (tNMH_SmLi_01, NMH_SmLi_01CycleTime);
+}
+
+KBI_Panel_Access (byte access)
+{
+  enableControl ("FAS_Anzeigen","FAS_Anzeigen_01",                                access);
+  enableControl ("Kombi","Kombi_01",                                              access);
+  enableControl ("Kombi","Kombi_02",                                              access);
+  enableControl ("Kombi","Kombi_03",                                              access);
+  enableControl ("Kombi","Kombi_08",                                              access);
+  enableControl ("Kombi","Kombi_21",                                              access);
+  enableControl ("KN_Kombi","KN_Kombi",                                           access);
+  enableControl ("Kombi_HUD","Kombi_HUD_01",                                      access);
+  enableControl ("NMH_Kombi","NMH_Kombi",                                         access);
+  enableControl ("Sensorik_Dimmung","Sensorik_Dimmung_01",                        access);
+
+  setControlVisibility ("FAS_Anzeigen", "Timeout_FAS_Anzeigen_01",                access);
+  setControlVisibility ("Kombi", "Timeout_Kombi_01",                              access);
+  setControlVisibility ("Kombi", "Timeout_Kombi_02",                              access);
+  setControlVisibility ("Kombi", "Timeout_Kombi_03",                              access);
+  setControlVisibility ("Kombi", "Timeout_Kombi_08",                              access);
+  setControlVisibility ("Kombi", "Timeout_Kombi_21",                              access);
+  setControlVisibility ("KN_Kombi", "Timeout_KN_Kombi",                           access);
+  setControlVisibility ("Kombi_HUD", "Timeout_Kombi_HUD_01",                      access);
+  setControlVisibility ("NMH_Kombi", "Timeout_NMH_Kombi",                         access);
+  setControlVisibility ("Sensorik_Dimmung", "Timeout_Sensorik_Dimmung_01",        access);
+  setControlVisibility ("Timeout","Kombi",                                        access);
+}
+
+HUD_Panel_Access (byte access)
+{
+  enableControl ("KN_HUD","KN_HUD",                                               access);
+  enableControl ("NMH_HUD","NMH_HUD",                                             access);
+  
+  setControlVisibility ("KN_HUD", "Timeout_KN_HUD",                               access);
+  setControlVisibility ("NMH_HUD", "Timeout_NMH_HUD",                             access);
+  setControlVisibility ("Timeout","HUD",                                          access);
+}
+
+on envVar Env_GlobalAppl
+{
+  if ((@Env_GlobalAppl == 1) || (@Env_GlobalNMH == 1))
+    Global_IL_Timeout(0);
+  else
+    Global_IL_Timeout(1);
+  
+  send_check_Appl(@this);
+}
+
+on envVar Env_GlobalNMH
+{
+  if ((@Env_GlobalAppl == 1) || (@Env_GlobalNMH == 1))
+    Global_IL_Timeout(0);
+  else
+    Global_IL_Timeout(1);
+}
+
+on sysvar Konfig::Kombi
+{
+  KBI_Panel_Access (@Konfig::Kombi);
+  send_check_Appl(1);
+}
+
+on sysvar Konfig::HUD
+{
+  HUD_Panel_Access (@Konfig::HUD);
+  send_check_Appl(1);
+}
+
+on envVar Env_Appl_AB_CAN_Send
+{
+  if (@this == 1)
+  {
+    @Timeout_AAA_01                                                    = 0;
+    @Timeout_ACC_19                                                    = 0;
+    @Timeout_AGA_01                                                    = 0;
+    @Timeout_Airbag_01                                                 = 0;
+    @Timeout_Airbag_02                                                 = 0;
+    @Timeout_Airbag_04                                                 = 0;
+    @Timeout_Airbag_06                                                 = 0;
+    @Timeout_Anhaenger_01                                              = 0;
+    @Timeout_ARA_Status_01                                             = 0;
+    @Timeout_AWV_02                                                    = 0;
+    @Timeout_AZK_01                                                    = 0;
+    @Timeout_BCM_01                                                    = 0;
+    @Timeout_BCM_03                                                    = 0;
+    @Timeout_BEM_02                                                    = 0;
+    @Timeout_BEM_06                                                    = 0;
+    @Timeout_Blinkmodi_02                                              = 0;
+    @Timeout_BMS_05                                                    = 0;
+    @Timeout_BMS_07                                                    = 0;
+    @Timeout_Bremse_EV_02                                              = 0;
+    @Timeout_Charisma_03                                               = 0;
+    @Timeout_Daempfer_01                                               = 0;
+    @Timeout_DCDC_02                                                   = 0;
+    @Timeout_Diagnose_01                                               = 0;
+    @Timeout_Dimmung_01                                                = 0;
+    @Timeout_EA_02                                                     = 0;
+    @Timeout_ELV_01                                                    = 0;
+    @Timeout_EML_07                                                    = 0;
+    @Timeout_Entfernungen_01                                           = 0;
+    @Timeout_EPB_03                                                    = 0;
+    @Timeout_ESC_50                                                    = 0;
+    @Timeout_ESC_51                                                    = 0;
+    @Timeout_ESP_20                                                    = 0;
+    @Timeout_ESP_21                                                    = 0;
+    @Timeout_ESP_24                                                    = 0;
+    @Timeout_ESP_30                                                    = 0;
+    @Timeout_FoD_01                                                    = 0;
+    @Timeout_Gateway_73                                                = 0;
+    @Timeout_Getriebe_16                                               = 0;
+    @Timeout_Heckradar_01                                              = 0;
+    @Timeout_HVK_01                                                    = 0;
+    @Timeout_IPA_02                                                    = 0;
+    @Timeout_Klemmen_Status_01                                         = 0;
+    @Timeout_Klemmen_Steuerung_01                                      = 0;
+    @Timeout_Klima_03                                                  = 0;
+    @Timeout_Klima_06                                                  = 0;
+    @Timeout_Klima_12                                                  = 0;
+    @Timeout_Klima_Sensor_02                                           = 0;
+    @Timeout_KonzernrollenModus_01                                     = 0;
+    @Timeout_LDW_02                                                    = 0;
+    @Timeout_LH_EPS_01                                                 = 0;
+    @Timeout_Licht_Anf_01                                              = 0;
+    @Timeout_Licht_hinten_01                                           = 0;
+    @Timeout_Licht_vorne_01                                            = 0;
+    @Timeout_MainUnit_01                                               = 0;
+    @Timeout_Mem_BFS_01                                                = 0;
+    @Timeout_Mem_FS_01                                                 = 0;
+    @Timeout_MFG_01                                                    = 0;
+    @Timeout_MFL_01                                                    = 0;
+    @Timeout_MFL_Tasten_Kon_01                                         = 0;
+    @Timeout_Motor_14                                                  = 0;
+    @Timeout_Motor_18                                                  = 0;
+    @Timeout_Motor_26                                                  = 0;
+    @Timeout_Motor_41                                                  = 0;
+    @Timeout_Motor_51                                                  = 0;
+    @Timeout_Motor_52                                                  = 0;
+    @Timeout_Motor_53                                                  = 0;
+    @Timeout_Motor_54                                                  = 0;
+    @Timeout_Motor_57                                                  = 0;
+    @Timeout_Motor_Hybrid_06                                           = 0;
+    @Timeout_ORU_01                                                    = 0;
+    @Timeout_Parkhilfe_01                                              = 0;
+    @Timeout_Parkhilfe_04                                              = 0;
+    @Timeout_Personalisierung_01                                       = 0;
+    @Timeout_PreCrash_02                                               = 0;
+    @Timeout_PSD_06                                                    = 0;
+    @Timeout_Rear_View_06                                              = 0;
+    @Timeout_Reichweite_01                                             = 0;
+    @Timeout_Reichweite_02                                             = 0;
+    @Timeout_Reichweite_03                                             = 0;
+    @Timeout_RKA_01                                                    = 0;
+    @Timeout_RLS_01                                                    = 0;
+    @Timeout_RLS_02                                                    = 0;
+    @Timeout_SAL_01                                                    = 0;
+    @Timeout_SAM_01                                                    = 0;
+    @Timeout_SMLS_01                                                   = 0;
+    @Timeout_Systeminfo_01                                             = 0;
+    @Timeout_TA_01                                                     = 0;
+    @Timeout_Thermo_Verbrauch_01                                       = 0;
+    @Timeout_TM_01                                                     = 0;
+    @Timeout_TSG_BT_01                                                 = 0;
+    @Timeout_TSG_FT_01                                                 = 0;
+    @Timeout_TSG_FT_02                                                 = 0;
+    @Timeout_TSG_HBFS_01                                               = 0;
+    @Timeout_TSG_HFS_01                                                = 0;
+    @Timeout_UserStateServer_01                                        = 0;
+    @Timeout_VLK_01                                                    = 0;
+    @Timeout_VZE_04                                                    = 0;
+    @Timeout_WBA_03                                                    = 0;
+    @Timeout_WFS_01                                                    = 0;
+    @Timeout_Wischer_01                                                = 0;
+    @Timeout_Zeitmaster_02                                             = 0;
+    @Timeout_ZV_02                                                     = 0;
+    @Timeout_ZV_04                                                     = 0;
+    
+    @Timeout_FAS_Anzeigen_01                                           = 0;
+    @Timeout_KN_Kombi                                                  = 0;
+    @Timeout_Kombi_01                                                  = 0;
+    @Timeout_Kombi_02                                                  = 0;
+    @Timeout_Kombi_03                                                  = 0;
+    @Timeout_Kombi_08                                                  = 0;
+    @Timeout_Kombi_21                                                  = 0;
+    @Timeout_Kombi_HUD_01                                              = 0;
+    @Timeout_Sensorik_Dimmung_01                                       = 0;
+    
+    @Timeout_KN_HUD                                                    = 0;
+  }
+}
+
+on envVar Env_Appl_AB_CAN_Timeout
+{
+  if (@this == 1)
+  {
+    @Timeout_AAA_01                                                    = 1;
+    @Timeout_ACC_19                                                    = 1;
+    @Timeout_AGA_01                                                    = 1;
+    @Timeout_Airbag_01                                                 = 1;
+    @Timeout_Airbag_02                                                 = 1;
+    @Timeout_Airbag_04                                                 = 1;
+    @Timeout_Airbag_06                                                 = 1;
+    @Timeout_Anhaenger_01                                              = 1;
+    @Timeout_ARA_Status_01                                             = 1;
+    @Timeout_AWV_02                                                    = 1;
+    @Timeout_AZK_01                                                    = 1;
+    @Timeout_BCM_01                                                    = 1;
+    @Timeout_BCM_03                                                    = 1;
+    @Timeout_BEM_02                                                    = 1;
+    @Timeout_BEM_06                                                    = 1;
+    @Timeout_Blinkmodi_02                                              = 1;
+    @Timeout_BMS_05                                                    = 1;
+    @Timeout_BMS_07                                                    = 1;
+    @Timeout_Bremse_EV_02                                              = 1;
+    @Timeout_Charisma_03                                               = 1;
+    @Timeout_Daempfer_01                                               = 1;
+    @Timeout_DCDC_02                                                   = 1;
+    @Timeout_Diagnose_01                                               = 1;
+    @Timeout_Dimmung_01                                                = 1;
+    @Timeout_EA_02                                                     = 1;
+    @Timeout_ELV_01                                                    = 1;
+    @Timeout_EML_07                                                    = 1;
+    @Timeout_Entfernungen_01                                           = 1;
+    @Timeout_EPB_03                                                    = 1;
+    @Timeout_ESC_50                                                    = 1;
+    @Timeout_ESC_51                                                    = 1;
+    @Timeout_ESP_20                                                    = 1;
+    @Timeout_ESP_21                                                    = 1;
+    @Timeout_ESP_24                                                    = 1;
+    @Timeout_ESP_30                                                    = 1;
+    @Timeout_FoD_01                                                    = 1;
+    @Timeout_Gateway_73                                                = 1;
+    @Timeout_Getriebe_16                                               = 1;
+    @Timeout_Heckradar_01                                              = 1;
+    @Timeout_HVK_01                                                    = 1;
+    @Timeout_IPA_02                                                    = 1;
+    @Timeout_Klemmen_Status_01                                         = 1;
+    @Timeout_Klemmen_Steuerung_01                                      = 1;
+    @Timeout_Klima_03                                                  = 1;
+    @Timeout_Klima_06                                                  = 1;
+    @Timeout_Klima_12                                                  = 1;
+    @Timeout_Klima_Sensor_02                                           = 1;
+    @Timeout_KonzernrollenModus_01                                     = 1;
+    @Timeout_LDW_02                                                    = 1;
+    @Timeout_LH_EPS_01                                                 = 1;
+    @Timeout_Licht_Anf_01                                              = 1;
+    @Timeout_Licht_hinten_01                                           = 1;
+    @Timeout_Licht_vorne_01                                            = 1;
+    @Timeout_MainUnit_01                                               = 1;
+    @Timeout_Mem_BFS_01                                                = 1;
+    @Timeout_Mem_FS_01                                                 = 1;
+    @Timeout_MFG_01                                                    = 1;
+    @Timeout_MFL_01                                                    = 1;
+    @Timeout_MFL_Tasten_Kon_01                                         = 1;
+    @Timeout_Motor_14                                                  = 1;
+    @Timeout_Motor_18                                                  = 1;
+    @Timeout_Motor_26                                                  = 1;
+    @Timeout_Motor_41                                                  = 1;
+    @Timeout_Motor_51                                                  = 1;
+    @Timeout_Motor_52                                                  = 1;
+    @Timeout_Motor_53                                                  = 1;
+    @Timeout_Motor_54                                                  = 1;
+    @Timeout_Motor_57                                                  = 1;
+    @Timeout_Motor_Hybrid_06                                           = 1;
+    @Timeout_ORU_01                                                    = 1;
+    @Timeout_Parkhilfe_01                                              = 1;
+    @Timeout_Parkhilfe_04                                              = 1;
+    @Timeout_Personalisierung_01                                       = 1;
+    @Timeout_PreCrash_02                                               = 1;
+    @Timeout_PSD_06                                                    = 1;
+    @Timeout_Rear_View_06                                              = 1;
+    @Timeout_Reichweite_01                                             = 1;
+    @Timeout_Reichweite_02                                             = 1;
+    @Timeout_Reichweite_03                                             = 1;
+    @Timeout_RKA_01                                                    = 1;
+    @Timeout_RLS_01                                                    = 1;
+    @Timeout_RLS_02                                                    = 1;
+    @Timeout_SAL_01                                                    = 1;
+    @Timeout_SAM_01                                                    = 1;
+    @Timeout_SMLS_01                                                   = 1;
+    @Timeout_Systeminfo_01                                             = 1;
+    @Timeout_TA_01                                                     = 1;
+    @Timeout_Thermo_Verbrauch_01                                       = 1;
+    @Timeout_TM_01                                                     = 1;
+    @Timeout_TSG_BT_01                                                 = 1;
+    @Timeout_TSG_FT_01                                                 = 1;
+    @Timeout_TSG_FT_02                                                 = 1;
+    @Timeout_TSG_HBFS_01                                               = 1;
+    @Timeout_TSG_HFS_01                                                = 1;
+    @Timeout_UserStateServer_01                                        = 1;
+    @Timeout_VLK_01                                                    = 1;
+    @Timeout_VZE_04                                                    = 1;
+    @Timeout_WBA_03                                                    = 1;
+    @Timeout_WFS_01                                                    = 1;
+    @Timeout_Wischer_01                                                = 1;
+    @Timeout_Zeitmaster_02                                             = 1;
+    @Timeout_ZV_02                                                     = 1;
+    @Timeout_ZV_04                                                     = 1;
+    
+    @Timeout_FAS_Anzeigen_01                                           = 1;
+    @Timeout_KN_Kombi                                                  = 1;
+    @Timeout_Kombi_01                                                  = 1;
+    @Timeout_Kombi_02                                                  = 1;
+    @Timeout_Kombi_03                                                  = 1;
+    @Timeout_Kombi_08                                                  = 1;
+    @Timeout_Kombi_21                                                  = 1;
+    @Timeout_Kombi_HUD_01                                              = 1;
+    @Timeout_Sensorik_Dimmung_01                                       = 1;
+    
+    @Timeout_KN_HUD                                                    = 1;
+  }
+}
+
+on envVar Env_NMH_AB_CAN_Send
+{
+  if (@this == 1)
+  {
+    @Timeout_NMH_DispKBI_FS                                            = 0;
+    @Timeout_NMH_Gateway                                               = 0;
+    @Timeout_NMH_ICAS3Sys01                                            = 0;
+    @Timeout_NMH_Info_El                                               = 0;
+    @Timeout_NMH_SmLi_01                                               = 0;
+    
+    @Timeout_NMH_HUD                                                   = 0;
+    @Timeout_NMH_Kombi                                                 = 0;
+  }
+}
+
+on envVar Env_NMH_AB_CAN_Timeout
+{
+  if (@this == 1)
+  {
+    @Timeout_NMH_DispKBI_FS                                            = 1;
+    @Timeout_NMH_Gateway                                               = 1;
+    @Timeout_NMH_ICAS3Sys01                                            = 1;
+    @Timeout_NMH_Info_El                                               = 1;
+    @Timeout_NMH_SmLi_01                                               = 1;
+    
+    @Timeout_NMH_HUD                                                   = 1;
+    @Timeout_NMH_Kombi                                                 = 1;
+  }
+}
+
+send_check_Appl(byte state)
+{
+  // Appl
+  if ((state == 1) && (@Env_GlobalAppl == 1))
+  {
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_AAA_01               = !@Timeout_AAA_01;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_ACC_19               = !@Timeout_ACC_19;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_AGA_01               = !@Timeout_AGA_01;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_Airbag_01            = !@Timeout_Airbag_01;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_Airbag_02            = !@Timeout_Airbag_02;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_Airbag_04            = !@Timeout_Airbag_04;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_Airbag_06            = !@Timeout_Airbag_06;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_Anhaenger_01         = !@Timeout_Anhaenger_01;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_ARA_Status_01        = !@Timeout_ARA_Status_01;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_AWV_02               = !@Timeout_AWV_02;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_AZK_01               = !@Timeout_AZK_01;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_BCM_01               = !@Timeout_BCM_01;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_BCM_03               = !@Timeout_BCM_03;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_BEM_02               = !@Timeout_BEM_02;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_BEM_06               = !@Timeout_BEM_06;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_Blinkmodi_02         = !@Timeout_Blinkmodi_02;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_BMS_05               = !@Timeout_BMS_05;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_BMS_07               = !@Timeout_BMS_07;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_Bremse_EV_02         = !@Timeout_Bremse_EV_02;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_Charisma_03          = !@Timeout_Charisma_03;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_Daempfer_01          = !@Timeout_Daempfer_01;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_DCDC_02              = !@Timeout_DCDC_02;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_Diagnose_01          = !@Timeout_Diagnose_01;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_Dimmung_01           = !@Timeout_Dimmung_01;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_EA_02                = !@Timeout_EA_02;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_ELV_01               = !@Timeout_ELV_01;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_EML_07               = !@Timeout_EML_07;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_Entfernungen_01      = !@Timeout_Entfernungen_01;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_EPB_03               = !@Timeout_EPB_03;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_ESC_50               = !@Timeout_ESC_50;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_ESC_51               = !@Timeout_ESC_51;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_ESP_20               = !@Timeout_ESP_20;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_ESP_21               = !@Timeout_ESP_21;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_ESP_24               = !@Timeout_ESP_24;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_ESP_30               = !@Timeout_ESP_30;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_Gateway_73           = !@Timeout_Gateway_73;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_Getriebe_16          = !@Timeout_Getriebe_16;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_Heckradar_01         = !@Timeout_Heckradar_01;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_HVK_01               = !@Timeout_HVK_01;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_IPA_02               = !@Timeout_IPA_02;
+  //@IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_Klemmen_Status_01    = !@Timeout_Klemmen_Status_01;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_Klemmen_Steuerung_01 = !@Timeout_Klemmen_Steuerung_01;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_Klima_03             = !@Timeout_Klima_03;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_Klima_06             = !@Timeout_Klima_06;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_Klima_12             = !@Timeout_Klima_12;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_Klima_Sensor_02      = !@Timeout_Klima_Sensor_02;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_KonzernrollenModus_01= !@Timeout_KonzernrollenModus_01;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_LDW_02               = !@Timeout_LDW_02;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_LH_EPS_01            = !@Timeout_LH_EPS_01;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_Licht_Anf_01         = !@Timeout_Licht_Anf_01;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_Licht_hinten_01      = !@Timeout_Licht_hinten_01;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_Licht_vorne_01       = !@Timeout_Licht_vorne_01;
+    @IL_CAN1::Message_EnableCyclic::ICAS3_Gateway_MainUnit_01          = !@Timeout_MainUnit_01;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_Mem_BFS_01           = !@Timeout_Mem_BFS_01;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_Mem_FS_01            = !@Timeout_Mem_FS_01;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_MFG_01               = !@Timeout_MFG_01;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_MFL_01               = !@Timeout_MFL_01;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_MFL_Tasten_Kon_01    = !@Timeout_MFL_Tasten_Kon_01;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_Motor_14             = !@Timeout_Motor_14;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_Motor_18             = !@Timeout_Motor_18;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_Motor_26             = !@Timeout_Motor_26;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_Motor_41             = !@Timeout_Motor_41;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_Motor_51             = !@Timeout_Motor_51;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_Motor_52             = !@Timeout_Motor_52;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_Motor_53             = !@Timeout_Motor_53;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_Motor_54             = !@Timeout_Motor_54;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_Motor_57             = !@Timeout_Motor_57;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_Motor_Hybrid_06      = !@Timeout_Motor_Hybrid_06;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_ORU_01               = !@Timeout_ORU_01;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_Parkhilfe_01         = !@Timeout_Parkhilfe_01;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_Parkhilfe_04         = !@Timeout_Parkhilfe_04;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_Personalisierung_01  = !@Timeout_Personalisierung_01;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_PreCrash_02          = !@Timeout_PreCrash_02;
+    @IL_CAN1::Message_EnableCyclic::ICAS3_Gateway_PSD_06               = !@Timeout_PSD_06;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_Rear_View_06         = !@Timeout_Rear_View_06;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_Reichweite_01        = !@Timeout_Reichweite_01;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_Reichweite_02        = !@Timeout_Reichweite_02;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_Reichweite_03        = !@Timeout_Reichweite_03;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_RKA_01               = !@Timeout_RKA_01;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_RLS_01               = !@Timeout_RLS_01;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_RLS_02               = !@Timeout_RLS_02;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_SAL_01               = !@Timeout_SAL_01;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_SAM_01               = !@Timeout_SAM_01;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_SMLS_01              = !@Timeout_SMLS_01;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_Systeminfo_01        = !@Timeout_Systeminfo_01;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_TA_01                = !@Timeout_TA_01;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_Thermo_Verbrauch_01  = !@Timeout_Thermo_Verbrauch_01;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_TM_01                = !@Timeout_TM_01;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_TSG_BT_01            = !@Timeout_TSG_BT_01;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_TSG_FT_01            = !@Timeout_TSG_FT_01;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_TSG_FT_02            = !@Timeout_TSG_FT_02;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_TSG_HBFS_01          = !@Timeout_TSG_HBFS_01;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_TSG_HFS_01           = !@Timeout_TSG_HFS_01;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_UserStateServer_01   = !@Timeout_UserStateServer_01;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_VLK_01               = !@Timeout_VLK_01;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_VZE_04               = !@Timeout_VZE_04;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_WBA_03               = !@Timeout_WBA_03;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_WFS_01               = !@Timeout_WFS_01;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_Wischer_01           = !@Timeout_Wischer_01;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_Zeitmaster_02        = !@Timeout_Zeitmaster_02;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_ZV_02                = !@Timeout_ZV_02;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_ZV_04                = !@Timeout_ZV_04;
+    
+    // Kombi Botschaften
+    if (@Konfig::Kombi == 1)
+    {
+      @IL_CAN1::Message_EnableCyclic::Kombi_FAS_Anzeigen_01            = !@Timeout_FAS_Anzeigen_01;
+      @IL_CAN1::Message_EnableCyclic::Kombi_KN_Kombi                   = !@Timeout_KN_Kombi;
+      @IL_CAN1::Message_EnableCyclic::Kombi_Kombi_01                   = !@Timeout_Kombi_01;
+      @IL_CAN1::Message_EnableCyclic::Kombi_Kombi_02                   = !@Timeout_Kombi_02;
+      @IL_CAN1::Message_EnableCyclic::Kombi_Kombi_03                   = !@Timeout_Kombi_03;
+      @IL_CAN1::Message_EnableCyclic::Kombi_Kombi_08                   = !@Timeout_Kombi_08;
+      @IL_CAN1::Message_EnableCyclic::Kombi_Kombi_21                   = !@Timeout_Kombi_21;
+      @IL_CAN1::Message_EnableCyclic::Kombi_Kombi_HUD_01               = !@Timeout_Kombi_HUD_01;
+      @IL_CAN1::Message_EnableCyclic::Fahrerdisplay_Kombi_Sensorik_Dimmung_01 = !@Timeout_Sensorik_Dimmung_01;
+    }
+    else
+    {
+      @IL_CAN1::Message_EnableCyclic::Kombi_FAS_Anzeigen_01            = 0;
+      @IL_CAN1::Message_EnableCyclic::Kombi_KN_Kombi                   = 0;
+      @IL_CAN1::Message_EnableCyclic::Kombi_Kombi_01                   = 0;
+      @IL_CAN1::Message_EnableCyclic::Kombi_Kombi_02                   = 0;
+      @IL_CAN1::Message_EnableCyclic::Kombi_Kombi_03                   = 0;
+      @IL_CAN1::Message_EnableCyclic::Kombi_Kombi_08                   = 0;
+      @IL_CAN1::Message_EnableCyclic::Kombi_Kombi_21                   = 0;
+      @IL_CAN1::Message_EnableCyclic::Kombi_Kombi_HUD_01               = 0;
+      @IL_CAN1::Message_EnableCyclic::Fahrerdisplay_Kombi_Sensorik_Dimmung_01 = 0;
+    }
+
+    // HUD Botschaften
+    if (@Konfig::HUD == 1)
+    {
+      @IL_CAN1::Message_EnableCyclic::HUD_KN_HUD                       = !@Timeout_KN_HUD;
+    }
+    else
+    {
+      @IL_CAN1::Message_EnableCyclic::HUD_KN_HUD                       = 0;
+    }
+  }
+
+  else
+  {
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_AAA_01               = 0;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_ACC_19               = 0;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_AGA_01               = 0;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_Airbag_01            = 0;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_Airbag_02            = 0;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_Airbag_04            = 0;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_Airbag_06            = 0;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_Anhaenger_01         = 0;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_ARA_Status_01        = 0;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_AWV_02               = 0;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_AZK_01               = 0;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_BCM_01               = 0;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_BCM_03               = 0;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_BEM_02               = 0;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_BEM_06               = 0;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_Blinkmodi_02         = 0;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_BMS_05               = 0;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_BMS_07               = 0;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_Bremse_EV_02         = 0;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_Charisma_03          = 0;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_Daempfer_01          = 0;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_DCDC_02              = 0;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_Diagnose_01          = 0;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_Dimmung_01           = 0;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_EA_02                = 0;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_ELV_01               = 0;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_EML_07               = 0;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_Entfernungen_01      = 0;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_EPB_03               = 0;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_ESC_50               = 0;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_ESC_51               = 0;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_ESP_20               = 0;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_ESP_21               = 0;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_ESP_24               = 0;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_ESP_30               = 0;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_Gateway_73           = 0;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_Getriebe_16          = 0;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_Heckradar_01         = 0;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_HVK_01               = 0;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_IPA_02               = 0;
+  //@IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_Klemmen_Status_01    = 0;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_Klemmen_Steuerung_01 = 0;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_Klima_03             = 0;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_Klima_06             = 0;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_Klima_12             = 0;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_Klima_Sensor_02      = 0;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_KonzernrollenModus_01= 0;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_LDW_02               = 0;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_LH_EPS_01            = 0;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_Licht_Anf_01         = 0;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_Licht_hinten_01      = 0;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_Licht_vorne_01       = 0;
+    @IL_CAN1::Message_EnableCyclic::ICAS3_Gateway_MainUnit_01          = 0;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_Mem_BFS_01           = 0;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_Mem_FS_01            = 0;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_MFG_01               = 0;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_MFL_01               = 0;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_MFL_Tasten_Kon_01    = 0;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_Motor_14             = 0;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_Motor_18             = 0;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_Motor_26             = 0;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_Motor_41             = 0;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_Motor_51             = 0;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_Motor_52             = 0;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_Motor_53             = 0;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_Motor_54             = 0;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_Motor_57             = 0;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_Motor_Hybrid_06      = 0;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_ORU_01               = 0;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_Parkhilfe_01         = 0;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_Parkhilfe_04         = 0;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_Personalisierung_01  = 0;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_PreCrash_02          = 0;
+    @IL_CAN1::Message_EnableCyclic::ICAS3_Gateway_PSD_06               = 0;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_Rear_View_06         = 0;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_Reichweite_01        = 0;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_Reichweite_02        = 0;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_Reichweite_03        = 0;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_RKA_01               = 0;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_RLS_01               = 0;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_RLS_02               = 0;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_SAL_01               = 0;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_SAM_01               = 0;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_SMLS_01              = 0;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_Systeminfo_01        = 0;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_TA_01                = 0;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_Thermo_Verbrauch_01  = 0;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_TM_01                = 0;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_TSG_BT_01            = 0;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_TSG_FT_01            = 0;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_TSG_FT_02            = 0;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_TSG_HBFS_01          = 0;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_TSG_HFS_01           = 0;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_UserStateServer_01   = 0;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_VLK_01               = 0;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_VZE_04               = 0;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_WBA_03               = 0;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_WFS_01               = 0;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_Wischer_01           = 0;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_Zeitmaster_02        = 0;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_ZV_02                = 0;
+    @IL_CAN1::Message_EnableCyclic::ICAS1_Gateway_ZV_04                = 0;
+
+    @IL_CAN1::Message_EnableCyclic::Kombi_FAS_Anzeigen_01              = 0;
+    @IL_CAN1::Message_EnableCyclic::Kombi_KN_Kombi                     = 0;
+    @IL_CAN1::Message_EnableCyclic::Kombi_Kombi_01                     = 0;
+    @IL_CAN1::Message_EnableCyclic::Kombi_Kombi_02                     = 0;
+    @IL_CAN1::Message_EnableCyclic::Kombi_Kombi_03                     = 0;
+    @IL_CAN1::Message_EnableCyclic::Kombi_Kombi_08                     = 0;
+    @IL_CAN1::Message_EnableCyclic::Kombi_Kombi_21                     = 0;
+    @IL_CAN1::Message_EnableCyclic::Kombi_Kombi_HUD_01                 = 0;
+    @IL_CAN1::Message_EnableCyclic::Fahrerdisplay_Kombi_Sensorik_Dimmung_01 = 0;
+
+    @IL_CAN1::Message_EnableCyclic::HUD_KN_HUD                         = 0;
+  }
+}
+
+Global_IL_Timeout(byte timeout)
+{
+  @IL_CAN1::EnableNode::BAP_Tester                                     = !timeout;
+  @IL_CAN1::EnableNode::Fahrerdisplay_Kombi                            = !timeout;
+  @IL_CAN1::EnableNode::HUD                                            = !timeout;
+  @IL_CAN1::EnableNode::ICAS1_Gateway                                  = !timeout;
+  @IL_CAN1::EnableNode::ICAS3_Gateway                                  = !timeout;
+  @IL_CAN1::EnableNode::Kombi                                          = !timeout;
+  @IL_CAN1::EnableNode::SmartLight_01                                  = !timeout;
+  @IL_CAN1::EnableNode::ZR_MIB_TOP_ab_Gen3                             = !timeout;
+  @IL_CAN1::enable_AllNodes                                            = !timeout;
+}
+
+
+on stopMeasurement
+{
+  Global_IL_Timeout(0);
+}
+
+
+on EnvVar Timeout_AAA_01                                               { send_check_Appl(1); }
+on EnvVar Timeout_ACC_19                                               { send_check_Appl(1); }
+on EnvVar Timeout_AGA_01                                               { send_check_Appl(1); }
+on EnvVar Timeout_Airbag_01                                            { send_check_Appl(1); }
+on EnvVar Timeout_Airbag_02                                            { send_check_Appl(1); }
+on EnvVar Timeout_Airbag_04                                            { send_check_Appl(1); }
+on EnvVar Timeout_Airbag_06                                            { send_check_Appl(1); }
+on EnvVar Timeout_Anhaenger_01                                         { send_check_Appl(1); }
+on EnvVar Timeout_ARA_Status_01                                        { send_check_Appl(1); }
+on EnvVar Timeout_AWV_02                                               { send_check_Appl(1); }
+on EnvVar Timeout_AZK_01                                               { send_check_Appl(1); }
+on EnvVar Timeout_BCM_01                                               { send_check_Appl(1); }
+on EnvVar Timeout_BCM_03                                               { send_check_Appl(1); }
+on EnvVar Timeout_BEM_02                                               { send_check_Appl(1); }
+on EnvVar Timeout_BEM_06                                               { send_check_Appl(1); }
+on EnvVar Timeout_Blinkmodi_02                                         { send_check_Appl(1); }
+on EnvVar Timeout_BMS_05                                               { send_check_Appl(1); }
+on EnvVar Timeout_BMS_07                                               { send_check_Appl(1); }
+on EnvVar Timeout_Bremse_EV_02                                         { send_check_Appl(1); }
+on EnvVar Timeout_Charisma_03                                          { send_check_Appl(1); }
+on EnvVar Timeout_Daempfer_01                                          { send_check_Appl(1); }
+on EnvVar Timeout_DCDC_02                                              { send_check_Appl(1); }
+on EnvVar Timeout_Diagnose_01                                          { send_check_Appl(1); }
+on EnvVar Timeout_Dimmung_01                                           { send_check_Appl(1); }
+on EnvVar Timeout_EA_02                                                { send_check_Appl(1); }
+on EnvVar Timeout_ELV_01                                               { send_check_Appl(1); }
+on EnvVar Timeout_EML_07                                               { send_check_Appl(1); }
+on EnvVar Timeout_Entfernungen_01                                      { send_check_Appl(1); }
+on EnvVar Timeout_EPB_03                                               { send_check_Appl(1); }
+on EnvVar Timeout_ESC_50                                               { send_check_Appl(1); }
+on EnvVar Timeout_ESC_51                                               { send_check_Appl(1); }
+on EnvVar Timeout_ESP_20                                               { send_check_Appl(1); }
+on EnvVar Timeout_ESP_21                                               { send_check_Appl(1); }
+on EnvVar Timeout_ESP_24                                               { send_check_Appl(1); }
+on EnvVar Timeout_ESP_30                                               { send_check_Appl(1); }
+on EnvVar Timeout_Gateway_73                                           { send_check_Appl(1); }
+on EnvVar Timeout_Getriebe_16                                          { send_check_Appl(1); }
+on EnvVar Timeout_Heckradar_01                                         { send_check_Appl(1); }
+on EnvVar Timeout_HVK_01                                               { send_check_Appl(1); }
+on EnvVar Timeout_IPA_02                                               { send_check_Appl(1); }
+on EnvVar Timeout_Klemmen_Status_01                                    { send_check_Appl(1); }
+on EnvVar Timeout_Klemmen_Steuerung_01                                 { send_check_Appl(1); }
+on EnvVar Timeout_Klima_03                                             { send_check_Appl(1); }
+on EnvVar Timeout_Klima_06                                             { send_check_Appl(1); }
+on EnvVar Timeout_Klima_12                                             { send_check_Appl(1); }
+on EnvVar Timeout_Klima_Sensor_02                                      { send_check_Appl(1); }
+on EnvVar Timeout_KonzernrollenModus_01                                { send_check_Appl(1); }
+on EnvVar Timeout_LDW_02                                               { send_check_Appl(1); }
+on EnvVar Timeout_LH_EPS_01                                            { send_check_Appl(1); }
+on EnvVar Timeout_Licht_Anf_01                                         { send_check_Appl(1); }
+on EnvVar Timeout_Licht_hinten_01                                      { send_check_Appl(1); }
+on EnvVar Timeout_Licht_vorne_01                                       { send_check_Appl(1); }
+on EnvVar Timeout_MainUnit_01                                          { send_check_Appl(1); }
+on EnvVar Timeout_Mem_BFS_01                                           { send_check_Appl(1); }
+on EnvVar Timeout_Mem_FS_01                                            { send_check_Appl(1); }
+on EnvVar Timeout_MFG_01                                               { send_check_Appl(1); }
+on EnvVar Timeout_MFL_01                                               { send_check_Appl(1); }
+on EnvVar Timeout_MFL_Tasten_Kon_01                                    { send_check_Appl(1); }
+on EnvVar Timeout_Motor_14                                             { send_check_Appl(1); }
+on EnvVar Timeout_Motor_18                                             { send_check_Appl(1); }
+on EnvVar Timeout_Motor_26                                             { send_check_Appl(1); }
+on EnvVar Timeout_Motor_41                                             { send_check_Appl(1); }
+on EnvVar Timeout_Motor_51                                             { send_check_Appl(1); }
+on EnvVar Timeout_Motor_52                                             { send_check_Appl(1); }
+on EnvVar Timeout_Motor_53                                             { send_check_Appl(1); }
+on EnvVar Timeout_Motor_54                                             { send_check_Appl(1); }
+on EnvVar Timeout_Motor_57                                             { send_check_Appl(1); }
+on EnvVar Timeout_Motor_Hybrid_06                                      { send_check_Appl(1); }
+on EnvVar Timeout_ORU_01                                               { send_check_Appl(1); }
+on EnvVar Timeout_Parkhilfe_01                                         { send_check_Appl(1); }
+on EnvVar Timeout_Parkhilfe_04                                         { send_check_Appl(1); }
+on EnvVar Timeout_Personalisierung_01                                  { send_check_Appl(1); }
+on EnvVar Timeout_PreCrash_02                                          { send_check_Appl(1); }
+on EnvVar Timeout_PSD_06                                               { send_check_Appl(1); }
+on EnvVar Timeout_Rear_View_06                                         { send_check_Appl(1); }
+on EnvVar Timeout_Reichweite_01                                        { send_check_Appl(1); }
+on EnvVar Timeout_Reichweite_02                                        { send_check_Appl(1); }
+on EnvVar Timeout_Reichweite_03                                        { send_check_Appl(1); }
+on EnvVar Timeout_RKA_01                                               { send_check_Appl(1); }
+on EnvVar Timeout_RLS_01                                               { send_check_Appl(1); }
+on EnvVar Timeout_RLS_02                                               { send_check_Appl(1); }
+on EnvVar Timeout_SAL_01                                               { send_check_Appl(1); }
+on EnvVar Timeout_SAM_01                                               { send_check_Appl(1); }
+on EnvVar Timeout_SMLS_01                                              { send_check_Appl(1); }
+on EnvVar Timeout_Systeminfo_01                                        { send_check_Appl(1); }
+on EnvVar Timeout_TA_01                                                { send_check_Appl(1); }
+on EnvVar Timeout_Thermo_Verbrauch_01                                  { send_check_Appl(1); }
+on EnvVar Timeout_TM_01                                                { send_check_Appl(1); }
+on EnvVar Timeout_TSG_BT_01                                            { send_check_Appl(1); }
+on EnvVar Timeout_TSG_FT_01                                            { send_check_Appl(1); }
+on EnvVar Timeout_TSG_FT_02                                            { send_check_Appl(1); }
+on EnvVar Timeout_TSG_HBFS_01                                          { send_check_Appl(1); }
+on EnvVar Timeout_TSG_HFS_01                                           { send_check_Appl(1); }
+on EnvVar Timeout_UserStateServer_01                                   { send_check_Appl(1); }
+on EnvVar Timeout_VLK_01                                               { send_check_Appl(1); }
+on EnvVar Timeout_VZE_04                                               { send_check_Appl(1); }
+on EnvVar Timeout_WBA_03                                               { send_check_Appl(1); }
+on EnvVar Timeout_WFS_01                                               { send_check_Appl(1); }
+on EnvVar Timeout_Wischer_01                                           { send_check_Appl(1); }
+on EnvVar Timeout_Zeitmaster_02                                        { send_check_Appl(1); }
+on EnvVar Timeout_ZV_02                                                { send_check_Appl(1); }
+on EnvVar Timeout_ZV_04                                                { send_check_Appl(1); }
+
+on EnvVar Timeout_FAS_Anzeigen_01                                      { send_check_Appl(1); }
+on EnvVar Timeout_KN_Kombi                                             { send_check_Appl(1); }
+on EnvVar Timeout_Kombi_01                                             { send_check_Appl(1); }
+on EnvVar Timeout_Kombi_02                                             { send_check_Appl(1); }
+on EnvVar Timeout_Kombi_03                                             { send_check_Appl(1); }
+on EnvVar Timeout_Kombi_08                                             { send_check_Appl(1); }
+on EnvVar Timeout_Kombi_21                                             { send_check_Appl(1); }
+on EnvVar Timeout_Kombi_HUD_01                                         { send_check_Appl(1); }
+on EnvVar Timeout_Sensorik_Dimmung_01                                  { send_check_Appl(1); }
+                                                                    
+on EnvVar Timeout_KN_HUD                                               { send_check_Appl(1); }
+
+
+
+
+
+
+//// MU Timeout ////
+
+on sysvar Timeout::Mainunit
+{
+  MU_on_off (@this);
+}
+
+MU_on_off (byte status)
+{
+  @Timeout_MainUnit_01                                                 = status;
+  @Timeout_NMH_Info_El                                                 = status;
+  @Timeout_PSD_06                                                      = status;
+}
+
+
+
+
+//// GW Timeout ////
+
+on sysvar Timeout::Gateway
+{
+  GW_on_off (@this);
+}
+
+GW_on_off (byte status)
+{
+  @Timeout_AZK_01                                                      = status;
+  @Timeout_BCM_03                                                      = status;
+  @Timeout_BEM_02                                                      = status;
+  @Timeout_BEM_06                                                      = status;
+  @Timeout_Blinkmodi_02                                                = status;
+  @Timeout_Charisma_03                                                 = status;
+  @Timeout_Diagnose_01                                                 = status;
+  @Timeout_Dimmung_01                                                  = status;
+  @Timeout_EML_07                                                      = status;
+  @Timeout_Entfernungen_01                                             = status;
+  @Timeout_Gateway_73                                                  = status;
+  @Timeout_Klemmen_Status_01                                           = status;
+  @Timeout_Klemmen_Steuerung_01                                        = status;
+  @Timeout_KonzernrollenModus_01                                       = status;
+  @Timeout_Licht_Anf_01                                                = status;
+  @Timeout_Licht_hinten_01                                             = status;
+  @Timeout_Licht_vorne_01                                              = status;
+  @Timeout_ORU_01                                                      = status;
+  @Timeout_Personalisierung_01                                         = status;
+  @Timeout_Reichweite_01                                               = status;
+  @Timeout_Reichweite_02                                               = status;
+  @Timeout_Reichweite_03                                               = status;
+  @Timeout_SAL_01                                                      = status;
+  @Timeout_Systeminfo_01                                               = status;
+  @Timeout_UserStateServer_01                                          = status;
+  @Timeout_VLK_01                                                      = status;
+  @Timeout_WFS_01                                                      = status;
+  @Timeout_Zeitmaster_02                                               = status;
+  @Timeout_ZV_02                                                       = status;
+  @Timeout_ZV_04                                                       = status;
+}
+
+
+
+
+
+/////////// Klemmen_Status_01 ///////////
+
+on timer tKlemmen_Status_01
+{
+	if ((@Timeout_Klemmen_Status_01 == 0) && (@Env_GlobalAppl == 1))
+	{
+    	if (getValue(EnvKlemmen_Status_01_BZ_Fehler) == 0)
+            cntKlemmen_Status_01++;        //zählt immer um 1 weiter, wenn kein Fehler gewünscht
+
+	    if (cntKlemmen_Status_01 >= 16)    //zählt bis 15, beginnt dann wieder bei 0
+		    cntKlemmen_Status_01 = 0;
+
+	    mKlemmen_Status_01.Klemmen_Status_01_BZ = cntKlemmen_Status_01;
+    	updateChecksumCRC8(mKlemmen_Status_01, S_PDU_Klemmen_Status_01[cntKlemmen_Status_01], getValue(EnvKlemmen_Status_01_CRC_Fehler));
+
+        output(mKlemmen_Status_01);
+
+      putValue(EnvKlemmen_Status_01_BZ, cntKlemmen_Status_01);            //BZ in Umgebungsvariable speichern
+      putValue(EnvKlemmen_Status_01_CRC, mKlemmen_Status_01.Klemmen_Status_01_CRC);  //CRC in Umgebungsvariable speichern
+    }
+}
+
+Klemmen_Status_01_on_change()
+{
+  canceltimer (tKlemmen_Status_01);
+  
+  if ((@Timeout_Klemmen_Status_01 == 0) && (@Env_GlobalAppl == 1))
+	{
+    	if (getValue(EnvKlemmen_Status_01_BZ_Fehler) == 0)
+            cntKlemmen_Status_01++;        //zählt immer um 1 weiter, wenn kein Fehler gewünscht
+
+	    if (cntKlemmen_Status_01 >= 16)    //zählt bis 15, beginnt dann wieder bei 0
+		    cntKlemmen_Status_01 = 0;
+
+	    mKlemmen_Status_01.Klemmen_Status_01_BZ = cntKlemmen_Status_01;
+    	updateChecksumCRC8(mKlemmen_Status_01, S_PDU_Klemmen_Status_01[cntKlemmen_Status_01], getValue(EnvKlemmen_Status_01_CRC_Fehler));
+
+        output(mKlemmen_Status_01);
+
+      putValue(EnvKlemmen_Status_01_BZ, cntKlemmen_Status_01);            //BZ in Umgebungsvariable speichern
+      putValue(EnvKlemmen_Status_01_CRC, mKlemmen_Status_01.Klemmen_Status_01_CRC);  //CRC in Umgebungsvariable speichern
+    }
+	setTimerCyclic(tKlemmen_Status_01, Klemmen_Status_01CycleTime);
+}
+
+on envVar EnvZAS_Kl_S
+{
+	mKlemmen_Status_01.ZAS_Kl_S=getValue(this);
+  Klemmen_Status_01_on_change();
+}
+
+on envVar EnvZAS_Kl_15
+{
+	mKlemmen_Status_01.ZAS_Kl_15=getValue(this);
+  Klemmen_Status_01_on_change();
+}
+
+on envVar EnvZAS_Kl_X
+{
+	mKlemmen_Status_01.ZAS_Kl_X=getValue(this);
+  Klemmen_Status_01_on_change();
+}
+
+
+
+
+/////////// NMH_DispKBI_FS ///////////
+
+on timer tNMH_DispKBI_FS
+{
+	if ((@Timeout_NMH_DispKBI_FS == 0) && (@Env_GlobalNMH == 1))
+	{
+    output(mNMH_DispKBI_FS);
+  }
+}
+
+on envVar EnvNM_DispKBI_FS_NM_State
+{
+	mNMH_DispKBI_FS.NM_DispKBI_FS_NM_State = @this;
+}
+
+
+/////////// NMH_Gateway ///////////
+
+on timer tNMH_Gateway
+{
+	if ((@Timeout_NMH_Gateway == 0) && (@Env_GlobalNMH == 1))
+	{
+    output(mNMH_Gateway);
+  }
+}
+
+on envVar EnvNM_Gateway_NM_State
+{
+	mNMH_Gateway.NM_Gateway_NM_State = @this;
+}
+
+
+/////////// NMH_HUD ///////////
+
+on timer tNMH_HUD
+{
+	if ((@Timeout_NMH_HUD == 0) && (@Env_GlobalNMH == 1) && (@Konfig::HUD == 1))
+	{
+    output(mNMH_HUD);
+  }
+}
+
+on envVar EnvNM_HUD_CBV_AWB
+{
+	if (@Konfig::HUD == 1) mNMH_HUD.NM_HUD_CBV_AWB = @this;
+}
+
+on envVar EnvNM_HUD_CBV_CRI
+{
+	if (@Konfig::HUD == 1) mNMH_HUD.NM_HUD_CBV_CRI = @this;
+}
+
+on envVar EnvNM_HUD_NM_State
+{
+	if (@Konfig::HUD == 1) mNMH_HUD.NM_HUD_NM_State = @this;
+}
+
+on envVar EnvNM_HUD_Car_WakeUp
+{
+	if (@Konfig::HUD == 1) mNMH_HUD.NM_HUD_Car_WakeUp = @this;
+}
+
+on envVar EnvNM_HUD_UDS_CC
+{
+	if (@Konfig::HUD == 1) mNMH_HUD.NM_HUD_UDS_CC = @this;
+}
+
+on envVar EnvNM_HUD_NM_aktiv_KL15
+{
+	if (@Konfig::HUD == 1) mNMH_HUD.NM_HUD_NM_aktiv_KL15 = @this;
+}
+
+on envVar EnvNM_HUD_NM_aktiv_Diagnose
+{
+	if (@Konfig::HUD == 1) mNMH_HUD.NM_HUD_NM_aktiv_Diagnose = @this;
+}
+
+on envVar EnvNM_HUD_NM_aktiv_Tmin
+{
+	if (@Konfig::HUD == 1) mNMH_HUD.NM_HUD_NM_aktiv_Tmin = @this;
+}
+
+on envVar EnvNM_HUD_CAB_V10
+{
+	if (@Konfig::HUD == 1) mNMH_HUD.NM_HUD_CAB_V10 = @this;
+}
+
+
+
+/////////// NMH_Info_El ///////////
+
+on timer tNMH_Info_El
+{
+	if ((@Timeout_NMH_Info_El == 0) && (@Env_GlobalNMH == 1))
+	{
+    output(mNMH_Info_El);
+  }
+}
+
+on envVar EnvNM_Info_El_NM_State
+{
+	mNMH_Info_El.NM_Info_El_NM_State = @this;
+}
+
+
+/////////// NMH_Kombi ///////////
+
+on timer tNMH_Kombi
+{
+	if ((@Timeout_NMH_Kombi == 0) && (@Env_GlobalNMH == 1) && (@Konfig::Kombi == 1))
+	{
+    output(mNMH_Kombi);
+  }
+}
+
+on envVar EnvNM_Kombi_CBV_AWB
+{
+	if (@Konfig::Kombi == 1) mNMH_Kombi.NM_Kombi_CBV_AWB = @this;
+}
+
+on envVar EnvNM_Kombi_CBV_CRI
+{
+	if (@Konfig::Kombi == 1) mNMH_Kombi.NM_Kombi_CBV_CRI = @this;
+}
+
+on envVar EnvNM_Kombi_NM_State
+{
+	if (@Konfig::Kombi == 1) mNMH_Kombi.NM_Kombi_NM_State = @this;
+}
+
+on envVar EnvNM_Kombi_Car_Wakeup
+{
+	if (@Konfig::Kombi == 1) mNMH_Kombi.NM_Kombi_Car_Wakeup = @this;
+}
+
+on envVar EnvNM_Kombi_UDS_CC
+{
+	if (@Konfig::Kombi == 1) mNMH_Kombi.NM_Kombi_UDS_CC = @this;
+}
+
+on envVar EnvNM_Kombi_NM_aktiv_KL15
+{
+	if (@Konfig::Kombi == 1) mNMH_Kombi.NM_Kombi_NM_aktiv_KL15 = @this;
+}
+
+on envVar EnvNM_Kombi_NM_aktiv_Diagnose
+{
+	if (@Konfig::Kombi == 1) mNMH_Kombi.NM_Kombi_NM_aktiv_Diagnose = @this;
+}
+
+on envVar EnvNM_Kombi_NM_aktiv_Tmin
+{
+	if (@Konfig::Kombi == 1) mNMH_Kombi.NM_Kombi_NM_aktiv_Tmin = @this;
+}
+
+on envVar EnvNM_Kombi_NM_aktiv_Buzzer
+{
+	if (@Konfig::Kombi == 1) mNMH_Kombi.NM_Kombi_NM_aktiv_Buzzer = @this;
+}
+
+on envVar EnvNM_Kombi_NM_aktiv_Schluesselkomm
+{
+	if (@Konfig::Kombi == 1) mNMH_Kombi.NM_Kombi_NM_aktiv_Schluesselkomm = @this;
+}
+
+on envVar EnvNM_Kombi_NM_aktiv_VLW
+{
+	if (@Konfig::Kombi == 1) mNMH_Kombi.NM_Kombi_NM_aktiv_VLW = @this;
+}
+
+on envVar EnvNM_Kombi_CAB_V10
+{
+	if (@Konfig::Kombi == 1) mNMH_Kombi.NM_Kombi_CAB_V10 = @this;
+}
+
+
+/////////// NMH_SmLi_01 ///////////
+
+on timer tNMH_SmLi_01
+{
+	if ((@Timeout_NMH_SmLi_01 == 0) && (@Env_GlobalNMH == 1))
+	{
+    output(mNMH_SmLi_01);
+  }
+}
+
+on envVar EnvNM_SmLi_01_NM_State
+{
+	mNMH_SmLi_01.NM_SmLi_01_NM_State = @this;
+}
+
+
+
+
+
+
+
+
+/////////// NMH_State Logik ///////////
+
+on message AB_CAN.*
+{
+  // NMH Botschaften haben laut K-Matrix ID 0x1Bxxxxxx, aber im CAPL 0x9Bxxxxxx !?
+  if (this.SIMULATED == 1 )
+  {
+    if ((this.id > 0x00000000 && this.id < 0x9B000000) || ((this.id > 0x9B000100) && (this.id < 0xFFFFFFFF))) // Application
+    {
+      // wenn Buskommunikation aktiv, dann von Bus-Sleep Mode in Repeat Mode wechseln
+      if (NM_Zustand == 0)
+      {
+        NM_Zustand = 1;
+        //writelineex (4,0,"NM_Zustand = 1");
+        @EnvNM_DispKBI_FS_NM_State                     = 1;
+        @EnvNM_Gateway_NM_State                        = 1;
+        @EnvNM_Info_El_NM_State                        = 1;
+        @EnvNM_SmLi_01_NM_State                        = 1;
+        if (@Konfig::HUD   == 1) @EnvNM_HUD_NM_State   = 1;
+        if (@Konfig::Kombi == 1) @EnvNM_Kombi_NM_State = 1;
+      }
+  
+      Kommunikationsbedarf = 1;
+      cancelTimer (Kommunikationsbedarf_reset);
+      setTimer (Kommunikationsbedarf_reset, 200);
+    }
+    
+   // writelineex(4,0,"ID: %x",this.id);
+  
+    if ((this.id >= 0x9B000000) && (this.id <= 0x9B000100)) // NMH
+    {
+      NM_Kommunikation = 1;
+      cancelTimer (NM_Kommunikation_reset);
+      setTimer (NM_Kommunikation_reset, 500);
+    }
+  }
+  
+  // Bus Timeout
+  canceltimer(Busruhe);
+  settimer(Busruhe,2000);
+  putvalue(Env_AB_CAN_active,1);
+}
+
+on timer NM_Timer
+{  
+  // Im Zustand Repeat Message den Timer T_aktiv_min starten
+  if ((NM_Zustand == 1) && (T_aktiv_min_lock == 0))
+  {
+    //writelineex (4,0,"T_aktiv_min Aufruf");
+    T_aktiv_min_lock = 1;
+    setTimer (T_aktiv_min, 4000);
+  }
+  
+  // wenn im Zustand Normal Operation der Kommunikationsbedarf entfällt, dann nach Ready Sleep wechseln
+  if ((NM_Zustand == 2) && (Kommunikationsbedarf == 0))
+  {
+    NM_Zustand = 3;
+    //writelineex (4,0,"NM_Zustand = 3");
+  }
+  
+  // wenn im Zustand Ready Sleep der Kommunikationsbedarf wieder besteht, dann zurück nach Normal Operation wechseln
+  if ((NM_Zustand == 3) && (Kommunikationsbedarf == 1))
+  {
+    cancelTimer (T_Timeout);
+    NM_Zustand = 2;
+    //writelineex (4,0,"NM_Zustand = 2");
+    @EnvNM_DispKBI_FS_NM_State                     = 8;
+    @EnvNM_Gateway_NM_State                        = 8;
+    @EnvNM_Info_El_NM_State                        = 8;
+    @EnvNM_SmLi_01_NM_State                        = 8;
+    if (@Konfig::HUD   == 1) @EnvNM_HUD_NM_State   = 8;
+    if (@Konfig::Kombi == 1) @EnvNM_Kombi_NM_State = 8;
+  }
+  
+  // wenn im Zustand Ready Sleep keine Kommunikationsbedarf besteht und keine NM-Botschaften gesendet werden, dann Timer starten
+  if ((NM_Zustand == 3) && (Kommunikationsbedarf == 0) && (NM_Kommunikation == 0) && (T_Timeout_lock == 0))
+  {
+    T_Timeout_lock = 1;
+    T_Timeout_counter = 0;
+    setTimerCyclic (T_Timeout, 1);
+  }
+}
+
+on timer Kommunikationsbedarf_reset
+{
+  Kommunikationsbedarf = 0; // wenn 100ms keine Applicationbotschaften, dann Kommunikationsbedarf rücksetzen
+}
+
+on timer NM_Kommunikation_reset
+{
+  NM_Kommunikation = 0; // wenn 100ms keine NM Botschaften, dann NM_Kommunikation rücksetzen
+}
+
+on timer T_aktiv_min
+{
+  // Kommunikationsbedarf prüfen
+  if (Kommunikationsbedarf == 1)
+  {
+    // wenn ja, dann nach Normal Operation wechseln
+    NM_Zustand = 2; 
+    //writelineex (4,0,"NM_Zustand = 2"); 
+    @EnvNM_DispKBI_FS_NM_State                     = 4;
+    @EnvNM_Gateway_NM_State                        = 4;
+    @EnvNM_Info_El_NM_State                        = 4;
+    @EnvNM_SmLi_01_NM_State                        = 4;
+    if (@Konfig::HUD   == 1) @EnvNM_HUD_NM_State   = 4;
+    if (@Konfig::Kombi == 1) @EnvNM_Kombi_NM_State = 4;
+  }
+  
+  else
+  {
+    // sonst nach Ready Sleep wechseln
+    NM_Zustand = 3;
+    //writelineex (4,0,"NM_Zustand = 3");
+  } 
+  
+  // lock zurücksetzen
+  T_aktiv_min_lock = 0;
+}
+
+on timer T_Timeout
+{
+  // wenn keine NM_Botschaften mehr gesendet werden, dann 1s Timer starten
+  if (NM_Kommunikation == 0)
+  {
+    T_Timeout_counter++;
+    //writelineex (4,0,"T_Timeout_counter: %d",T_Timeout_counter);
+  }
+  
+  // wenn 1s Timer abgelaufen
+  if (T_Timeout_counter == 1000)
+  {
+    T_Timeout_lock = 0;
+    T_Timeout_counter = 0;
+    cancelTimer (T_Timeout);
+    NM_Zustand = 4;
+    //writelineex (4,0,"NM_Zustand = 4");
+    setTimerCyclic (T_WaitBusSleep, 1);
+  }
+}
+
+on timer T_WaitBusSleep
+{
+  // 750ms timer starten
+  if (NM_Zustand == 4)
+  {
+    T_WaitBusSleep_counter++;
+    //writelineex (4,0,"T_WaitBusSleep_counter: %d",T_WaitBusSleep_counter); 
+  }
+  
+  // im Prepare Bus-Sleep Mode die Kommunikation reaktiviert wird, in den Zustand Repeat Message wechseln
+  if ((NM_Kommunikation == 1) || (Kommunikationsbedarf == 1))
+  {
+    T_WaitBusSleep_lock = 0;
+    T_WaitBusSleep_counter = 0;
+    cancelTimer (T_WaitBusSleep);
+    NM_Zustand = 1;
+    //writelineex (4,0,"NM_Zustand = 1");
+    @EnvNM_DispKBI_FS_NM_State                     = 2;
+    @EnvNM_Gateway_NM_State                        = 2;
+    @EnvNM_Info_El_NM_State                        = 2;
+    @EnvNM_SmLi_01_NM_State                        = 2;
+    if (@Konfig::HUD   == 1) @EnvNM_HUD_NM_State   = 2;
+    if (@Konfig::Kombi == 1) @EnvNM_Kombi_NM_State = 2;
+  }
+  
+  // wenn 750ms Timer abgelaufen
+  if (T_WaitBusSleep_counter == 750)
+  {
+    T_WaitBusSleep_lock = 0;
+    T_WaitBusSleep_counter = 0;
+    cancelTimer (T_WaitBusSleep);
+    NM_Zustand = 0;
+    //writelineex (4,0,"NM_Zustand = 0");
+  }
+}
+
+
+
+
+
+
+/////////////// Bus-Timeout ///////////////
+
+on timer Busruhe
+{
+  putvalue(Env_AB_CAN_active,0);
+}
+
+
+
+
+
+/////////////// Logging ///////////////
+
+on sysvar Logging::Start_logging
+{
+  if (@this == 1) startLogging();
+}
+
+on sysvar Logging::Stop_logging
+{
+  if (@this == 1) stopLogging();
+}

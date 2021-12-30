@@ -1,0 +1,67 @@
+/*@!Encoding:1252*/
+includes
+{
+ //   #include "UdpIPv6Handling.cin"
+ //   #include "Encoding.cin"
+}
+
+variables
+{
+  ethernetPacket txPacket2;
+  ethernetPacket txPacket1;
+
+}
+
+void HandleUDP( ethernetPacket * pkt, word udpDataOffset, word srcPort, word dstPort )
+{
+  char buffer[100];
+  word length;
+
+  length = pkt.GetData( udpDataOffset, buffer, elcount(buffer)-1 );
+  buffer[length] = 0; // terminating zero for strings
+
+  //write( "UDP (port 0x%X to 0x%X): %s", srcPort, dstPort, buffer );
+}
+
+
+on ethernetPacket msgChannel1.*
+{
+  dword ipHeaderLength, ipPayloadLength;
+  byte ipProtocol, ipTTL;
+  word srcPort, dstPort;
+  
+  //write("Received Ethernet packet on Eth%d", this.msgChannel );
+  if( this.msgChannel == 1 )
+  {
+    switch( this.type )
+    {
+       case 0x86DD: // IPv6        
+         //Type Ethertype byte 12-13 , 16-17 if with VLAN     
+         ipHeaderLength = 40;// (this.Byte(0) & 0x0F) * 4;
+         ipPayloadLength = this.Byte(5);
+         ipProtocol = this.Byte(6); //byte 0 = 14, + 6 = byte 20
+         ipTTL = this.Byte(7);
+         
+         
+         txPacket2 = this;
+         txPacket2.msgChannel = 2; // send on channel 1
+        
+         if(ipProtocol == 17) // UDP-Identifier
+         {        
+            //write("IPv6 on Eth%d | %d | %d | %d", this.msgChannel, ipProtocol, ipTTL, ipHeaderLength );
+            HandleUDP( this, ipHeaderLength+8, swapWord(this.Word(ipHeaderLength)), swapWord(this.Word(ipHeaderLength+2)) );
+            srcPort = swapWord(this.Word(ipHeaderLength));
+            dstPort =swapWord(this.Word(ipHeaderLength+2));
+            if( dstPort == 42514 ) 
+            {
+                 output( txPacket2 ); // forward package    
+                 txPacket2.msgChannel = 3; // send on channel 1
+                 output( txPacket2 ); // forward package    
+                 txPacket2.msgChannel = 4; // send on channel 1
+                 output( txPacket2 ); // forward package    
+            }
+         }        
+    }
+  }
+}
+

@@ -1,0 +1,60 @@
+/*@!Encoding:1252*/
+variables
+{ 
+  byte result;
+}
+
+on start
+{
+  @Env_Klemme_30 = 1;
+}
+
+on envvar Env_COM_Port_open
+{
+  if (@this == 1)
+  { 
+    result = rs232Open(@Env_COM_Port_Nr);
+    
+    if (result == 1)
+      writelineex(4,0,"COM-Port %d konnte geöffnet werden",@Env_COM_Port_Nr);
+    else
+      writelineex(4,0,"COM-Port %d konnte NICHT geöffnet werden",@Env_COM_Port_Nr);
+  
+    
+    if ( 0!=RS232Configure(@Env_COM_Port_Nr,9600,8,1,0) )
+      writelineex(4,0,"Configured COM-Port %d.", @Env_COM_Port_Nr);
+    else
+      writelineex(4,0,"ERROR, could not configure COM-Port %d.", @Env_COM_Port_Nr);
+  
+  }
+  else
+  {
+    result = rs232Close(@Env_COM_Port_Nr);
+    
+    if (result == 1)
+      writelineex(4,0,"COM-Port %d konnte geschlossen werden",@Env_COM_Port_Nr);
+    else
+      writelineex(4,0,"COM-Port %d konnte NICHT geschlossen werden",@Env_COM_Port_Nr);
+  }
+}
+
+on envVar Env_Klemme_30
+{
+  byte buffer_an[4]  = {255,13,243,0};
+  byte buffer_aus[4] = {255,13,244,0};
+  byte buffer_receive[4];
+  
+  if (@this == 1) // an
+  {
+    RS232Send(@Env_COM_Port_Nr,buffer_an,4);
+  }
+  else // aus
+    RS232Send(@Env_COM_Port_Nr,buffer_aus,4);
+}
+
+
+
+on stopMeasurement
+{
+  @Env_COM_Port_open = 0;
+}

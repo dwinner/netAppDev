@@ -1,0 +1,115 @@
+/*@!Encoding:1252*/
+includes
+{
+  #pragma library ("..\\_install\\ks.dll")
+}
+
+variables
+{
+  message KS_Kombi_Req_FD mKS_Kombi_FD_Req;
+  
+  byte i;
+  
+  mstimer send_1;
+  mstimer send_2;
+  
+  byte Challenge[11] = {0x80, 0x01, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x00};
+  byte Response[11]  = {0x80, 0x02, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0x00};
+  byte uncoded[16]   = {0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08,0xaa,0xaa,0xaa,0xaa,0xaa,0xaa,0xaa,0xaa};
+  byte encoded[16];
+  byte key_valid[16]   = {0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08,0x08,0x07,0x06,0x05,0x04,0x03,0x02,0x01};
+  byte key_invalid[16] = {0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff};
+}
+
+on start
+{
+  @Env_KS_valid = 1;
+  @Env_KS_automatic_resp = 1;
+}
+
+on message KS_Kombi_Resp_FD
+{
+  if (@Env_KS_automatic_resp == 1)
+  {
+    if (this.byte(0) == 0x03 && this.byte(1) == 0x40 && this.byte(2) == 0x01 && this.byte(3) == 0x03) // Challenge Req
+    {
+      settimer(send_1,20);
+    }
+    
+    if (this.byte(0) == 0x0B && this.byte(1) == 0xC0 && this.byte(2) == 0x01) // Response Kombi
+    {
+      for (i=0;i<9;i++)
+        Response[i] = this.byte(i+3);
+      
+      for (i=0;i<8;i++)
+        uncoded[i+8] = Response[i];
+      
+      // encrypt durch ks.dll
+      if (@Env_KS_valid == 1) encrypt(uncoded, encoded, key_valid);
+      if (@Env_KS_valid == 0) encrypt(uncoded, encoded, key_invalid);
+      
+      //writelineex(4,0,"uncoded: %x %x %x %x %x %x %x %x %x %x %x %x %x %x %x %x",uncoded[0],uncoded[1],uncoded[2],uncoded[3],uncoded[4],uncoded[5],uncoded[6],uncoded[7],uncoded[8],uncoded[9],uncoded[10],uncoded[11],uncoded[12],uncoded[13],uncoded[14],uncoded[15]);
+      //writelineex(4,0,"key_valid: %x %x %x %x %x %x %x %x %x %x %x %x %x %x %x %x",key_valid[0],key_valid[1],key_valid[2],key_valid[3],key_valid[4],key_valid[5],key_valid[6],key_valid[7],key_valid[8],key_valid[9],key_valid[10],key_valid[11],key_valid[12],key_valid[13],key_valid[14],key_valid[15]);
+      //writelineex(4,0,"encoded: %x %x %x %x %x %x %x %x %x %x %x %x %x %x %x %x",encoded[0],encoded[1],encoded[2],encoded[3],encoded[4],encoded[5],encoded[6],encoded[7],encoded[8],encoded[9],encoded[10],encoded[11],encoded[12],encoded[13],encoded[14],encoded[15]);
+      //writelineex(4,0,"----------------------------------------------------");
+      
+      settimer(send_2,20);
+    }
+       
+    if (this.byte(0) == 0x0B && this.byte(1) == 0xC0 && this.byte(2) == 0x02) // Pos Resp Kombi
+    {
+      write("KS process successful");
+    }
+  }
+}
+
+on timer send_1 // Challenge
+{
+  mKS_Kombi_FD_Req.byte(0)  = 0x00;
+  mKS_Kombi_FD_Req.byte(1)  = 0x0B;
+  mKS_Kombi_FD_Req.byte(2)  = Challenge[0];
+  mKS_Kombi_FD_Req.byte(3)  = Challenge[1];
+  mKS_Kombi_FD_Req.byte(4)  = Challenge[2];
+  mKS_Kombi_FD_Req.byte(5)  = Challenge[3];
+  mKS_Kombi_FD_Req.byte(6)  = Challenge[4];
+  mKS_Kombi_FD_Req.byte(7)  = Challenge[5];
+  mKS_Kombi_FD_Req.byte(8)  = Challenge[6];
+  mKS_Kombi_FD_Req.byte(9)  = Challenge[7];
+  mKS_Kombi_FD_Req.byte(10) = Challenge[8];
+  mKS_Kombi_FD_Req.byte(11) = Challenge[9];
+  mKS_Kombi_FD_Req.byte(12) = Challenge[10];
+  mKS_Kombi_FD_Req.byte(13) = 0xAA;
+  mKS_Kombi_FD_Req.byte(14) = 0xAA;
+  mKS_Kombi_FD_Req.byte(15) = 0xAA;
+  
+  output (mKS_Kombi_FD_Req);
+}
+
+
+on timer send_2 // Key
+{
+  mKS_Kombi_FD_Req.byte(0)  = 0x00;
+  mKS_Kombi_FD_Req.byte(1)  = 0x0B;
+  mKS_Kombi_FD_Req.byte(2)  = 0x80;
+  mKS_Kombi_FD_Req.byte(3)  = 0x02;
+  mKS_Kombi_FD_Req.byte(4)  = encoded[0];
+  mKS_Kombi_FD_Req.byte(5)  = encoded[1];
+  mKS_Kombi_FD_Req.byte(6)  = encoded[2];
+  mKS_Kombi_FD_Req.byte(7)  = encoded[3];
+  mKS_Kombi_FD_Req.byte(8)  = encoded[4];
+  mKS_Kombi_FD_Req.byte(9)  = encoded[5];
+  mKS_Kombi_FD_Req.byte(10)  = encoded[6];
+  mKS_Kombi_FD_Req.byte(11) = encoded[7];
+  mKS_Kombi_FD_Req.byte(12) = 0x00;
+  mKS_Kombi_FD_Req.byte(13) = 0xAA;
+  mKS_Kombi_FD_Req.byte(14) = 0xAA;
+  mKS_Kombi_FD_Req.byte(15) = 0xAA;
+  
+  output (mKS_Kombi_FD_Req);
+}
+
+on envVar Env_KS_start_IKA
+{
+  if (@this == 1)
+    settimer(send_1,0);  
+}

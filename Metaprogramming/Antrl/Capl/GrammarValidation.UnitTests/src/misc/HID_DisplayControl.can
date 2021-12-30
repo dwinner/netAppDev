@@ -1,0 +1,589 @@
+/*@!Encoding:1252*/
+variables
+{
+  int  i;
+  int  length;
+  byte function;
+  byte data[62];
+  char data_string[62];
+  
+  msTimer Flow_Control;
+  
+  msTimer timeout;
+  
+  message HID_HUD_ZR_Req_FD  mHID_HUD_ZR_Req_FD;
+  message HID_HUD_ZR_Resp_FD mHID_HUD_ZR_Resp_FD;
+  message HID_ZR_HUD_Req_FD  mHID_ZR_HUD_Req_FD;
+  message HID_ZR_HUD_Resp_FD mHID_ZR_HUD_Resp_FD;
+  
+  mstimer HID_DisplayControl_00_FetchAll_Get_reset;
+}
+
+on start
+{
+  setControlVisibility ("HID_DisplayControl", "HID_ON_OFF",    !@Konfig::MIB3);
+  setControlVisibility ("HID_DisplayControl", "Get_Button",    !@Konfig::MIB3);
+  setControlVisibility ("HID_DisplayControl", "SetGet_Button", !@Konfig::MIB3);
+  setControlVisibility ("HID_DisplayControl", "Timeout",       !@Konfig::MIB3);
+  clear_panel();
+  function_available();
+}
+
+on envVar Env_GlobalAppl
+{
+  if (@this == 1)
+  {
+    @HID_DisplayControl_00_FetchAll_Get = 1;
+    setTimer (HID_DisplayControl_00_FetchAll_Get_reset, 5);
+  }
+}
+
+on timer HID_DisplayControl_00_FetchAll_Get_reset
+{
+  @HID_DisplayControl_00_FetchAll_Get = 0;
+}
+
+on envVar HID_DisplayControl_00_FetchAll_Get
+{
+  if (@this == 1 && @Konfig::MIB3 == 0)
+    get_req (0x00);
+}
+
+on envVar HID_DisplayControl_ON_OFF
+{
+  if (@this == 0)
+    clear_panel();
+}
+
+on message HID_HUD_ZR_Req_FD
+{
+  if ( (@HID_DisplayControl_ON_OFF == 1) || (@Konfig::MIB3 == 1) )
+  {
+    cancelTimer (timeout);
+    @HID_DisplayControl_Timeout = 0;
+    
+    switch (this.byte(0) )
+    {
+      case 0x10: // CAN segmentiert, 1 Frame
+        
+        // data Array leeren
+        for (i=0;i<62;i++)
+          data[i] = 0;
+        
+        length = this.byte(1);
+        function = this.byte(2);
+        
+        for (i=0;i<5;i++)
+          data[i] = this.byte(i+3);
+        
+        settimer(Flow_Control,10);
+        
+      break;
+        
+        
+      case 0x21: // CAN segmentiert, 2 Frame
+
+        if (length < 14) // passt in den Frame
+        {
+          for (i=0;i<length-5;i++)
+            data[i+5] = this.byte(i+1);
+          
+          check_rx_Data();
+        }
+        else
+        {
+          for (i=0;i<7;i++)
+            data[i+5] = this.byte(i+1);
+        }
+        
+      break;
+        
+        
+      case 0x22: // CAN segmentiert, 3 Frame
+        
+        for (i=0;i<length-14;i++)
+          data[i+12] = this.byte(i+1);
+        
+        check_rx_Data();
+
+      break;
+        
+        
+      default: // CAN-FD oder unsegmentiert
+      {
+        // data Array leeren
+        for (i=0;i<62;i++)
+          data[i] = 0;
+        
+        // Data <= 8
+        if (this.byte(0) != 0)
+        {
+          length   = this.byte(0);
+          function = this.byte(1);
+          
+          for (i=0;i<length-1;i++)
+            data[i] = this.byte(i+2);
+        }
+        
+        // Data > 8
+        if (this.byte(0) == 0)
+        {
+          length   = this.byte(1);
+          function = this.byte(2);
+          
+          for (i=0;i<length-1;i++)
+            data[i] = this.byte(i+3);
+        }
+        
+        check_rx_Data();
+      }
+    }
+  }
+}
+
+on timer Flow_Control
+{
+  mHID_HUD_ZR_Resp_FD.dlc     = 8;
+  mHID_HUD_ZR_Resp_FD.byte(0) = 0x30;
+  mHID_HUD_ZR_Resp_FD.byte(1) = 0x00;
+  mHID_HUD_ZR_Resp_FD.byte(2) = 0x00;
+  mHID_HUD_ZR_Resp_FD.byte(3) = 0x55;
+  mHID_HUD_ZR_Resp_FD.byte(4) = 0x55;
+  mHID_HUD_ZR_Resp_FD.byte(5) = 0x55;
+  mHID_HUD_ZR_Resp_FD.byte(6) = 0x55;
+  mHID_HUD_ZR_Resp_FD.byte(7) = 0x55;
+  output (mHID_HUD_ZR_Resp_FD);
+}
+
+on message HID_ZR_HUD_Resp_FD
+{
+  if ( (@HID_DisplayControl_ON_OFF == 1) || (@Konfig::MIB3 == 1) )
+  {
+    cancelTimer (timeout);
+    @HID_DisplayControl_Timeout = 0;
+    
+    // data Array leeren
+    for (i=0;i<62;i++)
+      data[i] = 0;
+    
+    // Data <= 8
+    if (this.byte(0) != 0)
+    {
+      length   = this.byte(0);
+      function = this.byte(1);
+      
+      for (i=0;i<length-1;i++)
+        data[i] = this.byte(i+2);
+    }
+    
+    // Data > 8
+    if (this.byte(0) == 0)
+    {
+      length   = this.byte(1);
+      function = this.byte(2);
+      
+      for (i=0;i<length-1;i++)
+        data[i] = this.byte(i+4);
+    }
+
+    check_rx_Data();
+  }
+}
+
+check_rx_Data()
+{
+  char data_new[63];
+  
+  // data Array leeren
+    for (i=0;i<62;i++)
+      data_new[i] = 0;
+  
+  switch (function)
+  {
+    case 0x00: // FetchAll/Reset
+      get_req (0x00);
+    break;
+    
+    case 0x01: // DataDefinition
+      @HID_DisplayControl_01_DataDefinition_Major_version  = data[0];
+      @HID_DisplayControl_01_DataDefinition_Minor_version  = data[1];
+      @HID_DisplayControl_01_DataDefinition_Bugfix_version = data[2];
+    break;
+      
+    case 0x02: // Command Support
+      @HID_DisplayControl_02_CommandSupport_00_FetchAll_Reset           =  data[0]     & 0x01;
+      @HID_DisplayControl_02_CommandSupport_01_DataDefinition           = (data[0]>>1) & 0x01;
+      @HID_DisplayControl_02_CommandSupport_02_CommandSupport           = (data[0]>>2) & 0x01;
+      @HID_DisplayControl_02_CommandSupport_10_FirmwareVersion          =  data[2]     & 0x01;
+      @HID_DisplayControl_02_CommandSupport_11_HardwareVersion          = (data[2]>>1) & 0x01;
+      @HID_DisplayControl_02_CommandSupport_12_PartNumber               = (data[2]>>2) & 0x01;
+      @HID_DisplayControl_02_CommandSupport_13_FlashDate                = (data[2]>>3) & 0x01;
+      @HID_DisplayControl_02_CommandSupport_20_Resolution               =  data[4]     & 0x01;
+      @HID_DisplayControl_02_CommandSupport_21_Size                     = (data[4]>>1) & 0x01;
+      @HID_DisplayControl_02_CommandSupport_22_PixelDensity             = (data[4]>>2) & 0x01;
+      @HID_DisplayControl_02_CommandSupport_23_MaxFramerate             = (data[4]>>3) & 0x01;
+      @HID_DisplayControl_02_CommandSupport_24_Paneltype                = (data[4]>>4) & 0x01;
+      @HID_DisplayControl_02_CommandSupport_25_ReactionTime             = (data[4]>>5) & 0x01;
+      @HID_DisplayControl_02_CommandSupport_26_Temperature              = (data[4]>>6) & 0x01;
+      @HID_DisplayControl_02_CommandSupport_30_Backlight                =  data[6]     & 0x01;
+      @HID_DisplayControl_02_CommandSupport_31_Brightness               = (data[6]>>1) & 0x01;
+      @HID_DisplayControl_02_CommandSupport_32_Contrast                 = (data[6]>>2) & 0x01;
+      @HID_DisplayControl_02_CommandSupport_33_Gamma                    = (data[6]>>3) & 0x01;
+      @HID_DisplayControl_02_CommandSupport_34_ColorSpace               = (data[6]>>4) & 0x01;
+      @HID_DisplayControl_02_CommandSupport_35_ExtensionState           = (data[6]>>5) & 0x01;
+      @HID_DisplayControl_02_CommandSupport_36_PositionAdjustmentHeight = (data[6]>>6) & 0x01;
+      @HID_DisplayControl_02_CommandSupport_37_PositionAdjustmentWidth  = (data[6]>>7) & 0x01;
+      
+      function_available();
+    break;
+      
+    case 0x10: // Firmware Version
+      for (i= 0;i < data[0];i++)
+        data_new[i] = data[i+1];
+      putValue (HID_DisplayControl_10_FirmwareVersion_Version, data_new);
+    break;
+      
+    case 0x11: // Hardware Version
+      for (i= 0;i < data[0];i++)
+        data_new[i] = data[i+1];
+      putValue (HID_DisplayControl_11_HardwareVersion_Version, data_new);
+    break;
+      
+    case 0x12: // Part Number
+      for (i= 0;i < data[0];i++)
+        data_new[i] = data[i+1];
+      putValue (HID_DisplayControl_12_PartNumber_Version, data_new);
+    break;
+      
+    case 0x13: // Flash Date
+      @HID_DisplayControl_13_FlashDate_Hour     = data[0];
+      @HID_DisplayControl_13_FlashDate_Minute   = data[1];
+      @HID_DisplayControl_13_FlashDate_Second   = data[2];
+      @HID_DisplayControl_13_FlashDate_Day      = data[3];
+      @HID_DisplayControl_13_FlashDate_Month    = data[4];
+      @HID_DisplayControl_13_FlashDate_Year     = data[5] + 2000;
+      @HID_DisplayControl_13_FlashDate_Year_roh = data[5];
+    break;
+      
+    case 0x20: // Resolution
+      @HID_DisplayControl_20_Resolution_ResolutionX = data[0] * 256 + data[1];
+      @HID_DisplayControl_20_Resolution_ResolutionY = data[2] * 256 + data[3];
+    break;
+      
+    case 0x21: // Size
+      @HID_DisplayControl_21_Size_SizeX     = (data[0] * 256 + data[1]) / 10.0;
+      @HID_DisplayControl_21_Size_SizeX_roh = (data[0] * 256 + data[1]);
+      @HID_DisplayControl_21_Size_SizeY     = (data[2] * 256 + data[3]) / 10.0;
+      @HID_DisplayControl_21_Size_SizeY_roh = (data[2] * 256 + data[3]);
+    break;
+      
+    case 0x22: // PixelDensity
+      @HID_DisplayControl_22_PixelDensity_DensityX = data[0] * 256 + data[1];
+      @HID_DisplayControl_22_PixelDensity_DensityY = data[2] * 256 + data[3];
+    break;
+      
+    case 0x23: // MaxFramerate
+      @HID_DisplayControl_23_MaxFramerate_Framerate = data[0] * 256 + data[1];
+    break;
+      
+    case 0x24: // Paneltype
+      @HID_DisplayControl_24_Paneltype_Paneltype = data[0];
+    break;
+      
+    case 0x25: // ReactionTime
+      @HID_DisplayControl_25_ReactionTime_ReactionTime     = (data[0] * 256 + data[1]) / 10.0;
+      @HID_DisplayControl_25_ReactionTime_ReactionTime_roh = (data[0] * 256 + data[1]);
+    break;
+      
+    case 0x26: // Temperature   --> nochmal prüfen, ob Logik so i.O. / ungenau spezifiziert
+      @HID_DisplayControl_26_Temperature_Temp_roh = (data[0] * 256 + data[1]) & 0x0000FFFF;
+
+      if ((@HID_DisplayControl_26_Temperature_Temp_roh >= 0x0000) && (@HID_DisplayControl_26_Temperature_Temp_roh <= 0x7FFE)) // pos
+        @HID_DisplayControl_26_Temperature_Temp = @HID_DisplayControl_26_Temperature_Temp_roh / 10.0;
+      
+      if ((@HID_DisplayControl_26_Temperature_Temp_roh >= 0xFFFF8000) && (@HID_DisplayControl_26_Temperature_Temp_roh <= 0xFFFFFFFF)) // neg
+        @HID_DisplayControl_26_Temperature_Temp = -1 * ((0xFFFFFFFF - @HID_DisplayControl_26_Temperature_Temp_roh) / 10.0);
+      
+    break;
+      
+    case 0x30: // Backlight
+      @HID_DisplayControl_30_Backlight_Backlight = data[0];
+    break;
+      
+    case 0x31: // Brightness
+      @HID_DisplayControl_31_Brightness_Brightness = data[0];
+    break;
+      
+    case 0x32: // Contrast
+      @HID_DisplayControl_32_Contrast_Contrast = data[0];
+    break;
+      
+    case 0x33: // Gamma
+      @HID_DisplayControl_33_Gamma_Gamma     = (data[0] * 256 + data[1]) / 100.0;
+      @HID_DisplayControl_33_Gamma_Gamma_roh = (data[0] * 256 + data[1]);
+    break;
+      
+    case 0x34: // ColorSpace
+      @HID_DisplayControl_34_ColorSpace_Space = data[0];
+    break;
+      
+    case 0x35: // ExtensionState
+      @HID_DisplayControl_35_ExtensionState_ExtensionState = data[0];
+    break;
+      
+    case 0x36: // Position Adjustment Height
+      @HID_DisplayControl_36_PositionAdjustmentHeight_Height = data[0];
+    break;
+      
+    case 0x37: // Position Adjustment Width
+      @HID_DisplayControl_37_PositionAdjustmentWidth_Width = data[0];
+    break;
+  }
+}
+
+
+on envVar HID_DisplayControl_02_CommandSupport_10_FirmwareVersion          { function_available(); }
+on envVar HID_DisplayControl_02_CommandSupport_11_HardwareVersion          { function_available(); }
+on envVar HID_DisplayControl_02_CommandSupport_12_PartNumber               { function_available(); }
+on envVar HID_DisplayControl_02_CommandSupport_13_FlashDate                { function_available(); }
+on envVar HID_DisplayControl_02_CommandSupport_20_Resolution               { function_available(); }
+on envVar HID_DisplayControl_02_CommandSupport_21_Size                     { function_available(); }
+on envVar HID_DisplayControl_02_CommandSupport_22_PixelDensity             { function_available(); }
+on envVar HID_DisplayControl_02_CommandSupport_23_MaxFramerate             { function_available(); }
+on envVar HID_DisplayControl_02_CommandSupport_24_Paneltype                { function_available(); }
+on envVar HID_DisplayControl_02_CommandSupport_25_ReactionTime             { function_available(); }
+on envVar HID_DisplayControl_02_CommandSupport_26_Temperature              { function_available(); }
+on envVar HID_DisplayControl_02_CommandSupport_30_Backlight                { function_available(); }
+on envVar HID_DisplayControl_02_CommandSupport_31_Brightness               { function_available(); }
+on envVar HID_DisplayControl_02_CommandSupport_32_Contrast                 { function_available(); }
+on envVar HID_DisplayControl_02_CommandSupport_33_Gamma                    { function_available(); }
+on envVar HID_DisplayControl_02_CommandSupport_34_ColorSpace               { function_available(); }
+on envVar HID_DisplayControl_02_CommandSupport_35_ExtensionState           { function_available(); }
+on envVar HID_DisplayControl_02_CommandSupport_36_PositionAdjustmentHeight { function_available(); }
+on envVar HID_DisplayControl_02_CommandSupport_37_PositionAdjustmentWidth  { function_available(); }
+
+function_available()
+{
+  enableControl("HID_DisplayControl" , "0x01_DataDefinition",                                                                                !@Konfig::MIB3);
+  enableControl("HID_DisplayControl" , "0x02_CommandSupport",                                                                                !@Konfig::MIB3);
+  enableControl("HID_DisplayControl" , "0x10_FirmwareVersion",          @HID_DisplayControl_02_CommandSupport_10_FirmwareVersion          && !@Konfig::MIB3);
+  enableControl("HID_DisplayControl" , "0x11_HardwareVersion",          @HID_DisplayControl_02_CommandSupport_11_HardwareVersion          && !@Konfig::MIB3);
+  enableControl("HID_DisplayControl" , "0x12_PartNumber",               @HID_DisplayControl_02_CommandSupport_12_PartNumber               && !@Konfig::MIB3);
+  enableControl("HID_DisplayControl" , "0x13_FlashDate",                @HID_DisplayControl_02_CommandSupport_13_FlashDate                && !@Konfig::MIB3);
+  enableControl("HID_DisplayControl" , "0x20_Resolution",               @HID_DisplayControl_02_CommandSupport_20_Resolution               && !@Konfig::MIB3);
+  enableControl("HID_DisplayControl" , "0x21_Size",                     @HID_DisplayControl_02_CommandSupport_21_Size                     && !@Konfig::MIB3);
+  enableControl("HID_DisplayControl" , "0x22_PixelDensity",             @HID_DisplayControl_02_CommandSupport_22_PixelDensity             && !@Konfig::MIB3);
+  enableControl("HID_DisplayControl" , "0x23_MaxFramerate",             @HID_DisplayControl_02_CommandSupport_23_MaxFramerate             && !@Konfig::MIB3);
+  enableControl("HID_DisplayControl" , "0x24_Paneltype",                @HID_DisplayControl_02_CommandSupport_24_Paneltype                && !@Konfig::MIB3);
+  enableControl("HID_DisplayControl" , "0x25_ReactionTime",             @HID_DisplayControl_02_CommandSupport_25_ReactionTime             && !@Konfig::MIB3);
+  enableControl("HID_DisplayControl" , "0x26_Temperature",              @HID_DisplayControl_02_CommandSupport_26_Temperature              && !@Konfig::MIB3);
+  enableControl("HID_DisplayControl" , "0x30_Backlight",                @HID_DisplayControl_02_CommandSupport_30_Backlight                && !@Konfig::MIB3);
+  enableControl("HID_DisplayControl" , "0x31_Brightness",               @HID_DisplayControl_02_CommandSupport_31_Brightness               && !@Konfig::MIB3);
+  enableControl("HID_DisplayControl" , "0x32_Contrast",                 @HID_DisplayControl_02_CommandSupport_32_Contrast                 && !@Konfig::MIB3);
+  enableControl("HID_DisplayControl" , "0x33_Gamma",                    @HID_DisplayControl_02_CommandSupport_33_Gamma                    && !@Konfig::MIB3);
+  enableControl("HID_DisplayControl" , "0x34_ColorSpace",               @HID_DisplayControl_02_CommandSupport_34_ColorSpace               && !@Konfig::MIB3);
+  enableControl("HID_DisplayControl" , "0x35_ExtensionState",           @HID_DisplayControl_02_CommandSupport_35_ExtensionState           && !@Konfig::MIB3);
+  enableControl("HID_DisplayControl" , "0x36_PositionAdjustmentHeight", @HID_DisplayControl_02_CommandSupport_36_PositionAdjustmentHeight && !@Konfig::MIB3);
+  enableControl("HID_DisplayControl" , "0x37_PositionAdjustmentWidth",  @HID_DisplayControl_02_CommandSupport_37_PositionAdjustmentWidth  && !@Konfig::MIB3);
+}
+
+clear_panel()
+{
+  @HID_DisplayControl_01_DataDefinition_Major_version               = 0;
+  @HID_DisplayControl_01_DataDefinition_Minor_version               = 0;
+  @HID_DisplayControl_01_DataDefinition_Bugfix_version              = 0;
+  @HID_DisplayControl_02_CommandSupport_00_FetchAll_Reset           = 0;
+  @HID_DisplayControl_02_CommandSupport_01_DataDefinition           = 0;
+  @HID_DisplayControl_02_CommandSupport_02_CommandSupport           = 0;
+  @HID_DisplayControl_02_CommandSupport_10_FirmwareVersion          = 0;
+  @HID_DisplayControl_02_CommandSupport_11_HardwareVersion          = 0;
+  @HID_DisplayControl_02_CommandSupport_12_PartNumber               = 0;
+  @HID_DisplayControl_02_CommandSupport_13_FlashDate                = 0;
+  @HID_DisplayControl_02_CommandSupport_20_Resolution               = 0;
+  @HID_DisplayControl_02_CommandSupport_21_Size                     = 0;
+  @HID_DisplayControl_02_CommandSupport_22_PixelDensity             = 0;
+  @HID_DisplayControl_02_CommandSupport_23_MaxFramerate             = 0;
+  @HID_DisplayControl_02_CommandSupport_24_Paneltype                = 0;
+  @HID_DisplayControl_02_CommandSupport_25_ReactionTime             = 0;
+  @HID_DisplayControl_02_CommandSupport_26_Temperature              = 0;
+  @HID_DisplayControl_02_CommandSupport_30_Backlight                = 0;
+  @HID_DisplayControl_02_CommandSupport_31_Brightness               = 0;
+  @HID_DisplayControl_02_CommandSupport_32_Contrast                 = 0;
+  @HID_DisplayControl_02_CommandSupport_33_Gamma                    = 0;
+  @HID_DisplayControl_02_CommandSupport_34_ColorSpace               = 0;
+  @HID_DisplayControl_02_CommandSupport_35_ExtensionState           = 0;
+  @HID_DisplayControl_02_CommandSupport_36_PositionAdjustmentHeight = 0;
+  @HID_DisplayControl_02_CommandSupport_37_PositionAdjustmentWidth  = 0;
+  putValue (HID_DisplayControl_10_FirmwareVersion_Version,          "");
+  putValue (HID_DisplayControl_11_HardwareVersion_Version,          "");
+  putValue (HID_DisplayControl_12_PartNumber_Version,               "");
+  @HID_DisplayControl_13_FlashDate_Hour                             = 0;
+  @HID_DisplayControl_13_FlashDate_Minute                           = 0;
+  @HID_DisplayControl_13_FlashDate_Second                           = 0;
+  @HID_DisplayControl_13_FlashDate_Day                              = 0;
+  @HID_DisplayControl_13_FlashDate_Month                            = 0;
+  @HID_DisplayControl_13_FlashDate_Year                             = 0;
+  @HID_DisplayControl_13_FlashDate_Year_roh                         = 0;
+  @HID_DisplayControl_20_Resolution_ResolutionX                     = 0;
+  @HID_DisplayControl_20_Resolution_ResolutionY                     = 0;
+  @HID_DisplayControl_21_Size_SizeX                                 = 0;
+  @HID_DisplayControl_21_Size_SizeX_roh                             = 0;
+  @HID_DisplayControl_21_Size_SizeY                                 = 0;
+  @HID_DisplayControl_21_Size_SizeY_roh                             = 0;
+  @HID_DisplayControl_22_PixelDensity_DensityX                      = 0;
+  @HID_DisplayControl_22_PixelDensity_DensityY                      = 0;
+  @HID_DisplayControl_23_MaxFramerate_Framerate                     = 0;
+  @HID_DisplayControl_24_Paneltype_Paneltype                        = 0;
+  @HID_DisplayControl_25_ReactionTime_ReactionTime                  = 0;
+  @HID_DisplayControl_25_ReactionTime_ReactionTime_roh              = 0;
+  @HID_DisplayControl_26_Temperature_Temp                           = 0;
+  @HID_DisplayControl_26_Temperature_Temp_roh                       = 0;
+  @HID_DisplayControl_30_Backlight_Backlight                        = 0;
+  @HID_DisplayControl_31_Brightness_Brightness                      = 0;
+  @HID_DisplayControl_32_Contrast_Contrast                          = 0;
+  @HID_DisplayControl_33_Gamma_Gamma                                = 0;
+  @HID_DisplayControl_33_Gamma_Gamma_roh                            = 0;
+  @HID_DisplayControl_34_ColorSpace_Space                           = 0;
+  @HID_DisplayControl_35_ExtensionState_ExtensionState              = 0;
+  @HID_DisplayControl_36_PositionAdjustmentHeight_Height            = 0;
+  @HID_DisplayControl_37_PositionAdjustmentWidth_Width              = 0;
+}
+
+
+on envVar HID_DisplayControl_01_DataDefinition_Get              { if (@this == 1)    get_req (0x001); }
+on envVar HID_DisplayControl_02_CommandSupport_Get              { if (@this == 1)    get_req (0x002); }
+on envVar HID_DisplayControl_10_FirmwareVersion_Get             { if (@this == 1)    get_req (0x010); }
+on envVar HID_DisplayControl_11_HardwareVersion_Get             { if (@this == 1)    get_req (0x011); }
+on envVar HID_DisplayControl_12_PartNumber_Get                  { if (@this == 1)    get_req (0x012); }
+on envVar HID_DisplayControl_13_FlashDate_Get                   { if (@this == 1)    get_req (0x013); }
+on envVar HID_DisplayControl_20_Resolution_Get                  { if (@this == 1)    get_req (0x020); }
+on envVar HID_DisplayControl_21_Size_Get                        { if (@this == 1)    get_req (0x021); }
+on envVar HID_DisplayControl_22_PixelDensity_Get                { if (@this == 1)    get_req (0x022); }
+on envVar HID_DisplayControl_23_MaxFramerate_Get                { if (@this == 1)    get_req (0x023); }
+on envVar HID_DisplayControl_24_Paneltype_Get                   { if (@this == 1)    get_req (0x024); }
+on envVar HID_DisplayControl_25_ReactionTime_Get                { if (@this == 1)    get_req (0x025); }
+on envVar HID_DisplayControl_26_Temperature_Get                 { if (@this == 1)    get_req (0x026); }
+on envVar HID_DisplayControl_30_Backlight_Get                   { if (@this == 1)    get_req (0x030); }
+on envVar HID_DisplayControl_31_Brightness_Get                  { if (@this == 1)    get_req (0x031); }
+on envVar HID_DisplayControl_32_Contrast_Get                    { if (@this == 1)    get_req (0x032); }
+on envVar HID_DisplayControl_33_Gamma_Get                       { if (@this == 1)    get_req (0x033); }
+on envVar HID_DisplayControl_34_ColorSpace_Get                  { if (@this == 1)    get_req (0x034); }
+on envVar HID_DisplayControl_35_ExtensionState_Get              { if (@this == 1)    get_req (0x035); }
+on envVar HID_DisplayControl_36_PositionAdjustmentHeight_Get    { if (@this == 1)    get_req (0x036); }
+on envVar HID_DisplayControl_37_PositionAdjustmentWidth_Get     { if (@this == 1)    get_req (0x037); }
+
+on envVar HID_DisplayControl_30_Backlight_SetGet                { if (@this == 1) setget_req (0x030); }
+on envVar HID_DisplayControl_31_Brightness_SetGet               { if (@this == 1) setget_req (0x031); }
+on envVar HID_DisplayControl_32_Contrast_SetGet                 { if (@this == 1) setget_req (0x032); }
+on envVar HID_DisplayControl_33_Gamma_SetGet                    { if (@this == 1) setget_req (0x033); }
+on envVar HID_DisplayControl_34_ColorSpace_SetGet               { if (@this == 1) setget_req (0x034); }
+on envVar HID_DisplayControl_35_ExtensionState_SetGet           { if (@this == 1) setget_req (0x035); }
+on envVar HID_DisplayControl_36_PositionAdjustmentHeight_SetGet { if (@this == 1) setget_req (0x036); }
+on envVar HID_DisplayControl_37_PositionAdjustmentWidth_SetGet  { if (@this == 1) setget_req (0x037); }
+
+
+
+get_req (byte command)
+{
+  mHID_ZR_HUD_Req_FD.byte(0) = 1;
+  mHID_ZR_HUD_Req_FD.byte(1) = command;
+  mHID_ZR_HUD_Req_FD.byte(2) = 0xAA;
+  mHID_ZR_HUD_Req_FD.byte(3) = 0xAA;
+  mHID_ZR_HUD_Req_FD.byte(4) = 0xAA;
+  mHID_ZR_HUD_Req_FD.byte(5) = 0xAA;
+  mHID_ZR_HUD_Req_FD.byte(6) = 0xAA;
+  mHID_ZR_HUD_Req_FD.byte(7) = 0xAA;
+  mHID_ZR_HUD_Req_FD.DLC     = 8;
+  
+  settimer (timeout, 100);
+  output (mHID_ZR_HUD_Req_FD);
+}
+
+setget_req (byte command)
+{
+  for (i=0;i<8;i++)
+    mHID_ZR_HUD_Req_FD.byte(i) = 0xAA;
+  mHID_ZR_HUD_Req_FD.DLC       = 8;
+  
+  switch (command)
+  {
+    case 0x30:
+      mHID_ZR_HUD_Req_FD.byte(0) = 2;
+      mHID_ZR_HUD_Req_FD.byte(1) = 0x30;
+      mHID_ZR_HUD_Req_FD.byte(2) = @HID_DisplayControl_30_Backlight_Backlight;
+    break;
+      
+    case 0x31:
+      mHID_ZR_HUD_Req_FD.byte(0) = 2;
+      mHID_ZR_HUD_Req_FD.byte(1) = 0x31;
+      mHID_ZR_HUD_Req_FD.byte(2) = @HID_DisplayControl_31_Brightness_Brightness;
+    break;
+      
+    case 0x32:
+      mHID_ZR_HUD_Req_FD.byte(0) = 2;
+      mHID_ZR_HUD_Req_FD.byte(1) = 0x32;
+      mHID_ZR_HUD_Req_FD.byte(2) = @HID_DisplayControl_32_Contrast_Contrast;
+    break;
+      
+    case 0x33:
+      mHID_ZR_HUD_Req_FD.byte(0) = 3;
+      mHID_ZR_HUD_Req_FD.byte(1) = 0x33;
+      mHID_ZR_HUD_Req_FD.byte(2) = @HID_DisplayControl_33_Gamma_Gamma_roh    & 0x00FF;
+      mHID_ZR_HUD_Req_FD.byte(3) = @HID_DisplayControl_33_Gamma_Gamma_roh>>8 & 0x00FF;
+    break;
+      
+    case 0x34:
+      mHID_ZR_HUD_Req_FD.byte(0) = 2;
+      mHID_ZR_HUD_Req_FD.byte(1) = 0x34;
+      mHID_ZR_HUD_Req_FD.byte(2) = @HID_DisplayControl_34_ColorSpace_Space;
+    break;
+      
+    case 0x35:
+      mHID_ZR_HUD_Req_FD.byte(0) = 2;
+      mHID_ZR_HUD_Req_FD.byte(1) = 0x35;
+      mHID_ZR_HUD_Req_FD.byte(2) = @HID_DisplayControl_35_ExtensionState_ExtensionState;
+    break;
+      
+    case 0x36:
+      mHID_ZR_HUD_Req_FD.byte(0) = 2;
+      mHID_ZR_HUD_Req_FD.byte(1) = 0x36;
+      mHID_ZR_HUD_Req_FD.byte(2) = @HID_DisplayControl_36_PositionAdjustmentHeight_Height;
+    break;
+      
+    case 0x37:
+      mHID_ZR_HUD_Req_FD.byte(0) = 2;
+      mHID_ZR_HUD_Req_FD.byte(1) = 0x37;
+      mHID_ZR_HUD_Req_FD.byte(2) = @HID_DisplayControl_37_PositionAdjustmentWidth_Width;
+    break;
+  }
+  settimer (timeout, 100);
+  output (mHID_ZR_HUD_Req_FD);
+}
+
+on timer timeout
+{
+  @HID_DisplayControl_Timeout = 1;
+}
+
+
+
+on envVar HID_DisplayControl_30_Backlight_SetGet_Toggle_OnOff
+{
+  if (@this == 1)
+  {
+    @HID_DisplayControl_30_Backlight_Backlight = !@HID_DisplayControl_30_Backlight_Backlight;
+    
+    mHID_ZR_HUD_Req_FD.byte(0) = 2;
+    mHID_ZR_HUD_Req_FD.byte(1) = 0x30;
+    mHID_ZR_HUD_Req_FD.byte(2) = @HID_DisplayControl_30_Backlight_Backlight;
+    mHID_ZR_HUD_Req_FD.byte(3) = 0xAA;
+    mHID_ZR_HUD_Req_FD.byte(4) = 0xAA;
+    mHID_ZR_HUD_Req_FD.byte(5) = 0xAA;
+    mHID_ZR_HUD_Req_FD.byte(6) = 0xAA;
+    mHID_ZR_HUD_Req_FD.byte(7) = 0xAA;
+    output (mHID_ZR_HUD_Req_FD);
+  }
+}
+
+on envVar HID_DisplayControl_33_Gamma_Gamma_roh { @HID_DisplayControl_33_Gamma_Gamma     = @this / 100.0; }
+on envVar HID_DisplayControl_33_Gamma_Gamma     { @HID_DisplayControl_33_Gamma_Gamma_roh = @this * 100.0; }

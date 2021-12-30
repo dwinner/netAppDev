@@ -1,0 +1,231 @@
+//-----------------------------------------------------------------------------
+//  Copyright (C) Continental Automotive All Right Reserved
+//            File        : NetworkMaster.can
+//            Author      : Ratheesh
+//            Environment : CAPL
+//-----------------------------------------------------------------------------
+//  Type        : CAPL script
+//  Description : This file contains the additional addon functions which are
+//                not supported by CANoe NM
+//  Code Status : Not tested
+//  Reference   : MIB_MOST_KMatrix_V1.13.00F_20121108_MT.html
+//-----------------------------------------------------------------------------
+//  Revision History
+//  Version     Modified by         Date            Description
+//  1.0         Ratheesh            7-Jan-2013     Initial version
+//-----------------------------------------------------------------------------
+
+includes
+{
+  #include "MostDefs.cin"
+  #include "FCatDefs.cin"
+}
+
+//
+// Abbreviation:
+// NM - NetworkMaster
+//
+// Simulation setup is using the inbuilt NM in CANoe
+// This file contains the additional addon functions which are not supported by CANoe NM
+//
+// Note: The NM has to support OwnConfigInvalid message from multiple devices.
+//       But here, NM supports OwnConfigInvalid from one device at a time
+//
+
+variables
+{
+  // Flag indicating configuration invalid handling active or finished
+  byte gOwnConfigInvalidHandlingActive = 0x00;
+
+  // OwnConfigurationInvalid sender handle
+  word gOwnConfigInvalidSenderHandle;
+
+  // OwnConfigurationInvalid DeviceID
+  word gOwnConfigInvalidDeviceID;
+
+  // Opearation state
+  byte gOperationState = kOperationState_Normal;
+
+  // MMI State
+  byte gMMIState = kMMIState_MMI_ON;
+  
+  // Timer to create a delay before sending OwnConfigInvalid.ResultAck
+  msTimer tOwnCfgInvalidResultAck;
+  long gOwnCfgInvalidResultAckTOut = 5;
+}
+
+on preStart
+{
+  // Let this node behave more like a simulation (e.g. don't receive spy messages)
+  mostApplicationNode();
+  // Activate fault injection to suppress "Function Not Available" Errors 
+  // Attention: Main switch in hardware configuration dialog has to activate fault injection, too
+  mostAsFiEnable(1);
+}
+
+long OnMostFiAmsPreSend(mostAmsMessage * msg) 
+{
+  //--------------------------------------------------------------------------------------
+  //
+  //
+  // **** Fault injection need to be enabled in Cfg file ****
+  //
+  //--------------------------------------------------------------------------------------
+  long gFunctionIds[2000];
+  long cntFunctionIds;
+  mostAMSMessage * resp;
+  mostAMSMessage * tmp = {DLC=1000};
+
+  //  write(" FBlockID = 0x%.4X, InstID = 0x%.2X, FuncID = 0x%.4X, OpType = 0x%.2X,", msg.FBlockID, msg.InstanceID, msg.FunctionId, msg.OpType);
+  if ((msg.FBlockID==0x02) && (msg.FunctionId==0) && (msg.OpType==0xC))
+  {
+    resp=msg;
+    cntFunctionIds=mostMsgDecodeRLE(resp,gFunctionIds,elcount(gFunctionIds)); 
+    // Add own functions to report message
+    gFunctionIds[cntFunctionIds++]=0xA03;
+    gFunctionIds[cntFunctionIds++]=0xD1E;
+    gFunctionIds[cntFunctionIds++]=0xD20;
+    mostMsgEncodeRLE(resp,gFunctionIds,cntFunctionIds);
+    output(resp);
+    return 0; // Suppress original message
+  }
+
+  if ((msg.FBlockID == 0x02) && (msg.InstanceID == 0x01))
+  {
+    if (((msg.FunctionId == 0xA03) || 
+         (msg.FunctionId == 0xD1E) ||
+         (msg.FunctionId == 0xD20)) &&
+        ((msg.OpType==0xF) ||
+         (msg.OpType==0x9)))
+    {
+//      write("Tx Msg suppressed!!");
+      // Don't send Error: 
+      return 0;
+    }
+  }
+
+  // Send original message
+  return 1;
+}
+
+on timer tOwnCfgInvalidResultAck
+{
+  NM_OwnConfigInvalid_ResultAck();
+}
+
+// OwnConfigInvalid.StartResultAck message handling
+on mostAMSMessage NetworkMaster.OwnConfigInvalid.StartResultAck
+{
+  word senderHandle;
+  byte state;
+  word deviceId;
+
+  // If OwnConfigInvalid handling for a device is in progress
+  if (gOwnConfigInvalidHandlingActive == 0x01)
+    return;
+
+  if (!CheckValidReceptionAndLength(this, 5))
+    return;
+
+  if (!mostParamIsAvailable(this, "SenderHandle") ||
+      !mostParamIsAvailable(this, "State") ||
+      !mostParamIsAvailable(this, "DeviceID"))
+  {
+    write("NetworkMaster: Warning - OwnConfigInvalid.StartResultAck message doesn't match expected parameter values.");
+    return;
+  }
+
+  senderHandle = mostParamGet(this, "SenderHandle");
+  state = mostParamGet(this, "State");
+  deviceId = mostParamGet(this, "DeviceID");
+
+  // if state is Active
+  if (state == 0x00)
+  {
+    gOwnConfigInvalidSenderHandle = senderHandle;
+    gOwnConfigInvalidDeviceID = deviceId;
+
+    // Set gOwnConfigInvalidHandlingActive flag
+    gOwnConfigInvalidHandlingActive = 0x01;
+  }
+}
+
+// NetBlock.FBlockIDs.Status message handling
+on mostAMSMessage NetBlock.FBlockIDs.Status
+{
+  mostAMSMessage NetworkMaster.OwnConfigInvalid.ResultAck msg;
+
+  if (gOwnConfigInvalidHandlingActive == 0x01)
+  {
+    if ((this.DLC == 0x00) &&
+        (this.SA == gOwnConfigInvalidDeviceID))
+    {
+      // NetBlock.FBlockIDs.Status received with empty FBlock list
+      // Send OwnConfigInvalid.Status message
+      setTimer(tOwnCfgInvalidResultAck, gOwnCfgInvalidResultAckTOut);
+    }
+  }
+}
+
+void NM_OwnConfigInvalid_ResultAck(void)
+{
+  mostAMSMessage NetworkMaster.OwnConfigInvalid.ResultAck msg;
+
+  // NetBlock.FBlockIDs.Status received with empty FBlock list
+  // Send OwnConfigInvalid.Status message
+  msg.DA = gOwnConfigInvalidDeviceID;
+  msg.MsgChannel = mostGetChannel();
+  mostParamSet(msg, "SenderHandle", gOwnConfigInvalidSenderHandle);
+  mostParamSet(msg, "State", 0x01);
+  msg.DLC = 0x03;
+  output(msg);
+  // Completed OwnConfigInvalid handling
+  gOwnConfigInvalidHandlingActive = 0x00;
+}
+
+// NetworkMaster.OperationState.Get message handling
+on mostAmsMessage NetworkMaster.OperationState.Get
+{
+  mostAMSMessage NetworkMaster.OperationState.Status msg;
+
+  if (!CheckValidReceptionAndLength(this, 0))
+    return;
+
+  msg.DA = this.SA;
+  msg.MsgChannel = mostGetChannel();
+  msg.InstanceId = mostApGetInstID();
+  mostParamSet(msg, "OperationState", gOperationState);
+  msg.DLC = 0x01;
+  output(msg);
+}
+
+// NetworkMaster.MMIState.Get message handling
+on mostAmsMessage NetworkMaster.MMIState.Get
+{
+  mostAMSMessage NetworkMaster.MMIState.Status msg;
+
+  if (!CheckValidReceptionAndLength(this, 0))
+    return;
+
+  msg.DA = this.SA;
+  msg.MsgChannel = mostGetChannel();
+  msg.InstanceId = mostApGetInstID();
+  mostParamSet(msg, "NWM_MMI_State", gMMIState);
+  msg.DLC = 0x01;
+  output(msg);
+}
+
+OnMostStableLock()
+{
+  byte boConfigOKEnabled;
+  boConfigOKEnabled = (byte)(@MAIN::Button_AutoConfigOK);  
+  
+  if (boConfigOKEnabled == 0x01)
+  {
+    /*
+    Fix for broadcasting Configuration.Status OK
+    Setting Config state to NotOk and broadcasting it
+    */
+    MostNwmFiSetConfigState(0,1);
+  }
+}

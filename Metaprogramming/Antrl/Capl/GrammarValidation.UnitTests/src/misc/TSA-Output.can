@@ -1,0 +1,1109 @@
+/*@@var:*/
+variables
+{   
+    byte Command_OnCAN;
+    const byte cMenuWarnInfoCommand =    0x20;
+    const byte cMenuInfoWarnMsgCommand = 0x21;
+    byte Layout_OnCAN;
+    const byte cNoInfoLayout =  0x00;
+    const byte cOneSignLayout = 0x30;
+    const byte cTwoSignLayout = 0x31;
+    const byte cTextualLayout = 0x22;
+    byte Sign1_OnCAN;
+    byte Supplement1_OnCAN;
+    byte Sign2_OnCAN;
+    byte Supplement2_OnCAN;
+    byte Unit_OnCAN;
+    const byte cKM = 1;
+    const byte cMiles = 2;
+    byte Icon_Set_Type_OnCAN;
+    const byte cVienna_RHD =   0x00;
+    const byte cVienna_LHD =   0x01;
+    const byte cUS =           0x02;
+    const byte cChina =        0x03;
+    const byte cKorea =        0x04;
+    const byte cJapan =        0x05;
+    const byte cCanada =       0x06;
+    const byte cSouthAmerica = 0x07;
+    const byte cGulfStates =   0x08;
+    byte Speedlimit_Warn_Type;
+    const byte cIdle_0 =       0x00;
+    const byte cOpt_only =     0x01;
+    const byte cOpt_Acoust =   0x02;
+    const byte cSNA_3 =        0x03;
+
+
+
+    
+//    byte command_out;
+//    byte layout_out;
+    byte warning_settype_out;
+    byte menutext_settype_out;
+//    byte sign1_out;
+//    byte supplement1_out;
+//    byte sign2_out;
+//    byte supplement2_out;
+//    byte sla_unit_out;
+//    byte icons_settype_out;
+    byte tsa_counter;
+
+    byte tsa_icon1, tsa_icon2;
+    
+    int flag_warning;  
+}
+
+   
+/*@@end*/
+
+/*@@startStart:Start:*/
+on start
+{
+    Command_OnCAN = 0;
+    Layout_OnCAN = 0;
+    warning_settype_out = 0;
+    menutext_settype_out = 0;
+    Sign1_OnCAN = 0;
+    Supplement1_OnCAN = 0;
+    Sign2_OnCAN = 0;
+    Supplement2_OnCAN = 0;
+    Unit_OnCAN = 0;
+    Icon_Set_Type_OnCAN = 0;
+    tsa_counter = 0;
+    flag_warning = 0;
+
+}
+/*@@end*/
+
+/*@@msg:CAN1.hmi_2014_17b::TSA_Disp_Rq1_AR (0xD5):*/
+on message TSA_Disp_Rq1_AR
+{
+    tsa_icon1 = (this.byte(1) & 0xC0 );
+
+    if(tsa_icon1 == 64)
+    {
+        putValue( env_tsaicon_out, 1); 
+    }
+    else
+        putValue( env_tsaicon_out, 0 );    
+}
+/*@@end*/
+
+/*@@msg:CAN1.hmi_2014_17b::TSA_Disp_Rq2_AR (0x41B):*/
+on message TSA_Disp_Rq2_AR
+{
+ /*   command_out = this.byte(0 );
+    layout_out = this.byte(1);
+    warning_settype_out = this.byte(1);
+    menutext_settype_out = this.byte(2);
+    sign1_out = this.byte(2);
+    supplement1_out = this.byte(3);
+    sign2_out = this.byte(4);
+    supplement2_out = this.byte(5);
+    sla_unit_out = (this.byte(6) & 0x03);
+//    icons_settype_out = (this.byte(6) & 0x3C);
+    tsa_counter = (this.byte(7));*/
+//    write("on message TSA_Disp_Rq2_AR");
+
+//    command_out =          this.TSA_Disp_Rq2_Command;
+//    layout_out =           this.TSA_Disp_Rq2_Layout;
+//    warning_settype_out =  this.TSA_Disp_Rq2_Layout;
+//    menutext_settype_out = this.TSA_Disp_Rq2_Sign1;
+//    sign1_out =            this.TSA_Disp_Rq2_Sign1;
+//    supplement1_out =      this.TSA_Disp_Rq2_Supplement1;
+//    sign2_out =            this.TSA_Disp_Rq2_Sign2;
+//    supplement2_out =      this.TSA_Disp_Rq2_Supplement2;
+//    sla_unit_out =         this.TSA_Disp_Rq2_Unit;
+//    icons_settype_out =    this.TSA_Disp_Rq2_Icons;
+//    tsa_counter =          this.TSA_Disp_Rq2_Counter;
+
+    Command_OnCAN =          this.TSA_Command;
+    Layout_OnCAN =           this.TSA_Layout_Structure;
+    warning_settype_out =    this.TSA_Layout_Structure;
+    menutext_settype_out =   this.TSA_Layout_A_Byte2;
+    Sign1_OnCAN =            this.TSA_Layout_A_Byte2;
+    Supplement1_OnCAN =      this.TSA_Layout_A_Byte3;
+    Sign2_OnCAN =            this.TSA_Layout_A_Byte4;
+    Supplement2_OnCAN =      this.TSA_Layout_A_Byte5;
+    Unit_OnCAN =             this.TSA_Layout_A_Byte6 & 0x03;
+    Icon_Set_Type_OnCAN =    ( this.TSA_Layout_A_Byte6 & 0x3C ) /  4;
+    Speedlimit_Warn_Type =   ( this.TSA_Layout_A_Byte6 & 0xC0 ) / 64;
+    tsa_counter =            this.TSA_Layout_A_Byte7;
+//    write("Sign1_OnCAN %X ", Sign1_OnCAN );
+//----------------------------------------------------------   
+// Ausgabe fuers Grafik-Fenster
+
+// Fehlerfall in ARBEIT------------------------------------------->>>
+ 
+    if( Command_OnCAN == cMenuInfoWarnMsgCommand )
+    {   
+        flag_warning = 1;
+    }
+    else if( Command_OnCAN == cMenuWarnInfoCommand )
+    {
+        flag_warning = 0;
+    }
+
+    if( flag_warning == 1 )
+    {
+        Layout_OnCAN = 0;
+        Sign1_Clear_All();
+        Sign1_Supplement_Clear_All();
+        Sign2_Clear_All();
+        Sign2_Supplement_Clear_All();
+        putValue( env_slaunit_out, 0 );
+        putValue( env_menutext_settype_out, 0 );
+        putValue( env_layout, 0 );
+ 
+        putValue( env_command, Command_OnCAN );
+        putValue( env_warning, warning_settype_out );
+    }
+    
+    // Fehlerfall in ARBEIT <<<-------------------------------------------
+    else if( flag_warning == 0 )
+    {
+        putValue(  env_warning, 0 );
+        putValue(  env_layout, Layout_OnCAN );    
+
+        if( Layout_OnCAN == cTextualLayout )
+        {
+            Sign1_Clear_All();
+            Sign1_Supplement_Clear_All();
+            Sign2_Clear_All();
+            Sign2_Supplement_Clear_All();
+            putValue( env_menutext, menutext_settype_out );
+        }
+        else
+        {
+            putValue( env_menutext, 0 );
+        }
+        putValue( env_command, Command_OnCAN );
+        Sign1_Supplement_Eval();
+        Sign2_Supplement_Eval();
+        putValue( env_sla_unit, Unit_OnCAN );
+        putValue( env_icons_settype, Icon_Set_Type_OnCAN );
+        putValue( env_counter, tsa_counter );
+        
+    }  
+// Ausgabe fuer das Icon-Ausgabefenster
+    // Sign 1 ------------------------------------------------------------------------------
+    // -------------------------------------------------------------------------------------
+    if( Layout_OnCAN == cOneSignLayout )
+    {
+        Sign1_Eval();
+        Sign1_Supplement_Eval();
+        Sign2_Clear_All();
+        Sign2_Supplement_Clear_All();
+
+        putValue( env_menutext_settype_out, 0 );
+        putValue( env_slaunit_out, Unit_OnCAN );
+
+    }
+    // Sign 2 ------------------------------------------------------------------------------
+    // -------------------------------------------------------------------------------------
+    else if( Layout_OnCAN == cTwoSignLayout )
+    {
+        Sign1_Eval();
+        Sign1_Supplement_Eval();
+        Sign2_Eval();
+        Sign2_Supplement_Eval();
+
+        putValue( env_menutext_settype_out, 0 );
+        putValue( env_slaunit_out, Unit_OnCAN );
+    }    
+    if( Layout_OnCAN == cTextualLayout )
+    {
+        putValue( env_slaunit_out, 0 );
+        Sign1_Clear_All();
+        Sign1_Supplement_Clear_All();
+        Sign2_Clear_All();
+        Sign2_Supplement_Clear_All();
+
+        putValue( env_menutext_settype_out, menutext_settype_out );
+    }   
+}
+/*@@end*/
+
+/*@@caplFunc:Sign1_Eval():*///function
+Sign1_Eval()
+{
+    // Evaluates Sign1_OnCAN and determines which icon has to be shown
+    /* -------------------------- Speedlimit -------------------*/
+    if( ( Sign1_OnCAN >= 0x01 ) && ( Sign1_OnCAN <=0x20 ) )
+    {
+        if( ( Icon_Set_Type_OnCAN == cUS     ) ||
+            ( Icon_Set_Type_OnCAN == cCanada )    )
+        {   // Speedlimit miles
+            putValue( Env_TSA_DISP_Sign1_Speedlimit_numeric_Miles, Sign1_OnCAN );
+            putValue( Env_TSA_DISP_Sign1_Speedlimit_numeric_KM, 0 ); // Clear KM-Signs
+        }
+        else
+        {   // Speedlimit km/h
+            putValue( Env_TSA_DISP_Sign1_Speedlimit_numeric_KM, Sign1_OnCAN );
+            putValue( Env_TSA_DISP_Sign1_Speedlimit_numeric_Miles, 0 );
+        }
+    }
+    else
+    {
+        putValue( Env_TSA_DISP_Sign1_Speedlimit_numeric_KM, 0 ); // Clear KM-Signs
+        putValue( Env_TSA_DISP_Sign1_Speedlimit_numeric_Miles, 0 ); // Clear Miles-Signs
+    }
+    /* -------------------------- End of Speedlimit -------------------*/
+    if( ( Sign1_OnCAN >= 0x21 ) && ( Sign1_OnCAN <=0x40 ) )
+    {
+        if( ( Icon_Set_Type_OnCAN == cUS     ) ||
+            ( Icon_Set_Type_OnCAN == cCanada )    )
+        {   // Speedlimit miles
+            putValue( Env_TSA_DISP_Sign1_Endoflimit_numeric_Miles, Sign1_OnCAN - 0x20 );
+            putValue( Env_TSA_DISP_Sign1_Endoflimit_numeric_KM, 0 ); // Clear KM-Signs
+        }
+        else
+        {   // Speedlimit km/h
+            putValue( Env_TSA_DISP_Sign1_Endoflimit_numeric_KM, Sign1_OnCAN - 0x20 );
+            putValue( Env_TSA_DISP_Sign1_Endoflimit_numeric_Miles, 0 );
+        }
+    }
+    else
+    {
+        putValue( Env_TSA_DISP_Sign1_Endoflimit_numeric_KM, 0 ); // Clear KM-Signs
+        putValue( Env_TSA_DISP_Sign1_Endoflimit_numeric_Miles, 0 ); // Clear Miles-Signs
+    }
+    /* -------------------------- Minimum Speed -------------------*/
+    if( ( Sign1_OnCAN >= 0x41 ) && ( Sign1_OnCAN <=0x60 ) )
+    {
+        if( ( Icon_Set_Type_OnCAN == cUS     ) ||
+            ( Icon_Set_Type_OnCAN == cCanada )    )
+        {   // Speedlimit miles
+            putValue( Env_TSA_DISP_Sign1_MinSpeed_numeric_Miles, Sign1_OnCAN - 0x40 );
+            putValue( Env_TSA_DISP_Sign1_MinSpeed_numeric_KM, 0 ); // Clear KM-Signs
+            putValue( Env_TSA_DISP_Sign1_MinSpeed_numeric_Japan_Korea, 0 ); // Clear KM-Signs
+            putValue( Env_TSA_DISP_Sign1_MinSpeed_numeric_China, 0 ); // Clear KM-Signs
+        }
+        else if( Icon_Set_Type_OnCAN == cChina )
+
+        {   // Speedlimit km/h
+            putValue( Env_TSA_DISP_Sign1_MinSpeed_numeric_China, Sign1_OnCAN - 0x40 );
+            putValue( Env_TSA_DISP_Sign1_MinSpeed_numeric_KM, 0 ); // Clear KM-Signs
+            putValue( Env_TSA_DISP_Sign1_MinSpeed_numeric_Miles, 0 ); // Clear KM-Signs
+            putValue( Env_TSA_DISP_Sign1_MinSpeed_numeric_Japan_Korea, 0 ); // Clear KM-Signs
+        }
+        else if( ( Icon_Set_Type_OnCAN == cJapan     ) ||
+                 ( Icon_Set_Type_OnCAN == cKorea )     )
+
+        {   // Speedlimit km/h
+            putValue( Env_TSA_DISP_Sign1_MinSpeed_numeric_Japan_Korea, Sign1_OnCAN - 0x40 );
+            putValue( Env_TSA_DISP_Sign1_MinSpeed_numeric_KM, 0 ); // Clear KM-Signs
+            putValue( Env_TSA_DISP_Sign1_MinSpeed_numeric_Miles, 0 ); // Clear KM-Signs
+            putValue( Env_TSA_DISP_Sign1_MinSpeed_numeric_China, 0 ); // Clear KM-Signs
+        }
+        else 
+        {   // Speedlimit km/h
+            putValue( Env_TSA_DISP_Sign1_MinSpeed_numeric_KM, Sign1_OnCAN - 0x40 );
+            putValue( Env_TSA_DISP_Sign1_MinSpeed_numeric_Japan_Korea, 0 ); // Clear KM-Signs
+            putValue( Env_TSA_DISP_Sign1_MinSpeed_numeric_Miles, 0 ); // Clear KM-Signs
+            putValue( Env_TSA_DISP_Sign1_MinSpeed_numeric_China, 0 ); // Clear KM-Signs
+        }
+    }
+    else
+    {
+        putValue( Env_TSA_DISP_Sign1_MinSpeed_numeric_KM, 0 ); // Clear KM-Signs
+        putValue( Env_TSA_DISP_Sign1_MinSpeed_numeric_Miles, 0 ); // Clear Miles-Signs
+        putValue( Env_TSA_DISP_Sign1_MinSpeed_numeric_Japan_Korea, 0 ); // Clear KM-Signs
+        putValue( Env_TSA_DISP_Sign1_MinSpeed_numeric_China, 0 ); // Clear KM-Signs
+    }
+    /* -------------------------- End of Minimum Speed -------------------*/
+    if( ( Sign1_OnCAN >= 0x61 ) && ( Sign1_OnCAN <=0x80 ) )
+    {
+        if( ( Icon_Set_Type_OnCAN == cVienna_RHD   ) ||
+            ( Icon_Set_Type_OnCAN == cVienna_LHD   ) ||
+            ( Icon_Set_Type_OnCAN == cSouthAmerica ) ||
+            ( Icon_Set_Type_OnCAN == cGulfStates   )    )
+        {   // Speedlimit miles
+            putValue( Env_TSA_DISP_Sign1_EndofMinSpeed_numeric_KM, Sign1_OnCAN - 0x60 );
+        }
+        else
+        {   // Speedlimit km/h
+            putValue( Env_TSA_DISP_Sign1_EndofMinSpeed_numeric_KM, 0 ); // Clear KM-Signs
+        }
+    }
+    else
+    {
+        putValue( Env_TSA_DISP_Sign1_EndofMinSpeed_numeric_KM, 0 ); // Clear KM-Signs
+    }
+    /* -------------------------- Advisory Speed -------------------*/
+    if( ( Sign1_OnCAN >= 0x81 ) && ( Sign1_OnCAN <=0xA0 ) )
+    {
+        if( ( Icon_Set_Type_OnCAN == cUS     )    )
+        {   // Speedlimit miles
+            putValue( Env_TSA_DISP_Sign1_AdvSpeed_numeric_US, Sign1_OnCAN - 0x80 );
+            putValue( Env_TSA_DISP_Sign1_AdvSpeed_numeric_KM, 0 ); // Clear KM-Signs
+            putValue( Env_TSA_DISP_Sign1_AdvSpeed_numeric_China_Canada, 0 ); // Clear KM-Signs
+        }
+        else if( ( Icon_Set_Type_OnCAN == cChina  ) ||
+                 ( Icon_Set_Type_OnCAN == cCanada )     )
+
+        {   // Speedlimit km/h
+            putValue( Env_TSA_DISP_Sign1_AdvSpeed_numeric_China_Canada, Sign1_OnCAN - 0x80 );
+            putValue( Env_TSA_DISP_Sign1_AdvSpeed_numeric_KM, 0 ); // Clear KM-Signs
+            putValue( Env_TSA_DISP_Sign1_AdvSpeed_numeric_US, 0 ); // Clear KM-Signs
+        }
+        else if( ( Icon_Set_Type_OnCAN == cVienna_RHD ) ||
+                 ( Icon_Set_Type_OnCAN == cVienna_LHD )     )
+
+        {   // Speedlimit km/h
+            putValue( Env_TSA_DISP_Sign1_AdvSpeed_numeric_KM, Sign1_OnCAN - 0x80 );
+            putValue( Env_TSA_DISP_Sign1_AdvSpeed_numeric_China_Canada, 0 ); // Clear KM-Signs
+            putValue( Env_TSA_DISP_Sign1_AdvSpeed_numeric_US, 0 ); // Clear KM-Signs
+        }
+        else 
+        {   // Speedlimit km/h
+            putValue( Env_TSA_DISP_Sign1_AdvSpeed_numeric_KM, 0 );
+            putValue( Env_TSA_DISP_Sign1_AdvSpeed_numeric_China_Canada, 0 ); // Clear KM-Signs
+            putValue( Env_TSA_DISP_Sign1_AdvSpeed_numeric_US, 0 ); // Clear KM-Signs
+        }
+    }
+    else
+    {
+        putValue( Env_TSA_DISP_Sign1_AdvSpeed_numeric_KM, 0 );
+        putValue( Env_TSA_DISP_Sign1_AdvSpeed_numeric_China_Canada, 0 ); // Clear KM-Signs
+        putValue( Env_TSA_DISP_Sign1_AdvSpeed_numeric_US, 0 ); // Clear KM-Signs
+    }
+    /* -------------------------- End of Advisory Speed -------------------*/
+    if( ( Sign1_OnCAN >= 0xA1 ) && ( Sign1_OnCAN <=0xC0 ) )
+    {
+        if( ( Icon_Set_Type_OnCAN == cVienna_RHD   ) ||
+            ( Icon_Set_Type_OnCAN == cVienna_LHD   )    )
+        {   // Speedlimit miles
+            putValue( Env_TSA_DISP_Sign1_EndofAdvSpeed_numeric_KM, Sign1_OnCAN - 0xA0 );
+        }
+        else
+        {   // Speedlimit km/h
+            putValue( Env_TSA_DISP_Sign1_EndofAdvSpeed_numeric_KM, 0 ); // Clear KM-Signs
+        }
+    }
+    else
+    {
+        putValue( Env_TSA_DISP_Sign1_EndofAdvSpeed_numeric_KM, 0 ); // Clear KM-Signs
+    }
+    /* -------------------------- General Signs -------------------*/
+    if( ( Sign1_OnCAN < 0xC1 ) )// "End of Limit km/h"
+    {
+        putValue( Env_TSA_DISP_Sign1_General_Signs, 0 );
+        putValue( Env_TSA_DISP_Sign1_NoPassing, 0 );
+        putValue( Env_TSA_DISP_Sign1_Passing, 0 );
+    }
+    if( ( Sign1_OnCAN == 0xC1 ) )// "End of Limit km/h"
+    {
+        if( ( Icon_Set_Type_OnCAN == cVienna_RHD   ) ||
+            ( Icon_Set_Type_OnCAN == cVienna_LHD   ) ||
+            ( Icon_Set_Type_OnCAN == cChina        ) ||
+            ( Icon_Set_Type_OnCAN == cKorea        ) ||
+            ( Icon_Set_Type_OnCAN == cJapan        ) ||
+            ( Icon_Set_Type_OnCAN == cSouthAmerica ) ||
+            ( Icon_Set_Type_OnCAN == cGulfStates   )    )
+        {   // Speedlimit miles
+            putValue( Env_TSA_DISP_Sign1_General_Signs, 1 );
+        }
+        else
+        {
+            putValue( Env_TSA_DISP_Sign1_General_Signs, 0 );
+            putValue( Env_TSA_DISP_Sign1_NoPassing, 0 );
+            putValue( Env_TSA_DISP_Sign1_Passing, 0 );
+        }
+    }
+    else if( ( Sign1_OnCAN == 0xC2 ) )// "End of Limit miles"
+    {
+        if( ( Icon_Set_Type_OnCAN == cVienna_RHD   ) ||
+            ( Icon_Set_Type_OnCAN == cVienna_LHD   ) ||
+            ( Icon_Set_Type_OnCAN == cChina        ) ||
+            ( Icon_Set_Type_OnCAN == cKorea        ) ||
+            ( Icon_Set_Type_OnCAN == cJapan        ) ||
+            ( Icon_Set_Type_OnCAN == cSouthAmerica ) ||
+            ( Icon_Set_Type_OnCAN == cGulfStates   )    )
+        {   // Speedlimit miles
+            putValue( Env_TSA_DISP_Sign1_General_Signs, 2 );
+        }
+        else
+        {
+            putValue( Env_TSA_DISP_Sign1_General_Signs, 0 );
+            putValue( Env_TSA_DISP_Sign1_NoPassing, 0 );
+            putValue( Env_TSA_DISP_Sign1_Passing, 0 );
+        }
+    }
+    else if( ( Sign1_OnCAN == 0xC3 ) )// "End of restrictions"
+    {
+        if( ( Icon_Set_Type_OnCAN == cVienna_RHD   ) ||
+            ( Icon_Set_Type_OnCAN == cVienna_LHD   ) ||
+            ( Icon_Set_Type_OnCAN == cChina        ) ||
+            ( Icon_Set_Type_OnCAN == cKorea        ) ||
+            ( Icon_Set_Type_OnCAN == cJapan        ) ||
+            ( Icon_Set_Type_OnCAN == cSouthAmerica ) ||
+            ( Icon_Set_Type_OnCAN == cGulfStates   )    )
+        {   // Speedlimit miles
+            putValue( Env_TSA_DISP_Sign1_General_Signs, 3 );
+        }
+        else
+        {
+            putValue( Env_TSA_DISP_Sign1_General_Signs, 0 );
+            putValue( Env_TSA_DISP_Sign1_NoPassing, 0 );
+            putValue( Env_TSA_DISP_Sign1_Passing, 0 );
+        }
+    }
+    else if( ( Sign1_OnCAN == 0xC4 ) )// "Residential area"
+    {
+        if( ( Icon_Set_Type_OnCAN == cVienna_RHD   ) ||
+            ( Icon_Set_Type_OnCAN == cVienna_LHD   )    )
+        {   // Speedlimit miles
+            putValue( Env_TSA_DISP_Sign1_General_Signs, 4 );
+        }
+        else
+        {
+            putValue( Env_TSA_DISP_Sign1_General_Signs, 0 );
+            putValue( Env_TSA_DISP_Sign1_NoPassing, 0 );
+            putValue( Env_TSA_DISP_Sign1_Passing, 0 );
+        }
+    }
+    else if( ( Sign1_OnCAN == 0xC5 ) )// "end of residential area"
+    {
+        if( ( Icon_Set_Type_OnCAN == cVienna_RHD   ) ||
+            ( Icon_Set_Type_OnCAN == cVienna_LHD   )    )
+        {   // Speedlimit miles
+            putValue( Env_TSA_DISP_Sign1_General_Signs, 5 );
+        }
+        else
+        {
+            putValue( Env_TSA_DISP_Sign1_General_Signs, 0 );
+            putValue( Env_TSA_DISP_Sign1_NoPassing, 0 );
+            putValue( Env_TSA_DISP_Sign1_Passing, 0 );
+        }
+    }
+    else if( ( Sign1_OnCAN >= 0xC6 ) && ( Sign1_OnCAN <= 0xC9 ) )// "Empty" including no passing
+    {
+        putValue( Env_TSA_DISP_Sign1_General_Signs, 0 );
+    }
+    else if( Sign1_OnCAN == 0xCA )// "No Passing"
+    {
+        if( ( Icon_Set_Type_OnCAN == cVienna_RHD   )    )
+        {   // Speedlimit miles
+            putValue( Env_TSA_DISP_Sign1_NoPassing, 1 );
+        }
+        else if( ( Icon_Set_Type_OnCAN == cVienna_LHD   )    )
+        {   // Speedlimit miles
+            putValue( Env_TSA_DISP_Sign1_NoPassing, 2 );
+        }
+        else if( ( Icon_Set_Type_OnCAN == cJapan   )    )
+        {   // Speedlimit miles
+            putValue( Env_TSA_DISP_Sign1_NoPassing, 3 );
+        }
+        else if( ( Icon_Set_Type_OnCAN == cChina   )    )
+        {   // Speedlimit miles
+            putValue( Env_TSA_DISP_Sign1_NoPassing, 4 );
+        }
+        else if( ( Icon_Set_Type_OnCAN == cKorea   )    )
+        {   // Speedlimit miles
+            putValue( Env_TSA_DISP_Sign1_NoPassing, 5 );
+        }
+        else if( ( Icon_Set_Type_OnCAN == cUS   )    )
+        {   // Speedlimit miles
+            putValue( Env_TSA_DISP_Sign1_NoPassing, 6 );
+        }
+        else if( ( Icon_Set_Type_OnCAN == cCanada   )    )
+        {   // Speedlimit miles
+            putValue( Env_TSA_DISP_Sign1_NoPassing, 7 );
+        }
+        else if( ( Icon_Set_Type_OnCAN == cSouthAmerica   )    )
+        {   // Speedlimit miles
+            putValue( Env_TSA_DISP_Sign1_NoPassing, 8 );
+        }
+        else if( ( Icon_Set_Type_OnCAN == cGulfStates   )    )
+        {   // Speedlimit miles
+            putValue( Env_TSA_DISP_Sign1_NoPassing, 9 );
+        }
+        else
+        {
+            putValue( Env_TSA_DISP_Sign1_NoPassing, 0 );
+        }
+        putValue( Env_TSA_DISP_Sign1_General_Signs, 0 );
+        putValue( Env_TSA_DISP_Sign1_Passing, 0 );
+    }
+    else if( Sign1_OnCAN == 0xCB )// "End of No Passing"
+    {
+        if( ( Icon_Set_Type_OnCAN == cVienna_RHD   )    )
+        {   // Speedlimit miles
+            putValue( Env_TSA_DISP_Sign1_Passing, 1 );
+        }
+        else if( ( Icon_Set_Type_OnCAN == cVienna_LHD   )    )
+        {   // Speedlimit miles
+            putValue( Env_TSA_DISP_Sign1_Passing, 2 );
+        }
+        else if( ( Icon_Set_Type_OnCAN == cJapan   )    )
+        {   // Speedlimit miles
+            putValue( Env_TSA_DISP_Sign1_Passing, 3 );
+        }
+        else if( ( Icon_Set_Type_OnCAN == cChina   )    )
+        {   // Speedlimit miles
+            putValue( Env_TSA_DISP_Sign1_Passing, 4 );
+        }
+        else if( ( Icon_Set_Type_OnCAN == cKorea   )    )
+        {   // Speedlimit miles
+            putValue( Env_TSA_DISP_Sign1_Passing, 5 );
+        }
+        else if( ( Icon_Set_Type_OnCAN == cUS   )    )
+        {   // Speedlimit miles
+            putValue( Env_TSA_DISP_Sign1_Passing, 6 );
+        }
+        else if( ( Icon_Set_Type_OnCAN == cCanada   )    )
+        {   // Speedlimit miles
+            putValue( Env_TSA_DISP_Sign1_Passing, 7 );
+        }
+        else if( ( Icon_Set_Type_OnCAN == cSouthAmerica   )    )
+        {   // Speedlimit miles
+            putValue( Env_TSA_DISP_Sign1_Passing, 8 );
+        }
+        else if( ( Icon_Set_Type_OnCAN == cGulfStates   )    )
+        {   // Speedlimit miles
+            putValue( Env_TSA_DISP_Sign1_Passing, 9 );
+        }
+        else
+        {
+            putValue( Env_TSA_DISP_Sign1_Passing, 0 );
+        }
+        putValue( Env_TSA_DISP_Sign1_General_Signs, 0 );
+        putValue( Env_TSA_DISP_Sign1_NoPassing, 0 );
+    }
+    else if( ( Sign1_OnCAN == 0xCC ) )// "No entry"
+    {
+        putValue( Env_TSA_DISP_Sign1_General_Signs, 6 );
+        putValue( Env_TSA_DISP_Sign1_NoPassing, 0 );
+        putValue( Env_TSA_DISP_Sign1_Passing, 0 );
+    }
+    else if( ( Sign1_OnCAN == 0xCD ) )// "Pedestrian crossing"
+    {
+        if( ( Icon_Set_Type_OnCAN == cUS           ) ||
+            ( Icon_Set_Type_OnCAN == cCanada       ) ||
+            ( Icon_Set_Type_OnCAN == cSouthAmerica )    )
+        {   // Speedlimit miles
+            putValue( Env_TSA_DISP_Sign1_General_Signs, 8 );
+            putValue( Env_TSA_DISP_Sign1_NoPassing, 0 );
+            putValue( Env_TSA_DISP_Sign1_Passing, 0 );
+        }
+        else
+        {
+            putValue( Env_TSA_DISP_Sign1_General_Signs, 7 );
+            putValue( Env_TSA_DISP_Sign1_NoPassing, 0 );
+            putValue( Env_TSA_DISP_Sign1_Passing, 0 );
+        }
+    }
+    else if( ( Sign1_OnCAN >= 0xCE ) && ( Sign1_OnCAN <= 0xFD ) )// "Empty"
+    {
+        putValue( Env_TSA_DISP_Sign1_General_Signs, 0 );
+    }
+    else if( ( Sign1_OnCAN == 0xFE ) )// "no Info"
+    {
+        if( ( Icon_Set_Type_OnCAN == cUS           ) ||
+            ( Icon_Set_Type_OnCAN == cCanada       )    )
+        {   // Speedlimit miles
+            putValue( Env_TSA_DISP_Sign1_General_Signs, 10 );
+            putValue( Env_TSA_DISP_Sign1_NoPassing, 0 );
+            putValue( Env_TSA_DISP_Sign1_Passing, 0 );
+        }
+        else
+        {
+            putValue( Env_TSA_DISP_Sign1_General_Signs, 9 );
+            putValue( Env_TSA_DISP_Sign1_NoPassing, 0 );
+            putValue( Env_TSA_DISP_Sign1_Passing, 0 );
+        }
+    }
+    else if( ( Sign1_OnCAN == 0xFF ) )// "SNA"
+    {
+        putValue( Env_TSA_DISP_Sign1_General_Signs, 0 );
+        putValue( Env_TSA_DISP_Sign1_NoPassing, 0 );
+        putValue( Env_TSA_DISP_Sign1_Passing, 0 );
+    }
+    else
+    {
+        putValue( Env_TSA_DISP_Sign1_General_Signs, 0 );
+        putValue( Env_TSA_DISP_Sign1_NoPassing, 0 );
+        putValue( Env_TSA_DISP_Sign1_Passing, 0 );
+    }
+}
+/*@@end*/
+
+/*@@caplFunc:Sign1_Clear_All():*///function
+Sign1_Clear_All()
+{
+    putValue( Env_TSA_DISP_Sign1_Speedlimit_numeric_KM, 0 );
+    putValue( Env_TSA_DISP_Sign1_Speedlimit_numeric_Miles, 0 );
+    putValue( Env_TSA_DISP_Sign1_Endoflimit_numeric_KM, 0 );
+    putValue( Env_TSA_DISP_Sign1_Endoflimit_numeric_Miles, 0 );
+    putValue( Env_TSA_DISP_Sign1_MinSpeed_numeric_KM, 0 );
+    putValue( Env_TSA_DISP_Sign1_MinSpeed_numeric_Miles, 0 );
+    putValue( Env_TSA_DISP_Sign1_MinSpeed_numeric_Japan_Korea, 0 );
+    putValue( Env_TSA_DISP_Sign1_MinSpeed_numeric_China, 0 );
+    putValue( Env_TSA_DISP_Sign1_EndofMinSpeed_numeric_KM, 0 );
+    putValue( Env_TSA_DISP_Sign1_AdvSpeed_numeric_KM, 0 );
+    putValue( Env_TSA_DISP_Sign1_AdvSpeed_numeric_China_Canada, 0 );
+    putValue( Env_TSA_DISP_Sign1_AdvSpeed_numeric_US, 0 );
+    putValue( Env_TSA_DISP_Sign1_EndofAdvSpeed_numeric_KM, 0 );
+    putValue( Env_TSA_DISP_Sign1_General_Signs, 0 );
+    putValue( Env_TSA_DISP_Sign1_Passing, 0 );
+    putValue( Env_TSA_DISP_Sign1_NoPassing, 0 );
+}
+/*@@end*/
+
+/*@@caplFunc:Sign2_Clear_All():*///function
+Sign2_Clear_All()
+{
+    putValue( Env_TSA_DISP_Sign2_Speedlimit_numeric_KM, 0 );
+    putValue( Env_TSA_DISP_Sign2_Speedlimit_numeric_Miles, 0 );
+    putValue( Env_TSA_DISP_Sign2_Endoflimit_numeric_KM, 0 );
+    putValue( Env_TSA_DISP_Sign2_Endoflimit_numeric_Miles, 0 );
+    putValue( Env_TSA_DISP_Sign2_MinSpeed_numeric_KM, 0 );
+    putValue( Env_TSA_DISP_Sign2_MinSpeed_numeric_Miles, 0 );
+    putValue( Env_TSA_DISP_Sign2_MinSpeed_numeric_Japan_Korea, 0 );
+    putValue( Env_TSA_DISP_Sign2_MinSpeed_numeric_China, 0 );
+    putValue( Env_TSA_DISP_Sign2_EndofMinSpeed_numeric_KM, 0 );
+    putValue( Env_TSA_DISP_Sign2_AdvSpeed_numeric_KM, 0 );
+    putValue( Env_TSA_DISP_Sign2_AdvSpeed_numeric_China_Canada, 0 );
+    putValue( Env_TSA_DISP_Sign2_AdvSpeed_numeric_US, 0 );
+    putValue( Env_TSA_DISP_Sign2_EndofAdvSpeed_numeric_KM, 0 );
+    putValue( Env_TSA_DISP_Sign2_General_Signs, 0 );
+    putValue( Env_TSA_DISP_Sign2_Passing, 0 );
+    putValue( Env_TSA_DISP_Sign2_NoPassing, 0 );
+}
+/*@@end*/
+
+/*@@caplFunc:Sign1_Supplement_Clear_All():*///function
+Sign1_Supplement_Clear_All()
+{
+    putValue( Env_TSA_DISP_Supplement1, 0 );
+}
+/*@@end*/
+
+/*@@caplFunc:Sign2_Supplement_Clear_All():*///function
+Sign2_Supplement_Clear_All()
+{
+    putValue( Env_TSA_DISP_Supplement2, 0 );
+}
+/*@@end*/
+
+/*@@caplFunc:Sign1_Supplement_Eval():*///function
+Sign1_Supplement_Eval()
+{
+    if( Supplement1_OnCAN < 14 )
+        putValue( Env_TSA_DISP_Supplement1, Supplement1_OnCAN );
+}
+/*@@end*/
+
+/*@@caplFunc:Sign2_Supplement_Eval():*///function
+Sign2_Supplement_Eval()
+{
+    if( Supplement2_OnCAN < 14 )
+        putValue( Env_TSA_DISP_Supplement2, Supplement2_OnCAN );
+}
+/*@@end*/
+
+/*@@caplFunc:Sign2_Eval():*///function
+Sign2_Eval()
+{
+    // Evaluates Sign2_OnCAN and determines which icon has to be shown
+    /* -------------------------- Speedlimit -------------------*/
+    if( ( Sign2_OnCAN >= 0x01 ) && ( Sign2_OnCAN <=0x20 ) )
+    {
+        if( ( Icon_Set_Type_OnCAN == cUS     ) ||
+            ( Icon_Set_Type_OnCAN == cCanada )    )
+        {   // Speedlimit miles
+            putValue( Env_TSA_DISP_Sign2_Speedlimit_numeric_Miles, Sign2_OnCAN );
+            putValue( Env_TSA_DISP_Sign2_Speedlimit_numeric_KM, 0 ); // Clear KM-Signs
+        }
+        else
+        {   // Speedlimit km/h
+            putValue( Env_TSA_DISP_Sign2_Speedlimit_numeric_KM, Sign2_OnCAN );
+            putValue( Env_TSA_DISP_Sign2_Speedlimit_numeric_Miles, 0 );
+        }
+    }
+    else
+    {
+        putValue( Env_TSA_DISP_Sign2_Speedlimit_numeric_KM, 0 ); // Clear KM-Signs
+        putValue( Env_TSA_DISP_Sign2_Speedlimit_numeric_Miles, 0 ); // Clear Miles-Signs
+    }
+    /* -------------------------- End of Speedlimit -------------------*/
+    if( ( Sign2_OnCAN >= 0x21 ) && ( Sign2_OnCAN <=0x40 ) )
+    {
+        if( ( Icon_Set_Type_OnCAN == cUS     ) ||
+            ( Icon_Set_Type_OnCAN == cCanada )    )
+        {   // Speedlimit miles
+            putValue( Env_TSA_DISP_Sign2_Endoflimit_numeric_Miles, Sign2_OnCAN - 0x20 );
+            putValue( Env_TSA_DISP_Sign2_Endoflimit_numeric_KM, 0 ); // Clear KM-Signs
+        }
+        else
+        {   // Speedlimit km/h
+            putValue( Env_TSA_DISP_Sign2_Endoflimit_numeric_KM, Sign2_OnCAN - 0x20 );
+            putValue( Env_TSA_DISP_Sign2_Endoflimit_numeric_Miles, 0 );
+        }
+    }
+    else
+    {
+        putValue( Env_TSA_DISP_Sign2_Endoflimit_numeric_KM, 0 ); // Clear KM-Signs
+        putValue( Env_TSA_DISP_Sign2_Endoflimit_numeric_Miles, 0 ); // Clear Miles-Signs
+    }
+    /* -------------------------- Minimum Speed -------------------*/
+    if( ( Sign2_OnCAN >= 0x41 ) && ( Sign2_OnCAN <=0x60 ) )
+    {
+        if( ( Icon_Set_Type_OnCAN == cUS     ) ||
+            ( Icon_Set_Type_OnCAN == cCanada )    )
+        {   // Speedlimit miles
+            putValue( Env_TSA_DISP_Sign2_MinSpeed_numeric_Miles, Sign2_OnCAN - 0x40 );
+            putValue( Env_TSA_DISP_Sign2_MinSpeed_numeric_KM, 0 ); // Clear KM-Signs
+            putValue( Env_TSA_DISP_Sign2_MinSpeed_numeric_Japan_Korea, 0 ); // Clear KM-Signs
+            putValue( Env_TSA_DISP_Sign2_MinSpeed_numeric_China, 0 ); // Clear KM-Signs
+        }
+        else if( Icon_Set_Type_OnCAN == cChina )
+
+        {   // Speedlimit km/h
+            putValue( Env_TSA_DISP_Sign2_MinSpeed_numeric_China, Sign2_OnCAN - 0x40 );
+            putValue( Env_TSA_DISP_Sign2_MinSpeed_numeric_KM, 0 ); // Clear KM-Signs
+            putValue( Env_TSA_DISP_Sign2_MinSpeed_numeric_Miles, 0 ); // Clear KM-Signs
+            putValue( Env_TSA_DISP_Sign2_MinSpeed_numeric_Japan_Korea, 0 ); // Clear KM-Signs
+        }
+        else if( ( Icon_Set_Type_OnCAN == cJapan     ) ||
+                 ( Icon_Set_Type_OnCAN == cKorea )     )
+
+        {   // Speedlimit km/h
+            putValue( Env_TSA_DISP_Sign2_MinSpeed_numeric_Japan_Korea, Sign2_OnCAN - 0x40 );
+            putValue( Env_TSA_DISP_Sign2_MinSpeed_numeric_KM, 0 ); // Clear KM-Signs
+            putValue( Env_TSA_DISP_Sign2_MinSpeed_numeric_Miles, 0 ); // Clear KM-Signs
+            putValue( Env_TSA_DISP_Sign2_MinSpeed_numeric_China, 0 ); // Clear KM-Signs
+        }
+        else 
+        {   // Speedlimit km/h
+            putValue( Env_TSA_DISP_Sign2_MinSpeed_numeric_KM, Sign2_OnCAN - 0x40 );
+            putValue( Env_TSA_DISP_Sign2_MinSpeed_numeric_Japan_Korea, 0 ); // Clear KM-Signs
+            putValue( Env_TSA_DISP_Sign2_MinSpeed_numeric_Miles, 0 ); // Clear KM-Signs
+            putValue( Env_TSA_DISP_Sign2_MinSpeed_numeric_China, 0 ); // Clear KM-Signs
+        }
+    }
+    else
+    {
+        putValue( Env_TSA_DISP_Sign2_MinSpeed_numeric_KM, 0 ); // Clear KM-Signs
+        putValue( Env_TSA_DISP_Sign2_MinSpeed_numeric_Miles, 0 ); // Clear Miles-Signs
+        putValue( Env_TSA_DISP_Sign2_MinSpeed_numeric_Japan_Korea, 0 ); // Clear KM-Signs
+        putValue( Env_TSA_DISP_Sign2_MinSpeed_numeric_China, 0 ); // Clear KM-Signs
+    }
+    /* -------------------------- End of Minimum Speed -------------------*/
+    if( ( Sign2_OnCAN >= 0x61 ) && ( Sign2_OnCAN <=0x80 ) )
+    {
+        if( ( Icon_Set_Type_OnCAN == cVienna_RHD   ) ||
+            ( Icon_Set_Type_OnCAN == cVienna_LHD   ) ||
+            ( Icon_Set_Type_OnCAN == cSouthAmerica ) ||
+            ( Icon_Set_Type_OnCAN == cGulfStates   )    )
+        {   // Speedlimit miles
+            putValue( Env_TSA_DISP_Sign2_EndofMinSpeed_numeric_KM, Sign2_OnCAN - 0x60 );
+        }
+        else
+        {   // Speedlimit km/h
+            putValue( Env_TSA_DISP_Sign2_EndofMinSpeed_numeric_KM, 0 ); // Clear KM-Signs
+        }
+    }
+    else
+    {
+        putValue( Env_TSA_DISP_Sign2_EndofMinSpeed_numeric_KM, 0 ); // Clear KM-Signs
+    }
+    /* -------------------------- Advisory Speed -------------------*/
+    if( ( Sign2_OnCAN >= 0x81 ) && ( Sign2_OnCAN <=0xA0 ) )
+    {
+        if( ( Icon_Set_Type_OnCAN == cUS     )    )
+        {   // Speedlimit miles
+            putValue( Env_TSA_DISP_Sign2_AdvSpeed_numeric_US, Sign2_OnCAN - 0x80 );
+            putValue( Env_TSA_DISP_Sign2_AdvSpeed_numeric_KM, 0 ); // Clear KM-Signs
+            putValue( Env_TSA_DISP_Sign2_AdvSpeed_numeric_China_Canada, 0 ); // Clear KM-Signs
+        }
+        else if( ( Icon_Set_Type_OnCAN == cChina  ) ||
+                 ( Icon_Set_Type_OnCAN == cCanada )     )
+
+        {   // Speedlimit km/h
+            putValue( Env_TSA_DISP_Sign2_AdvSpeed_numeric_China_Canada, Sign2_OnCAN - 0x80 );
+            putValue( Env_TSA_DISP_Sign2_AdvSpeed_numeric_KM, 0 ); // Clear KM-Signs
+            putValue( Env_TSA_DISP_Sign2_AdvSpeed_numeric_US, 0 ); // Clear KM-Signs
+        }
+        else if( ( Icon_Set_Type_OnCAN == cVienna_RHD ) ||
+                 ( Icon_Set_Type_OnCAN == cVienna_LHD )     )
+
+        {   // Speedlimit km/h
+            putValue( Env_TSA_DISP_Sign2_AdvSpeed_numeric_KM, Sign2_OnCAN - 0x80 );
+            putValue( Env_TSA_DISP_Sign2_AdvSpeed_numeric_China_Canada, 0 ); // Clear KM-Signs
+            putValue( Env_TSA_DISP_Sign2_AdvSpeed_numeric_US, 0 ); // Clear KM-Signs
+        }
+        else 
+        {   // Speedlimit km/h
+            putValue( Env_TSA_DISP_Sign2_AdvSpeed_numeric_KM, 0 );
+            putValue( Env_TSA_DISP_Sign2_AdvSpeed_numeric_China_Canada, 0 ); // Clear KM-Signs
+            putValue( Env_TSA_DISP_Sign2_AdvSpeed_numeric_US, 0 ); // Clear KM-Signs
+        }
+    }
+    else
+    {
+        putValue( Env_TSA_DISP_Sign2_AdvSpeed_numeric_KM, 0 );
+        putValue( Env_TSA_DISP_Sign2_AdvSpeed_numeric_China_Canada, 0 ); // Clear KM-Signs
+        putValue( Env_TSA_DISP_Sign2_AdvSpeed_numeric_US, 0 ); // Clear KM-Signs
+    }
+    /* -------------------------- End of Advisory Speed -------------------*/
+    if( ( Sign2_OnCAN >= 0xA1 ) && ( Sign2_OnCAN <=0xC0 ) )
+    {
+        if( ( Icon_Set_Type_OnCAN == cVienna_RHD   ) ||
+            ( Icon_Set_Type_OnCAN == cVienna_LHD   )    )
+        {   // Speedlimit miles
+            putValue( Env_TSA_DISP_Sign2_EndofAdvSpeed_numeric_KM, Sign2_OnCAN - 0xA0 );
+        }
+        else
+        {   // Speedlimit km/h
+            putValue( Env_TSA_DISP_Sign2_EndofAdvSpeed_numeric_KM, 0 ); // Clear KM-Signs
+        }
+    }
+    else
+    {
+        putValue( Env_TSA_DISP_Sign2_EndofAdvSpeed_numeric_KM, 0 ); // Clear KM-Signs
+    }
+    /* -------------------------- General Signs -------------------*/
+    if( ( Sign2_OnCAN < 0xC1 ) )// "End of Limit km/h"
+    {
+        putValue( Env_TSA_DISP_Sign2_General_Signs, 0 );
+        putValue( Env_TSA_DISP_Sign2_NoPassing, 0 );
+        putValue( Env_TSA_DISP_Sign2_Passing, 0 );
+    }
+    if( ( Sign2_OnCAN == 0xC1 ) )// "End of Limit km/h"
+    {
+        if( ( Icon_Set_Type_OnCAN == cVienna_RHD   ) ||
+            ( Icon_Set_Type_OnCAN == cVienna_LHD   ) ||
+            ( Icon_Set_Type_OnCAN == cChina        ) ||
+            ( Icon_Set_Type_OnCAN == cKorea        ) ||
+            ( Icon_Set_Type_OnCAN == cJapan        ) ||
+            ( Icon_Set_Type_OnCAN == cSouthAmerica ) ||
+            ( Icon_Set_Type_OnCAN == cGulfStates   )    )
+        {   // Speedlimit miles
+            putValue( Env_TSA_DISP_Sign2_General_Signs, 1 );
+        }
+        else
+        {
+            putValue( Env_TSA_DISP_Sign2_General_Signs, 0 );
+            putValue( Env_TSA_DISP_Sign2_NoPassing, 0 );
+            putValue( Env_TSA_DISP_Sign2_Passing, 0 );
+        }
+    }
+    else if( ( Sign2_OnCAN == 0xC2 ) )// "End of Limit miles"
+    {
+        if( ( Icon_Set_Type_OnCAN == cVienna_RHD   ) ||
+            ( Icon_Set_Type_OnCAN == cVienna_LHD   ) ||
+            ( Icon_Set_Type_OnCAN == cChina        ) ||
+            ( Icon_Set_Type_OnCAN == cKorea        ) ||
+            ( Icon_Set_Type_OnCAN == cJapan        ) ||
+            ( Icon_Set_Type_OnCAN == cSouthAmerica ) ||
+            ( Icon_Set_Type_OnCAN == cGulfStates   )    )
+        {   // Speedlimit miles
+            putValue( Env_TSA_DISP_Sign2_General_Signs, 2 );
+        }
+        else
+        {
+            putValue( Env_TSA_DISP_Sign2_General_Signs, 0 );
+            putValue( Env_TSA_DISP_Sign2_NoPassing, 0 );
+            putValue( Env_TSA_DISP_Sign2_Passing, 0 );
+        }
+    }
+    else if( ( Sign2_OnCAN == 0xC3 ) )// "End of restrictions"
+    {
+        if( ( Icon_Set_Type_OnCAN == cVienna_RHD   ) ||
+            ( Icon_Set_Type_OnCAN == cVienna_LHD   ) ||
+            ( Icon_Set_Type_OnCAN == cChina        ) ||
+            ( Icon_Set_Type_OnCAN == cKorea        ) ||
+            ( Icon_Set_Type_OnCAN == cJapan        ) ||
+            ( Icon_Set_Type_OnCAN == cSouthAmerica ) ||
+            ( Icon_Set_Type_OnCAN == cGulfStates   )    )
+        {   // Speedlimit miles
+            putValue( Env_TSA_DISP_Sign2_General_Signs, 3 );
+        }
+        else
+        {
+            putValue( Env_TSA_DISP_Sign2_General_Signs, 0 );
+            putValue( Env_TSA_DISP_Sign2_NoPassing, 0 );
+            putValue( Env_TSA_DISP_Sign2_Passing, 0 );
+        }
+    }
+    else if( ( Sign2_OnCAN == 0xC4 ) )// "Residential area"
+    {
+        if( ( Icon_Set_Type_OnCAN == cVienna_RHD   ) ||
+            ( Icon_Set_Type_OnCAN == cVienna_LHD   )    )
+        {   // Speedlimit miles
+            putValue( Env_TSA_DISP_Sign2_General_Signs, 4 );
+        }
+        else
+        {
+            putValue( Env_TSA_DISP_Sign2_General_Signs, 0 );
+            putValue( Env_TSA_DISP_Sign2_NoPassing, 0 );
+            putValue( Env_TSA_DISP_Sign2_Passing, 0 );
+        }
+    }
+    else if( ( Sign2_OnCAN == 0xC5 ) )// "end of residential area"
+    {
+        if( ( Icon_Set_Type_OnCAN == cVienna_RHD   ) ||
+            ( Icon_Set_Type_OnCAN == cVienna_LHD   )    )
+        {   // Speedlimit miles
+            putValue( Env_TSA_DISP_Sign2_General_Signs, 5 );
+        }
+        else
+        {
+            putValue( Env_TSA_DISP_Sign2_General_Signs, 0 );
+            putValue( Env_TSA_DISP_Sign2_NoPassing, 0 );
+            putValue( Env_TSA_DISP_Sign2_Passing, 0 );
+        }
+    }
+    else if( ( Sign2_OnCAN >= 0xC6 ) && ( Sign2_OnCAN <= 0xC9 ) )// "Empty" including no passing
+    {
+        putValue( Env_TSA_DISP_Sign2_General_Signs, 0 );
+    }
+    else if( Sign2_OnCAN == 0xCA )// "No Passing"
+    {
+        if( ( Icon_Set_Type_OnCAN == cVienna_RHD   )    )
+        {   // Speedlimit miles
+            putValue( Env_TSA_DISP_Sign2_NoPassing, 1 );
+        }
+        else if( ( Icon_Set_Type_OnCAN == cVienna_LHD   )    )
+        {   // Speedlimit miles
+            putValue( Env_TSA_DISP_Sign2_NoPassing, 2 );
+        }
+        else if( ( Icon_Set_Type_OnCAN == cJapan   )    )
+        {   // Speedlimit miles
+            putValue( Env_TSA_DISP_Sign2_NoPassing, 3 );
+        }
+        else if( ( Icon_Set_Type_OnCAN == cChina   )    )
+        {   // Speedlimit miles
+            putValue( Env_TSA_DISP_Sign2_NoPassing, 4 );
+        }
+        else if( ( Icon_Set_Type_OnCAN == cKorea   )    )
+        {   // Speedlimit miles
+            putValue( Env_TSA_DISP_Sign2_NoPassing, 5 );
+        }
+        else if( ( Icon_Set_Type_OnCAN == cUS   )    )
+        {   // Speedlimit miles
+            putValue( Env_TSA_DISP_Sign2_NoPassing, 6 );
+        }
+        else if( ( Icon_Set_Type_OnCAN == cCanada   )    )
+        {   // Speedlimit miles
+            putValue( Env_TSA_DISP_Sign2_NoPassing, 7 );
+        }
+        else if( ( Icon_Set_Type_OnCAN == cSouthAmerica   )    )
+        {   // Speedlimit miles
+            putValue( Env_TSA_DISP_Sign2_NoPassing, 8 );
+        }
+        else if( ( Icon_Set_Type_OnCAN == cGulfStates   )    )
+        {   // Speedlimit miles
+            putValue( Env_TSA_DISP_Sign2_NoPassing, 9 );
+        }
+        else
+        {
+            putValue( Env_TSA_DISP_Sign2_NoPassing, 0 );
+        }
+        putValue( Env_TSA_DISP_Sign2_General_Signs, 0 );
+        putValue( Env_TSA_DISP_Sign2_Passing, 0 );
+    }
+    else if( Sign2_OnCAN == 0xCB )// "End of No Passing"
+    {
+        if( ( Icon_Set_Type_OnCAN == cVienna_RHD   )    )
+        {   // Speedlimit miles
+            putValue( Env_TSA_DISP_Sign2_Passing, 1 );
+        }
+        else if( ( Icon_Set_Type_OnCAN == cVienna_LHD   )    )
+        {   // Speedlimit miles
+            putValue( Env_TSA_DISP_Sign2_Passing, 2 );
+        }
+        else if( ( Icon_Set_Type_OnCAN == cJapan   )    )
+        {   // Speedlimit miles
+            putValue( Env_TSA_DISP_Sign2_Passing, 3 );
+        }
+        else if( ( Icon_Set_Type_OnCAN == cChina   )    )
+        {   // Speedlimit miles
+            putValue( Env_TSA_DISP_Sign2_Passing, 4 );
+        }
+        else if( ( Icon_Set_Type_OnCAN == cKorea   )    )
+        {   // Speedlimit miles
+            putValue( Env_TSA_DISP_Sign2_Passing, 5 );
+        }
+        else if( ( Icon_Set_Type_OnCAN == cUS   )    )
+        {   // Speedlimit miles
+            putValue( Env_TSA_DISP_Sign2_Passing, 6 );
+        }
+        else if( ( Icon_Set_Type_OnCAN == cCanada   )    )
+        {   // Speedlimit miles
+            putValue( Env_TSA_DISP_Sign2_Passing, 7 );
+        }
+        else if( ( Icon_Set_Type_OnCAN == cSouthAmerica   )    )
+        {   // Speedlimit miles
+            putValue( Env_TSA_DISP_Sign2_Passing, 8 );
+        }
+        else if( ( Icon_Set_Type_OnCAN == cGulfStates   )    )
+        {   // Speedlimit miles
+            putValue( Env_TSA_DISP_Sign2_Passing, 9 );
+        }
+        else
+        {
+            putValue( Env_TSA_DISP_Sign2_Passing, 0 );
+        }
+        putValue( Env_TSA_DISP_Sign2_General_Signs, 0 );
+        putValue( Env_TSA_DISP_Sign2_NoPassing, 0 );
+    }
+    else if( ( Sign2_OnCAN == 0xCC ) )// "No entry"
+    {
+        putValue( Env_TSA_DISP_Sign2_General_Signs, 6 );
+        putValue( Env_TSA_DISP_Sign2_NoPassing, 0 );
+        putValue( Env_TSA_DISP_Sign2_Passing, 0 );
+    }
+    else if( ( Sign2_OnCAN == 0xCD ) )// "Pedestrian crossing"
+    {
+        if( ( Icon_Set_Type_OnCAN == cUS           ) ||
+            ( Icon_Set_Type_OnCAN == cCanada       ) ||
+            ( Icon_Set_Type_OnCAN == cSouthAmerica )    )
+        {   // Speedlimit miles
+            putValue( Env_TSA_DISP_Sign2_General_Signs, 8 );
+            putValue( Env_TSA_DISP_Sign2_NoPassing, 0 );
+            putValue( Env_TSA_DISP_Sign2_Passing, 0 );
+        }
+        else
+        {
+            putValue( Env_TSA_DISP_Sign2_General_Signs, 7 );
+            putValue( Env_TSA_DISP_Sign2_NoPassing, 0 );
+            putValue( Env_TSA_DISP_Sign2_Passing, 0 );
+        }
+    }
+    else if( ( Sign2_OnCAN >= 0xCE ) && ( Sign2_OnCAN <= 0xFD ) )// "Empty"
+    {
+        putValue( Env_TSA_DISP_Sign2_General_Signs, 0 );
+    }
+    else if( ( Sign2_OnCAN == 0xFE ) )// "no Info"
+    {
+        if( ( Icon_Set_Type_OnCAN == cUS           ) ||
+            ( Icon_Set_Type_OnCAN == cCanada       )    )
+        {   // Speedlimit miles
+            putValue( Env_TSA_DISP_Sign2_General_Signs, 10 );
+            putValue( Env_TSA_DISP_Sign2_NoPassing, 0 );
+            putValue( Env_TSA_DISP_Sign2_Passing, 0 );
+        }
+        else
+        {
+            putValue( Env_TSA_DISP_Sign2_General_Signs, 9 );
+            putValue( Env_TSA_DISP_Sign2_NoPassing, 0 );
+            putValue( Env_TSA_DISP_Sign2_Passing, 0 );
+        }
+    }
+    else if( ( Sign2_OnCAN == 0xFF ) )// "SNA"
+    {
+        putValue( Env_TSA_DISP_Sign2_General_Signs, 0 );
+        putValue( Env_TSA_DISP_Sign2_NoPassing, 0 );
+        putValue( Env_TSA_DISP_Sign2_Passing, 0 );
+    }
+    else
+    {
+        putValue( Env_TSA_DISP_Sign2_General_Signs, 0 );
+        putValue( Env_TSA_DISP_Sign2_NoPassing, 0 );
+        putValue( Env_TSA_DISP_Sign2_Passing, 0 );
+    }
+}
+/*@@end*/
+

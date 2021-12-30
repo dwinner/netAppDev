@@ -1,0 +1,271 @@
+/*@!Encoding:1252*/
+
+
+//////// HUD ////////
+
+on EnvVar EnvNM_HUD_CAB_V10_01
+{
+  check_CAB_HUD();
+}
+
+on EnvVar EnvNM_HUD_CAB_V10_02
+{
+  check_CAB_HUD();
+}
+
+on EnvVar EnvNM_HUD_CAB_V10_03
+{
+  check_CAB_HUD();
+}
+
+on EnvVar EnvNM_HUD_CAB_V10_04
+{
+  check_CAB_HUD();
+}
+
+on EnvVar EnvNM_HUD_CAB_V10_05
+{
+  check_CAB_HUD();
+}
+
+on EnvVar EnvNM_HUD_CAB_V10_06
+{
+  check_CAB_HUD();
+}
+
+on EnvVar EnvNM_HUD_CAB_V10_07
+{
+  check_CAB_HUD();
+}
+
+on EnvVar EnvNM_HUD_CAB_V10_08
+{
+  check_CAB_HUD();
+}
+
+on EnvVar EnvNM_HUD_CAB_V10_09
+{
+  check_CAB_HUD();
+}
+
+on EnvVar EnvNM_HUD_CAB_V10_11
+{
+  check_CAB_HUD();
+}
+
+on EnvVar EnvNM_HUD_CAB_V10_13
+{
+  check_CAB_HUD();
+}
+
+on EnvVar EnvNM_HUD_CAB_V10_14
+{
+  check_CAB_HUD();
+}
+
+on EnvVar EnvNM_HUD_CAB_V10_15
+{
+  check_CAB_HUD();
+}
+
+on EnvVar EnvNM_HUD_CAB_V10_16
+{
+  check_CAB_HUD();
+}
+
+on EnvVar EnvNM_HUD_CAB_V10_17
+{
+  check_CAB_HUD();
+}
+
+check_CAB_HUD()
+{
+  long CAB_val;
+  
+  if (@IL_CAN1::EnableNode::HUD == 1) 
+  {
+    CAB_val = @EnvNM_HUD_CAB_V10_01 * 1 + @EnvNM_HUD_CAB_V10_02 * 2 + @EnvNM_HUD_CAB_V10_03 * 4 + @EnvNM_HUD_CAB_V10_04 * 8 + @EnvNM_HUD_CAB_V10_05 * 16 + @EnvNM_HUD_CAB_V10_06 * 32 + @EnvNM_HUD_CAB_V10_07 * 64 + @EnvNM_HUD_CAB_V10_08 * 128 + @EnvNM_HUD_CAB_V10_09 * 256 + @EnvNM_HUD_CAB_V10_11 * 1024 + @EnvNM_HUD_CAB_V10_13 * 4096 + @EnvNM_HUD_CAB_V10_14 * 8192 + @EnvNM_HUD_CAB_V10_15 * 16384 + @EnvNM_HUD_CAB_V10_16 * 32768 + @EnvNM_HUD_CAB_V10_17 * 65536;
+    
+    @EnvNM_HUD_CAB_V10 = CAB_val;
+  }
+}
+
+
+
+//////// Kombi ////////
+
+on EnvVar EnvNM_Kombi_CAB_V10_01
+{
+  check_CAB_Kombi();
+}
+
+on EnvVar EnvNM_Kombi_CAB_V10_02
+{
+  check_CAB_Kombi();
+}
+
+on EnvVar EnvNM_Kombi_CAB_V10_03
+{
+  check_CAB_Kombi();
+}
+
+on EnvVar EnvNM_Kombi_CAB_V10_04
+{
+  check_CAB_Kombi();
+}
+
+on EnvVar EnvNM_Kombi_CAB_V10_05
+{
+  check_CAB_Kombi();
+}
+
+on EnvVar EnvNM_Kombi_CAB_V10_06
+{
+  check_CAB_Kombi();
+}
+
+on EnvVar EnvNM_Kombi_CAB_V10_07
+{
+  check_CAB_Kombi();
+}
+
+on EnvVar EnvNM_Kombi_CAB_V10_08
+{
+  check_CAB_Kombi();
+}
+
+on EnvVar EnvNM_Kombi_CAB_V10_09
+{
+  check_CAB_Kombi();
+}
+
+on EnvVar EnvNM_Kombi_CAB_V10_11
+{
+  check_CAB_Kombi();
+}
+
+on EnvVar EnvNM_Kombi_CAB_V10_13
+{
+  check_CAB_Kombi();
+}
+
+on EnvVar EnvNM_Kombi_CAB_V10_14
+{
+  check_CAB_Kombi();
+}
+
+on EnvVar EnvNM_Kombi_CAB_V10_15
+{
+  check_CAB_Kombi();
+}
+
+on EnvVar EnvNM_Kombi_CAB_V10_16
+{
+  check_CAB_Kombi();
+}
+
+on EnvVar EnvNM_Kombi_CAB_V10_17
+{
+  check_CAB_Kombi();
+}
+
+check_CAB_Kombi()
+{
+  long CAB_val;
+  
+  if (@IL_CAN1::EnableNode::Kombi == 1) 
+  {
+    CAB_val = @EnvNM_Kombi_CAB_V10_01 * 1 + @EnvNM_Kombi_CAB_V10_02 * 2 + @EnvNM_Kombi_CAB_V10_03 * 4 + @EnvNM_Kombi_CAB_V10_04 * 8 + @EnvNM_Kombi_CAB_V10_05 * 16 + @EnvNM_Kombi_CAB_V10_06 * 32 + @EnvNM_Kombi_CAB_V10_07 * 64 + @EnvNM_Kombi_CAB_V10_08 * 128 + @EnvNM_Kombi_CAB_V10_09 * 256 + @EnvNM_Kombi_CAB_V10_11 * 1024 + @EnvNM_Kombi_CAB_V10_13 * 4096 + @EnvNM_Kombi_CAB_V10_14 * 8192 + @EnvNM_Kombi_CAB_V10_15 * 16384 + @EnvNM_Kombi_CAB_V10_16 * 32768 + @EnvNM_Kombi_CAB_V10_17 * 65536;
+    
+    @EnvNM_Kombi_CAB_V10 = CAB_val;
+  }
+}
+
+
+
+
+//////// Systeminfo ////////
+
+on EnvVar EnvSI_CAB_V10_01
+{
+  check_CAB_Systeminfo();
+}
+
+on EnvVar EnvSI_CAB_V10_02
+{
+  check_CAB_Systeminfo();
+}
+
+on EnvVar EnvSI_CAB_V10_03
+{
+  check_CAB_Systeminfo();
+}
+
+on EnvVar EnvSI_CAB_V10_04
+{
+  check_CAB_Systeminfo();
+}
+
+on EnvVar EnvSI_CAB_V10_05
+{
+  check_CAB_Systeminfo();
+}
+
+on EnvVar EnvSI_CAB_V10_06
+{
+  check_CAB_Systeminfo();
+}
+
+on EnvVar EnvSI_CAB_V10_07
+{
+  check_CAB_Systeminfo();
+}
+
+on EnvVar EnvSI_CAB_V10_08
+{
+  check_CAB_Systeminfo();
+}
+
+on EnvVar EnvSI_CAB_V10_09
+{
+  check_CAB_Systeminfo();
+}
+
+on EnvVar EnvSI_CAB_V10_11
+{
+  check_CAB_Systeminfo();
+}
+
+on EnvVar EnvSI_CAB_V10_13
+{
+  check_CAB_Systeminfo();
+}
+
+on EnvVar EnvSI_CAB_V10_14
+{
+  check_CAB_Systeminfo();
+}
+
+on EnvVar EnvSI_CAB_V10_15
+{
+  check_CAB_Systeminfo();
+}
+
+on EnvVar EnvSI_CAB_V10_16
+{
+  check_CAB_Systeminfo();
+}
+
+on EnvVar EnvSI_CAB_V10_17
+{
+  check_CAB_Systeminfo();
+}
+
+check_CAB_Systeminfo()
+{
+  long CAB_val;
+  
+  CAB_val = @EnvSI_CAB_V10_01 * 1 + @EnvSI_CAB_V10_02 * 2 + @EnvSI_CAB_V10_03 * 4 + @EnvSI_CAB_V10_04 * 8 + @EnvSI_CAB_V10_05 * 16 + @EnvSI_CAB_V10_06 * 32 + @EnvSI_CAB_V10_07 * 64 + @EnvSI_CAB_V10_08 * 128 + @EnvSI_CAB_V10_09 * 256 + @EnvSI_CAB_V10_11 * 1024 + @EnvSI_CAB_V10_13 * 4096 + @EnvSI_CAB_V10_14 * 8192 + @EnvSI_CAB_V10_15 * 16384 + @EnvSI_CAB_V10_16 * 32768 + @EnvSI_CAB_V10_17 * 65536;
+  
+  @EnvSI_CAB_V10 = CAB_val;
+}

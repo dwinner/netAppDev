@@ -1,0 +1,4167 @@
+/*@@includes:*/
+includes
+{
+    // new global access functions for reading ini-file settings, format conversion
+    #include "..\..\COMMON\Main\util.CIN"
+}
+/*@@end*/
+
+/*@@var:*/
+//*****************************************************************************
+// IntegrationTest
+// Rev.:  
+// Calulot, Sheryll
+// Kloos, Arthur        June-July 2010    
+// Vonderheid, Juergen  Jan 2011
+// Wilke, Helmut        12.04.2011      
+// - merge with new panel from INTEG group, adapted to NGSM power supply control
+//*****************************************************************************
+
+variables
+{
+    // the ini file name
+	//MR65802
+    //char INTEGR_cIniFileName[ 33 ]   = "INTEGR\\Main\\INTEGR.ini";
+	char INTEGR_cIniFileName[ 33 ]   = "INTEGR\\Main\\INTEGR_noBAP.ini";
+    // a handle to this file
+    dword INTEGR_IniFileHandle = 0;
+    // the log file name
+    char INTEGR_cLogFileName[ 35 ]   = "INTEGR\\Doc\\INTEGRLog.txt";
+    // a handle to this file
+    dword INTEGR_LogFileHandle = 0;
+    // text buffer for log file
+    char INTEGR_cLogBuffer[ 150 ];
+
+    // common variables, defines
+    const INTEGR_TIMER_DEFAULT_TIME = 1000;          /* ms */
+    // delay time for fast starting a timer function
+    const INTEGR_RUN_TIMER_FAST = 10;                /* ms */
+    // wait for updating power supply
+    const INTEGR_POWER_SUPPLY_DELAY_NORMAL = 1000;   /* ms */
+    // boolean
+    const FALSE = 0;
+    const TRUE  = 1;
+
+    // while debugging enable selected logging
+    int CNGLPG_Logging = 0;
+    int BEV_Logging = 0;
+    int MoveMfl_Logging = 0;
+    int Warnings_Logging = 0;
+    int KTM_Logging = 0;
+    int Dim_Logging = 0;
+    int OTP_Logging = 0;
+    int Pointer_Logging = 0;
+
+    // **** interface to NGSM power supply
+    // if a NGSM DC Power Supply is available and the Output has been activated
+    //byte INTEGR_boNgsmOutputIsActive;
+    // defines the state of the NGSM power supply, the same as defined in NGSM node NGSM.can
+    // it's shown in a state-field of this panel
+    const INTEGR_NGSM_OFF                    = 0;             // not connected and not initialized
+    const INTEGR_NGSM_DE_INIT                = 1;
+    const INTEGR_NGSM_INIT_NOK               = 2;
+    const INTEGR_NGSM_INIT_OK                = 3;
+    // power curve selection, the same as defined in NGSM node NGSM.can
+    const INTEGR_NGSM_OUTPUT_NORMAL          = 0;
+    const INTEGR_NGSM_OUTPUT_SSI4B           = 1;
+    const INTEGR_NGSM_OUTPUT_SSI4B2          = 2;
+    const INTEGR_NGSM_OUTPUT_WAIT            = 3;
+    const INTEGR_NGSM_OUTPUT_VOLTAGE_BOUNCE  = 4;
+    const INTEGR_NGSM_OUTPUT_MICRO_PULSE     = 5;
+    const INTEGR_NGSM_OUTPUT_LOW_BATTERY     = 6;
+    const INTEGR_NGSM_OUTPUT_VW80101_7       = 7;
+    const INTEGR_NGSM_OUTPUT_OVERVOLTAGE_A   = 8;
+    const INTEGR_NGSM_OUTPUT_OVERVOLTAGE_B   = 9;
+    const INTEGR_NGSM_OUTPUT_WARMSTART_PULSE = 10;
+    const INTEGR_NGSM_OUTPUT_END             = 11;   // list end, output type not allowed
+    const INTEGR_NGSM_OUTPUT_DO_NOT_CARE     = 12;
+    const INTEGR_NGSM_OUTPUT_DO_NOT_CHANGE   = 13;   // no request, no change
+
+    // define the test states
+    const INTEGR_TEST_OFF    = 0;
+    const INTEGR_TEST_BZ0    = 1;
+    const INTEGR_TEST_BZ1    = 2;
+    const INTEGR_TEST_BZ2    = 3;
+    const INTEGR_TEST_BZ3    = 4;
+    const INTEGR_TEST_BZ4    = 5;
+    const INTEGR_TEST_BZ5    = 6;
+    const INTEGR_TEST_BZ6    = 7;
+    const INTEGR_TEST_BZ7    = 8;
+    const INTEGR_TEST_BZ8    = 9;
+    const INTEGR_TEST_BZ9    = 10;
+    const INTEGR_TEST_BZ10   = 11;
+    const INTEGR_TEST_BZ11   = 12;
+    const INTEGR_TEST_BZ12   = 13;
+    const INTEGR_TEST_BZ13   = 14;
+
+    // **** the test organization
+    // performs a test case
+    msTimer INTEGR_TestCase_timer;
+    // the actual test case
+    int INTEGR_iActualTestCase = INTEGR_TEST_OFF;
+    // the new selected test case
+    int INTEGR_iNewTestCase = INTEGR_TEST_OFF;
+    // the internal state when a test case has been activated : pre, run, post
+    const INTEGR_ACTIVE_TEST_PRE_STATE  = 1;
+    const INTEGR_ACTIVE_TEST_RUN_STATE  = 2;
+    const INTEGR_ACTIVE_TEST_POST_STATE = 3;
+    const INTEGR_ACTIVE_TEST_END_STATE  = 4;
+    // internal state of a test function: INTEGR_ACTIVE_TEST_PRE_STATE, INTEGR_ACTIVE_TEST_RUN_STATE,
+    // INTEGR_ACTIVE_TEST_POST_STATE, INTEGR_ACTIVE_TEST_END_STATE
+    int INTEGR_ActiveTestInternalState;
+
+    // **** 'automatic' test
+    // automatic modes
+    const INTEGR_AUTOMATIC_MODE_OFF = 0; 
+    const INTEGR_AUTOMATIC_MODE_ON = 1; 
+    int INTEGR_iTestMode = INTEGR_AUTOMATIC_MODE_OFF;
+    // cyclic timer for running the tests cases, selects the next test case
+    msTimer INTEGR_TestMode_timer;
+    // time for one test state
+    const INTEGR_AUTOMATIC_CYCLE_TIME = 4000;        /* ms */
+    // fast start
+    const INTEGR_AUTOMATIC_CYCLE_START_TIME = 100;   /* ms */
+    // index into test state table
+    int INTEGR_iAutomaticTestTableIdx;
+    // number of static test tables
+    const INTEGR_MAX_NUMBER_AUTOMATIC_TESTS = 20;
+    // number of entries in test table
+    int INTEGR_iAutomaticTestTableEntries;
+    // contains the tests called by 'Automatic'
+    dword INTEGR_dAutomaticTestArray[ INTEGR_MAX_NUMBER_AUTOMATIC_TESTS ];
+    // number of entries in test runtime table
+    int INTEGR_iAutomaticTestRuntimeTableEntries;
+    // contains the runtimes of the tests called by 'Automatic'
+    dword INTEGR_dAutomaticTestRuntimeArray[ INTEGR_MAX_NUMBER_AUTOMATIC_TESTS ];
+    // number of entries in test recovery time table
+    int INTEGR_iAutomaticTestRecoveryTimeTableEntries;
+    // contains the recovery times of the tests called by 'Automatic'
+    dword INTEGR_dAutomaticTestRecoveryTimeArray[ INTEGR_MAX_NUMBER_AUTOMATIC_TESTS ];
+    // the runtime for a specific automatic test
+    dword INTEGR_dAutomaticTestRunTime;
+    // the recovery time for a specific automatic test
+    dword INTEGR_dAutomaticTestRecoveryTime;
+
+    // **** 'disable power curves' checkbox
+    // automatic modes
+    const INTEGR_DISABLE_VOLTAGE_CURVE_OFF = 0; 
+    const INTEGR_DISABLE_VOLTAGE_CURVE_ON = 1; 
+    int   INTEGR_iDisVoltageCurveSelection = INTEGR_DISABLE_VOLTAGE_CURVE_OFF;
+
+    // **** NGSM power supply
+    // the modes (manual, auto)
+    const INTEGR_NGSM_MANUAL_MODE = 0;
+    const INTEGR_NGSM_AUTO_MODE = 1;
+    // request for changing the mode (manual, auto)
+    int INTEGR_iNgsmModeRequest;
+    // the actual NGSM mode (manual, auto)
+    int INTEGR_iActualNgsmMode;
+
+    // the output types
+    // request for changing the power voltage type
+    int INTEGR_iNgsmOutputTypeRequest;
+    // the actual power voltage type
+    int INTEGR_iActualNgsmOutputType;
+    // max table size for voltage types
+    const INTEGR_MAX_NUMBER_VOLTAGE_TYPES = 20;
+    // number of entries in voltage table
+    int INTEGR_iPowerVoltageCurveTableEntries;
+    // contains the tests called by 'Automatic'
+    dword INTEGR_dPowerVoltageCurveTable[ INTEGR_MAX_NUMBER_VOLTAGE_TYPES ];
+    // delay time for next output voltage selection, should be greater than 
+    // delay until next output voltage in NGSM 'auto' mode
+    const INTEGR_SELECT_NEXT_OUTPUT_VOLTAGE_TIME = 25000; /* ms */
+    // a counter for counting the delay time for 'auto' output type selection
+    int INTEGR_iAutoOutputTypeCnt; 
+    // waiting times for NGSM commands
+    // to suppress power supply communication disorders, the holding time must 
+    //const INTEGR_OUTPUT_VOLTAGE_SWITCH_DELAY_TIME_NORMAL = 1000;    /* normal delay */
+    // be longer than the maximum response time of the current voltage curve
+    //const INTEGR_OUTPUT_VOLTAGE_SWITCH_DELAY_TIME = 15000; /* ms */
+    // in case of an error repeat the last output voltage setting
+    const INTEGR_SELECT_NEXT_OUTPUT_VOLTAGE_REPEAT_TIME = 1000;   /* ms */
+    // index into power supply voltage table
+    int INTEGR_iPowerVoltageTableIdx;
+    // NGSM command in progress timer
+    msTimer INTEGR_NgsmCommandInProgress_timer;
+    // Timer for autom/manual switch and output voltage type setting.
+    // The functionallity has been merged in one timer function because of synchronizing.
+    // Command transfer to NGSM (control by setTimer, cancelTimer doesn't work
+    // in cases of multiple access.
+    msTimer INTEGR_NgsmModeAndType_timer;
+    // the cyclic call time
+    const INTEGR_NGSM_MODE_AND_TYPE_CYCLE_TIMER = 1000; /* ms */
+
+    // ****
+    msTimer INTEGR_vToggleWarnings_timer;
+  	int ToggleWarnings_cycle = 100;
+  	int ToggleWarnings_cycleCtr = 0;
+
+    int AnzWarningStep = 0;
+
+    int   WarningsTimeTableEntries = 0;
+    const ToggleWarningsTimeArraySize = 20;   
+    dword ToggleWarningsTimeArray[ ToggleWarningsTimeArraySize ];
+       
+    int   WarningsStepTableEntries = 0;
+    const ToggleWarningsStepArraySize = 20;
+    // Anzahl der Wiederholungen fuer zu schaltende Zyklen 
+    dword ToggleWarningsStepArray[ ToggleWarningsStepArraySize ];
+
+  	int ToggleWarnings_state;
+    int ToggleWarnings_stateCntr = 0;
+    int ToggleWarnings_ctr;
+
+    // 1: warnings are suspend for some seconds
+    byte boInsertWarningSuspendCycle = 0;
+
+    int   AllWarningsTimeTableEntries = 0;
+    const ToggleAllWarningsTimeArraySize = 20;
+    dword ToggleAllWarningsTimeArray[ ToggleAllWarningsTimeArraySize ];
+
+    int   AllWarningsStepTableEntries = 0;
+    const ToggleAllWarningsStepArraySize = 20;
+    dword ToggleAllWarningsStepArray[ ToggleAllWarningsStepArraySize ];
+
+	msTimer INTEGR_vToggleKl15_timer;
+  	int     ToggleKl15_cycle = 1;
+    byte    Kl15NextStep = 0;
+    byte    Kl15On_TimeTableEntries = 0;
+    const   Kl15_ToggleTimeArraySize = 20;
+    dword   Kl15_ToggleTimeArray[ Kl15_ToggleTimeArraySize ];
+    byte    Kl15_PrellCntr = 0;
+    byte    Kl15_HoldTableEntries = 0;
+    const   Kl15_ToggleHoldArraySize = 10;
+    dword   Kl15_HoldTime[ Kl15_ToggleHoldArraySize ];
+    byte    Kl15_HoldCntr = 0;
+    byte    Kl15Repetitions = 0;
+    byte    Kl15MaxRepetitions = 0;
+	
+    msTimer INTEGR_vToggleNMH_timer;
+  	int   ToggleNMH_cycle = 1;
+    byte  NMHNextStep = 0;
+    byte  NMH_TimeTableEntries = 0;
+    const NMH_ToggleTimeArraySize = 20;
+    dword NMH_ToggleTimeArray[ NMH_ToggleTimeArraySize ];
+    byte  NMH_PrellCntr = 0;
+
+	msTimer INTEGR_SweepOtp_timer;
+    int  OTP_Cycle = 0;
+    int  OTP_Step = 0;
+    int  OTP_Max = 0;
+    int  OTP_Min = 0;
+    int  OTP_Value = 0;
+    byte OTP_Direction = 0;
+
+	msTimer INTEGR_SweepWba_timer;
+    int WBA_Cycle = 0;
+    int WBA_Step = 0;
+    int WBA_FahrstufeMax = 0;
+    int WBA_FahrstufeMin = 0;
+    int WBA_FahrstufeGangMax = 0;
+    int WBA_FahrstufeGangMin = 0;
+    int WBA_FahrstufeSollIstMax = 0;
+    int WBA_FahrstufeSollIstMin = 0;
+    int WBA_Value = 0;
+    int WBA_Count;
+    byte WBA_Direction = 0;
+    enum { PRND,PRND_Gang,SollIst} WBA_State = PRND;
+
+	msTimer INTEGR_SweepKmt_timer;
+    int KMT_Cycle = 0;
+    int KMT_Step = 0;
+    int KMT_Max = 0;
+    int KMT_Min = 0;
+    int KMT_Value = 0;
+    byte KMT_Direction = 0;
+
+	msTimer INTEGR_SweepDim_timer; 
+    int DIM_Cycle = 0;
+    int DIM_Step = 0;
+    int DIM_Max = 0;
+    int DIM_Min = 0;
+    int DIM_Value = 0;
+    byte DIM_Direction = 0;
+
+	msTimer INTEGR_SweepBEV_timer;
+    int BEV_Cycle_Time = 500;
+    // for Powermeter only
+    int BEV_PowermeterS_Direction = 0;
+    int BEV_Direction = 0; 
+    int BEV_eLadezustand_02S_Value = 0;
+    int BEV_eLadezustand_02S_Step = 1;
+    int BEV_eLadezustand_02S_Min = 0;
+    int BEV_eLadezustand_02S_Max = 100;
+    int BEV_eMO_PowermeterS_Value = 0;
+    int BEV_eMO_PowermeterS_Step = 10;
+    int BEV_eMO_PowermeterS_Min = 0;
+    int BEV_eMO_PowermeterS_Max = 4080;
+    int BEV_eMO_ePowermeterS_Value = 0;
+    int BEV_eMO_ePowermeterS_Step = 1;
+    int BEV_eMO_ePowermeterS_Min = 0;
+    int BEV_eMO_ePowermeterS_Max = 100;
+
+	msTimer INTEGR_SweepCNGLPG_timer;
+    int   CNGLPG_Cycle_Time = 1000;
+    int   CNGLPG_Direction = 0; 
+    float CNGLPG_Fuellungsgrad_CNG_Value = 0;
+    float CNGLPG_Fuellungsgrad_CNG_Step = 0.2;
+    float CNGLPG_Fuellungsgrad_CNG_Min = 1.0;
+    float CNGLPG_Fuellungsgrad_CNG_Max = 24.3;
+    float CNGLPG_eGasConsumption_Value = 0;
+    // different step size for CNG
+    float CNGLPG_Consumption_CNG_Step = 0.1;
+    // different step size for LPG
+    float CNGLPG_Consumption_LPG_Step = 1.0;
+    float CNGLPG_Consumption_Min = 1.0;
+    float CNGLPG_Consumption_Max = 2.5;
+    float CNGLPG_Tankmasse_CNG = 63.5;
+    float CNGLPG_Fuellungsgrad_LPG_m1_Value = 0.0;
+    float CNGLPG_Fuellungsgrad_LPG_m1_Step = 1.0;
+    float CNGLPG_Fuellungsgrad_LPG_m1_Min = 0.0;
+    float CNGLPG_Fuellungsgrad_LPG_m1_Max = 101.2;
+    float CNGLPG_Tankvolumen_LPG = 127.0;
+
+    // MFL key operation
+	msTimer INTEGR_MoveMfl_timer;
+  	int INTEGR_vMoveMfl_cycle = 1000;
+  	int INTEGR_vMoveMfl_state = 0;
+
+    // Warnings
+    const int MAX_WARNINGS = 50;
+    const int MAX_LENGTH = 50;
+    byte  Warning_TableEntries = MAX_WARNINGS;
+    // Warnings List
+    char All_Warnings[MAX_WARNINGS][MAX_LENGTH];
+    char replayName[32] = "ReplayTrace";
+}
+/*@@end*/
+
+/*@@caplFunc:INTEGR_vToggleWarnings(int):*///function
+/*@@end*/
+
+/*@@envVar:evINTEGR_TestCase:*/
+on envVar PlayReplayblock
+{
+  
+  if(@PlayReplayblock==1)
+  {
+   write("stop simulation");
+//   putValue( eSendEnabled, 0 );//Msg abschalten
+//   putValue( eNMHStateMachineState, NMH_StateSleep ); //NMH abschalten    
+//   @eNMHStateMachineEnabled = 0;
+   @eSendEnabled=0;
+   replayStart( replayName);
+   write("Start Replayblock ! ");
+    
+  }
+  else
+  {
+//   putValue( eSendEnabled, 1 );//Msg einschalten   
+//   @eNMHStateMachineEnabled = 1;
+//   putValue( eNMHStateMachineState, NMH_StateNormal ); //NMH abschalten     
+    replayStop( replayName);
+    @eSendEnabled=1;
+  }
+	
+}
+
+on envVar evINTEGR_TestCase
+{
+    // select the actual test functions (or OFF)
+
+    // set the actual test
+    INTEGR_iNewTestCase = getValue( This );
+
+    write( "INTEGR: new test = %d", INTEGR_iNewTestCase );
+    // Logging
+    if( INTEGR_LogFileHandle != 0)
+    {
+        snprintf( INTEGR_cLogBuffer, elcount( INTEGR_cLogBuffer ), "INTEGR: evINTEGR_TestCase: %d\n", INTEGR_iNewTestCase );
+        filePutString( INTEGR_cLogBuffer, elCount( INTEGR_cLogBuffer ), INTEGR_LogFileHandle );
+    }
+
+    // design the radio buttons
+    if( INTEGR_iNewTestCase == INTEGR_TEST_OFF )
+    {   
+        // tests are OFF
+        SetControlBackColor( "Integration_Test", "EnvVar:evINTEGR_TestCase_OFF", MakeRGB( 128, 128, 128 ) );
+    }
+    else
+    {   
+        // all test states != 0
+        SetControlBackColor( "Integration_Test", "EnvVar:evINTEGR_TestCase_OFF", MakeRGB( 192, 192, 192 ) );
+
+        // at start of a test case the NGSM DC Power Supply should be activated
+        INTEGR_vSwitchOnPowerSupply();
+    }
+
+    if( isTimerActive( INTEGR_TestCase_timer ) )
+    {
+        // if the msINTEGR_TestCaseTimer is still running
+        cancelTimer( INTEGR_TestCase_timer );
+    }
+    // start the msINTEGR_TestCaseTimer
+    // all other timing will be performed by this timer
+    setTimer( INTEGR_TestCase_timer, INTEGR_TIMER_DEFAULT_TIME );
+}     
+/*@@end*/
+
+/*@@timer:INTEGR_vToggleWarnings_timer:*/
+on timer INTEGR_vToggleWarnings_timer
+{
+    // enables/disables logging in 'Write' window
+    byte boDebug_ToggleWarnings_timer = 0;
+
+	char temp[MAX_LENGTH];
+    //temp2[MAX_LENGTH], temp3[MAX_LENGTH];
+
+    switch( ToggleWarnings_state )
+	{
+	case 0: // single warning, ON
+        // get a single warning from ini file
+        strncpy( temp, All_Warnings[ ToggleWarnings_ctr ], MAX_LENGTH );
+
+        if( boDebug_ToggleWarnings_timer )
+            write( "INTEGR: case 0: %s -> ON", temp );
+
+        if( ( INTEGR_LogFileHandle != 0) && ( Warnings_Logging != 0 ) )
+        {
+            snprintf( INTEGR_cLogBuffer, elcount( INTEGR_cLogBuffer ), "INTEGR: case 1: Warning %d = %s -> ON\n",
+                      ToggleWarnings_ctr, temp );
+            filePutString( INTEGR_cLogBuffer, elCount( INTEGR_cLogBuffer ), INTEGR_LogFileHandle );
+        }
+
+        // switch warning ON
+         // [30.08.2013]:: conflict with CANeasy conversion 4.0.12; - no Envar 'temp'; value is not being used
+        //putvalue( temp, 1 );
+                
+        // next warning state
+        ToggleWarnings_state = 1;   // single warning, OFF
+
+		break;
+
+	case 1: // single warning, OFF
+        strncpy( temp, All_Warnings[ ToggleWarnings_ctr ], MAX_LENGTH );
+
+        if( boDebug_ToggleWarnings_timer )
+            write( "INTEGR: case 1: %s -> OFF", temp );
+
+        if( ( INTEGR_LogFileHandle != 0 ) && ( Warnings_Logging != 0 ) )
+        {
+            snprintf( INTEGR_cLogBuffer, elcount( INTEGR_cLogBuffer ), "INTEGR: case 1: Warning %d = %s -> OFF\n",
+                      ToggleWarnings_ctr, temp );
+            filePutString( INTEGR_cLogBuffer, elCount( INTEGR_cLogBuffer ), INTEGR_LogFileHandle );
+        }
+
+        // switch warning OFF
+         // [30.08.2013]:: conflict with CANeasy conversion 4.0.12; - no Envar 'temp'; value is not being used
+        //putvalue( temp, 0 );
+
+        ToggleWarnings_ctr++;   // preparation for next warning
+                
+        if( ToggleWarnings_ctr >= Warning_TableEntries )
+        {
+            // all warnings (from table) processed
+            boInsertWarningSuspendCycle = 1;    // warnings are suspend for some seconds
+
+            if( INTEGR_LogFileHandle != 0)
+            {
+                snprintf( INTEGR_cLogBuffer, elcount( INTEGR_cLogBuffer ), "INTEGR: case 1: all %d warnings processed, AnzWarningStep: %d entries %d\n",
+                          ToggleWarnings_ctr, AnzWarningStep, WarningsTimeTableEntries );
+                filePutString( INTEGR_cLogBuffer, elCount( INTEGR_cLogBuffer ), INTEGR_LogFileHandle );
+            }
+
+            ToggleWarnings_state = 0;   // next warning state is ON
+            // reload warnings selection
+            ToggleWarnings_ctr = 0;     // start with first warning
+            // next cycle
+            ToggleWarnings_cycleCtr++;
+
+            // check against 'Anzahl der Wiederholungen fuer zu schaltende Zyklen' 
+            if( ToggleWarnings_cycleCtr == ToggleWarningsStepArray[ AnzWarningStep ] )
+            {
+                // all repetitions for a specific cycle time processed
+
+                if( ( INTEGR_LogFileHandle != 0 ) && ( Warnings_Logging != 0 ) )
+                {
+                    snprintf( INTEGR_cLogBuffer, elcount( INTEGR_cLogBuffer ), "INTEGR: case 1: %d repetitions processed\n",
+                              ToggleWarnings_cycleCtr);
+                    filePutString( INTEGR_cLogBuffer, elCount( INTEGR_cLogBuffer ), INTEGR_LogFileHandle );
+                }
+
+                ToggleWarnings_cycleCtr = 0;
+                AnzWarningStep++;
+
+                if( AnzWarningStep == WarningsTimeTableEntries )
+                {
+                    // all cyclic times (from table) entries processed
+
+                    if( ( INTEGR_LogFileHandle != 0 ) && ( Warnings_Logging != 0 ) )
+                    {
+                        snprintf( INTEGR_cLogBuffer, elcount( INTEGR_cLogBuffer ), "INTEGR: case 1: all %d cycle times processed\n",
+                                  AnzWarningStep );
+                        filePutString( INTEGR_cLogBuffer, elCount( INTEGR_cLogBuffer ), INTEGR_LogFileHandle );
+                    }
+
+                    // if all single warnings has been processed and all repetions are done
+                    ToggleWarnings_state = 2;   // all Warning, ON
+                    // alle Steps durchlaufen
+                    AnzWarningStep = 0;
+
+                    boInsertWarningSuspendCycle = 1;    // warnings are suspend for some seconds
+                }
+
+                // set timer cyclic time
+                ToggleWarnings_cycle = ToggleWarningsTimeArray[ AnzWarningStep ];
+
+                if( ( INTEGR_LogFileHandle != 0 ) && ( Warnings_Logging != 0 ) )
+                {
+                    snprintf( INTEGR_cLogBuffer, elcount( INTEGR_cLogBuffer ), "INTEGR: case 1: set new cyclic time = %d\n",
+                              ToggleWarnings_cycle );
+                    filePutString( INTEGR_cLogBuffer, elCount( INTEGR_cLogBuffer ), INTEGR_LogFileHandle );
+                }
+            }
+        }
+        else
+        {
+            // next warning state
+            ToggleWarnings_state = 0;   // single warning, ON
+        }
+
+        break;
+
+	case 2: // all Warning, ON
+        if( boDebug_ToggleWarnings_timer )
+            write( "INTEGR: case 2, all warnings ON" );
+
+        if( ( INTEGR_LogFileHandle != 0 ) && ( Warnings_Logging != 0 ) )
+        {
+            snprintf( INTEGR_cLogBuffer, elcount( INTEGR_cLogBuffer ), "INTEGR: case 2, all warnings ON\n" );
+            filePutString( INTEGR_cLogBuffer, elCount( INTEGR_cLogBuffer ), INTEGR_LogFileHandle );
+        }
+
+        putvalue(eAllWarn,1); //Warnungen
+        putvalue(eAllWarn,0); 
+        putvalue(eWarnAll,1); //Lampen       
+        putvalue(eWarnAll,0); 
+        // next warning state
+        ToggleWarnings_state = 3;   // all Warning, Off
+
+		break;
+
+	case 3: // all Warning, OFF
+        if( boDebug_ToggleWarnings_timer )
+            write( "INTEGR: case = 3, all warnings OFF" );
+            
+        if( ( INTEGR_LogFileHandle != 0 ) && ( Warnings_Logging != 0 ) )
+        {
+            snprintf( INTEGR_cLogBuffer, elcount( INTEGR_cLogBuffer ), "INTEGR: case 2, all warnings OFF\n" );
+            filePutString( INTEGR_cLogBuffer, elCount( INTEGR_cLogBuffer ), INTEGR_LogFileHandle );
+        }
+
+        putvalue(eNoWarn,1);        
+        putvalue(eNoWarn,0);        
+        putvalue(eWarnNone,1); //Lampen       
+        putvalue(eWarnNone,0); 
+
+        // next warning state
+        ToggleWarnings_state = 2;   // all warnings, ON
+        // next cycle
+        ToggleWarnings_cycleCtr++;
+
+        if( ToggleWarnings_cycleCtr == ToggleAllWarningsStepArray[ AnzWarningStep ] )
+        {
+            // all repetitions processed
+            ToggleWarnings_cycleCtr = 0;
+            AnzWarningStep++;
+
+            if( AnzWarningStep == AllWarningsTimeTableEntries )
+            {
+                // restart the warning test cycle
+                // next warning state: single warning, ON
+                ToggleWarnings_state = 0;
+
+                boInsertWarningSuspendCycle = 1;    // warnings are suspend for some seconds
+
+                // all cyclic times (from table) entries processed
+                if( ( INTEGR_LogFileHandle != 0 ) && ( Warnings_Logging != 0 ) )
+                {
+                    snprintf( INTEGR_cLogBuffer, elcount( INTEGR_cLogBuffer ), "INTEGR: case = 3, (all warnings OFF): all processed: AnzWarningStep: %d MaxStep %d\n",
+                              AnzWarningStep, WarningsTimeTableEntries );
+                    filePutString( INTEGR_cLogBuffer, elCount( INTEGR_cLogBuffer ), INTEGR_LogFileHandle );
+                }
+
+                AnzWarningStep = 0;
+            }
+
+            // load the new cyclic time
+            ToggleWarnings_cycle = ToggleAllWarningsTimeArray[ AnzWarningStep ];
+
+            if( ( INTEGR_LogFileHandle != 0 ) && ( Warnings_Logging != 0 ) )
+            {
+                snprintf( INTEGR_cLogBuffer, elcount( INTEGR_cLogBuffer ), "INTEGR: case = 3, (all warnings OFF): WarningTime: %d Steps: %d\n",
+                          ToggleWarnings_cycle, ToggleAllWarningsStepArray[ AnzWarningStep ] );              
+                filePutString( INTEGR_cLogBuffer, elCount( INTEGR_cLogBuffer ), INTEGR_LogFileHandle );
+            }
+        }
+
+		break;
+
+    default: break;
+    }   // end switch
+
+    if( boInsertWarningSuspendCycle == 1 )
+    {
+        // suspend warnings for some seconds, give other display content a chance to be shown in display 
+        setTimer( INTEGR_vToggleWarnings_timer, 30000 );    // 30 s
+        boInsertWarningSuspendCycle = 0;
+    }
+    else
+    {   
+        // continue with 'normal' cycle time
+        setTimer( INTEGR_vToggleWarnings_timer, ToggleWarnings_cycle );
+    }
+
+    if( ( INTEGR_LogFileHandle != 0)  && ( Warnings_Logging != 0 ) )
+    {
+        snprintf( INTEGR_cLogBuffer, elcount( INTEGR_cLogBuffer ), "INTEGR: ToggleWarnings_cycle = %d\n",
+                  ToggleWarnings_cycle );              
+        filePutString( INTEGR_cLogBuffer, elCount( INTEGR_cLogBuffer ), INTEGR_LogFileHandle );
+    }
+}
+/*@@end*/
+
+/*@@timer:INTEGR_vToggleKl15_timer:*/
+on timer INTEGR_vToggleKl15_timer
+{
+
+    // time management for Kl15 toggling 
+    
+    // set the next bouncing time; time is valid for one Kl15 ON state and one Kl15 OFF state
+    // and will be repeated for some seconds (repeat time is 2s, 5s and 10 s)
+    if( Kl15Repetitions > Kl15MaxRepetitions - 1 )
+    {
+        // all repetitions has been performed, now we can change the next cyclic time and as well 
+        // a new max repetition counter
+
+        // reload the prell counter, entries in KL15On_TimeTable in INTEGR ini-file
+        if( Kl15_PrellCntr < ( Kl15On_TimeTableEntries - 1 ) )
+            Kl15_PrellCntr++;
+        else 
+            Kl15_PrellCntr = 0;
+        // and load a new cyclic time (the time when this function is called again)  
+        ToggleKl15_cycle = Kl15_ToggleTimeArray[ Kl15_PrellCntr ];
+        // check against cycle time = 0; protect timer overrun when wrong time was calculated 
+        ToggleKl15_cycle = INTEGR_iCheckTimerValues( ToggleKl15_cycle );
+
+        // get the hold time for repetition of a specific cycle time
+        if( Kl15_HoldCntr > Kl15_HoldTableEntries - 1 )    // protect
+        {
+            Kl15_HoldCntr = 0;
+        } 
+        // and calculate the repetitions for the given hold time
+        if( ( 2 * ToggleKl15_cycle ) >= Kl15_HoldTime[ Kl15_HoldCntr ] )
+        {
+            // a minimum of 1 cycle (Kl15 ON and Kl15 OFF phase) is guaranteed
+            Kl15MaxRepetitions = 2;
+        }
+        else
+        {
+            // always one Kl15 ON and one Kl15 OFF phase
+            Kl15MaxRepetitions = ( Kl15_HoldTime[ Kl15_HoldCntr ] / ( 2 * ToggleKl15_cycle ) ) * 2;
+        }
+        Kl15Repetitions = 0;  // counter for repetitions
+
+        if( INTEGR_LogFileHandle != 0)
+        {
+            snprintf( INTEGR_cLogBuffer, elcount( INTEGR_cLogBuffer ), 
+                      "ToggleKl15: cycle = %d, hold cnt = %d, Kl15_HoldTime = %d. Kl15MaxRepetitions = %d, Kl15Repetitions = %d\n",
+                      ToggleKl15_cycle, Kl15_HoldCntr, Kl15_HoldTime[ Kl15_HoldCntr ], Kl15MaxRepetitions, Kl15Repetitions );
+            filePutString( INTEGR_cLogBuffer, elCount( INTEGR_cLogBuffer ), INTEGR_LogFileHandle );
+        }
+
+        //write( "INTEGR_vToggleKl15_timer: cycle = %d, hold cnt = %d, Kl15_HoldTime = %d. Kl15MaxRepetitions = %d, Kl15Repetitions = %d",
+        //       ToggleKl15_cycle, Kl15_HoldCntr, Kl15_HoldTime[ Kl15_HoldCntr ], Kl15MaxRepetitions, Kl15Repetitions );
+
+        Kl15_HoldCntr++;     // for next hold time
+    }
+    else
+    {
+        //write( "INTEGR_vToggleKl15_timer: cycle = %d, Kl15Repetitions = %d", ToggleKl15_cycle, Kl15Repetitions );
+        Kl15Repetitions++;  
+    }    
+
+    switch( @eZAS_Kl_15S )    // the old Kl15 state
+       {
+         case 0:    // OFF
+              putValue( eZAS_Kl_15S, 1 );   // to ON
+              Kl15NextStep = 0;             // next is OFF 
+              break;
+
+         case 1:    // ON
+              putValue( eZAS_Kl_15S, 0 );   // to OFF
+              Kl15NextStep = 1;             // next is ON
+              break;
+         default: break;
+       }
+
+    // protect timer overrun when wrong time was calculated 
+    ToggleKl15_cycle = INTEGR_iCheckTimerValues( ToggleKl15_cycle );
+    setTimer(INTEGR_vToggleKl15_timer, ToggleKl15_cycle); 
+} 
+/*@@end*/
+
+/*@@caplFunc:INTEGR_vToggleWarnings(int):*///function
+INTEGR_vToggleWarnings( int State )
+{
+    // enables/disables logging in 'Write' window
+    byte boDebug_ToggleWarnings = 0;
+
+    if( ( INTEGR_LogFileHandle != 0 ) && ( Warnings_Logging != 0 ) )
+    {
+        snprintf( INTEGR_cLogBuffer, elcount( INTEGR_cLogBuffer ), "INTEGR: ToggleWarnings state = %d\n", State );
+        filePutString( INTEGR_cLogBuffer, elCount( INTEGR_cLogBuffer ), INTEGR_LogFileHandle );
+    }
+
+	switch( State )
+	{
+	case 0:
+        cancelTimer( INTEGR_vToggleWarnings_timer );
+		break;
+	
+    default:
+        // check the toggle counters
+        if( ToggleWarnings_state >= 4 )
+            ToggleWarnings_state = 0;   // what to do next: single warning ON
+        if( ToggleWarnings_ctr >= Warning_TableEntries )
+            ToggleWarnings_ctr = 0;     // start with the first warning from table 
+        if( AnzWarningStep >= AllWarningsTimeTableEntries )
+            AnzWarningStep = 0;         // points to the cycle time table
+        if( boDebug_ToggleWarnings )
+            write( "INTEGR: ToggleWarnings_state %d, ToggleWarnings_ctr %d, AnzWarningStep %d",
+                    ToggleWarnings_state, ToggleWarnings_ctr, AnzWarningStep );
+
+        // ToggleWarningsTimeArray contains the values from WarningsTimeTable,, the time 
+        ToggleWarnings_cycle = ToggleWarningsTimeArray[ AnzWarningStep ];
+        if( boDebug_ToggleWarnings )
+            write( "INTEGR: ToggleWarnings_cycle %d", ToggleWarnings_cycle );
+
+        // reload 'Anzahl der Wiederholungen fuer zu schaltende Zyklen' 
+        ToggleWarnings_stateCntr = ToggleWarningsStepArray[0];
+        if( boDebug_ToggleWarnings )
+            write( "INTEGR: ToggleWarnings_stateCntr %d", ToggleWarnings_stateCntr );
+
+        if( isTimerActive( INTEGR_vToggleWarnings_timer ) )
+        {
+            cancelTimer( INTEGR_vToggleWarnings_timer );
+        }
+        setTimer( INTEGR_vToggleWarnings_timer, 1 );  // start after 1 ms 
+		break;
+	}
+}
+/*@@end*/
+
+/*@@caplFunc:INTEGR_vToggleKl15(int):*///function
+INTEGR_vToggleKl15( int State )
+{
+    // switch on or off the KL15 toggling
+    if( INTEGR_LogFileHandle != 0)
+    {
+        snprintf( INTEGR_cLogBuffer, elcount( INTEGR_cLogBuffer ), "INTEGR: ToggleKl15 state = %d\n", State );
+        filePutString( INTEGR_cLogBuffer, elCount( INTEGR_cLogBuffer ), INTEGR_LogFileHandle );
+    }
+
+	switch( State )
+	{
+	case 0:
+        // Kl15 toggling stop
+        if( INTEGR_LogFileHandle != 0)
+        {
+            snprintf( INTEGR_cLogBuffer, elcount( INTEGR_cLogBuffer ), "INTEGR: ToggleKl15: stop timer\n" );
+            filePutString( INTEGR_cLogBuffer, elCount( INTEGR_cLogBuffer ), INTEGR_LogFileHandle );
+        }
+
+        //write( "ToggleKl15: stop timer" ); 
+
+        cancelTimer( INTEGR_vToggleKl15_timer );
+        // keep the last Kl15 state (on/off)
+		break;
+	
+    default:
+        // start the Kl15 toggling, Kl15 is ON
+
+        // load the cycle time
+        if( Kl15_PrellCntr < ( Kl15On_TimeTableEntries - 1 ) )
+            Kl15_PrellCntr++;
+        else 
+            Kl15_PrellCntr = 0;
+        // the time when the INTEGR_vToggleKl15_timer timer function will be called again
+        // loaded from KL15On_TimeTable (defined in INTEGR ini-file), time in ms
+        ToggleKl15_cycle = Kl15_ToggleTimeArray[ Kl15_PrellCntr ];
+        // Kl15 ON
+        INTEGR_vSwitchKl15( 1 );
+        // check against cycle time = 0; protect timer overrun when wrong time was calculated 
+        ToggleKl15_cycle = INTEGR_iCheckTimerValues( ToggleKl15_cycle );
+
+        // get the hold time for repetition of a specific cycle time
+        if( Kl15_HoldCntr > Kl15_HoldTableEntries - 1 )    // protect
+        {
+            Kl15_HoldCntr = 0;
+        } 
+        // and caculate the repetition; how many cycles fits in the hold time
+        if( ( 2 * ToggleKl15_cycle ) >= Kl15_HoldTime[ Kl15_HoldCntr ] )
+        {
+            // a minimum of 1 cycle (Kl15 ON and Kl15 OFF phase) is guaranteed
+            Kl15MaxRepetitions = 2;
+        }
+        else
+        {   
+            // always one Kl15 ON and one Kl15 OFF phase
+            Kl15MaxRepetitions = ( Kl15_HoldTime[ Kl15_HoldCntr ] / ( 2 * ToggleKl15_cycle ) * 2 );
+        }
+        Kl15Repetitions = 0;  // counter for repetitions
+
+        if( INTEGR_LogFileHandle != 0)
+        {
+            snprintf( INTEGR_cLogBuffer, elcount( INTEGR_cLogBuffer ), 
+                      "ToggleKl15: cycle = %d, hold cnt = %d, Kl15_HoldTime = %d. Kl15MaxRepetitions = %d, Kl15Repetitions = %d\n",
+                      ToggleKl15_cycle, Kl15_HoldCntr, Kl15_HoldTime[ Kl15_HoldCntr ], Kl15MaxRepetitions, Kl15Repetitions );
+            filePutString( INTEGR_cLogBuffer, elCount( INTEGR_cLogBuffer ), INTEGR_LogFileHandle );
+        }
+
+        //write( "ToggleKl15: cycle = %d, hold cnt = %d, Kl15_HoldTime = %d. Kl15MaxRepetitions = %d, Kl15Repetitions = %d",
+        //       ToggleKl15_cycle, Kl15_HoldCntr, Kl15_HoldTime[ Kl15_HoldCntr ], Kl15MaxRepetitions, Kl15Repetitions );
+
+        Kl15_HoldCntr++;     // for next hold time
+
+        // set new timer cycle
+        if( isTimerActive( INTEGR_vToggleKl15_timer ) )
+        {
+            cancelTimer( INTEGR_vToggleKl15_timer );
+        }
+        setTimer( INTEGR_vToggleKl15_timer, ToggleKl15_cycle ); 
+		break;
+	}
+}
+/*@@end*/
+
+/*@@caplFunc:INTEGR_vSwitchAllWarnings(int):*///function
+INTEGR_vSwitchAllWarnings( int State )
+{
+    int val,i;
+    char temp[MAX_LENGTH];
+
+    if( INTEGR_LogFileHandle != 0)
+    {
+        snprintf( INTEGR_cLogBuffer, elcount( INTEGR_cLogBuffer ), "INTEGR: SwitchAllWarnings state = %d\n", State );
+        filePutString( INTEGR_cLogBuffer, elCount( INTEGR_cLogBuffer ), INTEGR_LogFileHandle );
+    }
+
+    // always stop a running toggle timer
+    if( isTimerActive( INTEGR_vToggleWarnings_timer ) )
+    {
+        cancelTimer( INTEGR_vToggleWarnings_timer );
+    }
+
+	switch( State )
+	{
+	case 0:
+        // warning OFF
+        val = 0;
+        for (i=0; i < Warning_TableEntries; i++)
+        {
+            strncpy(temp, All_Warnings[i], MAX_LENGTH);
+            // [30.08.2013]:: conflict with CANeasy conversion 4.0.12; - no Envar 'temp'; value is not being used
+            /*if (getvalue(temp) != val)
+            {
+                putvalue(temp,val);
+            }*/
+        }        
+        break;
+	
+    default:
+        // warning ON
+        val = 1;
+        for (i=0; i < Warning_TableEntries; i++)
+        {
+            strncpy(temp, All_Warnings[i], MAX_LENGTH);
+             // [30.08.2013]:: conflict with CANeasy conversion 4.0.12; - no Envar 'temp'; value is not being used
+            /*if (getvalue(temp) != val)
+            {
+                putvalue(temp,val);
+            }*/
+        }
+        break;
+	}
+}
+/*@@end*/
+
+/*@@caplFunc:INTEGR_vSwitchKl15(int):*///function
+INTEGR_vSwitchKl15 (int State)
+{
+    if( INTEGR_LogFileHandle != 0)
+    {
+        snprintf( INTEGR_cLogBuffer, elcount( INTEGR_cLogBuffer ), "INTEGR: INTEGR_vSwitchKl15 state = %d\n", State );
+        filePutString( INTEGR_cLogBuffer, elCount( INTEGR_cLogBuffer ), INTEGR_LogFileHandle );
+    }
+
+    // always stop a running toggle timer
+    if( isTimerActive( INTEGR_vToggleKl15_timer ) )
+    {
+        cancelTimer( INTEGR_vToggleKl15_timer );
+    }
+
+	switch( State )
+	{
+    	case 0:
+            putValue(eZAS_Kl_15S, 0);
+		    break;
+	
+        default:
+            putValue(eZAS_Kl_15S, 1);
+		    break;
+	}
+}
+/*@@end*/
+
+/*@@timer:INTEGR_MoveMfl_timer:*/
+on timer INTEGR_MoveMfl_timer
+{
+    int WaitShort = 10;
+    int WaitLong  = 1000;
+
+	switch(INTEGR_vMoveMfl_state)
+	{
+    // press LEFT 2 times 
+	case 0: 
+        putValue(eKeyMenuUpState,1);
+        INTEGR_vMoveMfl_cycle = WaitShort;
+        break;
+	case 1: 
+        putValue(eKeyMenuUpState,0);
+        INTEGR_vMoveMfl_cycle = WaitLong;
+        break;
+	case 2: 
+        putValue(eKeyMenuUpState,1);
+        INTEGR_vMoveMfl_cycle = WaitShort;
+        break;
+	case 3: 
+        putValue(eKeyMenuUpState,0);
+        INTEGR_vMoveMfl_cycle = WaitLong;
+        break;
+
+    // press RIGHT 1 times 
+	case 4: 
+        putValue(eKeyMenuDownState,1);
+        INTEGR_vMoveMfl_cycle = WaitShort;
+        break;
+	case 5: 
+        putValue(eKeyMenuDownState,0);
+        INTEGR_vMoveMfl_cycle = WaitLong;
+        break;
+
+    // press MENU 1 times 
+	case 6: 
+        putValue(eKeyMenuState,1);
+        INTEGR_vMoveMfl_cycle = WaitShort;
+        break;
+	case 7: 
+        putValue(eKeyMenuState,0);
+        INTEGR_vMoveMfl_cycle = WaitLong;
+        break;
+
+    // press UP 2 times 
+	case 8: 
+        putValue(eKeyWheelEventCodeLeft_P1,1);
+        INTEGR_vMoveMfl_cycle = WaitShort;
+        break;
+	case 9: 
+        putValue(eKeyWheelEventCodeLeft_P1,0);
+        INTEGR_vMoveMfl_cycle = WaitLong;
+        break;
+	case 10: 
+        putValue(eKeyWheelEventCodeLeft_P1,1);
+        INTEGR_vMoveMfl_cycle = WaitShort;
+        break;
+	case 11: 
+        putValue(eKeyWheelEventCodeLeft_P1,0);
+        INTEGR_vMoveMfl_cycle = WaitLong;
+        break;
+
+    // press DOWN 1 times 
+	case 12: 
+        putValue(eKeyWheelEventCodeLeft_M1,1);
+        INTEGR_vMoveMfl_cycle = WaitShort;
+        break;
+	case 13: 
+        putValue(eKeyWheelEventCodeLeft_M1,0);
+        INTEGR_vMoveMfl_cycle = WaitLong;
+        break;
+
+    // press OK 2 times 
+	case 14: 
+        putValue(eKeyOkWheelLeftState,1);
+        INTEGR_vMoveMfl_cycle = WaitShort;
+        break;
+	case 15: 
+        putValue(eKeyOkWheelLeftState,0);
+        INTEGR_vMoveMfl_cycle = WaitLong;
+        break;
+	case 16: 
+        putValue(eKeyOkWheelLeftState,1);
+        INTEGR_vMoveMfl_cycle = WaitShort;
+        break;
+	case 17: 
+        putValue(eKeyOkWheelLeftState,0);
+        INTEGR_vMoveMfl_cycle = WaitLong;
+        break;
+    
+    default:
+        INTEGR_vMoveMfl_state = -1; /* with this line
+        ** the number of states must not be configured */
+        break;
+	}
+   
+    INTEGR_vMoveMfl_state ++;;
+    setTimer(INTEGR_MoveMfl_timer, INTEGR_vMoveMfl_cycle);
+    //write("IntTest: INTEGR_vMoveMfl_state = %d", MoveMfl_state);
+}
+/*@@end*/
+
+/*@@key:'o':*/
+on key 'o'
+{
+    write( "INTEGR: new test case by keyboard = %d", INTEGR_TEST_OFF );
+    // Logging
+    if( INTEGR_LogFileHandle != 0)
+    {
+        snprintf( INTEGR_cLogBuffer, elcount( INTEGR_cLogBuffer ), "INTEGR: keyboard test case INTEGR_TEST_OFF\n" );
+        filePutString( INTEGR_cLogBuffer, elCount( INTEGR_cLogBuffer ), INTEGR_LogFileHandle );
+    }
+
+    putValue( evINTEGR_TestCase, INTEGR_TEST_OFF );
+}
+/*@@end*/
+
+/*@@caplFunc:INTEGR_vMoveMfl(int):*///function
+INTEGR_vMoveMfl( int State )
+{
+    // starts/stopps MFL operation
+
+    if( ( INTEGR_LogFileHandle != 0 ) && ( MoveMfl_Logging != 0 ) ) 
+    {
+        snprintf( INTEGR_cLogBuffer, elcount( INTEGR_cLogBuffer ), "INTEGR: INTEGR_vMoveMfl state = %d\n", State );
+        filePutString( INTEGR_cLogBuffer, elCount( INTEGR_cLogBuffer ), INTEGR_LogFileHandle );
+    }
+
+    switch( State )
+    {
+        case 0:
+            cancelTimer(INTEGR_MoveMfl_timer);
+            // clears all (hanging) MFL buttons
+            INTEGR_vClearMfl();
+            break;
+	
+        default:
+            if( isTimerActive( INTEGR_MoveMfl_timer ) )
+            {
+                cancelTimer( INTEGR_MoveMfl_timer );
+            }
+            setTimer(INTEGR_MoveMfl_timer, 1); 
+		    break;
+    }
+}
+/*@@end*/
+
+/*@@caplFunc:INTEGR_vSweepPointer(int):*///function
+INTEGR_vSweepPointer( int State )
+{
+    if( ( INTEGR_LogFileHandle != 0 ) && ( Pointer_Logging != 0 ) )
+    {
+        snprintf( INTEGR_cLogBuffer, elcount( INTEGR_cLogBuffer ), "INTEGR: SweepPointer state = %d\n", State );
+        filePutString( INTEGR_cLogBuffer, elCount( INTEGR_cLogBuffer ), INTEGR_LogFileHandle );
+    }
+
+	switch( State )
+	{
+    	case 1:     // run
+            putValue(eSpeedSweep, 1);
+            putValue(eRPMSweep, 1);       
+		    break;
+
+	    default:    // stop
+            putValue(eSpeedSweep, 0);
+            putValue(eRPMSweep, 0);
+		    break;
+	}
+}
+/*@@end*/
+
+/*@@key:'0':*/
+on key '0'
+{
+    write( "INTEGR: new test case by keyboard = %d", INTEGR_TEST_BZ0 );
+    // Logging
+    if( INTEGR_LogFileHandle != 0)
+    {
+        snprintf( INTEGR_cLogBuffer, elcount( INTEGR_cLogBuffer ), "INTEGR: keyboard test case INTEGR_TEST_BZ0\n" );
+        filePutString( INTEGR_cLogBuffer, elCount( INTEGR_cLogBuffer ), INTEGR_LogFileHandle );
+    }
+
+    putValue( evINTEGR_TestCase, INTEGR_TEST_BZ0 );
+}
+/*@@end*/
+
+/*@@key:'1':*/
+on key '1'
+{
+    write( "INTEGR: new test case by keyboard = %d", INTEGR_TEST_BZ1 );
+    // Logging
+    if( INTEGR_LogFileHandle != 0)
+    {
+        snprintf( INTEGR_cLogBuffer, elcount( INTEGR_cLogBuffer ), "INTEGR: keyboard test case INTEGR_TEST_BZ1\n" );
+        filePutString( INTEGR_cLogBuffer, elCount( INTEGR_cLogBuffer ), INTEGR_LogFileHandle );
+    }
+
+    putValue( evINTEGR_TestCase, INTEGR_TEST_BZ1 );
+}
+/*@@end*/
+
+/*@@key:'2':*/
+on key '2'
+{
+    write( "INTEGR: new test case by keyboard = %d", INTEGR_TEST_BZ2 );
+    // Logging
+    if( INTEGR_LogFileHandle != 0)
+    {
+        snprintf( INTEGR_cLogBuffer, elcount( INTEGR_cLogBuffer ), "INTEGR: keyboard test case INTEGR_TEST_BZ2\n" );
+        filePutString( INTEGR_cLogBuffer, elCount( INTEGR_cLogBuffer ), INTEGR_LogFileHandle );
+    }
+
+    putValue( evINTEGR_TestCase, INTEGR_TEST_BZ2 );
+}
+/*@@end*/
+
+/*@@key:'3':*/
+on key '3'
+{
+    write( "INTEGR: new test case by keyboard = %d", INTEGR_TEST_BZ3 );
+    // Logging
+    if( INTEGR_LogFileHandle != 0)
+    {
+        snprintf( INTEGR_cLogBuffer, elcount( INTEGR_cLogBuffer ), "INTEGR: keyboard test case INTEGR_TEST_BZ3\n" );
+        filePutString( INTEGR_cLogBuffer, elCount( INTEGR_cLogBuffer ), INTEGR_LogFileHandle );
+    }
+
+    putValue( evINTEGR_TestCase, INTEGR_TEST_BZ3 );
+}
+/*@@end*/
+
+/*@@key:'4':*/
+on key '4'
+{
+    write( "INTEGR: new test case by keyboard = %d", INTEGR_TEST_BZ4 );
+    // Logging
+    if( INTEGR_LogFileHandle != 0)
+    {
+        snprintf( INTEGR_cLogBuffer, elcount( INTEGR_cLogBuffer ), "INTEGR: keyboard test case INTEGR_TEST_BZ4\n" );
+        filePutString( INTEGR_cLogBuffer, elCount( INTEGR_cLogBuffer ), INTEGR_LogFileHandle );
+    }
+
+    putValue( evINTEGR_TestCase, INTEGR_TEST_BZ4 );
+}
+/*@@end*/
+
+/*@@key:'5':*/
+on key '5'
+{
+    write( "INTEGR: new test case by keyboard = %d", INTEGR_TEST_BZ5 );
+    // Logging
+    if( INTEGR_LogFileHandle != 0)
+    {
+        snprintf( INTEGR_cLogBuffer, elcount( INTEGR_cLogBuffer ), "INTEGR: keyboard test case INTEGR_TEST_BZ5\n" );
+        filePutString( INTEGR_cLogBuffer, elCount( INTEGR_cLogBuffer ), INTEGR_LogFileHandle );
+    }
+
+    putValue( evINTEGR_TestCase, INTEGR_TEST_BZ5 );
+}
+/*@@end*/
+
+/*@@key:'6':*/
+on key '6'
+{
+    write( "INTEGR: new test case by keyboard = %d", INTEGR_TEST_BZ6 );
+    // Logging
+    if( INTEGR_LogFileHandle != 0)
+    {
+        snprintf( INTEGR_cLogBuffer, elcount( INTEGR_cLogBuffer ), "INTEGR: keyboard test case INTEGR_TEST_BZ6\n" );
+        filePutString( INTEGR_cLogBuffer, elCount( INTEGR_cLogBuffer ), INTEGR_LogFileHandle );
+    }
+
+    putValue( evINTEGR_TestCase, INTEGR_TEST_BZ6 );
+}
+/*@@end*/
+
+/*@@key:'7':*/
+on key '7'
+{
+    write( "INTEGR: new test case by keyboard = %d", INTEGR_TEST_BZ7 );
+    // Logging
+    if( INTEGR_LogFileHandle != 0)
+    {
+        snprintf( INTEGR_cLogBuffer, elcount( INTEGR_cLogBuffer ), "INTEGR: keyboard test case INTEGR_TEST_BZ7\n" );
+        filePutString( INTEGR_cLogBuffer, elCount( INTEGR_cLogBuffer ), INTEGR_LogFileHandle );
+    }
+
+    putValue( evINTEGR_TestCase, INTEGR_TEST_BZ7 );
+}
+/*@@end*/
+
+/*@@key:'8':*/
+on key '8'
+{
+    write( "INTEGR: new test case by keyboard = %d", INTEGR_TEST_BZ8 );
+    // Logging
+    if( INTEGR_LogFileHandle != 0)
+    {
+        snprintf( INTEGR_cLogBuffer, elcount( INTEGR_cLogBuffer ), "INTEGR: keyboard test case INTEGR_TEST_BZ8\n" );
+        filePutString( INTEGR_cLogBuffer, elCount( INTEGR_cLogBuffer ), INTEGR_LogFileHandle );
+    }
+
+    putValue( evINTEGR_TestCase, INTEGR_TEST_BZ8 );
+}
+/*@@end*/
+
+/*@@caplFunc:INTEGR_vSwitchNMH(int):*///function
+INTEGR_vSwitchNMH( int State )
+{
+    if( INTEGR_LogFileHandle != 0)
+    {
+        snprintf( INTEGR_cLogBuffer, elcount( INTEGR_cLogBuffer ), "INTEGR: SwitchNmh state = %d\n", State );
+        filePutString( INTEGR_cLogBuffer, elCount( INTEGR_cLogBuffer ), INTEGR_LogFileHandle );
+    }
+
+    // always stop a running toggle timer
+    if( isTimerActive( INTEGR_vToggleNMH_timer ) )
+    {
+        cancelTimer( INTEGR_vToggleNMH_timer );
+    }
+
+	switch( State )
+	{
+	case 0:
+        @eNMHControllerNodeAwake=0;
+ 		break;
+	case 1:
+        @eNMHControllerNodeAwake=1;
+ 		break;
+
+	default:
+        @eNMHControllerNodeAwake=0;
+		break;
+	}
+}
+/*@@end*/
+
+/*@@envVar:evINTEGR_TestMode:*/
+on envVar evINTEGR_TestMode
+{
+    // selects the test mode: Automatic, Manual
+
+    INTEGR_iTestMode = getValue( This );
+
+	switch( INTEGR_iTestMode )
+	{
+	    case INTEGR_AUTOMATIC_MODE_OFF: // integration test == 0ff, evINTEGR_TestCase is ignored
+            write( "evINTEGR_TestMode: event INTEGR_AUTOMATIC_MODE_OFF" );
+            // the test states will be set to OFF
+            putValue( evINTEGR_TestModeDisplay, "Automatic OFF" );
+
+            // Logging
+            if( INTEGR_LogFileHandle != 0)
+                filePutString( "Automatic OFF\n", elCount( "Automatic OFF\n" ), INTEGR_LogFileHandle );
+
+            //write( "INTEGR: stop Automatic" );
+            if( isTimerActive( INTEGR_TestMode_timer ) )
+            {
+                cancelTimer( INTEGR_TestMode_timer );
+            }
+            setTimer( INTEGR_TestMode_timer, INTEGR_AUTOMATIC_CYCLE_TIME );
+            // select OFF
+            putValue( evINTEGR_TestCase, 0 );
+		    break;
+
+	    case INTEGR_AUTOMATIC_MODE_ON: // Automatic test running
+            write( "evINTEGR_TestMode: event INTEGR_AUTOMATIC_MODE_ON" );
+            putValue( evINTEGR_TestModeDisplay, "Automatic ON" );
+
+            // Logging
+            if( INTEGR_LogFileHandle != 0)
+                filePutString( "Automatic ON\n", elCount( "Automatic ON\n" ), INTEGR_LogFileHandle );
+
+            // at start of a test case the NGSM DC Power Supply should be activated
+            INTEGR_vSwitchOnPowerSupply();
+
+            // array of test cases in 'Automatic' mode: index to first element
+            INTEGR_iAutomaticTestTableIdx = 0;
+            
+            // array of output voltage types: index to first entry
+            INTEGR_iPowerVoltageTableIdx = 0;
+
+            // start automatic-timer, fast start
+            if( isTimerActive( INTEGR_TestMode_timer ) )
+            {
+                cancelTimer( INTEGR_TestMode_timer );
+            }
+            setTimer( INTEGR_TestMode_timer, INTEGR_AUTOMATIC_CYCLE_START_TIME );
+		    break;
+
+	    case 2: // file mode
+            /* TO BE DONE (low priority):
+            ** a file is to be read cyclic (every 100ms) 
+            ** and its content should control which test state is to be activated.
+            ** The file name is to be peck_key.dat
+            ** and should contain only one line of text e.g. " 33 00 00 00"*/
+		    break;
+
+        default:
+            write( "INTEGR: ERROR: unknown evINTEGR_TestMode = %d", INTEGR_iTestMode );
+            break;
+	}
+}
+/*@@end*/
+
+/*@@startStart:Start:*/
+on start
+{
+    char buffer[1200];
+    char DataBuffer[100];
+    long DataIn;
+    byte i;
+
+    // open the ini-file
+    write( "INTEGR: open ini-file %s", INTEGR_cIniFileName );
+    INTEGR_IniFileHandle = openFileRead( INTEGR_cIniFileName, 0 /* ASCCII */ );
+    if( INTEGR_IniFileHandle == 0 )
+    {
+        write("INTEGR: ERROR: cannot open File INTEGR.ini");
+        // text output when 'on start' not possible, but color
+        SetControlBackColor( "Integration_Test", "EnvVar:evINTEGR_HelpBox", MakeRGB( 255, 0, 0 ) );
+        fileClose( INTEGR_IniFileHandle );
+    }
+    else
+    {
+        // open
+        // text output when 'on start' not possible, but color
+        SetControlBackColor( "Integration_Test", "EnvVar:evINTEGR_HelpBox", MakeRGB( 192, 192, 192 ) );
+    }
+    
+    // read pre-defined parameters from the ini-file
+    if( INTEGR_IniFileHandle != 0 )
+    {
+        // logging to a file is enabled/disabled
+        // may be overwritten by panel control
+        @evINTEGR_Logging = getProfileInt( "INTEGR_TestControl", "LoggingControl", 0, INTEGR_cIniFileName );
+        if( getValue( evINTEGR_Logging ) == 1 )
+        {
+            putValue( evINTEGR_LoggingDisplay, "Logging ON" );
+        }
+        else
+        {
+            putValue( evINTEGR_LoggingDisplay, "Logging OFF" );
+        }
+
+        // check if logging of a module is enabled
+        CNGLPG_Logging = getProfileInt( "INTEGR_TestControl", "CNGLPG_Logging", 0, INTEGR_cIniFileName );
+        BEV_Logging = getProfileInt( "INTEGR_TestControl", "BEV_Logging", 0, INTEGR_cIniFileName );
+        MoveMfl_Logging = getProfileInt( "INTEGR_TestControl", "MoveMfl_Logging", 0, INTEGR_cIniFileName );
+        Warnings_Logging = getProfileInt( "INTEGR_TestControl", "Warnings_Logging", 0, INTEGR_cIniFileName );
+        KTM_Logging = getProfileInt( "INTEGR_TestControl", "KTM_Logging", 0, INTEGR_cIniFileName );
+        Dim_Logging = getProfileInt( "INTEGR_TestControl", "Dim_Logging", 0, INTEGR_cIniFileName );
+        OTP_Logging = getProfileInt( "INTEGR_TestControl", "OTP_Logging", 0, INTEGR_cIniFileName );
+        Pointer_Logging = getProfileInt( "INTEGR_TestControl", "Pointer_Logging", 0, INTEGR_cIniFileName );
+
+        // the test mode: BZ0...BZxx
+        // may be overwritten by panel control
+        @evINTEGR_TestCase = getProfileInt( "INTEGR_TestControl", "TestCase", 0, INTEGR_cIniFileName );
+        if( getValue( evINTEGR_TestCase ) == 0 )    {
+            // test mode is OFF
+            SetControlBackColor( "Integration_Test", "EnvVar:evINTEGR_TestCase_OFF", MakeRGB( 128, 128, 128 ) );
+        }
+        else {
+            // test mode is BZ1 ... BZxx
+            SetControlBackColor( "Integration_Test", "EnvVar:evINTEGR_TestCase_OFF", MakeRGB( 0, 0, 255 ) );
+        }
+
+        // Timer reset or not when a new test mode has been selected
+        // may be overwritten by panel control
+        @evINTEGR_TimerResetControl = getProfileInt( "INTEGR_TestControl", "TimerResetControl", 0, INTEGR_cIniFileName );
+        if( getValue( evINTEGR_TimerResetControl ) == 1 )
+        {
+            putValue( evINTEGR_TimerResetDisplay, "Timer Reset ON" );
+        }
+        else
+        {
+            putValue( evINTEGR_TimerResetDisplay, "Timer Reset OFF" );
+        }
+
+        // 'Automatic' mode or 'manual' mode
+        // may be overwritten by panel control
+        @evINTEGR_TestMode = getProfileInt( "INTEGR_TestControl", "TestMode", 0, INTEGR_cIniFileName );
+        if( INTEGR_iTestMode == INTEGR_AUTOMATIC_MODE_ON )
+        {
+            putValue( evINTEGR_TestModeDisplay, "Automatic ON" );
+        }
+        else
+        {
+            putValue( evINTEGR_TestModeDisplay, "Automatic OFF" );
+        }
+
+        // fill the array of needed test states for 'Automatic' test
+        INTEGR_iAutomaticTestTableEntries = getProfileDwordArray( "Automatic", "AutomaticTestTable", INTEGR_dAutomaticTestArray, INTEGR_cIniFileName );
+        // check against max table size
+        if( INTEGR_iAutomaticTestTableEntries > INTEGR_MAX_NUMBER_AUTOMATIC_TESTS )
+        {
+            write( "INTEGR: ERROR: INTEGR_iAutomaticTestTableEntries %d >  INTEGR_MAX_NUMBER_AUTOMATIC_TESTS %d", INTEGR_iAutomaticTestTableEntries, INTEGR_MAX_NUMBER_AUTOMATIC_TESTS );
+            INTEGR_iAutomaticTestTableEntries = INTEGR_MAX_NUMBER_AUTOMATIC_TESTS;
+        }
+        else
+        {
+            write( "INTEGR: INTEGR_iAutomaticTestTableEntries %d", INTEGR_iAutomaticTestTableEntries );
+        }
+   
+        // fill the array of runtime for every test state
+        INTEGR_iAutomaticTestRuntimeTableEntries = getProfileDwordArray( "Automatic", "AutomaticTestRunTimes", INTEGR_dAutomaticTestRuntimeArray, INTEGR_cIniFileName );
+        // check against max table size
+        if( INTEGR_iAutomaticTestRuntimeTableEntries > INTEGR_MAX_NUMBER_AUTOMATIC_TESTS )
+        {
+            write( "INTEGR: ERROR: INTEGR_iAutomaticTestRuntimeTableEntries %d >  INTEGR_MAX_NUMBER_AUTOMATIC_TESTS %d", INTEGR_iAutomaticTestRuntimeTableEntries, INTEGR_MAX_NUMBER_AUTOMATIC_TESTS );
+            INTEGR_iAutomaticTestRuntimeTableEntries = INTEGR_MAX_NUMBER_AUTOMATIC_TESTS;
+        }
+        else
+        {
+            write( "INTEGR: INTEGR_iAutomaticTestRuntimeTableEntries %d", INTEGR_iAutomaticTestRuntimeTableEntries );
+        }
+
+        // fill the array of recovery times for every test state
+        INTEGR_iAutomaticTestRecoveryTimeTableEntries = getProfileDwordArray( "Automatic", "AutomaticTestRecoverTimes", INTEGR_dAutomaticTestRecoveryTimeArray, INTEGR_cIniFileName );
+        // check against max table size
+        if( INTEGR_iAutomaticTestRecoveryTimeTableEntries > INTEGR_MAX_NUMBER_AUTOMATIC_TESTS )
+        {
+            write( "INTEGR: ERROR: INTEGR_iAutomaticTestRecoveryTimeTableEntries %d >  INTEGR_MAX_NUMBER_AUTOMATIC_TESTS %d", INTEGR_iAutomaticTestRecoveryTimeTableEntries, INTEGR_MAX_NUMBER_AUTOMATIC_TESTS );
+            INTEGR_iAutomaticTestRecoveryTimeTableEntries = INTEGR_MAX_NUMBER_AUTOMATIC_TESTS;
+        }
+        else
+        {
+            write( "INTEGR: INTEGR_iAutomaticTestRecoveryTimeTableEntries %d", INTEGR_iAutomaticTestRecoveryTimeTableEntries );
+        }
+
+        //KL15 Prellzeiten aus Textfile einlesen 
+        Kl15On_TimeTableEntries = getProfileDwordArray("KL15Prellen", "KL15On_TimeTable", Kl15_ToggleTimeArray, INTEGR_cIniFileName );
+        // check if Kl15On_TimeTableEntries is NOT greater than array size
+        if( Kl15On_TimeTableEntries > Kl15_ToggleTimeArraySize )
+        {
+            write( "INTEGR: ERROR: Kl15On_TimeTableEntries %d >  Kl15_ToggleTimeArraySize %d", Kl15On_TimeTableEntries, Kl15_ToggleTimeArraySize );
+            Kl15On_TimeTableEntries = Kl15_ToggleTimeArraySize;
+        }
+        else
+        {
+            write( "INTEGR: Kl15On_TimeTableEntries %d", Kl15On_TimeTableEntries );
+        }
+
+        //KL15 Hold-Zeiten aus Textfile einlesen 
+        Kl15_HoldTableEntries = getProfileDwordArray("KL15HoldTimes", "KL15_HoldTable", Kl15_HoldTime, INTEGR_cIniFileName );
+        // check if Kl15_HoldTableEntries is NOT greater than array size
+        if( Kl15_HoldTableEntries > Kl15_ToggleHoldArraySize )
+        {
+            write( "INTEGR: ERROR: Kl15_HoldTableEntries %d >  Kl15_ToggleHoldArraySize %d", Kl15_HoldTableEntries, Kl15_ToggleHoldArraySize );
+            Kl15_HoldTableEntries = Kl15_ToggleHoldArraySize;
+        }
+        else
+        {
+            write( "INTEGR: Kl15_HoldTableEntries %d", Kl15_HoldTableEntries );
+        }
+
+        //NMH Prellzeiten aus Textfile einlesen 
+        NMH_TimeTableEntries = getProfileDwordArray("NMH_Prellen", "NMH_TimeTable", NMH_ToggleTimeArray, INTEGR_cIniFileName);
+        // write("AnzaKL15: %d",Kl15On_TimeTableEntries);
+        // check if NMH_TimeTableEntries is NOT greater than array size
+        if( NMH_TimeTableEntries > NMH_ToggleTimeArraySize )
+        {
+            write( "INTEGR: ERROR: NMH_TimeTableEntries %d >  NMH_ToggleTimeArraySize %d", NMH_TimeTableEntries, NMH_ToggleTimeArraySize );
+            NMH_TimeTableEntries = NMH_ToggleTimeArraySize;
+        }
+        else
+        {
+            write( "INTEGR: NMH_TimeTableEntries %d", NMH_TimeTableEntries );
+        }
+
+        // Werte fuer einzelne Warnungssteuerung
+        Warning_TableEntries = getProfileStringArray("Warnings","Warning_Table",All_Warnings,INTEGR_cIniFileName);
+        // check if Warning_TableEntries is NOT greater than array size
+        if( Warning_TableEntries > MAX_WARNINGS )
+        {
+            write( "INTEGR: ERROR: Warning_TableEntries %d >  MAX_WARNINGS %d", Warning_TableEntries, MAX_WARNINGS );
+            Warning_TableEntries = MAX_WARNINGS;
+        }
+        else
+        {
+            write( "INTEGR: Warning_TableEntries %d", Warning_TableEntries );
+        }
+
+        // load the values from WarningsTimeTable
+        WarningsTimeTableEntries = getProfileDwordArray("Warnings","WarningsTimeTable",ToggleWarningsTimeArray,INTEGR_cIniFileName);
+        // check if WarningsTimeTableEntries is NOT greater than array size
+        if( WarningsTimeTableEntries > ToggleWarningsTimeArraySize )
+        {
+            write( "INTEGR: ERROR: WarningsTimeTableEntries %d >  ToggleWarningsTimeArraySize %d", WarningsTimeTableEntries, ToggleWarningsTimeArraySize );
+            WarningsTimeTableEntries = ToggleWarningsTimeArraySize;
+        }
+        else
+        {
+            write( "INTEGR: WarningsTimeTableEntries %d", WarningsTimeTableEntries );
+        }
+    
+        // Anzahl der Wiederholungen fuer zu schaltende Zyklen
+        WarningsStepTableEntries = getProfileDwordArray("Warnings","WarningsStepTable",ToggleWarningsStepArray,INTEGR_cIniFileName);
+        // check if WarningsStepTableEntries is NOT greater than array size
+        if( WarningsStepTableEntries > ToggleWarningsStepArraySize )
+        {
+            write( "INTEGR: ERROR: WarningsStepTableEntries %d >  ToggleWarningsStepArraySize %d", WarningsStepTableEntries, ToggleWarningsStepArraySize );
+            WarningsStepTableEntries = ToggleWarningsStepArraySize;
+        }
+        else
+        {
+            write( "INTEGR: WarningsStepTableEntries %d", WarningsStepTableEntries );
+        }
+
+        // Werte Warnungssteuerung fuer alle Warnungen
+        AllWarningsTimeTableEntries = getProfileDwordArray("Warnings","AllWarningsTimeTable",ToggleAllWarningsTimeArray,INTEGR_cIniFileName);
+        // check if AllWarningsTimeTableEntries is NOT greater than array size
+        if( AllWarningsTimeTableEntries > ToggleAllWarningsTimeArraySize )
+        {
+            write( "INTEGR: ERROR: AllWarningsTimeTableEntries %d >  ToggleAllWarningsTimeArraySize %d", AllWarningsTimeTableEntries, ToggleAllWarningsTimeArraySize );
+            AllWarningsTimeTableEntries = ToggleAllWarningsTimeArraySize;
+        }
+        else
+        {
+            write( "INTEGR: AllWarningsTimeTableEntries %d", AllWarningsTimeTableEntries );
+        }
+
+        AllWarningsStepTableEntries = getProfileDwordArray("Warnings","AllWarningsStepTable",ToggleAllWarningsStepArray,INTEGR_cIniFileName);
+        // check if AllWarningsStepTableEntries is NOT greater than array size
+        if( AllWarningsStepTableEntries > ToggleAllWarningsStepArraySize )
+        {
+            write( "INTEGR: ERROR: AllWarningsStepTableEntries %d >  ToggleAllWarningsStepArraySize size %d", AllWarningsStepTableEntries, ToggleAllWarningsStepArraySize );
+            AllWarningsStepTableEntries = ToggleAllWarningsStepArraySize;
+        }
+        else
+        {
+            write( "INTEGR: AllWarningsStepTableEntries %d", AllWarningsStepTableEntries );
+        }
+
+        // **** the NGSM output voltage types in case of voltage curves
+        INTEGR_iPowerVoltageCurveTableEntries = getProfileDwordArray( "PowerSupplyModes", "PowerSupplyTypes", INTEGR_dPowerVoltageCurveTable, INTEGR_cIniFileName );
+        // check against max table size
+        if( INTEGR_iPowerVoltageCurveTableEntries > INTEGR_MAX_NUMBER_VOLTAGE_TYPES )
+        {
+            write( "INTEGR: ERROR: INTEGR_iPowerVoltageCurveTableEntries %d >  INTEGR_MAX_NUMBER_VOLTAGE_TYPES %d", INTEGR_iPowerVoltageCurveTableEntries, INTEGR_MAX_NUMBER_VOLTAGE_TYPES );
+            INTEGR_iPowerVoltageCurveTableEntries = INTEGR_MAX_NUMBER_VOLTAGE_TYPES;
+        }
+        else
+        {
+            write( "INTEGR: INTEGR_iPowerVoltageCurveTableEntries %d", INTEGR_iPowerVoltageCurveTableEntries );
+        }
+
+        // Values for OTP 
+        OTP_Cycle = getProfileInt("OTP", "OTP_Cycle", 0, INTEGR_cIniFileName);
+        OTP_Max = getProfileInt("OTP", "OTP_Max", 0, INTEGR_cIniFileName);
+        OTP_Min = getProfileInt("OTP", "OTP_Min", 0, INTEGR_cIniFileName);
+        OTP_Step = getProfileInt("OTP", "OTP_Step", 0, INTEGR_cIniFileName);
+
+        // Values for KMT
+        KMT_Cycle = getProfileInt("KMT", "KMT_Cycle", 0, INTEGR_cIniFileName);
+        KMT_Max = getProfileInt("KMT", "KMT_Max", 0, INTEGR_cIniFileName);
+        KMT_Min = getProfileInt("KMT", "KMT_Min", 0, INTEGR_cIniFileName);
+        KMT_Step = getProfileInt("KMT", "KMT_Step", 0, INTEGR_cIniFileName);
+
+        // Values for DIM
+        DIM_Cycle = getProfileInt("DIM", "DIM_Cycle", 0, INTEGR_cIniFileName);
+        DIM_Max = getProfileInt("DIM", "DIM_Max", 0, INTEGR_cIniFileName);
+        DIM_Min = getProfileInt("DIM", "DIM_Min", 0, INTEGR_cIniFileName);
+        DIM_Step = getProfileInt("DIM", "DIM_Step", 0, INTEGR_cIniFileName);
+
+        // Values for WBA
+        WBA_Cycle = getProfileInt("WBA", "WBA_Cycle", 0, INTEGR_cIniFileName);
+        WBA_FahrstufeMax = getProfileInt("WBA", "WBA_FahrstufeMax", 0, INTEGR_cIniFileName);
+        WBA_FahrstufeMin = getProfileInt("WBA", "WBA_FahrstufeMin", 0, INTEGR_cIniFileName);
+        WBA_FahrstufeGangMax = getProfileInt("WBA", "WBA_FahrstufeGangMax", 0, INTEGR_cIniFileName);
+        WBA_FahrstufeGangMin = getProfileInt("WBA", "WBA_FahrstufeGangMin", 0, INTEGR_cIniFileName);
+        WBA_FahrstufeSollIstMax = getProfileInt("WBA", "WBA_FahrstufeSollIstMax", 0, INTEGR_cIniFileName);
+        WBA_FahrstufeSollIstMin = getProfileInt("WBA", "WBA_FahrstufeSollIstMin", 0, INTEGR_cIniFileName);
+        WBA_Step = getProfileInt("WBA", "WBA_Step", 0, INTEGR_cIniFileName);
+
+        // Values for BEV
+        BEV_Cycle_Time = getProfileInt("BEV", "BEV_Cycle_Time", 0, INTEGR_cIniFileName);
+        BEV_eLadezustand_02S_Step = getProfileInt("BEV", "BEV_eLadezustand_02S_Step", 0, INTEGR_cIniFileName);
+        BEV_eLadezustand_02S_Min = getProfileInt("BEV", "BEV_eLadezustand_02S_Min", 0, INTEGR_cIniFileName);
+        BEV_eLadezustand_02S_Max = getProfileInt("BEV", "BEV_eLadezustand_02S_Max", 0, INTEGR_cIniFileName);
+        BEV_eMO_PowermeterS_Step = getProfileInt("BEV", "BEV_eMO_PowermeterS_Step", 0, INTEGR_cIniFileName);
+        BEV_eMO_PowermeterS_Min = getProfileInt("BEV", "BEV_eMO_PowermeterS_Min", 0, INTEGR_cIniFileName);
+        BEV_eMO_PowermeterS_Max = getProfileInt("BEV", "BEV_eMO_PowermeterS_Max", 0, INTEGR_cIniFileName);
+        BEV_eMO_ePowermeterS_Step = getProfileInt("BEV", "BEV_eMO_ePowermeterS_Step", 0, INTEGR_cIniFileName);
+        BEV_eMO_ePowermeterS_Min = getProfileInt("BEV", "BEV_eMO_ePowermeterS_Min", 0, INTEGR_cIniFileName);
+        BEV_eMO_ePowermeterS_Max = getProfileInt("BEV", "BEV_eMO_ePowermeterS_Max", 0, INTEGR_cIniFileName);
+
+        // Values for CNG_LPG
+        CNGLPG_Cycle_Time = getProfileInt("CNG_LPG", "CNGLPG_Cycle_Time", 0, INTEGR_cIniFileName);
+        CNGLPG_Fuellungsgrad_CNG_Step = getProfileFloat("CNG_LPG", "CNGLPG_Fuellungsgrad_CNG_Step", 0, INTEGR_cIniFileName);
+        CNGLPG_Fuellungsgrad_CNG_Min = getProfileFloat("CNG_LPG", "CNGLPG_Fuellungsgrad_CNG_Min", 0, INTEGR_cIniFileName);
+        CNGLPG_Fuellungsgrad_CNG_Max = getProfileFloat("CNG_LPG", "CNGLPG_Fuellungsgrad_CNG_Max", 0, INTEGR_cIniFileName);
+        CNGLPG_Tankmasse_CNG = getProfileFloat("CNG_LPG", "CNGLPG_Tankmasse_CNG", 0, INTEGR_cIniFileName);
+        CNGLPG_Consumption_Min = getProfileFloat("CNG_LPG", "CNGLPG_Consumption_Min", 0, INTEGR_cIniFileName);
+        CNGLPG_Consumption_Max = getProfileFloat("CNG_LPG", "CNGLPG_Consumption_Max", 0, INTEGR_cIniFileName);
+        CNGLPG_Fuellungsgrad_LPG_m1_Min = getProfileFloat("CNG_LPG", "CNGLPG_Fuellungsgrad_LPG_m1_Min", 0, INTEGR_cIniFileName);
+        CNGLPG_Fuellungsgrad_LPG_m1_Max = getProfileFloat("CNG_LPG", "CNGLPG_Fuellungsgrad_LPG_m1_Max", 0, INTEGR_cIniFileName);
+        CNGLPG_Tankvolumen_LPG = getProfileFloat("CNG_LPG", "CNGLPG_Tankvolumen_LPG", 0, INTEGR_cIniFileName);
+        // for CNG and LPG we use different stepping, they depeds on the limit parameters
+        // so we achieve a constant synchronization of eGasConsumption and MO_Fuellungsgrad_CNG, or MO_Fuellungsgrad_LPG
+        CNGLPG_Consumption_CNG_Step = ( CNGLPG_Consumption_Max - CNGLPG_Consumption_Min ) /
+                                      ( ( CNGLPG_Fuellungsgrad_CNG_Max - CNGLPG_Fuellungsgrad_CNG_Min ) / CNGLPG_Fuellungsgrad_CNG_Step );
+        CNGLPG_Consumption_LPG_Step = ( CNGLPG_Consumption_Max - CNGLPG_Consumption_Min ) /
+                                      ( ( CNGLPG_Fuellungsgrad_LPG_m1_Max - CNGLPG_Fuellungsgrad_LPG_m1_Min ) / CNGLPG_Fuellungsgrad_LPG_m1_Step );
+    }   // end read ini-file
+
+    // NGSM DC Power Supply init values
+    // request for changing the mode
+    INTEGR_iNgsmModeRequest = INTEGR_NGSM_MANUAL_MODE;
+    // the actual NGSM mode (manual, auto)
+    INTEGR_iActualNgsmMode = INTEGR_NGSM_MANUAL_MODE;
+    // request for changing the power voltage type
+    INTEGR_iNgsmOutputTypeRequest = INTEGR_NGSM_OUTPUT_NORMAL;
+    // the actual power voltage type
+    INTEGR_iActualNgsmOutputType = INTEGR_NGSM_OUTPUT_NORMAL;
+    // a counter for counting the delay time for 'auto' output type selection
+    INTEGR_iAutoOutputTypeCnt = 0;
+
+    // reset index
+    INTEGR_iPowerVoltageTableIdx = 0;
+
+    // check the panel state of the NGSM DC Power Supply
+    // NGSM support test
+    if( @evNGSM_Support != FALSE )
+    {
+        INTEGR_boCheckNgsmPanel();
+    }
+    
+    // **** prepare the test run environment
+    // no test case running
+    INTEGR_ActiveTestInternalState = INTEGR_ACTIVE_TEST_END_STATE;
+    // the next test case
+    INTEGR_iNewTestCase = INTEGR_TEST_OFF;
+    // the running test case
+    INTEGR_iActualTestCase = INTEGR_TEST_OFF;
+
+    // run all envVar's (are not automatically called when environment variables are written while in Start context) 
+    CallAllOnEnvVar(); 
+
+    // start the cyclic timer: NGSM check, mode (auto/ manual) switch over and output timer switch over
+    setTimer( INTEGR_NgsmModeAndType_timer, INTEGR_NGSM_MODE_AND_TYPE_CYCLE_TIMER );
+}
+/*@@end*/
+
+/*@@envVar:evINTEGR_TestMode:*/
+/*@@end*/
+
+/*@@timer:INTEGR_vToggleNMH_timer:*/
+on timer INTEGR_vToggleNMH_timer
+{
+    if(NMHNextStep==1)
+      {
+      if(NMH_PrellCntr < NMH_TimeTableEntries-1)
+         NMH_PrellCntr++;
+      else 
+         NMH_PrellCntr=0;
+      
+      ToggleNMH_cycle = NMH_ToggleTimeArray[ NMH_PrellCntr ];
+      }
+
+    switch(@eNMHControllerNodeAwake) 
+       {
+         case 0:
+              putValue(eNMHControllerNodeAwake,1);
+              NMHNextStep=0;
+              break;
+         case 1: 
+              putValue(eNMHControllerNodeAwake,0);
+              NMHNextStep=1;
+              break;
+         default: break;
+       }
+
+    //write( "INTEGR: INTEGR_vToggleNMH_timer time 1 = %d", ToggleNMH_cycle );
+    // protect timer overrun when wrong time was calculated 
+    ToggleNMH_cycle = INTEGR_iCheckTimerValues( ToggleNMH_cycle );
+    setTimer(INTEGR_vToggleNMH_timer, ToggleNMH_cycle); 
+}
+/*@@end*/
+
+/*@@caplFunc:INTEGR_vToggleNMH(int):*///function
+INTEGR_vToggleNMH( int State )
+{
+    if( INTEGR_LogFileHandle != 0)
+    {
+        snprintf( INTEGR_cLogBuffer, elcount( INTEGR_cLogBuffer ), "INTEGR: ToggleNMH state = %d\n", State );
+        filePutString( INTEGR_cLogBuffer, elCount( INTEGR_cLogBuffer ), INTEGR_LogFileHandle );
+    }
+
+	switch( State )
+	{
+	case 0:
+        cancelTimer(INTEGR_vToggleNMH_timer);
+		break;
+	
+    default:
+        
+        NMH_PrellCntr=0;
+        ToggleNMH_cycle=NMH_ToggleTimeArray[0];
+        INTEGR_vSwitchNMH(1);
+        
+        //write( "INTEGR: INTEGR_vToggleNMH_timer time 2 = %d", ToggleNMH_cycle ); 
+        // protect timer overrun when wrong time was calculated 
+        ToggleNMH_cycle = INTEGR_iCheckTimerValues( ToggleNMH_cycle );
+        if( isTimerActive( INTEGR_vToggleNMH_timer ) )
+        {
+            cancelTimer( INTEGR_vToggleNMH_timer );
+        }
+        setTimer(INTEGR_vToggleNMH_timer, ToggleNMH_cycle); 
+		break;
+	}
+}
+/*@@end*/
+
+/*@@caplFunc:INTEGR_vInitValues():*///function
+INTEGR_vInitValues()
+{
+    // stops and clear all timer and test functions
+    INTEGR_vSweepDim(0);
+    INTEGR_vSweepOTP(0);
+    INTEGR_vSweepBEV(0);
+    INTEGR_vSweepCNGLPG(0);
+    INTEGR_vSweepPointer(0);
+    INTEGR_vSwitchAllLamps(0);
+    INTEGR_vSwitchAllWarnings(0);
+    INTEGR_vToggleKL15(0);
+    INTEGR_vSwitchKl15(1);
+    INTEGR_vToggleNMH(0);
+    INTEGR_vSwitchNMH(1); 
+    INTEGR_vToggleWarnings(0);
+    INTEGR_vSweepKMT(0);
+    INTEGR_vSweepWBA(0);
+    INTEGR_vMoveMfl(0);
+}
+/*@@end*/
+
+/*@@caplFunc:INTEGR_vSweepOTP(int):*///function
+INTEGR_vSweepOTP( int State )
+{
+    if( ( INTEGR_LogFileHandle != 0 ) && ( OTP_Logging != 0 ) )
+    {
+        snprintf( INTEGR_cLogBuffer, elcount( INTEGR_cLogBuffer ), "INTEGR: SweepOTP state = %d\n", State );
+        filePutString( INTEGR_cLogBuffer, elCount( INTEGR_cLogBuffer ), INTEGR_LogFileHandle );
+    }
+
+    if( State == 0 )
+    {
+        cancelTimer(INTEGR_SweepOtp_timer);
+        @eBCM1_Aussen_Temp_ungefS=20;
+    }
+    else
+    {
+        OTP_Value=@eBCM1_Aussen_Temp_ungefS;
+        OTP_Direction=0; //upcount
+
+        if( isTimerActive( INTEGR_SweepOtp_timer ) )
+        {
+            cancelTimer( INTEGR_SweepOtp_timer );
+        }
+        setTimer(INTEGR_SweepOtp_timer,OTP_Cycle);
+    }
+}
+/*@@end*/
+
+/*@@timer:INTEGR_SweepOtp_timer:*/
+on timer INTEGR_SweepOtp_timer
+{
+ if(OTP_Direction==0)
+   {
+    OTP_Value+=OTP_Step;
+    if(OTP_Value>OTP_Max)
+      {
+       OTP_Value=OTP_Max;
+       OTP_Direction=1; //downcount
+      }
+   }
+ else
+   {
+    OTP_Value-=OTP_Step;
+    if(OTP_Value<OTP_Min)
+      {
+       OTP_Value=OTP_Min;
+       OTP_Direction=0; //upcount
+      }
+   }
+ @eBCM1_Aussen_Temp_ungefS=OTP_Value;
+ setTimer(INTEGR_SweepOtp_timer,OTP_Cycle);
+}
+/*@@end*/
+
+/*@@caplFunc:INTEGR_vSweepDim(int):*///function
+INTEGR_vSweepDim( int State )
+{
+    if( ( INTEGR_LogFileHandle != 0 ) && ( Dim_Logging != 0 ) )
+    {
+        snprintf( INTEGR_cLogBuffer, elcount( INTEGR_cLogBuffer ), "INTEGR: SweepDim state = %d\n", State );
+        filePutString( INTEGR_cLogBuffer, elCount( INTEGR_cLogBuffer ), INTEGR_LogFileHandle );
+    }
+
+    if( State == 0 )
+    {
+        cancelTimer( INTEGR_SweepDim_timer );
+        @eDI_KL_58xdS = 200;
+    }
+    else
+    {
+        DIM_Value = @eDI_KL_58xdS;
+        DIM_Direction = 0; //upcount
+        if( isTimerActive( INTEGR_SweepDim_timer ) )
+        {
+            cancelTimer( INTEGR_SweepDim_timer );
+        }
+        setTimer( INTEGR_SweepDim_timer, DIM_Cycle );
+    }
+}
+/*@@end*/
+
+/*@@timer:INTEGR_SweepDim_timer:*/
+on timer INTEGR_SweepDim_timer
+{
+ if(DIM_Direction==0)
+   {
+    DIM_Value+=DIM_Step;
+    if(DIM_Value>DIM_Max)
+      {
+       DIM_Value=DIM_Max;
+       DIM_Direction=1; //downcount
+      }
+   }
+ else
+   {
+    DIM_Value-=DIM_Step;
+    if(DIM_Value<DIM_Min)
+      {
+       DIM_Value=DIM_Min;
+       DIM_Direction=0; //upcount
+      }
+   }
+ @eDI_KL_58xdS=DIM_Value;
+ setTimer(INTEGR_SweepDim_timer,DIM_Cycle);
+}
+/*@@end*/
+
+/*@@caplFunc:INTEGR_vSwitchAllLamps(int):*///function
+INTEGR_vSwitchAllLamps( int State )
+{
+    if( INTEGR_LogFileHandle != 0)
+    {
+        snprintf( INTEGR_cLogBuffer, elcount( INTEGR_cLogBuffer ), "INTEGR: SwitchAllLamps state = %d\n", State );
+        filePutString( INTEGR_cLogBuffer, elCount( INTEGR_cLogBuffer ), INTEGR_LogFileHandle );
+    }
+
+    if( State == 0 )
+    {
+        @eNoWarn=1;
+        @eNoWarnLightComf=1;
+    }
+    else
+    {
+        @eAllWarn=1;
+        @eAllWarnLightComf=1;
+    }
+}
+/*@@end*/
+
+/*@@caplFunc:INTEGR_vSweepKMT(int):*///function
+INTEGR_vSweepKMT( int State )
+{
+    if( ( INTEGR_LogFileHandle != 0 ) && ( KTM_Logging != 0 ) )
+    {
+        snprintf( INTEGR_cLogBuffer, elcount( INTEGR_cLogBuffer ), "INTEGR: SweepKMT state = %d\n", State );
+        filePutString( INTEGR_cLogBuffer, elCount( INTEGR_cLogBuffer ), INTEGR_LogFileHandle );
+    }
+
+    if( State == 0 )
+    {
+        cancelTimer( INTEGR_SweepKmt_timer );
+        @eMO_ITM_Kuehlmittel_TempS = 20;
+    }
+    else
+    {
+        KMT_Value = @eMO_ITM_Kuehlmittel_TempS;
+
+        // todo: range check
+
+        KMT_Direction = 0; //upcount
+
+        if( ( INTEGR_LogFileHandle != 0 ) && ( KTM_Logging != 0 ) )
+        {
+            snprintf( INTEGR_cLogBuffer, elcount( INTEGR_cLogBuffer ), "INTEGR: KMT_Direction = %d\n", KMT_Direction );
+            filePutString( INTEGR_cLogBuffer, elCount( INTEGR_cLogBuffer ), INTEGR_LogFileHandle );
+            snprintf( INTEGR_cLogBuffer, elcount( INTEGR_cLogBuffer ), "INTEGR: KMT_Value = %d\n", KMT_Value );
+            filePutString( INTEGR_cLogBuffer, elCount( INTEGR_cLogBuffer ), INTEGR_LogFileHandle );
+            snprintf( INTEGR_cLogBuffer, elcount( INTEGR_cLogBuffer ), "INTEGR: KMT_Cycle = %d\n", KMT_Cycle );
+            filePutString( INTEGR_cLogBuffer, elCount( INTEGR_cLogBuffer ), INTEGR_LogFileHandle );
+        }
+
+        if( isTimerActive( INTEGR_SweepKmt_timer ) )
+        {
+            cancelTimer( INTEGR_SweepKmt_timer );
+        }
+        setTimer( INTEGR_SweepKmt_timer, KMT_Cycle );
+    }
+}
+/*@@end*/
+
+/*@@timer:INTEGR_SweepKmt_timer:*/
+on timer INTEGR_SweepKmt_timer              
+{                                    
+    if( KMT_Direction == 0 )                
+    {                                 
+        KMT_Value += KMT_Step;             
+        if( KMT_Value > KMT_Max )            
+        {                              
+            KMT_Value = KMT_Max;            
+            KMT_Direction = 1; //downcount  
+        }                              
+    }                                 
+    else                                
+    {                                 
+        KMT_Value -= KMT_Step;             
+        if( KMT_Value < KMT_Min )            
+        {                              
+            KMT_Value = KMT_Min;            
+            KMT_Direction = 0; //upcount  
+        }                              
+    }                                 
+ 
+    @eMO_ITM_Kuehlmittel_TempS = KMT_Value;
+    
+    if( ( INTEGR_LogFileHandle != 0 ) && ( KTM_Logging != 0 ) )
+    {
+        snprintf( INTEGR_cLogBuffer, elcount( INTEGR_cLogBuffer ), "INTEGR: KMT_Direction = %d\n", KMT_Direction );
+        filePutString( INTEGR_cLogBuffer, elCount( INTEGR_cLogBuffer ), INTEGR_LogFileHandle );
+        snprintf( INTEGR_cLogBuffer, elcount( INTEGR_cLogBuffer ), "INTEGR: KMT_Value = %d\n", KMT_Value );
+        filePutString( INTEGR_cLogBuffer, elCount( INTEGR_cLogBuffer ), INTEGR_LogFileHandle );
+        snprintf( INTEGR_cLogBuffer, elcount( INTEGR_cLogBuffer ), "INTEGR: KMT_Cycle = %d\n", KMT_Cycle );
+        filePutString( INTEGR_cLogBuffer, elCount( INTEGR_cLogBuffer ), INTEGR_LogFileHandle );
+    }
+
+    setTimer( INTEGR_SweepKmt_timer, KMT_Cycle ); 
+}                                    
+/*@@end*/
+
+/*@@caplFunc:INTEGR_vSweepWBA(int):*///function
+INTEGR_vSweepWBA( int State )
+{
+    // sweep WBA
+
+    // Log
+    if( INTEGR_LogFileHandle != 0)
+    {
+        snprintf( INTEGR_cLogBuffer, elcount( INTEGR_cLogBuffer ), "INTEGR: SweepWBA state = %d\n", State );
+        filePutString( INTEGR_cLogBuffer, elCount( INTEGR_cLogBuffer ), INTEGR_LogFileHandle );
+    }
+
+    if( State == 0 )
+    {
+        cancelTimer(INTEGR_SweepOtp_timer);
+        @eWBA_Fahrstufe_02S=0;
+        @eWBA_eing_Gang_02S=0;
+        @eMO_IstgangS=0;
+        @eMO_SollgangS=0;
+    }
+    else
+    {
+        WBA_Value=@eWBA_Fahrstufe_02S;
+        DIM_Direction=0; //upcount
+        WBA_Count=0;
+
+        if( isTimerActive( INTEGR_SweepOtp_timer ) )
+        {
+            cancelTimer( INTEGR_SweepOtp_timer );
+        }
+        setTimer(INTEGR_SweepOtp_timer,WBA_Cycle);
+    }
+}
+/*@@end*/
+
+/*@@timer:INTEGR_SweepWba_timer:*/
+on timer INTEGR_SweepWba_timer
+{
+    // sweep WAB
+
+    byte boDebug_INTEGR_SweepWba_timer = 0;      // 1: enables debug output within this function
+
+    switch( WBA_State )
+    {
+        case PRND: 
+            if( boDebug_INTEGR_SweepWba_timer )
+                write( "INTEGR: INTEGR_SweepOtp_timer: PRND, WBA_Direction %d, WBA_Step %d", WBA_Direction, WBA_Step );
+
+            if(WBA_Direction==0)                
+            {                                 
+                WBA_Value+=WBA_Step;             
+                if(WBA_Value>WBA_FahrstufeMax)            
+                {                              
+                    WBA_Value=WBA_FahrstufeMax;            
+                    WBA_Direction=1; //downcount  
+                    WBA_Count++;
+                }                              
+            }                                 
+            else                                
+            {                                 
+                WBA_Value-=WBA_Step;             
+                if(WBA_Value<WBA_FahrstufeMin)            
+                {                              
+                    WBA_Value=WBA_FahrstufeMin;            
+                    WBA_Direction=0; //upcount  
+                    WBA_Count++;
+                }                              
+            }
+        
+            if(WBA_Count==2)
+            {
+                WBA_State=PRND_Gang;
+                WBA_Direction=0;
+                WBA_Value=0;
+            }
+            @eWBA_Fahrstufe_02S=WBA_Value;
+            @eWBA_eing_Gang_02S=0;
+            @eMO_IstgangS=0;
+            @eMO_SollgangS=0;
+            break;
+  
+        case PRND_Gang: 
+            if( boDebug_INTEGR_SweepWba_timer )
+                write( "INTEGR: INTEGR_SweepOtp_timer: PRND_Gang, WBA_Direction %d, WBA_Step %d", WBA_Direction, WBA_Step );
+
+            if(WBA_Direction==0)                
+            {                                 
+                WBA_Value+=WBA_Step;             
+                if(WBA_Value>WBA_FahrstufeGangMax)            
+                {                              
+                    WBA_Value=WBA_FahrstufeGangMax;            
+                    WBA_Direction=1; //downcount  
+                    WBA_Count++;
+                }                              
+            }                                 
+            else                                
+            {                                 
+                WBA_Value-=WBA_Step;             
+                if(WBA_Value<WBA_FahrstufeGangMin)            
+                {                              
+                    WBA_Value=WBA_FahrstufeGangMin;            
+                    WBA_Direction=0; //upcount  
+                    WBA_Count++;
+                }                              
+            }
+        
+            if(WBA_Count==4)
+            {
+                WBA_State=SollIst;
+                WBA_Direction=0;
+                WBA_Value=0;
+            }
+            @eWBA_Fahrstufe_02S=6;
+            @eWBA_eing_Gang_02S=WBA_Value;
+            @eMO_IstgangS=0;
+            @eMO_SollgangS=0;       
+            break;
+
+        case SollIst: 
+            if( boDebug_INTEGR_SweepWba_timer )
+                write( "INTEGR: INTEGR_SweepOtp_timer: SollIst, WBA_Direction %d, WBA_Step %d", WBA_Direction, WBA_Step );
+
+            if(WBA_Direction==0)                
+            {                                 
+                WBA_Value+=WBA_Step;             
+                if(WBA_Value>WBA_FahrstufeSollIstMax)            
+                {                              
+                    WBA_Value=WBA_FahrstufeSollIstMax;            
+                    WBA_Direction=1; //downcount  
+                    WBA_Count++;
+                }                              
+            }                                 
+            else                                
+            {                                 
+                WBA_Value-=WBA_Step;             
+                if( WBA_Value < WBA_FahrstufeSollIstMin )            
+                {                              
+                    WBA_Value=WBA_FahrstufeSollIstMin;            
+                    WBA_Direction=0; //upcount  
+                    WBA_Count++;
+                }                              
+            }
+        
+            if(WBA_Count==6)
+            {
+                if( boDebug_INTEGR_SweepWba_timer )
+                    write( "INTEGR: INTEGR_SweepOtp_timer: WBA_Count %d", WBA_Count );
+                WBA_State=PRND;
+                WBA_Direction=0;
+                WBA_Value=0;
+                WBA_Count=0;
+            }
+
+            @eWBA_Fahrstufe_02S=0;
+            @eWBA_eing_Gang_02S=0;
+            @eMO_IstgangS = WBA_Value;
+            if( WBA_Value < 1 )
+            {
+                @eMO_SollgangS = 0;     // condsider WBA_Value = 0
+            }
+            else
+            {
+                @eMO_SollgangS = WBA_Value - 1;
+            }
+            break;
+
+        default:
+            // output always
+            write( "INTEGR: INTEGR_SweepOtp_timer: wrong WBA_State" );
+            // log
+            if( INTEGR_LogFileHandle != 0)
+            {
+                snprintf( INTEGR_cLogBuffer, elcount( INTEGR_cLogBuffer ), 
+                          "INTEGR: INTEGR_SweepOtp_timer: wrong WBA_State\n" );
+                filePutString( INTEGR_cLogBuffer, elCount( INTEGR_cLogBuffer ), INTEGR_LogFileHandle );
+            }
+            break;
+    }
+
+    if( boDebug_INTEGR_SweepWba_timer )
+        write( "INTEGR: INTEGR_SweepOtp_timer: IstgangS %d, SollgangS %d", @eMO_IstgangS, @eMO_SollgangS );
+    // restart timer
+    setTimer( INTEGR_SweepOtp_timer, WBA_Cycle );
+}
+/*@@end*/
+
+/*@@envVar:evINTEGR_Logging:*/
+on envVar evINTEGR_Logging
+{
+    // enables logging of test states and results
+    // older log files will be overwritten !
+
+    char timeBuffer[64];    // system Date and Time
+
+	if( getValue( evINTEGR_Logging ) == 1 )
+	{
+        putValue( evINTEGR_LoggingDisplay, "Logging ON" );
+
+        // open the ini-file
+        INTEGR_LogFileHandle = openFileWrite( INTEGR_cLogFileName, 0 /* ASCII */ );
+        if( INTEGR_LogFileHandle == 0 )
+        {
+            write( "INTEGR: ERROR: cannot open File INTEGRLog.txt" );
+            putValue( evINTEGR_HelpBox, "ERROR: cannot open INTEGRLog.txt" );
+            fileClose( INTEGR_LogFileHandle );
+        }
+        else
+        {
+            // write LOG header to file
+            filePutString( "Filename: INTEGRLog.txt\n", 
+                           elCount( "Filename: INTEGRLog.txt\n" ), INTEGR_LogFileHandle );
+            getLocalTimeString( timeBuffer );
+            snprintf( INTEGR_cLogBuffer, elcount( INTEGR_cLogBuffer ), "Time:     %s\n", timeBuffer );
+            filePutString( INTEGR_cLogBuffer, elCount( INTEGR_cLogBuffer ), INTEGR_LogFileHandle );
+        }
+    }
+    else
+    {
+        // close LOG file
+        if( INTEGR_LogFileHandle != 0)
+        {
+            putValue( evINTEGR_HelpBox, "INTEGR: close LOG file" );
+            // logging
+            filePutString( "INTEGRLog.txt is closing now\n", 
+                           elCount( "INTEGRLog.txt is closing now\n" ), INTEGR_LogFileHandle );
+            fileClose( INTEGR_LogFileHandle );
+        }
+
+        INTEGR_LogFileHandle = 0;
+    }
+}
+/*@@end*/
+
+/*@@envVar:evINTEGR_TimerResetControl:*/
+on envVar evINTEGR_TimerResetControl
+{
+    // reset the timer when a test state has been changed
+
+	if( getValue( evINTEGR_TimerResetControl ) == 1 )
+	{
+        // reset timer when a test case has been changed
+        putValue( evINTEGR_TimerResetDisplay, "Timer Reset ON" );
+        write( "INTEGR: TimerReset: enabled" );
+
+        // Logging
+        if( INTEGR_LogFileHandle != 0)
+        {
+            filePutString( "INTEGR: TimerReset: enabled\n",
+                           elCount( "INTEGR: TimerReset: enabled\n" ), INTEGR_LogFileHandle );
+        }
+    }
+    else
+    {
+        putValue( evINTEGR_TimerResetDisplay, "Timer Reset OFF" );
+        write( "INTEGR: TimerReset: disabled" );
+
+        // Logging
+        if( INTEGR_LogFileHandle != 0)
+        {
+            filePutString( "INTEGR: TimerReset: disabled\n",
+                           elCount( "INTEGR: TimerReset: disabled\n" ), INTEGR_LogFileHandle );
+        }
+    }
+}
+/*@@end*/
+
+/*@@timer:INTEGR_TestMode_timer:*/
+on timer INTEGR_TestMode_timer
+{
+    // performs the timing for 'Automatic' tests
+    // load the test case number, the run-tiome and the recovery-time from ini-tables
+    
+    // 'Automatic' ?
+    if( INTEGR_iTestMode == INTEGR_AUTOMATIC_MODE_ON )
+    {
+        // Automatic test mode
+
+        // Check if all defined test states have be performed
+        if( INTEGR_iAutomaticTestTableIdx >= INTEGR_iAutomaticTestTableEntries )
+        {
+            // all tests in the automatic test table have been performed
+            // restart with first entry
+            INTEGR_iAutomaticTestTableIdx = 0;
+        }
+
+        // set next test case from array
+        INTEGR_iNewTestCase = INTEGR_dAutomaticTestArray[ INTEGR_iAutomaticTestTableIdx ];
+
+        // set the run time for the new test case from array
+        INTEGR_dAutomaticTestRunTime = INTEGR_dAutomaticTestRuntimeArray[ INTEGR_iAutomaticTestTableIdx ];
+
+        // set the recovery time for this test state
+        INTEGR_dAutomaticTestRecoveryTime = INTEGR_dAutomaticTestRecoveryTimeArray[ INTEGR_iAutomaticTestTableIdx ];
+
+        write( "INTEGR: 'Autom': test case %d", INTEGR_iNewTestCase );
+
+        // next automatic test case
+        INTEGR_iAutomaticTestTableIdx++;
+
+        // restart the test case running timer
+        if( isTimerActive( INTEGR_TestCase_timer ) )
+        {
+            // if the msINTEGR_TestCaseTimer is still running
+            cancelTimer( INTEGR_TestCase_timer );
+        }
+        // start the msINTEGR_TestCaseTimer
+        // all other timing will be performed by this timer
+        setTimer( INTEGR_TestCase_timer, INTEGR_TIMER_DEFAULT_TIME );
+        
+        // stay in this test as long as the timer is running
+        setTimer( INTEGR_TestMode_timer, INTEGR_dAutomaticTestRunTime );
+    }
+    else
+    {
+        // Manual test mode
+    }
+}
+/*@@end*/
+
+/*@@caplFunc:INTEGR_iCheckTimerValues(int):*///function
+int INTEGR_iCheckTimerValues( int iTimerValue )
+{
+    // check if iTimerValue != 0, otherwise set iTimerValue to a default value different from 0
+    // this protects the timer against wrong time calculation (and overrun when recursion)
+     
+    int iReturnValue;
+     
+    if( iTimerValue == 0 )
+    {
+        iReturnValue = INTEGR_TIMER_DEFAULT_TIME;
+        write( "INTEGR: ERROR: timer value = 0!" );
+    }
+    else
+    {
+        iReturnValue = iTimerValue;
+    }
+
+    return( iReturnValue );
+}
+/*@@end*/
+
+/*@@caplFunc:INTEGR_boCheckNgsmPanel():*///function
+byte INTEGR_boCheckNgsmPanel()
+{
+    // check the NGSM DC Power Supply panel
+    // return: 0: NGSM is not initialzed or NGSM panel push button 'Output Control' is de-activated
+    //         1: NGSM is initialized and NGSM panel push button 'Output Control' has been activated
+
+    byte boReturnValue;
+
+    boReturnValue = FALSE;
+   
+    // NGSM support test
+    if( @evNGSM_Support == FALSE )
+    {
+        return FALSE; // NGSM support disabled
+    }
+
+    switch( @evNGSM_PowerSupplyState )  // environment variable from NGSM panel
+    {
+        case INTEGR_NGSM_OFF:
+            putValue( evINTEGR_HelpBox, "NGSM Power supply: OFF" );
+            SetControlBackColor( "Integration_Test", "EnvVar:evINTEGR_HelpBox", MakeRGB( 255, 0, 0 ) );
+            break;
+
+        case INTEGR_NGSM_DE_INIT:
+            putValue( evINTEGR_HelpBox, "NGSM Power supply: NOT initialized" );
+            SetControlBackColor( "Integration_Test", "EnvVar:evINTEGR_HelpBox", MakeRGB( 255, 0, 0 ) );
+            break;
+
+        case INTEGR_NGSM_INIT_NOK:
+            putValue( evINTEGR_HelpBox, "NGSM Power supply: Init NOT OK" );
+            SetControlBackColor( "Integration_Test", "EnvVar:evINTEGR_HelpBox", MakeRGB( 255, 0, 0 ) );
+            break;
+
+        case INTEGR_NGSM_INIT_OK:
+            // NGSM DC Power Supply is activated
+            // check if the power supply output has been enabled (from NGSM panel)
+            // it's the panel setting, not the true state of the physical NGSM 'OUTPUT ON' switch
+            if( @evNGSM_OutputState == TRUE /* ON */ )
+            {
+                boReturnValue = TRUE;
+
+                putValue( evINTEGR_HelpBox, "NGSM Power supply: Output ON" );
+                SetControlBackColor( "Integration_Test", "EnvVar:evINTEGR_HelpBox", MakeRGB( 0, 255, 0 ) );
+            }
+            else
+            {
+                putValue( evINTEGR_HelpBox, "ERROR: NGSM Power supply: Output OFF" );
+                SetControlBackColor( "Integration_Test", "EnvVar:evINTEGR_HelpBox", MakeRGB( 255, 0, 0 ) );
+            }
+            break;
+
+        default:
+            putValue( evINTEGR_HelpBox, "ERROR: wrong NGSM power supply state" );
+            SetControlBackColor( "Integration_Test", "EnvVar:evINTEGR_HelpBox", MakeRGB( 255, 0, 0 ) );
+            break;
+    }
+
+    return( boReturnValue );
+}
+/*@@end*/
+
+/*@@timer:INTEGR_TestCase_timer:*/
+on timer INTEGR_TestCase_timer
+{
+    // performs a test case
+    // - stops a running test
+    // - run prefunction of the test (e.g. power supply settings
+    // - run the test
+    // - in case of a new test has been selected or the tests are switched OFF
+    //   the post functions for the test (e.g. stopping timer) will be performed
+
+    // the time for next call
+    dword INTEGR_dNewTimerValue = 0;
+    byte boDebug_TestRunTimer = 0;      // 1: enables debug output within this function
+
+    // reset, because in CANoe it's a static
+    INTEGR_dNewTimerValue = 0;
+
+    // if the last test case has been finished
+    // and a new test case has been selected
+    if( ( INTEGR_ActiveTestInternalState == INTEGR_ACTIVE_TEST_END_STATE )     &&
+        ( INTEGR_iNewTestCase != INTEGR_iActualTestCase ) )
+    {
+        // start the new test case only if last test case has been finished
+        if( boDebug_TestRunTimer )
+            write( "INTEGR: start new test case %d", INTEGR_iNewTestCase );
+
+        // Logging
+        if( INTEGR_LogFileHandle != 0)
+        {
+            snprintf( INTEGR_cLogBuffer, elcount( INTEGR_cLogBuffer ),
+                      "msINTEGR_TestCaseTimer: start new test case %d\n", INTEGR_iActualTestCase );
+            filePutString( INTEGR_cLogBuffer, elCount( INTEGR_cLogBuffer ), INTEGR_LogFileHandle );
+        }
+
+        INTEGR_iActualTestCase = INTEGR_iNewTestCase; 
+        INTEGR_ActiveTestInternalState = INTEGR_ACTIVE_TEST_PRE_STATE;
+        // also update the panel
+        putValue( evINTEGR_TestCase, INTEGR_iActualTestCase );
+    }
+    else if( INTEGR_iNewTestCase != INTEGR_iActualTestCase )
+    {
+        // new test case -> changing the running test case
+        if( boDebug_TestRunTimer )
+            write( "msINTEGR_TestCaseTimer: new test case selected %d, internal state of actual test %d",
+                   INTEGR_iNewTestCase, INTEGR_ActiveTestInternalState );
+
+        // Logging
+        if( INTEGR_LogFileHandle != 0)
+        {
+            snprintf( INTEGR_cLogBuffer, elcount( INTEGR_cLogBuffer ),
+                      "msINTEGR_TestCaseTimer: new test case selected %d, , internal state of actual test %d\n",
+                      INTEGR_iNewTestCase, INTEGR_ActiveTestInternalState );
+            filePutString( INTEGR_cLogBuffer, elCount( INTEGR_cLogBuffer ), INTEGR_LogFileHandle );
+        }
+
+        // when a new test case has been selected it depends on the internal state of the actual (running) test what to do
+        switch( INTEGR_ActiveTestInternalState )
+        {
+            case INTEGR_ACTIVE_TEST_PRE_STATE:
+                // no break
+            case INTEGR_ACTIVE_TEST_RUN_STATE:
+                // stop the actual running test case 
+                INTEGR_ActiveTestInternalState = INTEGR_ACTIVE_TEST_POST_STATE;
+                break;
+
+            case INTEGR_ACTIVE_TEST_POST_STATE:
+                // wait until post processing has been finished
+                break;
+
+            case INTEGR_ACTIVE_TEST_END_STATE:
+                // nothing todo
+                break;
+
+            default:
+                write( "msINTEGR_TestCaseTimer: ERROR: not defined internal test state" );
+                break;
+        }  // end switch
+    }
+         
+    // the test cases
+    if( boDebug_TestRunTimer )
+        write( "msINTEGR_TestCaseTimer: process test case %d, internal test state %d",
+                INTEGR_iActualTestCase, INTEGR_ActiveTestInternalState );
+
+    // log
+    if( INTEGR_LogFileHandle != 0)
+    {
+        snprintf( INTEGR_cLogBuffer, elcount( INTEGR_cLogBuffer ),
+                  "msINTEGR_TestCaseTimer: process test case %d, internal test state %d\n",
+                   INTEGR_iActualTestCase, INTEGR_ActiveTestInternalState );
+        filePutString( INTEGR_cLogBuffer, elCount( INTEGR_cLogBuffer ), INTEGR_LogFileHandle );
+    }
+
+   	switch( INTEGR_iActualTestCase )
+    {
+    	case INTEGR_TEST_OFF: // Test OFF
+            switch( INTEGR_ActiveTestInternalState )
+            {
+                case INTEGR_ACTIVE_TEST_PRE_STATE:
+                    // in case of 'Test OFF' stop a pending 'Automatic' test 
+                    @evINTEGR_TestMode = FALSE;
+
+                    // set to normal output voltage, programm the NGSM power supply
+                    INTEGR_vSetNgsmModeAndType( INTEGR_NGSM_MANUAL_MODE, INTEGR_NGSM_OUTPUT_NORMAL );
+                    // allways stop running timers
+                    INTEGR_vInitValues();
+                    // allways reset pointer values
+                    INTEGR_vPointerSweepResetValues();
+                    // no break
+                case INTEGR_ACTIVE_TEST_RUN_STATE:
+                    if( INTEGR_iTestMode == INTEGR_AUTOMATIC_MODE_ON )
+                    {
+                        // Automatic: nothing to do if in 'Automatic' mode
+                        INTEGR_ActiveTestInternalState = INTEGR_ACTIVE_TEST_RUN_STATE;
+                        // cyclic call
+                        INTEGR_dNewTimerValue = INTEGR_TIMER_DEFAULT_TIME;
+                    }
+                    else
+                    {
+                        // Manual: stop timer (for cyclic call) in next state
+                        INTEGR_ActiveTestInternalState = INTEGR_ACTIVE_TEST_POST_STATE;
+                    }
+                    break;
+
+                case INTEGR_ACTIVE_TEST_POST_STATE:
+                    INTEGR_vInitValues();
+                    // set to normal output voltage, programm the NGSM power supply
+                    INTEGR_vSetNgsmModeAndType( INTEGR_NGSM_MANUAL_MODE, INTEGR_NGSM_OUTPUT_NORMAL );
+                    // next internal state
+                    INTEGR_ActiveTestInternalState = INTEGR_ACTIVE_TEST_END_STATE;
+                    // waiting for preparing power supply
+                    INTEGR_dNewTimerValue = INTEGR_POWER_SUPPLY_DELAY_NORMAL;
+                    break;
+            }
+            break;
+             
+    	case INTEGR_TEST_BZ0: // BZ0 KL15 OFF, CAN Load OFF, Voltage 12V, NMH OFF
+            switch( INTEGR_ActiveTestInternalState )
+            {
+                case INTEGR_ACTIVE_TEST_PRE_STATE:
+                    // set to normal output voltage, programm the NGSM power supply
+                    INTEGR_vSetNgsmModeAndType( INTEGR_NGSM_MANUAL_MODE, INTEGR_NGSM_OUTPUT_NORMAL );
+                    // next internal state
+                    INTEGR_ActiveTestInternalState = INTEGR_ACTIVE_TEST_RUN_STATE; 
+                    // waiting for preparing power supply
+                    INTEGR_dNewTimerValue = INTEGR_POWER_SUPPLY_DELAY_NORMAL;
+                    break;
+
+                case INTEGR_ACTIVE_TEST_RUN_STATE:
+                    @eDI_KL_58xtS = 0;      // pointer dimming OFF
+                    INTEGR_vSwitchKl15(0);  // KL15 OFF
+                    INTEGR_vSwitchNMH(0);   // NMH OFF
+                    INTEGR_vCanLoad(0);     // CAN load OFF
+                    // runs until test off or when a new test case has been selected
+                    // no timer restart
+                    break;
+
+                case INTEGR_ACTIVE_TEST_POST_STATE:
+                    // in case of 'Timer-Reset' is ON, independent of 'Automatic' test
+                    if( @evINTEGR_TimerResetControl != FALSE ) 
+                    {
+                        // nothing to do
+                    }
+                    // this test case will be terminated
+                    INTEGR_ActiveTestInternalState = INTEGR_ACTIVE_TEST_END_STATE; 
+                    // hold time in this state
+                    INTEGR_dNewTimerValue = INTEGR_TIMER_DEFAULT_TIME;
+                    break;
+            }
+    		break;
+
+    	case INTEGR_TEST_BZ1: // BZ1 KL15 ON, CAN Load ON, Voltage 12V, NMH ON
+            switch( INTEGR_ActiveTestInternalState )
+            {
+                case INTEGR_ACTIVE_TEST_PRE_STATE:
+                    // set to normal output voltage, programm the NGSM power supply
+                    INTEGR_vSetNgsmModeAndType( INTEGR_NGSM_MANUAL_MODE, INTEGR_NGSM_OUTPUT_NORMAL );
+                    // next internal state
+                    INTEGR_ActiveTestInternalState = INTEGR_ACTIVE_TEST_RUN_STATE; 
+                    // waiting for preparing power supply
+                    INTEGR_dNewTimerValue = INTEGR_POWER_SUPPLY_DELAY_NORMAL;
+                    break;
+
+                case INTEGR_ACTIVE_TEST_RUN_STATE:
+                    @eDI_KL_58xtS=100;      // pointer dimming ON
+                    INTEGR_vSwitchKl15(1);  // KL15 ON
+                    INTEGR_vSwitchNMH(1);   // NMH ON
+                    INTEGR_vCanLoad(1);     // CAN load ON
+                    // runs until test off or when a new test case has been selected
+                    // no timer restart
+                    break;
+
+                case INTEGR_ACTIVE_TEST_POST_STATE:
+                    // in case of 'Timer-Reset' is ON, independent of 'Automatic' test
+                    if( @evINTEGR_TimerResetControl != FALSE ) 
+                    {
+                        // stops and clear all timer and test functions
+                        INTEGR_vInitValues();
+                        // reset pointer values
+                        INTEGR_vPointerSweepResetValues();
+                    }
+                    // stops MFL timer
+                    INTEGR_vMoveMfl( 0 );
+                    // this test case will be terminated
+                    INTEGR_ActiveTestInternalState = INTEGR_ACTIVE_TEST_END_STATE; 
+                    // hold time in this state
+                    INTEGR_dNewTimerValue = INTEGR_TIMER_DEFAULT_TIME;
+                    break;
+            }
+    		break;
+
+    	case INTEGR_TEST_BZ2: // BZ2 KL15 Toggling, CAN Load ON, Voltage 12V, NMH ON
+            switch( INTEGR_ActiveTestInternalState )
+            {
+                case INTEGR_ACTIVE_TEST_PRE_STATE:
+                    // set to normal output voltage, programm the NGSM power supply
+                    INTEGR_vSetNgsmModeAndType( INTEGR_NGSM_MANUAL_MODE, INTEGR_NGSM_OUTPUT_NORMAL );
+                    // next internal state
+                    INTEGR_ActiveTestInternalState = INTEGR_ACTIVE_TEST_RUN_STATE; 
+                    // waiting for preparing power supply
+                    INTEGR_dNewTimerValue = INTEGR_POWER_SUPPLY_DELAY_NORMAL;
+                    break;
+
+                case INTEGR_ACTIVE_TEST_RUN_STATE:
+                    @eDI_KL_58xtS=100;      // pointer dimming ON
+                    INTEGR_vToggleKl15(1);  // KL15 toggle ON
+                    INTEGR_vSwitchNMH(1);   // NMH ON
+                    INTEGR_vCanLoad(1);     // CAN load ON
+                    // runs until test off or when a new test case has been selected
+                    // no timer restart
+                    break;
+
+                case INTEGR_ACTIVE_TEST_POST_STATE:
+                    // in case of 'Timer-Reset' is ON, independent of 'Automatic' test
+                    if( @evINTEGR_TimerResetControl != FALSE ) 
+                    {
+                        // reset the Kl15 toggle counters
+                        Kl15_PrellCntr = 0;
+                        Kl15_HoldCntr = 0;
+                        Kl15MaxRepetitions = 0;
+
+                        // stops and clear all timer and test functions
+                        INTEGR_vInitValues();
+                        // reset pointer values
+                        INTEGR_vPointerSweepResetValues();
+                    }
+                    // stops MFL timer
+                    INTEGR_vMoveMfl( 0 );
+                    // always stops toggling Kl15
+                    INTEGR_vToggleKl15( 0 );
+                    // this test case will be terminated
+                    INTEGR_ActiveTestInternalState = INTEGR_ACTIVE_TEST_END_STATE; 
+                    // hold time in this state
+                    INTEGR_dNewTimerValue = INTEGR_TIMER_DEFAULT_TIME;
+                    break;
+            }
+    		break;
+
+    	case INTEGR_TEST_BZ3: // BZ3 KL15 ON, CAN Load ON, Voltage curves, NMH ON
+            switch( INTEGR_ActiveTestInternalState )
+            {
+                case INTEGR_ACTIVE_TEST_PRE_STATE:
+                  	// check if NGSM output mode (voltage curves) should be switch on
+                    INTEGR_vCheckNgsmVoltageCurvesEnabled();
+                    // next internal state
+                    INTEGR_ActiveTestInternalState = INTEGR_ACTIVE_TEST_RUN_STATE; 
+                    // waiting for preparing power supply
+                    INTEGR_dNewTimerValue = INTEGR_POWER_SUPPLY_DELAY_NORMAL;
+                    break;
+
+                case INTEGR_ACTIVE_TEST_RUN_STATE:
+                    @eDI_KL_58xtS=100;      // pointer dimming ON
+                    INTEGR_vSwitchKl15(1);  // KL15 ON
+                    INTEGR_vSwitchNMH(1);   // NMH ON
+                    INTEGR_vCanLoad(1);     // CAN load ON
+                    // runs until test off or when a new test case has been selected
+                    // no timer restart
+                    break;
+
+                case INTEGR_ACTIVE_TEST_POST_STATE:
+                    // stop the power automatic voltage mode, output type don't care
+                    INTEGR_vSetNgsmModeAndType( INTEGR_NGSM_MANUAL_MODE, INTEGR_NGSM_OUTPUT_DO_NOT_CHANGE );
+                    
+                    // in case of 'Timer-Reset' is ON, independent of 'Automatic' test
+                    if( @evINTEGR_TimerResetControl != 0 ) 
+                    {
+                        // stops and clear all timer and test functions
+                        INTEGR_vInitValues();
+                        // reset pointer values
+                        INTEGR_vPointerSweepResetValues();
+                    }
+                    // stops MFL timer
+                    INTEGR_vMoveMfl( 0 );
+                    // this test case will be terminated
+                    INTEGR_ActiveTestInternalState = INTEGR_ACTIVE_TEST_END_STATE; 
+                    // hold time in this state
+                    INTEGR_dNewTimerValue = INTEGR_TIMER_DEFAULT_TIME;
+                    break;
+            }
+    		break;
+
+    	case INTEGR_TEST_BZ4: // BZ4 KL15 Toggling, CAN Load ON, Voltage curves, NMH ON
+            switch( INTEGR_ActiveTestInternalState )
+            {
+                case INTEGR_ACTIVE_TEST_PRE_STATE:
+                  	// check if NGSM output mode (voltage curves) should be switch on
+                    INTEGR_vCheckNgsmVoltageCurvesEnabled();
+                    // next internal state
+                    INTEGR_ActiveTestInternalState = INTEGR_ACTIVE_TEST_RUN_STATE; 
+                    // waiting for preparing power supply
+                    INTEGR_dNewTimerValue = INTEGR_POWER_SUPPLY_DELAY_NORMAL;
+                    break;
+
+                case INTEGR_ACTIVE_TEST_RUN_STATE:
+                    @eDI_KL_58xtS=100;      // pointer dimming ON
+                    INTEGR_vToggleKl15(1);  // KL15 toggle ON
+                    INTEGR_vSwitchNMH(1);   // NMH ON
+                    INTEGR_vCanLoad(1);     // CAN load ON
+                    // runs until test off or when a new test case has been selected
+                    // no timer restart
+                    break;
+
+                case INTEGR_ACTIVE_TEST_POST_STATE:
+                    // stop the power automatic voltage mode, output type don't care
+                    INTEGR_vSetNgsmModeAndType( INTEGR_NGSM_MANUAL_MODE, INTEGR_NGSM_OUTPUT_DO_NOT_CHANGE );
+                    
+                     // in case of 'Timer-Reset' is ON, independent of 'Automatic' test
+                   if( @evINTEGR_TimerResetControl != FALSE ) 
+                    {
+                        // reset the Kl15 toggle counters
+                        Kl15_PrellCntr = 0;
+                        Kl15_HoldCntr = 0;
+                        Kl15MaxRepetitions = 0;
+
+                        // stops and clear all timer and test functions
+                        INTEGR_vInitValues();
+                        // reset pointer values
+                        INTEGR_vPointerSweepResetValues();
+                    }
+                    // stops MFL timer
+                    INTEGR_vMoveMfl( 0 );
+                    // always stops toggling Kl15
+                    INTEGR_vToggleKl15( 0 );
+                    // this test case will be terminated
+                    INTEGR_ActiveTestInternalState = INTEGR_ACTIVE_TEST_END_STATE; 
+                    // hold time in this state
+                    INTEGR_dNewTimerValue = INTEGR_TIMER_DEFAULT_TIME;
+                    break;
+            }
+    		break;
+
+    	case INTEGR_TEST_BZ5: // BZ5 KL15 OFF, CAN Load ON, Voltage curves, NMH ON
+            switch( INTEGR_ActiveTestInternalState )
+            {
+                case INTEGR_ACTIVE_TEST_PRE_STATE:
+                  	// check if NGSM output mode (voltage curves) should be switch on
+                    INTEGR_vCheckNgsmVoltageCurvesEnabled();
+                    // next internal state
+                    INTEGR_ActiveTestInternalState = INTEGR_ACTIVE_TEST_RUN_STATE; 
+                    // waiting for preparing power supply
+                    INTEGR_dNewTimerValue = INTEGR_POWER_SUPPLY_DELAY_NORMAL;
+                    break;
+
+                case INTEGR_ACTIVE_TEST_RUN_STATE:
+                    @eDI_KL_58xtS=100;      // pointer dimming ON
+                    INTEGR_vSwitchKl15(0);  // KL15 OFF
+                    INTEGR_vSwitchNMH(1);   // NMH ON
+                    INTEGR_vCanLoad(1);     // CAN load ON
+                    // runs until test off or when a new test case has been selected
+                    // no timer restart
+                    break;
+
+                case INTEGR_ACTIVE_TEST_POST_STATE:
+                    // stop the power automatic voltage mode, output type don't care
+                    INTEGR_vSetNgsmModeAndType( INTEGR_NGSM_MANUAL_MODE, INTEGR_NGSM_OUTPUT_DO_NOT_CHANGE );
+                    
+                    // in case of 'Timer-Reset' is ON, independent of 'Automatic' test
+                    if( @evINTEGR_TimerResetControl != 0 ) 
+                    {
+                        // stops and clear all timer and test functions
+                        INTEGR_vInitValues();
+                        // reset pointer values
+                        INTEGR_vPointerSweepResetValues();
+                    }
+                    // this test case will be terminated
+                    INTEGR_ActiveTestInternalState = INTEGR_ACTIVE_TEST_END_STATE; 
+                    // hold time in this state
+                    INTEGR_dNewTimerValue = INTEGR_TIMER_DEFAULT_TIME;
+                    break;
+            }
+            break;
+
+    	case INTEGR_TEST_BZ6: // BZ6 KL15 OFF, CAN Load ON, Voltage curves, NMH Toggling
+            switch( INTEGR_ActiveTestInternalState )
+            {
+                case INTEGR_ACTIVE_TEST_PRE_STATE:
+                  	// check if NGSM output mode (voltage curves) should be switch on
+                    INTEGR_vCheckNgsmVoltageCurvesEnabled();
+                    // next internal state
+                    INTEGR_ActiveTestInternalState = INTEGR_ACTIVE_TEST_RUN_STATE; 
+                    // waiting for preparing power supply
+                    INTEGR_dNewTimerValue = INTEGR_POWER_SUPPLY_DELAY_NORMAL;
+                    break;
+
+                case INTEGR_ACTIVE_TEST_RUN_STATE:
+                    @eDI_KL_58xtS=100;      // pointer dimming ON
+                    INTEGR_vSwitchKl15(0);  // KL15 OFF
+                    INTEGR_vToggleNMH(1);   // NMH toggle ON
+                    INTEGR_vCanLoad(1);     // CAN load ON
+                    // runs until test off or when a new test case has been selected
+                    // no timer restart
+                    break;
+
+                case INTEGR_ACTIVE_TEST_POST_STATE:
+                    // stop the power automatic voltage mode, output type don't care
+                    INTEGR_vSetNgsmModeAndType( INTEGR_NGSM_MANUAL_MODE, INTEGR_NGSM_OUTPUT_DO_NOT_CHANGE );
+                    
+                    // in case of 'Timer-Reset' is ON, independent of 'Automatic' test
+                    if( @evINTEGR_TimerResetControl != FALSE ) 
+                    {
+                        // stops and clear all timer and test functions
+                        INTEGR_vInitValues();
+                        // reset pointer values
+                        INTEGR_vPointerSweepResetValues();
+                    }
+                    // this test case will be terminated
+                    INTEGR_ActiveTestInternalState = INTEGR_ACTIVE_TEST_END_STATE; 
+                    // hold time in this state
+                    INTEGR_dNewTimerValue = INTEGR_TIMER_DEFAULT_TIME;
+                    break;
+            }
+    		break;
+
+    	case INTEGR_TEST_BZ7: // BZ7 KL15 OFF, CAN Load OFF, Voltage curves, NMH OFF
+            switch( INTEGR_ActiveTestInternalState )
+            {
+                case INTEGR_ACTIVE_TEST_PRE_STATE:
+                  	// check if NGSM output mode (voltage curves) should be switch on
+                    INTEGR_vCheckNgsmVoltageCurvesEnabled();
+                    // next internal state
+                    INTEGR_ActiveTestInternalState = INTEGR_ACTIVE_TEST_RUN_STATE; 
+                    // waiting for preparing power supply
+                    INTEGR_dNewTimerValue = INTEGR_POWER_SUPPLY_DELAY_NORMAL;
+                    break;
+
+                case INTEGR_ACTIVE_TEST_RUN_STATE:
+                    // pointer dimming OFF
+                    @eDI_KL_58xtS = 0;      // pointer dimming OFF
+                    INTEGR_vSwitchKl15(0);  // KL15 OFF
+                    INTEGR_vSwitchNMH(0);   // NMH OFF
+                    INTEGR_vCanLoad(0);     // CAN load OFF
+                    // runs until test off or when a new test case has been selected
+                    // no timer restart
+                    break;
+
+                case INTEGR_ACTIVE_TEST_POST_STATE:
+                    // stop the power automatic voltage mode, output type don't care
+                    INTEGR_vSetNgsmModeAndType( INTEGR_NGSM_MANUAL_MODE, INTEGR_NGSM_OUTPUT_DO_NOT_CHANGE );
+                    
+                    // in case of 'Timer-Reset' is ON, independent of 'Automatic' test
+                    if( @evINTEGR_TimerResetControl != FALSE ) 
+                    {
+                        // stops and clear all timer and test functions
+                        INTEGR_vInitValues();
+                        // reset pointer values
+                        INTEGR_vPointerSweepResetValues();
+                    }
+                    // this test case will be terminated
+                    INTEGR_ActiveTestInternalState = INTEGR_ACTIVE_TEST_END_STATE; 
+                    // hold time in this state
+                    INTEGR_dNewTimerValue = INTEGR_TIMER_DEFAULT_TIME;
+                    break;
+            }
+    		break;
+
+    	case INTEGR_TEST_BZ8: // BZ8 KL15 OFF, CAN Load ON, Voltage 12V, NMH ON
+            switch( INTEGR_ActiveTestInternalState )
+            {
+                case INTEGR_ACTIVE_TEST_PRE_STATE:
+                    // start the power manual voltage mode, normal output type
+                    INTEGR_vSetNgsmModeAndType( INTEGR_NGSM_MANUAL_MODE, INTEGR_NGSM_OUTPUT_NORMAL );
+                    // next internal state
+                    INTEGR_ActiveTestInternalState = INTEGR_ACTIVE_TEST_RUN_STATE; 
+                    // waiting for preparing power supply
+                    INTEGR_dNewTimerValue = INTEGR_POWER_SUPPLY_DELAY_NORMAL;
+                    break;
+
+                case INTEGR_ACTIVE_TEST_RUN_STATE:
+                    @eDI_KL_58xtS=100;      // pointer dimming ON
+                    INTEGR_vSwitchKl15(0);  // KL15 OFF
+                    INTEGR_vSwitchNMH(1);   // NMH ON
+                    INTEGR_vCanLoad(1);     // CAN load ON
+                    // runs until test off or when a new test case has been selected
+                    // no timer restart
+                    break;
+
+                case INTEGR_ACTIVE_TEST_POST_STATE:
+                    // in case of 'Timer-Reset' is ON, independent of 'Automatic' test
+                    if( @evINTEGR_TimerResetControl != FALSE ) 
+                    {
+                        // stops and clear all timer and test functions
+                        INTEGR_vInitValues();
+                        // reset pointer values
+                        INTEGR_vPointerSweepResetValues();
+                    }
+                    // this test case will be terminated
+                    INTEGR_ActiveTestInternalState = INTEGR_ACTIVE_TEST_END_STATE; 
+                    // hold time in this state
+                    INTEGR_dNewTimerValue = INTEGR_TIMER_DEFAULT_TIME;
+                    break;
+            }
+    		break;
+
+    	case INTEGR_TEST_BZ9: // BZ9 KL15 OFF, CAN Load OFF, Voltage 12V, NMH Toggling
+            switch( INTEGR_ActiveTestInternalState )
+            {
+                case INTEGR_ACTIVE_TEST_PRE_STATE:
+                    // start the power manual voltage mode, normal output type
+                    INTEGR_vSetNgsmModeAndType( INTEGR_NGSM_MANUAL_MODE, INTEGR_NGSM_OUTPUT_NORMAL );
+                    // next internal state
+                    INTEGR_ActiveTestInternalState = INTEGR_ACTIVE_TEST_RUN_STATE; 
+                    // waiting for preparing power supply
+                    INTEGR_dNewTimerValue = INTEGR_POWER_SUPPLY_DELAY_NORMAL;
+                    break;
+
+                case INTEGR_ACTIVE_TEST_RUN_STATE:
+                    // pointer dimming OFF
+                    @eDI_KL_58xtS = 0;      // pointer dimming OFF
+                    INTEGR_vSwitchKl15(0);  // KL15 OFF
+                    INTEGR_vToggleNMH(1);   // NMH toggle ON
+                    INTEGR_vCanLoad(0);     // CAN load OFF
+                    // runs until test off or when a new test case has been selected
+                    // no timer restart
+                    break;
+
+                case INTEGR_ACTIVE_TEST_POST_STATE:
+                    // in case of 'Timer-Reset' is ON, independent of 'Automatic' test
+                    if( @evINTEGR_TimerResetControl != FALSE ) 
+                    {
+                        // stops and clear all timer and test functions
+                        INTEGR_vInitValues();
+                        // reset pointer values
+                        INTEGR_vPointerSweepResetValues();
+                    }
+                    // this test case will be terminated
+                    INTEGR_ActiveTestInternalState = INTEGR_ACTIVE_TEST_END_STATE; 
+                    // hold time in this state
+                    INTEGR_dNewTimerValue = INTEGR_TIMER_DEFAULT_TIME;
+                    break;
+            }
+    		break;
+
+    	case INTEGR_TEST_BZ10: // BZ10 KL15 ON, CAN Load ON, Voltage SSI4b, NMH ON
+            switch( INTEGR_ActiveTestInternalState )
+            {
+                case INTEGR_ACTIVE_TEST_PRE_STATE:
+                    // start the power manual voltage mode, normal output type
+                    INTEGR_vSetNgsmModeAndType( INTEGR_NGSM_MANUAL_MODE, INTEGR_NGSM_OUTPUT_NORMAL );
+                    // next internal state
+                    INTEGR_ActiveTestInternalState = INTEGR_ACTIVE_TEST_RUN_STATE; 
+                    // waiting for preparing power supply
+                    INTEGR_dNewTimerValue = INTEGR_POWER_SUPPLY_DELAY_NORMAL;
+                    break;
+
+                case INTEGR_ACTIVE_TEST_RUN_STATE:
+                    @eDI_KL_58xtS=100;      // pointer dimming ON
+                    INTEGR_vSwitchKl15(1);  // KL15 ON
+                    INTEGR_vSwitchNMH(1);   // NMH ON
+                    INTEGR_vCanLoad(1);     // CAN load ON
+                    // set to Voltage SSI4b, programm the NGSM power supply
+                    INTEGR_vSetNgsmModeAndType( INTEGR_NGSM_MANUAL_MODE, INTEGR_NGSM_OUTPUT_SSI4B );
+                    // runs until test off or when a new test case has been selected
+                    // no timer restart
+                    break;
+
+                case INTEGR_ACTIVE_TEST_POST_STATE:
+                    // start the power manual voltage mode, normal output type
+                    INTEGR_vSetNgsmModeAndType( INTEGR_NGSM_MANUAL_MODE, INTEGR_NGSM_OUTPUT_NORMAL );
+                    // in case of 'Timer-Reset' is ON, independent of 'Automatic' test
+                    if( @evINTEGR_TimerResetControl != FALSE ) 
+                    {
+                        // stops and clear all timer and test functions
+                        INTEGR_vInitValues();
+                        // reset pointer values
+                        INTEGR_vPointerSweepResetValues();
+                    }
+                    // stops MFL timer
+                    INTEGR_vMoveMfl( 0 );
+                    // this test case will be terminated
+                    INTEGR_ActiveTestInternalState = INTEGR_ACTIVE_TEST_END_STATE; 
+                    // hold time in this state
+                    INTEGR_dNewTimerValue = INTEGR_TIMER_DEFAULT_TIME;
+                    break;
+            }
+    		break;
+
+    	case INTEGR_TEST_BZ11: // BZ11 KL15 ON, CAN Load ON, Voltage SSI4B2, NMH ON
+            switch( INTEGR_ActiveTestInternalState )
+            {
+                case INTEGR_ACTIVE_TEST_PRE_STATE:
+                    // start the power manual voltage mode, normal output type
+                    INTEGR_vSetNgsmModeAndType( INTEGR_NGSM_MANUAL_MODE, INTEGR_NGSM_OUTPUT_NORMAL );
+                    // next internal state
+                    INTEGR_ActiveTestInternalState = INTEGR_ACTIVE_TEST_RUN_STATE; 
+                    // waiting for preparing power supply
+                    INTEGR_dNewTimerValue = INTEGR_POWER_SUPPLY_DELAY_NORMAL;
+                    break;
+
+                case INTEGR_ACTIVE_TEST_RUN_STATE:
+                    @eDI_KL_58xtS=100;      // pointer dimming ON
+                    INTEGR_vSwitchKl15(1);  // KL15 ON
+                    INTEGR_vSwitchNMH(1);   // NMH ON
+                    INTEGR_vCanLoad(1);     // CAN load ON
+                    // set to Voltage SSI4B2, programm the NGSM power supply
+                    INTEGR_vSetNgsmModeAndType( INTEGR_NGSM_MANUAL_MODE, INTEGR_NGSM_OUTPUT_SSI4B2 );
+                    // runs until test off or when a new test case has been selected
+                    // no timer restart
+                    break;
+
+                case INTEGR_ACTIVE_TEST_POST_STATE:
+                    // start the power manual voltage mode, normal output type
+                    INTEGR_vSetNgsmModeAndType( INTEGR_NGSM_MANUAL_MODE, INTEGR_NGSM_OUTPUT_NORMAL );
+
+                    // in case of 'Timer-Reset' is ON, independent of 'Automatic' test
+                    if( @evINTEGR_TimerResetControl != FALSE ) 
+                    {
+                        // stops and clear all timer and test functions
+                        INTEGR_vInitValues();
+                        // reset pointer values
+                        INTEGR_vPointerSweepResetValues();
+                    }
+                    // stops MFL timer
+                    INTEGR_vMoveMfl( 0 );
+                    // this test case will be terminated
+                    INTEGR_ActiveTestInternalState = INTEGR_ACTIVE_TEST_END_STATE; 
+                    // hold time in this state
+                    INTEGR_dNewTimerValue = INTEGR_TIMER_DEFAULT_TIME;
+                    break;
+            }
+    		break;
+
+    	case INTEGR_TEST_BZ12: // BZ12 dummy
+            switch( INTEGR_ActiveTestInternalState )
+            {
+                case INTEGR_ACTIVE_TEST_PRE_STATE:
+                    // start the power manual voltage mode, normal output type
+                    INTEGR_vSetNgsmModeAndType( INTEGR_NGSM_MANUAL_MODE, INTEGR_NGSM_OUTPUT_NORMAL );
+                    // next internal state
+                    INTEGR_ActiveTestInternalState = INTEGR_ACTIVE_TEST_RUN_STATE; 
+                    // waiting for preparing power supply
+                    INTEGR_dNewTimerValue = INTEGR_POWER_SUPPLY_DELAY_NORMAL;
+                    break;
+
+                case INTEGR_ACTIVE_TEST_RUN_STATE:
+                    // runs until test off or when a new test case has been selected
+                    // no timer restart
+                    break;
+
+                case INTEGR_ACTIVE_TEST_POST_STATE:
+                    // in case of 'Timer-Reset' is ON, independent of 'Automatic' test
+                    if( @evINTEGR_TimerResetControl != FALSE ) 
+                    {
+                        // stops and clear all timer and test functions
+                        INTEGR_vInitValues();
+                        // reset pointer values
+                        INTEGR_vPointerSweepResetValues();
+                    }
+                    // this test case will be terminated
+                    INTEGR_ActiveTestInternalState = INTEGR_ACTIVE_TEST_END_STATE; 
+                    // hold time in this state
+                    INTEGR_dNewTimerValue = INTEGR_TIMER_DEFAULT_TIME;
+                    break;
+            }
+    		break;
+
+    	case INTEGR_TEST_BZ13: // BZ13 for Diagnosis 
+            switch( INTEGR_ActiveTestInternalState )
+            {
+                case INTEGR_ACTIVE_TEST_PRE_STATE:
+                    // start the power manual voltage mode, normal output type
+                    INTEGR_vSetNgsmModeAndType( INTEGR_NGSM_MANUAL_MODE, INTEGR_NGSM_OUTPUT_NORMAL );
+                    // next internal state
+                    INTEGR_ActiveTestInternalState = INTEGR_ACTIVE_TEST_RUN_STATE; 
+                    // waiting for preparing power supply
+                    INTEGR_dNewTimerValue = INTEGR_POWER_SUPPLY_DELAY_NORMAL;
+                    break;
+
+                case INTEGR_ACTIVE_TEST_RUN_STATE:
+                    @eDI_KL_58xtS=100;  // // pointer dimming ON
+                    INTEGR_vSwitchKl15(1);
+                    INTEGR_vSwitchNMH(1);
+                    // runs until test off or when a new test case has been selected
+                    // no timer restart
+                    break;
+
+                case INTEGR_ACTIVE_TEST_POST_STATE:
+                    // in case of 'Timer-Reset' is ON, independent of 'Automatic' test
+                    if( @evINTEGR_TimerResetControl != FALSE ) 
+                    {
+                        // stops and clear all timer and test functions
+                        INTEGR_vInitValues();
+                        // reset pointer values
+                        INTEGR_vPointerSweepResetValues();
+                    }
+                    // this test case will be terminated
+                    INTEGR_ActiveTestInternalState = INTEGR_ACTIVE_TEST_END_STATE; 
+                    // hold time in this state
+                    INTEGR_dNewTimerValue = INTEGR_TIMER_DEFAULT_TIME;
+                    break;
+            }
+    		break;
+
+        default:
+            write( "INTEGR: unknown INTEGR_iActualTestCase = %d", INTEGR_iActualTestCase );
+        break;
+    } // end switch
+
+    // restart the timer
+    if( INTEGR_dNewTimerValue != 0 )
+    {
+        setTimer( INTEGR_TestCase_timer, INTEGR_dNewTimerValue );
+    }
+    else
+    {
+        // not started until new setTimer from a function
+    }
+
+    if( boDebug_TestRunTimer )
+        write( "msINTEGR_TestCaseTimer: iNewTestCase %d, iActualTestCase %d, ActiveTestInternalState %d, dNewTimerValue %d",
+                INTEGR_iNewTestCase, INTEGR_iActualTestCase, INTEGR_ActiveTestInternalState, INTEGR_dNewTimerValue );
+}
+/*@@end*/
+
+/*@@caplFunc:INTEGR_vSwitchOnPowerSupply():*///function
+INTEGR_vSwitchOnPowerSupply( )
+{
+    // check if the NGSM power supply is ON and the output has been activated
+    // otherwise switch it ON
+
+    // NGSM support test
+    if( @evNGSM_Support == FALSE )
+    {
+        return; // NGSM support disabled
+    }
+
+    if( INTEGR_boCheckNgsmPanel() == FALSE )
+    {
+        // turning ON the NGSM DC Power Supply (NGSM panel switch 'NGSM Power Supply')
+        if( getValue( evNGSM_PowerSupplyState ) != INTEGR_NGSM_INIT_OK )
+        {   
+            // NGSM is INTEGR_NGSM_OFF, INTEGR_NGSM_DE_INIT, INTEGR_NGSM_INIT_NOK
+            // try switch ON the power supply and enable the output
+            putValue( evNGSM_PowerSwitch, TRUE );
+        }
+        
+        // and try activating the NGSM output via NGSM panel button 'Output Control'
+        if( getValue( evNGSM_PowerSupplyState ) == INTEGR_NGSM_INIT_OK )
+        {
+            // try only if NGSM is initialized
+            putValue( evNGSM_OutputState, TRUE ); 
+        }
+    } 
+}
+/*@@end*/
+
+/*@@caplFunc:INTEGR_vPointerSweepResetValues():*///function
+INTEGR_vPointerSweepResetValues()
+{
+    // For Pointer Sweep: Revolution
+    int RPM_START = 0;
+    int RPM_END = 6000;
+    int RPM_STEPS = 100;
+    int RPM_TIME = 200;
+
+    // For Pointer Sweep: Speed
+    int SPEED_START = 0;
+    int SPEED_END = 240;
+    int SPEED_STEPS = 100;
+    int SPEED_TIME = 200;
+
+    // For Pointer Sweep: Temp
+    long TEMP_MAX = 142.5;
+    int TEMP_MIN = 50;
+    int TEMP_STEPS = 10;
+
+    // reset speed pointer sweep values
+    putValue( eSpeedRandom, 0 );
+    putValue( eSpeedSingleSteps, 0 );
+    putValue( eSpeedInputIsMetric, 1 );
+    putValue( eSpeedStart, SPEED_START );
+    putValue( eSpeedEnd, SPEED_END );
+    putValue( eSpeedSteps, SPEED_STEPS );
+    putValue( eSpeedTime, SPEED_TIME );
+    putValue( eSpeed, 0 );
+
+    // reset revolution sweep settings
+    putValue( eRPMRandom, 0 );          // stops random
+    putValue( eRPMStart, RPM_START );
+    putValue( eRPMEnd, RPM_END );
+    putValue( eRPMSteps, RPM_STEPS );
+    putValue( eRPMTime, RPM_TIME );
+    putValue( eMO_AnzeigedrehzS, 0 );   // starts from 0
+
+    // reset temperature sweep
+    putValue( eMO_ITM_Kuehlmittel_TempS, TEMP_MIN );   // start temperature
+}
+/*@@end*/
+
+/*@@stop:StopMeasurement:*/
+on stopMeasurement
+{
+    // stop all event timer
+    cancelTimer( INTEGR_NgsmCommandInProgress_timer );
+    cancelTimer( INTEGR_NgsmModeAndType_timer );
+    cancelTimer( INTEGR_MoveMfl_timer );
+    // clears all (hanging) MFL buttons
+    INTEGR_vClearMfl();
+    cancelTimer( INTEGR_SweepDim_timer );
+    cancelTimer( INTEGR_SweepKmt_timer );
+    cancelTimer( INTEGR_SweepOtp_timer );
+    cancelTimer( INTEGR_SweepOtp_timer );
+    cancelTimer( INTEGR_vToggleKl15_timer );
+    cancelTimer( INTEGR_vToggleNMH_timer );
+    cancelTimer( INTEGR_vToggleWarnings_timer );
+    cancelTimer( INTEGR_TestMode_timer );
+    cancelTimer( INTEGR_TestCase_timer );
+
+    putValue( evINTEGR_HelpBox, "Integration_Test is OFF" );
+    SetControlBackColor( "Integration_Test", "EnvVar:evINTEGR_HelpBox", MakeRGB( 192, 192, 192 ) );
+
+    // close Parameter input file
+    if( INTEGR_IniFileHandle != 0 )
+    {
+        fileClose( INTEGR_IniFileHandle );
+    }
+
+    // close LOG file
+    if( INTEGR_LogFileHandle != 0 )
+    {
+        fileClose( INTEGR_LogFileHandle );
+    }
+
+    write("INTEGR: IntegrationTest stopped!");
+    putValue( evINTEGR_HelpBox, "IntegrationTest stopped" );
+}
+/*@@end*/
+
+/*@@key:'b':*/
+on key 'b'
+{
+    write( "INTEGR: new test case by keyboard = %d", INTEGR_TEST_BZ11 );
+    // Logging
+    if( INTEGR_LogFileHandle != 0)
+    {
+        snprintf( INTEGR_cLogBuffer, elcount( INTEGR_cLogBuffer ), "INTEGR: keyboard test case INTEGR_TEST_BZ11\n" );
+        filePutString( INTEGR_cLogBuffer, elCount( INTEGR_cLogBuffer ), INTEGR_LogFileHandle );
+    }
+
+    putValue( evINTEGR_TestCase, INTEGR_TEST_BZ11 );
+}
+/*@@end*/
+
+/*@@key:'a':*/
+on key 'a'
+{
+    write( "INTEGR: new test case by keyboard = %d", INTEGR_TEST_BZ10 );
+    // Logging
+    if( INTEGR_LogFileHandle != 0)
+    {
+        snprintf( INTEGR_cLogBuffer, elcount( INTEGR_cLogBuffer ), "INTEGR: keyboard test case INTEGR_TEST_BZ10\n" );
+        filePutString( INTEGR_cLogBuffer, elCount( INTEGR_cLogBuffer ), INTEGR_LogFileHandle );
+    }
+
+    putValue( evINTEGR_TestCase, INTEGR_TEST_BZ10 );
+}
+/*@@end*/
+
+/*@@key:'9':*/
+on key '9'
+{
+    write( "INTEGR: new test case by keyboard = %d", INTEGR_TEST_BZ9 );
+    // Logging
+    if( INTEGR_LogFileHandle != 0)
+    {
+        snprintf( INTEGR_cLogBuffer, elcount( INTEGR_cLogBuffer ), "INTEGR: keyboard test case INTEGR_TEST_BZ9\n" );
+        filePutString( INTEGR_cLogBuffer, elCount( INTEGR_cLogBuffer ), INTEGR_LogFileHandle );
+    }
+
+    putValue( evINTEGR_TestCase, INTEGR_TEST_BZ9 );
+}
+/*@@end*/
+
+/*@@timer:INTEGR_NgsmModeAndType_timer:*/
+on timer INTEGR_NgsmModeAndType_timer
+{
+    // automatic (time scheduled) switch to next NGSM output voltage type
+
+    int iNextNgsmOutputType;
+    byte boDebug_msNgsmAutoSelectionTimer = 0;      // 1: enables debug output within this function
+
+    // NGSM support test
+    if( @evNGSM_Support == FALSE )
+    {
+        return; // NGSM support disabled
+    }
+
+    // ***********************************************************************
+    // cyclic check the state of the NGSM Power Supply
+    if( INTEGR_boCheckNgsmPanel() == FALSE )
+    {
+        // writing commands to the NGSM DC Power Supply makes only sense if
+        // the NGSM output has been activated (related to the panel)
+
+        putValue( evINTEGR_HelpBox, "ERROR: NGSM output is NOT under control" );
+        SetControlBackColor( "Integration_Test", "EnvVar:evINTEGR_HelpBox", MakeRGB( 192, 192, 192 ) );
+
+        // re-start the cyclic timer
+        setTimer( INTEGR_NgsmModeAndType_timer, INTEGR_NGSM_MODE_AND_TYPE_CYCLE_TIMER );
+   
+        return;     // do not process this event because NGSM output can't programmed
+    }
+   
+    // ***********************************************************************
+    // check the mode (auto, manual)
+    if( INTEGR_iNgsmModeRequest != INTEGR_iActualNgsmMode )
+    {
+        // mode change request
+        // if last NGSM command is still in progress
+        if( isTimerActive( INTEGR_NgsmCommandInProgress_timer ) )
+        {
+            // wait until last NGSM command has been finished, we have no chance to interrupt
+            // this running command without an error behaviour from NGSM
+        }
+        else
+        {
+            // change the mode
+            INTEGR_iActualNgsmMode = INTEGR_iNgsmModeRequest;
+        }
+    }
+    else
+    {
+        // mode (auto, manual) hasn't changed
+    }    
+
+    // ***********************************************************************
+    // in case of auto mode check, if the delay counter for the next output type has been expired
+    if( INTEGR_iActualNgsmMode == INTEGR_NGSM_AUTO_MODE )
+    {
+        // in 'auto' mode the output type will be controlled only from an array 
+        // (a requested output type by command is ignored)
+          
+        // check delay counter: automatic selection of the next new output type
+        if( INTEGR_iAutoOutputTypeCnt++ >= INTEGR_SELECT_NEXT_OUTPUT_VOLTAGE_TIME / INTEGR_NGSM_MODE_AND_TYPE_CYCLE_TIMER )
+        {
+            // restart the auto delay counter
+            INTEGR_iAutoOutputTypeCnt = 0;
+
+            // delay counter expires, next output voltage
+            // select the new voltage output type
+            INTEGR_iNgsmOutputTypeRequest = INTEGR_dPowerVoltageCurveTable[ INTEGR_iPowerVoltageTableIdx ];
+            if( boDebug_msNgsmAutoSelectionTimer )
+                write( "INTEGR_NgsmModeAndType_timer: 'auto' mode, index %d, new INTEGR_iNgsmOutputTypeRequest %d", 
+                       INTEGR_iPowerVoltageTableIdx, INTEGR_iNgsmOutputTypeRequest );    
+            
+            if( INTEGR_iNgsmOutputTypeRequest >= INTEGR_NGSM_OUTPUT_END )
+            {
+                // output type not allowed
+                if( boDebug_msNgsmAutoSelectionTimer )
+                    write( "INTEGR_NgsmModeAndType_timer: INTEGR_iNgsmOutputTypeRequest overflow" );    
+                INTEGR_iNgsmOutputTypeRequest = INTEGR_NGSM_OUTPUT_NORMAL; // prevents array overrun 
+            }
+
+            // send command to NGSM
+            if( INTEGR_boSendNgsmNewOutputType( INTEGR_iNgsmOutputTypeRequest ) == TRUE )
+            {
+                // command has been send
+                if( boDebug_msNgsmAutoSelectionTimer )
+                    write( "INTEGR_NgsmModeAndType_timer: in 'auto' success" );    
+
+                // the next voltage type table index
+                INTEGR_iPowerVoltageTableIdx++;
+
+                // check if all defined voltage types were performed
+                if( INTEGR_iPowerVoltageTableIdx >= INTEGR_iPowerVoltageCurveTableEntries )
+                {
+                    // all voltage types were performed
+                    if( boDebug_msNgsmAutoSelectionTimer )
+                        write( "INTEGR_NgsmModeAndType_timer: array overflow, index %d", INTEGR_iPowerVoltageTableIdx );    
+                    // restart with first entry
+                    INTEGR_iPowerVoltageTableIdx = 0;
+                }
+            }
+            else
+            {
+                // no success
+                if( boDebug_msNgsmAutoSelectionTimer )
+                    write( "INTEGR_NgsmModeAndType_timer: in 'auto' no success, repeat" );    
+            }
+        }
+        else
+        {
+            // wait until delay counter has been expired
+        }
+    }
+    else
+    {
+        // ***********************************************************************
+        // in case of manual mode, check if last NGSM has been finished
+        if( isTimerActive( INTEGR_NgsmCommandInProgress_timer ) )
+        {
+            // wait until last NGSM command has been finished, we have no chance to interrupt
+            // this running command without an error behaviour from NGSM
+        }
+        else
+        {
+            if( INTEGR_iNgsmOutputTypeRequest == INTEGR_NGSM_OUTPUT_DO_NOT_CHANGE )
+            {
+                // no request
+            }
+            else
+            {
+                if( INTEGR_iNgsmOutputTypeRequest >= INTEGR_NGSM_OUTPUT_END )
+                {
+                    // output type not allowed
+                    INTEGR_iNgsmOutputTypeRequest = INTEGR_NGSM_OUTPUT_NORMAL; // prevents array overrun 
+                }
+
+                if( boDebug_msNgsmAutoSelectionTimer )
+                    write( "INTEGR_NgsmModeAndType_timer: 'manual' mode, new INTEGR_iNgsmOutputTypeRequest %d", 
+                           INTEGR_iNgsmOutputTypeRequest );    
+ 
+                // send command to NGSM
+                if( INTEGR_boSendNgsmNewOutputType( INTEGR_iNgsmOutputTypeRequest ) == TRUE )
+                {
+                    // command has been send
+                    if( boDebug_msNgsmAutoSelectionTimer )
+                        write( "INTEGR_NgsmModeAndType_timer: in 'manual' success" );
+
+                    // output type has changed successfully, clear request    
+                    INTEGR_iNgsmOutputTypeRequest = INTEGR_NGSM_OUTPUT_DO_NOT_CHANGE;    
+                }
+                else
+                {
+                    // no success
+                    if( boDebug_msNgsmAutoSelectionTimer )
+                        write( "INTEGR_NgsmModeAndType_timer: in 'manual' no success, repeat" );    
+                }
+            }
+        }
+    }
+
+    // re-start the cyclic timer: NGSM check, mode (auto/ manual) switch over and output timer switch over
+    setTimer( INTEGR_NgsmModeAndType_timer, INTEGR_NGSM_MODE_AND_TYPE_CYCLE_TIMER );
+}
+/*@@end*/
+
+/*@@caplFunc:INTEGR_vSetNgsmModeAndType(int,int):*///function
+INTEGR_vSetNgsmModeAndType( int iNgsmMode, int iNgsmOutputType )
+{
+    // This timer function synchronizes new requests to the NGSM DC Power Supply.
+    // Transmitting of a new command to the NGSM is prevented as long as the last command is still running.
+    // Otherwise an error popup from NGSM (when command interface is overrun) stops the further 
+    // processing of new NGSM commands.
+
+    // parameters:
+    // iNgsmMode: INTEGR_NGSM_MANUAL_MODE, INTEGR_NGSM_AUTO_MODE
+    // iNgsmOutputType: INTEGR_NGSM_OUTPUT_NORMAL ... INTEGR_NGSM_OUTPUT_SLIDER_CONTROL
+
+    byte boDebug_boSetNgsmModeAndType = 0;      // 1: enables debug output within this function
+
+    // write( "INTEGR_vSetNgsmModeAndType: mode %d and output type %d request", iNgsmMode, iNgsmOutputType );
+
+    if( INTEGR_iActualNgsmMode == iNgsmMode /* new mode */ )
+    {
+        // voltage mode (auto, manual) has not changed
+        
+        if( INTEGR_iActualNgsmMode == INTEGR_NGSM_MANUAL_MODE )
+        {
+            // NGSM DC Power Supply is still in 'manual' mode
+            // output voltage types selected from application (iNgsmOutputType)
+            if( boDebug_boSetNgsmModeAndType )
+                write( "INTEGR_vSetNgsmModeAndType: 'manual' voltage mode is still running, new output type %d request",
+                       iNgsmOutputType  );
+            // Log
+            if( INTEGR_LogFileHandle != 0)
+            {
+                snprintf( INTEGR_cLogBuffer, elcount( INTEGR_cLogBuffer ),
+                          "INTEGR_vSetNgsmModeAndType: 'manual' voltage mode is still running, new output type %d request\n",
+                          iNgsmOutputType );
+                filePutString( INTEGR_cLogBuffer, elCount( INTEGR_cLogBuffer ), INTEGR_LogFileHandle );
+            }
+
+            // request for new NGSM output type (managed by INTEGR_NgsmModeAndType_timer())
+            INTEGR_iNgsmOutputTypeRequest = iNgsmOutputType;
+        }
+        else
+        {
+            // NGSM DC Power Supply is still in 'auto' mode
+            // output voltage types selected automatically, the transfer parameter iNgsmOutputType don't care
+            if( boDebug_boSetNgsmModeAndType )
+                write( "INTEGR_vSetNgsmModeAndType: 'automatic' voltage mode is still running" );
+        }
+    }
+    else
+    {
+        // voltage mode  (auto, manual) has been changed, switch to new NGSM mode
+
+        if( iNgsmMode /* the new mode */ == INTEGR_NGSM_MANUAL_MODE )
+        {
+            // NGSM DC Power Supply is in 'automatic' mode and must switched over to 'manual' mode
+            // actions: check if NGSM interface is still occupied
+            //          set mode
+            //          set new output type
+            if( boDebug_boSetNgsmModeAndType )
+                write( "INTEGR_vSetNgsmModeAndType: NGSM new mode request for 'manual'" );
+            // Log
+            if( INTEGR_LogFileHandle != 0)
+            {
+                snprintf( INTEGR_cLogBuffer, elcount( INTEGR_cLogBuffer ),
+                          "INTEGR_vSetNgsmModeAndType: NGSM new mode request for 'manual'\n" );
+                filePutString( INTEGR_cLogBuffer, elCount( INTEGR_cLogBuffer ), INTEGR_LogFileHandle );
+            }
+
+            // new NGSM mode request
+            INTEGR_iNgsmModeRequest = INTEGR_NGSM_MANUAL_MODE;
+
+            // request for new NGSM output type (managed by INTEGR_NgsmModeAndType_timer())
+            INTEGR_iNgsmOutputTypeRequest = iNgsmOutputType;
+        }
+        else
+        {
+            // NGSM DC Power Supply is in 'manual' mode and must switched over to 'automatic' mode
+            if( boDebug_boSetNgsmModeAndType )
+                write( "INTEGR_vSetNgsmModeAndType: NGSM new mode request for 'automatic'" );
+            // Log
+            if( INTEGR_LogFileHandle != 0)
+            {
+                snprintf( INTEGR_cLogBuffer, elcount( INTEGR_cLogBuffer ), 
+                          "INTEGR_vSetNgsmModeAndType: NGSM new mode request for 'manual'\n" );
+                filePutString( INTEGR_cLogBuffer, elCount( INTEGR_cLogBuffer ), INTEGR_LogFileHandle );
+            }
+
+            // new NGSM mode request
+            INTEGR_iNgsmModeRequest = INTEGR_NGSM_AUTO_MODE;
+
+            // request for new NGSM output type (managed by INTEGR_NgsmModeAndType_timer())
+            INTEGR_iNgsmOutputTypeRequest = iNgsmOutputType;
+        }
+    }
+}
+/*@@end*/
+
+/*@@caplFunc:INTEGR_boSendNgsmNewOutputType(int):*///function
+byte INTEGR_boSendNgsmNewOutputType( int iNgsmOutputType )
+{
+    // Send a new 'output type' command to NGSM DC Power supply via RS232 connection
+    // - check if last ´NGSM command is still running
+    // - restart NGSM command delay timer with time values related to the output type
+    // - return TRUE if command has been send
+    //          FALSE if NGSM command interface was locked
+    
+    byte boReturnValue;
+    byte boDebug_boSendNgsmNewOutputType = 0;      // 1: enables debug output within this function
+    // waiting time
+    int  iDelayForNextNgsmOutputCommand;
+
+    boReturnValue = FALSE;
+
+    // NGSM support test
+    if( @evNGSM_Support == FALSE )
+    {
+        return FALSE; // NGSM support disabled
+    }
+
+    if( INTEGR_boCheckNgsmPanel() == FALSE )
+    {
+        // writing commands to the NGSM DC Power Supply makes only sense if
+        // the NGSM output has been activated (related to the panel)
+
+        putValue( evINTEGR_HelpBox, "ERROR: NGSM output is NOT under control" );
+        SetControlBackColor( "Integration_Test", "EnvVar:evINTEGR_HelpBox", MakeRGB( 255, 0, 0 ) );
+   
+        return( boReturnValue );     // do not process this event because NGSM output can't programmed
+    }
+
+    // check if NGSM command interface is still busy (NGSM is still processing the last
+    // command and a new command can lead to an overrun)
+    if( isTimerActive( INTEGR_NgsmCommandInProgress_timer ) )
+    {
+        // there is a pending command NGSM DC Power Supply
+        // currently the new output type will be ignored
+
+        if( boDebug_boSendNgsmNewOutputType )
+            write( "INTEGR_boSendNgsmNewOutputType: NGSM command is still active, ignore %d",
+                   INTEGR_iPowerVoltageTableIdx, iNgsmOutputType );
+        // Log
+        if( INTEGR_LogFileHandle != 0)
+        {
+            snprintf( INTEGR_cLogBuffer, elcount( INTEGR_cLogBuffer ),
+                      "INTEGR_boSendNgsmNewOutputType: NGSM command is still active, ignore %d\n",
+                      iNgsmOutputType );
+            filePutString( INTEGR_cLogBuffer, elCount( INTEGR_cLogBuffer ), INTEGR_LogFileHandle );
+        }
+    }
+    else
+    {
+        // NGSM DC Power Supply is idle, send command
+
+        if( boDebug_boSendNgsmNewOutputType )
+            write( "INTEGR_boSendNgsmNewOutputType: send NGSM output type %d", iNgsmOutputType );
+
+        // a reminder
+        INTEGR_iActualNgsmOutputType = iNgsmOutputType;
+        
+        // command to NGSM
+        putValue( evNGSM_SetCurveSelector, iNgsmOutputType );
+        
+        // restart this timer, waiting time for next output voltage command depends on 
+        // the running command type
+        // to suppress power supply communication disorders
+  	    switch( iNgsmOutputType )
+        {
+            case INTEGR_NGSM_OUTPUT_NORMAL:
+                iDelayForNextNgsmOutputCommand = 2000;  /* ms */
+                break;
+            case INTEGR_NGSM_OUTPUT_SSI4B:
+                iDelayForNextNgsmOutputCommand = 6000;  /* ms */
+                break;
+            case INTEGR_NGSM_OUTPUT_SSI4B2:
+                iDelayForNextNgsmOutputCommand = 6000;  /* ms */
+                break;
+   	        case INTEGR_NGSM_OUTPUT_WAIT:
+                iDelayForNextNgsmOutputCommand = 6000;  /* ms */
+                break;
+   	        case INTEGR_NGSM_OUTPUT_VOLTAGE_BOUNCE:
+                iDelayForNextNgsmOutputCommand = 2000;  /* ms */
+                break;
+  	        case INTEGR_NGSM_OUTPUT_MICRO_PULSE:
+                iDelayForNextNgsmOutputCommand = 2000;  /* ms */
+                break;
+  	        case INTEGR_NGSM_OUTPUT_LOW_BATTERY:
+                iDelayForNextNgsmOutputCommand = 2000;  /* ms */
+                break;
+      	    case INTEGR_NGSM_OUTPUT_VW80101_7:
+                iDelayForNextNgsmOutputCommand = 6000;  /* ms */
+                break;
+   	        case INTEGR_NGSM_OUTPUT_OVERVOLTAGE_A:
+                iDelayForNextNgsmOutputCommand = 20000;  /* ms */
+                break;
+  	        case INTEGR_NGSM_OUTPUT_OVERVOLTAGE_B:
+                iDelayForNextNgsmOutputCommand = 20000;  /* ms */
+                break;
+  	        case INTEGR_NGSM_OUTPUT_WARMSTART_PULSE:
+                iDelayForNextNgsmOutputCommand = 5000;  /* ms */
+                break;
+            default:
+                iDelayForNextNgsmOutputCommand = 2000;  /* ms */
+                break;
+        } // end switch
+
+        setTimer( INTEGR_NgsmCommandInProgress_timer, iDelayForNextNgsmOutputCommand );
+
+        if( boDebug_boSendNgsmNewOutputType )
+            write( "INTEGR_boSendNgsmNewOutputType: set new output type %d, delay %d", 
+                   iNgsmOutputType, iDelayForNextNgsmOutputCommand );
+        // Log
+        if( INTEGR_LogFileHandle != 0)
+        {
+            snprintf( INTEGR_cLogBuffer, elcount( INTEGR_cLogBuffer ),
+                      "INTEGR_boSendNgsmNewOutputType: set new output type %d, delay %d\n",
+                      iNgsmOutputType, iDelayForNextNgsmOutputCommand );
+            filePutString( INTEGR_cLogBuffer, elCount( INTEGR_cLogBuffer ), INTEGR_LogFileHandle );
+        }
+
+        // success
+        boReturnValue = TRUE;
+    }
+
+    return( boReturnValue );
+}
+/*@@end*/
+
+/*@@timer:INTEGR_NgsmCommandInProgress_timer:*/
+on timer INTEGR_NgsmCommandInProgress_timer
+{
+    // prevents overwriting of the NGSM command interface
+    // runs as long as a command is proccessed by the NGSM
+    // the run time is estimated and depends on the voltage type (curve selection)
+}
+/*@@end*/
+
+/*@@caplFunc:INTEGR_vClearMfl():*///function
+INTEGR_vClearMfl()
+{
+    // clears all (hanging) MFL buttons
+
+    putValue(eKeyMenuState,0);
+    putValue(eKeyMenuUpState,0);
+    putValue(eKeyMenuDownState,0);
+    putValue(eKeyUpState,0);
+    putValue(eKeyDownState,0);
+    putValue(eKeyWheelEventCodeLeft_P1,0);
+    putValue(eKeyWheelEventCodeLeft_M1,0);
+    putValue(eKeyOkWheelLeftState,0);
+}
+/*@@end*/
+
+/*@@envVar:evINTEGR_DisVoltageCurves:*/
+on envVar evINTEGR_DisVoltageCurves
+{
+    // disables/enables the voltage curves (NGSM setting)
+    // If the check box is ON, the 'disable voltage curves' mode is ON.
+    // In this case the selection of the different 'voltage curves' will be prevented
+
+    // set the actual test
+    INTEGR_iDisVoltageCurveSelection = getValue( This );
+
+	if( INTEGR_iDisVoltageCurveSelection == 1 )
+	{
+        // 'disable voltage curves' enabled: use the constant 12.0 V
+        putValue( evINTEGR_DisVoltageCurveDisplay, "Voltage Curves disabled" );
+        //write( "INTEGR: Voltage Curves are disabled" );
+    }
+    else
+    {
+        // 'disable voltage curves' disabled: a switchover to the dfferent voltage curves is allowed
+        putValue( evINTEGR_DisVoltageCurveDisplay, "Voltage Curves enabled" );
+        //write( "INTEGR: Voltage Curves are enabled" );
+    }
+
+    // in case of a BZ is running statically (no automatic switch over to a new BZ)
+    // we should check if the 'voltage curves' should be enabled or disabled 
+    //if( ( getValue( evINTEGR_TestCase ) == INTEGR_TEST_BZ3 )  ||
+    //    ( getValue( evINTEGR_TestCase ) == INTEGR_TEST_BZ4 )  ||
+    //    ( getValue( evINTEGR_TestCase ) == INTEGR_TEST_BZ5 )  ||
+    //    ( getValue( evINTEGR_TestCase ) == INTEGR_TEST_BZ6 )  ||
+    //    ( getValue( evINTEGR_TestCase ) == INTEGR_TEST_BZ7 )  ||
+    //    ( getValue( evINTEGR_TestCase ) == INTEGR_TEST_BZ10 ) ||
+    //    ( getValue( evINTEGR_TestCase ) == INTEGR_TEST_BZ11 ) )
+    //{
+    //    // in the cases above the 'voltage curves' could be enabled or disabled
+    //    INTEGR_vCheckNgsmVoltageCurvesEnabled();
+    //}
+    INTEGR_vCheckNgsmVoltageCurvesEnabled(); //@RV Voltages curves should always be disabled if set!!!!
+}
+/*@@end*/
+
+/*@@caplFunc:INTEGR_vCheckNgsmVoltageCurvesEnabled():*/
+INTEGR_vCheckNgsmVoltageCurvesEnabled()
+{
+    if( getValue( evINTEGR_DisVoltageCurves ) == 1 )
+    {   // disable voltage curve selection; const 12 V
+        // set to normal output voltage, programm the NGSM power supply
+        INTEGR_vSetNgsmModeAndType( INTEGR_NGSM_MANUAL_MODE, INTEGR_NGSM_OUTPUT_NORMAL );
+    }
+    else
+    {
+        // start the power automatic voltage mode, output type don't care
+        INTEGR_vSetNgsmModeAndType( INTEGR_NGSM_AUTO_MODE, INTEGR_NGSM_OUTPUT_DO_NOT_CARE );
+    }
+}
+/*@@end*/
+
+/*@@caplFunc:INTEGR_vSweepBEV(int):*///function
+INTEGR_vSweepBEV( int State )
+{
+    // pointer sweep for BEV Kombi
+    // - Ladezustand_02: 0.0 ... 100.0 ... 0.0
+    // - MO_ePowermeter: 0.0 ... 100.0
+    // - MO_Powermeter:  -1 ... 0 ... 4080 ... 0 ... -1
+
+    if( ( INTEGR_LogFileHandle != 0) && ( BEV_Logging != 0 ) )
+    {
+        snprintf( INTEGR_cLogBuffer, elcount( INTEGR_cLogBuffer ), "INTEGR: SweepBEV state = %d\n", State );
+        filePutString( INTEGR_cLogBuffer, elCount( INTEGR_cLogBuffer ), INTEGR_LogFileHandle );
+    }
+
+    if( State == 0 )
+    {   
+        // reset to zero position
+        cancelTimer( INTEGR_SweepBEV_timer );
+        @eLadezustand_02S = BEV_eLadezustand_02S_Min;
+        @eMO_PowermeterS = BEV_eMO_PowermeterS_Min;
+        @eMO_ePowermeterS = BEV_eMO_ePowermeterS_Min;
+    }
+    else
+    {
+        // reload the values
+        BEV_eLadezustand_02S_Value = @eLadezustand_02S;
+        BEV_eMO_PowermeterS_Value = @eMO_PowermeterS;
+        BEV_eMO_ePowermeterS_Value = @eMO_ePowermeterS;
+
+        // and check if in allowed range
+        if( ( BEV_eLadezustand_02S_Value < BEV_eLadezustand_02S_Min ) ||
+            ( BEV_eLadezustand_02S_Value > BEV_eLadezustand_02S_Max ) )
+            BEV_eLadezustand_02S_Value = BEV_eLadezustand_02S_Min; // zero position
+
+        if( ( BEV_eMO_PowermeterS_Value < BEV_eMO_PowermeterS_Min ) ||
+            ( BEV_eMO_PowermeterS_Value > BEV_eMO_PowermeterS_Max ) )
+            BEV_eMO_PowermeterS_Value = BEV_eMO_PowermeterS_Min;  // zero position
+
+        if( ( BEV_eMO_ePowermeterS_Value < BEV_eMO_ePowermeterS_Min ) ||
+            ( BEV_eMO_ePowermeterS_Value > BEV_eMO_ePowermeterS_Max ) )
+            BEV_eMO_ePowermeterS_Value = BEV_eMO_ePowermeterS_Min;       // zero position
+
+        // only for Powermeter
+        if( ( BEV_PowermeterS_Direction < 0 ) || ( BEV_PowermeterS_Direction > 1 ) )
+            BEV_PowermeterS_Direction = 0; // upcount
+
+        // for Power in % and for Ladezustand
+        if( ( BEV_Direction < 0 ) || ( BEV_Direction > 1 ) )
+            BEV_Direction = 0; // upcount
+
+        if( ( INTEGR_LogFileHandle != 0) && ( BEV_Logging != 0 ) )
+        {
+            snprintf( INTEGR_cLogBuffer, elcount( INTEGR_cLogBuffer ), "INTEGR: BEV_Direction = %d\n", BEV_Direction );
+            filePutString( INTEGR_cLogBuffer, elCount( INTEGR_cLogBuffer ), INTEGR_LogFileHandle );
+            snprintf( INTEGR_cLogBuffer, elcount( INTEGR_cLogBuffer ), "INTEGR: BEV_eLadezustand_02S = %d\n", BEV_eLadezustand_02S_Value );
+            filePutString( INTEGR_cLogBuffer, elCount( INTEGR_cLogBuffer ), INTEGR_LogFileHandle );
+            snprintf( INTEGR_cLogBuffer, elcount( INTEGR_cLogBuffer ), "INTEGR: BEV_eMO_PowermeterS = %d\n", BEV_eMO_PowermeterS_Value );
+            filePutString( INTEGR_cLogBuffer, elCount( INTEGR_cLogBuffer ), INTEGR_LogFileHandle );
+            snprintf( INTEGR_cLogBuffer, elcount( INTEGR_cLogBuffer ), "INTEGR: BEV_eMO_ePowermeterS = %d\n", BEV_eMO_ePowermeterS_Value );
+            filePutString( INTEGR_cLogBuffer, elCount( INTEGR_cLogBuffer ), INTEGR_LogFileHandle );
+            snprintf( INTEGR_cLogBuffer, elcount( INTEGR_cLogBuffer ), "INTEGR: BEV_PowermeterS_Direction = %d\n", BEV_PowermeterS_Direction );
+            filePutString( INTEGR_cLogBuffer, elCount( INTEGR_cLogBuffer ), INTEGR_LogFileHandle );
+            snprintf( INTEGR_cLogBuffer, elcount( INTEGR_cLogBuffer ), "INTEGR: BEV_Cycle_Time = %d\n", BEV_Cycle_Time );
+            filePutString( INTEGR_cLogBuffer, elCount( INTEGR_cLogBuffer ), INTEGR_LogFileHandle );
+        }
+
+        if( isTimerActive( INTEGR_SweepBEV_timer ) )
+        {
+            cancelTimer( INTEGR_SweepBEV_timer );
+        }
+        setTimer( INTEGR_SweepBEV_timer, BEV_Cycle_Time );
+    }
+}
+/*@@end*/
+
+/*@@timer:INTEGR_SweepBEV_timer:*/
+on timer INTEGR_SweepBEV_timer
+{
+    // PowermeterS has too many (> 4000) steps, therefore we slow down the cyclic time
+    if( BEV_PowermeterS_Direction == 0 )
+    {
+        BEV_eMO_PowermeterS_Value += BEV_eMO_PowermeterS_Step;
+        if( BEV_eMO_PowermeterS_Value > BEV_eMO_PowermeterS_Max )
+        {
+            BEV_eMO_PowermeterS_Value = BEV_eMO_PowermeterS_Max;
+            BEV_PowermeterS_Direction = 1; //downcount
+        }
+    }
+    else
+    {
+        BEV_eMO_PowermeterS_Value -= BEV_eMO_PowermeterS_Step;
+        if( BEV_eMO_PowermeterS_Value < BEV_eMO_PowermeterS_Min )
+        {
+            BEV_eMO_PowermeterS_Value = BEV_eMO_PowermeterS_Min;
+            BEV_PowermeterS_Direction = 0; //upcount
+        }
+    }
+
+    // different cycle time for eLadezustand_02S and eMO_ePowermeterS because of only 100 steps
+    if( BEV_Direction == 0 )
+    {
+        BEV_eLadezustand_02S_Value += BEV_eLadezustand_02S_Step;
+        if( BEV_eLadezustand_02S_Value > BEV_eLadezustand_02S_Max )
+            BEV_eLadezustand_02S_Value = BEV_eLadezustand_02S_Max;
+
+        BEV_eMO_ePowermeterS_Value += BEV_eMO_ePowermeterS_Step;
+        if( BEV_eMO_ePowermeterS_Value > BEV_eMO_ePowermeterS_Max )
+            BEV_eMO_ePowermeterS_Value = BEV_eMO_ePowermeterS_Max;
+
+        if( ( BEV_eLadezustand_02S_Value == BEV_eLadezustand_02S_Max ) &&
+            ( BEV_eMO_ePowermeterS_Value == BEV_eMO_ePowermeterS_Max ) )
+            BEV_Direction = 1; //downcount
+    }
+    else
+    {
+        BEV_eLadezustand_02S_Value -= BEV_eLadezustand_02S_Step;
+        if( BEV_eLadezustand_02S_Value < BEV_eLadezustand_02S_Min )
+            BEV_eLadezustand_02S_Value = BEV_eLadezustand_02S_Min;
+
+        BEV_eMO_ePowermeterS_Value -= BEV_eMO_ePowermeterS_Step;
+        if( BEV_eMO_ePowermeterS_Value < BEV_eMO_ePowermeterS_Min )
+            BEV_eMO_ePowermeterS_Value = BEV_eMO_ePowermeterS_Min;
+
+        if( ( BEV_eLadezustand_02S_Value == BEV_eLadezustand_02S_Min ) &&
+            ( BEV_eMO_ePowermeterS_Value == BEV_eMO_ePowermeterS_Min ) )
+            BEV_Direction = 0; //upcount
+    }
+
+    if( ( INTEGR_LogFileHandle != 0) && ( BEV_Logging != 0 ) )
+    {
+        snprintf( INTEGR_cLogBuffer, elcount( INTEGR_cLogBuffer ), "INTEGR: BEV_Direction = %d\n", BEV_Direction );
+        filePutString( INTEGR_cLogBuffer, elCount( INTEGR_cLogBuffer ), INTEGR_LogFileHandle );
+        snprintf( INTEGR_cLogBuffer, elcount( INTEGR_cLogBuffer ), "INTEGR: BEV_eLadezustand_02S = %d\n", BEV_eLadezustand_02S_Value );
+        filePutString( INTEGR_cLogBuffer, elCount( INTEGR_cLogBuffer ), INTEGR_LogFileHandle );
+        snprintf( INTEGR_cLogBuffer, elcount( INTEGR_cLogBuffer ), "INTEGR: BEV_eMO_PowermeterS = %d\n", BEV_eMO_PowermeterS_Value );
+        filePutString( INTEGR_cLogBuffer, elCount( INTEGR_cLogBuffer ), INTEGR_LogFileHandle );
+        snprintf( INTEGR_cLogBuffer, elcount( INTEGR_cLogBuffer ), "INTEGR: BEV_eMO_ePowermeterS = %d\n", BEV_eMO_ePowermeterS_Value );
+        filePutString( INTEGR_cLogBuffer, elCount( INTEGR_cLogBuffer ), INTEGR_LogFileHandle );
+        snprintf( INTEGR_cLogBuffer, elcount( INTEGR_cLogBuffer ), "INTEGR: BEV_PowermeterS_Direction = %d\n", BEV_PowermeterS_Direction );
+        filePutString( INTEGR_cLogBuffer, elCount( INTEGR_cLogBuffer ), INTEGR_LogFileHandle );
+        snprintf( INTEGR_cLogBuffer, elcount( INTEGR_cLogBuffer ), "INTEGR: BEV_Cycle_Time = %d\n", BEV_Cycle_Time );
+        filePutString( INTEGR_cLogBuffer, elCount( INTEGR_cLogBuffer ), INTEGR_LogFileHandle );
+    }
+
+    // load the values
+    @eLadezustand_02S = BEV_eLadezustand_02S_Value;
+    @eMO_PowermeterS = BEV_eMO_PowermeterS_Value;
+    @eMO_ePowermeterS = BEV_eMO_ePowermeterS_Value;
+   
+    setTimer( INTEGR_SweepBEV_timer, BEV_Cycle_Time );
+}
+/*@@end*/
+
+/*@@caplFunc:INTEGR_vSweepCNGLPG(int):*///function
+INTEGR_vSweepCNGLPG( int State )
+{
+    // pointer sweep for CNG Kombi
+    // - Motor_Gas_01:
+    //      dataset: GasModeLedEnable: 1 = LED available
+    //                  EEL_nbi8GasModeLedEnable, mask 0x02
+    //
+    //      eMO_CNG_LPG = 0 : 0 ist CNG, 1 ist LPG
+    //      eMO_akt_Betrieb = 1: CNG LED an
+    //      MO_AnzeigeGasbetrieb    1 : Umschaltung auf Gasbetrieb
+    //                              2 : auf Gasbetrieb umgeschaltet
+    //      eMO_Fuellungsgrad_CNG: 0 ... 255
+    //      eGasConsumption = 2.00
+    //      eMO_Verbrauch_LPG = 1000
+    //      eMO_Tankmasse_CNG: 0 ... 63.5, (CAN_MQB_831); maximum tank mass of CNG in kg which is used for 
+    //                                     CNG range calculation of the trip computer
+    //      eMO_Fuellungsgrad_LPG_m1: 0.0 ... 101.2
+    //      eMO_Tankvolumen_LPG: 0 ... 127
+
+    if( ( INTEGR_LogFileHandle != 0) && ( CNGLPG_Logging != 0 ) )
+    {
+        snprintf( INTEGR_cLogBuffer, elcount( INTEGR_cLogBuffer ), "INTEGR: INTEGR_vSweepCNGLPG state = %d\n", State );
+        filePutString( INTEGR_cLogBuffer, elCount( INTEGR_cLogBuffer ), INTEGR_LogFileHandle );
+    }
+
+    if( State == 0 )
+    {   
+        // reset to zero position
+        cancelTimer( INTEGR_SweepCNGLPG_timer );
+        @eMO_Fuellungsgrad_CNG = CNGLPG_Fuellungsgrad_CNG_Min;
+        CNGLPG_Fuellungsgrad_CNG_Value = CNGLPG_Fuellungsgrad_CNG_Min;
+        @eMO_Fuellungsgrad_LPG_m1 = CNGLPG_Fuellungsgrad_LPG_m1_Min;
+        CNGLPG_Fuellungsgrad_LPG_m1_Value = CNGLPG_Fuellungsgrad_LPG_m1_Min;
+        @eGasConsumption = CNGLPG_Consumption_Min;
+        @eMO_Tankmasse_CNG = CNGLPG_Tankmasse_CNG;
+        @eMO_Tankvolumen_LPG = CNGLPG_Tankvolumen_LPG;
+    }
+    else
+    {
+        // set the static values
+        @eMO_akt_Betrieb = 1;       // CNG LED on
+        @eMO_Tankmasse_CNG = CNGLPG_Tankmasse_CNG;
+        @eMO_Tankvolumen_LPG = CNGLPG_Tankvolumen_LPG;
+
+        // reload the dynamic values, only CNGLPG_eGasConsumption_Value
+        CNGLPG_eGasConsumption_Value = @eGasConsumption;
+        // @eMO_Fuellungsgrad_CNG and @eMO_Fuellungsgrad_LPG_m1 can not reload from panel Motor_Gas_01
+        // because this values will be cleared when we swicht between CNG and LPG
+
+        // and check if in allowed range
+        if( ( CNGLPG_Fuellungsgrad_CNG_Value < CNGLPG_Fuellungsgrad_CNG_Min ) || 
+            ( CNGLPG_Fuellungsgrad_CNG_Value > CNGLPG_Fuellungsgrad_CNG_Max ) )
+            CNGLPG_Fuellungsgrad_CNG_Value = CNGLPG_Fuellungsgrad_CNG_Min; // zero position
+
+        if( ( CNGLPG_eGasConsumption_Value < CNGLPG_Consumption_Min ) || 
+            ( CNGLPG_eGasConsumption_Value > CNGLPG_Consumption_Max ) )
+            CNGLPG_eGasConsumption_Value = CNGLPG_Consumption_Min;  // zero position
+
+        if( ( CNGLPG_Fuellungsgrad_LPG_m1_Value < CNGLPG_Fuellungsgrad_LPG_m1_Min ) || 
+            ( CNGLPG_Fuellungsgrad_LPG_m1_Value > CNGLPG_Fuellungsgrad_LPG_m1_Max ) )
+            CNGLPG_Fuellungsgrad_LPG_m1_Value = CNGLPG_Fuellungsgrad_LPG_m1_Min;  // zero position
+
+        if( ( CNGLPG_Direction < 0 ) || ( CNGLPG_Direction > 1 ) )
+            CNGLPG_Direction = 0; // upcount
+
+        if( ( INTEGR_LogFileHandle != 0) && ( CNGLPG_Logging != 0 ) )
+        {
+            snprintf( INTEGR_cLogBuffer, elcount( INTEGR_cLogBuffer ), "INTEGR: CNGLPG_Direction = %d\n", CNGLPG_Direction );
+            filePutString( INTEGR_cLogBuffer, elCount( INTEGR_cLogBuffer ), INTEGR_LogFileHandle );
+            snprintf( INTEGR_cLogBuffer, elcount( INTEGR_cLogBuffer ), "INTEGR: CNGLPG_Fuellungsgrad_CNG_Value = %f\n", CNGLPG_Fuellungsgrad_CNG_Value );
+            filePutString( INTEGR_cLogBuffer, elCount( INTEGR_cLogBuffer ), INTEGR_LogFileHandle );
+            snprintf( INTEGR_cLogBuffer, elcount( INTEGR_cLogBuffer ), "INTEGR: CNGLPG_Fuellungsgrad_CNG_Step = %f\n", CNGLPG_Fuellungsgrad_CNG_Step );
+            filePutString( INTEGR_cLogBuffer, elCount( INTEGR_cLogBuffer ), INTEGR_LogFileHandle );
+            snprintf( INTEGR_cLogBuffer, elcount( INTEGR_cLogBuffer ), "INTEGR: CNGLPG_Fuellungsgrad_CNG_Min = %f\n", CNGLPG_Fuellungsgrad_CNG_Min );
+            filePutString( INTEGR_cLogBuffer, elCount( INTEGR_cLogBuffer ), INTEGR_LogFileHandle );
+            snprintf( INTEGR_cLogBuffer, elcount( INTEGR_cLogBuffer ), "INTEGR: CNGLPG_Fuellungsgrad_CNG_Max = %f\n", CNGLPG_Fuellungsgrad_CNG_Max );
+            filePutString( INTEGR_cLogBuffer, elCount( INTEGR_cLogBuffer ), INTEGR_LogFileHandle );
+            snprintf( INTEGR_cLogBuffer, elcount( INTEGR_cLogBuffer ), "INTEGR: CNGLPG_eGasConsumption_Value = %f\n", CNGLPG_eGasConsumption_Value );
+            filePutString( INTEGR_cLogBuffer, elCount( INTEGR_cLogBuffer ), INTEGR_LogFileHandle );
+            snprintf( INTEGR_cLogBuffer, elcount( INTEGR_cLogBuffer ), "INTEGR: CNGLPG_Consumption_CNG_Step = %f\n", CNGLPG_Consumption_CNG_Step );
+            filePutString( INTEGR_cLogBuffer, elCount( INTEGR_cLogBuffer ), INTEGR_LogFileHandle );
+            snprintf( INTEGR_cLogBuffer, elcount( INTEGR_cLogBuffer ), "INTEGR: CNGLPG_Consumption_LPG_Step = %f\n", CNGLPG_Consumption_LPG_Step );
+            filePutString( INTEGR_cLogBuffer, elCount( INTEGR_cLogBuffer ), INTEGR_LogFileHandle );
+            snprintf( INTEGR_cLogBuffer, elcount( INTEGR_cLogBuffer ), "INTEGR: CNGLPG_eGasConsumption_Min = %f\n", CNGLPG_Consumption_Min );
+            filePutString( INTEGR_cLogBuffer, elCount( INTEGR_cLogBuffer ), INTEGR_LogFileHandle );
+            snprintf( INTEGR_cLogBuffer, elcount( INTEGR_cLogBuffer ), "INTEGR: CNGLPG_eGasConsumption_Max = %f\n", CNGLPG_Consumption_Max );
+            filePutString( INTEGR_cLogBuffer, elCount( INTEGR_cLogBuffer ), INTEGR_LogFileHandle );
+            snprintf( INTEGR_cLogBuffer, elcount( INTEGR_cLogBuffer ), "INTEGR: CNGLPG_Tankmasse_CNG = %f\n", CNGLPG_Tankmasse_CNG );
+            filePutString( INTEGR_cLogBuffer, elCount( INTEGR_cLogBuffer ), INTEGR_LogFileHandle );
+            snprintf( INTEGR_cLogBuffer, elcount( INTEGR_cLogBuffer ), "INTEGR: CNGLPG_Fuellungsgrad_LPG_m1_Value = %f\n", CNGLPG_Fuellungsgrad_LPG_m1_Value );
+            filePutString( INTEGR_cLogBuffer, elCount( INTEGR_cLogBuffer ), INTEGR_LogFileHandle );
+            snprintf( INTEGR_cLogBuffer, elcount( INTEGR_cLogBuffer ), "INTEGR: CNGLPG_Fuellungsgrad_LPG_m1_Step = %f\n", CNGLPG_Fuellungsgrad_LPG_m1_Step );
+            filePutString( INTEGR_cLogBuffer, elCount( INTEGR_cLogBuffer ), INTEGR_LogFileHandle );
+            snprintf( INTEGR_cLogBuffer, elcount( INTEGR_cLogBuffer ), "INTEGR: CNGLPG_Fuellungsgrad_LPG_m1_Min = %f\n", CNGLPG_Fuellungsgrad_LPG_m1_Min );
+            filePutString( INTEGR_cLogBuffer, elCount( INTEGR_cLogBuffer ), INTEGR_LogFileHandle );
+            snprintf( INTEGR_cLogBuffer, elcount( INTEGR_cLogBuffer ), "INTEGR: CNGLPG_Fuellungsgrad_LPG_m1_Max = %f\n", CNGLPG_Fuellungsgrad_LPG_m1_Max );
+            filePutString( INTEGR_cLogBuffer, elCount( INTEGR_cLogBuffer ), INTEGR_LogFileHandle );
+            snprintf( INTEGR_cLogBuffer, elcount( INTEGR_cLogBuffer ), "INTEGR: CNGLPG_Tankvolumen_LPG = %f\n", CNGLPG_Tankvolumen_LPG );
+            filePutString( INTEGR_cLogBuffer, elCount( INTEGR_cLogBuffer ), INTEGR_LogFileHandle );
+            snprintf( INTEGR_cLogBuffer, elcount( INTEGR_cLogBuffer ), "INTEGR: CNGLPG_Cycle_Time = %d\n", CNGLPG_Cycle_Time );
+            filePutString( INTEGR_cLogBuffer, elCount( INTEGR_cLogBuffer ), INTEGR_LogFileHandle );
+        }
+
+        if( isTimerActive( INTEGR_SweepCNGLPG_timer ) )
+        {
+            cancelTimer( INTEGR_SweepCNGLPG_timer );
+        }
+        setTimer( INTEGR_SweepCNGLPG_timer, CNGLPG_Cycle_Time );
+    }
+}
+/*@@end*/
+
+/*@@timer:INTEGR_SweepCNGLPG_timer:*/
+on timer INTEGR_SweepCNGLPG_timer
+{
+    int i16CngLpgSelection;
+
+    // CNG or LPG
+    i16CngLpgSelection = @eMO_CNG_LPG;
+    // refresh the CNGLPG_Tankmasse_CNG or CNGLPG_Tankvolumen_LPG
+    // reason: when in Motor_Gas_01 the mode is switched (CNG to LPG, LPG to CNG) the variables 
+    // in the panel Motor_Gas_01 will be automatically cleared
+    if( i16CngLpgSelection == 0 )
+    {   
+        @eMO_Tankmasse_CNG = CNGLPG_Tankmasse_CNG;
+    }
+    else
+    {
+        @eMO_Tankvolumen_LPG = CNGLPG_Tankvolumen_LPG;
+    }
+
+    if( CNGLPG_Direction == 0 )
+    {
+        if( i16CngLpgSelection == 0 )
+        {   
+            // CNG: sweep MO_Fuellungsgrad_CNG and Consumption
+
+            CNGLPG_Fuellungsgrad_CNG_Value += CNGLPG_Fuellungsgrad_CNG_Step;
+            if( CNGLPG_Fuellungsgrad_CNG_Value > CNGLPG_Fuellungsgrad_CNG_Max )
+                CNGLPG_Fuellungsgrad_CNG_Value = CNGLPG_Fuellungsgrad_CNG_Max;
+ 
+            CNGLPG_eGasConsumption_Value += CNGLPG_Consumption_CNG_Step;
+            if( CNGLPG_eGasConsumption_Value > CNGLPG_Consumption_Max )
+                CNGLPG_eGasConsumption_Value = CNGLPG_Consumption_Max;
+ 
+            if( CNGLPG_Fuellungsgrad_CNG_Value >= CNGLPG_Fuellungsgrad_CNG_Max )
+                CNGLPG_Direction = 1; //downcount
+        }
+        else
+        {
+            // LPG: sweep CNGLPG_eMO_Fuellungsgrad_LPG_m1 and Consumption
+
+            CNGLPG_Fuellungsgrad_LPG_m1_Value += CNGLPG_Fuellungsgrad_LPG_m1_Step;
+            if( CNGLPG_Fuellungsgrad_LPG_m1_Value > CNGLPG_Fuellungsgrad_LPG_m1_Max )
+                CNGLPG_Fuellungsgrad_LPG_m1_Value = CNGLPG_Fuellungsgrad_LPG_m1_Max;
+ 
+            CNGLPG_eGasConsumption_Value += CNGLPG_Consumption_LPG_Step;
+            if( CNGLPG_eGasConsumption_Value > CNGLPG_Consumption_Max )
+                CNGLPG_eGasConsumption_Value = CNGLPG_Consumption_Max;
+ 
+            if( CNGLPG_Fuellungsgrad_LPG_m1_Value >= CNGLPG_Fuellungsgrad_LPG_m1_Max )
+                CNGLPG_Direction = 1; //downcount
+        }
+    }
+    else
+    {
+        if( i16CngLpgSelection == 0 )
+        {   
+            // CNG: sweep MO_Fuellungsgrad_CNG and Consumption
+
+            CNGLPG_Fuellungsgrad_CNG_Value -= CNGLPG_Fuellungsgrad_CNG_Step;
+            if( CNGLPG_Fuellungsgrad_CNG_Value < CNGLPG_Fuellungsgrad_CNG_Min )
+                CNGLPG_Fuellungsgrad_CNG_Value = CNGLPG_Fuellungsgrad_CNG_Min;
+ 
+            CNGLPG_eGasConsumption_Value -= CNGLPG_Consumption_CNG_Step;
+            if( CNGLPG_eGasConsumption_Value < CNGLPG_Consumption_Min )
+                CNGLPG_eGasConsumption_Value = CNGLPG_Consumption_Min;
+ 
+            if( CNGLPG_Fuellungsgrad_CNG_Value <= CNGLPG_Fuellungsgrad_CNG_Min)
+                CNGLPG_Direction = 0; //upcount
+        }
+        else
+        {
+            // LPG: sweep CNGLPG_eMO_Fuellungsgrad_LPG_m1 and Consumption
+
+            CNGLPG_Fuellungsgrad_LPG_m1_Value -= CNGLPG_Fuellungsgrad_LPG_m1_Step;
+            if( CNGLPG_Fuellungsgrad_LPG_m1_Value < CNGLPG_Fuellungsgrad_LPG_m1_Min )
+                CNGLPG_Fuellungsgrad_LPG_m1_Value = CNGLPG_Fuellungsgrad_LPG_m1_Min;
+ 
+            CNGLPG_eGasConsumption_Value -= CNGLPG_Consumption_LPG_Step;
+            if( CNGLPG_eGasConsumption_Value < CNGLPG_Consumption_Min )
+                CNGLPG_eGasConsumption_Value = CNGLPG_Consumption_Min;
+ 
+            if( CNGLPG_Fuellungsgrad_LPG_m1_Value <= CNGLPG_Fuellungsgrad_LPG_m1_Min )
+                CNGLPG_Direction = 0; //upcount
+        }
+    }
+
+    // store the values
+    if( i16CngLpgSelection == 0 )
+    {   
+        // CNG
+        @eMO_Fuellungsgrad_CNG = CNGLPG_Fuellungsgrad_CNG_Value;
+        @eGasConsumption = CNGLPG_eGasConsumption_Value;
+
+        if( ( INTEGR_LogFileHandle != 0) && ( CNGLPG_Logging != 0 ) )
+        {
+            snprintf( INTEGR_cLogBuffer, elcount( INTEGR_cLogBuffer ), "INTEGR: CNGLPG_Direction = %d\n", CNGLPG_Direction );
+            filePutString( INTEGR_cLogBuffer, elCount( INTEGR_cLogBuffer ), INTEGR_LogFileHandle );
+            snprintf( INTEGR_cLogBuffer, elcount( INTEGR_cLogBuffer ), "INTEGR: CNGLPG_Fuellungsgrad_CNG_Value = %f\n", CNGLPG_Fuellungsgrad_CNG_Value );
+            filePutString( INTEGR_cLogBuffer, elCount( INTEGR_cLogBuffer ), INTEGR_LogFileHandle );
+            snprintf( INTEGR_cLogBuffer, elcount( INTEGR_cLogBuffer ), "INTEGR: CNGLPG_eGasConsumption_Value = %f\n", CNGLPG_eGasConsumption_Value );
+            filePutString( INTEGR_cLogBuffer, elCount( INTEGR_cLogBuffer ), INTEGR_LogFileHandle );
+            snprintf( INTEGR_cLogBuffer, elcount( INTEGR_cLogBuffer ), "INTEGR: CNGLPG_Cycle_Time = %d\n", CNGLPG_Cycle_Time );
+            filePutString( INTEGR_cLogBuffer, elCount( INTEGR_cLogBuffer ), INTEGR_LogFileHandle );
+        }
+    }
+    else
+    {
+        // LPG
+        @eMO_Fuellungsgrad_LPG_m1 = CNGLPG_Fuellungsgrad_LPG_m1_Value;
+        @eGasConsumption = CNGLPG_eGasConsumption_Value;
+
+        if( ( INTEGR_LogFileHandle != 0) && ( CNGLPG_Logging != 0 ) )
+        {
+            snprintf( INTEGR_cLogBuffer, elcount( INTEGR_cLogBuffer ), "INTEGR: CNGLPG_Direction = %d\n", CNGLPG_Direction );
+            filePutString( INTEGR_cLogBuffer, elCount( INTEGR_cLogBuffer ), INTEGR_LogFileHandle );
+            snprintf( INTEGR_cLogBuffer, elcount( INTEGR_cLogBuffer ), "INTEGR: CNGLPG_Fuellungsgrad_LPG_m1_Value = %f\n", CNGLPG_Fuellungsgrad_LPG_m1_Value );
+            filePutString( INTEGR_cLogBuffer, elCount( INTEGR_cLogBuffer ), INTEGR_LogFileHandle );
+            snprintf( INTEGR_cLogBuffer, elcount( INTEGR_cLogBuffer ), "INTEGR: CNGLPG_eGasConsumption_Value = %f\n", CNGLPG_eGasConsumption_Value );
+            filePutString( INTEGR_cLogBuffer, elCount( INTEGR_cLogBuffer ), INTEGR_LogFileHandle );
+            snprintf( INTEGR_cLogBuffer, elcount( INTEGR_cLogBuffer ), "INTEGR: CNGLPG_Cycle_Time = %d\n", CNGLPG_Cycle_Time );
+            filePutString( INTEGR_cLogBuffer, elCount( INTEGR_cLogBuffer ), INTEGR_LogFileHandle );
+        }
+    }
+   
+    setTimer( INTEGR_SweepCNGLPG_timer, CNGLPG_Cycle_Time );
+}
+/*@@end*/
+
+/*@@caplFunc:INTEGR_vCanLoad(int):*///function
+INTEGR_vCanLoad( int State )
+{
+    if( State == 0 )    // CAN load off
+    {
+        // toggle off
+        INTEGR_vToggleWarnings(0);            
+        // sweep off
+        INTEGR_vSweepOTP(0);
+        INTEGR_vSweepDim(0);
+        INTEGR_vSweepPointer(0);
+        INTEGR_vSweepKMT(0);
+        INTEGR_vSweepWBA(0);
+        INTEGR_vSweepBEV(0);
+        INTEGR_vSweepCNGLPG(0);
+        INTEGR_vMoveMfl(0);
+    }
+    else                // CAN load on
+    {
+        // toggle on
+        INTEGR_vToggleWarnings(1);            
+        // sweep on
+        INTEGR_vSweepOTP(1);
+        INTEGR_vSweepDim(1);
+        INTEGR_vSweepPointer(1);
+        INTEGR_vSweepKMT(1);
+        INTEGR_vSweepWBA(1);
+        INTEGR_vSweepBEV(1);
+        INTEGR_vSweepCNGLPG(1);
+        INTEGR_vMoveMfl(1);
+    }
+}
+/*@@end*/
+

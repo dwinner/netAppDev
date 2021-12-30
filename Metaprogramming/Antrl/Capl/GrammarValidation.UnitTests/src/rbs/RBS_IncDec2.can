@@ -1,0 +1,4228 @@
+/*@!Encoding:1252*/
+includes
+{
+    #include "RBS_IncDec.cin"
+}
+
+variables
+{
+}
+
+/* ------- generated code for Rest Bus Simulation ------- */
+
+on EnvVar eDEV_Kombi_UD1_Byte4Def
+{
+    putValue( eDEV_Kombi_UD1_Byte4S, 0 );
+}
+
+on EnvVar eDEV_Kombi_UD1_Byte5Dec
+{
+    if (getValue( this ))  putValue( eDEV_Kombi_UD1_Byte5S, getValue( eDEV_Kombi_UD1_Byte5S ) - 1 );
+}
+
+on EnvVar eDEV_Kombi_UD1_Byte5Inc
+{
+    if (getValue( this ))  putValue( eDEV_Kombi_UD1_Byte5S, getValue( eDEV_Kombi_UD1_Byte5S ) + 1 );
+}
+
+on EnvVar eDEV_Kombi_UD1_Byte5Def
+{
+    putValue( eDEV_Kombi_UD1_Byte5S, 0 );
+}
+
+on EnvVar eDEV_Kombi_UD1_Byte6Dec
+{
+    if (getValue( this ))  putValue( eDEV_Kombi_UD1_Byte6S, getValue( eDEV_Kombi_UD1_Byte6S ) - 1 );
+}
+
+on EnvVar eDEV_Kombi_UD1_Byte6Inc
+{
+    if (getValue( this ))  putValue( eDEV_Kombi_UD1_Byte6S, getValue( eDEV_Kombi_UD1_Byte6S ) + 1 );
+}
+
+on EnvVar eDEV_Kombi_UD1_Byte6Def
+{
+    putValue( eDEV_Kombi_UD1_Byte6S, 0 );
+}
+
+on EnvVar eDEV_Kombi_UD1_Byte7Dec
+{
+    if (getValue( this ))  putValue( eDEV_Kombi_UD1_Byte7S, getValue( eDEV_Kombi_UD1_Byte7S ) - 1 );
+}
+
+on EnvVar eDEV_Kombi_UD1_Byte7Inc
+{
+    if (getValue( this ))  putValue( eDEV_Kombi_UD1_Byte7S, getValue( eDEV_Kombi_UD1_Byte7S ) + 1 );
+}
+
+on EnvVar eDEV_Kombi_UD1_Byte7Def
+{
+    putValue( eDEV_Kombi_UD1_Byte7S, 0 );
+}
+
+on EnvVar eDEV_Kombi_UD1_Byte8Dec
+{
+    if (getValue( this ))  putValue( eDEV_Kombi_UD1_Byte8S, getValue( eDEV_Kombi_UD1_Byte8S ) - 1 );
+}
+
+on EnvVar eDEV_Kombi_UD1_Byte8Inc
+{
+    if (getValue( this ))  putValue( eDEV_Kombi_UD1_Byte8S, getValue( eDEV_Kombi_UD1_Byte8S ) + 1 );
+}
+
+on EnvVar eDEV_Kombi_UD1_Byte8Def
+{
+    putValue( eDEV_Kombi_UD1_Byte8S, 0 );
+}
+
+on EnvVar eDEV_Kombi_UD2_Byte1Dec
+{
+    if (getValue( this ))  putValue( eDEV_Kombi_UD2_Byte1S, getValue( eDEV_Kombi_UD2_Byte1S ) - 1 );
+}
+
+on EnvVar eDEV_Kombi_UD2_Byte1Inc
+{
+    if (getValue( this ))  putValue( eDEV_Kombi_UD2_Byte1S, getValue( eDEV_Kombi_UD2_Byte1S ) + 1 );
+}
+
+on EnvVar eDEV_Kombi_UD2_Byte1Def
+{
+    putValue( eDEV_Kombi_UD2_Byte1S, 0 );
+}
+
+on EnvVar eDEV_Kombi_UD2_Byte2Dec
+{
+    if (getValue( this ))  putValue( eDEV_Kombi_UD2_Byte2S, getValue( eDEV_Kombi_UD2_Byte2S ) - 1 );
+}
+
+on EnvVar eDEV_Kombi_UD2_Byte2Inc
+{
+    if (getValue( this ))  putValue( eDEV_Kombi_UD2_Byte2S, getValue( eDEV_Kombi_UD2_Byte2S ) + 1 );
+}
+
+on EnvVar eDEV_Kombi_UD2_Byte2Def
+{
+    putValue( eDEV_Kombi_UD2_Byte2S, 0 );
+}
+
+on EnvVar eDEV_Kombi_UD2_Byte3Dec
+{
+    if (getValue( this ))  putValue( eDEV_Kombi_UD2_Byte3S, getValue( eDEV_Kombi_UD2_Byte3S ) - 1 );
+}
+
+on EnvVar eDEV_Kombi_UD2_Byte3Inc
+{
+    if (getValue( this ))  putValue( eDEV_Kombi_UD2_Byte3S, getValue( eDEV_Kombi_UD2_Byte3S ) + 1 );
+}
+
+on EnvVar eDEV_Kombi_UD2_Byte3Def
+{
+    putValue( eDEV_Kombi_UD2_Byte3S, 0 );
+}
+
+on EnvVar eDEV_Kombi_UD2_Byte4Dec
+{
+    if (getValue( this ))  putValue( eDEV_Kombi_UD2_Byte4S, getValue( eDEV_Kombi_UD2_Byte4S ) - 1 );
+}
+
+on EnvVar eDEV_Kombi_UD2_Byte4Inc
+{
+    if (getValue( this ))  putValue( eDEV_Kombi_UD2_Byte4S, getValue( eDEV_Kombi_UD2_Byte4S ) + 1 );
+}
+
+on EnvVar eDEV_Kombi_UD2_Byte4Def
+{
+    putValue( eDEV_Kombi_UD2_Byte4S, 0 );
+}
+
+on EnvVar eDEV_Kombi_UD2_Byte5Dec
+{
+    if (getValue( this ))  putValue( eDEV_Kombi_UD2_Byte5S, getValue( eDEV_Kombi_UD2_Byte5S ) - 1 );
+}
+
+on EnvVar eDEV_Kombi_UD2_Byte5Inc
+{
+    if (getValue( this ))  putValue( eDEV_Kombi_UD2_Byte5S, getValue( eDEV_Kombi_UD2_Byte5S ) + 1 );
+}
+
+on EnvVar eDEV_Kombi_UD2_Byte5Def
+{
+    putValue( eDEV_Kombi_UD2_Byte5S, 0 );
+}
+
+on EnvVar eDEV_Kombi_UD2_Byte6Dec
+{
+    if (getValue( this ))  putValue( eDEV_Kombi_UD2_Byte6S, getValue( eDEV_Kombi_UD2_Byte6S ) - 1 );
+}
+
+on EnvVar eDEV_Kombi_UD2_Byte6Inc
+{
+    if (getValue( this ))  putValue( eDEV_Kombi_UD2_Byte6S, getValue( eDEV_Kombi_UD2_Byte6S ) + 1 );
+}
+
+on EnvVar eDEV_Kombi_UD2_Byte6Def
+{
+    putValue( eDEV_Kombi_UD2_Byte6S, 0 );
+}
+
+on EnvVar eDEV_Kombi_UD2_Byte7Dec
+{
+    if (getValue( this ))  putValue( eDEV_Kombi_UD2_Byte7S, getValue( eDEV_Kombi_UD2_Byte7S ) - 1 );
+}
+
+on EnvVar eDEV_Kombi_UD2_Byte7Inc
+{
+    if (getValue( this ))  putValue( eDEV_Kombi_UD2_Byte7S, getValue( eDEV_Kombi_UD2_Byte7S ) + 1 );
+}
+
+on EnvVar eDEV_Kombi_UD2_Byte7Def
+{
+    putValue( eDEV_Kombi_UD2_Byte7S, 0 );
+}
+
+on EnvVar eDEV_Kombi_UD2_Byte8Dec
+{
+    if (getValue( this ))  putValue( eDEV_Kombi_UD2_Byte8S, getValue( eDEV_Kombi_UD2_Byte8S ) - 1 );
+}
+
+on EnvVar eDEV_Kombi_UD2_Byte8Inc
+{
+    if (getValue( this ))  putValue( eDEV_Kombi_UD2_Byte8S, getValue( eDEV_Kombi_UD2_Byte8S ) + 1 );
+}
+
+on EnvVar eDEV_Kombi_UD2_Byte8Def
+{
+    putValue( eDEV_Kombi_UD2_Byte8S, 0 );
+}
+
+on EnvVar eTAnhaenger_01Dec
+{
+    if (getValue( this ))  putValue( eTAnhaenger_01, dec( getValue( eTAnhaenger_01 ) ) );
+}
+
+on EnvVar eTAnhaenger_01Inc
+{
+    if (getValue( this ))  putValue( eTAnhaenger_01, inc( getValue( eTAnhaenger_01 ) ) );
+}
+
+on EnvVar eTAnhaenger_01Def
+{
+    putValue( eTAnhaenger_01, 100 );
+}
+
+on EnvVar eTOTAnhaenger_01Dec
+{
+    if (getValue( this ))  putValue( eTOTAnhaenger_01, dec( getValue( eTOTAnhaenger_01 ) ) );
+}
+
+on EnvVar eTOTAnhaenger_01Inc
+{
+    if (getValue( this ))  putValue( eTOTAnhaenger_01, inc( getValue( eTOTAnhaenger_01 ) ) );
+}
+
+on EnvVar eTOTAnhaenger_01Def
+{
+    putValue( eTOTAnhaenger_01, 1000 );
+}
+
+on EnvVar eDlcAnhaenger_01Dec
+{
+    if (getValue( this ))  putValue( eDlcAnhaenger_01, getValue( eDlcAnhaenger_01 ) - 1 );
+}
+
+on EnvVar eDlcAnhaenger_01Inc
+{
+    if (getValue( this ))  putValue( eDlcAnhaenger_01, getValue( eDlcAnhaenger_01 ) + 1 );
+}
+
+on EnvVar eDlcAnhaenger_01Def
+{
+    putValue( eDlcAnhaenger_01, 8 );
+}
+
+on EnvVar eBZStepAnhaenger_01Dec
+{
+    if (getValue( this ))  putValue( eBZStepAnhaenger_01, getValue( eBZStepAnhaenger_01 ) - 1 );
+}
+
+on EnvVar eBZStepAnhaenger_01Inc
+{
+    if (getValue( this ))  putValue( eBZStepAnhaenger_01, getValue( eBZStepAnhaenger_01 ) + 1 );
+}
+
+on EnvVar eBZStepAnhaenger_01Def
+{
+    putValue( eBZStepAnhaenger_01, 1 );
+}
+
+on EnvVar eTBCM_01Dec
+{
+    if (getValue( this ))  putValue( eTBCM_01, dec( getValue( eTBCM_01 ) ) );
+}
+
+on EnvVar eTBCM_01Inc
+{
+    if (getValue( this ))  putValue( eTBCM_01, inc( getValue( eTBCM_01 ) ) );
+}
+
+on EnvVar eTBCM_01Def
+{
+    putValue( eTBCM_01, 1000 );
+}
+
+on EnvVar eTOTBCM_01Dec
+{
+    if (getValue( this ))  putValue( eTOTBCM_01, dec( getValue( eTOTBCM_01 ) ) );
+}
+
+on EnvVar eTOTBCM_01Inc
+{
+    if (getValue( this ))  putValue( eTOTBCM_01, inc( getValue( eTOTBCM_01 ) ) );
+}
+
+on EnvVar eTOTBCM_01Def
+{
+    putValue( eTOTBCM_01, 5000 );
+}
+
+on EnvVar eDlcBCM_01Dec
+{
+    if (getValue( this ))  putValue( eDlcBCM_01, getValue( eDlcBCM_01 ) - 1 );
+}
+
+on EnvVar eDlcBCM_01Inc
+{
+    if (getValue( this ))  putValue( eDlcBCM_01, getValue( eDlcBCM_01 ) + 1 );
+}
+
+on EnvVar eDlcBCM_01Def
+{
+    putValue( eDlcBCM_01, 8 );
+}
+
+on EnvVar eTBlinkmodi_02Dec
+{
+    if (getValue( this ))  putValue( eTBlinkmodi_02, dec( getValue( eTBlinkmodi_02 ) ) );
+}
+
+on EnvVar eTBlinkmodi_02Inc
+{
+    if (getValue( this ))  putValue( eTBlinkmodi_02, inc( getValue( eTBlinkmodi_02 ) ) );
+}
+
+on EnvVar eTBlinkmodi_02Def
+{
+    putValue( eTBlinkmodi_02, 1000 );
+}
+
+on EnvVar eTOTBlinkmodi_02Dec
+{
+    if (getValue( this ))  putValue( eTOTBlinkmodi_02, dec( getValue( eTOTBlinkmodi_02 ) ) );
+}
+
+on EnvVar eTOTBlinkmodi_02Inc
+{
+    if (getValue( this ))  putValue( eTOTBlinkmodi_02, inc( getValue( eTOTBlinkmodi_02 ) ) );
+}
+
+on EnvVar eTOTBlinkmodi_02Def
+{
+    putValue( eTOTBlinkmodi_02, 5000 );
+}
+
+on EnvVar eDlcBlinkmodi_02Dec
+{
+    if (getValue( this ))  putValue( eDlcBlinkmodi_02, getValue( eDlcBlinkmodi_02 ) - 1 );
+}
+
+on EnvVar eDlcBlinkmodi_02Inc
+{
+    if (getValue( this ))  putValue( eDlcBlinkmodi_02, getValue( eDlcBlinkmodi_02 ) + 1 );
+}
+
+on EnvVar eDlcBlinkmodi_02Def
+{
+    putValue( eDlcBlinkmodi_02, 8 );
+}
+
+on EnvVar eTDimmung_01Dec
+{
+    if (getValue( this ))  putValue( eTDimmung_01, dec( getValue( eTDimmung_01 ) ) );
+}
+
+on EnvVar eTDimmung_01Inc
+{
+    if (getValue( this ))  putValue( eTDimmung_01, inc( getValue( eTDimmung_01 ) ) );
+}
+
+on EnvVar eTDimmung_01Def
+{
+    putValue( eTDimmung_01, 200 );
+}
+
+on EnvVar eTOTDimmung_01Dec
+{
+    if (getValue( this ))  putValue( eTOTDimmung_01, dec( getValue( eTOTDimmung_01 ) ) );
+}
+
+on EnvVar eTOTDimmung_01Inc
+{
+    if (getValue( this ))  putValue( eTOTDimmung_01, inc( getValue( eTOTDimmung_01 ) ) );
+}
+
+on EnvVar eTOTDimmung_01Def
+{
+    putValue( eTOTDimmung_01, 2000 );
+}
+
+on EnvVar eDlcDimmung_01Dec
+{
+    if (getValue( this ))  putValue( eDlcDimmung_01, getValue( eDlcDimmung_01 ) - 1 );
+}
+
+on EnvVar eDlcDimmung_01Inc
+{
+    if (getValue( this ))  putValue( eDlcDimmung_01, getValue( eDlcDimmung_01 ) + 1 );
+}
+
+on EnvVar eDlcDimmung_01Def
+{
+    putValue( eDlcDimmung_01, 8 );
+}
+
+on EnvVar eTELV_01Dec
+{
+    if (getValue( this ))  putValue( eTELV_01, dec( getValue( eTELV_01 ) ) );
+}
+
+on EnvVar eTELV_01Inc
+{
+    if (getValue( this ))  putValue( eTELV_01, inc( getValue( eTELV_01 ) ) );
+}
+
+on EnvVar eTELV_01Def
+{
+    putValue( eTELV_01, 1000 );
+}
+
+on EnvVar eTOTELV_01Dec
+{
+    if (getValue( this ))  putValue( eTOTELV_01, dec( getValue( eTOTELV_01 ) ) );
+}
+
+on EnvVar eTOTELV_01Inc
+{
+    if (getValue( this ))  putValue( eTOTELV_01, inc( getValue( eTOTELV_01 ) ) );
+}
+
+on EnvVar eTOTELV_01Def
+{
+    putValue( eTOTELV_01, 5000 );
+}
+
+on EnvVar eDlcELV_01Dec
+{
+    if (getValue( this ))  putValue( eDlcELV_01, getValue( eDlcELV_01 ) - 1 );
+}
+
+on EnvVar eDlcELV_01Inc
+{
+    if (getValue( this ))  putValue( eDlcELV_01, getValue( eDlcELV_01 ) + 1 );
+}
+
+on EnvVar eDlcELV_01Def
+{
+    putValue( eDlcELV_01, 8 );
+}
+
+on EnvVar eTKessy_04Dec
+{
+    if (getValue( this ))  putValue( eTKessy_04, dec( getValue( eTKessy_04 ) ) );
+}
+
+on EnvVar eTKessy_04Inc
+{
+    if (getValue( this ))  putValue( eTKessy_04, inc( getValue( eTKessy_04 ) ) );
+}
+
+on EnvVar eTKessy_04Def
+{
+    putValue( eTKessy_04, 200 );
+}
+
+on EnvVar eTOTKessy_04Dec
+{
+    if (getValue( this ))  putValue( eTOTKessy_04, dec( getValue( eTOTKessy_04 ) ) );
+}
+
+on EnvVar eTOTKessy_04Inc
+{
+    if (getValue( this ))  putValue( eTOTKessy_04, inc( getValue( eTOTKessy_04 ) ) );
+}
+
+on EnvVar eTOTKessy_04Def
+{
+    putValue( eTOTKessy_04, 2000 );
+}
+
+on EnvVar eDlcKessy_04Dec
+{
+    if (getValue( this ))  putValue( eDlcKessy_04, getValue( eDlcKessy_04 ) - 1 );
+}
+
+on EnvVar eDlcKessy_04Inc
+{
+    if (getValue( this ))  putValue( eDlcKessy_04, getValue( eDlcKessy_04 ) + 1 );
+}
+
+on EnvVar eDlcKessy_04Def
+{
+    putValue( eDlcKessy_04, 8 );
+}
+
+on EnvVar eTKlemmen_Status_01Dec
+{
+    if (getValue( this ))  putValue( eTKlemmen_Status_01, dec( getValue( eTKlemmen_Status_01 ) ) );
+}
+
+on EnvVar eTKlemmen_Status_01Inc
+{
+    if (getValue( this ))  putValue( eTKlemmen_Status_01, inc( getValue( eTKlemmen_Status_01 ) ) );
+}
+
+on EnvVar eTKlemmen_Status_01Def
+{
+    putValue( eTKlemmen_Status_01, 100 );
+}
+
+on EnvVar eTOTKlemmen_Status_01Dec
+{
+    if (getValue( this ))  putValue( eTOTKlemmen_Status_01, dec( getValue( eTOTKlemmen_Status_01 ) ) );
+}
+
+on EnvVar eTOTKlemmen_Status_01Inc
+{
+    if (getValue( this ))  putValue( eTOTKlemmen_Status_01, inc( getValue( eTOTKlemmen_Status_01 ) ) );
+}
+
+on EnvVar eTOTKlemmen_Status_01Def
+{
+    putValue( eTOTKlemmen_Status_01, 1000 );
+}
+
+on EnvVar eDlcKlemmen_Status_01Dec
+{
+    if (getValue( this ))  putValue( eDlcKlemmen_Status_01, getValue( eDlcKlemmen_Status_01 ) - 1 );
+}
+
+on EnvVar eDlcKlemmen_Status_01Inc
+{
+    if (getValue( this ))  putValue( eDlcKlemmen_Status_01, getValue( eDlcKlemmen_Status_01 ) + 1 );
+}
+
+on EnvVar eDlcKlemmen_Status_01Def
+{
+    putValue( eDlcKlemmen_Status_01, 4 );
+}
+
+on EnvVar eBZStepKlemmen_Status_01Dec
+{
+    if (getValue( this ))  putValue( eBZStepKlemmen_Status_01, getValue( eBZStepKlemmen_Status_01 ) - 1 );
+}
+
+on EnvVar eBZStepKlemmen_Status_01Inc
+{
+    if (getValue( this ))  putValue( eBZStepKlemmen_Status_01, getValue( eBZStepKlemmen_Status_01 ) + 1 );
+}
+
+on EnvVar eBZStepKlemmen_Status_01Def
+{
+    putValue( eBZStepKlemmen_Status_01, 1 );
+}
+
+on EnvVar eTKlima_Sensor_02Dec
+{
+    if (getValue( this ))  putValue( eTKlima_Sensor_02, dec( getValue( eTKlima_Sensor_02 ) ) );
+}
+
+on EnvVar eTKlima_Sensor_02Inc
+{
+    if (getValue( this ))  putValue( eTKlima_Sensor_02, inc( getValue( eTKlima_Sensor_02 ) ) );
+}
+
+on EnvVar eTKlima_Sensor_02Def
+{
+    putValue( eTKlima_Sensor_02, 200 );
+}
+
+on EnvVar eTOTKlima_Sensor_02Dec
+{
+    if (getValue( this ))  putValue( eTOTKlima_Sensor_02, dec( getValue( eTOTKlima_Sensor_02 ) ) );
+}
+
+on EnvVar eTOTKlima_Sensor_02Inc
+{
+    if (getValue( this ))  putValue( eTOTKlima_Sensor_02, inc( getValue( eTOTKlima_Sensor_02 ) ) );
+}
+
+on EnvVar eTOTKlima_Sensor_02Def
+{
+    putValue( eTOTKlima_Sensor_02, 2000 );
+}
+
+on EnvVar eDlcKlima_Sensor_02Dec
+{
+    if (getValue( this ))  putValue( eDlcKlima_Sensor_02, getValue( eDlcKlima_Sensor_02 ) - 1 );
+}
+
+on EnvVar eDlcKlima_Sensor_02Inc
+{
+    if (getValue( this ))  putValue( eDlcKlima_Sensor_02, getValue( eDlcKlima_Sensor_02 ) + 1 );
+}
+
+on EnvVar eDlcKlima_Sensor_02Def
+{
+    putValue( eDlcKlima_Sensor_02, 8 );
+}
+
+on EnvVar eTLicht_Anf_01Dec
+{
+    if (getValue( this ))  putValue( eTLicht_Anf_01, dec( getValue( eTLicht_Anf_01 ) ) );
+}
+
+on EnvVar eTLicht_Anf_01Inc
+{
+    if (getValue( this ))  putValue( eTLicht_Anf_01, inc( getValue( eTLicht_Anf_01 ) ) );
+}
+
+on EnvVar eTLicht_Anf_01Def
+{
+    putValue( eTLicht_Anf_01, 100 );
+}
+
+on EnvVar eTOTLicht_Anf_01Dec
+{
+    if (getValue( this ))  putValue( eTOTLicht_Anf_01, dec( getValue( eTOTLicht_Anf_01 ) ) );
+}
+
+on EnvVar eTOTLicht_Anf_01Inc
+{
+    if (getValue( this ))  putValue( eTOTLicht_Anf_01, inc( getValue( eTOTLicht_Anf_01 ) ) );
+}
+
+on EnvVar eTOTLicht_Anf_01Def
+{
+    putValue( eTOTLicht_Anf_01, 1000 );
+}
+
+on EnvVar eDlcLicht_Anf_01Dec
+{
+    if (getValue( this ))  putValue( eDlcLicht_Anf_01, getValue( eDlcLicht_Anf_01 ) - 1 );
+}
+
+on EnvVar eDlcLicht_Anf_01Inc
+{
+    if (getValue( this ))  putValue( eDlcLicht_Anf_01, getValue( eDlcLicht_Anf_01 ) + 1 );
+}
+
+on EnvVar eDlcLicht_Anf_01Def
+{
+    putValue( eDlcLicht_Anf_01, 8 );
+}
+
+on EnvVar eTLicht_hinten_01Dec
+{
+    if (getValue( this ))  putValue( eTLicht_hinten_01, dec( getValue( eTLicht_hinten_01 ) ) );
+}
+
+on EnvVar eTLicht_hinten_01Inc
+{
+    if (getValue( this ))  putValue( eTLicht_hinten_01, inc( getValue( eTLicht_hinten_01 ) ) );
+}
+
+on EnvVar eTLicht_hinten_01Def
+{
+    putValue( eTLicht_hinten_01, 100 );
+}
+
+on EnvVar eTOTLicht_hinten_01Dec
+{
+    if (getValue( this ))  putValue( eTOTLicht_hinten_01, dec( getValue( eTOTLicht_hinten_01 ) ) );
+}
+
+on EnvVar eTOTLicht_hinten_01Inc
+{
+    if (getValue( this ))  putValue( eTOTLicht_hinten_01, inc( getValue( eTOTLicht_hinten_01 ) ) );
+}
+
+on EnvVar eTOTLicht_hinten_01Def
+{
+    putValue( eTOTLicht_hinten_01, 1000 );
+}
+
+on EnvVar eDlcLicht_hinten_01Dec
+{
+    if (getValue( this ))  putValue( eDlcLicht_hinten_01, getValue( eDlcLicht_hinten_01 ) - 1 );
+}
+
+on EnvVar eDlcLicht_hinten_01Inc
+{
+    if (getValue( this ))  putValue( eDlcLicht_hinten_01, getValue( eDlcLicht_hinten_01 ) + 1 );
+}
+
+on EnvVar eDlcLicht_hinten_01Def
+{
+    putValue( eDlcLicht_hinten_01, 8 );
+}
+
+on EnvVar eBZStepLicht_hinten_01Dec
+{
+    if (getValue( this ))  putValue( eBZStepLicht_hinten_01, getValue( eBZStepLicht_hinten_01 ) - 1 );
+}
+
+on EnvVar eBZStepLicht_hinten_01Inc
+{
+    if (getValue( this ))  putValue( eBZStepLicht_hinten_01, getValue( eBZStepLicht_hinten_01 ) + 1 );
+}
+
+on EnvVar eBZStepLicht_hinten_01Def
+{
+    putValue( eBZStepLicht_hinten_01, 1 );
+}
+
+on EnvVar eTLicht_vorne_01Dec
+{
+    if (getValue( this ))  putValue( eTLicht_vorne_01, dec( getValue( eTLicht_vorne_01 ) ) );
+}
+
+on EnvVar eTLicht_vorne_01Inc
+{
+    if (getValue( this ))  putValue( eTLicht_vorne_01, inc( getValue( eTLicht_vorne_01 ) ) );
+}
+
+on EnvVar eTLicht_vorne_01Def
+{
+    putValue( eTLicht_vorne_01, 1000 );
+}
+
+on EnvVar eTOTLicht_vorne_01Dec
+{
+    if (getValue( this ))  putValue( eTOTLicht_vorne_01, dec( getValue( eTOTLicht_vorne_01 ) ) );
+}
+
+on EnvVar eTOTLicht_vorne_01Inc
+{
+    if (getValue( this ))  putValue( eTOTLicht_vorne_01, inc( getValue( eTOTLicht_vorne_01 ) ) );
+}
+
+on EnvVar eTOTLicht_vorne_01Def
+{
+    putValue( eTOTLicht_vorne_01, 5000 );
+}
+
+on EnvVar eDlcLicht_vorne_01Dec
+{
+    if (getValue( this ))  putValue( eDlcLicht_vorne_01, getValue( eDlcLicht_vorne_01 ) - 1 );
+}
+
+on EnvVar eDlcLicht_vorne_01Inc
+{
+    if (getValue( this ))  putValue( eDlcLicht_vorne_01, getValue( eDlcLicht_vorne_01 ) + 1 );
+}
+
+on EnvVar eDlcLicht_vorne_01Def
+{
+    putValue( eDlcLicht_vorne_01, 8 );
+}
+
+on EnvVar eTLog_Datenlogger_ReqDec
+{
+    if (getValue( this ))  putValue( eTLog_Datenlogger_Req, dec( getValue( eTLog_Datenlogger_Req ) ) );
+}
+
+on EnvVar eTLog_Datenlogger_ReqInc
+{
+    if (getValue( this ))  putValue( eTLog_Datenlogger_Req, inc( getValue( eTLog_Datenlogger_Req ) ) );
+}
+
+on EnvVar eTLog_Datenlogger_ReqDef
+{
+    putValue( eTLog_Datenlogger_Req, 0 );
+}
+
+on EnvVar eTOTLog_Datenlogger_ReqDec
+{
+    if (getValue( this ))  putValue( eTOTLog_Datenlogger_Req, dec( getValue( eTOTLog_Datenlogger_Req ) ) );
+}
+
+on EnvVar eTOTLog_Datenlogger_ReqInc
+{
+    if (getValue( this ))  putValue( eTOTLog_Datenlogger_Req, inc( getValue( eTOTLog_Datenlogger_Req ) ) );
+}
+
+on EnvVar eTOTLog_Datenlogger_ReqDef
+{
+    putValue( eTOTLog_Datenlogger_Req, 500 );
+}
+
+on EnvVar eDlcLog_Datenlogger_ReqDec
+{
+    if (getValue( this ))  putValue( eDlcLog_Datenlogger_Req, getValue( eDlcLog_Datenlogger_Req ) - 1 );
+}
+
+on EnvVar eDlcLog_Datenlogger_ReqInc
+{
+    if (getValue( this ))  putValue( eDlcLog_Datenlogger_Req, getValue( eDlcLog_Datenlogger_Req ) + 1 );
+}
+
+on EnvVar eDlcLog_Datenlogger_ReqDef
+{
+    putValue( eDlcLog_Datenlogger_Req, 8 );
+}
+
+on EnvVar eTLog_Kombi_ReqDec
+{
+    if (getValue( this ))  putValue( eTLog_Kombi_Req, dec( getValue( eTLog_Kombi_Req ) ) );
+}
+
+on EnvVar eTLog_Kombi_ReqInc
+{
+    if (getValue( this ))  putValue( eTLog_Kombi_Req, inc( getValue( eTLog_Kombi_Req ) ) );
+}
+
+on EnvVar eTLog_Kombi_ReqDef
+{
+    putValue( eTLog_Kombi_Req, 0 );
+}
+
+on EnvVar eTOTLog_Kombi_ReqDec
+{
+    if (getValue( this ))  putValue( eTOTLog_Kombi_Req, dec( getValue( eTOTLog_Kombi_Req ) ) );
+}
+
+on EnvVar eTOTLog_Kombi_ReqInc
+{
+    if (getValue( this ))  putValue( eTOTLog_Kombi_Req, inc( getValue( eTOTLog_Kombi_Req ) ) );
+}
+
+on EnvVar eTOTLog_Kombi_ReqDef
+{
+    putValue( eTOTLog_Kombi_Req, 500 );
+}
+
+on EnvVar eDlcLog_Kombi_ReqDec
+{
+    if (getValue( this ))  putValue( eDlcLog_Kombi_Req, getValue( eDlcLog_Kombi_Req ) - 1 );
+}
+
+on EnvVar eDlcLog_Kombi_ReqInc
+{
+    if (getValue( this ))  putValue( eDlcLog_Kombi_Req, getValue( eDlcLog_Kombi_Req ) + 1 );
+}
+
+on EnvVar eDlcLog_Kombi_ReqDef
+{
+    putValue( eDlcLog_Kombi_Req, 8 );
+}
+
+on EnvVar eTMem_BFS_01Dec
+{
+    if (getValue( this ))  putValue( eTMem_BFS_01, dec( getValue( eTMem_BFS_01 ) ) );
+}
+
+on EnvVar eTMem_BFS_01Inc
+{
+    if (getValue( this ))  putValue( eTMem_BFS_01, inc( getValue( eTMem_BFS_01 ) ) );
+}
+
+on EnvVar eTMem_BFS_01Def
+{
+    putValue( eTMem_BFS_01, 100 );
+}
+
+on EnvVar eTOTMem_BFS_01Dec
+{
+    if (getValue( this ))  putValue( eTOTMem_BFS_01, dec( getValue( eTOTMem_BFS_01 ) ) );
+}
+
+on EnvVar eTOTMem_BFS_01Inc
+{
+    if (getValue( this ))  putValue( eTOTMem_BFS_01, inc( getValue( eTOTMem_BFS_01 ) ) );
+}
+
+on EnvVar eTOTMem_BFS_01Def
+{
+    putValue( eTOTMem_BFS_01, 1000 );
+}
+
+on EnvVar eDlcMem_BFS_01Dec
+{
+    if (getValue( this ))  putValue( eDlcMem_BFS_01, getValue( eDlcMem_BFS_01 ) - 1 );
+}
+
+on EnvVar eDlcMem_BFS_01Inc
+{
+    if (getValue( this ))  putValue( eDlcMem_BFS_01, getValue( eDlcMem_BFS_01 ) + 1 );
+}
+
+on EnvVar eDlcMem_BFS_01Def
+{
+    putValue( eDlcMem_BFS_01, 8 );
+}
+
+on EnvVar eTMem_FS_01Dec
+{
+    if (getValue( this ))  putValue( eTMem_FS_01, dec( getValue( eTMem_FS_01 ) ) );
+}
+
+on EnvVar eTMem_FS_01Inc
+{
+    if (getValue( this ))  putValue( eTMem_FS_01, inc( getValue( eTMem_FS_01 ) ) );
+}
+
+on EnvVar eTMem_FS_01Def
+{
+    putValue( eTMem_FS_01, 100 );
+}
+
+on EnvVar eTOTMem_FS_01Dec
+{
+    if (getValue( this ))  putValue( eTOTMem_FS_01, dec( getValue( eTOTMem_FS_01 ) ) );
+}
+
+on EnvVar eTOTMem_FS_01Inc
+{
+    if (getValue( this ))  putValue( eTOTMem_FS_01, inc( getValue( eTOTMem_FS_01 ) ) );
+}
+
+on EnvVar eTOTMem_FS_01Def
+{
+    putValue( eTOTMem_FS_01, 1000 );
+}
+
+on EnvVar eDlcMem_FS_01Dec
+{
+    if (getValue( this ))  putValue( eDlcMem_FS_01, getValue( eDlcMem_FS_01 ) - 1 );
+}
+
+on EnvVar eDlcMem_FS_01Inc
+{
+    if (getValue( this ))  putValue( eDlcMem_FS_01, getValue( eDlcMem_FS_01 ) + 1 );
+}
+
+on EnvVar eDlcMem_FS_01Def
+{
+    putValue( eDlcMem_FS_01, 8 );
+}
+
+on EnvVar eTMFG_01Dec
+{
+    if (getValue( this ))  putValue( eTMFG_01, dec( getValue( eTMFG_01 ) ) );
+}
+
+on EnvVar eTMFG_01Inc
+{
+    if (getValue( this ))  putValue( eTMFG_01, inc( getValue( eTMFG_01 ) ) );
+}
+
+on EnvVar eTMFG_01Def
+{
+    putValue( eTMFG_01, 200 );
+}
+
+on EnvVar eTOTMFG_01Dec
+{
+    if (getValue( this ))  putValue( eTOTMFG_01, dec( getValue( eTOTMFG_01 ) ) );
+}
+
+on EnvVar eTOTMFG_01Inc
+{
+    if (getValue( this ))  putValue( eTOTMFG_01, inc( getValue( eTOTMFG_01 ) ) );
+}
+
+on EnvVar eTOTMFG_01Def
+{
+    putValue( eTOTMFG_01, 2000 );
+}
+
+on EnvVar eDlcMFG_01Dec
+{
+    if (getValue( this ))  putValue( eDlcMFG_01, getValue( eDlcMFG_01 ) - 1 );
+}
+
+on EnvVar eDlcMFG_01Inc
+{
+    if (getValue( this ))  putValue( eDlcMFG_01, getValue( eDlcMFG_01 ) + 1 );
+}
+
+on EnvVar eDlcMFG_01Def
+{
+    putValue( eDlcMFG_01, 8 );
+}
+
+on EnvVar eBZStepMFG_01Dec
+{
+    if (getValue( this ))  putValue( eBZStepMFG_01, getValue( eBZStepMFG_01 ) - 1 );
+}
+
+on EnvVar eBZStepMFG_01Inc
+{
+    if (getValue( this ))  putValue( eBZStepMFG_01, getValue( eBZStepMFG_01 ) + 1 );
+}
+
+on EnvVar eBZStepMFG_01Def
+{
+    putValue( eBZStepMFG_01, 1 );
+}
+
+on EnvVar eTRLS_01Dec
+{
+    if (getValue( this ))  putValue( eTRLS_01, dec( getValue( eTRLS_01 ) ) );
+}
+
+on EnvVar eTRLS_01Inc
+{
+    if (getValue( this ))  putValue( eTRLS_01, inc( getValue( eTRLS_01 ) ) );
+}
+
+on EnvVar eTRLS_01Def
+{
+    putValue( eTRLS_01, 200 );
+}
+
+on EnvVar eTOTRLS_01Dec
+{
+    if (getValue( this ))  putValue( eTOTRLS_01, dec( getValue( eTOTRLS_01 ) ) );
+}
+
+on EnvVar eTOTRLS_01Inc
+{
+    if (getValue( this ))  putValue( eTOTRLS_01, inc( getValue( eTOTRLS_01 ) ) );
+}
+
+on EnvVar eTOTRLS_01Def
+{
+    putValue( eTOTRLS_01, 2000 );
+}
+
+on EnvVar eDlcRLS_01Dec
+{
+    if (getValue( this ))  putValue( eDlcRLS_01, getValue( eDlcRLS_01 ) - 1 );
+}
+
+on EnvVar eDlcRLS_01Inc
+{
+    if (getValue( this ))  putValue( eDlcRLS_01, getValue( eDlcRLS_01 ) + 1 );
+}
+
+on EnvVar eDlcRLS_01Def
+{
+    putValue( eDlcRLS_01, 5 );
+}
+
+on EnvVar eTSMLS_01Dec
+{
+    if (getValue( this ))  putValue( eTSMLS_01, dec( getValue( eTSMLS_01 ) ) );
+}
+
+on EnvVar eTSMLS_01Inc
+{
+    if (getValue( this ))  putValue( eTSMLS_01, inc( getValue( eTSMLS_01 ) ) );
+}
+
+on EnvVar eTSMLS_01Def
+{
+    putValue( eTSMLS_01, 1000 );
+}
+
+on EnvVar eTOTSMLS_01Dec
+{
+    if (getValue( this ))  putValue( eTOTSMLS_01, dec( getValue( eTOTSMLS_01 ) ) );
+}
+
+on EnvVar eTOTSMLS_01Inc
+{
+    if (getValue( this ))  putValue( eTOTSMLS_01, inc( getValue( eTOTSMLS_01 ) ) );
+}
+
+on EnvVar eTOTSMLS_01Def
+{
+    putValue( eTOTSMLS_01, 5000 );
+}
+
+on EnvVar eDlcSMLS_01Dec
+{
+    if (getValue( this ))  putValue( eDlcSMLS_01, getValue( eDlcSMLS_01 ) - 1 );
+}
+
+on EnvVar eDlcSMLS_01Inc
+{
+    if (getValue( this ))  putValue( eDlcSMLS_01, getValue( eDlcSMLS_01 ) + 1 );
+}
+
+on EnvVar eDlcSMLS_01Def
+{
+    putValue( eDlcSMLS_01, 8 );
+}
+
+on EnvVar eBZStepSMLS_01Dec
+{
+    if (getValue( this ))  putValue( eBZStepSMLS_01, getValue( eBZStepSMLS_01 ) - 1 );
+}
+
+on EnvVar eBZStepSMLS_01Def
+{
+    putValue( eBZStepSMLS_01, 1 );
+}
+
+on EnvVar eBZStepSMLS_01Inc
+{
+    if (getValue( this ))  putValue( eBZStepSMLS_01, getValue( eBZStepSMLS_01 ) + 1 );
+}
+
+on EnvVar eTTCO_01Dec
+{
+    if (getValue( this ))  putValue( eTTCO_01, dec( getValue( eTTCO_01 ) ) );
+}
+
+on EnvVar eTTCO_01Inc
+{
+    if (getValue( this ))  putValue( eTTCO_01, inc( getValue( eTTCO_01 ) ) );
+}
+
+on EnvVar eTTCO_01Def
+{
+    putValue( eTTCO_01, 20 );
+}
+
+on EnvVar eTOTTCO_01Dec
+{
+    if (getValue( this ))  putValue( eTOTTCO_01, dec( getValue( eTOTTCO_01 ) ) );
+}
+
+on EnvVar eTOTTCO_01Inc
+{
+    if (getValue( this ))  putValue( eTOTTCO_01, inc( getValue( eTOTTCO_01 ) ) );
+}
+
+on EnvVar eTOTTCO_01Def
+{
+    putValue( eTOTTCO_01, 500 );
+}
+
+on EnvVar eDlcTCO_01Dec
+{
+    if (getValue( this ))  putValue( eDlcTCO_01, getValue( eDlcTCO_01 ) - 1 );
+}
+
+on EnvVar eDlcTCO_01Inc
+{
+    if (getValue( this ))  putValue( eDlcTCO_01, getValue( eDlcTCO_01 ) + 1 );
+}
+
+on EnvVar eDlcTCO_01Def
+{
+    putValue( eDlcTCO_01, 8 );
+}
+
+on EnvVar eTTimeDateDec
+{
+    if (getValue( this ))  putValue( eTTimeDate, dec( getValue( eTTimeDate ) ) );
+}
+
+on EnvVar eTTimeDateInc
+{
+    if (getValue( this ))  putValue( eTTimeDate, inc( getValue( eTTimeDate ) ) );
+}
+
+on EnvVar eTTimeDateDef
+{
+    putValue( eTTimeDate, 1000 );
+}
+
+on EnvVar eTOTTimeDateDec
+{
+    if (getValue( this ))  putValue( eTOTTimeDate, dec( getValue( eTOTTimeDate ) ) );
+}
+
+on EnvVar eTOTTimeDateInc
+{
+    if (getValue( this ))  putValue( eTOTTimeDate, inc( getValue( eTOTTimeDate ) ) );
+}
+
+on EnvVar eTOTTimeDateDef
+{
+    putValue( eTOTTimeDate, 5000 );
+}
+
+on EnvVar eDlcTimeDateDec
+{
+    if (getValue( this ))  putValue( eDlcTimeDate, getValue( eDlcTimeDate ) - 1 );
+}
+
+on EnvVar eDlcTimeDateInc
+{
+    if (getValue( this ))  putValue( eDlcTimeDate, getValue( eDlcTimeDate ) + 1 );
+}
+
+on EnvVar eDlcTimeDateDef
+{
+    putValue( eDlcTimeDate, 8 );
+}
+
+on EnvVar eTVehiDistDec
+{
+    if (getValue( this ))  putValue( eTVehiDist, dec( getValue( eTVehiDist ) ) );
+}
+
+on EnvVar eTVehiDistInc
+{
+    if (getValue( this ))  putValue( eTVehiDist, inc( getValue( eTVehiDist ) ) );
+}
+
+on EnvVar eTVehiDistDef
+{
+    putValue( eTVehiDist, 100 );
+}
+
+on EnvVar eTOTVehiDistDec
+{
+    if (getValue( this ))  putValue( eTOTVehiDist, dec( getValue( eTOTVehiDist ) ) );
+}
+
+on EnvVar eTOTVehiDistInc
+{
+    if (getValue( this ))  putValue( eTOTVehiDist, inc( getValue( eTOTVehiDist ) ) );
+}
+
+on EnvVar eTOTVehiDistDef
+{
+    putValue( eTOTVehiDist, 1000 );
+}
+
+on EnvVar eDlcVehiDistDec
+{
+    if (getValue( this ))  putValue( eDlcVehiDist, getValue( eDlcVehiDist ) - 1 );
+}
+
+on EnvVar eDlcVehiDistInc
+{
+    if (getValue( this ))  putValue( eDlcVehiDist, getValue( eDlcVehiDist ) + 1 );
+}
+
+on EnvVar eDlcVehiDistDef
+{
+    putValue( eDlcVehiDist, 8 );
+}
+
+on EnvVar eTWischer_01Dec
+{
+    if (getValue( this ))  putValue( eTWischer_01, dec( getValue( eTWischer_01 ) ) );
+}
+
+on EnvVar eTWischer_01Inc
+{
+    if (getValue( this ))  putValue( eTWischer_01, inc( getValue( eTWischer_01 ) ) );
+}
+
+on EnvVar eTWischer_01Def
+{
+    putValue( eTWischer_01, 1000 );
+}
+
+on EnvVar eTOTWischer_01Dec
+{
+    if (getValue( this ))  putValue( eTOTWischer_01, dec( getValue( eTOTWischer_01 ) ) );
+}
+
+on EnvVar eTOTWischer_01Inc
+{
+    if (getValue( this ))  putValue( eTOTWischer_01, inc( getValue( eTOTWischer_01 ) ) );
+}
+
+on EnvVar eTOTWischer_01Def
+{
+    putValue( eTOTWischer_01, 5000 );
+}
+
+on EnvVar eDlcWischer_01Dec
+{
+    if (getValue( this ))  putValue( eDlcWischer_01, getValue( eDlcWischer_01 ) - 1 );
+}
+
+on EnvVar eDlcWischer_01Inc
+{
+    if (getValue( this ))  putValue( eDlcWischer_01, getValue( eDlcWischer_01 ) + 1 );
+}
+
+on EnvVar eDlcWischer_01Def
+{
+    putValue( eDlcWischer_01, 2 );
+}
+
+on EnvVar eTZV_02Dec
+{
+    if (getValue( this ))  putValue( eTZV_02, dec( getValue( eTZV_02 ) ) );
+}
+
+on EnvVar eTZV_02Inc
+{
+    if (getValue( this ))  putValue( eTZV_02, inc( getValue( eTZV_02 ) ) );
+}
+
+on EnvVar eTZV_02Def
+{
+    putValue( eTZV_02, 200 );
+}
+
+on EnvVar eTOTZV_02Dec
+{
+    if (getValue( this ))  putValue( eTOTZV_02, dec( getValue( eTOTZV_02 ) ) );
+}
+
+on EnvVar eTOTZV_02Inc
+{
+    if (getValue( this ))  putValue( eTOTZV_02, inc( getValue( eTOTZV_02 ) ) );
+}
+
+on EnvVar eTOTZV_02Def
+{
+    putValue( eTOTZV_02, 2000 );
+}
+
+on EnvVar eDlcZV_02Dec
+{
+    if (getValue( this ))  putValue( eDlcZV_02, getValue( eDlcZV_02 ) - 1 );
+}
+
+on EnvVar eDlcZV_02Inc
+{
+    if (getValue( this ))  putValue( eDlcZV_02, getValue( eDlcZV_02 ) + 1 );
+}
+
+on EnvVar eDlcZV_02Def
+{
+    putValue( eDlcZV_02, 8 );
+}
+
+on EnvVar eBZStepESP_21Dec
+{
+    if (getValue( this ))  putValue( eBZStepESP_21, getValue( eBZStepESP_21 ) - 1 );
+}
+
+on EnvVar eBZStepESP_21Inc
+{
+    if (getValue( this ))  putValue( eBZStepESP_21, getValue( eBZStepESP_21 ) + 1 );
+}
+
+on EnvVar eBZStepESP_21Def
+{
+    putValue( eBZStepESP_21, 1 );
+}
+
+on EnvVar eTARA_Status_01Dec
+{
+    if (getValue( this ))  putValue( eTARA_Status_01, dec( getValue( eTARA_Status_01 ) ) );
+}
+
+on EnvVar eTARA_Status_01Inc
+{
+    if (getValue( this ))  putValue( eTARA_Status_01, inc( getValue( eTARA_Status_01 ) ) );
+}
+
+on EnvVar eTARA_Status_01Def
+{
+    putValue( eTARA_Status_01, 100 );
+}
+
+on EnvVar eTOTARA_Status_01Dec
+{
+    if (getValue( this ))  putValue( eTOTARA_Status_01, dec( getValue( eTOTARA_Status_01 ) ) );
+}
+
+on EnvVar eTOTARA_Status_01Inc
+{
+    if (getValue( this ))  putValue( eTOTARA_Status_01, inc( getValue( eTOTARA_Status_01 ) ) );
+}
+
+on EnvVar eTOTARA_Status_01Def
+{
+    putValue( eTOTARA_Status_01, 1000 );
+}
+
+on EnvVar eDlcARA_Status_01Dec
+{
+    if (getValue( this ))  putValue( eDlcARA_Status_01, getValue( eDlcARA_Status_01 ) - 1 );
+}
+
+on EnvVar eDlcARA_Status_01Inc
+{
+    if (getValue( this ))  putValue( eDlcARA_Status_01, getValue( eDlcARA_Status_01 ) + 1 );
+}
+
+on EnvVar eDlcARA_Status_01Def
+{
+    putValue( eDlcARA_Status_01, 8 );
+}
+
+on EnvVar eTESP_21Dec
+{
+    if (getValue( this ))  putValue( eTESP_21, dec( getValue( eTESP_21 ) ) );
+}
+
+on EnvVar eTESP_21Inc
+{
+    if (getValue( this ))  putValue( eTESP_21, inc( getValue( eTESP_21 ) ) );
+}
+
+on EnvVar eTESP_21Def
+{
+    putValue( eTESP_21, 20 );
+}
+
+on EnvVar eTOTESP_21Dec
+{
+    if (getValue( this ))  putValue( eTOTESP_21, dec( getValue( eTOTESP_21 ) ) );
+}
+
+on EnvVar eTOTESP_21Inc
+{
+    if (getValue( this ))  putValue( eTOTESP_21, inc( getValue( eTOTESP_21 ) ) );
+}
+
+on EnvVar eTOTESP_21Def
+{
+    putValue( eTOTESP_21, 500 );
+}
+
+on EnvVar eDlcESP_21Dec
+{
+    if (getValue( this ))  putValue( eDlcESP_21, getValue( eDlcESP_21 ) - 1 );
+}
+
+on EnvVar eDlcESP_21Inc
+{
+    if (getValue( this ))  putValue( eDlcESP_21, getValue( eDlcESP_21 ) + 1 );
+}
+
+on EnvVar eDlcESP_21Def
+{
+    putValue( eDlcESP_21, 8 );
+}
+
+on EnvVar eTAirbag_01Dec
+{
+    if (getValue( this ))  putValue( eTAirbag_01, dec( getValue( eTAirbag_01 ) ) );
+}
+
+on EnvVar eTAirbag_01Inc
+{
+    if (getValue( this ))  putValue( eTAirbag_01, inc( getValue( eTAirbag_01 ) ) );
+}
+
+on EnvVar eTAirbag_01Def
+{
+    putValue( eTAirbag_01, 40 );
+}
+
+on EnvVar eTOTAirbag_01Dec
+{
+    if (getValue( this ))  putValue( eTOTAirbag_01, dec( getValue( eTOTAirbag_01 ) ) );
+}
+
+on EnvVar eTOTAirbag_01Inc
+{
+    if (getValue( this ))  putValue( eTOTAirbag_01, inc( getValue( eTOTAirbag_01 ) ) );
+}
+
+on EnvVar eTOTAirbag_01Def
+{
+    putValue( eTOTAirbag_01, 400 );
+}
+
+on EnvVar eTAirbag_02Dec
+{
+    if (getValue( this ))  putValue( eTAirbag_02, dec( getValue( eTAirbag_02 ) ) );
+}
+
+on EnvVar eTAirbag_02Inc
+{
+    if (getValue( this ))  putValue( eTAirbag_02, inc( getValue( eTAirbag_02 ) ) );
+}
+
+on EnvVar eTAirbag_02Def
+{
+    putValue( eTAirbag_02, 200 );
+}
+
+on EnvVar eTOTAirbag_02Dec
+{
+    if (getValue( this ))  putValue( eTOTAirbag_02, dec( getValue( eTOTAirbag_02 ) ) );
+}
+
+on EnvVar eTOTAirbag_02Inc
+{
+    if (getValue( this ))  putValue( eTOTAirbag_02, inc( getValue( eTOTAirbag_02 ) ) );
+}
+
+on EnvVar eTOTAirbag_02Def
+{
+    putValue( eTOTAirbag_02, 2000 );
+}
+
+on EnvVar eDlcAirbag_02Dec
+{
+    if (getValue( this ))  putValue( eDlcAirbag_02, getValue( eDlcAirbag_02 ) - 1 );
+}
+
+on EnvVar eDlcAirbag_02Inc
+{
+    if (getValue( this ))  putValue( eDlcAirbag_02, getValue( eDlcAirbag_02 ) + 1 );
+}
+
+on EnvVar eDlcAirbag_02Def
+{
+    putValue( eDlcAirbag_02, 8 );
+}
+
+on EnvVar eTBEM_02Dec
+{
+    if (getValue( this ))  putValue( eTBEM_02, dec( getValue( eTBEM_02 ) ) );
+}
+
+on EnvVar eTBEM_02Inc
+{
+    if (getValue( this ))  putValue( eTBEM_02, inc( getValue( eTBEM_02 ) ) );
+}
+
+on EnvVar eTBEM_02Def
+{
+    putValue( eTBEM_02, 100 );
+}
+
+on EnvVar eTOTBEM_02Dec
+{
+    if (getValue( this ))  putValue( eTOTBEM_02, dec( getValue( eTOTBEM_02 ) ) );
+}
+
+on EnvVar eTOTBEM_02Inc
+{
+    if (getValue( this ))  putValue( eTOTBEM_02, inc( getValue( eTOTBEM_02 ) ) );
+}
+
+on EnvVar eTOTBEM_02Def
+{
+    putValue( eTOTBEM_02, 1000 );
+}
+
+on EnvVar eDlcBEM_02Dec
+{
+    if (getValue( this ))  putValue( eDlcBEM_02, getValue( eDlcBEM_02 ) - 1 );
+}
+
+on EnvVar eDlcBEM_02Inc
+{
+    if (getValue( this ))  putValue( eDlcBEM_02, getValue( eDlcBEM_02 ) + 1 );
+}
+
+on EnvVar eDlcBEM_02Def
+{
+    putValue( eDlcBEM_02, 8 );
+}
+
+on EnvVar eTCharisma_03Dec
+{
+    if (getValue( this ))  putValue( eTCharisma_03, dec( getValue( eTCharisma_03 ) ) );
+}
+
+on EnvVar eTCharisma_03Inc
+{
+    if (getValue( this ))  putValue( eTCharisma_03, inc( getValue( eTCharisma_03 ) ) );
+}
+
+on EnvVar eTCharisma_03Def
+{
+    putValue( eTCharisma_03, 1000 );
+}
+
+on EnvVar eTOTCharisma_03Dec
+{
+    if (getValue( this ))  putValue( eTOTCharisma_03, dec( getValue( eTOTCharisma_03 ) ) );
+}
+
+on EnvVar eTOTCharisma_03Inc
+{
+    if (getValue( this ))  putValue( eTOTCharisma_03, inc( getValue( eTOTCharisma_03 ) ) );
+}
+
+on EnvVar eTOTCharisma_03Def
+{
+    putValue( eTOTCharisma_03, 5000 );
+}
+
+on EnvVar eDlcCharisma_03Dec
+{
+    if (getValue( this ))  putValue( eDlcCharisma_03, getValue( eDlcCharisma_03 ) - 1 );
+}
+
+on EnvVar eDlcCharisma_03Inc
+{
+    if (getValue( this ))  putValue( eDlcCharisma_03, getValue( eDlcCharisma_03 ) + 1 );
+}
+
+on EnvVar eDlcCharisma_03Def
+{
+    putValue( eDlcCharisma_03, 8 );
+}
+
+on EnvVar eTDaempfer_01Dec
+{
+    if (getValue( this ))  putValue( eTDaempfer_01, dec( getValue( eTDaempfer_01 ) ) );
+}
+
+on EnvVar eTDaempfer_01Inc
+{
+    if (getValue( this ))  putValue( eTDaempfer_01, inc( getValue( eTDaempfer_01 ) ) );
+}
+
+on EnvVar eTDaempfer_01Def
+{
+    putValue( eTDaempfer_01, 100 );
+}
+
+on EnvVar eTOTDaempfer_01Dec
+{
+    if (getValue( this ))  putValue( eTOTDaempfer_01, dec( getValue( eTOTDaempfer_01 ) ) );
+}
+
+on EnvVar eTOTDaempfer_01Inc
+{
+    if (getValue( this ))  putValue( eTOTDaempfer_01, inc( getValue( eTOTDaempfer_01 ) ) );
+}
+
+on EnvVar eTOTDaempfer_01Def
+{
+    putValue( eTOTDaempfer_01, 1000 );
+}
+
+on EnvVar eDlcDaempfer_01Dec
+{
+    if (getValue( this ))  putValue( eDlcDaempfer_01, getValue( eDlcDaempfer_01 ) - 1 );
+}
+
+on EnvVar eDlcDaempfer_01Inc
+{
+    if (getValue( this ))  putValue( eDlcDaempfer_01, getValue( eDlcDaempfer_01 ) + 1 );
+}
+
+on EnvVar eDlcDaempfer_01Def
+{
+    putValue( eDlcDaempfer_01, 8 );
+}
+
+on EnvVar eTDEV_Kombi_SUP1Dec
+{
+    if (getValue( this ))  putValue( eTDEV_Kombi_SUP1, dec( getValue( eTDEV_Kombi_SUP1 ) ) );
+}
+
+on EnvVar eTDEV_Kombi_SUP1Inc
+{
+    if (getValue( this ))  putValue( eTDEV_Kombi_SUP1, inc( getValue( eTDEV_Kombi_SUP1 ) ) );
+}
+
+on EnvVar eTDEV_Kombi_SUP1Def
+{
+    putValue( eTDEV_Kombi_SUP1, 0 );
+}
+
+on EnvVar eTOTDEV_Kombi_SUP1Dec
+{
+    if (getValue( this ))  putValue( eTOTDEV_Kombi_SUP1, dec( getValue( eTOTDEV_Kombi_SUP1 ) ) );
+}
+
+on EnvVar eTOTDEV_Kombi_SUP1Inc
+{
+    if (getValue( this ))  putValue( eTOTDEV_Kombi_SUP1, inc( getValue( eTOTDEV_Kombi_SUP1 ) ) );
+}
+
+on EnvVar eTOTDEV_Kombi_SUP1Def
+{
+    putValue( eTOTDEV_Kombi_SUP1, 500 );
+}
+
+on EnvVar eDlcDEV_Kombi_SUP1Dec
+{
+    if (getValue( this ))  putValue( eDlcDEV_Kombi_SUP1, getValue( eDlcDEV_Kombi_SUP1 ) - 1 );
+}
+
+on EnvVar eDlcDEV_Kombi_SUP1Inc
+{
+    if (getValue( this ))  putValue( eDlcDEV_Kombi_SUP1, getValue( eDlcDEV_Kombi_SUP1 ) + 1 );
+}
+
+on EnvVar eDlcDEV_Kombi_SUP1Def
+{
+    putValue( eDlcDEV_Kombi_SUP1, 8 );
+}
+
+on EnvVar eTDEV_Kombi_SUP2Dec
+{
+    if (getValue( this ))  putValue( eTDEV_Kombi_SUP2, dec( getValue( eTDEV_Kombi_SUP2 ) ) );
+}
+
+on EnvVar eTDEV_Kombi_SUP2Inc
+{
+    if (getValue( this ))  putValue( eTDEV_Kombi_SUP2, inc( getValue( eTDEV_Kombi_SUP2 ) ) );
+}
+
+on EnvVar eTDEV_Kombi_SUP2Def
+{
+    putValue( eTDEV_Kombi_SUP2, 0 );
+}
+
+on EnvVar eTOTDEV_Kombi_SUP2Dec
+{
+    if (getValue( this ))  putValue( eTOTDEV_Kombi_SUP2, dec( getValue( eTOTDEV_Kombi_SUP2 ) ) );
+}
+
+on EnvVar eTOTDEV_Kombi_SUP2Inc
+{
+    if (getValue( this ))  putValue( eTOTDEV_Kombi_SUP2, inc( getValue( eTOTDEV_Kombi_SUP2 ) ) );
+}
+
+on EnvVar eTOTDEV_Kombi_SUP2Def
+{
+    putValue( eTOTDEV_Kombi_SUP2, 500 );
+}
+
+on EnvVar eDlcDEV_Kombi_SUP2Dec
+{
+    if (getValue( this ))  putValue( eDlcDEV_Kombi_SUP2, getValue( eDlcDEV_Kombi_SUP2 ) - 1 );
+}
+
+on EnvVar eDlcDEV_Kombi_SUP2Inc
+{
+    if (getValue( this ))  putValue( eDlcDEV_Kombi_SUP2, getValue( eDlcDEV_Kombi_SUP2 ) + 1 );
+}
+
+on EnvVar eDlcDEV_Kombi_SUP2Def
+{
+    putValue( eDlcDEV_Kombi_SUP2, 8 );
+}
+
+on EnvVar eTDEV_Kombi_SUP3Dec
+{
+    if (getValue( this ))  putValue( eTDEV_Kombi_SUP3, dec( getValue( eTDEV_Kombi_SUP3 ) ) );
+}
+
+on EnvVar eTDEV_Kombi_SUP3Inc
+{
+    if (getValue( this ))  putValue( eTDEV_Kombi_SUP3, inc( getValue( eTDEV_Kombi_SUP3 ) ) );
+}
+
+on EnvVar eTDEV_Kombi_SUP3Def
+{
+    putValue( eTDEV_Kombi_SUP3, 0 );
+}
+
+on EnvVar eTOTDEV_Kombi_SUP3Dec
+{
+    if (getValue( this ))  putValue( eTOTDEV_Kombi_SUP3, dec( getValue( eTOTDEV_Kombi_SUP3 ) ) );
+}
+
+on EnvVar eTOTDEV_Kombi_SUP3Inc
+{
+    if (getValue( this ))  putValue( eTOTDEV_Kombi_SUP3, inc( getValue( eTOTDEV_Kombi_SUP3 ) ) );
+}
+
+on EnvVar eTOTDEV_Kombi_SUP3Def
+{
+    putValue( eTOTDEV_Kombi_SUP3, 500 );
+}
+
+on EnvVar eDlcDEV_Kombi_SUP3Dec
+{
+    if (getValue( this ))  putValue( eDlcDEV_Kombi_SUP3, getValue( eDlcDEV_Kombi_SUP3 ) - 1 );
+}
+
+on EnvVar eDlcDEV_Kombi_SUP3Inc
+{
+    if (getValue( this ))  putValue( eDlcDEV_Kombi_SUP3, getValue( eDlcDEV_Kombi_SUP3 ) + 1 );
+}
+
+on EnvVar eDlcDEV_Kombi_SUP3Def
+{
+    putValue( eDlcDEV_Kombi_SUP3, 8 );
+}
+
+on EnvVar eTDEV_Kombi_UD1_PC_KI_ControlDec
+{
+    if (getValue( this ))  putValue( eTDEV_Kombi_UD1_PC_KI_Control, dec( getValue( eTDEV_Kombi_UD1_PC_KI_Control ) ) );
+}
+
+on EnvVar eTDEV_Kombi_UD1_PC_KI_ControlInc
+{
+    if (getValue( this ))  putValue( eTDEV_Kombi_UD1_PC_KI_Control, inc( getValue( eTDEV_Kombi_UD1_PC_KI_Control ) ) );
+}
+
+on EnvVar eTDEV_Kombi_UD1_PC_KI_ControlDef
+{
+    putValue( eTDEV_Kombi_UD1_PC_KI_Control, 0 );
+}
+
+on EnvVar eTOTDEV_Kombi_UD1_PC_KI_ControlD
+{
+    if (getValue( this ))  putValue( eTOTDEV_Kombi_UD1_PC_KI_Control, dec( getValue( eTOTDEV_Kombi_UD1_PC_KI_Control ) ) );
+}
+
+on EnvVar eTOTDEV_Kombi_UD1_PC_KI_ControlI
+{
+    if (getValue( this ))  putValue( eTOTDEV_Kombi_UD1_PC_KI_Control, inc( getValue( eTOTDEV_Kombi_UD1_PC_KI_Control ) ) );
+}
+
+on EnvVar e00TOTDEV_Kombi_UD1_PC_KI_Contro
+{
+    putValue( eTOTDEV_Kombi_UD1_PC_KI_Control, 500 );
+}
+
+on EnvVar eDlcDEV_Kombi_UD1_PC_KI_ControlD
+{
+    if (getValue( this ))  putValue( eDlcDEV_Kombi_UD1_PC_KI_Control, getValue( eDlcDEV_Kombi_UD1_PC_KI_Control ) - 1 );
+}
+
+on EnvVar eDlcDEV_Kombi_UD1_PC_KI_ControlI
+{
+    if (getValue( this ))  putValue( eDlcDEV_Kombi_UD1_PC_KI_Control, getValue( eDlcDEV_Kombi_UD1_PC_KI_Control ) + 1 );
+}
+
+on EnvVar e00DlcDEV_Kombi_UD1_PC_KI_Contro
+{
+    putValue( eDlcDEV_Kombi_UD1_PC_KI_Control, 8 );
+}
+
+on EnvVar eTDEV_Kombi_UD2_PC_KI_DataDec
+{
+    if (getValue( this ))  putValue( eTDEV_Kombi_UD2_PC_KI_Data, dec( getValue( eTDEV_Kombi_UD2_PC_KI_Data ) ) );
+}
+
+on EnvVar eTDEV_Kombi_UD2_PC_KI_DataInc
+{
+    if (getValue( this ))  putValue( eTDEV_Kombi_UD2_PC_KI_Data, inc( getValue( eTDEV_Kombi_UD2_PC_KI_Data ) ) );
+}
+
+on EnvVar eTDEV_Kombi_UD2_PC_KI_DataDef
+{
+    putValue( eTDEV_Kombi_UD2_PC_KI_Data, 0 );
+}
+
+on EnvVar eTOTDEV_Kombi_UD2_PC_KI_DataDec
+{
+    if (getValue( this ))  putValue( eTOTDEV_Kombi_UD2_PC_KI_Data, dec( getValue( eTOTDEV_Kombi_UD2_PC_KI_Data ) ) );
+}
+
+on EnvVar eTOTDEV_Kombi_UD2_PC_KI_DataInc
+{
+    if (getValue( this ))  putValue( eTOTDEV_Kombi_UD2_PC_KI_Data, inc( getValue( eTOTDEV_Kombi_UD2_PC_KI_Data ) ) );
+}
+
+on EnvVar eTOTDEV_Kombi_UD2_PC_KI_DataDef
+{
+    putValue( eTOTDEV_Kombi_UD2_PC_KI_Data, 500 );
+}
+
+on EnvVar eDlcDEV_Kombi_UD2_PC_KI_DataDec
+{
+    if (getValue( this ))  putValue( eDlcDEV_Kombi_UD2_PC_KI_Data, getValue( eDlcDEV_Kombi_UD2_PC_KI_Data ) - 1 );
+}
+
+on EnvVar eDlcDEV_Kombi_UD2_PC_KI_DataInc
+{
+    if (getValue( this ))  putValue( eDlcDEV_Kombi_UD2_PC_KI_Data, getValue( eDlcDEV_Kombi_UD2_PC_KI_Data ) + 1 );
+}
+
+on EnvVar eDlcDEV_Kombi_UD2_PC_KI_DataDef
+{
+    putValue( eDlcDEV_Kombi_UD2_PC_KI_Data, 8 );
+}
+
+on EnvVar eTDiagnose_01Dec
+{
+    if (getValue( this ))  putValue( eTDiagnose_01, dec( getValue( eTDiagnose_01 ) ) );
+}
+
+on EnvVar eTDiagnose_01Inc
+{
+    if (getValue( this ))  putValue( eTDiagnose_01, inc( getValue( eTDiagnose_01 ) ) );
+}
+
+on EnvVar eTDiagnose_01Def
+{
+    putValue( eTDiagnose_01, 1000 );
+}
+
+on EnvVar eTOTDiagnose_01Dec
+{
+    if (getValue( this ))  putValue( eTOTDiagnose_01, dec( getValue( eTOTDiagnose_01 ) ) );
+}
+
+on EnvVar eTOTDiagnose_01Inc
+{
+    if (getValue( this ))  putValue( eTOTDiagnose_01, inc( getValue( eTOTDiagnose_01 ) ) );
+}
+
+on EnvVar eTOTDiagnose_01Def
+{
+    putValue( eTOTDiagnose_01, 5000 );
+}
+
+on EnvVar eDlcDiagnose_01Dec
+{
+    if (getValue( this ))  putValue( eDlcDiagnose_01, getValue( eDlcDiagnose_01 ) - 1 );
+}
+
+on EnvVar eDlcDiagnose_01Inc
+{
+    if (getValue( this ))  putValue( eDlcDiagnose_01, getValue( eDlcDiagnose_01 ) + 1 );
+}
+
+on EnvVar eDlcDiagnose_01Def
+{
+    putValue( eDlcDiagnose_01, 8 );
+}
+
+on EnvVar eTESP_02Dec
+{
+    if (getValue( this ))  putValue( eTESP_02, dec( getValue( eTESP_02 ) ) );
+}
+
+on EnvVar eTESP_02Inc
+{
+    if (getValue( this ))  putValue( eTESP_02, inc( getValue( eTESP_02 ) ) );
+}
+
+on EnvVar eTESP_02Def
+{
+    putValue( eTESP_02, 20 );
+}
+
+on EnvVar eTOTESP_02Dec
+{
+    if (getValue( this ))  putValue( eTOTESP_02, dec( getValue( eTOTESP_02 ) ) );
+}
+
+on EnvVar eTOTESP_02Inc
+{
+    if (getValue( this ))  putValue( eTOTESP_02, inc( getValue( eTOTESP_02 ) ) );
+}
+
+on EnvVar eTOTESP_02Def
+{
+    putValue( eTOTESP_02, 500 );
+}
+
+on EnvVar eDlcESP_02Dec
+{
+    if (getValue( this ))  putValue( eDlcESP_02, getValue( eDlcESP_02 ) - 1 );
+}
+
+on EnvVar eDlcESP_02Inc
+{
+    if (getValue( this ))  putValue( eDlcESP_02, getValue( eDlcESP_02 ) + 1 );
+}
+
+on EnvVar eDlcESP_02Def
+{
+    putValue( eDlcESP_02, 8 );
+}
+
+
+
+
+on EnvVar eTESP_20Dec
+{
+    if (getValue( this ))  putValue( eTESP_20, dec( getValue( eTESP_20 ) ) );
+}
+
+on EnvVar eTESP_20Inc
+{
+    if (getValue( this ))  putValue( eTESP_20, inc( getValue( eTESP_20 ) ) );
+}
+
+on EnvVar eTESP_20Def
+{
+    putValue( eTESP_20, 1000 );
+}
+
+on EnvVar eTOTESP_20Dec
+{
+    if (getValue( this ))  putValue( eTOTESP_20, dec( getValue( eTOTESP_20 ) ) );
+}
+
+on EnvVar eTOTESP_20Inc
+{
+    if (getValue( this ))  putValue( eTOTESP_20, inc( getValue( eTOTESP_20 ) ) );
+}
+
+on EnvVar eTOTESP_20Def
+{
+    putValue( eTOTESP_20, 5000 );
+}
+
+on EnvVar eDlcESP_20Dec
+{
+    if (getValue( this ))  putValue( eDlcESP_20, getValue( eDlcESP_20 ) - 1 );
+}
+
+on EnvVar eDlcESP_20Inc
+{
+    if (getValue( this ))  putValue( eDlcESP_20, getValue( eDlcESP_20 ) + 1 );
+}
+
+on EnvVar eDlcESP_20Def
+{
+    putValue( eDlcESP_20, 8 );
+}
+
+on EnvVar eTESP_24Dec
+{
+    if (getValue( this ))  putValue( eTESP_24, dec( getValue( eTESP_24 ) ) );
+}
+
+on EnvVar eTESP_24Inc
+{
+    if (getValue( this ))  putValue( eTESP_24, inc( getValue( eTESP_24 ) ) );
+}
+
+on EnvVar eTESP_24Def
+{
+    putValue( eTESP_24, 50 );
+}
+
+on EnvVar eTOTESP_24Dec
+{
+    if (getValue( this ))  putValue( eTOTESP_24, dec( getValue( eTOTESP_24 ) ) );
+}
+
+on EnvVar eTOTESP_24Inc
+{
+    if (getValue( this ))  putValue( eTOTESP_24, inc( getValue( eTOTESP_24 ) ) );
+}
+
+on EnvVar eTOTESP_24Def
+{
+    putValue( eTOTESP_24, 500 );
+}
+
+on EnvVar eDlcESP_24Dec
+{
+    if (getValue( this ))  putValue( eDlcESP_24, getValue( eDlcESP_24 ) - 1 );
+}
+
+on EnvVar eDlcESP_24Inc
+{
+    if (getValue( this ))  putValue( eDlcESP_24, getValue( eDlcESP_24 ) + 1 );
+}
+
+on EnvVar eDlcESP_24Def
+{
+    putValue( eDlcESP_24, 8 );
+}
+
+on EnvVar eBZStepESP_24Dec
+{
+    if (getValue( this ))  putValue( eBZStepESP_24, getValue( eBZStepESP_24 ) - 1 );
+}
+
+on EnvVar eBZStepESP_24Inc
+{
+    if (getValue( this ))  putValue( eBZStepESP_24, getValue( eBZStepESP_24 ) + 1 );
+}
+
+on EnvVar eBZStepESP_24Def
+{
+    putValue( eBZStepESP_24, 1 );
+}
+
+on EnvVar eTTSG_FT_02Dec
+{
+    if (getValue( this ))  putValue( eTTSG_FT_02, dec( getValue( eTTSG_FT_02 ) ) );
+}
+
+on EnvVar eTTSG_FT_02Inc
+{
+    if (getValue( this ))  putValue( eTTSG_FT_02, inc( getValue( eTTSG_FT_02 ) ) );
+}
+
+on EnvVar eTTSG_FT_02Def
+{
+    putValue( eTTSG_FT_02, 100 );
+}
+
+on EnvVar eTOTTSG_FT_02Dec
+{
+    if (getValue( this ))  putValue( eTOTTSG_FT_02, dec( getValue( eTOTTSG_FT_02 ) ) );
+}
+
+on EnvVar eTOTTSG_FT_02Inc
+{
+    if (getValue( this ))  putValue( eTOTTSG_FT_02, inc( getValue( eTOTTSG_FT_02 ) ) );
+}
+
+on EnvVar eTOTTSG_FT_02Def
+{
+    putValue( eTOTTSG_FT_02, 1000 );
+}
+
+on EnvVar eDlcTSG_FT_02Dec
+{
+    if (getValue( this ))  putValue( eDlcTSG_FT_02, getValue( eDlcTSG_FT_02 ) - 1 );
+}
+
+on EnvVar eDlcTSG_FT_02Inc
+{
+    if (getValue( this ))  putValue( eDlcTSG_FT_02, getValue( eDlcTSG_FT_02 ) + 1 );
+}
+
+on EnvVar eDlcTSG_FT_02Def
+{
+    putValue( eDlcTSG_FT_02, 8 );
+}
+
+on EnvVar eBZStepTSG_FT_02Dec
+{
+    if (getValue( this ))  putValue( eBZStepTSG_FT_02, getValue( eBZStepTSG_FT_02 ) - 1 );
+}
+
+on EnvVar eBZStepTSG_FT_02Inc
+{
+    if (getValue( this ))  putValue( eBZStepTSG_FT_02, getValue( eBZStepTSG_FT_02 ) + 1 );
+}
+
+on EnvVar eBZStepTSG_FT_02Def
+{
+    putValue( eBZStepTSG_FT_02, 1 );
+}
+
+on EnvVar eTGateway_73Dec
+{
+    if (getValue( this ))  putValue( eTGateway_73, dec( getValue( eTGateway_73 ) ) );
+}
+
+on EnvVar eTGateway_73Inc
+{
+    if (getValue( this ))  putValue( eTGateway_73, inc( getValue( eTGateway_73 ) ) );
+}
+
+on EnvVar eTGateway_73Def
+{
+    putValue( eTGateway_73, 50 );
+}
+
+on EnvVar eTOTGateway_73Dec
+{
+    if (getValue( this ))  putValue( eTOTGateway_73, dec( getValue( eTOTGateway_73 ) ) );
+}
+
+on EnvVar eTOTGateway_73Inc
+{
+    if (getValue( this ))  putValue( eTOTGateway_73, inc( getValue( eTOTGateway_73 ) ) );
+}
+
+on EnvVar eTOTGateway_73Def
+{
+    putValue( eTOTGateway_73, 500 );
+}
+
+on EnvVar eDlcGateway_73Dec
+{
+    if (getValue( this ))  putValue( eDlcGateway_73, getValue( eDlcGateway_73 ) - 1 );
+}
+
+on EnvVar eDlcGateway_73Inc
+{
+    if (getValue( this ))  putValue( eDlcGateway_73, getValue( eDlcGateway_73 ) + 1 );
+}
+
+on EnvVar eDlcGateway_73Def
+{
+    putValue( eDlcGateway_73, 8 );
+}
+
+on EnvVar eTISO_Funktionaler_Req_AllDec
+{
+    if (getValue( this ))  putValue( eTISO_Funktionaler_Req_All, dec( getValue( eTISO_Funktionaler_Req_All ) ) );
+}
+
+on EnvVar eTISO_Funktionaler_Req_AllInc
+{
+    if (getValue( this ))  putValue( eTISO_Funktionaler_Req_All, inc( getValue( eTISO_Funktionaler_Req_All ) ) );
+}
+
+on EnvVar eTISO_Funktionaler_Req_AllDef
+{
+    putValue( eTISO_Funktionaler_Req_All, 0 );
+}
+
+on EnvVar eTOTISO_Funktionaler_Req_AllDec
+{
+    if (getValue( this ))  putValue( eTOTISO_Funktionaler_Req_All, dec( getValue( eTOTISO_Funktionaler_Req_All ) ) );
+}
+
+on EnvVar eTOTISO_Funktionaler_Req_AllInc
+{
+    if (getValue( this ))  putValue( eTOTISO_Funktionaler_Req_All, inc( getValue( eTOTISO_Funktionaler_Req_All ) ) );
+}
+
+on EnvVar eTOTISO_Funktionaler_Req_AllDef
+{
+    putValue( eTOTISO_Funktionaler_Req_All, 500 );
+}
+
+on EnvVar eDlcISO_Funktionaler_Req_AllDec
+{
+    if (getValue( this ))  putValue( eDlcISO_Funktionaler_Req_All, getValue( eDlcISO_Funktionaler_Req_All ) - 1 );
+}
+
+on EnvVar eDlcISO_Funktionaler_Req_AllInc
+{
+    if (getValue( this ))  putValue( eDlcISO_Funktionaler_Req_All, getValue( eDlcISO_Funktionaler_Req_All ) + 1 );
+}
+
+on EnvVar eDlcISO_Funktionaler_Req_AllDef
+{
+    putValue( eDlcISO_Funktionaler_Req_All, 8 );
+}
+
+on EnvVar eTISO_Kombi_ReqDec
+{
+    if (getValue( this ))  putValue( eTISO_Kombi_Req, dec( getValue( eTISO_Kombi_Req ) ) );
+}
+
+on EnvVar eTISO_Kombi_ReqInc
+{
+    if (getValue( this ))  putValue( eTISO_Kombi_Req, inc( getValue( eTISO_Kombi_Req ) ) );
+}
+
+on EnvVar eTISO_Kombi_ReqDef
+{
+    putValue( eTISO_Kombi_Req, 0 );
+}
+
+on EnvVar eTOTISO_Kombi_ReqDec
+{
+    if (getValue( this ))  putValue( eTOTISO_Kombi_Req, dec( getValue( eTOTISO_Kombi_Req ) ) );
+}
+
+on EnvVar eTOTISO_Kombi_ReqInc
+{
+    if (getValue( this ))  putValue( eTOTISO_Kombi_Req, inc( getValue( eTOTISO_Kombi_Req ) ) );
+}
+
+on EnvVar eTOTISO_Kombi_ReqDef
+{
+    putValue( eTOTISO_Kombi_Req, 500 );
+}
+
+on EnvVar eDlcISO_Kombi_ReqDec
+{
+    if (getValue( this ))  putValue( eDlcISO_Kombi_Req, getValue( eDlcISO_Kombi_Req ) - 1 );
+}
+
+on EnvVar eDlcISO_Kombi_ReqInc
+{
+    if (getValue( this ))  putValue( eDlcISO_Kombi_Req, getValue( eDlcISO_Kombi_Req ) + 1 );
+}
+
+on EnvVar eDlcISO_Kombi_ReqDef
+{
+    putValue( eDlcISO_Kombi_Req, 8 );
+}
+
+on EnvVar eTKS_Kombi_ReqDec
+{
+    if (getValue( this ))  putValue( eTKS_Kombi_Req, dec( getValue( eTKS_Kombi_Req ) ) );
+}
+
+on EnvVar eTKS_Kombi_ReqInc
+{
+    if (getValue( this ))  putValue( eTKS_Kombi_Req, inc( getValue( eTKS_Kombi_Req ) ) );
+}
+
+on EnvVar eTKS_Kombi_ReqDef
+{
+    putValue( eTKS_Kombi_Req, 0 );
+}
+
+on EnvVar eTOTKS_Kombi_ReqDec
+{
+    if (getValue( this ))  putValue( eTOTKS_Kombi_Req, dec( getValue( eTOTKS_Kombi_Req ) ) );
+}
+
+on EnvVar eTOTKS_Kombi_ReqInc
+{
+    if (getValue( this ))  putValue( eTOTKS_Kombi_Req, inc( getValue( eTOTKS_Kombi_Req ) ) );
+}
+
+on EnvVar eTOTKS_Kombi_ReqDef
+{
+    putValue( eTOTKS_Kombi_Req, 500 );
+}
+
+on EnvVar eDlcKS_Kombi_ReqDec
+{
+    if (getValue( this ))  putValue( eDlcKS_Kombi_Req, getValue( eDlcKS_Kombi_Req ) - 1 );
+}
+
+on EnvVar eDlcKS_Kombi_ReqInc
+{
+    if (getValue( this ))  putValue( eDlcKS_Kombi_Req, getValue( eDlcKS_Kombi_Req ) + 1 );
+}
+
+on EnvVar eDlcKS_Kombi_ReqDef
+{
+    putValue( eDlcKS_Kombi_Req, 8 );
+}
+
+on EnvVar eTLDW_02Dec
+{
+    if (getValue( this ))  putValue( eTLDW_02, dec( getValue( eTLDW_02 ) ) );
+}
+
+on EnvVar eTLDW_02Inc
+{
+    if (getValue( this ))  putValue( eTLDW_02, inc( getValue( eTLDW_02 ) ) );
+}
+
+on EnvVar eTLDW_02Def
+{
+    putValue( eTLDW_02, 100 );
+}
+
+on EnvVar eTOTLDW_02Dec
+{
+    if (getValue( this ))  putValue( eTOTLDW_02, dec( getValue( eTOTLDW_02 ) ) );
+}
+
+on EnvVar eTOTLDW_02Inc
+{
+    if (getValue( this ))  putValue( eTOTLDW_02, inc( getValue( eTOTLDW_02 ) ) );
+}
+
+on EnvVar eTOTLDW_02Def
+{
+    putValue( eTOTLDW_02, 1000 );
+}
+
+on EnvVar eDlcLDW_02Dec
+{
+    if (getValue( this ))  putValue( eDlcLDW_02, getValue( eDlcLDW_02 ) - 1 );
+}
+
+on EnvVar eDlcLDW_02Inc
+{
+    if (getValue( this ))  putValue( eDlcLDW_02, getValue( eDlcLDW_02 ) + 1 );
+}
+
+on EnvVar eDlcLDW_02Def
+{
+    putValue( eDlcLDW_02, 8 );
+}
+
+on EnvVar eTLH_EPS_01Dec
+{
+    if (getValue( this ))  putValue( eTLH_EPS_01, dec( getValue( eTLH_EPS_01 ) ) );
+}
+
+on EnvVar eTLH_EPS_01Inc
+{
+    if (getValue( this ))  putValue( eTLH_EPS_01, inc( getValue( eTLH_EPS_01 ) ) );
+}
+
+on EnvVar eTLH_EPS_01Def
+{
+    putValue( eTLH_EPS_01, 50 );
+}
+
+on EnvVar eTOTLH_EPS_01Dec
+{
+    if (getValue( this ))  putValue( eTOTLH_EPS_01, dec( getValue( eTOTLH_EPS_01 ) ) );
+}
+
+on EnvVar eTOTLH_EPS_01Inc
+{
+    if (getValue( this ))  putValue( eTOTLH_EPS_01, inc( getValue( eTOTLH_EPS_01 ) ) );
+}
+
+on EnvVar eTOTLH_EPS_01Def
+{
+    putValue( eTOTLH_EPS_01, 500 );
+}
+
+on EnvVar eDlcLH_EPS_01Dec
+{
+    if (getValue( this ))  putValue( eDlcLH_EPS_01, getValue( eDlcLH_EPS_01 ) - 1 );
+}
+
+on EnvVar eDlcLH_EPS_01Inc
+{
+    if (getValue( this ))  putValue( eDlcLH_EPS_01, getValue( eDlcLH_EPS_01 ) + 1 );
+}
+
+on EnvVar eDlcLH_EPS_01Def
+{
+    putValue( eDlcLH_EPS_01, 8 );
+}
+
+on EnvVar eBZStepLH_EPS_01Dec
+{
+    if (getValue( this ))  putValue( eBZStepLH_EPS_01, getValue( eBZStepLH_EPS_01 ) - 1 );
+}
+
+on EnvVar eBZStepLH_EPS_01Inc
+{
+    if (getValue( this ))  putValue( eBZStepLH_EPS_01, getValue( eBZStepLH_EPS_01 ) + 1 );
+}
+
+on EnvVar eBZStepLH_EPS_01Def
+{
+    putValue( eBZStepLH_EPS_01, 1 );
+}
+
+on EnvVar eTLWR_AFS_01Dec
+{
+    if (getValue( this ))  putValue( eTLWR_AFS_01, dec( getValue( eTLWR_AFS_01 ) ) );
+}
+
+on EnvVar eTLWR_AFS_01Inc
+{
+    if (getValue( this ))  putValue( eTLWR_AFS_01, inc( getValue( eTLWR_AFS_01 ) ) );
+}
+
+on EnvVar eTLWR_AFS_01Def
+{
+    putValue( eTLWR_AFS_01, 100 );
+}
+
+on EnvVar eTOTLWR_AFS_01Dec
+{
+    if (getValue( this ))  putValue( eTOTLWR_AFS_01, dec( getValue( eTOTLWR_AFS_01 ) ) );
+}
+
+on EnvVar eTOTLWR_AFS_01Inc
+{
+    if (getValue( this ))  putValue( eTOTLWR_AFS_01, inc( getValue( eTOTLWR_AFS_01 ) ) );
+}
+
+on EnvVar eTOTLWR_AFS_01Def
+{
+    putValue( eTOTLWR_AFS_01, 1000 );
+}
+
+on EnvVar eDlcLWR_AFS_01Dec
+{
+    if (getValue( this ))  putValue( eDlcLWR_AFS_01, getValue( eDlcLWR_AFS_01 ) - 1 );
+}
+
+on EnvVar eDlcLWR_AFS_01Inc
+{
+    if (getValue( this ))  putValue( eDlcLWR_AFS_01, getValue( eDlcLWR_AFS_01 ) + 1 );
+}
+
+on EnvVar eDlcLWR_AFS_01Def
+{
+    putValue( eDlcLWR_AFS_01, 8 );
+}
+
+on EnvVar eBZStepLWR_AFS_01Dec
+{
+    if (getValue( this ))  putValue( eBZStepLWR_AFS_01, getValue( eBZStepLWR_AFS_01 ) - 1 );
+}
+
+on EnvVar eBZStepLWR_AFS_01Inc
+{
+    if (getValue( this ))  putValue( eBZStepLWR_AFS_01, getValue( eBZStepLWR_AFS_01 ) + 1 );
+}
+
+on EnvVar eBZStepLWR_AFS_01Def
+{
+    putValue( eBZStepLWR_AFS_01, 1 );
+}
+
+on EnvVar eTMFL_Tasten_Kon_01Dec
+{
+    if (getValue( this ))  putValue( eTMFL_Tasten_Kon_01, dec( getValue( eTMFL_Tasten_Kon_01 ) ) );
+}
+
+on EnvVar eTMFL_Tasten_Kon_01Inc
+{
+    if (getValue( this ))  putValue( eTMFL_Tasten_Kon_01, inc( getValue( eTMFL_Tasten_Kon_01 ) ) );
+}
+
+on EnvVar eTMFL_Tasten_Kon_01Def
+{
+    putValue( eTMFL_Tasten_Kon_01, 1000 );
+}
+
+on EnvVar eTOTMFL_Tasten_Kon_01Dec
+{
+    if (getValue( this ))  putValue( eTOTMFL_Tasten_Kon_01, dec( getValue( eTOTMFL_Tasten_Kon_01 ) ) );
+}
+
+on EnvVar eTOTMFL_Tasten_Kon_01Inc
+{
+    if (getValue( this ))  putValue( eTOTMFL_Tasten_Kon_01, inc( getValue( eTOTMFL_Tasten_Kon_01 ) ) );
+}
+
+on EnvVar eTOTMFL_Tasten_Kon_01Def
+{
+    putValue( eTOTMFL_Tasten_Kon_01, 5000 );
+}
+
+on EnvVar eDlcMFL_Tasten_Kon_01Dec
+{
+    if (getValue( this ))  putValue( eDlcMFL_Tasten_Kon_01, getValue( eDlcMFL_Tasten_Kon_01 ) - 1 );
+}
+
+on EnvVar eDlcMFL_Tasten_Kon_01Inc
+{
+    if (getValue( this ))  putValue( eDlcMFL_Tasten_Kon_01, getValue( eDlcMFL_Tasten_Kon_01 ) + 1 );
+}
+
+on EnvVar eDlcMFL_Tasten_Kon_01Def
+{
+    putValue( eDlcMFL_Tasten_Kon_01, 4 );
+}
+
+on EnvVar eTMotor_04Dec
+{
+    if (getValue( this ))  putValue( eTMotor_04, dec( getValue( eTMotor_04 ) ) );
+}
+
+on EnvVar eTMotor_04Inc
+{
+    if (getValue( this ))  putValue( eTMotor_04, inc( getValue( eTMotor_04 ) ) );
+}
+
+on EnvVar eTMotor_04Def
+{
+    putValue( eTMotor_04, 20 );
+}
+
+on EnvVar eTOTMotor_04Dec
+{
+    if (getValue( this ))  putValue( eTOTMotor_04, dec( getValue( eTOTMotor_04 ) ) );
+}
+
+on EnvVar eTOTMotor_04Inc
+{
+    if (getValue( this ))  putValue( eTOTMotor_04, inc( getValue( eTOTMotor_04 ) ) );
+}
+
+on EnvVar eTOTMotor_04Def
+{
+    putValue( eTOTMotor_04, 500 );
+}
+
+on EnvVar eDlcMotor_04Dec
+{
+    if (getValue( this ))  putValue( eDlcMotor_04, getValue( eDlcMotor_04 ) - 1 );
+}
+
+on EnvVar eDlcMotor_04Inc
+{
+    if (getValue( this ))  putValue( eDlcMotor_04, getValue( eDlcMotor_04 ) + 1 );
+}
+
+on EnvVar eDlcMotor_04Def
+{
+    putValue( eDlcMotor_04, 8 );
+}
+
+on EnvVar eTMotor_07Dec
+{
+    if (getValue( this ))  putValue( eTMotor_07, dec( getValue( eTMotor_07 ) ) );
+}
+
+on EnvVar eTMotor_07Inc
+{
+    if (getValue( this ))  putValue( eTMotor_07, inc( getValue( eTMotor_07 ) ) );
+}
+
+on EnvVar eTMotor_07Def
+{
+    putValue( eTMotor_07, 500 );
+}
+
+on EnvVar eTOTMotor_07Dec
+{
+    if (getValue( this ))  putValue( eTOTMotor_07, dec( getValue( eTOTMotor_07 ) ) );
+}
+
+on EnvVar eTOTMotor_07Inc
+{
+    if (getValue( this ))  putValue( eTOTMotor_07, inc( getValue( eTOTMotor_07 ) ) );
+}
+
+on EnvVar eTOTMotor_07Def
+{
+    putValue( eTOTMotor_07, 5000 );
+}
+
+on EnvVar eDlcMotor_07Dec
+{
+    if (getValue( this ))  putValue( eDlcMotor_07, getValue( eDlcMotor_07 ) - 1 );
+}
+
+on EnvVar eDlcMotor_07Inc
+{
+    if (getValue( this ))  putValue( eDlcMotor_07, getValue( eDlcMotor_07 ) + 1 );
+}
+
+on EnvVar eDlcMotor_07Def
+{
+    putValue( eDlcMotor_07, 8 );
+}
+
+on EnvVar eTMotor_09Dec
+{
+    if (getValue( this ))  putValue( eTMotor_09, dec( getValue( eTMotor_09 ) ) );
+}
+
+on EnvVar eTMotor_09Inc
+{
+    if (getValue( this ))  putValue( eTMotor_09, inc( getValue( eTMotor_09 ) ) );
+}
+
+on EnvVar eTMotor_09Def
+{
+    putValue( eTMotor_09, 500 );
+}
+
+on EnvVar eTOTMotor_09Dec
+{
+    if (getValue( this ))  putValue( eTOTMotor_09, dec( getValue( eTOTMotor_09 ) ) );
+}
+
+on EnvVar eTOTMotor_09Inc
+{
+    if (getValue( this ))  putValue( eTOTMotor_09, inc( getValue( eTOTMotor_09 ) ) );
+}
+
+on EnvVar eTOTMotor_09Def
+{
+    putValue( eTOTMotor_09, 5000 );
+}
+
+on EnvVar eDlcMotor_09Dec
+{
+    if (getValue( this ))  putValue( eDlcMotor_09, getValue( eDlcMotor_09 ) - 1 );
+}
+
+on EnvVar eDlcMotor_09Inc
+{
+    if (getValue( this ))  putValue( eDlcMotor_09, getValue( eDlcMotor_09 ) + 1 );
+}
+
+on EnvVar eDlcMotor_09Def
+{
+    putValue( eDlcMotor_09, 8 );
+}
+
+on EnvVar eTMotor_14Dec
+{
+    if (getValue( this ))  putValue( eTMotor_14, dec( getValue( eTMotor_14 ) ) );
+}
+
+on EnvVar eTMotor_14Inc
+{
+    if (getValue( this ))  putValue( eTMotor_14, inc( getValue( eTMotor_14 ) ) );
+}
+
+on EnvVar eTMotor_14Def
+{
+    putValue( eTMotor_14, 100 );
+}
+
+on EnvVar eTOTMotor_14Dec
+{
+    if (getValue( this ))  putValue( eTOTMotor_14, dec( getValue( eTOTMotor_14 ) ) );
+}
+
+on EnvVar eTOTMotor_14Inc
+{
+    if (getValue( this ))  putValue( eTOTMotor_14, inc( getValue( eTOTMotor_14 ) ) );
+}
+
+on EnvVar eTOTMotor_14Def
+{
+    putValue( eTOTMotor_14, 1000 );
+}
+
+on EnvVar eDlcMotor_14Dec
+{
+    if (getValue( this ))  putValue( eDlcMotor_14, getValue( eDlcMotor_14 ) - 1 );
+}
+
+on EnvVar eDlcMotor_14Inc
+{
+    if (getValue( this ))  putValue( eDlcMotor_14, getValue( eDlcMotor_14 ) + 1 );
+}
+
+on EnvVar eDlcMotor_14Def
+{
+    putValue( eDlcMotor_14, 8 );
+}
+
+on EnvVar eTMotor_18Dec
+{
+    if (getValue( this ))  putValue( eTMotor_18, dec( getValue( eTMotor_18 ) ) );
+}
+
+on EnvVar eTMotor_18Inc
+{
+    if (getValue( this ))  putValue( eTMotor_18, inc( getValue( eTMotor_18 ) ) );
+}
+
+on EnvVar eTMotor_18Def
+{
+    putValue( eTMotor_18, 500 );
+}
+
+on EnvVar eTOTMotor_18Dec
+{
+    if (getValue( this ))  putValue( eTOTMotor_18, dec( getValue( eTOTMotor_18 ) ) );
+}
+
+on EnvVar eTOTMotor_18Inc
+{
+    if (getValue( this ))  putValue( eTOTMotor_18, inc( getValue( eTOTMotor_18 ) ) );
+}
+
+on EnvVar eTOTMotor_18Def
+{
+    putValue( eTOTMotor_18, 5000 );
+}
+
+on EnvVar eDlcMotor_18Dec
+{
+    if (getValue( this ))  putValue( eDlcMotor_18, getValue( eDlcMotor_18 ) - 1 );
+}
+
+on EnvVar eDlcMotor_18Inc
+{
+    if (getValue( this ))  putValue( eDlcMotor_18, getValue( eDlcMotor_18 ) + 1 );
+}
+
+on EnvVar eDlcMotor_18Def
+{
+    putValue( eDlcMotor_18, 8 );
+}
+
+on EnvVar eTMotor_26Dec
+{
+    if (getValue( this ))  putValue( eTMotor_26, dec( getValue( eTMotor_26 ) ) );
+}
+
+on EnvVar eTMotor_26Inc
+{
+    if (getValue( this ))  putValue( eTMotor_26, inc( getValue( eTMotor_26 ) ) );
+}
+
+on EnvVar eTMotor_26Def
+{
+    putValue( eTMotor_26, 100 );
+}
+
+on EnvVar eTOTMotor_26Dec
+{
+    if (getValue( this ))  putValue( eTOTMotor_26, dec( getValue( eTOTMotor_26 ) ) );
+}
+
+on EnvVar eTOTMotor_26Inc
+{
+    if (getValue( this ))  putValue( eTOTMotor_26, inc( getValue( eTOTMotor_26 ) ) );
+}
+
+on EnvVar eTOTMotor_26Def
+{
+    putValue( eTOTMotor_26, 1000 );
+}
+
+on EnvVar eDlcMotor_26Dec
+{
+    if (getValue( this ))  putValue( eDlcMotor_26, getValue( eDlcMotor_26 ) - 1 );
+}
+
+on EnvVar eDlcMotor_26Inc
+{
+    if (getValue( this ))  putValue( eDlcMotor_26, getValue( eDlcMotor_26 ) + 1 );
+}
+
+on EnvVar eDlcMotor_26Def
+{
+    putValue( eDlcMotor_26, 8 );
+}
+
+on EnvVar eTMotor_Code_01Dec
+{
+    if (getValue( this ))  putValue( eTMotor_Code_01, dec( getValue( eTMotor_Code_01 ) ) );
+}
+
+on EnvVar eTMotor_Code_01Inc
+{
+    if (getValue( this ))  putValue( eTMotor_Code_01, inc( getValue( eTMotor_Code_01 ) ) );
+}
+
+on EnvVar eTMotor_Code_01Def
+{
+    putValue( eTMotor_Code_01, 1000 );
+}
+
+on EnvVar eTOTMotor_Code_01Dec
+{
+    if (getValue( this ))  putValue( eTOTMotor_Code_01, dec( getValue( eTOTMotor_Code_01 ) ) );
+}
+
+on EnvVar eTOTMotor_Code_01Inc
+{
+    if (getValue( this ))  putValue( eTOTMotor_Code_01, inc( getValue( eTOTMotor_Code_01 ) ) );
+}
+
+on EnvVar eTOTMotor_Code_01Def
+{
+    putValue( eTOTMotor_Code_01, 5000 );
+}
+
+on EnvVar eDlcMotor_Code_01Dec
+{
+    if (getValue( this ))  putValue( eDlcMotor_Code_01, getValue( eDlcMotor_Code_01 ) - 1 );
+}
+
+on EnvVar eDlcMotor_Code_01Inc
+{
+    if (getValue( this ))  putValue( eDlcMotor_Code_01, getValue( eDlcMotor_Code_01 ) + 1 );
+}
+
+on EnvVar eDlcMotor_Code_01Def
+{
+    putValue( eDlcMotor_Code_01, 8 );
+}
+
+on EnvVar eBZStepMotor_Code_01Dec
+{
+    if (getValue( this ))  putValue( eBZStepMotor_Code_01, getValue( eBZStepMotor_Code_01 ) - 1 );
+}
+
+on EnvVar eBZStepMotor_Code_01Inc
+{
+    if (getValue( this ))  putValue( eBZStepMotor_Code_01, getValue( eBZStepMotor_Code_01 ) + 1 );
+}
+
+on EnvVar eBZStepMotor_Code_01Def
+{
+    putValue( eBZStepMotor_Code_01, 1 );
+}
+
+on EnvVar eTNMH_GatewayDec
+{
+    if (getValue( this ))  putValue( eTNMH_Gateway, dec( getValue( eTNMH_Gateway ) ) );
+}
+
+on EnvVar eTNMH_GatewayInc
+{
+    if (getValue( this ))  putValue( eTNMH_Gateway, inc( getValue( eTNMH_Gateway ) ) );
+}
+
+on EnvVar eTNMH_GatewayDef
+{
+    putValue( eTNMH_Gateway, 200 );
+}
+
+on EnvVar eTOTNMH_GatewayDec
+{
+    if (getValue( this ))  putValue( eTOTNMH_Gateway, dec( getValue( eTOTNMH_Gateway ) ) );
+}
+
+on EnvVar eTOTNMH_GatewayInc
+{
+    if (getValue( this ))  putValue( eTOTNMH_Gateway, inc( getValue( eTOTNMH_Gateway ) ) );
+}
+
+on EnvVar eTOTNMH_GatewayDef
+{
+    putValue( eTOTNMH_Gateway, 2000 );
+}
+
+on EnvVar eDlcNMH_GatewayDec
+{
+    if (getValue( this ))  putValue( eDlcNMH_Gateway, getValue( eDlcNMH_Gateway ) - 1 );
+}
+
+on EnvVar eDlcNMH_GatewayInc
+{
+    if (getValue( this ))  putValue( eDlcNMH_Gateway, getValue( eDlcNMH_Gateway ) + 1 );
+}
+
+on EnvVar eDlcNMH_GatewayDef
+{
+    putValue( eDlcNMH_Gateway, 8 );
+}
+
+on EnvVar eTRDK_01Dec
+{
+    if (getValue( this ))  putValue( eTRDK_01, dec( getValue( eTRDK_01 ) ) );
+}
+
+on EnvVar eTRDK_01Inc
+{
+    if (getValue( this ))  putValue( eTRDK_01, inc( getValue( eTRDK_01 ) ) );
+}
+
+on EnvVar eTRDK_01Def
+{
+    putValue( eTRDK_01, 500 );
+}
+
+on EnvVar eTOTRDK_01Dec
+{
+    if (getValue( this ))  putValue( eTOTRDK_01, dec( getValue( eTOTRDK_01 ) ) );
+}
+
+on EnvVar eTOTRDK_01Inc
+{
+    if (getValue( this ))  putValue( eTOTRDK_01, inc( getValue( eTOTRDK_01 ) ) );
+}
+
+on EnvVar eTOTRDK_01Def
+{
+    putValue( eTOTRDK_01, 5000 );
+}
+
+on EnvVar eDlcRDK_01Dec
+{
+    if (getValue( this ))  putValue( eDlcRDK_01, getValue( eDlcRDK_01 ) - 1 );
+}
+
+on EnvVar eDlcRDK_01Inc
+{
+    if (getValue( this ))  putValue( eDlcRDK_01, getValue( eDlcRDK_01 ) + 1 );
+}
+
+on EnvVar eDlcRDK_01Def
+{
+    putValue( eDlcRDK_01, 8 );
+}
+
+on EnvVar eTRKA_01Dec
+{
+    if (getValue( this ))  putValue( eTRKA_01, dec( getValue( eTRKA_01 ) ) );
+}
+
+on EnvVar eTRKA_01Inc
+{
+    if (getValue( this ))  putValue( eTRKA_01, inc( getValue( eTRKA_01 ) ) );
+}
+
+on EnvVar eTRKA_01Def
+{
+    putValue( eTRKA_01, 500 );
+}
+
+on EnvVar eTOTRKA_01Dec
+{
+    if (getValue( this ))  putValue( eTOTRKA_01, dec( getValue( eTOTRKA_01 ) ) );
+}
+
+on EnvVar eTOTRKA_01Inc
+{
+    if (getValue( this ))  putValue( eTOTRKA_01, inc( getValue( eTOTRKA_01 ) ) );
+}
+
+on EnvVar eTOTRKA_01Def
+{
+    putValue( eTOTRKA_01, 5000 );
+}
+
+on EnvVar eDlcRKA_01Dec
+{
+    if (getValue( this ))  putValue( eDlcRKA_01, getValue( eDlcRKA_01 ) - 1 );
+}
+
+on EnvVar eDlcRKA_01Inc
+{
+    if (getValue( this ))  putValue( eDlcRKA_01, getValue( eDlcRKA_01 ) + 1 );
+}
+
+on EnvVar eDlcRKA_01Def
+{
+    putValue( eDlcRKA_01, 4 );
+}
+
+on EnvVar eTSWA_01Dec
+{
+    if (getValue( this ))  putValue( eTSWA_01, dec( getValue( eTSWA_01 ) ) );
+}
+
+on EnvVar eTSWA_01Inc
+{
+    if (getValue( this ))  putValue( eTSWA_01, inc( getValue( eTSWA_01 ) ) );
+}
+
+on EnvVar eTSWA_01Def
+{
+    putValue( eTSWA_01, 50 );
+}
+
+on EnvVar eTOTSWA_01Dec
+{
+    if (getValue( this ))  putValue( eTOTSWA_01, dec( getValue( eTOTSWA_01 ) ) );
+}
+
+on EnvVar eTOTSWA_01Inc
+{
+    if (getValue( this ))  putValue( eTOTSWA_01, inc( getValue( eTOTSWA_01 ) ) );
+}
+
+on EnvVar eTOTSWA_01Def
+{
+    putValue( eTOTSWA_01, 500 );
+}
+
+on EnvVar eDlcSWA_01Dec
+{
+    if (getValue( this ))  putValue( eDlcSWA_01, getValue( eDlcSWA_01 ) - 1 );
+}
+
+on EnvVar eDlcSWA_01Inc
+{
+    if (getValue( this ))  putValue( eDlcSWA_01, getValue( eDlcSWA_01 ) + 1 );
+}
+
+on EnvVar eDlcSWA_01Def
+{
+    putValue( eDlcSWA_01, 8 );
+}
+
+on EnvVar eBZStepSWA_01Dec
+{
+    if (getValue( this ))  putValue( eBZStepSWA_01, getValue( eBZStepSWA_01 ) - 1 );
+}
+
+on EnvVar eBZStepSWA_01Inc
+{
+    if (getValue( this ))  putValue( eBZStepSWA_01, getValue( eBZStepSWA_01 ) + 1 );
+}
+
+on EnvVar eBZStepSWA_01Def
+{
+    putValue( eBZStepSWA_01, 1 );
+}
+
+on EnvVar eTSysteminfo_01Dec
+{
+    if (getValue( this ))  putValue( eTSysteminfo_01, dec( getValue( eTSysteminfo_01 ) ) );
+}
+
+on EnvVar eTSysteminfo_01Inc
+{
+    if (getValue( this ))  putValue( eTSysteminfo_01, inc( getValue( eTSysteminfo_01 ) ) );
+}
+
+on EnvVar eTSysteminfo_01Def
+{
+    putValue( eTSysteminfo_01, 1000 );
+}
+
+on EnvVar eTOTSysteminfo_01Dec
+{
+    if (getValue( this ))  putValue( eTOTSysteminfo_01, dec( getValue( eTOTSysteminfo_01 ) ) );
+}
+
+on EnvVar eTOTSysteminfo_01Inc
+{
+    if (getValue( this ))  putValue( eTOTSysteminfo_01, inc( getValue( eTOTSysteminfo_01 ) ) );
+}
+
+on EnvVar eTOTSysteminfo_01Def
+{
+    putValue( eTOTSysteminfo_01, 5000 );
+}
+
+on EnvVar eDlcSysteminfo_01Dec
+{
+    if (getValue( this ))  putValue( eDlcSysteminfo_01, getValue( eDlcSysteminfo_01 ) - 1 );
+}
+
+on EnvVar eDlcSysteminfo_01Inc
+{
+    if (getValue( this ))  putValue( eDlcSysteminfo_01, getValue( eDlcSysteminfo_01 ) + 1 );
+}
+
+on EnvVar eDlcSysteminfo_01Def
+{
+    putValue( eDlcSysteminfo_01, 8 );
+}
+
+on EnvVar eTTSK_07Dec
+{
+    if (getValue( this ))  putValue( eTTSK_07, dec( getValue( eTTSK_07 ) ) );
+}
+
+on EnvVar eTTSK_07Inc
+{
+    if (getValue( this ))  putValue( eTTSK_07, inc( getValue( eTTSK_07 ) ) );
+}
+
+on EnvVar eTTSK_07Def
+{
+    putValue( eTTSK_07, 50 );
+}
+
+on EnvVar eTOTTSK_07Dec
+{
+    if (getValue( this ))  putValue( eTOTTSK_07, dec( getValue( eTOTTSK_07 ) ) );
+}
+
+on EnvVar eTOTTSK_07Inc
+{
+    if (getValue( this ))  putValue( eTOTTSK_07, inc( getValue( eTOTTSK_07 ) ) );
+}
+
+on EnvVar eTOTTSK_07Def
+{
+    putValue( eTOTTSK_07, 500 );
+}
+
+on EnvVar eDlcTSK_07Dec
+{
+    if (getValue( this ))  putValue( eDlcTSK_07, getValue( eDlcTSK_07 ) - 1 );
+}
+
+on EnvVar eDlcTSK_07Inc
+{
+    if (getValue( this ))  putValue( eDlcTSK_07, getValue( eDlcTSK_07 ) + 1 );
+}
+
+on EnvVar eDlcTSK_07Def
+{
+    putValue( eDlcTSK_07, 8 );
+}
+
+on EnvVar eBZStepTSK_07Dec
+{
+    if (getValue( this ))  putValue( eBZStepTSK_07, getValue( eBZStepTSK_07 ) - 1 );
+}
+
+on EnvVar eBZStepTSK_07Inc
+{
+    if (getValue( this ))  putValue( eBZStepTSK_07, getValue( eBZStepTSK_07 ) + 1 );
+}
+
+on EnvVar eBZStepTSK_07Def
+{
+    putValue( eBZStepTSK_07, 1 );
+}
+
+on EnvVar eTWBA_03Dec
+{
+    if (getValue( this ))  putValue( eTWBA_03, dec( getValue( eTWBA_03 ) ) );
+}
+
+on EnvVar eTWBA_03Inc
+{
+    if (getValue( this ))  putValue( eTWBA_03, inc( getValue( eTWBA_03 ) ) );
+}
+
+on EnvVar eTWBA_03Def
+{
+    putValue( eTWBA_03, 160 );
+}
+
+on EnvVar eTOTWBA_03Dec
+{
+    if (getValue( this ))  putValue( eTOTWBA_03, dec( getValue( eTOTWBA_03 ) ) );
+}
+
+on EnvVar eTOTWBA_03Inc
+{
+    if (getValue( this ))  putValue( eTOTWBA_03, inc( getValue( eTOTWBA_03 ) ) );
+}
+
+on EnvVar eTOTWBA_03Def
+{
+    putValue( eTOTWBA_03, 1600 );
+}
+
+on EnvVar eTWIV_01Dec
+{
+    if (getValue( this ))  putValue( eTWIV_01, dec( getValue( eTWIV_01 ) ) );
+}
+
+on EnvVar eTWIV_01Inc
+{
+    if (getValue( this ))  putValue( eTWIV_01, inc( getValue( eTWIV_01 ) ) );
+}
+
+on EnvVar eTWIV_01Def
+{
+    putValue( eTWIV_01, 2000 );
+}
+
+on EnvVar eTOTWIV_01Dec
+{
+    if (getValue( this ))  putValue( eTOTWIV_01, dec( getValue( eTOTWIV_01 ) ) );
+}
+
+on EnvVar eTOTWIV_01Inc
+{
+    if (getValue( this ))  putValue( eTOTWIV_01, inc( getValue( eTOTWIV_01 ) ) );
+}
+
+on EnvVar eTOTWIV_01Def
+{
+    putValue( eTOTWIV_01, 5000 );
+}
+
+on EnvVar eDlcWIV_01Dec
+{
+    if (getValue( this ))  putValue( eDlcWIV_01, getValue( eDlcWIV_01 ) - 1 );
+}
+
+on EnvVar eDlcWIV_01Inc
+{
+    if (getValue( this ))  putValue( eDlcWIV_01, getValue( eDlcWIV_01 ) + 1 );
+}
+
+on EnvVar eDlcWIV_01Def
+{
+    putValue( eDlcWIV_01, 8 );
+}
+
+on EnvVar eTBCM_03Dec
+{
+    if (getValue( this ))  putValue( eTBCM_03, dec( getValue( eTBCM_03 ) ) );
+}
+
+on EnvVar eTBCM_03Def
+{
+    putValue( eTBCM_03,1000 );
+}
+
+on EnvVar eTBCM_03Inc
+{
+    if (getValue( this ))  putValue( eTBCM_03, inc( getValue( eTBCM_03 ) ) );
+}
+
+on EnvVar eTOTBCM_03Dec
+{
+    if (getValue( this ))  putValue( eTOTBCM_03, dec( getValue( eTOTBCM_03 ) ) );
+}
+
+on EnvVar eTOTBCM_03Def
+{
+    putValue( eTOTBCM_03, 5000 );
+}
+
+on EnvVar eTOTBCM_03Inc
+{
+    if (getValue( this ))  putValue( eTOTBCM_03, inc( getValue( eTOTBCM_03 ) ) );
+}
+
+on EnvVar eDlcBCM_03Dec
+{
+    if (getValue( this ))  putValue( eDlcBCM_03, getValue( eDlcBCM_03 ) - 1 );
+}
+
+on EnvVar eDlcBCM_03Def
+{
+    putValue( eDlcBCM_03, 8 );
+}
+
+on EnvVar eDlcBCM_03Inc
+{
+    if (getValue( this ))  putValue( eDlcBCM_03, getValue( eDlcBCM_03 ) + 1 );
+}
+
+on EnvVar eDlcGateway_78Dec
+{
+    if (getValue( this ))  putValue( eDlcGateway_78, getValue( eDlcGateway_78 ) - 1 );
+}
+
+on EnvVar eDlcGateway_78Def
+{
+    putValue( eDlcGateway_78, 8 );
+}
+
+on EnvVar eDlcGateway_78Inc
+{
+    if (getValue( this ))  putValue( eDlcGateway_78, getValue( eDlcGateway_78 ) + 1 );
+}
+
+on EnvVar eDlcDEV_Kombi_RX1Dec
+{
+    if (getValue( this ))  putValue( eDlcDEV_Kombi_RX1, getValue( eDlcDEV_Kombi_RX1 ) - 1 );
+}
+
+on EnvVar eDlcDEV_Kombi_RX1Def
+{
+    putValue( eDlcDEV_Kombi_RX1, 8 );
+}
+
+on EnvVar eDlcDEV_Kombi_RX1Inc
+{
+    if (getValue( this ))  putValue( eDlcDEV_Kombi_RX1, getValue( eDlcDEV_Kombi_RX1 ) + 1 );
+}
+
+on EnvVar eDlcMotor_Gas_01Dec
+{
+    if (getValue( this ))  putValue( eDlcMotor_Gas_01, getValue( eDlcMotor_Gas_01 ) - 1 );
+}
+
+on EnvVar eDlcMotor_Gas_01Def
+{
+    putValue( eDlcMotor_Gas_01, 8 );
+}
+
+on EnvVar eDlcMotor_Gas_01Inc
+{
+    if (getValue( this ))  putValue( eDlcMotor_Gas_01, getValue( eDlcMotor_Gas_01 ) + 1 );
+}
+
+on EnvVar eTGateway_78Dec
+{
+    if (getValue( this ))  putValue( eTGateway_78, dec( getValue( eTGateway_78 ) ) );
+}
+
+on EnvVar eTGateway_78Def
+{
+    putValue( eTGateway_78, 100 );
+}
+
+on EnvVar eTGateway_78Inc
+{
+    if (getValue( this ))  putValue( eTGateway_78, inc( getValue( eTGateway_78 ) ) );
+}
+
+on EnvVar eTDEV_Kombi_RX1Dec
+{
+    if (getValue( this ))  putValue( eTDEV_Kombi_RX1, dec( getValue( eTDEV_Kombi_RX1 ) ) );
+}
+
+on EnvVar eTDEV_Kombi_RX1Def
+{
+    putValue( eTDEV_Kombi_RX1, 0 );
+}
+
+on EnvVar eTDEV_Kombi_RX1Inc
+{
+    if (getValue( this ))  putValue( eTDEV_Kombi_RX1, inc( getValue( eTDEV_Kombi_RX1 ) ) );
+}
+
+on EnvVar eTMotor_Gas_01Dec
+{
+    if (getValue( this ))  putValue( eTMotor_Gas_01, dec( getValue( eTMotor_Gas_01 ) ) );
+}
+
+on EnvVar eTMotor_Gas_01Def
+{
+    putValue( eTMotor_Gas_01, 50 );
+}
+
+on EnvVar eTMotor_Gas_01Inc
+{
+    if (getValue( this ))  putValue( eTMotor_Gas_01, inc( getValue( eTMotor_Gas_01) ) );
+}
+
+on EnvVar eTOTGateway_78Dec
+{
+    if (getValue( this ))  putValue( eTOTGateway_78, dec( getValue( eTOTGateway_78) ) );
+}
+
+on EnvVar eTOTGateway_78Def
+{
+    putValue( eTOTGateway_78, 1000 );
+}
+
+on EnvVar eTOTGateway_78Inc
+{
+    if (getValue( this ))  putValue( eTOTGateway_78, inc( getValue( eTOTGateway_78 ) ) );
+}
+
+on EnvVar eTOTDEV_Kombi_RX1Dec
+{
+    if (getValue( this ))  putValue( eTOTDEV_Kombi_RX1, dec( getValue( eTOTDEV_Kombi_RX1) ) );
+}
+
+on EnvVar eTOTDEV_Kombi_RX1Def
+{
+    putValue( eTOTDEV_Kombi_RX1, 500 );
+}
+
+on EnvVar eTOTDEV_Kombi_RX1Inc
+{
+    if (getValue( this ))  putValue( eTOTDEV_Kombi_RX1, inc( getValue( eTOTDEV_Kombi_RX1) ) );
+}
+
+on EnvVar eTOTMotor_Gas_01Dec
+{
+    if (getValue( this ))  putValue( eTOTMotor_Gas_01, dec( getValue( eTOTMotor_Gas_01) ) );
+}
+
+on EnvVar eTOTMotor_Gas_01Def
+{
+    putValue( eTOTDEV_Kombi_RX1, 500 );
+}
+
+on EnvVar eTOTMotor_Gas_01Inc
+{
+    if (getValue( this ))  putValue( eTOTMotor_Gas_01, inc( getValue( eTOTMotor_Gas_01) ) );
+}
+
+on EnvVar eTBAP_BC_ASG_02Dec
+{
+    if (getValue( this ))  putValue( eTBAP_BC_ASG_02, dec( getValue( eTBAP_BC_ASG_02 ) ) );
+}
+
+on EnvVar eTBAP_BC_ASG_02Def
+{
+    putValue( eTBAP_BC_ASG_02, 0 );
+}
+
+on EnvVar eTBAP_BC_ASG_02Inc
+{
+    if (getValue( this ))  putValue( eTBAP_BC_ASG_02, inc( getValue( eTBAP_BC_ASG_02 ) ) );
+}
+
+on EnvVar eTOTBAP_BC_ASG_02Dec
+{
+    if (getValue( this ))  putValue( eTOTBAP_BC_ASG_02, dec( getValue( eTOTBAP_BC_ASG_02 ) ) );
+}
+
+on EnvVar eTOTBAP_BC_ASG_02Def
+{
+    putValue( eTOTBAP_BC_ASG_02, 500 );
+}
+
+on EnvVar eTOTBAP_BC_ASG_02Inc
+{
+    if (getValue( this ))  putValue( eTOTBAP_BC_ASG_02, inc( getValue( eTOTBAP_BC_ASG_02 ) ) );
+}
+
+on EnvVar eDlcBAP_BC_ASG_02Dec
+{
+    if (getValue( this ))  putValue( eDlcBAP_BC_ASG_02, getValue( eDlcBAP_BC_ASG_02 ) - 1 );
+}
+
+on EnvVar eDlcBAP_BC_ASG_02Def
+{
+    putValue( eDlcBAP_BC_ASG_02, 8 );
+}
+
+on EnvVar eDlcBAP_BC_ASG_02Inc
+{
+    if (getValue( this ))  putValue( eDlcBAP_BC_ASG_02, getValue( eDlcBAP_BC_ASG_02 ) + 1 );
+}
+
+on EnvVar eTKlemmen_Steuerung_01Dec
+{
+    if (getValue( this ))  putValue( eTKlemmen_Steuerung_01, dec( getValue( eTKlemmen_Steuerung_01 ) ) );
+}
+
+on EnvVar eTKlemmen_Steuerung_01Def
+{
+    putValue( eTKlemmen_Steuerung_01, 1000 );
+}
+
+on EnvVar eTKlemmen_Steuerung_01Inc
+{
+    if (getValue( this ))  putValue( eTKlemmen_Steuerung_01, inc( getValue( eTKlemmen_Steuerung_01 ) ) );
+}
+
+on EnvVar eTOTKlemmen_Steuerung_01Dec
+{
+    if (getValue( this ))  putValue( eTOTKlemmen_Steuerung_01, dec( getValue( eTOTKlemmen_Steuerung_01 ) ) );
+}
+
+on EnvVar eTOTKlemmen_Steuerung_01Def
+{
+    putValue( eTOTKlemmen_Steuerung_01, 5000 );
+}
+
+on EnvVar eTOTKlemmen_Steuerung_01Inc
+{
+    if (getValue( this ))  putValue( eTOTKlemmen_Steuerung_01, inc( getValue( eTOTKlemmen_Steuerung_01 ) ) );
+}
+
+on EnvVar eDlcKlemmen_Steuerung_01Dec
+{
+    if (getValue( this ))  putValue( eDlcKlemmen_Steuerung_01, getValue( eDlcKlemmen_Steuerung_01 ) - 1 );
+}
+
+on EnvVar eDlcKlemmen_Steuerung_01Def
+{
+    putValue( eDlcKlemmen_Steuerung_01, 8 );
+}
+
+on EnvVar eDlcKlemmen_Steuerung_01Inc
+{
+    if (getValue( this ))  putValue( eDlcKlemmen_Steuerung_01, getValue( eDlcKlemmen_Steuerung_01 ) + 1 );
+}
+
+on EnvVar eTMainUnit_01Dec
+{
+    if (getValue( this ))  putValue( eTMainUnit_01, dec( getValue( eTMainUnit_01 ) ) );
+}
+
+on EnvVar eTMainUnit_01Def
+{
+    putValue( eTMainUnit_01, 500 );
+}
+
+on EnvVar eTMainUnit_01Inc
+{
+    if (getValue( this ))  putValue( eTMainUnit_01, inc( getValue( eTMainUnit_01 ) ) );
+}
+
+on EnvVar eTOTMainUnit_01Dec
+{
+    if (getValue( this ))  putValue( eTOTMainUnit_01, dec( getValue( eTOTMainUnit_01 ) ) );
+}
+
+on EnvVar eTOTMainUnit_01Def
+{
+    putValue( eTOTMainUnit_01, 5000 );
+}
+
+on EnvVar eTOTMainUnit_01Inc
+{
+    if (getValue( this ))  putValue( eTOTMainUnit_01, inc( getValue( eTOTMainUnit_01 ) ) );
+}
+
+on EnvVar eDlcMainUnit_01Dec
+{
+    if (getValue( this ))  putValue( eDlcMainUnit_01, getValue( eDlcMainUnit_01 ) - 1 );
+}
+
+on EnvVar eDlcMainUnit_01Def
+{
+    putValue( eDlcMainUnit_01, 8 );
+}
+
+on EnvVar eDlcMainUnit_01Inc
+{
+    if (getValue( this ))  putValue( eDlcMainUnit_01, getValue( eDlcMainUnit_01 ) + 1 );
+}
+
+on EnvVar eBAP_BC_ASG_02_HeaderDec
+{
+    if (getValue( this ))  putValue( eBAP_BC_ASG_02_HeaderS, getValue( eBAP_BC_ASG_02_HeaderS ) - 1 );
+}
+
+on EnvVar eBAP_BC_ASG_02_HeaderDef
+{
+    putValue( eBAP_BC_ASG_02_HeaderS, 0);
+}
+
+on EnvVar eBAP_BC_ASG_02_HeaderInc
+{
+    if (getValue( this ))  putValue( eBAP_BC_ASG_02_HeaderS, getValue( eBAP_BC_ASG_02_HeaderS ) + 1 );
+}
+
+on EnvVar eNM_eCall_SNIDec
+{
+    if (getValue( this ))  putValue( eNM_eCall_SNIS, getValue( eNM_eCall_SNIS ) - 1 );
+}
+
+on EnvVar eNM_eCall_SNIDef
+{
+    putValue( eNM_eCall_SNIS, 0);
+}
+
+on EnvVar eNM_eCall_SNIInc
+{
+    if (getValue( this ))  putValue( eNM_eCall_SNIS, getValue( eNM_eCall_SNIS ) + 1 );
+}
+
+on EnvVar eNM_eCall_NM_StateDec
+{
+    if (getValue( this ))  putValue( eNM_eCall_NM_StateS, getValue( eNM_eCall_NM_StateS ) - 1 );
+}
+
+on EnvVar eNM_eCall_NM_StateDef
+{
+    putValue( eNM_eCall_NM_StateS, 0);
+}
+
+on EnvVar eNM_eCall_NM_StateInc
+{
+    if (getValue( this ))  putValue( eNM_eCall_NM_StateS, getValue( eNM_eCall_NM_StateS ) + 1 );
+}
+
+on EnvVar eNM_eCall_WakeupDec
+{
+    if (getValue( this ))  putValue( eNM_eCall_WakeupS, getValue( eNM_eCall_WakeupS ) - 1 );
+}
+
+on EnvVar eNM_eCall_WakeupDef
+{
+    putValue( eNM_eCall_WakeupS, 0);
+}
+
+on EnvVar eNM_eCall_WakeupInc
+{
+    if (getValue( this ))  putValue( eNM_eCall_WakeupS, getValue( eNM_eCall_WakeupS ) + 1 );
+}
+
+on EnvVar eBZStepAGA_01Dec
+{
+    if (getValue( this ))  putValue( eBZStepAGA_01, getValue( eBZStepAGA_01 ) - 1 );
+}
+
+on EnvVar eBZStepAGA_01Def
+{
+    putValue( eBZStepAGA_01, 1 );
+}
+
+on EnvVar eBZStepAGA_01Inc
+{
+    if (getValue( this ))  putValue( eBZStepAGA_01, getValue( eBZStepAGA_01 ) + 1 );
+}
+
+on EnvVar eBZStepBMS_07Dec
+{
+    if (getValue( this ))  putValue( eBZStepBMS_07, getValue( eBZStepBMS_07 ) - 1 );
+}
+
+on EnvVar eBZStepBMS_07Def
+{
+    putValue( eBZStepBMS_07, 1 );
+}
+
+on EnvVar eBZStepBMS_07Inc
+{
+    if (getValue( this ))  putValue( eBZStepBMS_07, getValue( eBZStepBMS_07 ) + 1 );
+}
+
+on EnvVar eSMLS_P_verriegeltDec
+{
+    if (getValue( this ))  putValue( eSMLS_P_verriegeltS, getValue( eSMLS_P_verriegeltS ) - 1);
+}
+
+on EnvVar eSMLS_P_verriegeltDef
+{
+    putValue( eSMLS_P_verriegeltS, 0);
+}
+
+on EnvVar eSMLS_P_verriegeltInc
+{
+    if (getValue( this ))  putValue( eSMLS_P_verriegeltS, getValue( eSMLS_P_verriegeltS ) + 1);
+}
+
+on EnvVar eOCU_WFS_RNDDec
+{
+    if (getValue( this ))  putValue( eOCU_WFS_RNDS, getValue( eOCU_WFS_RNDS ) - 1);
+}
+
+on EnvVar eOCU_WFS_RNDDef
+{
+    putValue( eOCU_WFS_RNDS, 0);
+}
+
+on EnvVar eOCU_WFS_RNDInc
+{
+    if (getValue( this ))  putValue( eOCU_WFS_RNDS, getValue( eOCU_WFS_RNDS ) + 1);
+}
+
+on EnvVar eOCU_WFS_CRCDec
+{
+    if (getValue( this ))  putValue( eOCU_WFS_CRCS, getValue( eOCU_WFS_CRCS ) - 1);
+}
+
+on EnvVar eOCU_WFS_CRCDef
+{
+    putValue( eOCU_WFS_CRCS, 0);
+}
+
+on EnvVar eOCU_WFS_CRCInc
+{
+    if (getValue( this ))  putValue( eOCU_WFS_CRCS, getValue( eOCU_WFS_CRCS ) + 1);
+}
+
+//MR53874
+on EnvVar eThermo_Verbrauch_BTLDec
+{
+    if (getValue( this ))  putValue( eThermo_Verbrauch_BTLS, getValue( eThermo_Verbrauch_BTLS ) - 1);
+}
+
+//MR53874
+on EnvVar eThermo_Verbrauch_BTLDef
+{
+    putValue( eThermo_Verbrauch_BTLS, 0);
+}
+
+//MR53874
+on EnvVar eThermo_Verbrauch_BTLInc
+{
+    if (getValue( this ))  putValue( eThermo_Verbrauch_BTLS, getValue( eThermo_Verbrauch_BTLS ) + 1);
+}
+
+//MR53874
+on EnvVar eThermo_Verbrauch_InnenDec
+{
+    if (getValue( this ))  putValue( eThermo_Verbrauch_InnenS, getValue( eThermo_Verbrauch_InnenS ) - 1);
+}
+
+//MR53874
+on EnvVar eThermo_Verbrauch_InnenDef
+{
+    putValue( eThermo_Verbrauch_InnenS, 0);
+}
+
+//MR53874
+on EnvVar eThermo_Verbrauch_InnenInc
+{
+    if (getValue( this ))  putValue( eThermo_Verbrauch_InnenS, getValue( eThermo_Verbrauch_InnenS ) + 1);
+}
+
+//MR53874
+on EnvVar eThermo_Pred_P_dyn_InnenDec
+{
+    if (getValue( this ))  putValue( eThermo_Pred_P_dyn_InnenS, getValue( eThermo_Pred_P_dyn_InnenS ) - 10);
+}
+
+//MR53874
+on EnvVar eThermo_Pred_P_dyn_InnenDef
+{
+    putValue( eThermo_Pred_P_dyn_InnenS, 0);
+}
+
+//MR53874
+on EnvVar eThermo_Pred_P_dyn_InnenInc
+{
+    if (getValue( this ))  putValue( eThermo_Pred_P_dyn_InnenS, getValue( eThermo_Pred_P_dyn_InnenS ) + 10);
+}
+
+//MR53874
+on EnvVar eThermo_Pred_P_stat_InnenDec
+{
+    if (getValue( this ))  putValue( eThermo_Pred_P_stat_InnenS, getValue( eThermo_Pred_P_stat_InnenS ) - 10);
+}
+
+//MR53874
+on EnvVar eThermo_Pred_P_stat_InnenDef
+{
+    putValue( eThermo_Pred_P_stat_InnenS, 0);
+}
+
+//MR53874
+on EnvVar eThermo_Pred_P_stat_InnenInc
+{
+    if (getValue( this ))  putValue( eThermo_Pred_P_stat_InnenS, getValue( eThermo_Pred_P_stat_InnenS ) + 10);
+}
+
+//MR53874
+on EnvVar eThermo_Pred_T_dyn_InnenDec
+{
+    if (getValue( this ))  putValue( eThermo_Pred_T_dyn_InnenS, getValue( eThermo_Pred_T_dyn_InnenS ) - 1);
+}
+
+//MR53874
+on EnvVar eThermo_Pred_T_dyn_InnenDef
+{
+    putValue( eThermo_Pred_T_dyn_InnenS, 0);
+}
+
+//MR53874
+on EnvVar eThermo_Pred_T_dyn_InnenInc
+{
+    if (getValue( this ))  putValue( eThermo_Pred_T_dyn_InnenS, getValue( eThermo_Pred_T_dyn_InnenS ) + 1);
+}
+
+//MR53874
+on EnvVar eThermo_Pred_Innen_Kunde_AnfDec
+{
+    if (getValue( this ))  putValue( eThermo_Pred_Innen_Kunde_AnfS, getValue( eThermo_Pred_Innen_Kunde_AnfS ) - 1);
+}
+
+//MR53874
+on EnvVar eThermo_Pred_Innen_Kunde_AnfDef
+{
+    putValue( eThermo_Pred_Innen_Kunde_AnfS, 0);
+}
+
+//MR53874
+on EnvVar eThermo_Pred_Innen_Kunde_AnfInc
+{
+    if (getValue( this ))  putValue( eThermo_Pred_Innen_Kunde_AnfS, getValue( eThermo_Pred_Innen_Kunde_AnfS ) + 1);
+}
+
+//IssueList #173 MR 55685
+
+on EnvVar eTPersonalisierung_01Dec
+{
+    if (getValue( this ))  putValue( eTPersonalisierung_01, dec( getValue( eTPersonalisierung_01 ) ) );
+}
+
+//IssueList #173 MR 55685
+on EnvVar eTPersonalisierung_01Def
+{
+    putValue( eTPersonalisierung_01, 1000 );
+}
+
+//IssueList #173 MR 55685
+on EnvVar eTPersonalisierung_01Inc
+{
+    if (getValue( this ))  putValue( eTPersonalisierung_01, inc( getValue( eTPersonalisierung_01 ) ) );
+}
+
+//IssueList #173 MR 55685
+on EnvVar eTOTPersonalisierung_01Dec
+{
+    if (getValue( this ))  putValue( eTOTPersonalisierung_01, dec( getValue( eTOTPersonalisierung_01 ) ) );
+}
+
+on EnvVar eTOTPersonalisierung_01Def
+{
+    putValue( eTOTPersonalisierung_01, 5000 );
+}
+
+on EnvVar eTOTPersonalisierung_01Inc
+{
+    if (getValue( this ))  putValue( eTOTPersonalisierung_01, inc( getValue( eTOTPersonalisierung_01 ) ) );
+}
+
+on EnvVar eDlcPersonalisierung_01Dec
+{
+    if (getValue( this ))  putValue( eDlcPersonalisierung_01, getValue( eDlcPersonalisierung_01 ) - 1 );
+}
+
+on EnvVar eDlcPersonalisierung_01Def
+{
+    putValue( eDlcPersonalisierung_01, 8 );
+}
+
+on EnvVar eDlcPersonalisierung_01Inc
+{
+    if (getValue( this ))  putValue( eDlcPersonalisierung_01, getValue( eDlcPersonalisierung_01 ) + 1 );
+}
+
+on EnvVar ePerso_KontonummerDec
+{
+    if (getValue( this ))  putValue( ePerso_KontonummerS, getValue( ePerso_KontonummerS ) - 1);
+}
+
+on EnvVar ePerso_KontonummerDef
+{
+    putValue( ePerso_KontonummerS, 0);
+}
+
+on EnvVar ePerso_KontonummerInc
+{
+    if (getValue( this ))  putValue( ePerso_KontonummerS, getValue( ePerso_KontonummerS ) + 1);
+}
+
+on EnvVar ePerso_SteuerungDec
+{
+    if (getValue( this ))  putValue( ePerso_SteuerungS, getValue( ePerso_SteuerungS ) - 1);
+}
+
+on EnvVar ePerso_SteuerungDef
+{
+    putValue( ePerso_SteuerungS, 0);
+}
+
+on EnvVar ePerso_SteuerungInc
+{
+    if (getValue( this ))  putValue( ePerso_SteuerungS, getValue( ePerso_SteuerungS ) + 1);
+}
+
+on EnvVar ePerso_SteuerungsparameterDec
+{
+    if (getValue( this ))  putValue( ePerso_SteuerungsparameterS, getValue( ePerso_SteuerungsparameterS ) - 1);
+}
+
+on EnvVar ePerso_SteuerungsparameterDef
+{
+    putValue( ePerso_SteuerungsparameterS, 0);
+}
+
+on EnvVar ePerso_SteuerungsparameterInc
+{
+    if (getValue( this ))  putValue( ePerso_SteuerungsparameterS, getValue( ePerso_SteuerungsparameterS ) + 1);
+}
+
+on EnvVar ePerso_StatusDec
+{
+    if (getValue( this ))  putValue( ePerso_StatusS, getValue( ePerso_StatusS ) - 1);
+}
+
+on EnvVar ePerso_StatusDef
+{
+    putValue( ePerso_StatusS, 0);
+}
+
+on EnvVar ePerso_StatusInc
+{
+    if (getValue( this ))  putValue( ePerso_StatusS, getValue( ePerso_StatusS ) + 1);
+}
+
+on EnvVar eNVEM_Batterie_ServiceDec
+{
+    if (getValue( this ))  putValue( eNVEM_Batterie_ServiceS, getValue( eNVEM_Batterie_ServiceS ) - 1);
+}
+
+on EnvVar eNVEM_Batterie_ServiceDef
+{
+    putValue( eNVEM_Batterie_ServiceS, 0);
+}
+
+on EnvVar eNVEM_Batterie_ServiceInc
+{
+    if (getValue( this ))  putValue( eNVEM_Batterie_ServiceS, getValue( eNVEM_Batterie_ServiceS ) + 1);
+}
+
+on EnvVar eMO_Anzeige_Leistung_MaxDec
+{
+    if (getValue( this ))  putValue( eMO_Anzeige_Leistung_MaxS, getValue( eMO_Anzeige_Leistung_MaxS ) - 0.6);
+}
+
+on EnvVar eMO_Anzeige_Leistung_MaxDef
+{
+    putValue( eMO_Anzeige_Leistung_MaxS, 0);
+}
+
+on EnvVar eMO_Anzeige_Leistung_MaxInc
+{
+    if (getValue( this ))  putValue( eMO_Anzeige_Leistung_MaxS, getValue( eMO_Anzeige_Leistung_MaxS ) +0.6);
+}
+
+on EnvVar eMO_Anzeige_Drehmoment_MaxDec
+{
+    if (getValue( this ))  putValue( eMO_Anzeige_Drehmoment_MaxS, getValue( eMO_Anzeige_Drehmoment_MaxS ) -1);
+}
+
+on EnvVar eMO_Anzeige_Drehmoment_MaxDef
+{
+    putValue( eMO_Anzeige_Drehmoment_MaxS, 0);
+}
+
+on EnvVar eMO_Anzeige_Drehmoment_MaxInc
+{
+    if (getValue( this ))  putValue( eMO_Anzeige_Drehmoment_MaxS, getValue( eMO_Anzeige_Drehmoment_MaxS ) +1);
+}
+
+on EnvVar eRA_FrequencyDec
+{
+    if (getValue( this ))  putValue( eRA_FrequencyS, getValue( eRA_FrequencyS ) - 1);
+}
+
+on EnvVar eRA_FrequencyDef
+{
+    putValue( eRA_FrequencyS, 0);
+}
+
+on EnvVar eRA_FrequencyInc
+{
+    if (getValue( this ))  putValue( eRA_FrequencyS, getValue( eRA_FrequencyS ) +1);
+}
+
+on EnvVar eRA_Frequency_unitDec
+{
+    if (getValue( this ))  putValue( eRA_Frequency_unitS, getValue( eRA_Frequency_unitS ) - 1);
+}
+
+on EnvVar eRA_Frequency_unitDef
+{
+    putValue( eRA_Frequency_unitS, 0);
+}
+
+on EnvVar eRA_Frequency_unitInc
+{
+    if (getValue( this ))  putValue( eRA_Frequency_unitS, getValue( eRA_Frequency_unitS ) +1);
+}
+
+on EnvVar eTTM_01Dec
+{
+    if (getValue( this ))  putValue( eTTM_01, dec( getValue( eTTM_01 ) ) );
+}
+
+on EnvVar eTTM_01Def
+{
+    putValue( eTTM_01,1000 );
+}
+
+on EnvVar eTTM_01Inc
+{
+    if (getValue( this ))  putValue( eTTM_01, inc( getValue( eTTM_01 ) ) );
+}
+
+on EnvVar eTOTTM_01Dec
+{
+    if (getValue( this ))  putValue( eTOTTM_01, dec( getValue( eTOTTM_01 ) ) );
+}
+
+on EnvVar eTOTTM_01Def
+{
+    putValue( eTOTTM_01, 5000 );
+}
+
+on EnvVar eTOTTM_01Inc
+{
+    if (getValue( this ))  putValue( eTOTTM_01, inc( getValue( eTOTTM_01 ) ) );
+}
+
+on EnvVar eDlcTM_01Dec
+{
+    if (getValue( this ))  putValue( eDlcTM_01, getValue( eDlcTM_01 ) - 1 );
+}
+
+on EnvVar eDlcTM_01Def
+{
+    putValue( eDlcTM_01, 8 );
+}
+
+on EnvVar eDlcTM_01Inc
+{
+    if (getValue( this ))  putValue( eDlcTM_01, getValue( eDlcTM_01 ) + 1 );
+}
+
+on EnvVar eeCall_FunktionsstatusDec
+{
+    if (getValue( this ))  putValue( eeCall_FunktionsstatusS, getValue( eeCall_FunktionsstatusS ) - 1);
+}
+
+on EnvVar eeCall_FunktionsstatusDef
+{
+    putValue( eeCall_FunktionsstatusS, 0);
+}
+
+on EnvVar eeCall_FunktionsstatusInc
+{
+    if (getValue( this ))  putValue( eeCall_FunktionsstatusS, getValue( eeCall_FunktionsstatusS ) +1);
+}
+
+on EnvVar eTBCM_04Dec
+{
+    if (getValue( this ))  putValue( eTBCM_04, dec( getValue( eTBCM_04 ) ) );
+}
+
+on EnvVar eTBCM_04Def
+{
+    putValue( eTBCM_04,200 );
+}
+
+on EnvVar eTBCM_04Inc
+{
+    if (getValue( this ))  putValue( eTBCM_04, inc( getValue( eTBCM_04 ) ) );
+}
+
+on EnvVar eTOTBCM_04Dec
+{
+    if (getValue( this ))  putValue( eTOTBCM_04, dec( getValue( eTOTBCM_04 ) ) );
+}
+
+on EnvVar eTOTBCM_04Def
+{
+    putValue( eTOTBCM_04, 2000 );
+}
+
+on EnvVar eTOTBCM_04Inc
+{
+    if (getValue( this ))  putValue( eTOTBCM_04, inc( getValue( eTOTBCM_04 ) ) );
+}
+
+on EnvVar eDlcBCM_04Dec
+{
+    if (getValue( this ))  putValue( eDlcBCM_04, getValue( eDlcBCM_04 ) - 1 );
+}
+
+on EnvVar eDlcBCM_04Def
+{
+    putValue( eDlcBCM_04, 8 );
+}
+
+on EnvVar eDlcBCM_04Inc
+{
+    if (getValue( this ))  putValue( eDlcBCM_04, getValue( eDlcBCM_04 ) + 1 );
+}
+
+on EnvVar eBCM_RGB_RotDec
+{
+    if (getValue( this ))  putValue( eBCM_RGB_RotS, getValue( eBCM_RGB_RotS ) - 1);
+}
+
+on EnvVar eBCM_RGB_RotDef
+{
+    putValue( eBCM_RGB_RotS, 0);
+}
+
+on EnvVar eBCM_RGB_RotInc
+{
+    if (getValue( this ))  putValue( eBCM_RGB_RotS, getValue( eBCM_RGB_RotS ) +1);
+}
+
+on EnvVar eBCM_RGB_GruenDec
+{
+    if (getValue( this ))  putValue( eBCM_RGB_GruenS, getValue( eBCM_RGB_GruenS ) - 1);
+}
+
+on EnvVar eBCM_RGB_GruenDef
+{
+    putValue( eBCM_RGB_GruenS, 0);
+}
+
+on EnvVar eBCM_RGB_GruenInc
+{
+    if (getValue( this ))  putValue( eBCM_RGB_GruenS, getValue( eBCM_RGB_GruenS ) +1);
+}
+
+on EnvVar eBCM_RGB_BlauDec
+{
+    if (getValue( this ))  putValue( eBCM_RGB_BlauS, getValue( eBCM_RGB_BlauS ) - 1);
+}
+
+on EnvVar eBCM_RGB_BlauDef
+{
+    putValue( eBCM_RGB_BlauS, 0);
+}
+
+on EnvVar eBCM_RGB_BlauInc
+{
+    if (getValue( this ))  putValue( eBCM_RGB_BlauS, getValue( eBCM_RGB_BlauS ) +1);
+}
+
+on EnvVar eTASTA_Sensor_01Dec
+{
+    if (getValue( this ))  putValue( eTASTA_Sensor_01, dec( getValue( eTASTA_Sensor_01 ) ) );
+}
+
+on EnvVar eTASTA_Sensor_01Def
+{
+    putValue( eTASTA_Sensor_01,500 );
+}
+
+on EnvVar eTASTA_Sensor_01Inc
+{
+    if (getValue( this ))  putValue( eTASTA_Sensor_01, inc( getValue( eTASTA_Sensor_01 ) ) );
+}
+
+on EnvVar eTOTASTA_Sensor_01Dec
+{
+    if (getValue( this ))  putValue( eTOTASTA_Sensor_01, dec( getValue( eTOTASTA_Sensor_01 ) ) );
+}
+
+on EnvVar eTOTASTA_Sensor_01Def
+{
+    putValue( eTOTASTA_Sensor_01, 5000 );
+}
+
+on EnvVar eTOTASTA_Sensor_01Inc
+{
+    if (getValue( this ))  putValue( eTOTASTA_Sensor_01, inc( getValue( eTOTASTA_Sensor_01 ) ) );
+}
+
+on EnvVar eDlcASTA_Sensor_01Dec
+{
+    if (getValue( this ))  putValue( eDlcASTA_Sensor_01, getValue( eDlcASTA_Sensor_01 ) - 1 );
+}
+
+on EnvVar eDlcASTA_Sensor_01Def
+{
+    putValue( eDlcASTA_Sensor_01, 8 );
+}
+
+on EnvVar eDlcASTA_Sensor_01Inc
+{
+    if (getValue( this ))  putValue( eDlcASTA_Sensor_01, getValue( eDlcASTA_Sensor_01 ) + 1 );
+}
+
+on EnvVar eTWFS_01Dec
+{
+    if (getValue( this ))  putValue( eTWFS_01, dec( getValue( eTWFS_01 ) ) );
+}
+
+on EnvVar eTWFS_01Def
+{
+    putValue( eTWFS_01,200 );
+}
+
+on EnvVar eTWFS_01Inc
+{
+    if (getValue( this ))  putValue( eTWFS_01, inc( getValue( eTWFS_01 ) ) );
+}
+
+on EnvVar eTOTWFS_01Dec
+{
+    if (getValue( this ))  putValue( eTOTWFS_01, dec( getValue( eTOTWFS_01 ) ) );
+}
+
+on EnvVar eTOTWFS_01Def
+{
+    putValue( eTOTWFS_01, 2000 );
+}
+
+on EnvVar eTOTWFS_01Inc
+{
+    if (getValue( this ))  putValue( eTOTWFS_01, inc( getValue( eTOTWFS_01 ) ) );
+}
+
+on EnvVar eDlcWFS_01Dec
+{
+    if (getValue( this ))  putValue( eDlcWFS_01, getValue( eDlcWFS_01 ) - 1 );
+}
+
+on EnvVar eDlcWFS_01Def
+{
+    putValue( eDlcWFS_01, 8 );
+}
+
+on EnvVar eDlcWFS_01Inc
+{
+    if (getValue( this ))  putValue( eDlcWFS_01, getValue( eDlcWFS_01 ) + 1 );
+}
+
+on EnvVar eTAZK_01Dec
+{
+    if (getValue( this ))  putValue( eTAZK_01, dec( getValue( eTAZK_01 ) ) );
+}
+
+on EnvVar eTAZK_01Def
+{
+    putValue( eTAZK_01,1000 );
+}
+
+on EnvVar eTAZK_01Inc
+{
+    if (getValue( this ))  putValue( eTAZK_01, inc( getValue( eTAZK_01 ) ) );
+}
+
+on EnvVar eTOTAZK_01Dec
+{
+    if (getValue( this ))  putValue( eTOTAZK_01, dec( getValue( eTOTAZK_01 ) ) );
+}
+
+on EnvVar eTOTAZK_01Def
+{
+    putValue( eTOTAZK_01, 5000 );
+}
+
+on EnvVar eTOTAZK_01Inc
+{
+    if (getValue( this ))  putValue( eTOTAZK_01, inc( getValue( eTOTAZK_01 ) ) );
+}
+
+on EnvVar eDlcAZK_01Dec
+{
+    if (getValue( this ))  putValue( eDlcAZK_01, getValue( eDlcAZK_01 ) - 1 );
+}
+
+on EnvVar eDlcAZK_01Def
+{
+    putValue( eDlcAZK_01, 8 );
+}
+
+on EnvVar eDlcAZK_01Inc
+{
+    if (getValue( this ))  putValue( eDlcAZK_01, getValue( eDlcAZK_01 ) + 1 );
+}
+

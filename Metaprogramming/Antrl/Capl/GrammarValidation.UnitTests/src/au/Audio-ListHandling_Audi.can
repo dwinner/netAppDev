@@ -1,0 +1,926 @@
+/*@!Encoding:1252*/
+variables
+{    
+    const AudioSD_ReceptionList_MAX = 6;
+    const AudioSD_DABList_MAX = 6;
+    const AudioSD_RadioTVPresetList_MAX = 5;
+    const AudioSD_MBList_MAX = 5;            
+    const AudioSD_SourceList_MAX = 2;
+
+    byte AudioSD_BAP_ReceptionList_Short_case = 0;
+    byte AudioSD_BAP_ReceptionList_Long_case = 0;
+    byte AudioSD_BAP_DABList_Short_case = 0;
+    byte AudioSD_BAP_DABList_Long_case = 0;
+    byte AudioSD_BAP_MBList_Short_case = 0;
+    byte AudioSD_BAP_MBList_Long_case = 0;
+    byte AudioSD_BAP_RadioTVPresetList_Short_case = 0;
+    byte AudioSD_BAP_RadioTVPresetList_Long_case = 0;
+    byte AudioSD_BAP_SourceList_Short_case = 0;
+    byte AudioSD_BAP_SourceList_Long_case = 0;
+    
+    mstimer AudioSD_BAP_ReceptionList_Short_Timer;
+    mstimer AudioSD_BAP_ReceptionList_Long_Timer;
+    mstimer AudioSD_BAP_DABList_Short_Timer;
+    mstimer AudioSD_BAP_DABList_Long_Timer;
+    mstimer AudioSD_BAP_MBList_Short_Timer;
+    mstimer AudioSD_BAP_MBList_Long_Timer;
+    mstimer AudioSD_BAP_RadioTVPresetList_Short_Timer;
+    mstimer AudioSD_BAP_RadioTVPresetList_Long_Timer;
+    mstimer AudioSD_BAP_SourceList_Short_Timer;
+    mstimer AudioSD_BAP_SourceList_Long_Timer;
+
+    mstimer AudioSD_BAP_ReceptionList_Update_Timer;
+    byte AudioSD_RecepList_start_update = 0;
+
+    mstimer AudioSD_BAP_DABList_Update_Timer;
+    byte AudioSD_DABList_start_update = 0;
+
+    mstimer AudioSD_BAP_RadioTVPresetList_Update_Timer;
+    byte Audio_SD_RadioTVPresetList_start_update = 0;
+
+    mstimer AudioSD_BAP_MBList_Update_Timer;
+    byte Audio_SD_MBList_start_update = 0;
+    
+    mstimer AudioSD_BAP_SourceList_Update_Timer;
+    byte Audio_SD_SourceList_start_update = 0;
+
+    byte DAB_Long_index = 0, i = 0, DAB_Long_rand = 0;
+    byte DABList_Long_func[10];
+    byte DAB_Short_index = 0, DAB_Short_rand = 0;
+    byte DABList_Short_func[10];
+
+    byte MB_Long_index = 0, MB_Long_rand = 0;
+    byte MBList_Long_func[10];
+    byte MB_Short_index = 0, MB_Short_rand = 0;
+    byte MBList_Short_func[10];
+
+    byte RadioTVPreset_Long_index = 0, RadioTVPreset_Long_rand = 0;
+    byte RadioTVPresetList_Long_func[10];
+    byte RadioTVPreset_Short_index = 0, RadioTVPreset_Short_rand = 0;
+    byte RadioTVPresetList_Short_func[10];
+
+    byte Reception_Long_index = 0, Reception_Long_rand = 0;
+    byte Reception_Long_func[10];
+    byte Reception_Short_index = 0, Reception_Short_rand = 0;
+    byte Reception_Short_func[10];
+
+    byte Source_Long_index = 0, Source_Long_rand = 0;
+    byte Source_Long_func[10];
+    byte Source_Short_index = 0, Source_Short_rand = 0;
+    byte Source_Short_func[10];
+}
+
+on envVar env_AudioSD_ReceptionList_Short
+{
+    if (getValue(this)) 
+    {        
+         setTimer(AudioSD_BAP_ReceptionList_Short_Timer, 0 );
+    }
+}
+
+void AudioSD_BAP_ReceptionList_Display_Short (void)
+{
+    switch (AudioSD_BAP_ReceptionList_Short_case)
+    { 
+        case 0:  
+            putValue(env_AudioSD_FSGOpState_OpState, 0x0 );     
+            putValue(env_AudioSD_FSGOpState_update, 0x1);                  
+            setTimer (AudioSD_BAP_ReceptionList_Short_Timer, 300 );
+            break;
+        case 1:
+            putValue(env_AudioSD_CSH_PresetListRef, 0x0 ); 
+            putValue(env_AudioSD_CSH_PresetListAbsPos, 0x0 );
+            putValue(env_AudioSD_CSH_DABEnsHandle, 0x0 );
+            putValue(env_AudioSD_CSH_DABEnsAbsPos, 0x0 );
+            putValue(env_AudioSD_CSH_FSGhandle, 0x04);            
+            putValue(env_AudioSD_CSH_FSGAbsPos, 0x04);
+            //IssueList #126 - code commented 
+            //putValue(env_AudioSD_CSH_update, 0x1); 
+                                
+            setTimer (AudioSD_BAP_ReceptionList_Short_Timer, 300 );
+            break;
+        case 2:
+            putValue(env_AudioSD_activeSrc_Type, 0x1);            
+            putValue(env_AudioSD_activeSrc_ListState, 0x3);            
+            putValue(env_AudioSD_activeSrc_ReceptList, 0x1);                        
+            putValue(env_AudioSD_activeSrc_PresetList, 0x1);            
+            putValue(env_AudioSD_activeSrc_MedBrList, 0x0 );    
+            putValue(env_AudioSD_activeSrc_update, 0x1);                 
+            setTimer (AudioSD_BAP_ReceptionList_Short_Timer, 1000 );
+            break;
+        case 3:
+            putValue(env_AudioSD_PreferredList_List, 0x1);  
+            //IssueList #126 - code commented
+            //putValue(env_AudioSD_PreferredList_update, 0x1);                                      
+            setTimer (AudioSD_BAP_ReceptionList_Short_Timer, 300 );
+            break;
+        case 4:
+            putValue(env_AudioSD_RecListType_Type, 0x1);
+            //IssueList #126 - code commented                       
+            //putValue(env_AudioSD_RecListType_update, 0x1);                       
+            setTimer (AudioSD_BAP_ReceptionList_Short_Timer, 1000 );
+            break;
+        case 5:
+            putValue(env_AudioSD_RL_DataSource, 0x1);
+            putValue(env_AudioSD_RL_CSVPath, "BAP\\Arrays\\bap_audio_Reception_List_short.csv");           
+            putValue(env_AudioSD_RL_reload, 0x1);            
+            setTimer (AudioSD_BAP_ReceptionList_Short_Timer, 1000 );
+            break;
+        default:
+            break;
+    }   
+}
+
+on timer AudioSD_BAP_ReceptionList_Short_Timer
+{
+    //email from Jens: 04FEB2012
+    if (Reception_Short_index < AudioSD_ReceptionList_MAX)
+    {
+        //write("Reception_Short_index = %d", Reception_Short_index);
+        AudioSD_BAP_ReceptionList_Short_case = Reception_Short_index;
+        putValue(env_AudioSD_FSGOpState_update, 0x0 );
+        AudioSD_BAP_ReceptionList_Display_Short ();
+        Reception_Short_index ++;
+    } 
+    else
+    {
+        putValue(env_AudioSD_ReceptionList_Short, 0 );
+        Reception_Short_index = 0;
+        cancelTimer(AudioSD_BAP_ReceptionList_Short_Timer); 
+                
+        AudioSD_RecepList_start_update = 1;
+        setTimer (AudioSD_BAP_ReceptionList_Update_Timer, 100 );
+         //write("AudioSD_BAP_ReceptionList_Short_case  END");
+    }         
+}
+
+void AudioSD_BAP_RadioTVPresetList_Display_Short ()
+{    
+    switch(AudioSD_BAP_RadioTVPresetList_Short_case)
+    {
+        case 0:
+            putValue(env_AudioSD_FSGOpState_OpState, 0x0 ); 
+            //putValue(env_AudioSD_FSGOpState_update, 0x1);                                   
+            setTimer (AudioSD_BAP_RadioTVPresetList_Short_Timer, 400 );
+            break;
+        case 1:
+            putValue(env_AudioSD_CSH_FSGhandle, 0x0 );            
+            putValue(env_AudioSD_CSH_FSGAbsPos, 0x0 );
+            putValue(env_AudioSD_CSH_DABEnsHandle, 0x0 );
+            putValue(env_AudioSD_CSH_DABEnsAbsPos, 0x0 );
+            putValue(env_AudioSD_CSH_PresetListRef, 0x16); 
+            putValue(env_AudioSD_CSH_PresetListAbsPos, 0x06);
+            //IssueList #126 - code commented
+            //putValue(env_AudioSD_CSH_update, 0x1);                                                             
+            setTimer (AudioSD_BAP_RadioTVPresetList_Short_Timer, 400 );
+            break;
+        case 2:
+            putValue(env_AudioSD_activeSrc_ListState, 0x3);     
+            putValue(env_AudioSD_activeSrc_ReceptList, 0x0 );
+            putValue(env_AudioSD_activeSrc_MedBrList, 0x0 );        
+            putValue(env_AudioSD_activeSrc_PresetList, 0x1); 
+            //IssueList #126 - code commented
+            //putValue(env_AudioSD_activeSrc_update, 0x1);                                          
+            setTimer (AudioSD_BAP_RadioTVPresetList_Short_Timer, 1000 );
+            break;
+        case 3:
+            putValue(env_AudioSD_PreferredList_List, 0x2);  
+            //IssueList #126 - code commented 
+            //putValue(env_AudioSD_PreferredList_update, 0x1);                                       
+            setTimer (AudioSD_BAP_RadioTVPresetList_Short_Timer, 1000 );
+            break;
+        case 4:
+            putValue(env_AudioSD_RTPL_DataSource, 0x1); 
+            putValue(env_AudioSD_RTPL_CSVPath, "BAP\\Arrays\\bap_audio_RadioTVPreset_List_short.csv");            
+            putValue(env_AudioSD_RTPL_reload, 0x1);                   
+            setTimer (AudioSD_BAP_RadioTVPresetList_Short_Timer, 1000 );            
+            break; 
+         default:
+            break;
+     }  
+}
+
+on timer AudioSD_BAP_RadioTVPresetList_Short_Timer
+{
+    //email from Jens: 04FEB2012
+    if (RadioTVPreset_Short_index < AudioSD_RadioTVPresetList_MAX)
+    {
+        //write("RadioTVPreset_Short_index = %d", RadioTVPreset_Short_index);
+        AudioSD_BAP_RadioTVPresetList_Short_case = RadioTVPreset_Short_index;
+        AudioSD_BAP_RadioTVPresetList_Display_Short ();
+        RadioTVPreset_Short_index ++;
+        
+    } 
+    else
+    {
+        putValue(env_AudioSD_RadioTVPreList_Short, 0 );
+        RadioTVPreset_Short_index = 0;
+        cancelTimer(AudioSD_BAP_RadioTVPresetList_Short_Timer); 
+                
+        Audio_SD_RadioTVPresetList_start_update = 1;
+        setTimer (AudioSD_BAP_RadioTVPresetList_Update_Timer, 100 );
+       //write("AudioSD_BAP_RadioTVPresetList_Short_case  END");
+    }    
+}
+
+on envVar env_AudioSD_RadioTVPreList_Long
+{
+    if (getValue(this)) 
+    {
+        setTimer(AudioSD_BAP_RadioTVPresetList_Long_Timer, 0 );
+    }
+}
+
+on timer AudioSD_BAP_ReceptionList_Update_Timer
+{
+    if (AudioSD_RecepList_start_update == 1)
+    {                                        
+        putValue(env_AudioSD_RL_FRU, 0x1);
+        AudioSD_RecepList_start_update = 0;
+        setTimer (AudioSD_BAP_ReceptionList_Update_Timer, 1000 );
+    }
+    else
+    {
+        putValue(env_AudioSD_FSGOpState_update, 0x0 );
+        putValue(env_AudioSD_CSH_update, 0x0 );
+        putValue(env_AudioSD_activeSrc_update, 0x0 );
+        putValue(env_AudioSD_PreferredList_update, 0x0 );
+        putValue(env_AudioSD_RecListType_update, 0x0 );
+        putValue(env_AudioSD_RL_FRU, 0x0 );
+        putValue(env_AudioSD_RL_reload, 0x0 );            
+        AudioSD_RecepList_start_update = 0;
+        cancelTimer (AudioSD_BAP_ReceptionList_Update_Timer);
+    }
+}
+
+on timer AudioSD_BAP_RadioTVPresetList_Update_Timer
+{
+   
+    if (Audio_SD_RadioTVPresetList_start_update == 1)
+    {                                
+        putValue(env_AudioSD_RTPL_FRU, 0x1);
+        Audio_SD_RadioTVPresetList_start_update = 0;
+        setTimer(AudioSD_BAP_RadioTVPresetList_Update_Timer, 2000 );
+    }
+    else
+    {
+        //putValue(env_AudioSD_FSGOpState_update, 0x0 );
+        //putValue(env_AudioSD_CSH_update, 0x0 );
+        putValue(env_AudioSD_activeSrc_update, 0x0 );   
+        putValue(env_AudioSD_PreferredList_update, 0x0 );
+        putValue(env_AudioSD_RTPL_FRU, 0x0 );
+        putValue(env_AudioSD_RTPL_reload, 0x0 );
+        Audio_SD_RadioTVPresetList_start_update = 0;
+        cancelTimer(AudioSD_BAP_RadioTVPresetList_Update_Timer);
+    }
+}
+
+on envVar env_AudioSD_ReceptionList_Long
+{
+    if (getValue(this)) 
+    {        
+        setTimer(AudioSD_BAP_ReceptionList_Long_Timer, 0 );
+    }
+}
+
+void AudioSD_BAP_ReceptionList_Display_Long (void)
+{
+    switch (AudioSD_BAP_ReceptionList_Long_case)
+    { 
+        case 0:  
+            putValue(env_AudioSD_FSGOpState_OpState, 0x0 );                       
+            //putValue(env_AudioSD_FSGOpState_update, 0x1);
+            setTimer (AudioSD_BAP_ReceptionList_Long_Timer, 400 );
+            break;
+        case 1:
+            putValue(env_AudioSD_CSH_PresetListRef, 0x0 ); 
+            putValue(env_AudioSD_CSH_PresetListAbsPos, 0x0 );
+            putValue(env_AudioSD_CSH_DABEnsHandle, 0x0 );
+            putValue(env_AudioSD_CSH_DABEnsAbsPos, 0x0 );
+            putValue(env_AudioSD_CSH_FSGhandle, 0x58);            
+            putValue(env_AudioSD_CSH_FSGAbsPos, 0x24); 
+            //IssueList #126 - code commented
+           // putValue(env_AudioSD_CSH_update, 0x1);          
+            setTimer (AudioSD_BAP_ReceptionList_Long_Timer, 400 );
+            break;
+        case 2:
+            putValue(env_AudioSD_activeSrc_Type, 0x2);            
+            putValue(env_AudioSD_activeSrc_ListState, 0x3);                        
+            putValue(env_AudioSD_activeSrc_ReceptList, 0x1);             
+            putValue(env_AudioSD_activeSrc_PresetList, 0x1);            
+            putValue(env_AudioSD_activeSrc_MedBrList, 0x0 );   
+            //IssueList #126 - code commented
+            //putValue(env_AudioSD_activeSrc_update, 0x1);         
+            setTimer (AudioSD_BAP_ReceptionList_Long_Timer, 1000 );
+            break;
+        case 3:
+            putValue(env_AudioSD_PreferredList_List, 0x1);   
+            //IssueList #126 - code commented   
+            //putValue(env_AudioSD_PreferredList_update, 0x1);                  
+            setTimer (AudioSD_BAP_ReceptionList_Long_Timer, 1000 );
+            break;
+        case 4:
+            putValue(env_AudioSD_RecListType_Type, 0x2);
+            //IssueList #126 - code commented
+            //putValue(env_AudioSD_RecListType_update, 0x1);                       
+            setTimer (AudioSD_BAP_ReceptionList_Long_Timer, 1000 );
+            break;
+        case 5:
+            putValue(env_AudioSD_RL_DataSource, 0x1);
+            putValue(env_AudioSD_RL_CSVPath, "BAP\\Arrays\\bap_audio_Reception_List_long.csv");           
+            putValue(env_AudioSD_RL_reload, 0x1);            
+            setTimer (AudioSD_BAP_ReceptionList_Long_Timer, 1000 );
+            break;
+        default:
+            break;
+    }   
+}
+
+on timer AudioSD_BAP_ReceptionList_Long_Timer
+{
+    //email from Jens: 04FEB2012
+    if (Reception_Long_index < AudioSD_ReceptionList_MAX)
+    {
+        //write("Reception_Long_index = %d", Reception_Long_index);
+        AudioSD_BAP_ReceptionList_Long_case = Reception_Long_index;
+        AudioSD_BAP_ReceptionList_Display_Long ();
+        Reception_Long_index ++;
+       
+    } 
+    else
+    {
+        putValue(env_AudioSD_ReceptionList_Long, 0 );
+        Reception_Long_index = 0;
+        cancelTimer(AudioSD_BAP_ReceptionList_Long_Timer); 
+                
+        AudioSD_RecepList_start_update = 1;
+        setTimer (AudioSD_BAP_ReceptionList_Update_Timer, 100 );
+        //write("AudioSD_BAP_ReceptionList_Long_case  END");
+    }        
+}
+
+on envVar env_AudioSD_DABList_Long
+{
+    if (getValue(this)) 
+    {                
+        setTimer(AudioSD_BAP_DABList_Long_Timer, 0 );
+    }
+}
+
+on envVar env_AudioSD_DABList_Short
+{
+    if (getValue(this)) 
+    {                     
+        setTimer(AudioSD_BAP_DABList_Short_Timer, 0 );
+    }
+}
+
+void AudioSD_BAP_DABList_Display_Long (void)
+{
+    switch (AudioSD_BAP_DABList_Long_case)
+    { 
+        case 0:  
+            putValue(env_AudioSD_FSGOpState_OpState, 0x0 ); 
+            //putValue(env_AudioSD_FSGOpState_update, 0x1);                       
+            setTimer (AudioSD_BAP_DABList_Long_Timer, 400 );
+            break;
+        case 1:
+            putValue(env_AudioSD_CSH_FSGhandle, 0x1F);            
+            putValue(env_AudioSD_CSH_FSGAbsPos, 0x0F);
+            putValue(env_AudioSD_CSH_PresetListRef, 0x0 ); 
+            putValue(env_AudioSD_CSH_PresetListAbsPos, 0x0 );  
+            putValue(env_AudioSD_CSH_DABEnsHandle, 0x200 );
+            putValue(env_AudioSD_CSH_DABEnsAbsPos, 10 ); 
+            //IssueList #126 - code commented 
+            //putValue(env_AudioSD_CSH_update, 0x1);          
+            setTimer (AudioSD_BAP_DABList_Long_Timer, 400 );
+            break;
+        case 2:
+            putValue(env_AudioSD_activeSrc_Type, 0x3);            
+            putValue(env_AudioSD_activeSrc_ListState, 0x3);            
+            putValue(env_AudioSD_activeSrc_ReceptList, 0x1);                         
+            putValue(env_AudioSD_activeSrc_PresetList, 0x1);            
+            putValue(env_AudioSD_activeSrc_MedBrList, 0x0 );  
+            //IssueList #126 - code commented
+            putValue(env_AudioSD_activeSrc_update, 0x1);          
+            setTimer (AudioSD_BAP_DABList_Long_Timer, 1000 );
+            break;
+        case 3:
+            putValue(env_AudioSD_PreferredList_List, 0x1);
+            //IssueList #126 - code commented     
+            //putValue(env_AudioSD_PreferredList_update, 0x1);                   
+            setTimer (AudioSD_BAP_DABList_Long_Timer, 1000 );
+            break;
+        case 4:
+            putValue(env_AudioSD_RecListType_Type, 0x3); 
+            //IssueList #126 - code commented   
+            //putValue(env_AudioSD_RecListType_update, 0x1);                   
+            setTimer (AudioSD_BAP_DABList_Long_Timer, 1000 );
+            break;
+        case 5:
+            putValue(env_AudioSD_RL_DataSource, 0x1);
+            putValue(env_AudioSD_RL_CSVPath, "BAP\\Arrays\\bap_audio_DAB_List_long.csv");           
+            putValue(env_AudioSD_RL_reload, 0x1);                        
+            setTimer (AudioSD_BAP_DABList_Long_Timer, 1000 );
+            break;
+        default:
+            break;
+    }   
+}
+
+void AudioSD_BAP_DABList_Display_Short (void)
+{
+    switch (AudioSD_BAP_DABList_Short_case)
+    { 
+        case 0:  
+            putValue(env_AudioSD_FSGOpState_OpState, 0x0 );                       
+            //putValue(env_AudioSD_FSGOpState_update, 0x1);                       
+            setTimer (AudioSD_BAP_DABList_Short_Timer, 400 );
+            break;
+        case 1:
+            putValue(env_AudioSD_CSH_FSGhandle, 0x04);            
+            putValue(env_AudioSD_CSH_FSGAbsPos, 0x04);
+            putValue(env_AudioSD_CSH_PresetListRef, 0x0 ); 
+            putValue(env_AudioSD_CSH_PresetListAbsPos, 0x0 );
+            putValue(env_AudioSD_CSH_DABEnsHandle, 0x100 );
+            putValue(env_AudioSD_CSH_DABEnsAbsPos, 1); 
+            //IssueList #126 - code commented
+            //putValue(env_AudioSD_CSH_update, 0x1);                    
+            setTimer (AudioSD_BAP_DABList_Short_Timer, 400 );
+            break;
+        case 2:
+            putValue(env_AudioSD_activeSrc_Type, 0x3);                   
+            putValue(env_AudioSD_activeSrc_ListState, 0x3);            
+            putValue(env_AudioSD_activeSrc_ReceptList, 0x1);                        
+            putValue(env_AudioSD_activeSrc_PresetList, 0x1);            
+            putValue(env_AudioSD_activeSrc_MedBrList, 0x0 ); 
+            //IssueList #126 - code commented  
+           putValue(env_AudioSD_activeSrc_update, 0x1);                   
+            setTimer (AudioSD_BAP_DABList_Short_Timer, 1000 );
+            break;
+        case 3:
+            putValue(env_AudioSD_PreferredList_List, 0x1);
+            //IssueList #126 - code commented   
+            //putValue(env_AudioSD_PreferredList_update, 0x1);                                        
+            setTimer (AudioSD_BAP_DABList_Short_Timer, 1000 );
+            break;
+        case 4:
+            putValue(env_AudioSD_RecListType_Type, 0x3); 
+            //IssueList #126 - code commented  
+            //putValue(env_AudioSD_RecListType_update, 0x1);                                       
+            setTimer (AudioSD_BAP_DABList_Short_Timer, 1000 );
+            break;
+        case 5:
+            putValue(env_AudioSD_RL_DataSource, 0x1);
+            putValue(env_AudioSD_RL_CSVPath, "BAP\\Arrays\\bap_audio_DAB_List_short.csv");           
+            putValue(env_AudioSD_RL_reload, 0x1);                        
+            setTimer (AudioSD_BAP_DABList_Short_Timer, 1000 );
+            break;
+        default:
+            break;
+    }   
+}
+
+on timer AudioSD_BAP_DABList_Short_Timer
+{
+    //email from Jens: 04FEB2012
+    if (DAB_Short_index < AudioSD_DABList_MAX)
+    {        
+        //write("DAB_Short_index = %d", DAB_Short_index);
+        AudioSD_BAP_DABList_Short_case = DAB_Short_index;
+        AudioSD_BAP_DABList_Display_Short ();
+        DAB_Short_index ++;
+    } 
+    else
+    {
+        putValue(env_AudioSD_DABList_Short, 0 );
+        DAB_Short_index = 0;
+        cancelTimer(AudioSD_BAP_DABList_Short_Timer); 
+                
+        AudioSD_DABList_start_update = 1;
+        setTimer (AudioSD_BAP_DABList_Update_Timer, 100 );
+        
+        //write("AudioSD_BAP_DABList_Short_case  END");
+    }    
+}
+
+on timer AudioSD_BAP_DABList_Long_Timer
+{    
+    //email from Jens: 04FEB2012
+    if (DAB_Long_index < AudioSD_DABList_MAX)
+    { 
+        //write("DAB_Long_index = %d", DAB_Long_index);       
+        AudioSD_BAP_DABList_Long_case = DAB_Long_index;
+        AudioSD_BAP_DABList_Display_Long ();
+        DAB_Long_index ++;
+    } 
+    else
+    {
+        putValue(env_AudioSD_DABList_Long, 0 );
+        DAB_Long_index = 0;
+        cancelTimer(AudioSD_BAP_DABList_Long_Timer); 
+                
+        AudioSD_DABList_start_update = 1;
+        setTimer (AudioSD_BAP_DABList_Update_Timer, 100 );
+        //write("AudioSD_BAP_DABList_Long_case  END");
+
+    }    
+}
+
+on timer AudioSD_BAP_DABList_Update_Timer
+{
+    
+    if (AudioSD_DABList_start_update == 1)
+    {        
+        putValue(env_AudioSD_RL_FRU, 0x1);
+        AudioSD_DABList_start_update = 0;
+        setTimer (AudioSD_BAP_DABList_Update_Timer, 2000 );
+    }
+    else
+    {
+        //putValue(env_AudioSD_FSGOpState_update, 0x0 );
+        //putValue(env_AudioSD_CSH_update, 0x0 );
+        putValue(env_AudioSD_activeSrc_update, 0x0 );
+        putValue(env_AudioSD_PreferredList_update, 0x0 );
+        putValue(env_AudioSD_RecListType_update, 0x0 );
+        putValue(env_AudioSD_RL_FRU, 0x0 );
+        putValue(env_AudioSD_RL_reload, 0x0 );            
+        AudioSD_DABList_start_update = 0;
+        cancelTimer (AudioSD_BAP_DABList_Update_Timer);
+    }
+}
+
+on envVar env_AudioSD_RadioTVPreList_Short
+{
+    if (getValue(this)) 
+    {
+        setTimer(AudioSD_BAP_RadioTVPresetList_Short_Timer, 0 );
+    }
+}
+
+void AudioSD_BAP_RadioTVPresetList_Display_Long ()
+{    
+    switch(AudioSD_BAP_RadioTVPresetList_Long_case)
+    {
+        case 0:
+            putValue(env_AudioSD_FSGOpState_OpState, 0x0 );                                    
+            //putValue(env_AudioSD_FSGOpState_update, 0x1);
+            setTimer (AudioSD_BAP_RadioTVPresetList_Long_Timer, 400 );
+            break;
+        case 1:
+            putValue(env_AudioSD_CSH_FSGhandle, 0x0 );            
+            putValue(env_AudioSD_CSH_FSGAbsPos, 0x0 );
+            putValue(env_AudioSD_CSH_DABEnsHandle, 0x0 );
+            putValue(env_AudioSD_CSH_DABEnsAbsPos, 0x0 );
+            putValue(env_AudioSD_CSH_PresetListRef, 0x52); 
+            putValue(env_AudioSD_CSH_PresetListAbsPos, 0x22); 
+            //IssueList #126 - code commented 
+            //putValue(env_AudioSD_CSH_update, 0x1);                                 
+            setTimer (AudioSD_BAP_RadioTVPresetList_Long_Timer, 400 );
+            break;
+        case 2:
+            putValue(env_AudioSD_activeSrc_ListState, 0x3);  
+            putValue(env_AudioSD_activeSrc_ReceptList, 0x0 );
+            putValue(env_AudioSD_activeSrc_MedBrList, 0x0 );                          
+            putValue(env_AudioSD_activeSrc_PresetList, 0x1);
+            //IssueList #126 - code commented              
+            //putValue(env_AudioSD_activeSrc_update, 0x1);                    
+            setTimer (AudioSD_BAP_RadioTVPresetList_Long_Timer, 1000 );
+            break;
+        case 3:
+            putValue(env_AudioSD_PreferredList_List, 0x2);
+            //IssueList #126 - code commented       
+            //putValue(env_AudioSD_PreferredList_update, 0x1);                  
+            setTimer (AudioSD_BAP_RadioTVPresetList_Long_Timer, 1000 );
+            break;
+        case 4:
+            putValue(env_AudioSD_RTPL_DataSource, 0x1); 
+            putValue(env_AudioSD_RTPL_CSVPath, "BAP\\Arrays\\bap_audio_RadioTVPreset_List_long.csv");            
+            putValue(env_AudioSD_RTPL_reload, 0x1);           
+            setTimer (AudioSD_BAP_RadioTVPresetList_Long_Timer, 1000 );            
+            break; 
+         default:
+            break;
+     }  
+}
+
+on timer AudioSD_BAP_RadioTVPresetList_Long_Timer
+{
+    //email from Jens: 04FEB2012
+    if (RadioTVPreset_Long_index < AudioSD_RadioTVPresetList_MAX)
+    {
+        //write("RadioTVPreset_Long_index= %d", RadioTVPreset_Long_index);
+        AudioSD_BAP_RadioTVPresetList_Long_case = RadioTVPreset_Long_index;
+        AudioSD_BAP_RadioTVPresetList_Display_Long ();
+        RadioTVPreset_Long_index ++;
+    } 
+    else
+    {
+        putValue(env_AudioSD_RadioTVPreList_Long, 0 );
+        RadioTVPreset_Long_index = 0;
+        cancelTimer(AudioSD_BAP_RadioTVPresetList_Long_Timer); 
+                
+        Audio_SD_RadioTVPresetList_start_update = 1;
+        setTimer (AudioSD_BAP_RadioTVPresetList_Update_Timer, 100 );
+        //write("AudioSD_BAP_RadioTVPresetList_Long_case  END");
+    }    
+}
+
+on envVar env_AudioSD_MBList_Long
+{
+    if (getValue(this)) 
+    {        
+        setTimer(AudioSD_BAP_MBList_Long_Timer, 0 );
+    }
+}
+
+on envVar env_AudioSD_MBList_Short
+{
+    if (getValue(this)) 
+    {
+        setTimer(AudioSD_BAP_MBList_Short_Timer, 0 );
+    }
+}
+
+void AudioSD_BAP_MBList_Display_Long (void)
+{
+    switch (AudioSD_BAP_MBList_Long_case)
+    { 
+        case 0:  
+            putValue(env_AudioSD_FSGOpState_OpState, 0x0 ); 
+            //putValue(env_AudioSD_FSGOpState_update, 0x1);                      
+            setTimer (AudioSD_BAP_MBList_Long_Timer, 400 );
+            break;
+        case 1:
+            putValue(env_AudioSD_CSH_PresetListRef, 0x0 ); 
+            putValue(env_AudioSD_CSH_PresetListAbsPos, 0x0 );
+            putValue(env_AudioSD_CSH_DABEnsHandle, 0x0 );
+            putValue(env_AudioSD_CSH_DABEnsAbsPos, 0x0 );
+            putValue(env_AudioSD_CSH_FSGhandle, 0x1);            
+            putValue(env_AudioSD_CSH_FSGAbsPos, 0x1);  
+            //IssueList #126 - code commented
+            //putValue(env_AudioSD_CSH_update, 0x1);          
+            setTimer (AudioSD_BAP_MBList_Long_Timer, 400 );
+            break;        
+        case 2:
+            putValue(env_AudioSD_activeSrc_ReceptList, 0x0 );                        
+            putValue(env_AudioSD_activeSrc_PresetList, 0x0 ); 
+            //putValue(env_AudioSD_activeSrc_MedBrList, 0x1);   
+            //IssueList #126 - code commented         
+            //putValue(env_AudioSD_activeSrc_update, 0x1);                      
+            setTimer (AudioSD_BAP_MBList_Long_Timer, 1000 );
+            break;
+        case 3:
+            putValue(env_AudioSD_PreferredList_List, 0x1);
+            //IssueList #126 - code commented   
+            //putValue(env_AudioSD_PreferredList_update, 0x1);                             
+            setTimer (AudioSD_BAP_MBList_Long_Timer, 1000 );
+            break;
+        case 4:
+            putValue(env_AudioSD_MB_DataSource, 0x1);
+            putValue(env_AudioSD_MB_CSVPath, "BAP\\Arrays\\bap_audio_MediaBrowser_List_long.csv");           
+            putValue(env_AudioSD_MB_reload, 0x1);            
+            setTimer (AudioSD_BAP_MBList_Long_Timer, 1000 );
+            break;
+        default:
+            break;
+    }    
+}
+
+void AudioSD_BAP_MBList_Display_Short (void)
+{
+    switch (AudioSD_BAP_MBList_Short_case)
+    { 
+        case 0:  
+            putValue(env_AudioSD_FSGOpState_OpState, 0x0 );                       
+            //putValue(env_AudioSD_FSGOpState_update, 0x1);                      
+            setTimer (AudioSD_BAP_MBList_Short_Timer, 1000 );
+            break;
+        case 1:
+            putValue(env_AudioSD_CSH_PresetListRef, 0x0 ); 
+            putValue(env_AudioSD_CSH_PresetListAbsPos, 0x0 );
+            putValue(env_AudioSD_CSH_DABEnsHandle, 0x0 );
+            putValue(env_AudioSD_CSH_DABEnsAbsPos, 0x0 );
+            putValue(env_AudioSD_CSH_FSGhandle, 0xA);            
+            putValue(env_AudioSD_CSH_FSGAbsPos, 0xA); 
+            //IssueList #126 - code commented  
+            //putValue(env_AudioSD_CSH_update, 0x1);                   
+            setTimer (AudioSD_BAP_MBList_Short_Timer, 400 );
+            break;
+        case 2:
+            putValue(env_AudioSD_activeSrc_ReceptList, 0x0 );                        
+            putValue(env_AudioSD_activeSrc_PresetList, 0x0 ); 
+            //putValue(env_AudioSD_activeSrc_MedBrList, 0x1); 
+            //IssueList #126 - code commented          
+            //putValue(env_AudioSD_activeSrc_update, 0x1);                                            
+            setTimer (AudioSD_BAP_MBList_Short_Timer, 1000 );
+            break;
+        case 3:
+            putValue(env_AudioSD_PreferredList_List, 0x1); 
+            //IssueList #126 - code commented 
+            //putValue(env_AudioSD_PreferredList_update, 0x1);                                                   
+            setTimer (AudioSD_BAP_MBList_Short_Timer, 1000 );
+            break;
+        case 4:
+            putValue(env_AudioSD_MB_DataSource, 0x1);
+            //MR60227
+            if (getValue(env_PIC_bapMOST_active_flag)==0x00)
+            putValue(env_AudioSD_MB_CSVPath, "BAP\\Arrays\\bap_audio_MediaBrowser_List_short.csv");  
+            else
+            putValue(env_AudioSD_MB_CSVPath, "BAP\\Arrays\\bap_audio_MediaBrowser_List_long_MOST.csv");  
+                     
+            putValue(env_AudioSD_MB_reload, 0x1);            
+            setTimer (AudioSD_BAP_MBList_Short_Timer, 1000 );
+            break;
+        default:
+            break;
+    }    
+}
+
+on timer AudioSD_BAP_MBList_Long_Timer
+{
+    
+    //email from Jens: 04FEB2012
+    if (MB_Long_index < AudioSD_MBList_MAX)
+    {    
+        //write("MB_Long_index = %d", MB_Long_index);        
+        AudioSD_BAP_MBList_Long_case = MB_Long_index;
+        AudioSD_BAP_MBList_Display_Long ();
+        MB_Long_index ++;
+    } 
+    else
+    {
+        putValue(env_AudioSD_MBList_Long, 0 );
+        MB_Long_index = 0;
+        cancelTimer(AudioSD_BAP_MBList_Long_Timer); 
+                
+        Audio_SD_MBList_start_update = 1;
+        setTimer (AudioSD_BAP_MBList_Update_Timer, 100 );
+        //write("AudioSD_BAP_MBList_Long_case  END");
+    }    
+}
+
+on timer AudioSD_BAP_MBList_Short_Timer
+{
+    //email from Jens: 04FEB2012
+    if (MB_Short_index < AudioSD_MBList_MAX)
+    { 
+        //write("MB_Short_index = %d", MB_Short_index);    
+        AudioSD_BAP_MBList_Short_case = MB_Short_index;
+        AudioSD_BAP_MBList_Display_Short ();
+        MB_Short_index ++;
+    } 
+    else
+    {
+        putValue(env_AudioSD_MBList_Short, 0 );
+        MB_Short_index = 0;
+        cancelTimer(AudioSD_BAP_MBList_Short_Timer); 
+                
+        Audio_SD_MBList_start_update = 1;
+        setTimer (AudioSD_BAP_MBList_Update_Timer, 100 );
+        //write("AudioSD_BAP_MBList_Short_case  END");
+    } 
+}
+
+on timer AudioSD_BAP_MBList_Update_Timer
+{
+    if (Audio_SD_MBList_start_update == 1)
+    {                                
+        putValue(env_AudioSD_MB_FRU, 0x1);
+        Audio_SD_MBList_start_update = 0;
+        setTimer (AudioSD_BAP_MBList_Update_Timer, 2000 );
+    }
+    else
+    {
+        //putValue(env_AudioSD_FSGOpState_update, 0x0 );
+        //putValue(env_AudioSD_CSH_update, 0x0 );
+        putValue(env_AudioSD_activeSrc_update, 0x0 );
+        putValue(env_AudioSD_PreferredList_update, 0x0 );        
+        putValue(env_AudioSD_MB_FRU, 0x0 );
+        putValue(env_AudioSD_MB_reload, 0x0 );            
+        Audio_SD_MBList_start_update = 0;
+        cancelTimer (AudioSD_BAP_MBList_Update_Timer);
+    }
+}
+
+on envVar env_AudioSD_SourceList_Long
+{
+    if (getValue(this)) 
+    {        
+         setTimer(AudioSD_BAP_SourceList_Long_Timer, 0 );
+    }
+}
+
+on envVar env_AudioSD_SourceList_Short
+{
+    if (getValue(this)) 
+    {        
+        setTimer(AudioSD_BAP_SourceList_Short_Timer, 0 );
+    }
+}
+
+void AudioSD_BAP_SourceList_Display_Long (void)
+{
+    switch (AudioSD_BAP_SourceList_Long_case)
+    {         
+        case 0:
+            putValue(env_AudioSD_activeSrc_SLRef, 0x1);  
+            //IssueList #126 - code commented
+            //putValue(env_AudioSD_activeSrc_update, 0x1);                  
+            setTimer (AudioSD_BAP_SourceList_Long_Timer, 1000 );
+            break;       
+        case 1:
+            putValue(env_AudioSD_SL_DataSource, 0x1);
+            putValue(env_AudioSD_SL_CSVPath, "BAP\\Arrays\\bap_audio_Source_List_long.csv");           
+            putValue(env_AudioSD_SL_reload, 0x1);            
+            setTimer (AudioSD_BAP_SourceList_Long_Timer, 1000 );
+            break;
+        default:
+            break;
+    }    
+}
+
+void AudioSD_BAP_SourceList_Display_Short (void)
+{
+    switch (AudioSD_BAP_SourceList_Short_case)
+    {         
+        case 0:
+            putValue(env_AudioSD_activeSrc_SLRef, 0xC);
+            //IssueList #126 - code commented
+            //putValue(env_AudioSD_activeSrc_update, 0x1);                              
+            setTimer (AudioSD_BAP_SourceList_Short_Timer, 1000 );
+            break;       
+        case 1:
+            putValue(env_AudioSD_SL_DataSource, 0x1);
+            putValue(env_AudioSD_SL_CSVPath, "BAP\\Arrays\\bap_audio_Source_List_short.csv");           
+            putValue(env_AudioSD_SL_reload, 0x1);            
+            setTimer (AudioSD_BAP_SourceList_Short_Timer, 1000 );
+            break;
+        default:
+            break;
+    }    
+}
+
+on timer AudioSD_BAP_SourceList_Long_Timer
+{
+    //email from Jens: 04FEB2012
+    if (Source_Long_index < AudioSD_SourceList_MAX)
+    {
+        //write("Source_Long_index= %d", Source_Long_index); 
+        AudioSD_BAP_SourceList_Long_case = Source_Long_index;
+        AudioSD_BAP_SourceList_Display_Long ();
+        Source_Long_index ++;
+    } 
+    else
+    {
+        putValue(env_AudioSD_SourceList_Long, 0 );
+        Source_Long_index = 0;
+        cancelTimer(AudioSD_BAP_SourceList_Long_Timer); 
+                
+        Audio_SD_SourceList_start_update = 1;
+        setTimer (AudioSD_BAP_SourceList_Update_Timer, 100 );
+        //write("AudioSD_BAP_SourceList_Long_case  END");
+    }          
+}
+
+on timer AudioSD_BAP_SourceList_Short_Timer
+{
+    //email from Jens: 04FEB2012
+    if (Source_Short_index < AudioSD_SourceList_MAX)
+    {  
+        //write("Source_Short_index= %d", Source_Short_index);           
+        AudioSD_BAP_SourceList_Short_case = Source_Short_index;
+        AudioSD_BAP_SourceList_Display_Short ();
+        Source_Short_index ++;
+    } 
+    else
+    {
+        putValue(env_AudioSD_SourceList_Short, 0 );
+        Source_Short_index = 0;
+        cancelTimer(AudioSD_BAP_SourceList_Short_Timer); 
+                
+        Audio_SD_SourceList_start_update = 1;
+        setTimer (AudioSD_BAP_SourceList_Update_Timer, 100 );
+         //write("AudioSD_BAP_SourceList_Short_case  END");
+    }          
+}
+
+on timer AudioSD_BAP_SourceList_Update_Timer
+{
+    
+    if (Audio_SD_SourceList_start_update == 1)
+    {                
+        putValue(env_AudioSD_SL_FRU, 0x1);
+        Audio_SD_SourceList_start_update = 0;
+        setTimer (AudioSD_BAP_SourceList_Update_Timer, 2000 );
+    }
+    else
+    {        
+        putValue(env_AudioSD_activeSrc_update, 0x0 );     
+        putValue(env_AudioSD_SL_FRU, 0x0 );
+        putValue(env_AudioSD_SL_reload, 0x0 );            
+        Audio_SD_SourceList_start_update = 0;
+        cancelTimer (AudioSD_BAP_SourceList_Update_Timer);
+    }
+}
+

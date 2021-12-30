@@ -1,0 +1,3725 @@
+/*@!Encoding:1252*/
+/********************************************************************************/ 
+/*  Author:      Roy Buehring                                                   */ 
+/*  Department:  IAV, VC-F-23                                                   */ 
+/*  Email (IAV): roy.buehring@IAV.de                                            */
+/*  Email (VW):  extern.roy.buehring@volkswagen.de                              */
+/*  Mobil:       +49 152 21881956                                               */ 
+/*                                                                              */ 
+/*  Substitute:  Christian Franz                                                */ 
+/*  Department:  VW, EECF/1                                                     */ 
+/*  Phone:       +49-5361-9-42880                                               */ 
+/*                                                                              */ 
+/*  Purpose:     CANoe simulation for stand alone SDS secondary Display	        */ 
+/********************************************************************************/ 
+
+includes
+{
+    #pragma library ("..\..\_DLL\BAP1101\BAP1101.dll")
+}
+
+variables 
+{
+    char dbc_path[255]  = "BAP\\_DBC\\BAP_V9.04F.dbc";	            // relative path for dbc-file											
+    char xml_path[255]  ="BAP\\BAP-SIM_SDS_SD_v1.00_DF30_man_2016-05-01_RB\\XML\\BAP_SW17_MIB2_Std_MQB_V1_81_F_mod.xml";      // relative path for xml-file  _mod
+
+    
+    // CAPL constants
+    dword gBAP_Trace, gError_Trace;
+    const CAPL_WRITE_LINE_SUCCESS                   = 0;
+    const CAPL_WRITE_LINE_INFORMATION               = 1;
+    const CAPL_WRITE_LINE_WARNING                   = 2;
+    const CAPL_WRITE_LINE_ERROR                     = 3;
+
+    dword NODE_INDEX;
+    
+    // Timers
+    mstimer TaskTimer;													    // timer for BAP-Task	
+    mstimer startupTimer;                                                   // timer for startup (init-time)			
+    mstimer initTimer;                                                      // avoids start of Bap stack before complete initialisation
+    mstimer sequences_ContextStateTimer;
+    mstimer shutdownTimer;
+
+    // general values for readable code
+    const FALSE                                     = 0;
+    const TRUE                                      = 1;
+
+    // BAP constants
+    const BAP_HEADER_SIZE                           = 6;
+    const BAP_BUFFER_SIZE                           = 4000;
+
+    //BAP Data Type 
+    const Bap_Void			                        = 0;
+    const Bap_UInt8			                        = 1;
+    const Bap_UInt16		                        = 2;
+    const Bap_UInt32		                        = 3;
+    const Bap_ByteSequence	                        = 4;
+    const Bap_Error			                        = 5;
+    const Bap_Acknowledge                           = 6;
+
+    //BAP request types (FSG)
+    const Data_REQ			                        = 0x03;
+    const DataAck                                   = 0x0A;
+    const Changed_REQ		                        = 0x04;
+    const Processing_REQ	                        = 0x08;
+    const Result_REQ		                        = 0x09;
+    const Error_REQ                                 = 0x55;                 // own definition
+    const Data_REQ_CAN		                        = 0x11;   
+
+    //BAP indication types (FSG)
+    const Data_IND			                        = 0x00;                 // normally ASG, but needed for SetGet
+    const DataSetGet_IND	                        = 0x06;
+    const DataSet_IND		                        = 0x07;
+    const DataGet_IND		                        = 0x08;
+    const Acknowledge_Ind                           = 0x09;
+    const Processing_CNF	                        = 0x0A;
+    const Start_IND			                        = 0x0B;
+    const StartResult_IND	                        = 0x0C;
+    const Abort_IND	                                = 0x0D;       
+
+    // BAP and BAL error codes
+	const BAP_NO_ERROR                              = 0x00;
+	const BAP_BAL_OUT_OF_RANGE                      = 0x41;
+	const BAP_BAL_TEMP_NOT_AVAILABLE                = 0x42;
+	const BAP_BAL_MAX_DL_EXCEEDED                   = 0x43;
+	const BAP_BAL_UNIT_MISMATCH                     = 0x44;
+    const Error_IND                                 = 0x55;                 // eigene Error-Definition
+
+    // Config Defifitions
+    const Para_Heartbeat                            = 0x0000;
+    const Para_RetryCounter                         = 0x0001;
+    const Para_RetryTimer                           = 0x0002;
+    const Para_InhibitTime                          = 0x0003;
+    const Para_IntertelegramTime                    = 0x0004;
+    const Para_ChacheState                          = 0x0005;
+    const Para_LSGClass                             = 0x0010;
+    const Para_LSGSubClass                          = 0x0011;
+    const Para_MajProVer                            = 0x0012;
+    const Para_MinProVer                            = 0x0013;
+    const Para_MajDataDef                           = 0x0014;
+    const Para_MinDataDef                           = 0x0015;
+    const Para_SeqLengthError                       = 0x0020;
+    const Para_SeqNumError                          = 0x0021;
+    const Para_FunctionList                         = 0x0030;
+    const Para_FunctionListItem                     = 0x0031;
+
+    /*** FSG specific global consts. ***/
+    const LSG_SDS_SD	                            = 0x46;
+    message BAP_SDS_ASG_01 FSG_CAN_Message;  
+    int InitState                                   = 0;          
+
+    /*** GetAll ***/
+    const GET_ALL_FCT_ID                            = 0x01;
+    const GET_ALL_BAP_DATA_TYPE                     = 4;                    // Bap_ByteSequence; 
+    const GET_ALL_BAP_DATA_LENGTH                   = 136;
+
+    /*** BAP_Config ***/
+    const BAP_CONFIG_FCT_ID                         = 0x02;
+    const BAP_CONFIG_BAP_DATA_TYPE                  = 4;                    // Bap_ByteSequence;
+    const BAP_CONFIG_BAP_DATA_LENGTH                = 6;
+    const BAP_CONFIG_STATUS_CAN_DLC                 = 8;                    // For direct CAN access
+    const BAP_CONFIG_STATUS_CAN_BYTE0               = 0x40;
+    const BAP_CONFIG_STATUS_CAN_BYTE1               = 0x02;
+
+    /*** FunctionList ***/
+    const FUNCTION_LIST_FCT_ID                      = 0x03;
+    const FUNCTION_LIST_BAP_DATA_TYPE               = 4;                    // Bap_ByteSequence;
+    const FUNCTION_LIST_BAP_DATA_LENGTH             = 8;
+    const FUNCTION_LIST_STATUS_CAN_DLC_0            = 8;                    // For direct CAN access (Segment 0)
+    const FUNCTION_LIST_STATUS_CAN_BYTE0_0          = 0x80;
+    const FUNCTION_LIST_STATUS_CAN_BYTE0_1          = 0x08;
+    const FUNCTION_LIST_STATUS_CAN_BYTE0_2          = 0x40;
+    const FUNCTION_LIST_STATUS_CAN_BYTE0_3          = 0x03;
+    const FUNCTION_LIST_STATUS_CAN_DLC_1            = 5;                    // For direct CAN access (Segment 1)
+    const FUNCTION_LIST_STATUS_CAN_BYTE1_0          = 0xC0;
+    const FUNCTION_LIST_STATUS_CAN_BYTE1_1          = 0x00;
+
+    /*** Heartbeat ***/
+    const HEART_BEAT_FCT_ID                         = 0x04;
+    const HEART_BEAT_BAP_DATA_TYPE                  = 1;                    // Bap_Uint8;
+    const HEART_BEAT_BAP_DATA_LENGTH                = 0;                    // not relevant
+    const HEART_BEAT_STATUS_CAN_DLC                 = 3;                    // For direct CAN access
+    const HEART_BEAT_STATUS_CAN_BYTE0               = 0x40;
+    const HEART_BEAT_STATUS_CAN_BYTE1               = 0x04;
+
+    /*** FSG_Setup ***/
+    const FSG_SETUP_FCT_ID                          = 0x0E;
+    const FSG_SETUP_BAP_DATA_TYPE                   = 4;                    // Bap_ByteSequence;
+    const FSG_SETUP_BAP_DATA_LENGTH                 = 6;
+
+    /*** FSG_OperationState ***/
+    const FSG_OPERATION_STATE_FCT_ID                = 0x0F;
+    const FSG_OPERATION_STATE_BAP_DATA_TYPE         = 1;                    // Bap_Uint8;
+    const FSG_OPERATION_STATE_BAP_DATA_LENGTH       = 0;                    // not relevant   
+    const FSG_OPERATION_STATE_NORMAL                = 0;
+    const FSG_OPERATION_STATE_OFF                   = 1;
+    const FSG_OPERATION_STATE_INIT                  = 3;
+
+    /*** ASG_Capabilities ***/
+    const ASG_CAPABILITIES_FCT_ID                   = 0x10;
+    const ASG_CAPABILITIES_BAP_DATA_TYPE            = 4;                    // Bap_ByteSequence;
+    const ASG_CAPABILITIES_BAP_DATA_LENGTH          = 6;
+    const ASG_CAPABILITIES_DISPLAY_SMALL            = 0x00;
+    const ASG_CAPABILITIES_DISPLAY_MEDIUM           = 0x01;
+    const ASG_CAPABILITIES_DISPLAY_LARGE            = 0x02;
+
+    /*** SDS_ContextState ***/
+    const SDS_CONTEXT_STATE_FCT_ID                  = 0x11;
+    const SDS_CONTEXT_STATE_BAP_DATA_TYPE           = Bap_ByteSequence;
+    const SDS_CONTEXT_STATE_BAP_DATA_LENGTH         = 8;                    // Special case: Is min 6 bytes long
+    const SDS_CONTEXT_STATE_BAP_DATA_LENGTH_MAX     = 98;                   // and max 98 bytes long!
+    const SDS_CONTEXT_STATE_ADDITIONAL_TEXT         = 0xFFFF;
+
+    /*** CommandList ***/
+    const COMMAND_LIST_FCT_ID 	                    = 0x12;
+    const COMMAND_LIST_BAP_DATA_TYPE                = 4;                    // Bap_ByteSequence;
+    const COMMAND_LIST_BAP_DATA_LENGTH              = 8;                    // +strlen(...)!
+    const COMMAND_LIST_BAP_DATA_LENGTH_MAX          = 98;
+    const COMMANDLIST_ENTRIES                       = 254;                  // for 16 bit addressing
+    const COMMANDLIST_COMMANDTEXT_LENGTH            = 61;
+    const COMMANDLIST_EXTENSION_LENGTH              = 2;
+    const COMMANDLIST_RECADDR_ID_TEXT               = 1;
+    const COMMANDLIST_RECADDR_ID                    = 2;
+    const COMMANDLIST_RECADDR_TEXT                  = 3;
+    // global variables to store all possible elements
+    word CommandList_Data_Pos[COMMANDLIST_ENTRIES];
+    word CommandList_Data_CommandID[COMMANDLIST_ENTRIES];
+    char CommandList_Data_CommandText[COMMANDLIST_ENTRIES][COMMANDLIST_COMMANDTEXT_LENGTH];
+    int  CommandList_Data_illustrationOffset = 0;
+
+    /*** ResultList ***/
+    const RESULT_LIST_FCT_ID                        = 0x13;
+    const RESULT_LIST_BAP_DATA_TYPE                 = 4;                    // Bap_ByteSequence;
+    const RESULT_LIST_BAP_DATA_LENGTH               = 8;                    // +strlen(...)!
+    const RESULT_LIST_ENTRIES                       = 254;
+    const RESULT_LIST_RESULTTEXT_LENGTH             = 171;
+    const RESULT_LIST_EXTENSION_LENGTH              = 2;
+    const RESULT_LIST_TYPE_TEXT                     = 1;
+    const RESULT_LIST_TEXT                          = 2;
+    // global variables to store all possible elements
+    word ResultList_Data_Pos[RESULT_LIST_ENTRIES];
+    byte ResultList_Data_ResultType[RESULT_LIST_ENTRIES];
+    char ResultList_Data_ResultText[RESULT_LIST_ENTRIES][RESULT_LIST_RESULTTEXT_LENGTH];
+    int  ResultList_Data_illustrationOffset = 0;
+
+    /*** InfoStates ***/
+    const INFOSTATES_FCT_ID                         = 0x14;
+    const INFOSTATES_BAP_DATA_TYPE                  = 4;                    // Bap_ByteSequence;
+    const INFOSTATES_BAP_DATA_LENGTH                = 6;
+    const INFOSTATES_NOERROR                        = 0x00;
+    const INFOSTATES_SDS_NOT_AVAILABLE              = 0x01;
+    const INFOSTATES_LANGUANGE_CHANGE               = 0x02;
+    const INFOSTATES_SDS_DOMAIN_NOT_AVAILABLE       = 0x03;
+    const INFOSTATES_SDS_NOT_AVAILABLE_SWAP         = 0x04;
+    const INFOSTATES_UNKNOWN                        = 0xFF;
+
+    const SDS_TEXTLENGTH                            = 500;
+}
+
+on preStart
+{
+    int error;
+    char Path[255];
+    char BAPVersion [200];
+
+	// create write window for BAP communication
+    gBAP_Trace  = writecreate("SDS_SD_FSG BAP-Trace");								
+    writeclear(gBAP_Trace);													
+	gError_Trace = writecreate("SDS_SD_FSG Error");									
+	writeclear(gError_Trace);												
+
+    //clear CAPL-window in write-window
+    writeclear(1);	
+
+    //get version from Stack
+	Bap170_GetVersions(BAPVersion, 200);
+	writelineEx(gBAP_Trace, CAPL_WRITE_LINE_SUCCESS, "*********************************************************************************");
+	writelineEx(gBAP_Trace, CAPL_WRITE_LINE_SUCCESS, BAPVersion);
+	writelineEx(gBAP_Trace, CAPL_WRITE_LINE_SUCCESS, "*********************************************************************************");
+
+
+    // Create Node
+	NODE_INDEX = Bap170_CreateNode();
+
+    // Load DBC and XML files. 
+    // load dbc-file
+    getAbsFilePath(dbc_path, Path, 255);
+	writelineEx(gBAP_Trace, CAPL_WRITE_LINE_SUCCESS, "FSG-SDS_SD: Loading BAP_DBC-File: '%s'", Path);
+   
+	if(Bap170_LoadDBC(NODE_INDEX, 1, Path) != BAP_NO_ERROR)						
+		writelineEx(gError_Trace, CAPL_WRITE_LINE_ERROR, "FSG-SDS_SD Fehler beim Laden: '%s', Path");
+
+	//load xml-file 
+	getAbsFilePath(xml_path, Path, 255);
+    writelineEx(gBAP_Trace, CAPL_WRITE_LINE_SUCCESS, "FSG-SDS_SD: Load BAP-XML-File: '%s'", Path);
+	
+  
+    if (Bap170_LoadConfig(NODE_INDEX,Path,"") != BAP_NO_ERROR) 
+	    writelineEx(gError_Trace, CAPL_WRITE_LINE_ERROR, "FSG-SDS_SD: Fehler beim Laden: '%s' !", Path);	   
+    writelineEx(gBAP_Trace, CAPL_WRITE_LINE_SUCCESS, "*********************************************************************************");
+
+    // BAP DLL: Add CAN channel: BAP channel 1 is mapped to CAN card channel 1.
+	Bap170_AddCanMap(NODE_INDEX, 1, 1);	
+    
+    // BAP INIT
+	error = Bap170_Init(NODE_INDEX,LSG_SDS_SD);
+
+    // Check for initialisation error.
+    if(error == BAP_NO_ERROR)
+	    writelineEx(gBAP_Trace, CAPL_WRITE_LINE_SUCCESS, "FSG-SDS_SD BAP_Init successful");	
+    else
+	    writelineEx(gError_Trace, CAPL_WRITE_LINE_ERROR,"FSG-SDS_SD error in BAP_DLL_StackStart () - BAP INIT: 0x%x", error);	
+}
+
+on start
+{
+    @sysvar::SDS_SD_General::Smart = 0;
+    init_variables_controls();
+
+    //Panel
+    // closePanel("SDS_SD_FSG_Main");
+    // closePanel("SDS_SD_FSG_Properties");
+    // closePanel("SDS_SD_FSG_CommandList");
+    // closePanel("SDS_SD_FSG_ResultList");
+    // closePanel("SDS_SD_FSG_Sequences");
+
+    controls_enable_all();
+
+    // openPanel("SDS_SD_Main"); 
+     
+    init_variables();
+    setTimer(initTimer, 3000);
+}
+
+on stopMeasurement
+{
+    BAP170_ReleaseNode(NODE_INDEX);
+}
+
+on sysvar sysvar::SDS_SD_FSG::control_OnOff
+{
+	if(@this)               // Startup
+    {
+        init_SDS_SD();
+        setTimer(TaskTimer, 10);
+        if(@sysvar::SDS_SD_General::Smart)
+        {
+            @sysvar::SDS_SD_FSG::x0F_FSGOPState_OPState = FSG_OPERATION_STATE_INIT;
+            Request_0x0F_FSG_OperationState(Data_REQ, 0); 
+        } 
+        cancelTimer(shutdownTimer);
+        putvalue(env_SDS_v100_PowerOnOff, 1);
+    }
+	else                    // Must be a shutdown.	
+    {
+        if(@sysvar::SDS_SD_General::Smart)
+        {
+            @sysvar::SDS_SD_FSG::x0F_FSGOPState_OPState = FSG_OPERATION_STATE_OFF;
+            Request_0x0F_FSG_OperationState(Data_REQ, 0);
+            setTimer(shutdownTimer, 300); 
+        }
+        else
+        {
+            Shutdown_SDS_SD();
+            cancelTimer(TaskTimer);
+        } 
+        putvalue(env_SDS_v100_PowerOnOff, 0);
+    }
+
+    controls_enable_all();
+}
+
+shutdown_SDS_SD ()
+{
+    // Timer
+    canceltimer(TaskTimer);
+
+    // BAP-Stack
+    Bap170_Shutdown(NODE_INDEX,LSG_SDS_SD);
+
+    // Reset variables
+    if(@sysvar::SDS_SD_General::Smart)
+        init_variables();
+}
+
+init_variables()
+{
+    init_variables_properties();
+    init_variables_array_CommandList();
+    init_variables_array_ResultList();
+}
+
+init_variables_array_CommandList ()
+{
+    long i;
+
+    @sysvar::SDS_SD_FSG_CommandList::x12_CommandList_TNLE                        = 0;
+
+    @sysvar::SDS_SD_FSG_CommandList::x12_CommandList_AH_direction                = 0;
+    @sysvar::SDS_SD_FSG_CommandList::x12_CommandList_AH_elements_hex             = 0;
+    @sysvar::SDS_SD_FSG_CommandList::x12_CommandList_AH_indexSize                = 0;
+    @sysvar::SDS_SD_FSG_CommandList::x12_CommandList_AH_recordAddress            = 0;
+    @sysvar::SDS_SD_FSG_CommandList::x12_CommandList_AH_shift                    = 0;
+
+    @sysvar::SDS_SD_FSG_CommandList::x12_CommandList_AH_start_hex                = 0;
+    @sysvar::SDS_SD_FSG_CommandList::x12_CommandList_AH_transmitPos              = 0;
+
+    @sysvar::SDS_SD_FSG_CommandList::x12_CommandList_ASGID                       = 0;
+    @sysvar::SDS_SD_FSG_CommandList::x12_CommandList_TAID_hex                    = 0;
+
+    @sysvar::SDS_SD_FSG_CommandList::x12_CommandList_control_default_external    = 0;
+
+    for(i=0; i<elCount(CommandList_Data_Pos); i++)
+        CommandList_Data_Pos[i] = i+1;
+
+    CommandList_init_static();
+}
+
+int BAP_DLL_Init_SendBuffer ()
+{
+    byte Cache_Request_Data[255];
+    byte initError, changeError;
+
+    /*** Header-variables ***/
+    dword headerCache_BAPConfig[BAP_HEADER_SIZE];
+    dword headerCache_FctList[BAP_HEADER_SIZE];
+    dword headerCache_HeartBeat[BAP_HEADER_SIZE];
+    dword headerCache_FSG_Setup[BAP_HEADER_SIZE];
+    dword headerCache_FSG_OperationState[BAP_HEADER_SIZE];
+    dword headerCache_ASG_Capabilities[BAP_HEADER_SIZE];
+    dword headerCache_SDS_ContextState[BAP_HEADER_SIZE];
+    dword headerCache_InfoStates[BAP_HEADER_SIZE];
+    /*** Data-variables ***/
+    byte dataCache_BAPConfig[BAP_CONFIG_BAP_DATA_LENGTH];
+    byte dataCache_FctList[FUNCTION_LIST_BAP_DATA_LENGTH];
+    byte dataCache_FSG_Setup[FSG_SETUP_BAP_DATA_LENGTH];
+    byte dataCache_ASG_Capabilities[ASG_CAPABILITIES_BAP_DATA_LENGTH];
+    byte dataCache_SDS_ContextState[SDS_CONTEXT_STATE_BAP_DATA_LENGTH_MAX];
+    byte dataCache_InfoStates[INFOSTATES_BAP_DATA_LENGTH];
+    byte dataCache_Dummy[1]; // For Uint values
+    /*** Change-variables ***/
+    long buffer_BAPConfig[3];
+    long buffer_FctList[9];
+    long buffer_HeartBeat[2];
+    byte fctList[8];
+    int i;
+    /*** Helper-variables ***/
+    int addTextLength;
+    char buffer[SDS_TEXTLENGTH];
+
+    
+
+    initError = 0;
+
+    /****************************** BAP_Config ************************************/
+    // Change in dll
+    buffer_BAPConfig[0] = LSG_SDS_SD;
+    buffer_BAPConfig[1] = 0;
+    buffer_BAPConfig[2] = @sysvar::SDS_SD_FSG::x02_BAPConfig_LSG_Class;
+    BAP_DLL_ChangeConfig(Para_LSGClass,     buffer_BAPConfig);
+    buffer_BAPConfig[2] = @sysvar::SDS_SD_FSG::x02_BAPConfig_LSG_SubClass;
+    BAP_DLL_ChangeConfig(Para_LSGSubClass,  buffer_BAPConfig);
+    buffer_BAPConfig[2] = @sysvar::SDS_SD_FSG::x02_BAPConfig_BAP_major;
+    BAP_DLL_ChangeConfig(Para_MajProVer,    buffer_BAPConfig);
+    buffer_BAPConfig[2] = @sysvar::SDS_SD_FSG::x02_BAPConfig_BAP_minor;
+    BAP_DLL_ChangeConfig(Para_MinProVer,    buffer_BAPConfig);
+    buffer_BAPConfig[2] = @sysvar::SDS_SD_FSG::x02_BAPConfig_DF_VerMajor;
+    BAP_DLL_ChangeConfig(Para_MajDataDef,   buffer_BAPConfig);
+    buffer_BAPConfig[2] = @sysvar::SDS_SD_FSG::x02_BAPConfig_DF_VerMinor;
+    BAP_DLL_ChangeConfig(Para_MinDataDef,   buffer_BAPConfig);
+    // Header
+    BAP_createHeader(BAP_CONFIG_FCT_ID,             headerCache_BAPConfig,          BAP_CONFIG_BAP_DATA_LENGTH, 0);
+    // Data
+    dataCache_BAPConfig[0] = @sysvar::SDS_SD_FSG::x02_BAPConfig_BAP_major;
+    dataCache_BAPConfig[1] = @sysvar::SDS_SD_FSG::x02_BAPConfig_BAP_minor;
+    dataCache_BAPConfig[2] = @sysvar::SDS_SD_FSG::x02_BAPConfig_LSG_Class;
+    dataCache_BAPConfig[3] = @sysvar::SDS_SD_FSG::x02_BAPConfig_LSG_SubClass;
+    dataCache_BAPConfig[4] = @sysvar::SDS_SD_FSG::x02_BAPConfig_DF_VerMajor;
+    dataCache_BAPConfig[5] = @sysvar::SDS_SD_FSG::x02_BAPConfig_DF_VerMinor;
+    // Init SendBuffer
+    initError |= BAP_DLL_InitSendBuf("FctID_BAPConfig",             headerCache_BAPConfig,          dataCache_BAPConfig);
+
+
+    /**************************** FunctionList ************************************/
+    // Change in dll
+    FunctionList_createDataHelper (fctList);
+    buffer_FctList[0] = LSG_SDS_SD;
+    for(i=0; i<elCount(fctList); i++)
+        buffer_FctList[i+1] = fctList[i];
+    BAP_DLL_ChangeConfig(Para_FunctionList, buffer_FctList);
+    // Header
+    BAP_createHeader(FUNCTION_LIST_FCT_ID,          headerCache_FctList,            FUNCTION_LIST_BAP_DATA_LENGTH, 0);
+    // Data
+    FunctionList_createDataHelper(dataCache_FctList);
+    // Init SendBuffer
+    initError |= BAP_DLL_InitSendBuf("FctID_FctList",               headerCache_FctList,            dataCache_FctList);
+
+    
+    /****************************** HeartBeat *************************************/
+    // Change in dll
+    buffer_HeartBeat[0] = LSG_SDS_SD;
+    buffer_HeartBeat[1] = @sysvar::SDS_SD_FSG::x04_HeartBeat_HeartBeatTime;
+    BAP_DLL_ChangeConfig(Para_Heartbeat,     buffer_HeartBeat);
+    // Header & Data
+    BAP_createHeader(HEART_BEAT_FCT_ID,             headerCache_HeartBeat,          HEART_BEAT_BAP_DATA_LENGTH, 0);
+    // Init SendBuffer
+    initError |= BAP_DLL_InitSendBuf("FctID_HeartBeat",             headerCache_HeartBeat,          dataCache_Dummy);
+
+    
+    /****************************** FSG_Setup *************************************/
+    // Header
+    BAP_createHeader(FSG_SETUP_FCT_ID,              headerCache_FSG_Setup,          FSG_SETUP_BAP_DATA_LENGTH, 0);
+    // Data
+    if(@sysvar::SDS_SD_FSG::x0E_FSGSetup_setupValue_commandIDSupported)
+        dataCache_FSG_Setup[0] = 0x01;
+    else
+        dataCache_FSG_Setup[0] = 0x00;
+    // Init SendBuffer
+    initError |= BAP_DLL_InitSendBuf("FctID_FSG_Setup",             headerCache_FSG_Setup,          dataCache_FSG_Setup);
+
+    
+    /***************************** FSG_OperationState *****************************/
+    // Header & Data
+    BAP_createHeader(FSG_OPERATION_STATE_FCT_ID,    headerCache_FSG_OperationState, FSG_OPERATION_STATE_BAP_DATA_LENGTH, 0);
+    // Init SendBuffer
+    initError |= BAP_DLL_InitSendBuf("FctID_FSG_OperationState",    headerCache_FSG_OperationState, dataCache_Dummy);
+
+
+    /***************************** ASG_Capabilities *******************************/
+    // Header
+    BAP_createHeader(ASG_CAPABILITIES_FCT_ID,       headerCache_ASG_Capabilities,   ASG_CAPABILITIES_BAP_DATA_LENGTH, 0);
+    // Data
+    dataCache_ASG_Capabilities[0] = @sysvar::SDS_SD_FSG_Prop::x10_ASGCap_displaySizeClass;
+    dataCache_ASG_Capabilities[1] = @sysvar::SDS_SD_FSG_Prop::x10_ASGCap_extension1;
+    dataCache_ASG_Capabilities[2] = @sysvar::SDS_SD_FSG_Prop::x10_ASGCap_extension2;
+    dataCache_ASG_Capabilities[3] = @sysvar::SDS_SD_FSG_Prop::x10_ASGCap_extension3;
+    dataCache_ASG_Capabilities[4] = @sysvar::SDS_SD_FSG_Prop::x10_ASGCap_extension4;
+    dataCache_ASG_Capabilities[5] = @sysvar::SDS_SD_FSG_Prop::x10_ASGCap_extension5;
+    // Init SendBuffer
+    initError |= BAP_DLL_InitSendBuf("FctID_ASG_Capabilities",      headerCache_ASG_Capabilities,   dataCache_ASG_Capabilities);
+
+
+    /***************************** SDS_ContextState *******************************/
+    // Header
+    BAP_createHeader(SDS_CONTEXT_STATE_FCT_ID,      headerCache_SDS_ContextState,   SDS_CONTEXT_STATE_BAP_DATA_LENGTH, 0);
+    // Data
+    dataCache_SDS_ContextState[0] = @sysvar::SDS_SD_FSG_Prop::x11_SDSContextState_SDSContextState;
+    dataCache_SDS_ContextState[1] = @sysvar::SDS_SD_FSG_Prop::x11_SDSContextState_SDS_ContextType;
+    dataCache_SDS_ContextState[2] = @sysvar::SDS_SD_FSG_Prop::x11_SDSContextState_Attributes;                                         // Only support for values <256 !
+    dataCache_SDS_ContextState[4] = (@sysvar::SDS_SD_FSG_Prop::x11_SDSContextState_AdditionalInfoType & 0x00FF);
+    dataCache_SDS_ContextState[5] = (@sysvar::SDS_SD_FSG_Prop::x11_SDSContextState_AdditionalInfoType & 0xFF00) / 0x100;
+    addTextLength = sysGetVariableArrayLength(sysvar::SDS_SD_FSG_Prop::x11_SDSContextState_AdditionalText);
+    dataCache_SDS_ContextState[6] = addTextLength;
+    sysGetVariableString(sysvar::SDS_SD_FSG_Prop::x11_SDSContextState_AdditionalText, buffer, elCount(buffer));
+    for(i=0; i<addTextLength; i++) 
+        dataCache_SDS_ContextState[7+i] = buffer[i];
+    dataCache_SDS_ContextState[i+8] = @sysvar::SDS_SD_FSG_Prop::x11_SDSContextState_extension;
+    // Init SendBuffer
+    initError |= BAP_DLL_InitSendBuf("FctID_SDS_ContextState",      headerCache_SDS_ContextState,   dataCache_SDS_ContextState);
+
+
+    /***************************** Infostates *************************************/
+    // Header
+    BAP_createHeader(INFOSTATES_FCT_ID,             headerCache_InfoStates,         INFOSTATES_BAP_DATA_LENGTH, 0);
+    // Data
+    dataCache_InfoStates[0] = @sysvar::SDS_SD_FSG_Prop::x14_InfoStates_States;
+    dataCache_InfoStates[1] = @sysvar::SDS_SD_FSG_Prop::x14_InfoStates_extension1;
+    dataCache_InfoStates[2] = @sysvar::SDS_SD_FSG_Prop::x14_InfoStates_extension2;
+    dataCache_InfoStates[3] = @sysvar::SDS_SD_FSG_Prop::x14_InfoStates_extension3;
+    dataCache_InfoStates[4] = @sysvar::SDS_SD_FSG_Prop::x14_InfoStates_extension4;
+    dataCache_InfoStates[5] = @sysvar::SDS_SD_FSG_Prop::x14_InfoStates_extension5;
+    // Init SendBuffer
+    initError |= BAP_DLL_InitSendBuf("FctID_InfoStates",            headerCache_InfoStates,         dataCache_InfoStates);
+
+    return initError;
+}
+
+on timer TaskTimer
+{
+	Bap170_Task(NODE_INDEX);	// DLL-Task
+	
+    BAP_DLL_Indication();
+	
+    if (getValue(eSendEnabled))
+    {
+        BAP_CAN_TX_Request();
+    }
+
+	setTimer(TaskTimer, 10);	// restart BAP-DLL-Timer
+}
+
+on message CAN1.BAP_SDS_ASG_01// ASG BAP-message
+{
+    int i, error;
+    byte RX_Data[8];		//received CAN-DATA
+    dword RX_Header[3];		//received CAN-Header
+
+    RX_Header[0]=this.CAN; 
+    RX_Header[1]=this.ID; 
+    RX_Header[2]=this.DLC; // received length
+	
+	// extract CAN data    																	
+	for (i=0; i<this.DLC; i++) 														
+	    RX_Data[i]=this.byte(i);		  
+	        
+		switch ((RX_Data[1] & 0x0F))
+        {
+        //getAll
+        case 1: //error
+                if (getValue(C_FSG_SDS_0_0_1_ErrEn)==0x01)
+					Request_0x01_GetAll(Error_REQ, getValue(C_FSG_SDS_0_0_1_ErrCode));
+                
+                else if (getValue(C_FSG_SDS_0_0_1_FctEn) == 0x01)
+                error=Bap170_CAN_SetRxDat(NODE_INDEX,RX_Header,RX_Data);//send recieved CAN-data with CAN-header to BAP-DLL
+                break;
+
+        case 2: //error
+                if (getValue(P_FSG_SDS_0_0_2_ErrEn)==0x01)
+					Request_0x02_BAPConfig(Error_REQ, getValue(C_FSG_SDS_0_0_1_ErrCode));
+
+                else if (getValue(P_FSG_SDS_0_0_2_FctEn) == 0x01)
+                error=Bap170_CAN_SetRxDat(NODE_INDEX,RX_Header,RX_Data);//send recieved CAN-data with CAN-header to BAP-DLL
+                break;
+
+        case 3: //error
+                if (getValue(P_FSG_SDS_0_0_3_ErrEn)==0x01)
+					Request_0x03_FctList(Error_REQ, getValue(C_FSG_SDS_0_0_1_ErrCode));
+                
+                else if (getValue(P_FSG_SDS_0_0_3_FctEn) == 0x01)
+                error=Bap170_CAN_SetRxDat(NODE_INDEX,RX_Header,RX_Data);
+                break;
+             
+        
+        default: error=Bap170_CAN_SetRxDat(NODE_INDEX,RX_Header,RX_Data);	//send recieved CAN-data with CAN-header to BAP-DLL
+                break;
+        }
+	if(error !=0)
+	    writelineEx(gError_Trace, CAPL_WRITE_LINE_ERROR, "FSG-SDS-SD: BAP_CAN_SetRxData: %d", error);   
+}
+
+BAP_CAN_TX_Request()	// Function to send BAP data over CAN.
+{
+	int i;
+	byte TX_Data[8];			// CAN data 
+	dword TX_Header[3];			// CAN header 
+	message 0x100 TX_Message;	// dummy message 
+
+	TX_Header[2] = 8; // max-Length of TX_Data
+
+	// Get BAP data in CAN format from DLL.
+	while (Bap170_CAN_GetTxDat(NODE_INDEX,TX_Header,TX_Data) == 0) // as long as data are to be sent...
+	{
+		TX_Message.CAN = TX_Header[0]; // CAN channel
+		TX_Message.ID  = TX_Header[1]; // CAN ID
+		TX_Message.DLC = TX_Header[2]; // received length from BAP-DLL. 
+
+		// CAN data bytes
+		for (i=0; i < TX_Message.DLC; i++) 
+			TX_Message.byte(i) = TX_Data[i];
+
+		output(TX_Message); // send CAN message
+
+		// Correct bug on CAPL CAN interface.
+		// Rewrite length information (max length). 
+		TX_Header[2] = 8; // max. length of TX data.
+	}
+}
+
+BAP_DLL_Indication()
+{
+    int i, bapErrorCode;
+    int fct_ID, lsg_ID, bapIndication_t, BAP_data_type; 
+    int datalength;
+    dword indicationHeader[BAP_HEADER_SIZE];
+    byte indicationData[BAP_BUFFER_SIZE];
+    byte requestarray[BAP_HEADER_SIZE];
+
+    // Hinweis: Die Länge (indication[4]) muss vor Aufruf der Funktion auf die Länge von „data“ gesetzt werden!
+    // Ist das Datenfeld zu kurz, wird der Fehler „BapErr_InvalidArg“ zurückgegeben!
+    indicationHeader[4] = elCount(indicationData);
+
+    bapErrorCode = Bap170_GetInd(NODE_INDEX, indicationHeader, indicationData);
+
+    if(bapErrorCode == 0)
+	{
+		lsg_ID = indicationHeader[0];									            // LSG-ID
+		fct_ID = indicationHeader[1];									            // Function-ID
+		bapIndication_t = indicationHeader[2];									    // indication
+		BAP_data_type = indicationHeader[3];									    // BAP data type
+		datalength = indicationHeader[4];
+
+        if(indicationHeader[0] != LSG_SDS_SD)                                       // catch invalid LSG-ID
+        {
+            writelineEx(gError_Trace, CAPL_WRITE_LINE_ERROR, "FSG: Error BAP_Indication: invalid/unhandled LSG-ID %x", indicationHeader[0]);
+            return;
+        }
+
+        switch (fct_ID)
+	    {
+            case GET_ALL_FCT_ID:
+                // No action necessary (Get request is answered by BAP stack).
+		        break;
+
+            case BAP_CONFIG_FCT_ID:
+                // No action necessary (Get request is answered by BAP stack).
+		        break;
+
+            case FUNCTION_LIST_FCT_ID:
+                // No action necessary (Get request is answered by BAP stack).
+		        break;
+            
+            case HEART_BEAT_FCT_ID:
+                // No action necessary (Get request is answered by BAP stack).
+		        break;
+
+            case FSG_SETUP_FCT_ID:
+                // No action necessary (Get request is answered by BAP stack).
+		        break;
+
+            case FSG_OPERATION_STATE_FCT_ID:
+			    // No action necessary (Get request is answered by BAP stack).
+		        break;
+
+		    case ASG_CAPABILITIES_FCT_ID:
+			    Indication_0x10_ASG_Capabilities(indicationHeader, indicationData, datalength);
+		        break;
+
+		    case SDS_CONTEXT_STATE_FCT_ID:
+			    // No action necessary (Get request is answered by BAP stack).
+		        break;
+
+		    case COMMAND_LIST_FCT_ID:
+			    Indication_0x12_CommandList(indicationHeader, indicationData, datalength);
+		        break;
+                	
+		    case RESULT_LIST_FCT_ID:
+			    Indication_0x13_ResultList(indicationHeader, indicationData, datalength);
+		        break;
+
+		    case INFOSTATES_FCT_ID:
+			    // No action necessary (Get request is answered by BAP stack).
+		        break;
+                        
+		    default:
+			    writelineEx(gError_Trace, CAPL_WRITE_LINE_ERROR, "FSG-SDS_SD SDS_SD_functions: invalid funcion-ID %x", indicationHeader[1]);
+		    
+                // send error message.
+	            requestarray[0] = LSG_SDS_SD;					    // LSG-ID
+	            requestarray[1] = indicationHeader[1];	            // Fct.-ID
+	            requestarray[2] = Error_REQ;                        // request type
+			    requestarray[3] = BAP_BAL_TEMP_NOT_AVAILABLE;       // errorcode
+			
+                break;
+	    }	
+	}
+
+
+
+
+	
+	
+}
+
+Indication_0x10_ASG_Capabilities (dword indication_header [], byte indication_data[], int datalength)
+{
+    if(!@sysvar::SDS_SD_FSG::x03_FctList_0x10_ASGCap && @sysvar::SDS_SD_General::Smart)
+        return; // ignore invalid requests
+
+    switch(indication_header[2])    // BapIndication _t
+    {
+        case DataSetGet_IND:
+            // Send errorCode if value is out of range
+            if(indication_data[0] > ASG_CAPABILITIES_DISPLAY_LARGE)
+            {
+                Request_0x10_ASG_Capabilities(Error_REQ, BAP_BAL_OUT_OF_RANGE);
+                Request_0x10_ASG_Capabilities(Data_REQ, 0);
+            }
+            else
+            {
+                @sysvar::SDS_SD_FSG_Prop::x10_ASGCap_displaySizeClass = indication_data[0];
+                @sysvar::SDS_SD_FSG_Prop::x10_ASGCap_extension1       = indication_data[1];
+                @sysvar::SDS_SD_FSG_Prop::x10_ASGCap_extension2       = indication_data[2];
+                @sysvar::SDS_SD_FSG_Prop::x10_ASGCap_extension3       = indication_data[3];
+                @sysvar::SDS_SD_FSG_Prop::x10_ASGCap_extension4       = indication_data[4];
+                @sysvar::SDS_SD_FSG_Prop::x10_ASGCap_extension5       = indication_data[5];
+            
+                Request_0x10_ASG_Capabilities(Data_REQ, 0);
+            }
+            
+            break;
+
+        case Data_IND:
+            // Nothing toDo. Occurs after SetGet
+            break;
+        
+		case Error_IND:
+            writelineEx(gError_Trace, CAPL_WRITE_LINE_ERROR, "SDS_SD_FSG: Error-Indication in Indication_0x10_ASG_Capabilities: Error 0x%x", indication_header[5]);
+		    break;
+			
+        default:
+            writelineEx(gBAP_Trace, CAPL_WRITE_LINE_INFORMATION, "SDS_SD_FSG: Unhandled indication 0x%x in Indication_0x10_ASG_Capabilities.", indication_header[2]);
+            break;
+    }
+}
+
+Request_0x10_ASG_Capabilities(byte request, byte error)
+{
+    int i;
+    dword header [BAP_HEADER_SIZE];
+    byte data[FSG_SETUP_BAP_DATA_LENGTH];
+
+    switch(request)
+    {
+        case Data_REQ:
+            // create Data field
+            data[0] = @sysvar::SDS_SD_FSG_Prop::x10_ASGCap_displaySizeClass;
+            data[1] = @sysvar::SDS_SD_FSG_Prop::x10_ASGCap_extension1;
+            data[2] = @sysvar::SDS_SD_FSG_Prop::x10_ASGCap_extension2;
+            data[3] = @sysvar::SDS_SD_FSG_Prop::x10_ASGCap_extension3;
+            data[4] = @sysvar::SDS_SD_FSG_Prop::x10_ASGCap_extension4;
+            data[5] = @sysvar::SDS_SD_FSG_Prop::x10_ASGCap_extension5;
+            BAP_createHeader(ASG_CAPABILITIES_FCT_ID, header, ASG_CAPABILITIES_BAP_DATA_LENGTH, request);
+            break;
+
+        case Error_REQ:
+            BAP_createHeader(ASG_CAPABILITIES_FCT_ID, header, ASG_CAPABILITIES_BAP_DATA_LENGTH, request);
+	        header[5] = 0x41;                         // data (uint8/uint16/uint32 or Errorcode)
+            break;
+
+        default:
+            break;
+    }
+
+    
+
+    BAP_DLL_Request(request, header, data);
+}
+
+Request_0x11_SDS_ContextState(byte request, byte errorcode)
+{
+    int i;
+    int length;
+    dword header [BAP_HEADER_SIZE];
+    byte data[SDS_CONTEXT_STATE_BAP_DATA_LENGTH_MAX];
+    char buffer[SDS_TEXTLENGTH];
+    int addTextLength;
+
+    length = SDS_CONTEXT_STATE_BAP_DATA_LENGTH + sysGetVariableArrayLength(sysvar::SDS_SD_FSG_Prop::x11_SDSContextState_AdditionalText);
+    BAP_createHeader(SDS_CONTEXT_STATE_FCT_ID, header, length, request);
+
+    // create Data field
+    data[0] = @sysvar::SDS_SD_FSG_Prop::x11_SDSContextState_SDSContextState;
+    data[1] = @sysvar::SDS_SD_FSG_Prop::x11_SDSContextState_SDS_ContextType;
+    data[2] = @sysvar::SDS_SD_FSG_Prop::x11_SDSContextState_Attributes;                                         // Only support for values <256 !
+    data[4] = (@sysvar::SDS_SD_FSG_Prop::x11_SDSContextState_AdditionalInfoType & 0x00FF);
+    data[5] = (@sysvar::SDS_SD_FSG_Prop::x11_SDSContextState_AdditionalInfoType & 0xFF00) / 0x100;
+
+    addTextLength = sysGetVariableArrayLength(sysvar::SDS_SD_FSG_Prop::x11_SDSContextState_AdditionalText);
+    data[6] = addTextLength;
+
+    // Text
+    sysGetVariableString(sysvar::SDS_SD_FSG_Prop::x11_SDSContextState_AdditionalText, buffer, elCount(buffer));
+    for(i=0; i<addTextLength; i++) 
+        data[7+i] = buffer[i];
+
+    data[i+8] = @sysvar::SDS_SD_FSG_Prop::x11_SDSContextState_extension;
+
+    BAP_DLL_Request(Data_REQ, header, data);
+}
+
+Indication_0x12_CommandList (dword indication_header [], byte indication_data[], int datalength)
+{
+    byte idxSize, pos, direction, shift, recordAddress;
+    byte ASG_ID, TAID;
+    word startEl, elements;
+    word upperBuffer, lowerBuffer;
+    int i;
+    //VAGF-29789 - SDS Command List and Result List panels update needed
+    dword header [BAP_HEADER_SIZE];
+    byte data[BAP_BUFFER_SIZE];
+
+    if(!@sysvar::SDS_SD_FSG::x03_FctList_0x12_CommandList && @sysvar::SDS_SD_General::Smart)
+        return; // ignore invalid requests
+
+    // Clear variables
+    startEl = 0;
+    elements = 0;
+
+    //VAGF-29789 - SDS Command List and Result List panels update needed
+    for(i=0; i<elCount(header); i++)
+        header[i] = 0;
+    for(i=0; i<elCount(data); i++)
+        data[i] = 0;		
+    // Extract data
+    ASG_ID = Array_DecodeFirstByte_getASGID(indication_data[0]);
+    TAID = Array_DecodeFirstByte_getTAID(indication_data[0]);
+    
+    idxSize = Array_DecodeModeByte_getIdxSize (indication_data[1]);
+    pos = Array_DecodeModeByte_getTransmitPos (indication_data[1]);
+    direction = Array_DecodeModeByte_getDirection (indication_data[1]);
+    shift = Array_DecodeModeByte_getShift (indication_data[1]);
+    recordAddress = Array_DecodeModeByte_getRecordAddress (indication_data[1]);
+
+    if(idxSize == 0)
+    {
+        startEl |= indication_data[2];
+        elements = indication_data[3];
+    }
+    else
+    {
+        upperBuffer = indication_data[2];
+        lowerBuffer = indication_data[3];
+        startEl |= (upperBuffer << 4);
+        startEl |= lowerBuffer;
+
+        upperBuffer = indication_data[4];
+        lowerBuffer = indication_data[5];
+        elements |= (upperBuffer << 4);
+        elements |= lowerBuffer;
+    }
+
+    switch(indication_header[2])    // BapIndication _t
+    {
+        case DataGet_IND:
+            if(@sysvar::SDS_SD_General::Smart == 1 && @sysvar::SDS_SD_FSG::x0F_FSGOPState_OPState != FSG_OPERATION_STATE_NORMAL)
+            {
+                // Do nothing if Smart and OPState not in normal OP
+            }
+            else
+            {
+                //VAGF-29789 - SDS Command List and Result List panels update needed
+                if(getvalue(env_SDS_0x12_CommandList_Error_on))
+                {
+                    BAP_createHeader(COMMAND_LIST_FCT_ID, header, 0, Error_REQ);
+                    BAP_DLL_Request(Error_REQ, header, data);
+                }
+                else if(@sysvar::SDS_SD_FSG_CommandList::x12_CommandList_control_noGetArray == 0)
+                {
+                    @sysvar::SDS_SD_FSG_CommandList::x12_CommandList_ASGID = ASG_ID;
+                    @sysvar::SDS_SD_FSG_CommandList::x12_CommandList_TAID_hex = TAID;
+                    @sysvar::SDS_SD_FSG_CommandList::x12_CommandList_AH_indexSize = idxSize;
+                    @sysvar::SDS_SD_FSG_CommandList::x12_CommandList_AH_transmitPos = pos;
+                    @sysvar::SDS_SD_FSG_CommandList::x12_CommandList_AH_direction = direction;
+                    @sysvar::SDS_SD_FSG_CommandList::x12_CommandList_AH_shift = shift;
+                    @sysvar::SDS_SD_FSG_CommandList::x12_CommandList_AH_recordAddress = recordAddress;
+                    @sysvar::SDS_SD_FSG_CommandList::x12_CommandList_AH_start_hex = startEl;
+                    @sysvar::SDS_SD_FSG_CommandList::x12_CommandList_AH_elements_hex = elements;		    
+		    //VAGH-10511
+		    if(!getvalue(env_SDS_0x12_CommandList_StatusArrayOff))
+		        Request_0x12_CommandList_status ();
+                }
+            }
+            break;
+
+        case Changed_REQ:
+            // Nothing to do
+            break;
+
+        default:
+            // can be ASG-data-indication if sending message
+            break;
+    }
+}
+
+Indication_0x13_ResultList (dword indication_header [], byte indication_data[], int datalength)
+{
+    byte idxSize, pos, direction, shift, recordAddress;
+    byte ASG_ID, TAID;
+    word startEl, elements;
+    word upperBuffer, lowerBuffer;
+    int i;
+    //VAGF-29789 - SDS Command List and Result List panels update needed
+    dword header [BAP_HEADER_SIZE];
+    byte data[BAP_BUFFER_SIZE];
+
+    if(!@sysvar::SDS_SD_FSG::x03_FctList_0x13_ResultList && @sysvar::SDS_SD_General::Smart)
+        return; // ignore invalid requests
+
+    // Clear variables
+    startEl = 0;
+    elements = 0;
+
+    //VAGF-29789 - SDS Command List and Result List panels update needed
+    for(i=0; i<elCount(header); i++)
+        header[i] = 0;
+    for(i=0; i<elCount(data); i++)
+        data[i] = 0;	
+    // Extract data
+    ASG_ID = Array_DecodeFirstByte_getASGID(indication_data[0]);
+    TAID = Array_DecodeFirstByte_getTAID(indication_data[0]);
+    
+    idxSize = Array_DecodeModeByte_getIdxSize (indication_data[1]);
+    pos = Array_DecodeModeByte_getTransmitPos (indication_data[1]);
+    direction = Array_DecodeModeByte_getDirection (indication_data[1]);
+    shift = Array_DecodeModeByte_getShift (indication_data[1]);
+    recordAddress = Array_DecodeModeByte_getRecordAddress (indication_data[1]);
+
+    if(idxSize == 0)
+    {
+        startEl |= indication_data[2];
+        elements = indication_data[3];
+    }
+    else
+    {
+        upperBuffer = indication_data[2];
+        lowerBuffer = indication_data[3];
+        startEl |= (upperBuffer << 4);
+        startEl |= lowerBuffer;
+
+        upperBuffer = indication_data[4];
+        lowerBuffer = indication_data[5];
+        elements |= (upperBuffer << 4);
+        elements |= lowerBuffer;
+    }
+
+    switch(indication_header[2])    // BapIndication _t
+    {
+        case DataGet_IND:
+            if(@sysvar::SDS_SD_General::Smart == 1 && @sysvar::SDS_SD_FSG::x0F_FSGOPState_OPState != FSG_OPERATION_STATE_NORMAL)
+            {
+                // Do nothing if Smart and OPState not in normal OP
+            }
+            else
+            {
+	        //VAGF-29789 - SDS Command List and Result List panels update needed
+                if(getvalue(env_SDS_0x13_ResultList_Error_on))
+                {
+                    BAP_createHeader(RESULT_LIST_FCT_ID, header, 0, Error_REQ);
+                    BAP_DLL_Request(Error_REQ, header, data);
+                }
+                else if(@sysvar::SDS_SD_FSG_ResultList::x13_ResultList_control_noGetArray == 0)
+                {
+                    @sysvar::SDS_SD_FSG_ResultList::x13_ResultList_ASGID = ASG_ID;
+                    @sysvar::SDS_SD_FSG_ResultList::x13_ResultList_TAID_hex = TAID;
+                    @sysvar::SDS_SD_FSG_ResultList::x13_ResultList_AH_indexSize = idxSize;
+                    @sysvar::SDS_SD_FSG_ResultList::x13_ResultList_AH_transmitPos = pos;
+                    @sysvar::SDS_SD_FSG_ResultList::x13_ResultList_AH_direction = direction;
+                    @sysvar::SDS_SD_FSG_ResultList::x13_ResultList_AH_shift = shift;
+                    @sysvar::SDS_SD_FSG_ResultList::x13_ResultList_AH_recordAddress = recordAddress;
+                    @sysvar::SDS_SD_FSG_ResultList::x13_ResultList_AH_start_hex = startEl;
+                    @sysvar::SDS_SD_FSG_ResultList::x13_ResultList_AH_elements_hex = elements;
+                    //VAGH-10511
+                    if(!getvalue(env_SDS_0x13_ResultList_StatusArrayOff))
+                        Request_0x13_ResultList_status ();
+                }
+            }
+            break;
+
+        case Changed_REQ:
+            // Nothing to do
+            break;
+
+        default:
+            // can be ASG-data-indication if sending message
+            break;
+    }
+}
+
+Request_0x14_InfoStates(byte request, byte errorcode)
+{
+    dword header [BAP_HEADER_SIZE];
+    byte data[INFOSTATES_BAP_DATA_LENGTH];
+
+    BAP_createHeader(INFOSTATES_FCT_ID, header, INFOSTATES_BAP_DATA_LENGTH, request);
+
+    // create Data field
+    data[0] = @sysvar::SDS_SD_FSG_Prop::x14_InfoStates_States;
+    data[1] = @sysvar::SDS_SD_FSG_Prop::x14_InfoStates_extension1;
+    data[2] = @sysvar::SDS_SD_FSG_Prop::x14_InfoStates_extension2;
+    data[3] = @sysvar::SDS_SD_FSG_Prop::x14_InfoStates_extension3;
+    data[4] = @sysvar::SDS_SD_FSG_Prop::x14_InfoStates_extension4;
+    data[5] = @sysvar::SDS_SD_FSG_Prop::x14_InfoStates_extension5;
+
+    BAP_DLL_Request(Data_REQ, header, data);
+}
+
+void Request_0x0E_FSG_Setup(byte request, byte errorcode)
+{
+    dword header [BAP_HEADER_SIZE];
+    byte data[FSG_SETUP_BAP_DATA_LENGTH];
+
+    BAP_createHeader(FSG_SETUP_FCT_ID, header, FSG_SETUP_BAP_DATA_LENGTH, request);
+
+    // create Data field
+    if(@sysvar::SDS_SD_FSG::x0E_FSGSetup_setupValue_commandIDSupported)
+        data[0] = 0x01;
+    else
+        data[0] = 0x00;
+
+    BAP_DLL_Request(Data_REQ, header, data);
+}
+
+void Request_0x0F_FSG_OperationState(byte request, byte errorcode)
+{
+    dword header [BAP_HEADER_SIZE];
+    byte data[1];
+
+    BAP_createHeader(FSG_OPERATION_STATE_FCT_ID, header, FSG_OPERATION_STATE_BAP_DATA_LENGTH, request);
+   
+    BAP_DLL_Request(Data_REQ, header, data);
+}
+
+on sysvar sysvar::SDS_SD_FSG::x0E_FSGSetup_status
+{
+    if(@this)
+        Request_0x0E_FSG_Setup(Data_REQ,0);
+}
+
+on sysvar sysvar::SDS_SD_FSG::x0F_FSGOPState_status
+{
+      if(@this)
+          Request_0x0F_FSG_OperationState(Data_REQ,0);
+}
+
+on sysvar sysvar::SDS_SD_FSG_Prop::x10_ASGCap_status
+{
+    if(@this)
+        Request_0x10_ASG_Capabilities(Data_REQ,0);
+}
+
+on sysvar sysvar::SDS_SD_FSG_Prop::x11_SDSContextState_status
+{
+    int i;
+    int textlength;
+    char buffer[SDS_TEXTLENGTH];
+    char shortened[SDS_CONTEXT_STATE_BAP_DATA_LENGTH_MAX-SDS_CONTEXT_STATE_BAP_DATA_LENGTH];
+    
+    textlength = sysGetVariableArrayLength(sysvar::SDS_SD_FSG_Prop::x11_SDSContextState_AdditionalText);
+    sysGetVariableString(sysvar::SDS_SD_FSG_Prop::x11_SDSContextState_AdditionalText, buffer, elCount(buffer));
+
+    // If String is too long, it has to be shortened in panel
+    if( textlength>(SDS_CONTEXT_STATE_BAP_DATA_LENGTH_MAX-SDS_CONTEXT_STATE_BAP_DATA_LENGTH) )
+    {
+        for(i=0; i<elCount(shortened); i++)
+            shortened[i] = buffer[i];
+
+        sysSetVariableString(sysvar::SDS_SD_FSG_Prop::x11_SDSContextState_AdditionalText, shortened);
+    }
+
+    if(@this)
+        Request_0x11_SDS_ContextState(Data_REQ,0);
+}
+
+on sysvar sysvar::SDS_SD_FSG_Prop::x14_InfoStates_status
+{
+      if(@this)
+        Request_0x14_InfoStates(Data_REQ,0);
+}
+
+BAP_DLL_StackStart ()
+{
+    int error;
+
+    // BAP Chache
+    error  = BAP_DLL_Init_SendBuffer();
+
+    if(error ==BAP_NO_ERROR)
+	    writelineEx(gBAP_Trace, CAPL_WRITE_LINE_SUCCESS, "FSG-SDS_SD BAP Cache Request successful");	
+    else
+	    writelineEx(gError_Trace, 0,"FSG-SDS_SD error in BAP_DLL_StackStart () - BAP Chache: 0x%x", error);
+
+    //BAP-Start
+	error = Bap170_Start(NODE_INDEX, LSG_SDS_SD);
+		
+    if(error ==BAP_NO_ERROR)
+		writelineEx(gBAP_Trace, CAPL_WRITE_LINE_SUCCESS, "FSG-SDS_SD BAP_Start successful");
+    else
+	    writelineEx(gError_Trace, 0,"FSG-SDS_SD error in BAP_DLL_StackStart () - BAP Start: 0x%x", error);
+
+    writelineEx(gBAP_Trace, CAPL_WRITE_LINE_SUCCESS, "*********************************************************************************");
+}
+
+init_SDS_SD ()
+{
+    if(@sysvar::SDS_SD_General::Smart)
+        init_variables();							
+
+    BAP_DLL_StackStart();
+    
+    setTimer(startupTimer, 3000);			      
+}
+
+init_variables_properties ()
+{   
+    // 0x04 HeartBeat
+    @sysvar::SDS_SD_FSG::x04_HeartBeat_HeartBeatTime                    = 0xA;
+
+    // 0x0E FSG-Setup
+    @sysvar::SDS_SD_FSG::x0E_FSGSetup_setupValue_commandIDSupported     = 0;
+  
+    // 0x0F FSG-OperationState
+    @sysvar::SDS_SD_FSG::x0F_FSGOPState_OPState                         = FSG_OPERATION_STATE_INIT;
+
+	// 0x10 ASG_Capabilities
+    @sysvar::SDS_SD_FSG_Prop::x10_ASGCap_displaySizeClass               = 0;
+
+	// 0x11 SDS_ContextState
+    @sysvar::SDS_SD_FSG_Prop::x11_SDSContextState_Attributes            = 0;
+    @sysvar::SDS_SD_FSG_Prop::x11_SDSContextState_AdditionalInfoType    = 0; 
+    @sysvar::SDS_SD_FSG_Prop::x11_SDSContextState_SDS_ContextType       = 0;
+    @sysvar::SDS_SD_FSG_Prop::x11_SDSContextState_SDSContextState       = 0;
+    sysSetVariableString(sysvar::SDS_SD_FSG_Prop::x11_SDSContextState_AdditionalText, "");
+  
+	// 0x14 InfoState
+    @sysvar::SDS_SD_FSG_Prop::x14_InfoStates_States                     = INFOSTATES_SDS_DOMAIN_NOT_AVAILABLE;
+}
+
+on sysvar sysvar::SDS_SD_FSG_CommandList::x12_CommandList_control_ChangedArray
+{
+    if(@this)
+        Request_0x12_CommandList_changed ();
+}
+
+on sysvar sysvar::SDS_SD_FSG_CommandList::x12_CommandList_control_StatusArray
+{
+    //VAGF-29789 - SDS Command List and Result List panels update needed
+    dword header [BAP_HEADER_SIZE];
+    byte data[BAP_BUFFER_SIZE];
+    int i;
+		
+    for(i=0; i<elCount(header); i++)
+        header[i] = 0;
+    for(i=0; i<elCount(data); i++)
+        data[i] = 0;
+    if(@this)
+    {
+            // TAID=0 is to be generated, if the FSG sends a StatusArray without preceding GetArray
+            // ASGID=0 is to be generated, if the FSG sends a StatusArray without preceding GetArray
+            if(@sysvar::SDS_SD_General::Smart)
+            {
+                @sysvar::SDS_SD_FSG_CommandList::x12_CommandList_TAID_hex = 0;
+                @sysvar::SDS_SD_FSG_CommandList::x12_CommandList_ASGID    = 0;
+            }
+            //VAGH-10511
+            if(!getvalue(env_SDS_0x12_CommandList_StatusArrayOff))
+                Request_0x12_CommandList_status();
+    }
+}
+
+on sysvar sysvar::SDS_SD_FSG_CommandList::x12_CommandList_control_FRU
+{
+    if(@this)
+        Request_0x12_CommandList_FRU (@sysvar::SDS_SD_FSG_CommandList::x12_CommandList_AH_indexSize);
+}
+
+on sysvar sysvar::SDS_SD_FSG_CommandList::x12_CommandList_control_up
+{
+    if(@this)
+    {
+        CommandList_Data_illustrationOffset++;
+        CommandList_actualize_sysvar();
+    }
+}
+
+BAP_createHeader (dword FctID, dword headerBuffer[], dword datalength, dword requestType)
+{
+    dword datatype, data;
+
+    if(elCount(headerBuffer) != BAP_HEADER_SIZE)                            // Buffer not as big as specified.
+    {
+        writeLineEx(gError_Trace, CAPL_WRITE_LINE_ERROR, "Wrong BAP Header size in BAP_createHeader (dword FctID, byte[] headerBuffer)! Not %d but %d bytes long!", BAP_HEADER_SIZE, elCount(headerBuffer));
+        return;
+    }
+    
+    switch(requestType)
+    {
+        case 0:
+        case Data_REQ:
+            // first, get bap data type, length and data
+            switch(FctID)
+            {
+                case GET_ALL_FCT_ID:
+                    datatype = GET_ALL_BAP_DATA_TYPE;
+                    data = 0;                                                       // byteSequence
+                    break;
+        
+                case BAP_CONFIG_FCT_ID:
+                    datatype = BAP_CONFIG_BAP_DATA_TYPE;
+                    data = 0;                                                       // byteSequence
+                    break;
+        
+                case FUNCTION_LIST_FCT_ID:
+                    datatype = FUNCTION_LIST_BAP_DATA_TYPE;
+                    data = 0;                                                       // byteSequence
+                    break;
+        
+                case HEART_BEAT_FCT_ID:
+                    datatype = HEART_BEAT_BAP_DATA_TYPE;
+                    data = @sysvar::SDS_SD_FSG::x04_HeartBeat_HeartBeatTime;
+                    break;
+        
+                case FSG_SETUP_FCT_ID:
+                    datatype = FSG_SETUP_BAP_DATA_TYPE;
+                    data = 0;                                                       // byteSequence
+                    break;
+        
+                case FSG_OPERATION_STATE_FCT_ID:
+                    datatype = FSG_OPERATION_STATE_BAP_DATA_TYPE;
+                    data = @sysvar::SDS_SD_FSG::x0F_FSGOPState_OPState;
+                    break;
+        
+                case ASG_CAPABILITIES_FCT_ID:
+                    datatype = ASG_CAPABILITIES_BAP_DATA_TYPE;
+                    data = 0;                                                       // byteSequence
+                    break;
+        
+                case SDS_CONTEXT_STATE_FCT_ID:
+                    datatype = SDS_CONTEXT_STATE_BAP_DATA_TYPE;
+                    data = 0;                                                       // byteSequence
+                    break;
+        
+                case COMMAND_LIST_FCT_ID:
+                    datatype = COMMAND_LIST_BAP_DATA_TYPE;
+                    data = 0;                                                       // byteSequence
+                    break;
+        
+                case RESULT_LIST_FCT_ID:
+                    datatype = RESULT_LIST_BAP_DATA_TYPE;
+                    data = 0;                                                       // byteSequence
+                    break;
+
+                case INFOSTATES_FCT_ID:
+                    datatype = INFOSTATES_BAP_DATA_TYPE;
+                    data = 0;                                                       // byteSequence
+                    break;
+
+                default:
+                    writeLineEx(gError_Trace, CAPL_WRITE_LINE_ERROR, "Unknown Fct-ID in BAP_createHeader (dword FctID): %d", FctID);
+            }
+            break;
+        
+        case Changed_REQ:
+            datatype = SDS_CONTEXT_STATE_BAP_DATA_TYPE;
+            data = 0; 
+            break;
+
+        case Error_REQ:
+            datatype = Bap_Error;
+	    //VAGF-29789 - SDS Command List and Result List panels update needed
+            //data = 0; 	    
+            switch(FctID)
+            {
+                case COMMAND_LIST_FCT_ID:
+                    data = getvalue(env_SDS_0x12_CommandList_ErrorCode);
+                    break;
+        
+                case RESULT_LIST_FCT_ID:
+                    data = getvalue(env_SDS_0x13_ResultList_ErrorCode);
+                    break;
+
+                default:
+                    data = 0; 
+                    break;
+            }
+            break;
+
+        default:
+            writeLineEx(gError_Trace, CAPL_WRITE_LINE_ERROR, "Unhandled RequestType in BAP_createHeader (dword FctID): %d", requestType);
+    }
+
+    // Create header
+    headerBuffer[0] = LSG_SDS_SD;					// LSG-ID
+	headerBuffer[1] = FctID;		                // Fct-ID
+	headerBuffer[2] = requestType;					// BAP requestType
+	headerBuffer[3] = datatype;		                // BAP data-type (BapDataType_t)
+	headerBuffer[4] = datalength;				    // Length for data type byte sequence
+	headerBuffer[5] = data;                         // data (uint8/uint16/uint32 or Errorcode)
+}
+
+init_variables_controls ()
+{
+    @sysvar::SDS_SD_FSG::control_OnOff              = 0;
+    @sysvar::SDS_SD_FSG::control_OnOff_indicator    = 0;
+    enableControl("SDS_SD_FSG_Main", "Ctrl_OnOff", FALSE);
+    enableControl("SDS_SD_FSG_CommandList", "btn_dataSource_external", FALSE);
+    enableControl("SDS_SD_FSG_ResultList", "btn_dataSource_external", FALSE);
+    enableControl("AudioSD_FSG_SDS_State", "Btn_FSG_Icon", FALSE);
+}
+
+int BAP_DLL_InitSendBuf (char description[], dword Cache_Request_Header[], byte Cache_Request_Data[])
+{
+	byte error = 0;
+
+	error = Bap170_InitSendBuf(NODE_INDEX, Cache_Request_Header, Cache_Request_Data);
+	
+	if(error != 0)
+		writelineEx(gError_Trace, CAPL_WRITE_LINE_ERROR, "Error in BAP_DLL_InitSendBuf(char description[], dword Cache_Request_Header[], byte Cache_Request_Data[]): %s errorcode: 0x%x", description, error);
+
+    return error;
+}
+
+FunctionList_createDataHelper (byte buffer[])
+{
+    int idx;
+
+    for(idx=0; idx<elCount(buffer); idx++)
+        buffer[idx] = 0;
+        
+    // Byte 1
+    buffer[0] += (sysGetVariableInt(sysvar::SDS_SD_FSG::x03_FctList_0x01_GetAll)                * 0x40);    //Bit1 - GetAll
+    buffer[0] += (sysGetVariableInt(sysvar::SDS_SD_FSG::x03_FctList_0x02_BAPConfig)             * 0x20);    //Bit2 - BAPConfig
+    buffer[0] += (sysGetVariableInt(sysvar::SDS_SD_FSG::x03_FctList_0x03_FctList)               * 0x10);    //Bit3 - FunctionList
+    buffer[0] += (sysGetVariableInt(sysvar::SDS_SD_FSG::x03_FctList_0x04_HeartBeat)             * 0x08);    //Bit4 - Heartbeat
+
+    // Byte 2
+    if(@sysvar::SDS_SD_FSG::x03_FctList_0x0E_FSGSetup)
+        buffer[1] += (sysGetVariableInt(sysvar::SDS_SD_FSG::x03_FctList_0x0E_FSGSetup)          * 0x02);    //Bit14 - FSG_Setup
+    if(@sysvar::SDS_SD_FSG::x03_FctList_0x0F_FSGOPState)
+        buffer[1] += (sysGetVariableInt(sysvar::SDS_SD_FSG::x03_FctList_0x0F_FSGOPState)        * 0x01);    //Bit15 - FSG_OperationState
+
+    // Byte 3
+    if(@sysvar::SDS_SD_FSG::x03_FctList_0x10_ASGCap)
+        buffer[2] += (sysGetVariableInt(sysvar::SDS_SD_FSG::x03_FctList_0x10_ASGCap)            * 0x80);   //Bit16 - ASG_Capabilities
+    if(@sysvar::SDS_SD_FSG::x03_FctList_0x11_SDSContextState)
+        buffer[2] += (sysGetVariableInt(sysvar::SDS_SD_FSG::x03_FctList_0x11_SDSContextState)   * 0x40);   //Bit17 - SDS_ContextState
+    if(@sysvar::SDS_SD_FSG::x03_FctList_0x12_CommandList)
+        buffer[2] += (sysGetVariableInt(sysvar::SDS_SD_FSG::x03_FctList_0x12_CommandList)       * 0x20);   //Bit18 - CommandList
+    if(@sysvar::SDS_SD_FSG::x03_FctList_0x13_ResultList)
+        buffer[2] += (sysGetVariableInt(sysvar::SDS_SD_FSG::x03_FctList_0x13_ResultList)        * 0x10);   //Bit19 - ResultList
+    if(@sysvar::SDS_SD_FSG::x03_FctList_0x14_InfoStates)
+        buffer[2] += (sysGetVariableInt(sysvar::SDS_SD_FSG::x03_FctList_0x14_InfoStates)        * 0x08);   //Bit20 - InfoState
+}
+
+int BAP_DLL_Request (byte request, dword Request_header[], byte Request_data[])
+{
+    int ret;                                                                                // Return value
+    int i;
+
+    if(@sysvar::SDS_SD_FSG::control_OnOff == 0)                                             // Catch timer messages
+        return 0;
+
+    Request_header[2] = request;
+    
+    if(elCount(Request_header)!= BAP_HEADER_SIZE)			                                // catch wrong header size
+    {
+        writeLineEx(gError_Trace, CAPL_WRITE_LINE_ERROR, "FSG: Wrong BAP Header size in BAP_DLL_Request (dword Request_header[], byte Request_data[])! Not %d but %d bytes long!", BAP_HEADER_SIZE, elCount(Request_header));
+        return -1;
+    }
+
+    ret = Bap170_Request(NODE_INDEX, Request_header, Request_data);
+
+    if(ret != 0)
+        writeLineEx(gError_Trace, CAPL_WRITE_LINE_ERROR, "FSG: BAP-Error in BAP_DLL_Request (dword Request_header[], byte Request_data[])! ErrorCode = 0x%x!", ret);
+
+    if(ret!=0)
+    {
+        for(i=0; i<elCount(Request_header); i++)
+            writelineEx(gError_Trace, CAPL_WRITE_LINE_ERROR, "Request_header[%d]=0x%x", i, Request_header[i]);
+        for(i=0; i<Request_header[4]; i++)
+            writelineEx(gError_Trace, CAPL_WRITE_LINE_ERROR, "Request_data[%d]=0x%x", i, Request_data[i]);
+    }
+
+    return ret;
+}
+
+controls_enable_all ()
+{
+    byte fctIDs[11] = {GET_ALL_FCT_ID, BAP_CONFIG_FCT_ID, FUNCTION_LIST_FCT_ID, HEART_BEAT_FCT_ID, FSG_SETUP_FCT_ID, FSG_OPERATION_STATE_FCT_ID, ASG_CAPABILITIES_FCT_ID, SDS_CONTEXT_STATE_FCT_ID, COMMAND_LIST_FCT_ID, RESULT_LIST_FCT_ID, INFOSTATES_FCT_ID};
+    int idx;
+    
+    // Disable all
+    for(idx=0; idx<elCount(fctIDs); idx++)
+        controls_setFunctionActive(fctIDs[idx], FALSE);
+        
+    enableControl("SDS_SD_FSG_Main", "Btn_Properties", FALSE);
+    enableControl("SDS_SD_FSG_Main", "Btn_Sequences", FALSE);
+    
+    if(@sysvar::SDS_SD_General::Smart)
+    {
+        // Only enable related to FctList, if ON
+        if(@sysvar::SDS_SD_FSG::control_OnOff)
+        {
+            if(@sysvar::SDS_SD_FSG::x03_FctList_0x01_GetAll)
+                controls_setFunctionActive(GET_ALL_FCT_ID, TRUE);
+
+            if(@sysvar::SDS_SD_FSG::x03_FctList_0x02_BAPConfig)
+                controls_setFunctionActive(BAP_CONFIG_FCT_ID, TRUE);
+        
+            if(@sysvar::SDS_SD_FSG::x03_FctList_0x03_FctList)
+                controls_setFunctionActive(FUNCTION_LIST_FCT_ID, TRUE);
+            
+            if(@sysvar::SDS_SD_FSG::x03_FctList_0x04_HeartBeat)
+                controls_setFunctionActive(HEART_BEAT_FCT_ID, TRUE);
+
+            if(@sysvar::SDS_SD_FSG::x03_FctList_0x0E_FSGSetup)
+                controls_setFunctionActive(FSG_SETUP_FCT_ID, TRUE);
+
+            if(@sysvar::SDS_SD_FSG::x03_FctList_0x0F_FSGOPState)
+                controls_setFunctionActive(FSG_OPERATION_STATE_FCT_ID, TRUE);
+
+            if(@sysvar::SDS_SD_FSG::x03_FctList_0x10_ASGCap)
+                controls_setFunctionActive(ASG_CAPABILITIES_FCT_ID, TRUE);
+
+            if(@sysvar::SDS_SD_FSG::x03_FctList_0x11_SDSContextState)
+                controls_setFunctionActive(SDS_CONTEXT_STATE_FCT_ID, TRUE);
+
+            if(@sysvar::SDS_SD_FSG::x03_FctList_0x12_CommandList)
+                controls_setFunctionActive(COMMAND_LIST_FCT_ID, TRUE);
+        
+            if(@sysvar::SDS_SD_FSG::x03_FctList_0x13_ResultList)
+                controls_setFunctionActive(RESULT_LIST_FCT_ID, TRUE);
+        
+            if(@sysvar::SDS_SD_FSG::x03_FctList_0x14_InfoStates)
+                controls_setFunctionActive(INFOSTATES_FCT_ID, TRUE);
+
+            // Subpanels
+            if(@sysvar::SDS_SD_FSG::x03_FctList_0x10_ASGCap || @sysvar::SDS_SD_FSG::x03_FctList_0x11_SDSContextState || @sysvar::SDS_SD_FSG::x03_FctList_0x14_InfoStates)
+                enableControl("SDS_SD_FSG_Main", "Btn_Properties", TRUE);
+
+            if(@sysvar::SDS_SD_FSG::x03_FctList_0x11_SDSContextState && @sysvar::SDS_SD_FSG::x03_FctList_0x12_CommandList && @sysvar::SDS_SD_FSG::x03_FctList_0x13_ResultList)
+                enableControl("SDS_SD_FSG_Main", "Btn_Sequences", TRUE);
+        }
+    }
+    else // not smart, all on
+    {
+        for(idx=0; idx<elCount(fctIDs); idx++)
+            controls_setFunctionActive(fctIDs[idx], TRUE);
+        
+        enableControl("SDS_SD_FSG_Main", "Btn_Properties", TRUE);
+        enableControl("SDS_SD_FSG_Main", "Btn_Sequences", TRUE);
+
+        if(!@sysvar::SDS_SD_FSG::control_OnOff) // if off, function to insert data (status-fct off)
+        {
+            controls_setFunctionActive(GET_ALL_FCT_ID, FALSE);
+            controls_setFunctionActive(BAP_CONFIG_FCT_ID, FALSE);
+            controls_setFunctionActive(FUNCTION_LIST_FCT_ID, FALSE);
+            controls_setFunctionActive(HEART_BEAT_FCT_ID, FALSE);
+        }
+    }
+}
+
+on timer startupTimer
+{
+    if(@sysvar::SDS_SD_General::Smart && @sysvar::SDS_SD_FSG::control_OnOff)
+    {
+        if(@sysvar::SDS_SD_FSG::x03_FctList_0x14_InfoStates)
+        {
+            @sysvar::SDS_SD_FSG_Prop::x14_InfoStates_States = INFOSTATES_NOERROR;
+            Request_0x14_InfoStates(Data_REQ, 0);
+        }
+
+        if(@sysvar::SDS_SD_FSG::x03_FctList_0x0F_FSGOPState)
+        {
+            @sysvar::SDS_SD_FSG::x0F_FSGOPState_OPState = FSG_OPERATION_STATE_NORMAL;
+            Request_0x0F_FSG_OperationState(Data_REQ, 0);
+        }
+    }
+}
+
+on timer initTimer
+{
+    @sysvar::SDS_SD_FSG::control_OnOff_indicator = 1;
+}
+
+Request_0x12_CommandList_status ()
+{
+    // BAP stack buffer
+    dword header [BAP_HEADER_SIZE];
+    byte data[BAP_BUFFER_SIZE];
+    word indices[COMMANDLIST_ENTRIES];
+    int dataIterator; // data[]-iterator
+    
+    byte byteBuffer;
+    byte modeByte;
+    int i;
+
+    // header variables
+    byte recordAddress, shift, direction, transmitPos, idxSize, ASG_ID, TAID;
+    word start_pos, elements, tnle;
+    
+    //temporary array-element variables
+    char charBuffer[COMMANDLIST_COMMANDTEXT_LENGTH];
+    int textlength;
+    int arrayElement_length;
+    byte arrayBuffer[COMMAND_LIST_BAP_DATA_LENGTH_MAX];
+    int start_arrayElement;
+    int elementsCount;
+
+    // clear variables
+    for(i=0; i<elCount(header); i++)
+        header[i] = 0;
+    for(i=0; i<elCount(data); i++)
+        data[i] = 0;
+    for(i=0; i<elCount(indices); i++)
+        indices[i] = 0;
+
+    // get data
+    tnle = @sysvar::SDS_SD_FSG_CommandList::x12_CommandList_TNLE;
+    recordAddress = @sysvar::SDS_SD_FSG_CommandList::x12_CommandList_AH_recordAddress;
+    shift = @sysvar::SDS_SD_FSG_CommandList::x12_CommandList_AH_shift;
+    direction = @sysvar::SDS_SD_FSG_CommandList::x12_CommandList_AH_direction;
+    transmitPos = @sysvar::SDS_SD_FSG_CommandList::x12_CommandList_AH_transmitPos;
+    idxSize = @sysvar::SDS_SD_FSG_CommandList::x12_CommandList_AH_indexSize;
+    ASG_ID = @sysvar::SDS_SD_FSG_CommandList::x12_CommandList_ASGID;
+    TAID = @sysvar::SDS_SD_FSG_CommandList::x12_CommandList_TAID_hex;
+    start_pos = @sysvar::SDS_SD_FSG_CommandList::x12_CommandList_AH_start_hex;
+    elements = @sysvar::SDS_SD_FSG_CommandList::x12_CommandList_AH_elements_hex;
+
+    //VAGF-29789 - SDS Command List and Result List panels update needed
+    if(getvalue(env_SDS_0x12_CommandList_ASGID_error) != FALSE)
+    {
+        if(ASG_ID == 15)
+            ASG_ID = 0;
+        else
+            ASG_ID += 1;
+    }
+		
+    if(getvalue(env_SDS_0x12_CommandList_TAID_error) != FALSE)
+    {
+        if(TAID == 15)
+            TAID = 0;
+        else
+            TAID += 1;
+    }
+
+    elementsCount = List_arbitrary_getRequestedIndices (indices, start_pos, direction, shift, tnle, elements, CommandList_Data_Pos);
+    // if start in header != position of array element, change TransmitPos to true
+    if(elementsCount != 0)
+    {
+        if(start_pos != CommandList_Data_Pos[indices[0]])
+        {
+            @sysvar::SDS_SD_FSG_CommandList::x12_CommandList_AH_transmitPos = 1;
+            transmitPos = @sysvar::SDS_SD_FSG_CommandList::x12_CommandList_AH_transmitPos;
+        }
+    }
+
+    // if smart, change TransmitPos to true, if requested Positions are not continuous
+    if(@sysvar::SDS_SD_General::Smart && transmitPos == 0)
+    {
+        for(i=0; i<(elementsCount-1); i++)
+        {
+            if(CommandList_Data_Pos[indices[i]] != (CommandList_Data_Pos[indices[i+1]]-1))
+            {
+                @sysvar::SDS_SD_FSG_CommandList::x12_CommandList_AH_transmitPos = 1;
+                transmitPos = @sysvar::SDS_SD_FSG_CommandList::x12_CommandList_AH_transmitPos;
+                break;
+            }
+        }
+    }
+
+    // create mode byte
+    elementsCount = List_arbitrary_getRequestedIndices (indices, start_pos, direction, shift, tnle, elements, CommandList_Data_Pos);
+    modeByte = Array_createModeByte (shift, direction, transmitPos, idxSize, recordAddress);
+
+    dataIterator = Array_createHeader_status (data, tnle, start_pos, elementsCount, ASG_ID, TAID, modeByte, idxSize);
+
+    for(i=0; i<elementsCount; i++)
+    {
+        dataIterator = CommandList_addArrayElementData (data, dataIterator, indices[i], transmitPos, recordAddress, idxSize);
+    }
+
+    // Send BAP request
+    BAP_createHeader(COMMAND_LIST_FCT_ID, header, dataIterator, Data_REQ);
+    BAP_DLL_Request(Data_REQ, header, data);
+}
+
+int CommandList_addArrayElementData (byte buffer[], int idx, int entry, int transmitPos, int recordAddress, int idxSize)
+{
+    int i;
+
+    byte pos_upperByte, pos_lowerByte;
+    byte commandID_upperByte, commandID_lowerByte;
+    byte textLengthPos, textlength;
+    pos_upperByte = 0;
+    pos_lowerByte = 0;
+    commandID_upperByte = 0;
+    commandID_lowerByte = 0;
+    textLengthPos = 0;
+    textlength = 0;
+
+    // POS
+    if(transmitPos == 1)
+    {
+        if(idxSize == 0)    // 8 bit
+        {
+            buffer[idx] = CommandList_Data_Pos[entry];
+            idx++;
+        }
+        else                // 16 bit
+        {
+            pos_lowerByte = (CommandList_Data_Pos[entry] & 0x00FF);
+            pos_upperByte = (CommandList_Data_Pos[entry] & 0xFF00) >> 8;
+            buffer[idx] = pos_lowerByte;
+            idx++;
+            buffer[idx] = pos_upperByte;
+            idx++;
+        }
+    }
+    
+    // CommandID - if transmission is enabled via recordAddress
+    if(recordAddress == COMMANDLIST_RECADDR_ID || recordAddress == COMMANDLIST_RECADDR_ID_TEXT)
+    {
+        commandID_lowerByte = (CommandList_Data_CommandID[entry] & 0x00FF);
+        commandID_upperByte = (CommandList_Data_CommandID[entry] & 0xFF00) >> 8;
+
+        buffer[idx] = commandID_lowerByte;
+        idx++;
+        buffer[idx] = commandID_upperByte;
+        idx++;
+    }
+
+    // CommandText - if transmission is enabled via recordAddress
+    if(recordAddress == COMMANDLIST_RECADDR_TEXT || recordAddress == COMMANDLIST_RECADDR_ID_TEXT)
+    {
+        if(textLengthPos == 0) // store array position of textlength
+            textLengthPos = idx;
+
+        idx++;
+
+        for(i=0; i<elCount(CommandList_Data_CommandText[entry]); i++)
+        {
+            if(CommandList_Data_CommandText[entry][i] == 0) // end of text
+            {
+                break;
+            }
+            else
+            {
+                buffer[idx] = CommandList_Data_CommandText[entry][i];
+                idx++;
+                textlength++;
+            }
+        }
+
+        buffer[textLengthPos] = textlength;
+    }
+
+    /*buffer[idx] = 0x00;                             // Extension, empty
+    idx++;
+    buffer[idx] = 0x00;                             // Extension, empty
+    idx++;*/
+
+    return idx;   
+}
+
+byte Array_createModeByte (byte shift, byte direction, byte transmitPos, byte idxSize, byte recordAddress)
+{
+    byte byteBuffer;
+    byteBuffer = 0;
+
+    if(shift)
+        byteBuffer += (1);
+    
+    if(direction)
+        byteBuffer += (1 << 1);
+    
+    if(transmitPos)
+        byteBuffer += (1 << 2);
+    
+    if(idxSize)
+        byteBuffer += (1 << 3);
+
+    byteBuffer = (byteBuffer << 4);                                                          // upper nibble = Mode byte
+    byteBuffer += recordAddress;                                                            // lower nibble = RecordAddress
+
+    return byteBuffer;
+}
+
+on sysvar sysvar::SDS_SD_FSG_CommandList::x12_CommandList_control_down
+{
+    if(@this)
+    {
+        CommandList_Data_illustrationOffset--;
+        CommandList_actualize_sysvar();
+    }
+}
+
+CommandList_init_CSV () //Byte & file selection
+{
+    int i = 0;
+    int j = 0;
+    int k = 0;
+
+    byte dataBuffer[5000];
+    int byteCount = 0;
+    char file_complete[5000];
+
+    // byte buffers to store characters
+    char buffer_pos[5];
+    char buffer_commandID[7];
+    char buffer_commandText[500];
+    int buffer_incrementator = 0;
+
+    // differentiate data fields
+    enum dataTypeEnum {pos, commandID, commandText};
+    int dataType = pos;
+    int inc_csv_line;
+    inc_csv_line = 0;
+
+    // catch if no file was selected
+    if(sysGetVariableArrayLength(sysvar::SDS_SD_FSG_CommandList::x12_CommandList_control_externalFilePath) == 0)
+    {
+        sysSetVariableString(sysvar::SDS_SD_FSG_CommandList::x12_CommandList_control_loadReload_result, "Select file first!");
+        @sysvar::SDS_SD_FSG_CommandList::x12_CommandList_control_default_external    = 0;
+        return;
+    }
+
+    // Get complete path
+    sysGetVariableString(sysvar::SDS_SD_FSG_CommandList::x12_CommandList_control_externalFilePath, file_complete, elCount(file_complete));
+
+    byteCount = File_readCSV (dataBuffer, file_complete);
+
+    // clear old data
+    CommandList_clearData();
+
+    /*** Parse data and create new CommandList ***/            
+    for(i=0; i<byteCount; i++)
+    {
+        // nextline in *.csv -> "LF" and "CR" detected
+        if( (dataBuffer[i] == 0x0D) && (dataBuffer[i+1] == 0x0A) )
+        {
+            // Take data if not in first line
+            if(inc_csv_line > 0)
+            {
+                CommandList_Data_Pos[inc_csv_line-1] = atol(buffer_pos);
+                CommandList_Data_CommandID[inc_csv_line-1] = atol(buffer_commandID);
+                for(k=0; k<elCount(buffer_commandText) && k<elCount(CommandList_Data_CommandText[inc_csv_line-1]); k++)
+                    CommandList_Data_CommandText[inc_csv_line-1][k] = buffer_commandText[k];
+            }
+
+            inc_csv_line++;
+            i++;                        // skip CR
+            dataType = pos;             // starts with pos again
+            buffer_incrementator = 0;   // first buffer position
+
+            // clear all buffers
+            for(j=0; j<elCount(buffer_pos); j++)
+                buffer_pos[j] = 0;
+            for(j=0; j<elCount(buffer_commandID); j++)
+                buffer_commandID[j] = 0;
+            for(j=0; j<elCount(buffer_commandText); j++)
+                buffer_commandText[j] = 0;
+        }
+        else
+        // Don't work in header line
+        if(inc_csv_line > 0)
+        {
+            // detection of ';'
+            if (dataBuffer[i] == 0x3B)
+            {
+                dataType++;
+                buffer_incrementator = 0;
+            }
+            else // sign to read
+            {
+                switch(dataType)
+                {
+                    case pos:
+                        buffer_pos[buffer_incrementator] = dataBuffer[i];
+                        buffer_incrementator++;
+                        break;
+
+                    case commandID:
+                        buffer_commandID[buffer_incrementator] = dataBuffer[i];
+                        buffer_incrementator++;
+                        break;
+
+                    case commandText:
+                        buffer_commandText[buffer_incrementator] = dataBuffer[i];
+                        buffer_incrementator++;
+                        break;
+
+                    default:    // undefined / error
+                        writelineEx(gError_Trace, CAPL_WRITE_LINE_ERROR,"Fehler beim Lesen der .csv-Datei! Ungültiger Datentyp: %d", dataType);
+                        break;
+                }
+            }
+        }
+    }
+
+    @sysvar::SDS_SD_FSG_CommandList::x12_CommandList_TNLE = (inc_csv_line-1);   // first line (zero) is ignored, but csv end with LF/CR so line=TNLE
+    sysSetVariableString(sysvar::SDS_SD_FSG_CommandList::x12_CommandList_control_loadReload_result, "File successfully loaded!");
+
+    CommandList_actualize_sysvar ();
+
+    enableControl("SDS_SD_FSG_CommandList", "btn_dataSource_external", TRUE);
+}
+
+CommandList_init_static()
+{
+    int i = 0;
+    int j = 0;
+    int entryCount = 4;
+    char stringBuffer[100];
+
+    // Clear old entries
+    CommandList_clearData ();
+
+    for(i=0; i<strlen(stringBuffer); i++)
+        stringBuffer[i] = 0;
+
+    // Create new entries
+	for(i=0;i<entryCount;i++) 
+	{
+		CommandList_Data_Pos[i] = (i+1);
+        CommandList_Data_CommandID[i] = 0xFFFF;                                // use CommandText
+        
+        snprintf(stringBuffer, elCount(stringBuffer), "Command_%d", (i+1) );
+
+        for(j=0;j<COMMANDLIST_COMMANDTEXT_LENGTH;j++)
+			CommandList_Data_CommandText[i][j] = stringBuffer[j];
+	}
+
+    // Anctualize system variables for Panel
+    CommandList_Data_illustrationOffset = 0;
+    @sysvar::SDS_SD_FSG_CommandList::x12_CommandList_TNLE = entryCount;
+    CommandList_actualize_sysvar ();
+}
+
+CommandList_actualize_sysvar ()
+{
+    int offset;
+    int tnle;
+    tnle = @sysvar::SDS_SD_FSG_CommandList::x12_CommandList_TNLE;
+
+    if(CommandList_Data_illustrationOffset==0xFFFFFFFF)     // scrolled up, overflow -> start with last element
+        CommandList_Data_illustrationOffset = (tnle - 1);
+
+    if(CommandList_Data_illustrationOffset == tnle )        // last element reached -> start with first element
+        CommandList_Data_illustrationOffset = 0;
+
+    offset = CommandList_Data_illustrationOffset;           // take offset for local incrementation
+    
+    // 1st element
+    @sysvar::SDS_SD_FSG_CommandList::x12_CommandList_list_pos_element1 = CommandList_Data_Pos[offset];
+    @sysvar::SDS_SD_FSG_CommandList::x12_CommandList_list_CommandID_element1 = CommandList_Data_CommandID[offset];
+    sysSetVariableString(sysvar::SDS_SD_FSG_CommandList::x12_CommandList_list_CommandText_element1, CommandList_Data_CommandText[offset]);
+    if(offset == (tnle-1) )                                 // last element reached, start from begin
+        offset = 0;
+    else                                                    // increase offset to get next element
+        offset++;
+    
+    // 2nd element
+    @sysvar::SDS_SD_FSG_CommandList::x12_CommandList_list_pos_element2 = CommandList_Data_Pos[offset];
+    @sysvar::SDS_SD_FSG_CommandList::x12_CommandList_list_CommandID_element2 = CommandList_Data_CommandID[offset];
+    sysSetVariableString(sysvar::SDS_SD_FSG_CommandList::x12_CommandList_list_CommandText_element2, CommandList_Data_CommandText[offset]);
+    if(offset == (tnle-1) )                                 // last element reached, start from begin
+        offset = 0;
+    else                                                    // increase offset to get next element
+        offset++;
+    
+    // 3rd element
+    @sysvar::SDS_SD_FSG_CommandList::x12_CommandList_list_pos_element3 = CommandList_Data_Pos[offset];
+    @sysvar::SDS_SD_FSG_CommandList::x12_CommandList_list_CommandID_element3 = CommandList_Data_CommandID[offset];
+    sysSetVariableString(sysvar::SDS_SD_FSG_CommandList::x12_CommandList_list_CommandText_element3, CommandList_Data_CommandText[offset]);
+    if(offset == (tnle-1) )                                 // last element reached, start from begin
+        offset = 0;
+    else                                                    // increase offset to get next element
+        offset++;
+    
+    // 4th element
+    @sysvar::SDS_SD_FSG_CommandList::x12_CommandList_list_pos_element4 = CommandList_Data_Pos[offset];
+    @sysvar::SDS_SD_FSG_CommandList::x12_CommandList_list_CommandID_element4 = CommandList_Data_CommandID[offset];
+    sysSetVariableString(sysvar::SDS_SD_FSG_CommandList::x12_CommandList_list_CommandText_element4, CommandList_Data_CommandText[offset]);
+    if(offset == (tnle-1) )                                 // last element reached, start from begin
+        offset = 0;
+    else                                                    // increase offset to get next element
+        offset++;
+
+    // Adapt panel
+    enableControl("SDS_SD_FSG_CommandList", "CommandList_Element1", FALSE);
+    enableControl("SDS_SD_FSG_CommandList", "CommandList_Element2", FALSE);
+    enableControl("SDS_SD_FSG_CommandList", "CommandList_Element3", FALSE);
+    enableControl("SDS_SD_FSG_CommandList", "CommandList_Element4", FALSE);
+    enableControl("SDS_SD_FSG_CommandList", "Ctrl_CommandList_Up",  FALSE);
+    enableControl("SDS_SD_FSG_CommandList", "Ctrl_CommandList_Down", FALSE);
+
+    if(tnle>0)
+        enableControl("SDS_SD_FSG_CommandList", "CommandList_Element1", TRUE);
+    if(tnle>1)
+        enableControl("SDS_SD_FSG_CommandList", "CommandList_Element2", TRUE);
+    if(tnle>2)
+        enableControl("SDS_SD_FSG_CommandList", "CommandList_Element3", TRUE);
+    if(tnle>3)
+        enableControl("SDS_SD_FSG_CommandList", "CommandList_Element4", TRUE);
+    if(tnle>4)
+    {
+        enableControl("SDS_SD_FSG_CommandList", "Ctrl_CommandList_Up",  TRUE);
+        enableControl("SDS_SD_FSG_CommandList", "Ctrl_CommandList_Down", TRUE);
+    }
+}
+
+on sysvar sysvar::SDS_SD_FSG_CommandList::x12_CommandList_control_loadReload
+{
+    if(@this)
+    {
+        CommandList_init_CSV();
+        @sysvar::SDS_SD_FSG_CommandList::x12_CommandList_control_default_external = 1;
+    }
+}
+
+File_separatePath (char completePath[], char path[], char file[])
+{
+    int i, j;
+    int separators;
+    int separatorCounter;
+    int fileName_length;
+
+    // clear buffer
+    for(i=0; i<elCount(path); i++)
+        path[i] = 0;
+    for(i=0; i<elCount(file); i++)
+        file[i] = 0;
+
+    // Count separators
+    i = 0;
+    separators = 0;
+    while (completePath[i] !=0)
+    {
+        if(completePath[i] == 0x5C)
+            separators++;                
+        i++;
+    } 
+
+    // Get position of last separator
+    i = 0;
+    separatorCounter = 0;
+    while (separatorCounter != separators)
+    {
+        if(completePath[i] == 0x5C)
+            separatorCounter++;                
+        i++;
+    }
+
+    // Copy path to destination (stop on last separator position)
+    strncpy(path, completePath, i);
+
+    // get length of filename
+    j = i;
+    fileName_length = 0;
+    while(completePath[j] != 0x00)
+    {
+        fileName_length++;
+        j++;
+    }
+
+    // Copy filename to destination (start after last separator)
+    for(j=0; j<fileName_length; j++)
+        file[j] = completePath[i+j];
+}
+
+int File_readCSV (byte dataBuffer[], char file_complete[])
+{
+    char file_fileName[5000];
+    char file_path[5000];
+    dword CSVfileHandle = 0;
+
+    int csv_byte_len = 0;
+
+    File_separatePath (file_complete, file_path, file_fileName);
+
+    //set path for *.csv file
+    setFilePath(file_path, 0); 
+    //open *.csv (binary-mode -> get the ASCII/UTF-8 code)
+    CSVfileHandle = openFileRead(file_fileName,1); 
+    if (CSVfileHandle == 0) //*.csv file access successful
+        writelineEx(gError_Trace, CAPL_WRITE_LINE_ERROR,"Fehler beim Dateizugriff auf '%s'",file_complete);
+
+    csv_byte_len = fileGetBinaryBlock (dataBuffer, elcount(dataBuffer), CSVfileHandle); // get data from *.csv and store the total number of byte in *.csv-file
+
+    // close file
+    if(fileClose (CSVfileHandle) == 0) // close not successful
+        writelineEx(gError_Trace, CAPL_WRITE_LINE_ERROR,"Datei '%s' geschlossen", file_complete); // output result
+
+    return csv_byte_len;
+}
+
+on sysvar sysvar::SDS_SD_FSG_CommandList::x12_CommandList_control_default_external
+{
+    if(@this)
+        CommandList_init_CSV();
+    else
+        CommandList_init_static();
+}
+
+int Array_createHeader_changed (byte buffer[], word start_el, word elements, byte modeByte, byte idxSize)
+{
+    byte byteBuffer;
+    int nextPos;
+    nextPos = 0;
+
+    buffer[0] = modeByte;
+
+    if(idxSize == 0)                                                                        // 8 bit addressing
+    {
+        buffer[1] = start_el;
+        buffer[2] = elements;
+        nextPos = 3;
+    }
+    else                                                                                    // 16 bit addressing
+    {
+        byteBuffer = 0;
+        byteBuffer = (start_el & 0xFF00) >> 8;
+        buffer[1] = byteBuffer;
+
+        byteBuffer = 0;
+        byteBuffer = (start_el & 0x00FF);
+        buffer[2] = byteBuffer;
+
+        byteBuffer = 0;
+        byteBuffer = (elements & 0xFF00) >> 8;
+        buffer[3] = byteBuffer;
+
+        byteBuffer = 0;
+        byteBuffer = (elements & 0x00FF);
+        buffer[4] = byteBuffer;
+
+        nextPos = 5;
+    }
+
+    return nextPos;
+}
+
+int Array_createHeader_status (byte buffer[], word tnle, word start_el, word elements, byte ASG_ID, byte TAID, byte modeByte, byte idxSize)
+{
+    byte byteBuffer;
+    int nextPos;
+    nextPos = 0;
+
+    byteBuffer = (ASG_ID << 4);
+    byteBuffer += TAID;
+    buffer[0] = byteBuffer;
+
+    buffer[1] = tnle;
+
+    buffer[2] = modeByte;  
+
+    if(idxSize == 0)                                                                        // 8 bit addressing
+    {
+        buffer[3] = start_el;
+        buffer[4] = elements;
+        nextPos = 5;
+    }
+    else                                                                                    // 16 bit addressing
+    {
+        byteBuffer = 0;
+        byteBuffer = (start_el & 0x00FF);
+        buffer[3] = byteBuffer;
+
+        byteBuffer = 0;
+        byteBuffer = (start_el & 0xFF00) >> 8;
+        buffer[4] = byteBuffer;
+
+        byteBuffer = 0;
+        byteBuffer = (elements & 0x00FF);
+        buffer[5] = byteBuffer;
+
+        byteBuffer = 0;
+        byteBuffer = (elements & 0xFF00) >> 8;
+        buffer[6] = byteBuffer;
+
+        nextPos = 7;
+    }
+
+    return nextPos;
+}
+
+on sysvar sysvar::SDS_SD_FSG_ResultList::x13_ResultList_control_down
+{
+    if(@this)
+    {
+        ResultList_Data_illustrationOffset--;
+        ResultList_actualize_sysvar();
+    }
+}
+
+on sysvar sysvar::SDS_SD_FSG_ResultList::x13_ResultList_control_up
+{
+    if(@this)
+    {
+        ResultList_Data_illustrationOffset++;
+        ResultList_actualize_sysvar();
+    }
+}
+
+init_variables_array_ResultList ()
+{
+    long i;
+
+    @sysvar::SDS_SD_FSG_ResultList::x13_ResultList_TNLE                        = 0;
+
+    @sysvar::SDS_SD_FSG_ResultList::x13_ResultList_AH_direction                = 0;
+    @sysvar::SDS_SD_FSG_ResultList::x13_ResultList_AH_elements_hex             = 0;
+    @sysvar::SDS_SD_FSG_ResultList::x13_ResultList_AH_indexSize                = 0;
+    @sysvar::SDS_SD_FSG_ResultList::x13_ResultList_AH_recordAddress            = 0;
+    @sysvar::SDS_SD_FSG_ResultList::x13_ResultList_AH_shift                    = 0;
+
+    @sysvar::SDS_SD_FSG_ResultList::x13_ResultList_AH_start_hex                = 0;
+    @sysvar::SDS_SD_FSG_ResultList::x13_ResultList_AH_transmitPos              = 0;
+
+    @sysvar::SDS_SD_FSG_ResultList::x13_ResultList_ASGID                       = 0;
+    @sysvar::SDS_SD_FSG_ResultList::x13_ResultList_TAID_hex                    = 0;
+
+    @sysvar::SDS_SD_FSG_ResultList::x13_ResultList_control_default_external    = 0;
+
+    for(i=0; i<elCount(ResultList_Data_Pos); i++)
+        ResultList_Data_Pos[i] = (i+1);
+
+    ResultList_init_static();
+}
+
+ResultList_actualize_sysvar ()
+{
+    int offset;
+    int tnle;
+    tnle = @sysvar::SDS_SD_FSG_ResultList::x13_ResultList_TNLE;
+
+    if(ResultList_Data_illustrationOffset==0xFFFFFFFF)     // scrolled up, overflow -> start with last element
+        ResultList_Data_illustrationOffset = (tnle - 1);
+
+    if(ResultList_Data_illustrationOffset == tnle )        // last element reached -> start with first element
+        ResultList_Data_illustrationOffset = 0;
+
+    offset = ResultList_Data_illustrationOffset;           // take offset for local incrementation
+
+    // 1st element
+    @sysvar::SDS_SD_FSG_ResultList::x13_ResultList_list_pos_element1 = ResultList_Data_Pos[offset];
+    @sysvar::SDS_SD_FSG_ResultList::x13_ResultList_list_ResultType_element1 = ResultList_Data_ResultType[offset];
+    sysSetVariableString(sysvar::SDS_SD_FSG_ResultList::x13_ResultList_list_ResultText_element1, ResultList_Data_ResultText[offset]);
+    if(offset == (tnle-1) )                                 // last element reached, start from begin
+        offset = 0;
+    else                                                    // increase offset to get next element
+        offset++;
+    
+    // 2nd element
+    @sysvar::SDS_SD_FSG_ResultList::x13_ResultList_list_pos_element2 = ResultList_Data_Pos[offset];
+    @sysvar::SDS_SD_FSG_ResultList::x13_ResultList_list_ResultType_element2 = ResultList_Data_ResultType[offset];
+    sysSetVariableString(sysvar::SDS_SD_FSG_ResultList::x13_ResultList_list_ResultText_element2, ResultList_Data_ResultText[offset]);
+    if(offset == (tnle-1) )                                 // last element reached, start from begin
+        offset = 0;
+    else                                                    // increase offset to get next element
+        offset++;
+    
+    // 3rd element
+    @sysvar::SDS_SD_FSG_ResultList::x13_ResultList_list_pos_element3 = ResultList_Data_Pos[offset];
+    @sysvar::SDS_SD_FSG_ResultList::x13_ResultList_list_ResultType_element3 = ResultList_Data_ResultType[offset];
+    sysSetVariableString(sysvar::SDS_SD_FSG_ResultList::x13_ResultList_list_ResultText_element3, ResultList_Data_ResultText[offset]);
+    if(offset == (tnle-1) )                                 // last element reached, start from begin
+        offset = 0;
+    else                                                    // increase offset to get next element
+        offset++;
+
+    // 4th element
+    @sysvar::SDS_SD_FSG_ResultList::x13_ResultList_list_pos_element4 = ResultList_Data_Pos[offset];
+    @sysvar::SDS_SD_FSG_ResultList::x13_ResultList_list_ResultType_element4 = ResultList_Data_ResultType[offset];
+    sysSetVariableString(sysvar::SDS_SD_FSG_ResultList::x13_ResultList_list_ResultText_element4, ResultList_Data_ResultText[offset]);
+    if(offset == (tnle-1) )                                 // last element reached, start from begin
+        offset = 0;
+    else                                                    // increase offset to get next element
+        offset++;
+
+    // Adapt panel
+    enableControl("SDS_SD_FSG_ResultList", "ResultList_Element1", FALSE);
+    enableControl("SDS_SD_FSG_ResultList", "ResultList_Element2", FALSE);
+    enableControl("SDS_SD_FSG_ResultList", "ResultList_Element3", FALSE);
+    enableControl("SDS_SD_FSG_ResultList", "ResultList_Element4", FALSE);
+    enableControl("SDS_SD_FSG_ResultList", "Ctrl_ResultList_Up",  FALSE);
+    enableControl("SDS_SD_FSG_ResultList", "Ctrl_ResultList_Down", FALSE);
+
+    if(tnle>0)
+        enableControl("SDS_SD_FSG_ResultList", "ResultList_Element1", TRUE);
+    if(tnle>1)
+        enableControl("SDS_SD_FSG_ResultList", "ResultList_Element2", TRUE);
+    if(tnle>2)
+        enableControl("SDS_SD_FSG_ResultList", "ResultList_Element3", TRUE);
+    if(tnle>3)
+        enableControl("SDS_SD_FSG_ResultList", "ResultList_Element4", TRUE);
+    if(tnle>4)
+    {
+        enableControl("SDS_SD_FSG_ResultList", "Ctrl_ResultList_Up",  TRUE);
+        enableControl("SDS_SD_FSG_ResultList", "Ctrl_ResultList_Down", TRUE);
+    }
+}
+
+ResultList_init_static()
+{
+    int i = 0;
+    int j = 0;
+    int entryCount = 1;
+    char stringBuffer[100];
+
+    // Clear old entries
+    ResultList_clearData ();
+
+    for(i=0; i<strlen(stringBuffer); i++)
+        stringBuffer[i] = 0;
+
+    // Create new entries
+	for(i=0;i<entryCount;i++) 
+	{
+		ResultList_Data_Pos[i] = (i+1);
+        ResultList_Data_ResultType[i] = 0x00;                                
+        
+        snprintf(stringBuffer, elCount(stringBuffer), "Result_%d", (i+1) );
+
+        for(j=0;j<COMMANDLIST_COMMANDTEXT_LENGTH;j++)
+			ResultList_Data_ResultText[i][j] = stringBuffer[j];
+	}
+
+    // Anctualize system variables for Panel
+    ResultList_Data_illustrationOffset = 0;
+    @sysvar::SDS_SD_FSG_ResultList::x13_ResultList_TNLE = entryCount;
+    ResultList_actualize_sysvar ();
+}
+
+on sysvar sysvar::SDS_SD_FSG_ResultList::x13_ResultList_control_loadReload
+{
+    if(@this)
+    {
+        ResultList_init_CSV();
+        @sysvar::SDS_SD_FSG_ResultList::x13_ResultList_control_default_external = 1;
+    }
+}
+
+on sysvar sysvar::SDS_SD_FSG_ResultList::x13_ResultList_control_default_external
+{
+    if(@this)
+        ResultList_init_CSV();
+    else
+        ResultList_init_static();
+}
+
+ResultList_init_CSV () //Byte & file selection
+{
+    int i = 0;
+    int j = 0;
+    int k = 0;
+
+    byte dataBuffer[5000];
+    int byteCount = 0;
+    char file_complete[5000];
+
+    // byte buffers to store characters
+    char buffer_pos[5];
+    char buffer_resultType[7];
+    char buffer_resultText[500];
+    int buffer_incrementator = 0;
+
+    // differentiate data fields
+    enum dataTypeEnumResult {posResult, ResType, ResText};
+    int dataType = posResult;
+    int inc_csv_line;
+    inc_csv_line = 0;
+
+    // catch if no file was selected
+    if(sysGetVariableArrayLength(sysvar::SDS_SD_FSG_ResultList::x13_ResultList_control_externalFilePath) == 0)
+    {
+        sysSetVariableString(sysvar::SDS_SD_FSG_ResultList::x13_ResultList_control_loadReload_result, "Select file first!");
+        @sysvar::SDS_SD_FSG_ResultList::x13_ResultList_control_default_external    = 0;
+        return;
+    }
+
+    // Get complete path
+    sysGetVariableString(sysvar::SDS_SD_FSG_ResultList::x13_ResultList_control_externalFilePath, file_complete, elCount(file_complete));
+
+    byteCount = File_readCSV (dataBuffer, file_complete);
+
+    // clear old data
+    ResultList_clearData();
+
+    /*** Parse data and create new CommandList ***/            
+    for(i=0; i<byteCount; i++)
+    {
+        // nextline in *.csv -> "LF" and "CR" detected
+        if( (dataBuffer[i] == 0x0D) && (dataBuffer[i+1] == 0x0A) )
+        {
+            // Take data if not in first line
+            if(inc_csv_line > 0)
+            {
+                ResultList_Data_Pos[inc_csv_line-1] = atol(buffer_pos);
+                ResultList_Data_ResultType[inc_csv_line-1] = atol(buffer_resultType);
+                for(k=0; k<elCount(buffer_resultText) && k<elCount(ResultList_Data_ResultText[inc_csv_line-1]); k++)
+                    ResultList_Data_ResultText[inc_csv_line-1][k] = buffer_resultText[k];
+            }
+
+            inc_csv_line++;
+            i++;                        // skip CR
+            dataType = posResult;             // starts with pos again
+            buffer_incrementator = 0;   // first buffer position
+
+            // clear all buffers
+            for(j=0; j<elCount(buffer_pos); j++)
+                buffer_pos[j] = 0;
+            for(j=0; j<elCount(buffer_resultType); j++)
+                buffer_resultType[j] = 0;
+            for(j=0; j<elCount(buffer_resultText); j++)
+                buffer_resultText[j] = 0;
+        }
+        else
+        // Don't work in header line
+        if(inc_csv_line > 0)
+        {
+            // detection of ';'
+            if (dataBuffer[i] == 0x3B)
+            {
+                dataType++;
+                buffer_incrementator = 0;
+            }
+            else // sign to read
+            {
+                switch(dataType)
+                {
+                    case posResult:
+                        buffer_pos[buffer_incrementator] = dataBuffer[i];
+                        buffer_incrementator++;
+                        break;
+
+                    case ResType:
+                        buffer_resultType[buffer_incrementator] = dataBuffer[i];
+                        buffer_incrementator++;
+                        break;
+
+                    case ResText:
+                        buffer_resultText[buffer_incrementator] = dataBuffer[i];
+                        buffer_incrementator++;
+                        break;
+
+                    default:    // undefined / error
+                        writelineEx(gError_Trace, CAPL_WRITE_LINE_ERROR,"Fehler beim Lesen der .csv-Datei! Ungültiger Datentyp: %d", dataType);
+                        break;
+                }
+            }
+        }
+    }
+
+    @sysvar::SDS_SD_FSG_ResultList::x13_ResultList_TNLE = (inc_csv_line-1);   // first line (zero) is ignored, but csv end with LF/CR so line=TNLE
+    sysSetVariableString(sysvar::SDS_SD_FSG_ResultList::x13_ResultList_control_loadReload_result, "File successfully loaded!");
+
+    ResultList_actualize_sysvar ();
+
+    enableControl("SDS_SD_FSG_ResultList", "btn_dataSource_external", TRUE);
+}
+
+on sysvar sysvar::SDS_SD_FSG_ResultList::x13_ResultList_control_FRU
+{
+    if(@this)
+        Request_0x13_ResultList_FRU (@sysvar::SDS_SD_FSG_ResultList::x13_ResultList_AH_indexSize);
+}
+
+Request_0x13_ResultList_status ()
+{
+    // BAP stack buffer
+    dword header [BAP_HEADER_SIZE];
+    byte data[BAP_BUFFER_SIZE];
+    word indices[COMMANDLIST_ENTRIES];
+    int dataIterator; // data[]-iterator
+    
+    byte byteBuffer;
+    byte modeByte;
+    int i;
+
+    // header variables
+    byte recordAddress, shift, direction, transmitPos, idxSize, ASG_ID, TAID;
+    word start_pos, elements, tnle;
+    int shouldTransmitPos;
+    
+    //temporary array-element variables
+    char charBuffer[COMMANDLIST_COMMANDTEXT_LENGTH];
+    int textlength;
+    byte arrayBuffer[COMMAND_LIST_BAP_DATA_LENGTH_MAX];
+    int start_arrayElement;
+    int elementsCount;
+
+    // clear variables
+    for(i=0; i<elCount(header); i++)
+        header[i] = 0;
+    for(i=0; i<elCount(data); i++)
+        data[i] = 0;
+    for(i=0; i<elCount(indices); i++)
+        indices[i] = 0;
+
+    // get data
+    tnle = @sysvar::SDS_SD_FSG_ResultList::x13_ResultList_TNLE;
+    recordAddress = @sysvar::SDS_SD_FSG_ResultList::x13_ResultList_AH_recordAddress;
+    shift = @sysvar::SDS_SD_FSG_ResultList::x13_ResultList_AH_shift;
+    direction = @sysvar::SDS_SD_FSG_ResultList::x13_ResultList_AH_direction;
+    transmitPos = @sysvar::SDS_SD_FSG_ResultList::x13_ResultList_AH_transmitPos;
+    idxSize = @sysvar::SDS_SD_FSG_ResultList::x13_ResultList_AH_indexSize;
+    ASG_ID = @sysvar::SDS_SD_FSG_ResultList::x13_ResultList_ASGID;
+    TAID = @sysvar::SDS_SD_FSG_ResultList::x13_ResultList_TAID_hex;
+    start_pos = @sysvar::SDS_SD_FSG_ResultList::x13_ResultList_AH_start_hex;
+    elements = @sysvar::SDS_SD_FSG_ResultList::x13_ResultList_AH_elements_hex;
+
+    //VAGF-29789 - SDS Command List and Result List panels update needed
+    if(getvalue(env_SDS_0x13_ResultList_ASGID_error) != FALSE)
+    {
+        if(ASG_ID == 15)
+            ASG_ID = 0;
+        else
+            ASG_ID += 1;
+    }
+		
+    if(getvalue(env_SDS_0x13_ResultList_TAID_error) != FALSE)
+    {
+        if(TAID == 15)
+            TAID = 0;
+        else
+            TAID += 1;
+    }
+    
+    elementsCount = List_arbitrary_getRequestedIndices (indices, start_pos, direction, shift, tnle, elements, ResultList_Data_Pos);
+    // if start in header != position of array element, change TransmitPos to true
+    if(elementsCount != 0)
+    {
+        if(start_pos != ResultList_Data_Pos[indices[0]])
+        {
+            @sysvar::SDS_SD_FSG_ResultList::x13_ResultList_AH_transmitPos = 1;
+            transmitPos = @sysvar::SDS_SD_FSG_ResultList::x13_ResultList_AH_transmitPos;
+        }
+    }
+
+    // if smart, change TransmitPos to true, if requested Positions are not continuous
+    if(@sysvar::SDS_SD_General::Smart && transmitPos == 0)
+    {
+        for(i=0; i<(elementsCount-1); i++)
+        {
+            if(ResultList_Data_Pos[indices[i]] != (ResultList_Data_Pos[indices[i+1]]-1))
+            {
+                @sysvar::SDS_SD_FSG_ResultList::x13_ResultList_AH_transmitPos = 1;
+                transmitPos = @sysvar::SDS_SD_FSG_ResultList::x13_ResultList_AH_transmitPos;
+                break;
+            }
+        }
+    }
+
+    // create mode byte
+    elementsCount = List_arbitrary_getRequestedIndices (indices, start_pos, direction, shift, tnle, elements, ResultList_Data_Pos);
+    modeByte = Array_createModeByte (shift, direction, transmitPos, idxSize, recordAddress);
+
+    dataIterator = Array_createHeader_status (data, tnle, start_pos, elementsCount, ASG_ID, TAID, modeByte, idxSize);
+
+    for(i=0; i<elementsCount; i++)
+    {
+        dataIterator = ResultList_addArrayElementData (data, dataIterator, indices[i], transmitPos, recordAddress, idxSize);
+    }
+
+    // Send BAP request
+    BAP_createHeader(RESULT_LIST_FCT_ID, header, dataIterator, Data_REQ);
+    BAP_DLL_Request(Data_REQ, header, data);
+}
+
+on sysvar sysvar::SDS_SD_FSG_ResultList::x13_ResultList_control_StatusArray
+{
+    //VAGF-29789 - SDS Command List and Result List panels update needed
+    dword header [BAP_HEADER_SIZE];
+    byte data[BAP_BUFFER_SIZE];
+    int i;
+		
+    for(i=0; i<elCount(header); i++)
+        header[i] = 0;
+    for(i=0; i<elCount(data); i++)
+        data[i] = 0;
+    if(@this)
+    {
+        //VAGF-29789 - SDS Command List and Result List panels update needed
+        if(getvalue(env_SDS_0x13_ResultList_Error_on))
+        {
+            BAP_createHeader(RESULT_LIST_FCT_ID, header, 0, Error_REQ);
+            BAP_DLL_Request(Error_REQ, header, data);
+        }
+        else
+        {
+            // TAID=0 is to be generated, if the FSG sends a StatusArray without preceding GetArray
+            // ASGID=0 is to be generated, if the FSG sends a StatusArray without preceding GetArray
+            if(@sysvar::SDS_SD_General::Smart)
+            {
+                @sysvar::SDS_SD_FSG_ResultList::x13_ResultList_TAID_hex = 0;
+                @sysvar::SDS_SD_FSG_ResultList::x13_ResultList_ASGID    = 0;
+            }
+	    //VAGH-10511
+	    if(!getvalue(env_SDS_0x13_ResultList_StatusArrayOff))
+	        Request_0x13_ResultList_status ();
+        }
+    }
+}
+
+on sysvar sysvar::SDS_SD_FSG_ResultList::x13_ResultList_control_ChangedArray
+{
+    if(@this)
+        Request_0x13_ResultList_changed ();
+}
+
+int List_arbitrary_getFirstElement (int startElement, byte direction, byte shift, int tnle, word posList[])
+{
+    int i;
+    int startIdx;
+    startIdx = 0;
+
+    if(tnle == 0)
+        return -1;
+
+    /*** FORWARDS ***/
+    if(direction == 0)
+    {   
+        startIdx++;
+        for(i=0; i<elCount(posList); i++)
+        {
+            if(startElement>posList[i])
+                startIdx++;
+            else
+                break;
+        }
+
+        if(shift && startElement != 0)
+            startIdx = (startIdx+1);
+        
+        if(startIdx > tnle)
+            return -1;
+        else if (startIdx == 0)
+            return 0;
+        else
+            return (startIdx-1);
+    }
+
+    /*** BACKWARDS ***/
+    if(direction == 1)
+    {
+        if(shift == 0 && startElement == 0)
+                return -1; // shift needed
+
+        startIdx = tnle-1;
+        for(i=startIdx; i>0; i--)
+        {
+            if(startElement<posList[i])
+                startIdx--;
+            else
+                break;
+        }
+
+        if(shift == 0)
+        {
+            return startIdx;
+        }
+        else
+        {
+            if(startIdx > tnle-1)
+                return startIdx;
+            else
+                return startIdx-1;
+        }
+    }
+
+    return -1;
+}
+
+Request_0x12_CommandList_changed ()
+{
+    // BAP stack buffer
+    dword header [BAP_HEADER_SIZE];
+    byte data[BAP_BUFFER_SIZE];
+    word indices[COMMANDLIST_ENTRIES];
+    int elementsCount;
+    int dataIterator; // data[]-iterator
+    
+    byte modeByte, recordAddress;
+    int i;
+
+    // header variables
+    byte shift, direction, transmitPos, idxSize;
+    word start_pos, elements, tnle;
+
+    // clear variables
+    for(i=0; i<elCount(header); i++)
+        header[i] = 0;
+    for(i=0; i<elCount(data); i++)
+        data[i] = 0;
+    for(i=0; i<elCount(indices); i++)
+        indices[i] = 0;
+
+    // get data
+    tnle = @sysvar::SDS_SD_FSG_CommandList::x12_CommandList_TNLE;
+    shift = @sysvar::SDS_SD_FSG_CommandList::x12_CommandList_AH_shift;
+    direction = @sysvar::SDS_SD_FSG_CommandList::x12_CommandList_AH_direction;
+    transmitPos = @sysvar::SDS_SD_FSG_CommandList::x12_CommandList_AH_transmitPos;
+    idxSize = @sysvar::SDS_SD_FSG_CommandList::x12_CommandList_AH_indexSize;
+    start_pos = @sysvar::SDS_SD_FSG_CommandList::x12_CommandList_AH_start_hex;
+    elements = @sysvar::SDS_SD_FSG_CommandList::x12_CommandList_AH_elements_hex;
+    recordAddress = @sysvar::SDS_SD_FSG_CommandList::x12_CommandList_AH_recordAddress;
+
+    // create mode byte
+    modeByte = Array_createModeByte (shift, direction, transmitPos, idxSize, recordAddress);
+    elementsCount = List_arbitrary_getRequestedIndices (indices, start_pos, direction, shift, tnle, elements, CommandList_Data_Pos);
+
+    if(elementsCount<elements && transmitPos==1)
+    {
+        elements = elementsCount;
+        @sysvar::SDS_SD_FSG_CommandList::x12_CommandList_AH_elements_hex = elementsCount;
+    }
+
+    dataIterator = Array_createHeader_changed (data, start_pos, elements, modeByte, idxSize);
+
+    if(transmitPos == 1)
+    {
+        for(i=0; i<elementsCount && i<elCount(CommandList_Data_Pos); i++)
+        {
+            if(idxSize == 0)    // 8 bit
+            {
+                data[dataIterator] = CommandList_Data_Pos[indices[i]];
+                dataIterator++;
+            }
+            else                // 16 bit
+            {
+                data[dataIterator] = (CommandList_Data_Pos[indices[i]] & 0xFF00) >> 8;   // upper byte
+                dataIterator++;
+                data[dataIterator] = (CommandList_Data_Pos[indices[i]] & 0x00FF);        // lower byte
+                dataIterator++;
+            } 
+        }
+    }
+
+    // Send BAP request
+    BAP_createHeader(COMMAND_LIST_FCT_ID, header, dataIterator, Changed_REQ);
+    BAP_DLL_Request(Changed_REQ, header, data);
+}
+
+int List_arbitrary_getRequestedIndices (word buffer[], int startElement, byte direction, byte shift, int tnle, int elementsRequested, word posList[])
+{
+    int firstEl;
+    int numberOfElements;
+    int i;
+    numberOfElements = 0;
+
+    firstEl = List_arbitrary_getFirstElement (startElement, direction, shift, tnle, posList);
+
+    if(firstEl != -1)
+    {
+        if(direction == 0)  // forwards
+        {
+            for(i=0; (i<elementsRequested)&&(i+firstEl<tnle); i++)
+            {
+                buffer[i] = firstEl+i;
+                numberOfElements++;
+            }
+        }
+        else                // backwards
+        {
+            for(i=0; (i<elementsRequested)&&(firstEl-i>=0); i++)
+            {
+                buffer[i] = firstEl-i;
+                numberOfElements++;
+            }
+        }
+    }
+
+    return numberOfElements;
+}
+
+Request_0x13_ResultList_changed ()
+{
+    // BAP stack buffer
+    dword header [BAP_HEADER_SIZE];
+    byte data[BAP_BUFFER_SIZE];
+    word indices[COMMANDLIST_ENTRIES];
+    int elementsCount;
+    int dataIterator; // data[]-iterator
+    
+    byte modeByte, recordAddress;
+    int i;
+
+    // header variables
+    byte shift, direction, transmitPos, idxSize;
+    word start_pos, elements, tnle;
+
+    // clear variables
+    for(i=0; i<elCount(header); i++)
+        header[i] = 0;
+    for(i=0; i<elCount(data); i++)
+        data[i] = 0;
+    for(i=0; i<elCount(indices); i++)
+        indices[i] = 0;
+
+    // get data
+    tnle = @sysvar::SDS_SD_FSG_ResultList::x13_ResultList_TNLE;
+    shift = @sysvar::SDS_SD_FSG_ResultList::x13_ResultList_AH_shift;
+    direction = @sysvar::SDS_SD_FSG_ResultList::x13_ResultList_AH_direction;
+    transmitPos = @sysvar::SDS_SD_FSG_ResultList::x13_ResultList_AH_transmitPos;
+    idxSize = @sysvar::SDS_SD_FSG_ResultList::x13_ResultList_AH_indexSize;
+    start_pos = @sysvar::SDS_SD_FSG_ResultList::x13_ResultList_AH_start_hex;
+    elements = @sysvar::SDS_SD_FSG_ResultList::x13_ResultList_AH_elements_hex;
+    recordAddress = @sysvar::SDS_SD_FSG_ResultList::x13_ResultList_AH_recordAddress;
+
+    // create mode byte
+    modeByte = Array_createModeByte (shift, direction, transmitPos, idxSize, recordAddress);
+    elementsCount = List_arbitrary_getRequestedIndices (indices, start_pos, direction, shift, tnle, elements, ResultList_Data_Pos);
+
+    if(elementsCount<elements && transmitPos==1)
+    {
+        elements = elementsCount;
+        @sysvar::SDS_SD_FSG_ResultList::x13_ResultList_AH_elements_hex = elementsCount;
+    }
+
+    dataIterator = Array_createHeader_changed (data, start_pos, elements, modeByte, idxSize);
+
+    if(transmitPos == 1)
+    {
+        for(i=0; i<elementsCount && i<elCount(ResultList_Data_Pos); i++)
+        {
+            if(idxSize == 0)    // 8 bit
+            {
+                data[dataIterator] = ResultList_Data_Pos[indices[i]];
+                dataIterator++;
+            }
+            else                // 16 bit
+            {
+                data[dataIterator] = (ResultList_Data_Pos[indices[i]] & 0xFF00) >> 8;   // upper byte
+                dataIterator++;
+                data[dataIterator] = (ResultList_Data_Pos[indices[i]] & 0x00FF);        // lower byte
+                dataIterator++;
+            } 
+        }
+    }
+
+    // Send BAP request
+    BAP_createHeader(RESULT_LIST_FCT_ID, header, dataIterator, Changed_REQ);
+    BAP_DLL_Request(Changed_REQ, header, data);
+}
+
+int ResultList_addArrayElementData (byte buffer[], int idx, int entry, int transmitPos, int recordAddress, int idxSize)
+{
+    int i;
+
+    byte pos_upperByte, pos_lowerByte;
+    byte resultType;
+    byte textLengthPos, textlength;
+    pos_upperByte = 0;
+    pos_lowerByte = 0;
+    resultType = 0;
+    textLengthPos = 0;
+    textlength = 0;
+
+    // POS
+    if(transmitPos == 1)
+    {
+        if(idxSize == 0)    // 8 bit
+        {
+            buffer[idx] = ResultList_Data_Pos[entry];
+            idx++;
+        }
+        else                // 16 bit
+        {
+            pos_lowerByte = (ResultList_Data_Pos[entry] & 0x00FF);
+            pos_upperByte = (ResultList_Data_Pos[entry] & 0xFF00) >> 8;
+            buffer[idx] = pos_lowerByte;
+            idx++;
+            buffer[idx] = pos_upperByte;
+            idx++;
+        }
+    }
+    
+    // ResultType - if transmission is enabled via recordAddress
+    if(recordAddress == RESULT_LIST_TYPE_TEXT)
+    {
+        buffer[idx] = ResultList_Data_ResultType[entry];
+        idx++;
+    }
+
+    // ResultText - if transmission is enabled via recordAddress
+    if(recordAddress == RESULT_LIST_TYPE_TEXT || recordAddress == RESULT_LIST_TEXT)
+    {
+        if(textLengthPos == 0) // store array position of textlength
+            textLengthPos = idx;
+
+        idx++;
+
+        for(i=0; i<elCount(ResultList_Data_ResultText[entry]); i++)
+        {
+            if(ResultList_Data_ResultText[entry][i] == 0) // end of text
+            {
+                break;
+            }
+            else
+            {
+                buffer[idx] = ResultList_Data_ResultText[entry][i];
+                idx++;
+                textlength++;
+            }
+        }
+
+        buffer[textLengthPos] = textlength;
+    }
+
+    /*buffer[idx] = 0x00;                             // Extension, empty
+    idx++;
+    buffer[idx] = 0x00;                             // Extension, empty
+    idx++;*/
+
+    return idx;   
+}
+
+controls_setFunctionActive (int fctID, int bool)
+{
+    switch (fctID)
+    {
+        case GET_ALL_FCT_ID:
+            // No controls
+            break;
+
+        case BAP_CONFIG_FCT_ID:
+            enableControl("SDS_SD_FSG_Main", "Ctrl_BAP_Config", bool);
+            // Value insertion has inverted behavior
+            if(bool)
+                enableControl("SDS_SD_FSG_Main", "Ctrl_BAP_Config_value", FALSE);
+            else
+                enableControl("SDS_SD_FSG_Main", "Ctrl_BAP_Config_value", TRUE);
+            break;
+
+        case FUNCTION_LIST_FCT_ID:
+            enableControl("SDS_SD_FSG_Main", "Ctrl_FctList", bool);
+            // FctList-Bits have inverted behavior
+            if(bool)
+                enableControl("SDS_SD_FSG_Main", "Ctrl_FctList_value", FALSE);
+            else
+                enableControl("SDS_SD_FSG_Main", "Ctrl_FctList_value", TRUE);
+            break;
+
+        case HEART_BEAT_FCT_ID:
+            enableControl("SDS_SD_FSG_Main", "Ctrl_Heartbeat", bool);
+            // HeartBeat value has inverted behavior
+            if(bool)
+                enableControl("SDS_SD_FSG_Main", "Ctrl_Heartbeat_value", FALSE);
+            else
+                enableControl("SDS_SD_FSG_Main", "Ctrl_Heartbeat_value", TRUE);
+            break;
+
+        case FSG_SETUP_FCT_ID:
+            enableControl("SDS_SD_FSG_Main", "Ctrl_FSG_Setup", bool);
+            break;
+
+        case FSG_OPERATION_STATE_FCT_ID:
+            enableControl("SDS_SD_FSG_Main", "Ctrl_FSG_OPState", bool);
+            break;
+
+        case ASG_CAPABILITIES_FCT_ID:
+            enableControl("SDS_SD_FSG_Properties", "Ctrl_Properties_ASGCapabilities", bool);
+            break;
+
+        case SDS_CONTEXT_STATE_FCT_ID:
+            enableControl("SDS_SD_FSG_Properties", "Ctrl_Properties_SDSContextState", bool);
+            break;
+
+        case COMMAND_LIST_FCT_ID:
+            enableControl("SDS_SD_FSG_Main", "Btn_CommandList", bool);
+            break;
+
+        case RESULT_LIST_FCT_ID:
+            enableControl("SDS_SD_FSG_Main", "Btn_ResultList", bool);
+            break;
+
+        case INFOSTATES_FCT_ID:
+            enableControl("SDS_SD_FSG_Properties", "Ctrl_Properties_Infostates", bool);
+            break;
+        
+        default:
+            break;
+    }
+}
+
+on sysvar sysvar::SDS_SD_FSG::x03_FctList_0x12_CommandList
+{
+    if(!@this)
+    {
+        closePanel("SDS_SD_FSG_CommandList");
+        closePanel("SDS_SD_FSG_Sequences");
+    }
+}
+
+on sysvar sysvar::SDS_SD_FSG::x03_FctList_0x13_ResultList
+{
+    if(!@this)
+    {
+        closePanel("SDS_SD_FSG_ResultList");
+        closePanel("SDS_SD_FSG_Sequences");
+    }
+}
+
+on sysvar sysvar::SDS_SD_FSG::x03_FctList_status
+{
+    long temp[9];
+    byte fctList[8];
+    int i;
+
+    if(@this)
+    {
+        FunctionList_createDataHelper (fctList);
+        
+        temp[0] = LSG_SDS_SD;
+        for(i=0; i<elCount(fctList); i++)
+            temp[i+1] = fctList[i];
+
+        BAP_DLL_ChangeConfig(Para_FunctionList,     temp);
+
+        Request_0x03_FctList(Data_REQ_CAN,0); // Via CAN because BAP dll throws error 
+    }
+}
+
+on sysvar sysvar::SDS_SD_FSG::x04_HeartBeat_status
+{
+    long temp[2];
+
+    if(@this)
+    {        
+        temp[0] = LSG_SDS_SD;
+        temp[1] = @sysvar::SDS_SD_FSG::x04_HeartBeat_HeartBeatTime;
+
+        BAP_DLL_ChangeConfig(Para_Heartbeat,     temp);
+
+        Request_0x04_HeartBeat(Data_REQ_CAN,0); // Via CAN because BAP dll throws error
+    }      
+}
+
+on sysvar sysvar::SDS_SD_FSG::x02_BAPConfig_status
+{
+    long temp[3];
+    temp[0] = LSG_SDS_SD;
+    temp[1] = 0;
+
+    if(@this)
+    {
+        temp[2] = @sysvar::SDS_SD_FSG::x02_BAPConfig_LSG_Class;
+        BAP_DLL_ChangeConfig(Para_LSGClass,     temp);
+
+        temp[2] = @sysvar::SDS_SD_FSG::x02_BAPConfig_LSG_SubClass;
+        BAP_DLL_ChangeConfig(Para_LSGSubClass,  temp);
+
+        temp[2] = @sysvar::SDS_SD_FSG::x02_BAPConfig_BAP_major;
+        BAP_DLL_ChangeConfig(Para_MajProVer,    temp);
+
+        temp[2] = @sysvar::SDS_SD_FSG::x02_BAPConfig_BAP_minor;
+        BAP_DLL_ChangeConfig(Para_MinProVer,    temp);
+
+        temp[2] = @sysvar::SDS_SD_FSG::x02_BAPConfig_DF_VerMajor;
+        BAP_DLL_ChangeConfig(Para_MajDataDef,   temp);
+
+        temp[2] = @sysvar::SDS_SD_FSG::x02_BAPConfig_DF_VerMinor;
+        BAP_DLL_ChangeConfig(Para_MinDataDef,   temp);
+
+        Request_0x02_BAPConfig(Data_REQ_CAN,0); // Via CAN because BAP dll throws error
+    }  
+}
+
+void Request_0x02_BAPConfig(byte request, byte errorcode)
+{
+	int i;
+    dword header [BAP_HEADER_SIZE];
+    byte data[BAP_CONFIG_BAP_DATA_LENGTH];
+	
+    for(i=0; i<elCount(data); i++)
+        data[i] = 0;	
+		
+    switch(request)
+    {
+        case Data_REQ:
+            BAP_createHeader(BAP_CONFIG_FCT_ID, header, BAP_CONFIG_BAP_DATA_LENGTH, request);
+
+            // create Data field
+            data[0] = @sysvar::SDS_SD_FSG::x02_BAPConfig_BAP_major;
+            data[1] = @sysvar::SDS_SD_FSG::x02_BAPConfig_BAP_minor;
+            data[2] = @sysvar::SDS_SD_FSG::x02_BAPConfig_LSG_Class;
+            data[3] = @sysvar::SDS_SD_FSG::x02_BAPConfig_LSG_SubClass;
+            data[4] = @sysvar::SDS_SD_FSG::x02_BAPConfig_DF_VerMajor;
+            data[5] = @sysvar::SDS_SD_FSG::x02_BAPConfig_DF_VerMinor;
+
+            BAP_DLL_Request(Data_REQ, header, data);
+            break;
+
+        case Data_REQ_CAN:
+            FSG_CAN_Message.DLC      = BAP_CONFIG_STATUS_CAN_DLC;
+            FSG_CAN_Message.byte(0)  = BAP_CONFIG_STATUS_CAN_BYTE0;
+            FSG_CAN_Message.byte(1)  = BAP_CONFIG_STATUS_CAN_BYTE1;
+            FSG_CAN_Message.byte(2)  = @sysvar::SDS_SD_FSG::x02_BAPConfig_BAP_major;
+            FSG_CAN_Message.byte(3)  = @sysvar::SDS_SD_FSG::x02_BAPConfig_BAP_minor;
+            FSG_CAN_Message.byte(4)  = @sysvar::SDS_SD_FSG::x02_BAPConfig_LSG_Class;
+            FSG_CAN_Message.byte(5)  = @sysvar::SDS_SD_FSG::x02_BAPConfig_LSG_SubClass;
+            FSG_CAN_Message.byte(6)  = @sysvar::SDS_SD_FSG::x02_BAPConfig_DF_VerMajor;
+            FSG_CAN_Message.byte(7)  = @sysvar::SDS_SD_FSG::x02_BAPConfig_DF_VerMinor;
+            output(FSG_CAN_Message);
+            break;
+			
+        case Error_REQ:
+			BAP_createHeader(BAP_CONFIG_FCT_ID, header, 0, Error_REQ);
+			BAP_DLL_Request(Error_REQ, header, data);
+			break;
+
+        default:
+            writelineEx(gBAP_Trace, CAPL_WRITE_LINE_INFORMATION, "SDS_SD_FSG: Unhandled request 0x%x in Request_0x02_BAPConfig.", request);
+    }
+}
+
+void Request_0x03_FctList(byte request, byte errorcode)
+{
+	int i;
+    dword header [BAP_HEADER_SIZE];
+    byte data[FUNCTION_LIST_BAP_DATA_LENGTH];
+	
+    for(i=0; i<elCount(data); i++)
+        data[i] = 0;
+		
+    switch(request)
+    {
+        case Data_REQ:
+            BAP_createHeader(FUNCTION_LIST_FCT_ID, header, FUNCTION_LIST_BAP_DATA_LENGTH, request);
+
+            // create Data field
+            FunctionList_createDataHelper (data);
+
+            BAP_DLL_Request(Data_REQ, header, data);
+            break;
+
+        case Data_REQ_CAN:
+            FunctionList_createDataHelper (data);
+            FSG_CAN_Message.DLC      = FUNCTION_LIST_STATUS_CAN_DLC_0;
+            FSG_CAN_Message.byte(0)  = FUNCTION_LIST_STATUS_CAN_BYTE0_0;
+            FSG_CAN_Message.byte(1)  = FUNCTION_LIST_STATUS_CAN_BYTE0_1;
+            FSG_CAN_Message.byte(2)  = FUNCTION_LIST_STATUS_CAN_BYTE0_2;
+            FSG_CAN_Message.byte(3)  = FUNCTION_LIST_STATUS_CAN_BYTE0_3;
+            FSG_CAN_Message.byte(4)  = data[0];
+            FSG_CAN_Message.byte(5)  = data[1];
+            FSG_CAN_Message.byte(6)  = data[2];
+            FSG_CAN_Message.byte(7)  = data[3];
+            output(FSG_CAN_Message);
+            FSG_CAN_Message.DLC      = FUNCTION_LIST_STATUS_CAN_DLC_1;
+            FSG_CAN_Message.byte(0)  = FUNCTION_LIST_STATUS_CAN_BYTE1_0;
+            FSG_CAN_Message.byte(1)  = FUNCTION_LIST_STATUS_CAN_BYTE1_1;
+            FSG_CAN_Message.byte(2)  = data[4];
+            FSG_CAN_Message.byte(3)  = data[5];
+            FSG_CAN_Message.byte(4)  = data[6];
+            FSG_CAN_Message.byte(5)  = data[7];
+            output(FSG_CAN_Message);
+            break;
+
+        case Error_REQ:
+			BAP_createHeader(BAP_CONFIG_FCT_ID, header, 0, Error_REQ);
+			BAP_DLL_Request(Error_REQ, header, data);
+			break;
+
+        default:
+            writelineEx(gBAP_Trace, CAPL_WRITE_LINE_INFORMATION, "SDS_SD_FSG: Unhandled request 0x%x in Request_0x03_FctList.", request);
+    }
+}
+
+void Request_0x01_GetAll(byte request, byte errorcode)
+{
+	int i;
+    dword header [BAP_HEADER_SIZE];
+    byte data[FUNCTION_LIST_BAP_DATA_LENGTH];
+	
+    for(i=0; i<elCount(data); i++)
+        data[i] = 0;
+		
+    switch(request)
+    {
+        case Error_REQ:
+			BAP_createHeader(GET_ALL_FCT_ID, header, 0, Error_REQ);
+			BAP_DLL_Request(Error_REQ, header, data);
+			break;
+
+        default:
+            writelineEx(gBAP_Trace, CAPL_WRITE_LINE_INFORMATION, "SDS_SD_FSG: Unhandled request 0x%x in Request_0x03_FctList.", request);
+    }
+}
+
+void Request_0x04_HeartBeat(byte request, byte errorcode)
+{
+    dword header [BAP_HEADER_SIZE];
+    byte dummy[1];
+
+    switch(request)
+    {
+        case Data_REQ:
+            BAP_createHeader(HEART_BEAT_FCT_ID, header, HEART_BEAT_BAP_DATA_LENGTH, request);
+
+            BAP_DLL_Request(Data_REQ, header, dummy);
+            break;
+
+        case Data_REQ_CAN:
+            FSG_CAN_Message.DLC      = HEART_BEAT_STATUS_CAN_DLC;
+            FSG_CAN_Message.byte(0)  = HEART_BEAT_STATUS_CAN_BYTE0;
+            FSG_CAN_Message.byte(1)  = HEART_BEAT_STATUS_CAN_BYTE1;
+            FSG_CAN_Message.byte(2)  = @sysvar::SDS_SD_FSG::x04_HeartBeat_HeartBeatTime;
+            output(FSG_CAN_Message);
+            break;
+
+        default:
+            writelineEx(gBAP_Trace, CAPL_WRITE_LINE_INFORMATION, "SDS_SD_FSG: Unhandled request 0x%x in Request_0x04_HeartBeat.", request);
+    }
+}
+
+on sysvar sysvar::SDS_SD_FSG_Sequences::Context_AdditionalText
+{
+    if(@this)
+    {
+        // Send SDS_ContextState.Attributes='state is being loaded'
+        Sequences_setContextState (0x01, 0x00, 0x0000, 0x01, "", 0);  
+
+        // Clear Arrays and send FRUs
+        CommandList_clearData ();
+        ResultList_clearData ();
+        Request_0x12_CommandList_FRU(0);                                                        // idxSize=8Bit
+        Request_0x13_ResultList_FRU(0);                                                         // idxSize=8Bit
+    
+        // Send SDS_ContextState.Attributes='state completely loaded' with small delay
+        Sequences_setContextState(0x01, 0x00, 0xFFFF, 0x00, "AddText1 AddText2 AddText3 AddText4 AddText5 AddText6 AddText7 AddText8 AddText9 AddText1", TRUE);
+    }
+}
+
+on timer sequences_ContextStateTimer
+{
+    Request_0x11_SDS_ContextState(Data_REQ,0);
+}
+
+Request_0x12_CommandList_FRU (byte idxSize)
+{
+    @sysvar::SDS_SD_FSG_CommandList::x12_CommandList_AH_start_hex = 0;
+    @sysvar::SDS_SD_FSG_CommandList::x12_CommandList_AH_indexSize = idxSize;
+
+    if(idxSize == 0)                                                            // 8 bit
+        @sysvar::SDS_SD_FSG_CommandList::x12_CommandList_AH_elements_hex = 0xFF;
+    else                                                                        // 16 bit
+        @sysvar::SDS_SD_FSG_CommandList::x12_CommandList_AH_elements_hex = 0xFFFF;
+
+    @sysvar::SDS_SD_FSG_CommandList::x12_CommandList_AH_recordAddress = 0;      // indicates FRU 
+    @sysvar::SDS_SD_FSG_CommandList::x12_CommandList_AH_shift = 0;              // no shift
+    @sysvar::SDS_SD_FSG_CommandList::x12_CommandList_AH_direction = 0;          // forwards
+    @sysvar::SDS_SD_FSG_CommandList::x12_CommandList_AH_transmitPos = 0;        // transmit POS
+        
+    Request_0x12_CommandList_changed();
+}
+
+Request_0x13_ResultList_FRU (byte idxSize)
+{
+    @sysvar::SDS_SD_FSG_ResultList::x13_ResultList_AH_start_hex = 0;
+    @sysvar::SDS_SD_FSG_ResultList::x13_ResultList_AH_indexSize = idxSize;
+
+    if(idxSize == 0)                                                            // 8 bit
+        @sysvar::SDS_SD_FSG_ResultList::x13_ResultList_AH_elements_hex = 0xFF;
+    else                                                                        // 16 bit
+        @sysvar::SDS_SD_FSG_ResultList::x13_ResultList_AH_elements_hex = 0xFFFF;
+
+    @sysvar::SDS_SD_FSG_ResultList::x13_ResultList_AH_recordAddress = 0;      // indicates FRU 
+    @sysvar::SDS_SD_FSG_ResultList::x13_ResultList_AH_shift = 0;              // no shift
+    @sysvar::SDS_SD_FSG_ResultList::x13_ResultList_AH_direction = 0;          // forwards
+    @sysvar::SDS_SD_FSG_ResultList::x13_ResultList_AH_transmitPos = 0;        // transmit POS
+        
+    Request_0x13_ResultList_changed();
+}
+
+ResultList_clearData ()
+{
+    int i = 0;
+    int j = 0;
+
+	for(i=0;i<RESULT_LIST_ENTRIES;i++) 
+	{
+		ResultList_Data_Pos[i] = 0;
+        ResultList_Data_ResultType[i] = 0;
+
+		for(j=0;j<RESULT_LIST_RESULTTEXT_LENGTH;j++)
+			ResultList_Data_ResultText[i][j] =0;
+	}
+
+    // Anctualize system variables for Panel
+    ResultList_Data_illustrationOffset = 0;
+    @sysvar::SDS_SD_FSG_ResultList::x13_ResultList_TNLE = 0;
+    ResultList_actualize_sysvar ();
+}
+
+CommandList_clearData ()
+{
+    int i = 0;
+    int j = 0;
+
+	for(i=0;i<COMMANDLIST_ENTRIES;i++) 
+	{
+		CommandList_Data_Pos[i] = 0;
+        CommandList_Data_CommandID[i] = 0;
+
+		for(j=0;j<COMMANDLIST_COMMANDTEXT_LENGTH;j++)
+			CommandList_Data_CommandText[i][j] =0;
+	}
+    
+    // Anctualize system variables for Panel
+    CommandList_Data_illustrationOffset = 0;
+    @sysvar::SDS_SD_FSG_CommandList::x12_CommandList_TNLE = 0;
+    CommandList_actualize_sysvar ();
+}
+
+on sysvar sysvar::SDS_SD_FSG_Sequences::Context_CommandList_AdditionalText
+{
+    if(@this)
+    {
+        // Send SDS_ContextState.Attributes='state is being loaded'
+        Sequences_setContextState (0x01, 0x00, 0x0000, 0x01, "", 0);  
+
+        // Clear Arrays and send FRUs
+        CommandList_init_static ();
+        ResultList_clearData ();
+        Request_0x12_CommandList_FRU(0);                                                        // idxSize=8Bit
+        Request_0x13_ResultList_FRU(0);                                                         // idxSize=8Bit
+    
+        // Send SDS_ContextState.Attributes='state completely loaded' with small delay
+        Sequences_setContextState (0x01, 0x00, 0xFFFF, 0x00, "AddText1 AddText2 AddText3 AddText4 AddText5 AddText6 AddText7 AddText8 AddText9 AddText1", TRUE);
+    }
+}
+
+on sysvar sysvar::SDS_SD_FSG_Sequences::Context_CommandList_ResultList
+{
+    if(@this)
+    {
+        // Send SDS_ContextState.Attributes='state is being loaded'
+        Sequences_setContextState (0x01, 0x00, 0x0000, 0x01, "", 0);  
+
+        // Clear Arrays and send FRUs
+        CommandList_init_static ();
+        ResultList_init_static ();
+        Request_0x12_CommandList_FRU(0);                                                        // idxSize=8Bit
+        Request_0x13_ResultList_FRU(0);                                                         // idxSize=8Bit
+    
+        // Send SDS_ContextState.Attributes='state completely loaded' with small delay
+        Sequences_setContextState (0x01, 0x00, 0x0000, 0x00, "", TRUE);
+    }
+}
+
+on sysvar sysvar::SDS_SD_FSG_Sequences::Context_ResultList
+{
+    if(@this)
+    {
+        // Send SDS_ContextState.Attributes='state is being loaded'
+        Sequences_setContextState (0x01, 0x00, 0x0000, 0x01, "", 0);  
+
+        // Clear Arrays and send FRUs
+        CommandList_clearData ();
+        ResultList_init_static ();
+        Request_0x12_CommandList_FRU(0);                                                        // idxSize=8Bit
+        Request_0x13_ResultList_FRU(0);                                                         // idxSize=8Bit
+    
+        // Send SDS_ContextState.Attributes='state completely loaded' with small delay
+        Sequences_setContextState (0x01, 0x00, 0x0000, 0x00, "", TRUE);
+    }
+}
+
+on sysvar sysvar::SDS_SD_FSG_Sequences::Reset
+{
+    if(@this)
+    {
+        // change Infostate
+        @sysvar::SDS_SD_FSG_Prop::x14_InfoStates_States = INFOSTATES_NOERROR;
+        Request_0x14_InfoStates(Data_REQ, 0);
+
+        // Send SDS_ContextState.Attributes='state is being loaded'
+        @sysvar::SDS_SD_FSG_Prop::x11_SDSContextState_SDSContextState       = 0x00;             // idle/not active
+        @sysvar::SDS_SD_FSG_Prop::x11_SDSContextState_SDS_ContextType       = 0x00;             // any/unknown
+        @sysvar::SDS_SD_FSG_Prop::x11_SDSContextState_AdditionalInfoType    = 0x0000;           // no AddInfo
+        @sysvar::SDS_SD_FSG_Prop::x11_SDSContextState_Attributes            = 0x00;             // completely loaded
+        sysSetVariableString(sysvar::SDS_SD_FSG_Prop::x11_SDSContextState_AdditionalText, "");
+        Request_0x11_SDS_ContextState(Data_REQ,0);
+    }
+}
+
+on sysvar sysvar::SDS_SD_FSG_Sequences::Popups_01_LanguageNotSupported_min
+{
+    if(@this)
+        Sequences_showPopup (INFOSTATES_SDS_NOT_AVAILABLE, 0);
+}
+
+on sysvar sysvar::SDS_SD_FSG_Sequences::Popups_01_LanguageNotSupported_static
+{
+    if(@this)
+        Sequences_showPopup (INFOSTATES_SDS_NOT_AVAILABLE, 1);
+}
+
+on sysvar sysvar::SDS_SD_FSG_Sequences::Popups_02_LanguageLoading_min
+{
+    if(@this)
+        Sequences_showPopup (INFOSTATES_LANGUANGE_CHANGE, 0);
+}
+
+on sysvar sysvar::SDS_SD_FSG_Sequences::Popups_02_LanguageLoading_static
+{
+    if(@this)
+        Sequences_showPopup (INFOSTATES_LANGUANGE_CHANGE, 1);
+}
+
+on sysvar sysvar::SDS_SD_FSG_Sequences::Popups_03_Starting_min
+{
+    if(@this)
+        Sequences_showPopup (INFOSTATES_SDS_DOMAIN_NOT_AVAILABLE, 0);
+}
+
+on sysvar sysvar::SDS_SD_FSG_Sequences::Popups_03_Starting_static
+{
+    if(@this)
+        Sequences_showPopup (INFOSTATES_SDS_DOMAIN_NOT_AVAILABLE, 1);
+}
+
+on sysvar sysvar::SDS_SD_FSG_Sequences::Popups_04_NoSWAP_min
+{
+    if(@this)
+        Sequences_showPopup (INFOSTATES_SDS_NOT_AVAILABLE_SWAP, 0);
+}
+
+on sysvar sysvar::SDS_SD_FSG_Sequences::Popups_04_NoSWAP_static
+{
+    if(@this)
+        Sequences_showPopup (INFOSTATES_SDS_NOT_AVAILABLE_SWAP, 1);
+}
+
+Sequences_showPopup (int infostate, int static)
+{
+    // change Infostate
+    @sysvar::SDS_SD_FSG_Prop::x14_InfoStates_States = infostate;
+    Request_0x14_InfoStates(Data_REQ, 0);
+
+    // Send SDS_ContextState.Attributes='state completely loaded' with small delay
+    Sequences_setContextState (0x01, 0x00, 0x0000, 0x00, "", FALSE);
+
+    if(!static)
+        Sequences_setContextState (0x00, 0x00, 0x0000, 0x00, "", 100);
+}
+
+on sysvar sysvar::SDS_SD_FSG_Sequences::Context_PanelData
+{
+    char buffer[5000];
+    int addTextLength;
+    int i;
+    byte ContextState, ContextType, Attributes;
+    word AdditionalInfoType;
+
+    for (i=0; i<elCount(buffer); i++)
+        buffer[i]=0;
+
+    if(@this)
+    {
+        // Backup Panel data
+        for (i=0; i<elCount(buffer); i++)
+            buffer[i]=0;
+
+        ContextState        = @sysvar::SDS_SD_FSG_Prop::x11_SDSContextState_SDSContextState;
+        ContextType         = @sysvar::SDS_SD_FSG_Prop::x11_SDSContextState_SDS_ContextType;
+        AdditionalInfoType  = @sysvar::SDS_SD_FSG_Prop::x11_SDSContextState_AdditionalInfoType;
+        Attributes          = 1;                                                                // State is being loaded
+        addTextLength = sysGetVariableArrayLength(sysvar::SDS_SD_FSG_Prop::x11_SDSContextState_AdditionalText);
+        sysGetVariableString(sysvar::SDS_SD_FSG_Prop::x11_SDSContextState_AdditionalText, buffer, elCount(buffer));
+    
+        // Send SDS_ContextState.Attributes='state is being loaded'
+        Sequences_setContextState (0x01, 0x00, 0x0000, 0x01, "", 0);  
+
+        // Send FRUs
+        Request_0x12_CommandList_FRU(0);                                                        // idxSize=8Bit
+        Request_0x13_ResultList_FRU(0);                                                         // idxSize=8Bit
+    
+        // Send SDS_ContextState.Attributes='state completely loaded' with small delay
+        Sequences_setContextState (ContextState, ContextType, AdditionalInfoType, 0, buffer, 1);// State is completely loaded
+    }
+}
+
+on sysvar sysvar::SDS_SD_FSG_ResultList::x13_ResultList_control_clearAll
+{
+    if(@this)
+        ResultList_clearData ();
+}
+
+on sysvar sysvar::SDS_SD_FSG_CommandList::x12_CommandList_control_clearAll
+{
+    if(@this)
+        CommandList_clearData ();
+}
+
+Sequences_setContextState (byte ContextState, byte ContextType, word AdditionalInfoType, byte Attributes, char AdditionalText[], int delay)
+{
+    @sysvar::SDS_SD_FSG_Prop::x11_SDSContextState_SDSContextState       = ContextState;                 // global teleprompter
+    @sysvar::SDS_SD_FSG_Prop::x11_SDSContextState_SDS_ContextType       = ContextType;                  // any/unknown
+    @sysvar::SDS_SD_FSG_Prop::x11_SDSContextState_AdditionalInfoType    = AdditionalInfoType;           // AdditionalText
+    @sysvar::SDS_SD_FSG_Prop::x11_SDSContextState_Attributes            = Attributes;                   // state is being loaded
+    sysSetVariableString(sysvar::SDS_SD_FSG_Prop::x11_SDSContextState_AdditionalText, AdditionalText);
+
+    if(delay == 0)
+        Request_0x11_SDS_ContextState(Data_REQ,0);
+    else if(delay <= 50)
+        setTimer(sequences_ContextStateTimer, 50);
+    else
+        setTimer(sequences_ContextStateTimer, delay);
+}
+
+byte Array_DecodeModeByte_getShift (byte ModeByte)
+{
+    byte ret;
+    ret = 0;
+
+    ret = (ModeByte & 0x10) >> 4;
+
+    return ret;
+}
+
+byte Array_DecodeModeByte_getDirection (byte ModeByte)
+{
+    byte ret;
+    ret = 0;
+
+    ret = (ModeByte & 0x20) >> 5;  
+                                                       
+    return ret;
+}
+
+byte Array_DecodeModeByte_getTransmitPos (byte ModeByte)
+{
+    byte ret;
+    ret = 0;
+
+    ret = (ModeByte & 0x40) >> 6;
+
+    return ret;
+}
+
+byte Array_DecodeModeByte_getIdxSize (byte ModeByte)
+{
+    byte ret;
+    ret = 0;
+
+    ret = (ModeByte & 0x80) >> 7;
+
+    return ret;
+}
+
+byte Array_DecodeModeByte_getRecordAddress (byte ModeByte)
+{
+    byte ret;
+    ret = 0;
+
+    ret = (ModeByte & 0x0F);
+
+    return ret;
+}
+
+byte Array_DecodeFirstByte_getASGID (byte dataByte)
+{
+    byte ret;
+    ret = 0;
+
+    ret |= (dataByte & 0xF0) >> 4;
+                                                       
+    return ret;
+}
+
+byte Array_DecodeFirstByte_getTAID (byte dataByte)
+{
+    byte ret;
+    ret = 0;
+
+    ret |= (dataByte & 0x0F);   // databyte has to be indication_data[0]
+                                                       
+    return ret;
+}
+
+BAP_DLL_ChangeConfig(long paramIndex, long config[])
+{
+
+        byte ret;
+        ret = BAP170_ChangeConfig(NODE_INDEX, paramIndex, config);
+        
+        if(ret != 0)
+            writeLineEx(gError_Trace, CAPL_WRITE_LINE_ERROR, "FSG: BAP-Error in BAP_DLL_ChangeConfig (long paramIndex, long config[])! ErrorCode = 0x%x!", ret);    
+}
+
+on sysvar sysvar::SDS_SD_General::Smart
+{
+    controls_enable_all();
+}
+
+on timer shutdownTimer
+{
+    Shutdown_SDS_SD();
+    cancelTimer(TaskTimer);
+}
+
+on sysvar sysvar::SDS_SD_FSG::control_OnOff_indicator
+{
+    if(@this)
+        enableControl("SDS_SD_FSG_Main", "Ctrl_OnOff", TRUE);
+    else
+        enableControl("SDS_SD_FSG_Main", "Ctrl_OnOff", FALSE);
+}
+
+on envvar env_FSG_Panel_SDS
+{
+    if(@this)
+    {
+        OpenPanel("SDS_SD_FSG_Main");
+    }
+}
+
+//VAGH-15438 
+on envVar C_FSG_SDS_0_0_1_SegmEn
+{
+	if(getValue(this)) 
+	{
+		putValue(C_FSG_SDS_0_0_1_IntTlgEn,0);
+		sequence_err(GET_ALL_FCT_ID,15);
+	}
+	else
+	{
+		sequence_err_off(GET_ALL_FCT_ID);
+	}
+}
+
+//VAGH-15438 
+on envVar C_FSG_SDS_0_0_1_IntTlgEn
+{
+	if(getValue(this)) 
+	{
+		putValue(C_FSG_SDS_0_0_1_SegmEn,0);
+		intertelegram_err(GET_ALL_FCT_ID);
+	}
+	else
+	{
+		intertelegram_err_off(GET_ALL_FCT_ID);
+	}
+}
+
+//VAGH-15438 
+on envVar C_FSG_SDS_0_0_1_ErrEn
+{
+	if (getValue(this))
+		putValue(C_FSG_SDS_0_0_1_FctEn,0);
+}
+
+//VAGH-15438 
+on envVar C_FSG_SDS_0_0_1_FctEn
+{
+    long data[3];
+    data[0]=LSG_SDS_SD;
+    data[1]=GET_ALL_FCT_ID;
+    data[2]=getValue(this);
+    BAP_DLL_ChangeConfig(0x0031,data);
+}
+
+//VAGH-15438 
+on envVar P_FSG_SDS_0_0_3_SegmEn
+{
+	if(getValue(this)) 
+	{
+		putValue(P_FSG_SDS_0_0_3_IntTlgEn,0);
+		sequence_err(FUNCTION_LIST_FCT_ID,8);
+	}
+	else
+	{
+		sequence_err_off(FUNCTION_LIST_FCT_ID);
+	}
+}
+
+//VAGH-15438 
+on envVar P_FSG_SDS_0_0_3_IntTlgEn
+{
+	if(getValue(this)) 
+	{
+		putValue(P_FSG_SDS_0_0_3_SegmEn,0);
+		intertelegram_err(FUNCTION_LIST_FCT_ID);
+	}
+	else
+	{
+		intertelegram_err_off(FUNCTION_LIST_FCT_ID);
+	}
+}
+
+//VAGH-15438 
+on envVar P_FSG_SDS_0_0_3_ErrEn
+{
+	if (getValue(this))
+		putValue(P_FSG_SDS_0_0_3_FctEn,0);
+}
+
+//VAGH-15438 
+on envVar P_FSG_SDS_0_0_3_FctEn
+{
+    long data[3];
+    data[0]=LSG_SDS_SD;
+    data[1]=FUNCTION_LIST_FCT_ID;
+    data[2]=getValue(this);
+    BAP_DLL_ChangeConfig(0x0031,data);
+}
+
+//VAGH-15438 
+on envVar P_FSG_SDS_0_0_2_FctEn
+{
+    long data[3];
+    data[0]=LSG_SDS_SD;
+    data[1]=BAP_CONFIG_FCT_ID;
+    data[2]=getValue(this);
+    BAP_DLL_ChangeConfig(0x0031,data);
+}
+
+//VAGH-15438
+on envVar P_FSG_SDS_0_0_2Reset_BTN
+{
+   message 0x100 _mBAPconfig;	
+
+    if (getValue(this))
+    {
+        //for BAPconfig Set/Reset button
+         _mBAPconfig.CAN=1; 
+		 _mBAPconfig.ID=0x97334610; 
+		 _mBAPconfig.DLC=8; 
+                	
+         _mBAPconfig.byte(0) = 0x00;
+         _mBAPconfig.byte(1) = 0x02;
+         _mBAPconfig.byte(2) = @sysvar::SDS_SD_FSG::x02_BAPConfig_BAP_major;
+         _mBAPconfig.byte(3) = @sysvar::SDS_SD_FSG::x02_BAPConfig_BAP_minor;
+         _mBAPconfig.byte(4) = @sysvar::SDS_SD_FSG::x02_BAPConfig_LSG_Class;
+         _mBAPconfig.byte(5) = @sysvar::SDS_SD_FSG::x02_BAPConfig_LSG_SubClass;
+         _mBAPconfig.byte(6) = @sysvar::SDS_SD_FSG::x02_BAPConfig_DF_VerMajor;
+         _mBAPconfig.byte(7) = @sysvar::SDS_SD_FSG::x02_BAPConfig_DF_VerMinor;
+      
+        output(_mBAPconfig);	
+   }
+
+}
+
+//VAGH-15438 
+intertelegram_err(long fctId)
+{
+    long data[4];
+    data[0]=LSG_SDS_SD;
+    data[1]=fctId;
+    data[2]=1;
+    data[3]=940;
+    BAP_DLL_ChangeConfig(0x0020,data);
+}
+
+//VAGH-15438 
+intertelegram_err_off(long fctId)
+{
+    long data[4];
+    data[0]=LSG_SDS_SD;
+    data[1]=fctId;
+    data[2]=5000;
+    data[3]=0;
+    BAP_DLL_ChangeConfig(0x0020,data);
+}
+
+//VAGH-15438 
+sequence_err(long fctId, long size)
+{
+    long data[5];
+    long lastSeg;
+
+    lastSeg = size-5;
+
+    data[0]=LSG_SDS_SD;
+    data[1]=fctId;
+    data[2]=lastSeg/7+1;
+    data[3]=1;
+    data[4]=(lastSeg/7+4) & 15;
+    BAP_DLL_ChangeConfig(0x0021,data);
+}
+
+//VAGH-15438 
+sequence_err_off(long fctId)
+{
+    long data[5];
+
+    data[0]=LSG_SDS_SD;
+    data[1]=fctId;
+    data[2]=5000;
+    data[3]=0;
+    data[4]=0;
+    BAP_DLL_ChangeConfig(0x0021,data);
+}
+

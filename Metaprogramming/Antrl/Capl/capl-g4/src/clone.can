@@ -1,0 +1,20 @@
+/*@@var:*/
+variables
+{
+}
+/*@@end*/
+
+/*@@msg:*:*/
+on message *
+{
+    if (getValue(eChannel))
+    {                        
+	    if (this.can==1) /*&& (this.dir==TX))*/
+	    {                
+            this.can=2;                   
+		    output(this);
+	    }
+    }
+}
+/*@@end*/
+

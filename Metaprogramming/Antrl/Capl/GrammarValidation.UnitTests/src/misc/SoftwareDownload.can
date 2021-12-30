@@ -1,0 +1,110 @@
+includes
+{
+  #include "MostDefs.cin"
+  #include "FCatDefs.cin"
+}
+
+variables
+{
+  
+}
+
+on preStart
+{
+  // configure CAPL node as application node (don't receive spy messages...)
+  mostApplicationNode();
+
+  // configure FBlock
+  ConfigureFBlock();
+}
+
+void ConfigureFBlock(void)
+{
+  // Configures the FBlock.
+  // Therefore functions are registered at CANoe's Function and
+  // Notification Service.
+
+  long oldInstId = -1; // static variable
+  long newInstId;
+
+  newInstId = MostApGetInstId();
+
+  if(newInstId < 0)
+  {
+    newInstId = -1;
+  }
+
+  if(oldInstId != -1)
+  {
+    // disable Notification Service
+    mostAsNtfDisableEx(kFB_SWDL, oldInstId);
+    // disable Function Service
+    mostAsFsDisableEx(kFB_SWDL, oldInstId);
+  }
+
+  if(newInstId != -1)
+  {
+    // enable Notification Service
+    mostAsNtfEnable();
+    // enable Function Service
+    mostAsFsEnable();
+
+    // Enable function IDs FktIDs, Notification, CoverArt, ActiveCallPicture and StationArt
+    // Enable notification service for function IDs CoverArt, ActiveCallPicture and StationArt
+    mostAsFsFunctionEnable(kFct_SWDL_DeviceDescription, kOpTFAllInFCat);
+    mostAsFsFunctionEnable(kFct_SWDL_DownloadControl, kOpTFAllInFCat, "SendStatus_DownloadControl");
+    mostAsFsFunctionEnable(kFct_SWDL_DownloadStatus, kOpTFAllInFCat);
+    mostAsFsFunctionEnable(kFct_SWDL_DeviceReadyState, kOpTFAllInFCat);
+
+  }
+  oldInstId = newInstId;
+}
+
+long SendStatus_DownloadControl(long destAddr)
+{
+  mostAMSMessage SoftwareDownload.DownloadControl.Status msg;
+  char deviceName[32] = "BROADCAST";
+  
+  msg.DA = 0x517;
+  msg.FBlockID = 0xC2;
+  msg.InstanceId = 0x00;
+  msg.MsgChannel = mostGetChannel();
+  mostParamSetString(msg, "DeviceName", deviceName);
+  mostParamSet(msg, "DeviceID", 0xFFFF);
+  mostParamSet(msg, "ControlCommand", 0x00);
+  output(msg);
+  return 0;
+}
+
+on mostAmsMessage SoftwareDownload.DownloadStatus.SetGet
+{
+  double DownloadState;
+  mostAmsMessage SoftwareDownload.DownloadStatus.Status msg;
+  
+  msg.DA = 0x517;
+  msg.FBlockID = 0xC2;
+  msg.InstanceId = 0x00;
+  msg.MsgChannel = mostGetChannel();
+  DownloadState = mostParamGet(this, "DownloadState");
+  mostParamSet(msg, "DownloadState", DownloadState);
+  output(msg);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

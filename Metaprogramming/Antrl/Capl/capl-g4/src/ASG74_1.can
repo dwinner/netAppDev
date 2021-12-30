@@ -1,0 +1,4469 @@
+/*@!Encoding:1252*/
+includes
+{
+    #include "..\..\..\_DLL\latest_BAP_DLL.cin"
+}
+
+variables
+{
+
+  //@BAPSIMGEN_VAR_SECTION_BEGIN
+
+	/***************************************************/
+	/*            BapSimGen ASG template               */
+	/***************************************************/
+
+	/************** Ausgabe Konsolen (Traces) ***********/
+	dword gBAP_Trace;
+	dword gError_Trace;
+
+	/************** Node Verwaltung ***************/
+	//Power on/off
+	byte gSG_PowerOnOff=0x01;     // wird mit Power_off/on gesetzt
+	byte gBAP_Init=0;             // schon mal initialisiert?
+
+	const Power_off = 0x00;
+	const Power_on	= 0x01;
+
+	mstimer TaskTimer;				//real communication timer
+
+	/************** Request **************/
+	const Requestbuffer_lines = 100;
+	const BAP_buffer_size = 4096;
+
+	/************ Speichern von Requests im "Ringbuffer" ***********/
+	int   gBAP_Requestbuffer_status     [Requestbuffer_lines];		            // 0: kein Eintrag, 1:pending
+	dword gBAP_Request_header			[Requestbuffer_lines] [6];				// beinhaltet auch skalare Daten
+	dword gBAP_Request_data             [Requestbuffer_lines] [BAP_buffer_size];// ringbuffer Eintrag fuer BAP-Request
+
+
+	/************** Indication **************/
+	// enthaelt die derzeitige Indication
+	dword gBAP_Indication_header[6];	
+	byte  gBAP_Indication_data[BAP_buffer_size];		
+
+	/************** Konstanten ****************/
+
+	//BAP Data Type 
+	const Bap_void				=0;
+	const Bap_uint8				=1;
+	const Bap_uint16			=2;
+	const Bap_uint32			=3;
+	const Bap_byteSequence		=4;
+	const Bap_error				=5;
+	const Bap_acknowledge		=6;
+
+	char Datatype_Text[7][20] =
+	{
+		"void", "uint8", "uint16", "uint32", "byteSequence", "error", "acknowledge"
+	};
+
+	//BAP request types
+	const DataSetGet_REQ  = 0x00;
+	const DataSet_REQ	  = 0x01;
+	const DataGet_REQ	  = 0x02;
+	const Data_REQ		  = 0x03;
+	const Changed_REQ	  = 0x04;
+	const Start_REQ		  = 0x05;
+	const StartResult_REQ = 0x06;
+	const AbortResult_REQ = 0x07;
+	const Processing_REQ  = 0x08;
+	const Result_REQ      = 0x09;
+	const DataAck_REQ     = 0x0A;
+	const Ack_REQ         = 0x0B;
+	const Invalid_REQ     = 0x1F;      // Interne Kennzeichnung fuer einen ungueltigen Request
+
+	//eigene Error-Definition
+	const Error_REQ=0x20;
+
+	char Requesttype_Text[33][30] =
+	{
+		"DataSetGet_REQ", "DataSet_REQ", "DataGet_REQ", "Data_REQ",			/* 00 .. 03 */
+		"Changed_REQ", "Start_REQ", "StartResult_REQ", "AbortResult_REQ",   /* 04 .. 07 */
+		"Processing_REQ", "Result_REQ", "DataAck_REQ", "Ack_REQ", 			/* 08 .. 0b */
+		"Invalid_REQ", "Invalid_REQ", "Invalid_REQ", "Invalid_REQ",  		/* 0c .. 0f */
+		"Invalid_REQ", "Invalid_REQ", "Invalid_REQ", "Invalid_REQ",  		/* 10 .. 13 */
+		"Invalid_REQ", "Invalid_REQ", "Invalid_REQ", "Invalid_REQ",  		/* 14 .. 17 */
+		"Invalid_REQ", "Invalid_REQ", "Invalid_REQ", "Invalid_REQ", 		/* 18 .. 1b */
+		"Invalid_REQ", "Invalid_REQ", "Invalid_REQ", "Invalid_REQ",  		/* 1c .. 1f */
+		"Error_REQ"	  														/* 20 */
+	};
+
+	//BAP indication types
+	const Data_IND			 = 0x00;
+	const Reset_IND			 = 0x01;
+	const DataAck_IND        = 0x02;
+	const Result_IND		 = 0x03;
+	const Processing_IND	 = 0x04;
+  	const Changed_IND		 = 0x05;
+  	const DataSetGet_IND	 = 0x06;
+	const DataSet_IND		 = 0x07;
+	const DataGet_IND		 = 0x08;
+	const Ack_IND            = 0x09;
+	const Processing_CNF_IND = 0x0A;
+	const Start_IND			 = 0x0B;
+	const StartResult_IND	 = 0x0C;
+	const AbortResult_IND	 = 0x0D;
+	const Invalid_IND		 = 0x1F; // Kennzeichnung fuer eine ungueltige Indication
+	const Error_IND			 = 0x20;
+	
+	char Indicationtype_Text[33][30] =
+	{
+		"Data_IND", "Reset_IND", "DataAck_IND", "Result_IND",			 	/* 00 .. 03 */
+		"Processing_IND", "Changed_IND", "DataSetGet_IND", "DataSet_IND", 	/* 04 .. 07 */
+		"DataGet_IND", "Ack_IND", "Processing_CNF_IND", "Start_REQ",	 	/* 08 .. 0b */
+		"StartResult_REQ", "AbortResult_REQ", "Invalid_REQ", "Invalid_REQ", /* 0c .. 0f */
+		"Invalid_REQ", "Invalid_REQ", "Invalid_REQ", "Invalid_REQ",  		/* 10 .. 13 */
+		"Invalid_REQ", "Invalid_REQ", "Invalid_REQ", "Invalid_REQ",  		/* 14 .. 17 */
+		"Invalid_REQ", "Invalid_REQ", "Invalid_REQ", "Invalid_REQ", 		/* 18 .. 1b */
+		"Invalid_REQ", "Invalid_REQ", "Invalid_REQ", "Invalid_REQ",  		/* 1c .. 1f */
+		"Error_REQ"	  														/* 20 */
+	};	
+	
+	char Acknowledgetype_Text[24][30] =
+	{
+		"Property_SetGet_ACK", "Array_SetGet_ACK", "Property_Set_ACK", "Array_Set_ACK",  			/* 00 .. 03 */
+		"Method_Start_ACK", "Method_StartResult_ACK", "Method_AbortResult_ACK", "Property_Get_ACK",	/* 04 .. 07 */
+		"Array_Get_ACK", "Cache_GetAll_ACK", "Property_Ack_ACK", "Property_Status_ACK",	   			/* 08 .. 0b */
+		"Property_StatusAck_ACK", "Property_Error_ACK", "Array_Status_ACK", "Array_Changed_ACK",	/* 0c .. 0f */
+		"Array_Error_ACK", "Method_Processing_ACK", "Method_Result_ACK", "Method_Error_ACK",  		/* 10 .. 13 */
+		"Unknown_ACK", "Unknown_ACK", "Unknown_ACK", "Unknown_ACK"									/* 14 .. 17 */
+	};
+
+	/**************************** Global Function-ID's ******************************/
+	/** TODO: already_pressed kann zwischen den Funktionen geshared werden          */
+
+	byte already_pressed = 0;
+
+	const FctID_GetAll									= 0x01;
+	const FctID_BAP_Config								= 0x02;
+	const FctID_FunctionList							= 0x03;
+	const FctID_HeartBeat								= 0x04;
+    
+    char SGtype[4]="ASG";
+
+	char  dbc_path[255]             = "BAP\\Statistics_P30DF30_v1.01\\asg74_1\\bapdb\\BAP_only_MQB_MLBevo_v1.22.dbc";
+	char  xml_path[255]             = "BAP\\Statistics_P30DF30_v1.01\\asg74_1\\bapxml\\BAP_SW17_Statistc_P30DF30_ASG_v1.01.xml";
+	dword NODE_INDEX                =  0;
+	char  NODE_NAME[100]            = "Statistics";
+	const LSGID                     = 74;
+	char  panel_name[100]           = "ASG74_1";
+	char  bapconfig_panel_name[100]    = "panel1";
+	char  common_panel_name[100]    = "panel2";
+	const TaskTime                  = 10;
+	const heartBeatFactor                               = 5;
+	 const C_ASG_74_1_0_1_ID = 1;
+	 byte C_ASG_74_1_0_1GetAll_BTN_already_pressed = 0;
+	 char gCheckbox1[100] = "checkbox_C_ASG_74_1_0_1";
+	 char gErrField1[100] = "errfield_C_ASG_74_1_0_1";
+	 byte gC_ASG_74_1_0_1_ErrCode = 1;
+	 const P_ASG_74_1_0_2_ID = 2;
+	 byte P_ASG_74_1_0_2Get_BTN_already_pressed = 0;
+	 char gCheckbox2[100] = "checkbox_P_ASG_74_1_0_2";
+	 char gErrField2[100] = "errfield_P_ASG_74_1_0_2";
+	 byte gP_ASG_74_1_0_2_ErrCode = 1;
+	 const P_ASG_74_1_0_3_ID = 3;
+	 byte P_ASG_74_1_0_3Get_BTN_already_pressed = 0;
+	 char gCheckbox3[100] = "checkbox_P_ASG_74_1_0_3";
+	 char gErrField3[100] = "errfield_P_ASG_74_1_0_3";
+	 byte gP_ASG_74_1_0_3_ErrCode = 1;
+	 const P_ASG_74_1_0_4_ID = 4;
+	 byte P_ASG_74_1_0_4Get_BTN_already_pressed = 0;
+	 char gCheckbox4[100] = "checkbox_P_ASG_74_1_0_4";
+	 char gErrField4[100] = "errfield_P_ASG_74_1_0_4";
+	 byte gP_ASG_74_1_0_4_ErrCode = 1;
+	 const P_ASG_74_1_0_13_ID = 13;
+	 byte P_ASG_74_1_0_13Get_BTN_already_pressed = 0;
+	 byte P_ASG_74_1_0_13SetGet_BTN_already_pressed = 0;
+	 char gCheckbox13[100] = "checkbox_P_ASG_74_1_0_13";
+	 char gErrField13[100] = "errfield_P_ASG_74_1_0_13";
+	 byte gP_ASG_74_1_0_13_ErrCode = 1;
+	 char gPanel13[100] = "panel_P_ASG_74_1_0_13";
+	 const P_ASG_74_1_0_14_ID = 14;
+	 byte P_ASG_74_1_0_14Get_BTN_already_pressed = 0;
+	 char gCheckbox14[100] = "checkbox_P_ASG_74_1_0_14";
+	 char gErrField14[100] = "errfield_P_ASG_74_1_0_14";
+	 byte gP_ASG_74_1_0_14_ErrCode = 1;
+	 char gPanel14[100] = "panel_P_ASG_74_1_0_14";
+	 const P_ASG_74_1_0_15_ID = 15;
+	 byte P_ASG_74_1_0_15Get_BTN_already_pressed = 0;
+	 char gCheckbox15[100] = "checkbox_P_ASG_74_1_0_15";
+	 char gErrField15[100] = "errfield_P_ASG_74_1_0_15";
+	 byte gP_ASG_74_1_0_15_ErrCode = 1;
+	 char gPanel15[100] = "panel_P_ASG_74_1_0_15";
+	 const P_ASG_74_1_0_16_ID = 16;
+	 byte P_ASG_74_1_0_16Get_BTN_already_pressed = 0;
+	 char gCheckbox16[100] = "checkbox_P_ASG_74_1_0_16";
+	 char gErrField16[100] = "errfield_P_ASG_74_1_0_16";
+	 byte gP_ASG_74_1_0_16_ErrCode = 1;
+	 char gPanel16[100] = "panel_P_ASG_74_1_0_16";
+	 const P_ASG_74_1_0_17_ID = 17;
+	 byte P_ASG_74_1_0_17Get_BTN_already_pressed = 0;
+	 char gCheckbox17[100] = "checkbox_P_ASG_74_1_0_17";
+	 char gErrField17[100] = "errfield_P_ASG_74_1_0_17";
+	 byte gP_ASG_74_1_0_17_ErrCode = 1;
+	 char gPanel17[100] = "panel_P_ASG_74_1_0_17";
+	 const P_ASG_74_1_0_18_ID = 18;
+	 byte P_ASG_74_1_0_18Get_BTN_already_pressed = 0;
+	 char gCheckbox18[100] = "checkbox_P_ASG_74_1_0_18";
+	 char gErrField18[100] = "errfield_P_ASG_74_1_0_18";
+	 byte gP_ASG_74_1_0_18_ErrCode = 1;
+	 char gPanel18[100] = "panel_P_ASG_74_1_0_18";
+	 const P_ASG_74_1_0_19_ID = 19;
+	 byte P_ASG_74_1_0_19Get_BTN_already_pressed = 0;
+	 char gCheckbox19[100] = "checkbox_P_ASG_74_1_0_19";
+	 char gErrField19[100] = "errfield_P_ASG_74_1_0_19";
+	 byte gP_ASG_74_1_0_19_ErrCode = 1;
+	 char gPanel19[100] = "panel_P_ASG_74_1_0_19";
+	 const P_ASG_74_1_0_20_ID = 20;
+	 byte P_ASG_74_1_0_20Get_BTN_already_pressed = 0;
+	 char gCheckbox20[100] = "checkbox_P_ASG_74_1_0_20";
+	 char gErrField20[100] = "errfield_P_ASG_74_1_0_20";
+	 byte gP_ASG_74_1_0_20_ErrCode = 1;
+	 char gPanel20[100] = "panel_P_ASG_74_1_0_20";
+	 const P_ASG_74_1_0_21_ID = 21;
+	 byte P_ASG_74_1_0_21Get_BTN_already_pressed = 0;
+	 char gCheckbox21[100] = "checkbox_P_ASG_74_1_0_21";
+	 char gErrField21[100] = "errfield_P_ASG_74_1_0_21";
+	 byte gP_ASG_74_1_0_21_ErrCode = 1;
+	 char gPanel21[100] = "panel_P_ASG_74_1_0_21";
+	 const P_ASG_74_1_0_22_ID = 22;
+	 byte P_ASG_74_1_0_22Get_BTN_already_pressed = 0;
+	 byte P_ASG_74_1_0_22SetGet_BTN_already_pressed = 0;
+	 char gCheckbox22[100] = "checkbox_P_ASG_74_1_0_22";
+	 char gErrField22[100] = "errfield_P_ASG_74_1_0_22";
+	 byte gP_ASG_74_1_0_22_ErrCode = 1;
+	 char gPanel22[100] = "panel_P_ASG_74_1_0_22";
+	 const M_ASG_74_1_0_23_ID = 23;
+	 byte M_ASG_74_1_0_23StartResult_BTN_already_pressed = 0;
+	 char gCheckbox23[100] = "checkbox_M_ASG_74_1_0_23";
+	 char gErrField23[100] = "errfield_M_ASG_74_1_0_23";
+	 byte gM_ASG_74_1_0_23_ErrCode = 1;
+	 char gPanel23[100] = "panel_M_ASG_74_1_0_23";
+
+
+	/// Begin: Definition der BUS-Schnittstellen
+	
+	// FLEXRAY NOT ENABLED!
+	
+	// ETHERNET NOT ENABLED! 
+	
+	//// End Bus Schnittstellen
+}
+
+on preStart
+{
+	char Version[200];
+	char Path[255];
+
+	/***** Erzeugen der Ausgabeconsolen *****/	
+	gBAP_Trace=writecreate("BAP-Trace");		//write-window for BAP-cummunication
+	writeclear(gBAP_Trace);						//clear BAP-window in write-window
+	
+	gError_Trace=writecreate("Error");			//error-window for BAP-cummunication
+	writeclear(gError_Trace);					//clear error-window in write-window
+	
+	writeclear(1);								//clear CAPL-window in write-window
+	
+	/**** Versionsstring von DLL holen und auf Bildschirm ausgeben ***/	
+	BAP150_GetVersions(Version, 200);
+	writelineEx(gBAP_Trace, 0, "Versionx:%s", Version);
+											
+    NODE_INDEX = BAP150_CreateNode();
+    writelineEx(gBAP_Trace, 0, "ASG %d Nodeindex:%d", LSGID, Version);
+    
+	/**** Laden der CANoe Datenbank *****/
+	getAbsFilePath(dbc_path, Path, 255);
+	writelineEx(gBAP_Trace, 0, "Load BAP_DBC-File: %s", Path);
+	if(BAP150_LoadDBC(NODE_INDEX, 1, Path)  != 0) {		writelineEx(gError_Trace, 0, "Fehler beim Laden: %s !", Path);
+	}
+
+	/**** Laden des BAP XML Files ****/
+	getAbsFilePath(xml_path, Path, 255);
+	writelineEx(gBAP_Trace, 0, "Load BAP-XML-File: %s", Path);
+	if (BAP150_LoadConfig(NODE_INDEX, Path) != 0) {
+	    writelineEx(gError_Trace, 0, "Fehler beim Laden: %s !", Path);
+	}
+
+	if (BAP150_AddCanMap(NODE_INDEX, 1, 1) != 0) {
+		writelineEx(gError_Trace, 0, "Fehler beim Mappen!");
+	}
+	
+	// FLEXRAY NOT ENABLED!
+	
+}
+
+DisableFctCtrl ()
+{
+  	EnableControl(panel_name, common_panel_name, 0);
+	EnableControl(panel_name,gErrField1,0);
+	EnableControl(panel_name,gErrField2,0);
+	EnableControl(panel_name,gErrField3,0);
+	EnableControl(panel_name,gErrField4,0);
+	EnableControl(panel_name,gErrField13,0);
+	EnableControl(panel_name,gPanel13,0);
+	EnableControl(panel_name,"panel_P_ASG_74_1_0_13",0);
+	EnableControl(panel_name,gErrField14,0);
+	EnableControl(panel_name,gPanel14,0);
+	EnableControl(panel_name,"panel_P_ASG_74_1_0_14",0);
+	EnableControl(panel_name,gErrField15,0);
+	EnableControl(panel_name,gPanel15,0);
+	EnableControl(panel_name,"panel_P_ASG_74_1_0_15",0);
+	EnableControl(panel_name,gErrField16,0);
+	EnableControl(panel_name,gPanel16,0);
+	EnableControl(panel_name,"panel_P_ASG_74_1_0_16",0);
+	EnableControl(panel_name,gErrField17,0);
+	EnableControl(panel_name,gPanel17,0);
+	EnableControl(panel_name,"panel_P_ASG_74_1_0_17",0);
+	EnableControl(panel_name,gErrField18,0);
+	EnableControl(panel_name,gPanel18,0);
+	EnableControl(panel_name,"panel_P_ASG_74_1_0_18",0);
+	EnableControl(panel_name,gErrField19,0);
+	EnableControl(panel_name,gPanel19,0);
+	EnableControl(panel_name,"panel_P_ASG_74_1_0_19",0);
+	EnableControl(panel_name,gErrField20,0);
+	EnableControl(panel_name,gPanel20,0);
+	EnableControl(panel_name,"panel_P_ASG_74_1_0_20",0);
+	EnableControl(panel_name,gErrField21,0);
+	EnableControl(panel_name,gPanel21,0);
+	EnableControl(panel_name,"panel_P_ASG_74_1_0_21",0);
+	EnableControl(panel_name,gErrField22,0);
+	EnableControl(panel_name,gPanel22,0);
+	EnableControl(panel_name,"panel_P_ASG_74_1_0_22",0);
+	EnableControl(panel_name,gErrField23,0);
+	EnableControl(panel_name,gPanel23,0);
+	EnableControl(panel_name,"panel_M_ASG_74_1_0_23_Result",0);
+	EnableControl(panel_name,"panel_M_ASG_74_1_0_23_Processing",0);
+	EnableControl(panel_name,"panel_M_ASG_74_1_0_23_Start",0);
+
+}
+
+EnableFctCtrl ()
+{
+  	EnableControl(panel_name, common_panel_name, 1);
+		 EnableControl(panel_name,gPanel13,1);
+		 EnableControl(panel_name,gErrField13,1);
+		 EnableControl(panel_name,gPanel14,1);
+		 EnableControl(panel_name,gErrField14,1);
+		 EnableControl(panel_name,gPanel15,1);
+		 EnableControl(panel_name,gErrField15,1);
+		 EnableControl(panel_name,gPanel16,1);
+		 EnableControl(panel_name,gErrField16,1);
+		 EnableControl(panel_name,gPanel17,1);
+		 EnableControl(panel_name,gErrField17,1);
+		 EnableControl(panel_name,gPanel18,1);
+		 EnableControl(panel_name,gErrField18,1);
+		 EnableControl(panel_name,gPanel19,1);
+		 EnableControl(panel_name,gErrField19,1);
+		 EnableControl(panel_name,gPanel20,1);
+		 EnableControl(panel_name,gErrField20,1);
+		 EnableControl(panel_name,gPanel21,1);
+		 EnableControl(panel_name,gErrField21,1);
+		 EnableControl(panel_name,gPanel22,1);
+		 EnableControl(panel_name,gErrField22,1);
+		 EnableControl(panel_name,gPanel23,1);
+		 EnableControl(panel_name,gErrField23,1);
+
+}
+
+EnableConfigCtrl ()
+{
+  	if(getValue(C_ASG_74_1_0_1_FctLstItemEn))
+	{
+		setControlForeColor(panel_name, gCheckbox1, MakeRGB(0,240,0));
+	}
+	else
+	{
+		setControlForeColor(panel_name, gCheckbox1, MakeRGB(250,0,0));
+	}
+	if(getValue(P_ASG_74_1_0_2_FctLstItemEn))
+	{
+		setControlForeColor(panel_name, gCheckbox2, MakeRGB(0,240,0));
+	}
+	else
+	{
+		setControlForeColor(panel_name, gCheckbox2, MakeRGB(250,0,0));
+	}
+	if(getValue(P_ASG_74_1_0_3_FctLstItemEn))
+	{
+		setControlForeColor(panel_name, gCheckbox3, MakeRGB(0,240,0));
+	}
+	else
+	{
+		setControlForeColor(panel_name, gCheckbox3, MakeRGB(250,0,0));
+	}
+	EnableControl(panel_name, "panel_P_ASG_74_1_0_4", 1);
+	if(getValue(P_ASG_74_1_0_4_FctLstItemEn))
+	{
+		setControlForeColor(panel_name, gCheckbox4, MakeRGB(0,240,0));
+	}
+	else
+	{
+		setControlForeColor(panel_name, gCheckbox4, MakeRGB(250,0,0));
+	}
+	if(getValue(P_ASG_74_1_0_13_FctLstItemEn))
+	{
+		EnableControl(panel_name, "panel_P_ASG_74_1_0_13",1);
+		EnableControl(panel_name,"errfield_P_ASG_74_1_0_13",1);
+		setControlForeColor(panel_name, gCheckbox13, MakeRGB(0,240,0));
+	}
+	else
+	{
+		EnableControl(panel_name, "panel_P_ASG_74_1_0_13",0);
+		EnableControl(panel_name,"errfield_P_ASG_74_1_0_13",0);
+		setControlForeColor(panel_name, gCheckbox13, MakeRGB(250,0,0));
+	}
+	if(getValue(P_ASG_74_1_0_14_FctLstItemEn))
+	{
+		EnableControl(panel_name, "panel_P_ASG_74_1_0_14",1);
+		EnableControl(panel_name,"errfield_P_ASG_74_1_0_14",1);
+		setControlForeColor(panel_name, gCheckbox14, MakeRGB(0,240,0));
+	}
+	else
+	{
+		EnableControl(panel_name, "panel_P_ASG_74_1_0_14",0);
+		EnableControl(panel_name,"errfield_P_ASG_74_1_0_14",0);
+		setControlForeColor(panel_name, gCheckbox14, MakeRGB(250,0,0));
+	}
+	if(getValue(P_ASG_74_1_0_15_FctLstItemEn))
+	{
+		EnableControl(panel_name, "panel_P_ASG_74_1_0_15",1);
+		EnableControl(panel_name,"errfield_P_ASG_74_1_0_15",1);
+		setControlForeColor(panel_name, gCheckbox15, MakeRGB(0,240,0));
+	}
+	else
+	{
+		EnableControl(panel_name, "panel_P_ASG_74_1_0_15",0);
+		EnableControl(panel_name,"errfield_P_ASG_74_1_0_15",0);
+		setControlForeColor(panel_name, gCheckbox15, MakeRGB(250,0,0));
+	}
+	if(getValue(P_ASG_74_1_0_16_FctLstItemEn))
+	{
+		EnableControl(panel_name, "panel_P_ASG_74_1_0_16",1);
+		EnableControl(panel_name,"errfield_P_ASG_74_1_0_16",1);
+		setControlForeColor(panel_name, gCheckbox16, MakeRGB(0,240,0));
+	}
+	else
+	{
+		EnableControl(panel_name, "panel_P_ASG_74_1_0_16",0);
+		EnableControl(panel_name,"errfield_P_ASG_74_1_0_16",0);
+		setControlForeColor(panel_name, gCheckbox16, MakeRGB(250,0,0));
+	}
+	if(getValue(P_ASG_74_1_0_17_FctLstItemEn))
+	{
+		EnableControl(panel_name, "panel_P_ASG_74_1_0_17",1);
+		EnableControl(panel_name,"errfield_P_ASG_74_1_0_17",1);
+		setControlForeColor(panel_name, gCheckbox17, MakeRGB(0,240,0));
+	}
+	else
+	{
+		EnableControl(panel_name, "panel_P_ASG_74_1_0_17",0);
+		EnableControl(panel_name,"errfield_P_ASG_74_1_0_17",0);
+		setControlForeColor(panel_name, gCheckbox17, MakeRGB(250,0,0));
+	}
+	if(getValue(P_ASG_74_1_0_18_FctLstItemEn))
+	{
+		EnableControl(panel_name, "panel_P_ASG_74_1_0_18",1);
+		EnableControl(panel_name,"errfield_P_ASG_74_1_0_18",1);
+		setControlForeColor(panel_name, gCheckbox18, MakeRGB(0,240,0));
+	}
+	else
+	{
+		EnableControl(panel_name, "panel_P_ASG_74_1_0_18",0);
+		EnableControl(panel_name,"errfield_P_ASG_74_1_0_18",0);
+		setControlForeColor(panel_name, gCheckbox18, MakeRGB(250,0,0));
+	}
+	if(getValue(P_ASG_74_1_0_19_FctLstItemEn))
+	{
+		EnableControl(panel_name, "panel_P_ASG_74_1_0_19",1);
+		EnableControl(panel_name,"errfield_P_ASG_74_1_0_19",1);
+		setControlForeColor(panel_name, gCheckbox19, MakeRGB(0,240,0));
+	}
+	else
+	{
+		EnableControl(panel_name, "panel_P_ASG_74_1_0_19",0);
+		EnableControl(panel_name,"errfield_P_ASG_74_1_0_19",0);
+		setControlForeColor(panel_name, gCheckbox19, MakeRGB(250,0,0));
+	}
+	if(getValue(P_ASG_74_1_0_20_FctLstItemEn))
+	{
+		EnableControl(panel_name, "panel_P_ASG_74_1_0_20",1);
+		EnableControl(panel_name,"errfield_P_ASG_74_1_0_20",1);
+		setControlForeColor(panel_name, gCheckbox20, MakeRGB(0,240,0));
+	}
+	else
+	{
+		EnableControl(panel_name, "panel_P_ASG_74_1_0_20",0);
+		EnableControl(panel_name,"errfield_P_ASG_74_1_0_20",0);
+		setControlForeColor(panel_name, gCheckbox20, MakeRGB(250,0,0));
+	}
+	if(getValue(P_ASG_74_1_0_21_FctLstItemEn))
+	{
+		EnableControl(panel_name, "panel_P_ASG_74_1_0_21",1);
+		EnableControl(panel_name,"errfield_P_ASG_74_1_0_21",1);
+		setControlForeColor(panel_name, gCheckbox21, MakeRGB(0,240,0));
+	}
+	else
+	{
+		EnableControl(panel_name, "panel_P_ASG_74_1_0_21",0);
+		EnableControl(panel_name,"errfield_P_ASG_74_1_0_21",0);
+		setControlForeColor(panel_name, gCheckbox21, MakeRGB(250,0,0));
+	}
+	if(getValue(P_ASG_74_1_0_22_FctLstItemEn))
+	{
+		EnableControl(panel_name, "panel_P_ASG_74_1_0_22",1);
+		EnableControl(panel_name,"errfield_P_ASG_74_1_0_22",1);
+		setControlForeColor(panel_name, gCheckbox22, MakeRGB(0,240,0));
+	}
+	else
+	{
+		EnableControl(panel_name, "panel_P_ASG_74_1_0_22",0);
+		EnableControl(panel_name,"errfield_P_ASG_74_1_0_22",0);
+		setControlForeColor(panel_name, gCheckbox22, MakeRGB(250,0,0));
+	}
+	if(getValue(M_ASG_74_1_0_23_FctLstItemEn))
+	{
+		EnableControl(panel_name, "panel_M_ASG_74_1_0_23",1);
+		EnableControl(panel_name,"errfield_M_ASG_74_1_0_23",1);
+		EnableControl(panel_name,"panel_M_ASG_74_1_0_23_Processing",1);
+		EnableControl(panel_name,"panel_M_ASG_74_1_0_23_Start",1);
+		setControlForeColor(panel_name, gCheckbox23, MakeRGB(0,240,0));
+	}
+	else
+	{
+		EnableControl(panel_name, "panel_M_ASG_74_1_0_23",0);
+		EnableControl(panel_name,"errfield_M_ASG_74_1_0_23",0);
+		EnableControl(panel_name,"panel_M_ASG_74_1_0_23_Processing",0);
+		EnableControl(panel_name,"panel_M_ASG_74_1_0_23_Start",0);
+		setControlForeColor(panel_name, gCheckbox23, MakeRGB(250,0,0));
+	}
+
+}
+
+DisableReservedFld ()
+{
+  
+}
+
+resetErrfieldColor()
+{
+  	setControlBackColor(panel_name, "errfield_C_ASG_74_1_0_1", MakeRGB(255,255,255));
+	setControlBackColor(panel_name, "errfield_P_ASG_74_1_0_2", MakeRGB(255,255,255));
+	setControlBackColor(panel_name, "errfield_P_ASG_74_1_0_3", MakeRGB(255,255,255));
+	setControlBackColor(panel_name, "errfield_P_ASG_74_1_0_4", MakeRGB(255,255,255));
+	setControlBackColor(panel_name, "errfield_P_ASG_74_1_0_13", MakeRGB(255,255,255));
+	setControlBackColor(panel_name, "errfield_P_ASG_74_1_0_14", MakeRGB(255,255,255));
+	setControlBackColor(panel_name, "errfield_P_ASG_74_1_0_15", MakeRGB(255,255,255));
+	setControlBackColor(panel_name, "errfield_P_ASG_74_1_0_16", MakeRGB(255,255,255));
+	setControlBackColor(panel_name, "errfield_P_ASG_74_1_0_17", MakeRGB(255,255,255));
+	setControlBackColor(panel_name, "errfield_P_ASG_74_1_0_18", MakeRGB(255,255,255));
+	setControlBackColor(panel_name, "errfield_P_ASG_74_1_0_19", MakeRGB(255,255,255));
+	setControlBackColor(panel_name, "errfield_P_ASG_74_1_0_20", MakeRGB(255,255,255));
+	setControlBackColor(panel_name, "errfield_P_ASG_74_1_0_21", MakeRGB(255,255,255));
+	setControlBackColor(panel_name, "errfield_P_ASG_74_1_0_22", MakeRGB(255,255,255));
+	setControlBackColor(panel_name, "errfield_M_ASG_74_1_0_23", MakeRGB(255,255,255));
+
+}
+
+CANoe_Shutdown ()
+{
+	// Timer 
+	canceltimer(TaskTimer);		//cancel real CAN-communication timer
+
+	// Ruecksetzen der Hintergrundfarbe der Error-Felder
+	resetErrfieldColor();
+	// Deaktivierung aller Panel Elemente 
+	DisableFctCtrl();
+	EnableControl(panel_name, bapconfig_panel_name, 0); 
+	EnableConfigCtrl();
+
+}
+
+on timer TaskTimer
+{
+
+	/*** Aufruf des BAP Task in DLL fuer NODE_INDEX ***/
+	BAP150_Task(NODE_INDEX);	
+
+	/*** Pollen ueber die anstehenden Indications (Lesen aus DLL, Auslesen eines Puffers der DLL) ***/
+	BAP_DLL_Indication();	
+	
+	/*** Pollen ueber die anstehenden Requests (Schreiben in DLL, dort werden evt. Sendeauftraege gesetzt) ***/
+	BAP_DLL_Request();
+	
+	/*** Abarbeiten der ausstehenden Sendeauftraege innerhalb der BAP DLL und Versenden ueber CANoe ***/
+	BAP_CAN_TX_Request();
+
+	/*** Der Empfang von CAN Daten geschieht ueber on message CAN message Mechanismen ***/
+	// keine Funktion hier
+
+	/*** Retriggern des Timers mit 10 ms ***/
+	setTimer(TaskTimer, TaskTime); // @TODO bei anderer Taskzeit muss hier modifiziert werden
+}
+
+BAP_DLL_Indication()	//function to get received BAP-data from DLL (at BAL-interface)
+{
+	int i, length, datalength, temp;
+	byte Indication_data[BAP_buffer_size];		// indication data from DLL
+	dword Indication_header[6];					// indication header from DLL
+	byte BAP_data_type;
+
+	//init local variables
+	length=0;
+	datalength=0;
+	temp=0;
+	BAP_data_type=0;
+
+	for(i=0;i<6;i++)
+		Indication_header[i]=0;
+
+	for(i=0;i<BAP_buffer_size;i++)
+		Indication_data[i]=0;
+
+	// BAP-Stack needs this information for successful BAP150_GetIndication 
+	Indication_header[4]=BAP_buffer_size;
+
+	while (BAP150_GetInd(NODE_INDEX, Indication_header, Indication_data) == 0)
+	{		
+		//read header and write in global variable
+		for (i = 0; i < 6; i++) {
+			gBAP_Indication_header[i]=Indication_header[i];	
+		}
+
+		// nur Bytesequneces haben Datenanteil
+		if (gBAP_Indication_header[3] == Bap_byteSequence)
+		{
+			for (i = 0; i < BAP_buffer_size; i++) {
+				gBAP_Indication_data[i]=Indication_data[i];	
+			}
+		}	
+		// Verarbeiten der Indication
+		Process_Current_Indication();
+
+		// Vorbereiten fuer naechsten Durchlauf 
+		Indication_header[4]=BAP_buffer_size;
+	} 
+}
+
+ChangeConfig(long paramIndex,long config[])
+{
+
+        byte temp ;
+        temp = BAP150_ChangeConfig(NODE_INDEX, paramIndex, config);
+        if(temp == 0)
+            writelineEx(gBAP_Trace, 0, "BAP150_ChangeConfig for %s succesful (LSG %d, NODE_INDEX %d)", NODE_NAME, LSGID, NODE_INDEX);
+        else
+            writelineEx(gError_Trace, 0, "BAP150_ChangeConfig error 0x%X for %s (LSG %d, NODE_INDEX %d)", temp, NODE_NAME, LSGID, NODE_INDEX);        
+}
+
+PrintIndicationError(char reason[])
+{
+	writelineEx(gError_Trace, 0, "%s - %s lsgId:%d fctid:%d indType:%s dataType:%s",
+		reason, SGtype, gBAP_Indication_header[0], gBAP_Indication_header[1], Indicationtype_Text[gBAP_Indication_header[2]], Datatype_Text[gBAP_Indication_header[3]]);
+}
+
+BapOnOff(byte _on)
+{
+    int length, temp;
+
+    /***** Einschalten ******/
+    if(_on==1){
+        // soll der BAP Stack wieder initlialisiert werden?                                 
+        if(gBAP_Init==0){
+            gBAP_Init=1;
+            temp=BAP150_Init(NODE_INDEX, LSGID);
+            if(temp==0)
+                writelineEx(gBAP_Trace, 0, "BAP_Init for %s succesful (LSG %d, NODE_INDEX %d)", NODE_NAME, LSGID, NODE_INDEX);
+            else
+                writelineEx(gError_Trace, 0, "BAP_Init error 0x%X for %s (LSG %d, NODE_INDEX %d)", temp, NODE_NAME, LSGID, NODE_INDEX);         
+        }
+
+        // Initialisierung aller Variablen
+        Initialize_Variables();                     
+
+        // Aktivierung aller Panelelemente
+		//EnableFctCtrl();
+		initInvalidFields();
+		EnableControl(panel_name, common_panel_name, 1);
+		EnableControl(panel_name, bapconfig_panel_name, 1); 
+		DisableReservedFld();
+
+        //BAP-Shutdown
+        temp = BAP150_Shutdown(NODE_INDEX, LSGID);
+        if(temp==0)
+            writelineEx(gBAP_Trace, 0, "BAP_Shutdown for %s succesful (LSG %d, NODE_INDEX %d)", NODE_NAME, LSGID, NODE_INDEX);
+        else
+            writelineEx(gError_Trace, 0, "BAP_Shutdown error 0x%X for %s (LSG %d, NODE_INDEX %d)", temp, NODE_NAME, LSGID, NODE_INDEX); 
+
+        //BAP-Start
+        temp = BAP150_Start(NODE_INDEX, LSGID);             
+        if(temp == 0)
+            writelineEx(gBAP_Trace, 0, "BAP_Start for %s succesful (LSG %d, NODE_INDEX %d)", NODE_NAME, LSGID, NODE_INDEX);
+        else
+            writelineEx(gError_Trace, 0, "BAP_Start error 0x%X for %s (LSG %d, NODE_INDEX %d)", temp, NODE_NAME, LSGID, NODE_INDEX);        
+    
+        // setze den Timer fuer den zyklischen Aufruf des CANoe-"Tasks"
+        setTimer(TaskTimer, 10);                
+    
+        //  BAPFsg_ProcessDebug(NODE_INDEX,DEBUG_CAN_CHANNEL, DEBUG_ID, LSGID, DEBUG_SWITCH_ON);    
+    }
+    else{ /***** Ausschalten ****/
+        
+        BAP150_Shutdown(NODE_INDEX,LSGID);
+        
+        CANoe_Shutdown();
+        
+        // ETHERNET NOT ENABLED! (CALL_FCT_CLOSE_UPD_SOCKET_TOKEN)
+    }
+
+}
+
+Initialize_Variables()	//initialize/reset all global variables
+{
+	int i;
+	byte  Init_data[BAP_buffer_size];	// InitSend data for DLL
+
+	/**** Request Buffer Geschichten initialisieren ****/
+	for (i = 0; i < Requestbuffer_lines; i++)
+	{
+		gBAP_Requestbuffer_status[i] = 0;
+	}
+	for (i = 0; i < BAP_buffer_size; i++)
+	{
+		Init_data[i] = 0;
+	}
+	
+	/* Wert im Eingabefeld initialisieren*/
+	putValue(P_ASG_74_1_0_13, 0);
+	getValue(P_ASG_74_1_0_22,Init_data);
+	putValue(P_ASG_74_1_0_22,Init_data, 4);
+	/* Farbe setzen*/
+	putValue(C_ASG_74_1_0_1_State,"");
+	setControlBackColor(panel_name, "errfield_C_ASG_74_1_0_1_State", MakeRGB(255,255,255));
+
+}
+
+initInvalidFields()	//initialize/reset all global variables
+{
+	    setControlBackColor(panel_name, "panel1_edit", MakeRGB(220,220,220));
+    setControlBackColor(panel_name, "panel_P_ASG_74_1_0_4", MakeRGB(220,220,220));
+    setControlBackColor(panel_name, "panel_P_ASG_74_1_0_13", MakeRGB(220,220,220));
+    setControlBackColor(panel_name, "panel_P_ASG_74_1_0_14", MakeRGB(220,220,220));
+    setControlBackColor(panel_name, "panel_P_ASG_74_1_0_15", MakeRGB(220,220,220));
+    setControlBackColor(panel_name, "panel_P_ASG_74_1_0_16", MakeRGB(220,220,220));
+    setControlBackColor(panel_name, "panel_P_ASG_74_1_0_17", MakeRGB(220,220,220));
+    setControlBackColor(panel_name, "panel_P_ASG_74_1_0_18", MakeRGB(220,220,220));
+    setControlBackColor(panel_name, "panel_P_ASG_74_1_0_19", MakeRGB(220,220,220));
+    setControlBackColor(panel_name, "panel_P_ASG_74_1_0_20", MakeRGB(220,220,220));
+    setControlBackColor(panel_name, "panel_P_ASG_74_1_0_21", MakeRGB(220,220,220));
+    setControlBackColor(panel_name, "panel_P_ASG_74_1_0_22", MakeRGB(220,220,220));
+    setControlBackColor(panel_name, "panel_M_ASG_74_1_0_23_Result",MakeRGB(220,220,220));
+    setControlBackColor(panel_name, "panel_M_ASG_74_1_0_23_Processing",MakeRGB(220,220,220));
+
+}
+
+on start
+{
+	// noch nicht eingeschaltet
+	gSG_PowerOnOff=0;
+	// noch nicht initialisiert
+	gBAP_Init=0;
+	// open the panel, nur fuer CANoe-Version >= 5.1 erlaubt
+	//openPanel(panel_name);
+	// deaktiviere alle aktiven Panel Elemente, ausser AN/AUSS
+    CANoe_Shutdown();
+    // ungueltige Felder initialisieren
+    initInvalidFields();    
+    
+// ETHERNET AND FLEXRAY NOT ENABLED!
+}
+
+BAP_CAN_TX_Request()	//Function to send BAP-data over CAN
+{
+   int i;
+   byte TX_Data[8];				// CAN-data
+   byte TX_Data_FR[10];    		// FlexRay-Data
+   dword TX_Header[3];			// CAN-header
+   message 0x100 TX_Message;	// dummy-message, Adresse wird noch modifiziert
+   
+   byte send_result;
+   
+   // ONLY CAN IS ENABLED! 
+   		TX_Header[2] = 8; // max-Length of TX_Data
+
+		// Pollen ueber die Queue, die von der DLL zur Verfuegung gestellt wird
+		// Diese Daten muessen ueber den CAN Bus gesendet werden
+	   	while (BAP150_CAN_GetTxDat(NODE_INDEX,TX_Header,TX_Data) == 0) {	
+			TX_Message.CAN = TX_Header[0]; 		//CAN channel
+			TX_Message.ID =TX_Header[1]; 			//Can ID
+			TX_Message.DLC = TX_Header[2]; 		// received length
+			
+			for (i=0; i<TX_Message.DLC; i++) {	//CAN data-bytes
+		  		TX_Message.byte(i) = TX_Data[i];
+		  	}
+		  	
+		  	output(TX_Message);					//send CAN message
+		  	
+		  	//Versions Output
+		  	if(TX_Data[0] == 0x40 && TX_Data[1] == 0x00 && TX_Header[2] == 4)
+		  	{
+		    	writelineEx(gBAP_Trace, 0,"Major Version: %i, Minor Version: %i", TX_Data[2], TX_Data[3]);
+		  	}       
+		  	TX_Header[2] = 8; // max-Length of TX_Data
+	   	} 
+   // ONLY CAN IS ENABLED!
+   // FLEXRAY NOT ENABLED! (TX_FR_TOKEN)
+   // ETHERNET NOT ENABLED! (TX_IP_TOKEN)
+}
+
+ringbuffer_write (byte lsgID, byte fctID, byte request, byte dataType, word length, dword singleData, byte data[])
+{
+	int bufferline, i;
+
+	bufferline = getNextWriteIndex();	//get next free position in ring-buffer
+
+	if (bufferline == -1) 
+	{
+		writelineEx(gError_Trace, 0, "Crititcal Error: No free buffer found!");
+		return;
+	}
+		
+	gBAP_Request_header[bufferline][0] = lsgID;	// LSG
+	gBAP_Request_header[bufferline][1] = fctID;	// FCT
+	gBAP_Request_header[bufferline][3] = dataType; // dataType
+
+    //writelineEx(gBAP_Trace, 0, "Write request in buffer ASG NODEINDEX:%d lsgid:%d fctid:%d requesttype:%d datatype:%d length:%d", 
+    //        NODE_INDEX,lsgID,fctID,request,dataType,length);
+	switch (dataType)
+	{
+		case Bap_void:
+			gBAP_Request_header[bufferline][2] = request;	// request
+			gBAP_Request_header[bufferline][4] = 0;	// length
+				// Void
+			// @TODO?		
+			break;
+		case Bap_uint8:
+			gBAP_Request_header[bufferline][2] = request;		// request
+			gBAP_Request_header[bufferline][5] = singleData;	// Daten		
+			break;
+		case Bap_uint16:
+			gBAP_Request_header[bufferline][2] = request;		// request
+			gBAP_Request_header[bufferline][5] = singleData;	// Daten
+			break;			
+		case Bap_uint32:
+			gBAP_Request_header[bufferline][2] = request;		// request
+			gBAP_Request_header[bufferline][5] = singleData;	// Daten		
+			break;	
+		case Bap_byteSequence:
+			gBAP_Request_header[bufferline][2] = request;	// request
+			gBAP_Request_header[bufferline][4] = length;	// length
+			// Daten der ByteSequence kopieren
+			for(i = 0; i < BAP_buffer_size; i++)									
+				gBAP_Request_data[bufferline][i] = data[i];
+		case Bap_error:
+			gBAP_Request_header[bufferline][5] = singleData;	// Errorcode						
+			break;
+		default:
+			break;
+	}
+
+			
+
+}
+
+float round (float value, float step)
+{
+	return _floor(value / step + 0.5) * step;
+}
+
+Request_Void (byte lsgID, byte fctID, byte request)
+{
+	int i;
+	byte dataArray [BAP_buffer_size];
+
+	// Initialisieren eines Arrays
+	for(i=0;i<BAP_buffer_size;i++) dataArray [i]=0;
+
+	ringbuffer_write (lsgID, fctID, request, Bap_void, 0, 0, dataArray);	
+}
+
+Request_Int8 (byte lsgID, byte fctID, byte request, dword data)
+{
+	int i;
+	byte dataArray [BAP_buffer_size];
+
+	// Initialisieren eines Arrays
+	for(i=0;i<BAP_buffer_size;i++) dataArray [i]=0;
+
+	ringbuffer_write (lsgID, fctID, request, Bap_uint8, 0, data, dataArray);
+
+}
+
+Request_Int16 (byte lsgID, byte fctID, byte request, dword data)
+{
+	int i;
+	byte dataArray [BAP_buffer_size];
+
+	// Initialisieren eines Arrays
+	for(i=0;i<BAP_buffer_size;i++) dataArray [i]=0;
+
+	ringbuffer_write (lsgID, fctID, request, Bap_uint16, 0, data, dataArray);
+
+}
+
+Request_Int32 (byte lsgID, byte fctID, byte request, dword data)
+{
+	int i;
+	byte dataArray [BAP_buffer_size];
+
+	// Initialisieren eines Arrays
+	for(i=0;i<BAP_buffer_size;i++) dataArray [i]=0;
+
+	ringbuffer_write (lsgID, fctID, request, Bap_uint32, 0, data, dataArray);
+}
+
+Request_ByteSequence (byte lsgID, byte fctID, byte request, byte data[], word length)
+{
+	int i;
+	byte dataArray [BAP_buffer_size];
+
+	// Initialisieren eines Arrays
+	for(i=0;i<BAP_buffer_size;i++) dataArray [i]=0;
+
+	// Fuellen des Arrays
+	for(i=0;i<length;i++) dataArray [i]=data[i];
+
+	ringbuffer_write (lsgID, fctID, request, Bap_byteSequence, length, 0, dataArray);
+}
+
+Request_Error (byte lsgID, byte fctID, byte errorCode)
+{
+	int i;
+	byte dataArray [BAP_buffer_size];
+
+	// Initialisieren eines Arrays
+	for(i=0;i<BAP_buffer_size;i++) dataArray [i]=0;
+
+	ringbuffer_write (lsgID, fctID, 0, Bap_error, 0, errorCode, dataArray);
+}
+
+DisplayRequestErrorCode(dword fctID, dword errCode)
+{
+       switch(fctID)
+   {
+       case C_ASG_74_1_0_1_ID:
+           gC_ASG_74_1_0_1_ErrCode = 0;
+           putValue(C_ASG_74_1_0_1_ErrCode,  errCode);
+           setControlBackColor(panel_name,"errfield_C_ASG_74_1_0_1", MakeRGB(255,79,79));
+       break;
+       case P_ASG_74_1_0_2_ID:
+           gP_ASG_74_1_0_2_ErrCode = 0;
+           putValue(P_ASG_74_1_0_2_ErrCode,  errCode);
+           setControlBackColor(panel_name,"errfield_P_ASG_74_1_0_2", MakeRGB(255,79,79));
+       break;
+       case P_ASG_74_1_0_3_ID:
+           gP_ASG_74_1_0_3_ErrCode = 0;
+           putValue(P_ASG_74_1_0_3_ErrCode,  errCode);
+           setControlBackColor(panel_name,"errfield_P_ASG_74_1_0_3", MakeRGB(255,79,79));
+       break;
+       case P_ASG_74_1_0_4_ID:
+           gP_ASG_74_1_0_4_ErrCode = 0;
+           putValue(P_ASG_74_1_0_4_ErrCode,  errCode);
+           setControlBackColor(panel_name,"errfield_P_ASG_74_1_0_4", MakeRGB(255,79,79));
+       break;
+       case P_ASG_74_1_0_13_ID:
+           gP_ASG_74_1_0_13_ErrCode = 0;
+           putValue(P_ASG_74_1_0_13_ErrCode,  errCode);
+           setControlBackColor(panel_name,"errfield_P_ASG_74_1_0_13", MakeRGB(255,79,79));
+       break;
+       case P_ASG_74_1_0_14_ID:
+           gP_ASG_74_1_0_14_ErrCode = 0;
+           putValue(P_ASG_74_1_0_14_ErrCode,  errCode);
+           setControlBackColor(panel_name,"errfield_P_ASG_74_1_0_14", MakeRGB(255,79,79));
+       break;
+       case P_ASG_74_1_0_15_ID:
+           gP_ASG_74_1_0_15_ErrCode = 0;
+           putValue(P_ASG_74_1_0_15_ErrCode,  errCode);
+           setControlBackColor(panel_name,"errfield_P_ASG_74_1_0_15", MakeRGB(255,79,79));
+       break;
+       case P_ASG_74_1_0_16_ID:
+           gP_ASG_74_1_0_16_ErrCode = 0;
+           putValue(P_ASG_74_1_0_16_ErrCode,  errCode);
+           setControlBackColor(panel_name,"errfield_P_ASG_74_1_0_16", MakeRGB(255,79,79));
+       break;
+       case P_ASG_74_1_0_17_ID:
+           gP_ASG_74_1_0_17_ErrCode = 0;
+           putValue(P_ASG_74_1_0_17_ErrCode,  errCode);
+           setControlBackColor(panel_name,"errfield_P_ASG_74_1_0_17", MakeRGB(255,79,79));
+       break;
+       case P_ASG_74_1_0_18_ID:
+           gP_ASG_74_1_0_18_ErrCode = 0;
+           putValue(P_ASG_74_1_0_18_ErrCode,  errCode);
+           setControlBackColor(panel_name,"errfield_P_ASG_74_1_0_18", MakeRGB(255,79,79));
+       break;
+       case P_ASG_74_1_0_19_ID:
+           gP_ASG_74_1_0_19_ErrCode = 0;
+           putValue(P_ASG_74_1_0_19_ErrCode,  errCode);
+           setControlBackColor(panel_name,"errfield_P_ASG_74_1_0_19", MakeRGB(255,79,79));
+       break;
+       case P_ASG_74_1_0_20_ID:
+           gP_ASG_74_1_0_20_ErrCode = 0;
+           putValue(P_ASG_74_1_0_20_ErrCode,  errCode);
+           setControlBackColor(panel_name,"errfield_P_ASG_74_1_0_20", MakeRGB(255,79,79));
+       break;
+       case P_ASG_74_1_0_21_ID:
+           gP_ASG_74_1_0_21_ErrCode = 0;
+           putValue(P_ASG_74_1_0_21_ErrCode,  errCode);
+           setControlBackColor(panel_name,"errfield_P_ASG_74_1_0_21", MakeRGB(255,79,79));
+       break;
+       case P_ASG_74_1_0_22_ID:
+           gP_ASG_74_1_0_22_ErrCode = 0;
+           putValue(P_ASG_74_1_0_22_ErrCode,  errCode);
+           setControlBackColor(panel_name,"errfield_P_ASG_74_1_0_22", MakeRGB(255,79,79));
+       break;
+       case M_ASG_74_1_0_23_ID:
+           gM_ASG_74_1_0_23_ErrCode = 0;
+           putValue(M_ASG_74_1_0_23_ErrCode,  errCode);
+           setControlBackColor(panel_name,"errfield_M_ASG_74_1_0_23", MakeRGB(255,79,79));
+           putValue(M_ASG_74_1_0_23_State,  "ReqErr");
+       break;
+       default:
+           writelineEx(gError_Trace, 0, "%s%d/%d Unknown Functionid in  displayErrorCode", SGtype, LSGID,fctID);
+   }
+
+}
+
+BAP_DLL_Request ()
+{
+	int i;
+    int l=0;
+	byte temp;
+	byte Request_data[4096];	//Request data for DLL
+	dword Request_header[6];	//Request header for DLL
+	byte dataValid;
+	int nextElementToRead;
+	
+	// defaultmaessig ist senden OK
+	dataValid = 1;
+
+	// loeschen der Daten "Container"
+	for(i=0;i<6;i++)
+		Request_header[i]=0;
+	for(i=0;i<BAP_buffer_size;i++)
+		Request_data[i]=0;
+
+    
+	// Verarbeiten aller noch offenen Requests	
+	while ((nextElementToRead = getNextReadIndex()) != -1) 
+	{
+		// Fuer alle Datentypen gleich
+		Request_header[0]=gBAP_Request_header [nextElementToRead][0];		//LSG-ID
+		Request_header[1]=gBAP_Request_header [nextElementToRead][1];		//Function-ID
+		Request_header[2]=gBAP_Request_header [nextElementToRead][2];		//request type
+		Request_header[3]=gBAP_Request_header [nextElementToRead][3];		//BAP data type
+
+		switch(gBAP_Request_header[nextElementToRead][3]){
+			case Bap_uint32:
+                l=2;
+            case Bap_uint16:
+                l++;
+            case Bap_uint8:
+			case Bap_error: // Request (2) wird dabei ignoriert
+                l++;
+			case Bap_void:  // Datenfeld (5) wird dabei ignoriert
+				Request_header[4]=l;												//	not used
+				Request_header[5]=gBAP_Request_header [nextElementToRead][5];		// Daten
+			break;
+			case Bap_byteSequence:									
+				Request_header[4]=gBAP_Request_header [nextElementToRead][4];		// length
+				Request_header[5]=0;												// not used
+
+				// data-array for BAP-DLL funcion 'BAP_Request'
+				for(i=0;i<BAP_buffer_size;i++)
+					Request_data[i]=gBAP_Request_data [nextElementToRead][i];
+				break;			
+			default:
+				writelineEx(gError_Trace, 0, "BAP_DLL_Request: invalid BAP-Data-Type: %d", gBAP_Request_header[nextElementToRead][3]);
+				dataValid = 0;
+			break;			
+		}
+		
+		if(dataValid){
+            // wie heisst der Request?
+            writelineEx(gBAP_Trace, 0, "%s%d/%d BAP_Request %s datatype:%s length:%d", SGtype, Request_header[0],Request_header[1],Requesttype_Text[Request_header[2]],Datatype_Text[Request_header[3]],Request_header[4]);
+			temp = BAP150_Request(NODE_INDEX, Request_header, Request_data);	//send data to BAP-DLL	
+			// BAP-Request failed
+            if(temp != 0){
+                // Fehlercode: Request failed
+                writelineEx(gError_Trace, 0, "%s%d/%d Error during BAP_Request errorcode: 0x%X", SGtype, Request_header[0],Request_header[1],temp);
+                DisplayRequestErrorCode(Request_header[1],temp);
+            } 
+		}
+
+	}
+} 
+
+int getNextReadIndex ()
+{
+	int i, ret;
+	// der Puffer wird nach dem naechsten zu lesenden Eintrag durchsucht
+	// Existiert keiner wird -1 zurueckgegeben
+	ret = -1;
+
+	for (i = 0; i < Requestbuffer_lines; i++)
+	{
+		if (gBAP_Requestbuffer_status[i] == 1)
+		{
+			// zum verschicken
+			ret = i;
+			// und wieder freigeben
+			gBAP_Requestbuffer_status[i] = 0;
+			break;
+		}
+	}
+
+	return (ret);
+}
+
+int getNextWriteIndex ()
+{
+	int i, ret;
+	// der Puffer wird nach dem naechsten freien Eintrag durchsucht
+	// Existiert keiner wird -1 zurueckgegeben
+	ret = -1;
+
+	for (i = 0; i < Requestbuffer_lines; i++)
+	{
+		if (gBAP_Requestbuffer_status[i] == 0)
+		{
+			// zum schreiben
+			ret = i;
+			// belegen
+			gBAP_Requestbuffer_status[i] = 1;
+			break;
+		}
+	}
+
+	return (ret);
+}
+
+byte  isBitForFctSetted(word fctid, byte fctList[])
+{
+    byte byteNo ;
+    byte bitno ;
+    byte fctValue ;
+
+    byteNo = fctid / 8;
+    bitno = fctid % 8;
+
+    fctValue = 0x80 >> bitno;
+
+    return (fctList[byteNo] & fctValue)?1:0;
+}
+
+UpdateAllProperties()
+{
+	Request_Void(LSGID,P_ASG_74_1_0_2_ID,DataGet_REQ);
+	Request_Void(LSGID,P_ASG_74_1_0_3_ID,DataGet_REQ);
+	Request_Void(LSGID,P_ASG_74_1_0_4_ID,DataGet_REQ);
+	Request_Void(LSGID,P_ASG_74_1_0_13_ID,DataGet_REQ);
+	Request_Void(LSGID,P_ASG_74_1_0_14_ID,DataGet_REQ);
+	Request_Void(LSGID,P_ASG_74_1_0_15_ID,DataGet_REQ);
+	Request_Void(LSGID,P_ASG_74_1_0_16_ID,DataGet_REQ);
+	Request_Void(LSGID,P_ASG_74_1_0_17_ID,DataGet_REQ);
+	Request_Void(LSGID,P_ASG_74_1_0_18_ID,DataGet_REQ);
+	Request_Void(LSGID,P_ASG_74_1_0_19_ID,DataGet_REQ);
+	Request_Void(LSGID,P_ASG_74_1_0_20_ID,DataGet_REQ);
+	Request_Void(LSGID,P_ASG_74_1_0_21_ID,DataGet_REQ);
+	Request_Void(LSGID,P_ASG_74_1_0_22_ID,DataGet_REQ);
+
+}
+
+Process_Current_Indication ()
+{
+   int rxsize;
+   int txsize;
+   byte temp[BAP_buffer_size];
+   char buffer[BAP_buffer_size];
+   if(strncmp(Datatype_Text[gBAP_Indication_header[3]], "acknowledge", 4)!=0) 
+       writelineEx(gBAP_Trace, 0, "NodeIndex: %d: CurrentIndication %s lsgid:%d fctid:%d indType:%s dataType=%s length=%d",
+               NODE_INDEX, SGtype, gBAP_Indication_header[0], gBAP_Indication_header[1], Indicationtype_Text[gBAP_Indication_header[2]], Datatype_Text[gBAP_Indication_header[3]], gBAP_Indication_header[4]);
+   else 
+       writelineEx(gBAP_Trace, 0, "Internal acknowledge %s-%d fctid:%d indType:%s dataType=%s length=%d",
+               SGtype, gBAP_Indication_header[0], gBAP_Indication_header[1], Acknowledgetype_Text[gBAP_Indication_header[5]], Datatype_Text[gBAP_Indication_header[3]], gBAP_Indication_header[4]);
+   switch(gBAP_Indication_header[0])  // LSGID
+   {
+   case LSGID:
+       switch(gBAP_Indication_header[1]) // FCTID
+       {
+    case C_ASG_74_1_0_1_ID: 
+        switch(gBAP_Indication_header[3]) // Datentyp 
+        {
+        case Bap_void:
+            switch (gBAP_Indication_header[2]) // IndType
+            {
+                case Data_IND: // Indicationtyp pruefen
+                    //Now every Property with Cache is updated
+                    UpdateAllProperties();
+                    putValue(C_ASG_74_1_0_1_State, "StatusAll");
+                    setControlBackColor(panel_name, "errfield_C_ASG_74_1_0_1_State", MakeRGB(255,255,255));
+                    break;
+                default:
+                    PrintIndicationError("Illegal IndType");
+                    break;
+            }
+            break;
+            case Bap_error:
+               snprintf(buffer,BAP_buffer_size-1,"Error %02x", gBAP_Indication_header[5]);
+               putValue(C_ASG_74_1_0_1_State, buffer);
+               setControlBackColor(panel_name, "errfield_C_ASG_74_1_0_1_State", MakeRGB(255,79,79));
+               break;
+            case Bap_acknowledge:
+                break;
+            default:
+                PrintIndicationError("Illegal DataType");
+                break;
+        }
+    break;
+    case P_ASG_74_1_0_2_ID: 
+        switch(gBAP_Indication_header[3]) // Datentyp 
+        {
+        case Bap_byteSequence:
+            switch (gBAP_Indication_header[2]) // IndType
+            {
+                case Reset_IND: // Nur fuer FctId 2 (BAPConfig) relevant
+                   putValue(C_ASG_74_1_0_1_State, "");
+                   setControlBackColor(panel_name, "errfield_C_ASG_74_1_0_1_State", MakeRGB(255,255,255));
+                   initInvalidFields();
+                   // Fall through
+                case Data_IND: // Indicationtyp pruefen
+                    // Daten setzen
+                    putValue(BAPCFG_ASG_74_1_0_ProtocolMajor, gBAP_Indication_data[0]);
+                    putValue(BAPCFG_ASG_74_1_0_ProtocolMinor, gBAP_Indication_data[1]);
+                    putValue(BAPCFG_ASG_74_1_0_LsgClassMajor, gBAP_Indication_data[2]);
+                    putValue(BAPCFG_ASG_74_1_0_LsgClassMinor, gBAP_Indication_data[3]);
+                    putValue(BAPCFG_ASG_74_1_0_DFMajor, gBAP_Indication_data[4]);
+                    putValue(BAPCFG_ASG_74_1_0_DFMinor, gBAP_Indication_data[5]);
+                    setControlBackColor(panel_name, "errfield_P_ASG_74_1_0_2", MakeRGB(255,255,255));  
+                    setControlBackColor(panel_name, "panel1_edit", MakeRGB(255,255,255));  
+                    break;
+                default:
+                    PrintIndicationError("Illegal IndType");
+                    break;
+            }
+            break;
+            case Bap_error:
+                putValue(P_ASG_74_1_0_2_ErrCode,  gBAP_Indication_header[5]);
+                setControlBackColor(panel_name, "errfield_P_ASG_74_1_0_2", MakeRGB(255,79,79));  
+                setControlBackColor(panel_name, "panel1_edit", MakeRGB(220,220,220));  
+                break;
+            case Bap_acknowledge:
+                break;
+            default:
+                PrintIndicationError("Illegal DataType");
+                break;
+        }
+    break;
+    case P_ASG_74_1_0_3_ID: 
+       switch(gBAP_Indication_header[3]) // Datentyp
+       {
+            case Bap_byteSequence:
+                switch (gBAP_Indication_header[2]) // IndType
+                {
+                    case Data_IND: // Indicationtyp pruefen
+                    case Reset_IND: // Nur fuer FctId 2 (BAPConfig) relevant
+                    {
+                        setControlBackColor(panel_name, "errfield_P_ASG_74_1_0_3", MakeRGB(255,255,255));
+                        if(isBitForFctSetted(M_ASG_74_1_0_23_ID,gBAP_Indication_data))
+                        {
+                            putValue(M_ASG_74_1_0_23_FctLstItemEn, 1);
+                            setControlForeColor(panel_name, gCheckbox23,MakeRGB(0,240,0));
+                            EnableControl(panel_name, gPanel23, 1);
+                            EnableControl(panel_name, "panel_M_ASG_74_1_0_23_Result",1);
+                            EnableControl(panel_name, "panel_M_ASG_74_1_0_23_Processing",1);
+                            EnableControl(panel_name, "panel_M_ASG_74_1_0_23_Start",1);
+                        }
+                        else
+                        {
+                            putValue(M_ASG_74_1_0_23_FctLstItemEn, 0);
+                            setControlForeColor(panel_name, gCheckbox23,MakeRGB(250,0,0));
+                            EnableControl(panel_name, gPanel23, 0);
+                            EnableControl(panel_name, "panel_M_ASG_74_1_0_23_Result",0);
+                            EnableControl(panel_name, "panel_M_ASG_74_1_0_23_Processing",0);
+                            EnableControl(panel_name, "panel_M_ASG_74_1_0_23_Start",0);
+                        }
+
+                        if(isBitForFctSetted(P_ASG_74_1_0_22_ID,gBAP_Indication_data))
+                        {
+                            putValue(P_ASG_74_1_0_22_FctLstItemEn, 1);
+                            setControlForeColor(panel_name, gCheckbox22,MakeRGB(0,240,0));
+                            EnableControl(panel_name, gPanel22, 1);
+                            EnableControl(panel_name, "panel_P_ASG_74_1_0_22",1);
+                        }
+                        else
+                        {
+                            putValue(P_ASG_74_1_0_22_FctLstItemEn, 0);
+                            setControlForeColor(panel_name, gCheckbox22,MakeRGB(250,0,0));
+                            EnableControl(panel_name, gPanel22, 0);
+                            EnableControl(panel_name, "panel_P_ASG_74_1_0_22",0);
+                        }
+
+                        if(isBitForFctSetted(P_ASG_74_1_0_21_ID,gBAP_Indication_data))
+                        {
+                            putValue(P_ASG_74_1_0_21_FctLstItemEn, 1);
+                            setControlForeColor(panel_name, gCheckbox21,MakeRGB(0,240,0));
+                            EnableControl(panel_name, gPanel21, 1);
+                            EnableControl(panel_name, "panel_P_ASG_74_1_0_21",1);
+                        }
+                        else
+                        {
+                            putValue(P_ASG_74_1_0_21_FctLstItemEn, 0);
+                            setControlForeColor(panel_name, gCheckbox21,MakeRGB(250,0,0));
+                            EnableControl(panel_name, gPanel21, 0);
+                            EnableControl(panel_name, "panel_P_ASG_74_1_0_21",0);
+                        }
+
+                        if(isBitForFctSetted(P_ASG_74_1_0_19_ID,gBAP_Indication_data))
+                        {
+                            putValue(P_ASG_74_1_0_19_FctLstItemEn, 1);
+                            setControlForeColor(panel_name, gCheckbox19,MakeRGB(0,240,0));
+                            EnableControl(panel_name, gPanel19, 1);
+                            EnableControl(panel_name, "panel_P_ASG_74_1_0_19",1);
+                        }
+                        else
+                        {
+                            putValue(P_ASG_74_1_0_19_FctLstItemEn, 0);
+                            setControlForeColor(panel_name, gCheckbox19,MakeRGB(250,0,0));
+                            EnableControl(panel_name, gPanel19, 0);
+                            EnableControl(panel_name, "panel_P_ASG_74_1_0_19",0);
+                        }
+
+                        if(isBitForFctSetted(P_ASG_74_1_0_20_ID,gBAP_Indication_data))
+                        {
+                            putValue(P_ASG_74_1_0_20_FctLstItemEn, 1);
+                            setControlForeColor(panel_name, gCheckbox20,MakeRGB(0,240,0));
+                            EnableControl(panel_name, gPanel20, 1);
+                            EnableControl(panel_name, "panel_P_ASG_74_1_0_20",1);
+                        }
+                        else
+                        {
+                            putValue(P_ASG_74_1_0_20_FctLstItemEn, 0);
+                            setControlForeColor(panel_name, gCheckbox20,MakeRGB(250,0,0));
+                            EnableControl(panel_name, gPanel20, 0);
+                            EnableControl(panel_name, "panel_P_ASG_74_1_0_20",0);
+                        }
+
+                        if(isBitForFctSetted(P_ASG_74_1_0_18_ID,gBAP_Indication_data))
+                        {
+                            putValue(P_ASG_74_1_0_18_FctLstItemEn, 1);
+                            setControlForeColor(panel_name, gCheckbox18,MakeRGB(0,240,0));
+                            EnableControl(panel_name, gPanel18, 1);
+                            EnableControl(panel_name, "panel_P_ASG_74_1_0_18",1);
+                        }
+                        else
+                        {
+                            putValue(P_ASG_74_1_0_18_FctLstItemEn, 0);
+                            setControlForeColor(panel_name, gCheckbox18,MakeRGB(250,0,0));
+                            EnableControl(panel_name, gPanel18, 0);
+                            EnableControl(panel_name, "panel_P_ASG_74_1_0_18",0);
+                        }
+
+                        if(isBitForFctSetted(P_ASG_74_1_0_17_ID,gBAP_Indication_data))
+                        {
+                            putValue(P_ASG_74_1_0_17_FctLstItemEn, 1);
+                            setControlForeColor(panel_name, gCheckbox17,MakeRGB(0,240,0));
+                            EnableControl(panel_name, gPanel17, 1);
+                            EnableControl(panel_name, "panel_P_ASG_74_1_0_17",1);
+                        }
+                        else
+                        {
+                            putValue(P_ASG_74_1_0_17_FctLstItemEn, 0);
+                            setControlForeColor(panel_name, gCheckbox17,MakeRGB(250,0,0));
+                            EnableControl(panel_name, gPanel17, 0);
+                            EnableControl(panel_name, "panel_P_ASG_74_1_0_17",0);
+                        }
+
+                        if(isBitForFctSetted(P_ASG_74_1_0_16_ID,gBAP_Indication_data))
+                        {
+                            putValue(P_ASG_74_1_0_16_FctLstItemEn, 1);
+                            setControlForeColor(panel_name, gCheckbox16,MakeRGB(0,240,0));
+                            EnableControl(panel_name, gPanel16, 1);
+                            EnableControl(panel_name, "panel_P_ASG_74_1_0_16",1);
+                        }
+                        else
+                        {
+                            putValue(P_ASG_74_1_0_16_FctLstItemEn, 0);
+                            setControlForeColor(panel_name, gCheckbox16,MakeRGB(250,0,0));
+                            EnableControl(panel_name, gPanel16, 0);
+                            EnableControl(panel_name, "panel_P_ASG_74_1_0_16",0);
+                        }
+
+                        if(isBitForFctSetted(P_ASG_74_1_0_15_ID,gBAP_Indication_data))
+                        {
+                            putValue(P_ASG_74_1_0_15_FctLstItemEn, 1);
+                            setControlForeColor(panel_name, gCheckbox15,MakeRGB(0,240,0));
+                            EnableControl(panel_name, gPanel15, 1);
+                            EnableControl(panel_name, "panel_P_ASG_74_1_0_15",1);
+                        }
+                        else
+                        {
+                            putValue(P_ASG_74_1_0_15_FctLstItemEn, 0);
+                            setControlForeColor(panel_name, gCheckbox15,MakeRGB(250,0,0));
+                            EnableControl(panel_name, gPanel15, 0);
+                            EnableControl(panel_name, "panel_P_ASG_74_1_0_15",0);
+                        }
+
+                        if(isBitForFctSetted(P_ASG_74_1_0_14_ID,gBAP_Indication_data))
+                        {
+                            putValue(P_ASG_74_1_0_14_FctLstItemEn, 1);
+                            setControlForeColor(panel_name, gCheckbox14,MakeRGB(0,240,0));
+                            EnableControl(panel_name, gPanel14, 1);
+                            EnableControl(panel_name, "panel_P_ASG_74_1_0_14",1);
+                        }
+                        else
+                        {
+                            putValue(P_ASG_74_1_0_14_FctLstItemEn, 0);
+                            setControlForeColor(panel_name, gCheckbox14,MakeRGB(250,0,0));
+                            EnableControl(panel_name, gPanel14, 0);
+                            EnableControl(panel_name, "panel_P_ASG_74_1_0_14",0);
+                        }
+
+                        if(isBitForFctSetted(P_ASG_74_1_0_4_ID,gBAP_Indication_data))
+                        {
+                            putValue(P_ASG_74_1_0_4_FctLstItemEn, 1);
+                            setControlForeColor(panel_name, gCheckbox4,MakeRGB(0,240,0));
+                        }
+                        else
+                        {
+                            putValue(P_ASG_74_1_0_4_FctLstItemEn, 0);
+                            setControlForeColor(panel_name, gCheckbox4,MakeRGB(250,0,0));
+                        }
+
+                        if(isBitForFctSetted(P_ASG_74_1_0_13_ID,gBAP_Indication_data))
+                        {
+                            putValue(P_ASG_74_1_0_13_FctLstItemEn, 1);
+                            setControlForeColor(panel_name, gCheckbox13,MakeRGB(0,240,0));
+                            EnableControl(panel_name, gPanel13, 1);
+                            EnableControl(panel_name, "panel_P_ASG_74_1_0_13",1);
+                        }
+                        else
+                        {
+                            putValue(P_ASG_74_1_0_13_FctLstItemEn, 0);
+                            setControlForeColor(panel_name, gCheckbox13,MakeRGB(250,0,0));
+                            EnableControl(panel_name, gPanel13, 0);
+                            EnableControl(panel_name, "panel_P_ASG_74_1_0_13",0);
+                        }
+
+                        if(isBitForFctSetted(P_ASG_74_1_0_3_ID,gBAP_Indication_data))
+                        {
+                            putValue(P_ASG_74_1_0_3_FctLstItemEn, 1);
+                            setControlForeColor(panel_name, gCheckbox3,MakeRGB(0,240,0));
+                        }
+                        else
+                        {
+                            putValue(P_ASG_74_1_0_3_FctLstItemEn, 0);
+                            setControlForeColor(panel_name, gCheckbox3,MakeRGB(250,0,0));
+                        }
+
+                        if(isBitForFctSetted(P_ASG_74_1_0_2_ID,gBAP_Indication_data))
+                        {
+                            putValue(P_ASG_74_1_0_2_FctLstItemEn, 1);
+                            setControlForeColor(panel_name, gCheckbox2,MakeRGB(0,240,0));
+                        }
+                        else
+                        {
+                            putValue(P_ASG_74_1_0_2_FctLstItemEn, 0);
+                            setControlForeColor(panel_name, gCheckbox2,MakeRGB(250,0,0));
+                        }
+
+                        if(isBitForFctSetted(C_ASG_74_1_0_1_ID,gBAP_Indication_data))
+                        {
+                            putValue(C_ASG_74_1_0_1_FctLstItemEn, 1);
+                            setControlForeColor(panel_name, gCheckbox1,MakeRGB(0,240,0));
+                        }
+                        else
+                        {
+                            putValue(C_ASG_74_1_0_1_FctLstItemEn, 0);
+                            setControlForeColor(panel_name, gCheckbox1,MakeRGB(250,0,0));
+                        }
+
+                     }
+                        break;
+                    default:
+                      writelineEx(gError_Trace, 0, "NodeIndex: %d: Illegal IndType : lsgid:%d fctid:%d indType:%d",
+                           NODE_INDEX, gBAP_Indication_header[0], gBAP_Indication_header[1], gBAP_Indication_header[2]);
+                       break;
+                  }
+                  break;
+            case Bap_error:
+                putValue(P_ASG_74_1_0_3_ErrCode,  gBAP_Indication_header[5]);
+                setControlBackColor(panel_name, "errfield_P_ASG_74_1_0_3", MakeRGB(255,79,79));
+                break;
+            case Bap_acknowledge:
+            	 break;
+            default:
+                PrintIndicationError("Illegal DataType");
+                break;
+       }
+       break;
+    case P_ASG_74_1_0_4_ID: 
+        switch(gBAP_Indication_header[3]) // Datentyp 
+        {
+           case Bap_uint8:
+                   switch(gBAP_Indication_header[2]) // IndType
+                   {
+                       case Data_IND: // Indicationtyp pruefen
+                           // Daten setzen
+                           putValue(P_ASG_74_1_0_4, gBAP_Indication_header[5]);
+                           setControlBackColor(panel_name, "errfield_P_ASG_74_1_0_4", MakeRGB(255,255,255));  
+                           setControlBackColor(panel_name, "panel_P_ASG_74_1_0_4", MakeRGB(255,255,255));  
+                           break;                              
+                       default:
+                           PrintIndicationError("Illegal IndType");
+                           break;
+                   }
+                   break;
+            case Bap_error:
+                putValue(P_ASG_74_1_0_4_ErrCode,  gBAP_Indication_header[5]);
+                setControlBackColor(panel_name, "errfield_P_ASG_74_1_0_4", MakeRGB(255,79,79));  
+                setControlBackColor(panel_name, "panel_P_ASG_74_1_0_4", MakeRGB(220,220,220));  
+                if(gBAP_Indication_header[5]==0x21)
+                {
+                   putValue(C_ASG_74_1_0_1_State, "");
+                   setControlBackColor(panel_name, "errfield_C_ASG_74_1_0_1_State", MakeRGB(255,255,255));
+                }
+                break;
+            case Bap_acknowledge:
+                break;
+            default:
+                PrintIndicationError("Illegal DataType");
+                break;
+        }
+    break;
+    case P_ASG_74_1_0_13_ID: 
+        switch(gBAP_Indication_header[3]) // Datentyp 
+        {
+            case Bap_uint8:
+                    switch(gBAP_Indication_header[2]) // IndType
+                    {
+                        case Data_IND: // Indicationtyp pruefen
+                            // Daten setzen
+                            putValue(P_ASG_74_1_0_13, gBAP_Indication_header[5]);
+                            setControlBackColor(panel_name, "errfield_P_ASG_74_1_0_13", MakeRGB(255,255,255));  
+                            setControlBackColor(panel_name, "panel_P_ASG_74_1_0_13", MakeRGB(255,255,255));  
+                            break;                              
+                        default:
+                            PrintIndicationError("Illegal IndType");
+                            break;
+                    }
+                    break;
+            case Bap_error:
+                gP_ASG_74_1_0_13_ErrCode = 0;
+                putValue(P_ASG_74_1_0_13_ErrCode,  gBAP_Indication_header[5]);
+                setControlBackColor(panel_name, "errfield_P_ASG_74_1_0_13", MakeRGB(255,79,79));  
+                setControlBackColor(panel_name, "panel_P_ASG_74_1_0_13", MakeRGB(220,220,220));  
+                break;
+            case Bap_acknowledge:
+                break;
+            default:
+                    PrintIndicationError("Illegal DataType");
+                    break;
+        }
+    break;
+    case P_ASG_74_1_0_14_ID: 
+        switch(gBAP_Indication_header[3]) // Datentyp 
+        {
+            case Bap_byteSequence:
+                switch (gBAP_Indication_header[2]) // IndType
+                {
+                    case Data_IND: // Indicationtyp pruefen
+                        // Daten setzen
+                        putValue(P_ASG_74_1_0_14, gBAP_Indication_data, gBAP_Indication_header[4]);
+                        setControlBackColor(panel_name, "errfield_P_ASG_74_1_0_14", MakeRGB(255,255,255));  
+                        setControlBackColor(panel_name, "panel_P_ASG_74_1_0_14", MakeRGB(255,255,255));  
+                        break;
+                    default:
+                        PrintIndicationError("Illegal IndType");
+                        break;
+                }
+                break;
+            case Bap_error:
+                gP_ASG_74_1_0_14_ErrCode = 0;
+                putValue(P_ASG_74_1_0_14_ErrCode,  gBAP_Indication_header[5]);
+                setControlBackColor(panel_name, "errfield_P_ASG_74_1_0_14", MakeRGB(255,79,79));  
+                setControlBackColor(panel_name, "panel_P_ASG_74_1_0_14", MakeRGB(220,220,220));  
+                break;
+            case Bap_acknowledge:
+                break;
+            default:
+                PrintIndicationError("Illegal DataType");
+                break;
+        }
+    break;
+    case P_ASG_74_1_0_15_ID: 
+        switch(gBAP_Indication_header[3]) // Datentyp 
+        {
+            case Bap_uint8:
+                    switch(gBAP_Indication_header[2]) // IndType
+                    {
+                        case Data_IND: // Indicationtyp pruefen
+                            // Daten setzen
+                            putValue(P_ASG_74_1_0_15, gBAP_Indication_header[5]);
+                            setControlBackColor(panel_name, "errfield_P_ASG_74_1_0_15", MakeRGB(255,255,255));  
+                            setControlBackColor(panel_name, "panel_P_ASG_74_1_0_15", MakeRGB(255,255,255));  
+                            break;                              
+                        default:
+                            PrintIndicationError("Illegal IndType");
+                            break;
+                    }
+                    break;
+            case Bap_error:
+                gP_ASG_74_1_0_15_ErrCode = 0;
+                putValue(P_ASG_74_1_0_15_ErrCode,  gBAP_Indication_header[5]);
+                setControlBackColor(panel_name, "errfield_P_ASG_74_1_0_15", MakeRGB(255,79,79));  
+                setControlBackColor(panel_name, "panel_P_ASG_74_1_0_15", MakeRGB(220,220,220));  
+                break;
+            case Bap_acknowledge:
+                break;
+            default:
+                    PrintIndicationError("Illegal DataType");
+                    break;
+        }
+    break;
+    case P_ASG_74_1_0_16_ID: 
+        switch(gBAP_Indication_header[3]) // Datentyp 
+        {
+            case Bap_byteSequence:
+                switch (gBAP_Indication_header[2]) // IndType
+                {
+                    case Data_IND: // Indicationtyp pruefen
+                        // Daten setzen
+                        putValue(P_ASG_74_1_0_16, gBAP_Indication_data, gBAP_Indication_header[4]);
+                        setControlBackColor(panel_name, "errfield_P_ASG_74_1_0_16", MakeRGB(255,255,255));  
+                        setControlBackColor(panel_name, "panel_P_ASG_74_1_0_16", MakeRGB(255,255,255));  
+                        break;
+                    default:
+                        PrintIndicationError("Illegal IndType");
+                        break;
+                }
+                break;
+            case Bap_error:
+                gP_ASG_74_1_0_16_ErrCode = 0;
+                putValue(P_ASG_74_1_0_16_ErrCode,  gBAP_Indication_header[5]);
+                setControlBackColor(panel_name, "errfield_P_ASG_74_1_0_16", MakeRGB(255,79,79));  
+                setControlBackColor(panel_name, "panel_P_ASG_74_1_0_16", MakeRGB(220,220,220));  
+                break;
+            case Bap_acknowledge:
+                break;
+            default:
+                PrintIndicationError("Illegal DataType");
+                break;
+        }
+    break;
+    case P_ASG_74_1_0_17_ID: 
+        switch(gBAP_Indication_header[3]) // Datentyp 
+        {
+            case Bap_byteSequence:
+                switch (gBAP_Indication_header[2]) // IndType
+                {
+                    case Data_IND: // Indicationtyp pruefen
+                        // Daten setzen
+                        putValue(P_ASG_74_1_0_17, gBAP_Indication_data, gBAP_Indication_header[4]);
+                        setControlBackColor(panel_name, "errfield_P_ASG_74_1_0_17", MakeRGB(255,255,255));  
+                        setControlBackColor(panel_name, "panel_P_ASG_74_1_0_17", MakeRGB(255,255,255));  
+                        break;
+                    default:
+                        PrintIndicationError("Illegal IndType");
+                        break;
+                }
+                break;
+            case Bap_error:
+                gP_ASG_74_1_0_17_ErrCode = 0;
+                putValue(P_ASG_74_1_0_17_ErrCode,  gBAP_Indication_header[5]);
+                setControlBackColor(panel_name, "errfield_P_ASG_74_1_0_17", MakeRGB(255,79,79));  
+                setControlBackColor(panel_name, "panel_P_ASG_74_1_0_17", MakeRGB(220,220,220));  
+                break;
+            case Bap_acknowledge:
+                break;
+            default:
+                PrintIndicationError("Illegal DataType");
+                break;
+        }
+    break;
+    case P_ASG_74_1_0_18_ID: 
+        switch(gBAP_Indication_header[3]) // Datentyp 
+        {
+            case Bap_byteSequence:
+                switch (gBAP_Indication_header[2]) // IndType
+                {
+                    case Data_IND: // Indicationtyp pruefen
+                        // Daten setzen
+                        putValue(P_ASG_74_1_0_18, gBAP_Indication_data, gBAP_Indication_header[4]);
+                        setControlBackColor(panel_name, "errfield_P_ASG_74_1_0_18", MakeRGB(255,255,255));  
+                        setControlBackColor(panel_name, "panel_P_ASG_74_1_0_18", MakeRGB(255,255,255));  
+                        break;
+                    default:
+                        PrintIndicationError("Illegal IndType");
+                        break;
+                }
+                break;
+            case Bap_error:
+                gP_ASG_74_1_0_18_ErrCode = 0;
+                putValue(P_ASG_74_1_0_18_ErrCode,  gBAP_Indication_header[5]);
+                setControlBackColor(panel_name, "errfield_P_ASG_74_1_0_18", MakeRGB(255,79,79));  
+                setControlBackColor(panel_name, "panel_P_ASG_74_1_0_18", MakeRGB(220,220,220));  
+                break;
+            case Bap_acknowledge:
+                break;
+            default:
+                PrintIndicationError("Illegal DataType");
+                break;
+        }
+    break;
+    case P_ASG_74_1_0_19_ID: 
+        switch(gBAP_Indication_header[3]) // Datentyp 
+        {
+            case Bap_byteSequence:
+                switch (gBAP_Indication_header[2]) // IndType
+                {
+                    case Data_IND: // Indicationtyp pruefen
+                        // Daten setzen
+                        putValue(P_ASG_74_1_0_19, gBAP_Indication_data, gBAP_Indication_header[4]);
+                        setControlBackColor(panel_name, "errfield_P_ASG_74_1_0_19", MakeRGB(255,255,255));  
+                        setControlBackColor(panel_name, "panel_P_ASG_74_1_0_19", MakeRGB(255,255,255));  
+                        break;
+                    default:
+                        PrintIndicationError("Illegal IndType");
+                        break;
+                }
+                break;
+            case Bap_error:
+                gP_ASG_74_1_0_19_ErrCode = 0;
+                putValue(P_ASG_74_1_0_19_ErrCode,  gBAP_Indication_header[5]);
+                setControlBackColor(panel_name, "errfield_P_ASG_74_1_0_19", MakeRGB(255,79,79));  
+                setControlBackColor(panel_name, "panel_P_ASG_74_1_0_19", MakeRGB(220,220,220));  
+                break;
+            case Bap_acknowledge:
+                break;
+            default:
+                PrintIndicationError("Illegal DataType");
+                break;
+        }
+    break;
+    case P_ASG_74_1_0_20_ID: 
+        switch(gBAP_Indication_header[3]) // Datentyp 
+        {
+            case Bap_byteSequence:
+                switch (gBAP_Indication_header[2]) // IndType
+                {
+                    case Data_IND: // Indicationtyp pruefen
+                        // Daten setzen
+                        putValue(P_ASG_74_1_0_20, gBAP_Indication_data, gBAP_Indication_header[4]);
+                        setControlBackColor(panel_name, "errfield_P_ASG_74_1_0_20", MakeRGB(255,255,255));  
+                        setControlBackColor(panel_name, "panel_P_ASG_74_1_0_20", MakeRGB(255,255,255));  
+                        break;
+                    default:
+                        PrintIndicationError("Illegal IndType");
+                        break;
+                }
+                break;
+            case Bap_error:
+                gP_ASG_74_1_0_20_ErrCode = 0;
+                putValue(P_ASG_74_1_0_20_ErrCode,  gBAP_Indication_header[5]);
+                setControlBackColor(panel_name, "errfield_P_ASG_74_1_0_20", MakeRGB(255,79,79));  
+                setControlBackColor(panel_name, "panel_P_ASG_74_1_0_20", MakeRGB(220,220,220));  
+                break;
+            case Bap_acknowledge:
+                break;
+            default:
+                PrintIndicationError("Illegal DataType");
+                break;
+        }
+    break;
+    case P_ASG_74_1_0_21_ID: 
+        switch(gBAP_Indication_header[3]) // Datentyp 
+        {
+            case Bap_byteSequence:
+                switch (gBAP_Indication_header[2]) // IndType
+                {
+                    case Data_IND: // Indicationtyp pruefen
+                        // Daten setzen
+                        putValue(P_ASG_74_1_0_21, gBAP_Indication_data, gBAP_Indication_header[4]);
+                        setControlBackColor(panel_name, "errfield_P_ASG_74_1_0_21", MakeRGB(255,255,255));  
+                        setControlBackColor(panel_name, "panel_P_ASG_74_1_0_21", MakeRGB(255,255,255));  
+                        break;
+                    default:
+                        PrintIndicationError("Illegal IndType");
+                        break;
+                }
+                break;
+            case Bap_error:
+                gP_ASG_74_1_0_21_ErrCode = 0;
+                putValue(P_ASG_74_1_0_21_ErrCode,  gBAP_Indication_header[5]);
+                setControlBackColor(panel_name, "errfield_P_ASG_74_1_0_21", MakeRGB(255,79,79));  
+                setControlBackColor(panel_name, "panel_P_ASG_74_1_0_21", MakeRGB(220,220,220));  
+                break;
+            case Bap_acknowledge:
+                break;
+            default:
+                PrintIndicationError("Illegal DataType");
+                break;
+        }
+    break;
+    case P_ASG_74_1_0_22_ID: 
+        switch(gBAP_Indication_header[3]) // Datentyp 
+        {
+            case Bap_byteSequence:
+                switch (gBAP_Indication_header[2]) // IndType
+                {
+                    case Data_IND: // Indicationtyp pruefen
+                        // Daten setzen
+                        putValue(P_ASG_74_1_0_22, gBAP_Indication_data, gBAP_Indication_header[4]);
+                        setControlBackColor(panel_name, "errfield_P_ASG_74_1_0_22", MakeRGB(255,255,255));  
+                        setControlBackColor(panel_name, "panel_P_ASG_74_1_0_22", MakeRGB(255,255,255));  
+                        break;
+                    default:
+                        PrintIndicationError("Illegal IndType");
+                        break;
+                }
+                break;
+            case Bap_error:
+                gP_ASG_74_1_0_22_ErrCode = 0;
+                putValue(P_ASG_74_1_0_22_ErrCode,  gBAP_Indication_header[5]);
+                setControlBackColor(panel_name, "errfield_P_ASG_74_1_0_22", MakeRGB(255,79,79));  
+                setControlBackColor(panel_name, "panel_P_ASG_74_1_0_22", MakeRGB(220,220,220));  
+                break;
+            case Bap_acknowledge:
+                break;
+            default:
+                PrintIndicationError("Illegal DataType");
+                break;
+        }
+    break;
+    case M_ASG_74_1_0_23_ID: 
+            switch(gBAP_Indication_header[3]) // Datentyp
+            {
+                case Bap_byteSequence:
+                    switch (gBAP_Indication_header[2]) // IndType
+                    {
+                        case Result_IND: 
+                            putValue(M_ASG_74_1_0_23_State, "Result");
+                            // Daten setzen
+                            putValue(M_ASG_74_1_0_23_Result, gBAP_Indication_data, gBAP_Indication_header[4]);
+                            setControlBackColor(panel_name, "errfield_M_ASG_74_1_0_23", MakeRGB(255,255,255));  
+                            setControlBackColor(panel_name, "panel_M_ASG_74_1_0_23_Result", MakeRGB(255,255,255));  
+                            break;
+                        case Processing_IND:    
+                            putValue(M_ASG_74_1_0_23_State, "Running");
+                            // Wert von Processing anzeigen
+                            putValue(M_ASG_74_1_0_23_Processing, gBAP_Indication_data, gBAP_Indication_header[4]);
+                            setControlBackColor(panel_name, "errfield_M_ASG_74_1_0_23", MakeRGB(255,255,255));  
+                            setControlBackColor(panel_name, "panel_M_ASG_74_1_0_23_Processing", MakeRGB(255,255,255));  
+                            break;
+                        default:
+                            PrintIndicationError("Illegal IndType");
+                            break;
+                    }
+                    break;
+            case Bap_error:
+                gM_ASG_74_1_0_23_ErrCode = 0;
+                putValue(M_ASG_74_1_0_23_State, "Error");
+                putValue(M_ASG_74_1_0_23_ErrCode,  gBAP_Indication_header[5]);
+                setControlBackColor(panel_name, "errfield_M_ASG_74_1_0_23", MakeRGB(255,79,79));  
+                setControlBackColor(panel_name, "panel_M_ASG_74_1_0_23_Result", MakeRGB(220,220,220));  
+                setControlBackColor(panel_name, "panel_M_ASG_74_1_0_23_Processing", MakeRGB(220,220,220));  
+                break;
+            case Bap_acknowledge:
+                break;
+            default:
+                    PrintIndicationError("Illegal DataType");
+                    break;
+            }
+    break;
+       default:
+           writelineEx(gError_Trace, 0, "NodeIndex: %d: Illegal Fct: lsgid:%d fctid:%d indType:%d",
+           NODE_INDEX, gBAP_Indication_header[0], gBAP_Indication_header[1], gBAP_Indication_header[2]);
+           break;
+       }
+       break;
+   default:
+       writelineEx(gError_Trace, 0, "NodeIndex: %d: Illegal LSGID: lsgid:%d fctid:%d indType:%s", NODE_INDEX, gBAP_Indication_header[0], gBAP_Indication_header[1], Indicationtype_Text[gBAP_Indication_header[2]]);
+       break;
+   }
+}
+
+
+on message BAP_Statistics_FSG_01
+{
+   int i, temp;
+   byte RX_Data[8];            // received CAN-DATA
+   dword RX_Header[3];         // received CAN-Header
+   if(gSG_PowerOnOff==Power_on){
+       RX_Header[0]=this.CAN;
+       RX_Header[1]=this.ID;
+       RX_Header[2]=this.DLC; // received length
+       for (i=0; i<this.DLC; i++) {
+           RX_Data[i]=this.byte(i);
+       }
+       temp=BAP150_CAN_SetRxDat(NODE_INDEX, RX_Header, RX_Data);
+   }
+}
+
+
+
+intertelegram_err(long fctId)
+{
+    long data[4];
+    data[0]=LSGID;
+    data[1]=fctId;
+    data[2]=1;
+    data[3]=940;
+    ChangeConfig(0x0020,data);
+}
+
+sequence_err(long fctId, long size)
+{
+    long data[5];
+    long lastSeg;
+
+    lastSeg = size-5;
+
+    data[0]=LSGID;
+    data[1]=fctId;
+    data[2]=lastSeg/7+1;
+    data[3]=1;
+    data[4]=(lastSeg/7+4) & 15;
+    ChangeConfig(0x0021,data);
+}
+
+intertelegram_err_off(long fctId)
+{
+    long data[4];
+    data[0]=LSGID;
+    data[1]=fctId;
+    data[2]=5000;
+    data[3]=0;
+    ChangeConfig(0x0020,data);
+}
+
+sequence_err_off(long fctId)
+{
+    long data[5];
+
+    data[0]=LSGID;
+    data[1]=fctId;
+    data[2]=5000;
+    data[3]=0;
+    data[4]=0;
+    ChangeConfig(0x0021,data);
+}
+
+// START OF BUS CONFIG PANEL CAPL
+
+// ETHERNET AND FLEXRAY NOT ENABLED! (ENABLE_BUS_SELECTOR_PANEL_TOKEN)
+
+// ETHERNET AND FLEXRAY NOT ENABLED! (ENABLE_CAN_FRAME_TOKEN)
+
+// ETHERNET AND FLEXRAY NOT ENABLED! (ENABLE_FR_FRAME_TOKEN)
+
+// ETHERNET AND FLEXRAY NOT ENABLED! (ENABLE_ETHERNET_FRAME_TOKEN)
+
+// ETHERNET AND FLEXRAY NOT ENABLED! (ENABLE_IP_FORMAT_TOKEN)
+
+// ETHERNET AND FLEXRAY NOT ENABLED! (ON_ENVVAR_BUSTYPE_TOKEN)
+
+// ETHERNET NOT ENABLED! (ON_ENVVAR_ETHERNET_APPLY_BTN_TOKEN)
+
+// ETHERNET NOT ENABLED! (ON_ENVVAR_ETHERNET_RESET_BTN_TOKEN)
+
+// ETHERNET NOT ENABLED! (ON_ENVVAR_IP_INTERFACE_LIST_TOKEN)
+
+// ETHERNET NOT ENABLED! (ON_ENVVAR_IP_FORMAT_TOKEN)
+
+// ETHERNET NOT ENABLED! (ON_UDP_RECEIVE_FROM_TOKEN)
+
+// ETHERNET NOT ENABLED!
+
+on envVar ON_OFF_ASG74_1
+{
+   BapOnOff(getvalue(this));
+   gSG_PowerOnOff=getvalue(ON_OFF_ASG74_1);
+}
+on envVar C_ASG_74_1_0_1GetAll_BTN
+{
+ if (C_ASG_74_1_0_1GetAll_BTN_already_pressed == 0)
+  {
+     C_ASG_74_1_0_1GetAll_BTN_already_pressed = 1;
+     Request_Void(LSGID, C_ASG_74_1_0_1_ID, DataGet_REQ); 
+     putValue(C_ASG_74_1_0_1_State, "GetAll");
+     setControlBackColor(panel_name, "errfield_C_ASG_74_1_0_1_State", MakeRGB(255,255,255));
+ }
+ else
+ {
+     C_ASG_74_1_0_1GetAll_BTN_already_pressed = 0;
+ }
+}
+on envVar P_ASG_74_1_0_2Get_BTN
+{
+ if (P_ASG_74_1_0_2Get_BTN_already_pressed == 0)
+  {
+       putValue(P_ASG_74_1_0_2_ErrCode,0);
+       SetControlBackColor(panel_name,"errField_P_ASG_74_1_0_2",MakeRGB(255,255,255));
+       P_ASG_74_1_0_2Get_BTN_already_pressed = 1;
+ }
+ else
+ {
+       Request_Void(LSGID, P_ASG_74_1_0_2_ID, DataGet_REQ); 
+       P_ASG_74_1_0_2Get_BTN_already_pressed = 0;
+ }
+}
+on envVar P_ASG_74_1_0_3Get_BTN
+{
+ if (P_ASG_74_1_0_3Get_BTN_already_pressed == 0)
+  {
+       putValue(P_ASG_74_1_0_3_ErrCode,0);
+       SetControlBackColor(panel_name,"errField_P_ASG_74_1_0_3",MakeRGB(255,255,255));
+       P_ASG_74_1_0_3Get_BTN_already_pressed = 1;
+ }
+ else
+ {
+       Request_Void(LSGID, P_ASG_74_1_0_3_ID, DataGet_REQ); 
+       P_ASG_74_1_0_3Get_BTN_already_pressed = 0;
+ }
+}
+on envVar P_ASG_74_1_0_4Get_BTN
+{
+ if (P_ASG_74_1_0_4Get_BTN_already_pressed == 0)
+  {
+       putValue(P_ASG_74_1_0_4_ErrCode,0);
+       SetControlBackColor(panel_name,"errField_P_ASG_74_1_0_4",MakeRGB(255,255,255));
+       P_ASG_74_1_0_4Get_BTN_already_pressed = 1;
+ }
+ else
+ {
+       Request_Void(LSGID, P_ASG_74_1_0_4_ID, DataGet_REQ); 
+       P_ASG_74_1_0_4Get_BTN_already_pressed = 0;
+ }
+}
+on envVar P_ASG_74_1_0_13Get_BTN
+{
+ if (P_ASG_74_1_0_13Get_BTN_already_pressed == 0)
+  {
+       putValue(P_ASG_74_1_0_13_ErrCode,0);
+       SetControlBackColor(panel_name,"errField_P_ASG_74_1_0_13",MakeRGB(255,255,255));
+       P_ASG_74_1_0_13Get_BTN_already_pressed = 1;
+ }
+ else
+ {
+       Request_Void(LSGID, P_ASG_74_1_0_13_ID, DataGet_REQ); 
+       P_ASG_74_1_0_13Get_BTN_already_pressed = 0;
+ }
+}
+on envVar P_ASG_74_1_0_13SetGet_BTN
+{
+    if (P_ASG_74_1_0_13SetGet_BTN_already_pressed == 0)
+    {
+       putValue(P_ASG_74_1_0_13_ErrCode,0);
+       SetControlBackColor(panel_name,"errField_P_ASG_74_1_0_13",MakeRGB(255,255,255));
+       P_ASG_74_1_0_13SetGet_BTN_already_pressed = 1;
+    }
+    else
+    {
+       Request_Int8(LSGID, P_ASG_74_1_0_13_ID, DataSetGet_REQ, getValue(P_ASG_74_1_0_13));
+       P_ASG_74_1_0_13SetGet_BTN_already_pressed = 0;
+    }
+}
+on envVar P_ASG_74_1_0_13 // bus value of FSG_Control (13).
+{
+	// opcodes: Error-Status
+	byte param1; // Controlcode
+	// DATATYPE_UINTXX
+	param1 = getValue(P_ASG_74_1_0_13);
+	putValue(P_ASG_74_1_0_13_1, param1);
+}
+
+on envVar P_ASG_74_1_0_13_1_0
+{
+	byte bitval;
+	//thisval steht hier fuer den bitfield-wert, 
+	//aus Generierungsgruenden hier keine einheitliche Bezeichnung moeglich.
+	byte thisval; // Controlcode
+	bitval= getValue(this);
+	thisval = getValue(P_ASG_74_1_0_13_1);
+	thisval = thisval&~(1<<0)|(bitval<<0);
+	putValue(P_ASG_74_1_0_13_1,thisval);
+}
+
+on envVar P_ASG_74_1_0_13_1 // FSG_Control.Controlcode
+{
+	byte superval;
+
+	//Update Childvalue (BitField)
+	byte mask=0x01;
+	int i = 0;
+	byte thisval; // Controlcode
+	thisval = getValue(this);
+	if(thisval&(mask<<0))
+		putValue(P_ASG_74_1_0_13_1_0, 1);
+	else
+		putValue(P_ASG_74_1_0_13_1_0, 0);
+
+    // Update superval
+	superval = getValue(P_ASG_74_1_0_13);
+	superval = thisval;
+	putValue(P_ASG_74_1_0_13,superval);
+}
+
+on envVar P_ASG_74_1_0_14Get_BTN
+{
+ if (P_ASG_74_1_0_14Get_BTN_already_pressed == 0)
+  {
+       putValue(P_ASG_74_1_0_14_ErrCode,0);
+       SetControlBackColor(panel_name,"errField_P_ASG_74_1_0_14",MakeRGB(255,255,255));
+       P_ASG_74_1_0_14Get_BTN_already_pressed = 1;
+ }
+ else
+ {
+       Request_Void(LSGID, P_ASG_74_1_0_14_ID, DataGet_REQ); 
+       P_ASG_74_1_0_14Get_BTN_already_pressed = 0;
+ }
+}
+on envVar P_ASG_74_1_0_14 // bus value of FSG_Setup (14).
+{
+	// opcodes: Error-Status
+	word param1; // Discretisation_Time_Consumption
+	word param2; // Discretisation_Time_DriveMode
+	word param3; // Discretisation_Distance_DriveMode_KM
+	word param4; // Discretisation_Distance_DriveMode_MLS
+	byte param5; // Extension1
+	byte param6; // Extension2
+	byte param7; // Extension3
+	// DATATYPE_BYTESEQUENCE / DATATYPE_FIXEDBYTESEQUENCE
+	int i;
+	byte superval[11];
+	int currentPos;
+	currentPos = 0;
+	for( i = 0; i < 11; i++ ) {
+		superval[i] = 0;
+	}
+	getValue(P_ASG_74_1_0_14, superval);
+	///////// Start param1 - UINT16 /////////
+	param1 = superval[currentPos++]|(superval[currentPos++]<<8);
+	putValue(P_ASG_74_1_0_14_1, round((param1 * 0.1) - (0) + (0), 0.1));
+	///////// Start param2 - UINT16 /////////
+	param2 = superval[currentPos++]|(superval[currentPos++]<<8);
+	putValue(P_ASG_74_1_0_14_2, round((param2 * 0.1) - (0) + (0), 0.1));
+	///////// Start param3 - UINT16 /////////
+	param3 = superval[currentPos++]|(superval[currentPos++]<<8);
+	putValue(P_ASG_74_1_0_14_3, round((param3 * 0.01) - (0) + (0), 0.01));
+	///////// Start param4 - UINT16 /////////
+	param4 = superval[currentPos++]|(superval[currentPos++]<<8);
+	putValue(P_ASG_74_1_0_14_4, round((param4 * 0.01) - (0) + (0), 0.01));
+	///////// Start param5 - UINT8 /////////
+	param5 = superval[currentPos++];
+	putValue(P_ASG_74_1_0_14_5, round((param5 * 1.0) - (0) + (0), 1.0));
+	///////// Start param6 - UINT8 /////////
+	param6 = superval[currentPos++];
+	putValue(P_ASG_74_1_0_14_6, round((param6 * 1.0) - (0) + (0), 1.0));
+	///////// Start param7 - UINT8 /////////
+	param7 = superval[currentPos++];
+	putValue(P_ASG_74_1_0_14_7, round((param7 * 1.0) - (0) + (0), 1.0));
+}
+
+// Updates the bus value field and other dependencies.
+P_ASG_74_1_0_14_BuildFct()
+{
+	word param1; // Discretisation_Time_Consumption
+	word param2; // Discretisation_Time_DriveMode
+	word param3; // Discretisation_Distance_DriveMode_KM
+	word param4; // Discretisation_Distance_DriveMode_MLS
+	byte param5; // Extension1
+	byte param6; // Extension2
+	byte param7; // Extension3
+
+	int i;
+	byte superval[11];
+	int currentPos;
+	currentPos = 0;
+// gen_BuildFunc_SetSuperVals 
+	@P_ASG_74_1_0_14_1_range = round(@P_ASG_74_1_0_14_1 + (0), 0.1); // slider value + min = real value
+	param1 = round( (@P_ASG_74_1_0_14_1 + (0) - (0)) / (0.1), 0.1); // (slider value + min - offset) / step = busvalue
+	superval[currentPos++]=param1&0x00ff;
+	superval[currentPos++]=(param1&0xff00)>>8;
+// gen_BuildFunc_SetSuperVals 
+	@P_ASG_74_1_0_14_2_range = round(@P_ASG_74_1_0_14_2 + (0), 0.1); // slider value + min = real value
+	param2 = round( (@P_ASG_74_1_0_14_2 + (0) - (0)) / (0.1), 0.1); // (slider value + min - offset) / step = busvalue
+	superval[currentPos++]=param2&0x00ff;
+	superval[currentPos++]=(param2&0xff00)>>8;
+// gen_BuildFunc_SetSuperVals 
+	@P_ASG_74_1_0_14_3_range = round(@P_ASG_74_1_0_14_3 + (0), 0.01); // slider value + min = real value
+	param3 = round( (@P_ASG_74_1_0_14_3 + (0) - (0)) / (0.01), 0.01); // (slider value + min - offset) / step = busvalue
+	superval[currentPos++]=param3&0x00ff;
+	superval[currentPos++]=(param3&0xff00)>>8;
+// gen_BuildFunc_SetSuperVals 
+	@P_ASG_74_1_0_14_4_range = round(@P_ASG_74_1_0_14_4 + (0), 0.01); // slider value + min = real value
+	param4 = round( (@P_ASG_74_1_0_14_4 + (0) - (0)) / (0.01), 0.01); // (slider value + min - offset) / step = busvalue
+	superval[currentPos++]=param4&0x00ff;
+	superval[currentPos++]=(param4&0xff00)>>8;
+// gen_BuildFunc_SetSuperVals 
+	@P_ASG_74_1_0_14_5_range = round(@P_ASG_74_1_0_14_5 + (0), 1.0); // slider value + min = real value
+	param5 = 0; // underlying parameter has constant value 0.
+	superval[currentPos++]=param5;
+// gen_BuildFunc_SetSuperVals 
+	@P_ASG_74_1_0_14_6_range = round(@P_ASG_74_1_0_14_6 + (0), 1.0); // slider value + min = real value
+	param6 = 0; // underlying parameter has constant value 0.
+	superval[currentPos++]=param6;
+// gen_BuildFunc_SetSuperVals 
+	@P_ASG_74_1_0_14_7_range = round(@P_ASG_74_1_0_14_7 + (0), 1.0); // slider value + min = real value
+	param7 = 0; // underlying parameter has constant value 0.
+	superval[currentPos++]=param7;
+	putValue(P_ASG_74_1_0_14, superval, currentPos);
+}
+
+
+// Ueberwachung der Darstellungsvariable der Range.
+on envVar P_ASG_74_1_0_14_1_range // FSG_Setup.Discretisation_Time_Consumption 
+{
+	@P_ASG_74_1_0_14_1 = @P_ASG_74_1_0_14_1_range - (0); // slider = range - min
+}
+
+on envVar P_ASG_74_1_0_14_1 // FSG_Setup.Discretisation_Time_Consumption
+{
+	P_ASG_74_1_0_14_BuildFct();
+}
+
+// Ueberwachung der Darstellungsvariable der Range.
+on envVar P_ASG_74_1_0_14_2_range // FSG_Setup.Discretisation_Time_DriveMode 
+{
+	@P_ASG_74_1_0_14_2 = @P_ASG_74_1_0_14_2_range - (0); // slider = range - min
+}
+
+on envVar P_ASG_74_1_0_14_2 // FSG_Setup.Discretisation_Time_DriveMode
+{
+	P_ASG_74_1_0_14_BuildFct();
+}
+
+// Ueberwachung der Darstellungsvariable der Range.
+on envVar P_ASG_74_1_0_14_3_range // FSG_Setup.Discretisation_Distance_DriveMode_KM 
+{
+	@P_ASG_74_1_0_14_3 = @P_ASG_74_1_0_14_3_range - (0); // slider = range - min
+}
+
+on envVar P_ASG_74_1_0_14_3 // FSG_Setup.Discretisation_Distance_DriveMode_KM
+{
+	P_ASG_74_1_0_14_BuildFct();
+}
+
+// Ueberwachung der Darstellungsvariable der Range.
+on envVar P_ASG_74_1_0_14_4_range // FSG_Setup.Discretisation_Distance_DriveMode_MLS 
+{
+	@P_ASG_74_1_0_14_4 = @P_ASG_74_1_0_14_4_range - (0); // slider = range - min
+}
+
+on envVar P_ASG_74_1_0_14_4 // FSG_Setup.Discretisation_Distance_DriveMode_MLS
+{
+	P_ASG_74_1_0_14_BuildFct();
+}
+
+// Ueberwachung der Darstellungsvariable der Range.
+on envVar P_ASG_74_1_0_14_5_range // FSG_Setup.Extension1 
+{
+	@P_ASG_74_1_0_14_5 = @P_ASG_74_1_0_14_5_range - (0); // slider = range - min
+}
+
+on envVar P_ASG_74_1_0_14_5 // FSG_Setup.Extension1
+{
+	P_ASG_74_1_0_14_BuildFct();
+}
+
+// Ueberwachung der Darstellungsvariable der Range.
+on envVar P_ASG_74_1_0_14_6_range // FSG_Setup.Extension2 
+{
+	@P_ASG_74_1_0_14_6 = @P_ASG_74_1_0_14_6_range - (0); // slider = range - min
+}
+
+on envVar P_ASG_74_1_0_14_6 // FSG_Setup.Extension2
+{
+	P_ASG_74_1_0_14_BuildFct();
+}
+
+// Ueberwachung der Darstellungsvariable der Range.
+on envVar P_ASG_74_1_0_14_7_range // FSG_Setup.Extension3 
+{
+	@P_ASG_74_1_0_14_7 = @P_ASG_74_1_0_14_7_range - (0); // slider = range - min
+}
+
+on envVar P_ASG_74_1_0_14_7 // FSG_Setup.Extension3
+{
+	P_ASG_74_1_0_14_BuildFct();
+}
+
+on envVar P_ASG_74_1_0_15Get_BTN
+{
+ if (P_ASG_74_1_0_15Get_BTN_already_pressed == 0)
+  {
+       putValue(P_ASG_74_1_0_15_ErrCode,0);
+       SetControlBackColor(panel_name,"errField_P_ASG_74_1_0_15",MakeRGB(255,255,255));
+       P_ASG_74_1_0_15Get_BTN_already_pressed = 1;
+ }
+ else
+ {
+       Request_Void(LSGID, P_ASG_74_1_0_15_ID, DataGet_REQ); 
+       P_ASG_74_1_0_15Get_BTN_already_pressed = 0;
+ }
+}
+on envVar P_ASG_74_1_0_15 // bus value of FSG_OperationState (15).
+{
+	// opcodes: Error-Status
+	byte param1; // OP_State
+	// DATATYPE_UINTXX
+	param1 = getValue(P_ASG_74_1_0_15);
+	putValue(P_ASG_74_1_0_15_1, param1);
+}
+
+on envVar P_ASG_74_1_0_15_1 // FSG_OperationState.OP_State
+{
+	byte superval;
+
+	//Update Childvalue (Enum)
+	byte thisval; // OP_State
+	thisval = getValue(this);
+
+    // Update superval
+	superval = getValue(P_ASG_74_1_0_15);
+	superval = thisval;
+	putValue(P_ASG_74_1_0_15,superval);
+}
+
+on envVar P_ASG_74_1_0_16Get_BTN
+{
+ if (P_ASG_74_1_0_16Get_BTN_already_pressed == 0)
+  {
+       putValue(P_ASG_74_1_0_16_ErrCode,0);
+       SetControlBackColor(panel_name,"errField_P_ASG_74_1_0_16",MakeRGB(255,255,255));
+       P_ASG_74_1_0_16Get_BTN_already_pressed = 1;
+ }
+ else
+ {
+       Request_Void(LSGID, P_ASG_74_1_0_16_ID, DataGet_REQ); 
+       P_ASG_74_1_0_16Get_BTN_already_pressed = 0;
+ }
+}
+on envVar P_ASG_74_1_0_16 // bus value of TimeBased_ConsumptionData (16).
+{
+	// opcodes: Error-Status
+	byte param1; // ValueCount
+	word param2; // Consumption_Combustion
+	word param3; // Consumption_Electrical
+	word param4; // Consumption_CNG
+	word param5; // Recuperation
+	word param6; // Distance
+	word param7; // Extension1
+	word param8; // Extension2
+	word param9; // Extension3
+	// DATATYPE_BYTESEQUENCE / DATATYPE_FIXEDBYTESEQUENCE
+	int i;
+	byte superval[17];
+	int currentPos;
+	currentPos = 0;
+	for( i = 0; i < 17; i++ ) {
+		superval[i] = 0;
+	}
+	getValue(P_ASG_74_1_0_16, superval);
+	///////// Start param1 - UINT8 /////////
+	param1 = superval[currentPos++];
+	putValue(P_ASG_74_1_0_16_1, round((param1 * 1.0) - (0) + (0), 1.0));
+	///////// Start param2 - UINT16 /////////
+	param2 = superval[currentPos++]|(superval[currentPos++]<<8);
+	putValue(P_ASG_74_1_0_16_2, round((param2 * 10.0) - (0) + (0), 10.0));
+	///////// Start param3 - UINT16 /////////
+	param3 = superval[currentPos++]|(superval[currentPos++]<<8);
+	putValue(P_ASG_74_1_0_16_3, round((param3 * 10.0) - (0) + (0), 10.0));
+	///////// Start param4 - UINT16 /////////
+	param4 = superval[currentPos++]|(superval[currentPos++]<<8);
+	putValue(P_ASG_74_1_0_16_4, round((param4 * 10.0) - (0) + (0), 10.0));
+	///////// Start param5 - UINT16 /////////
+	param5 = superval[currentPos++]|(superval[currentPos++]<<8);
+	putValue(P_ASG_74_1_0_16_5, round((param5 * 10.0) - (0) + (0), 10.0));
+	///////// Start param6 - UINT16 /////////
+	param6 = superval[currentPos++]|(superval[currentPos++]<<8);
+	putValue(P_ASG_74_1_0_16_6, round((param6 * 1.0E-4) - (0) + (0), 1.0E-4));
+	///////// Start param7 - UINT16 /////////
+	param7 = superval[currentPos++]|(superval[currentPos++]<<8);
+	putValue(P_ASG_74_1_0_16_7, round((param7 * 1.0) - (0) + (0), 1.0));
+	///////// Start param8 - UINT16 /////////
+	param8 = superval[currentPos++]|(superval[currentPos++]<<8);
+	putValue(P_ASG_74_1_0_16_8, round((param8 * 1.0) - (0) + (0), 1.0));
+	///////// Start param9 - UINT16 /////////
+	param9 = superval[currentPos++]|(superval[currentPos++]<<8);
+	putValue(P_ASG_74_1_0_16_9, round((param9 * 1.0) - (0) + (0), 1.0));
+}
+
+// Updates the bus value field and other dependencies.
+P_ASG_74_1_0_16_BuildFct()
+{
+	byte param1; // ValueCount
+	word param2; // Consumption_Combustion
+	word param3; // Consumption_Electrical
+	word param4; // Consumption_CNG
+	word param5; // Recuperation
+	word param6; // Distance
+	word param7; // Extension1
+	word param8; // Extension2
+	word param9; // Extension3
+
+	int i;
+	byte superval[17];
+	int currentPos;
+	currentPos = 0;
+// gen_BuildFunc_SetSuperVals 
+	@P_ASG_74_1_0_16_1_range = round(@P_ASG_74_1_0_16_1 + (0), 1.0); // slider value + min = real value
+	param1 = round( (@P_ASG_74_1_0_16_1 + (0) - (0)) / (1.0), 1.0); // (slider value + min - offset) / step = busvalue
+	superval[currentPos++]=param1;
+// gen_BuildFunc_SetSuperVals 
+	@P_ASG_74_1_0_16_2_range = round(@P_ASG_74_1_0_16_2 + (0), 10.0); // slider value + min = real value
+	param2 = round( (@P_ASG_74_1_0_16_2 + (0) - (0)) / (10.0), 10.0); // (slider value + min - offset) / step = busvalue
+	superval[currentPos++]=param2&0x00ff;
+	superval[currentPos++]=(param2&0xff00)>>8;
+// gen_BuildFunc_SetSuperVals 
+	@P_ASG_74_1_0_16_3_range = round(@P_ASG_74_1_0_16_3 + (0), 10.0); // slider value + min = real value
+	param3 = round( (@P_ASG_74_1_0_16_3 + (0) - (0)) / (10.0), 10.0); // (slider value + min - offset) / step = busvalue
+	superval[currentPos++]=param3&0x00ff;
+	superval[currentPos++]=(param3&0xff00)>>8;
+// gen_BuildFunc_SetSuperVals 
+	@P_ASG_74_1_0_16_4_range = round(@P_ASG_74_1_0_16_4 + (0), 10.0); // slider value + min = real value
+	param4 = round( (@P_ASG_74_1_0_16_4 + (0) - (0)) / (10.0), 10.0); // (slider value + min - offset) / step = busvalue
+	superval[currentPos++]=param4&0x00ff;
+	superval[currentPos++]=(param4&0xff00)>>8;
+// gen_BuildFunc_SetSuperVals 
+	@P_ASG_74_1_0_16_5_range = round(@P_ASG_74_1_0_16_5 + (0), 10.0); // slider value + min = real value
+	param5 = round( (@P_ASG_74_1_0_16_5 + (0) - (0)) / (10.0), 10.0); // (slider value + min - offset) / step = busvalue
+	superval[currentPos++]=param5&0x00ff;
+	superval[currentPos++]=(param5&0xff00)>>8;
+// gen_BuildFunc_SetSuperVals 
+	@P_ASG_74_1_0_16_6_range = round(@P_ASG_74_1_0_16_6 + (0), 1.0E-4); // slider value + min = real value
+	param6 = round( (@P_ASG_74_1_0_16_6 + (0) - (0)) / (1.0E-4), 1.0E-4); // (slider value + min - offset) / step = busvalue
+	superval[currentPos++]=param6&0x00ff;
+	superval[currentPos++]=(param6&0xff00)>>8;
+// gen_BuildFunc_SetSuperVals 
+	@P_ASG_74_1_0_16_7_range = round(@P_ASG_74_1_0_16_7 + (0), 1.0); // slider value + min = real value
+	param7 = 0; // underlying parameter has constant value 0.
+	superval[currentPos++]=param7&0x00ff;
+	superval[currentPos++]=(param7&0xff00)>>8;
+// gen_BuildFunc_SetSuperVals 
+	@P_ASG_74_1_0_16_8_range = round(@P_ASG_74_1_0_16_8 + (0), 1.0); // slider value + min = real value
+	param8 = 0; // underlying parameter has constant value 0.
+	superval[currentPos++]=param8&0x00ff;
+	superval[currentPos++]=(param8&0xff00)>>8;
+// gen_BuildFunc_SetSuperVals 
+	@P_ASG_74_1_0_16_9_range = round(@P_ASG_74_1_0_16_9 + (0), 1.0); // slider value + min = real value
+	param9 = 0; // underlying parameter has constant value 0.
+	superval[currentPos++]=param9&0x00ff;
+	superval[currentPos++]=(param9&0xff00)>>8;
+	putValue(P_ASG_74_1_0_16, superval, currentPos);
+}
+
+
+// Ueberwachung der Darstellungsvariable der Range.
+on envVar P_ASG_74_1_0_16_1_range // TimeBased_ConsumptionData.ValueCount 
+{
+	@P_ASG_74_1_0_16_1 = @P_ASG_74_1_0_16_1_range - (0); // slider = range - min
+}
+
+on envVar P_ASG_74_1_0_16_1 // TimeBased_ConsumptionData.ValueCount
+{
+	P_ASG_74_1_0_16_BuildFct();
+}
+
+// Ueberwachung der Darstellungsvariable der Range.
+on envVar P_ASG_74_1_0_16_2_range // TimeBased_ConsumptionData.Consumption_Combustion 
+{
+	@P_ASG_74_1_0_16_2 = @P_ASG_74_1_0_16_2_range - (0); // slider = range - min
+}
+
+on envVar P_ASG_74_1_0_16_2 // TimeBased_ConsumptionData.Consumption_Combustion
+{
+	P_ASG_74_1_0_16_BuildFct();
+}
+
+// Ueberwachung der Darstellungsvariable der Range.
+on envVar P_ASG_74_1_0_16_3_range // TimeBased_ConsumptionData.Consumption_Electrical 
+{
+	@P_ASG_74_1_0_16_3 = @P_ASG_74_1_0_16_3_range - (0); // slider = range - min
+}
+
+on envVar P_ASG_74_1_0_16_3 // TimeBased_ConsumptionData.Consumption_Electrical
+{
+	P_ASG_74_1_0_16_BuildFct();
+}
+
+// Ueberwachung der Darstellungsvariable der Range.
+on envVar P_ASG_74_1_0_16_4_range // TimeBased_ConsumptionData.Consumption_CNG 
+{
+	@P_ASG_74_1_0_16_4 = @P_ASG_74_1_0_16_4_range - (0); // slider = range - min
+}
+
+on envVar P_ASG_74_1_0_16_4 // TimeBased_ConsumptionData.Consumption_CNG
+{
+	P_ASG_74_1_0_16_BuildFct();
+}
+
+// Ueberwachung der Darstellungsvariable der Range.
+on envVar P_ASG_74_1_0_16_5_range // TimeBased_ConsumptionData.Recuperation 
+{
+	@P_ASG_74_1_0_16_5 = @P_ASG_74_1_0_16_5_range - (0); // slider = range - min
+}
+
+on envVar P_ASG_74_1_0_16_5 // TimeBased_ConsumptionData.Recuperation
+{
+	P_ASG_74_1_0_16_BuildFct();
+}
+
+// Ueberwachung der Darstellungsvariable der Range.
+on envVar P_ASG_74_1_0_16_6_range // TimeBased_ConsumptionData.Distance 
+{
+	@P_ASG_74_1_0_16_6 = @P_ASG_74_1_0_16_6_range - (0); // slider = range - min
+}
+
+on envVar P_ASG_74_1_0_16_6 // TimeBased_ConsumptionData.Distance
+{
+	P_ASG_74_1_0_16_BuildFct();
+}
+
+// Ueberwachung der Darstellungsvariable der Range.
+on envVar P_ASG_74_1_0_16_7_range // TimeBased_ConsumptionData.Extension1 
+{
+	@P_ASG_74_1_0_16_7 = @P_ASG_74_1_0_16_7_range - (0); // slider = range - min
+}
+
+on envVar P_ASG_74_1_0_16_7 // TimeBased_ConsumptionData.Extension1
+{
+	P_ASG_74_1_0_16_BuildFct();
+}
+
+// Ueberwachung der Darstellungsvariable der Range.
+on envVar P_ASG_74_1_0_16_8_range // TimeBased_ConsumptionData.Extension2 
+{
+	@P_ASG_74_1_0_16_8 = @P_ASG_74_1_0_16_8_range - (0); // slider = range - min
+}
+
+on envVar P_ASG_74_1_0_16_8 // TimeBased_ConsumptionData.Extension2
+{
+	P_ASG_74_1_0_16_BuildFct();
+}
+
+// Ueberwachung der Darstellungsvariable der Range.
+on envVar P_ASG_74_1_0_16_9_range // TimeBased_ConsumptionData.Extension3 
+{
+	@P_ASG_74_1_0_16_9 = @P_ASG_74_1_0_16_9_range - (0); // slider = range - min
+}
+
+on envVar P_ASG_74_1_0_16_9 // TimeBased_ConsumptionData.Extension3
+{
+	P_ASG_74_1_0_16_BuildFct();
+}
+
+on envVar P_ASG_74_1_0_17Get_BTN
+{
+ if (P_ASG_74_1_0_17Get_BTN_already_pressed == 0)
+  {
+       putValue(P_ASG_74_1_0_17_ErrCode,0);
+       SetControlBackColor(panel_name,"errField_P_ASG_74_1_0_17",MakeRGB(255,255,255));
+       P_ASG_74_1_0_17Get_BTN_already_pressed = 1;
+ }
+ else
+ {
+       Request_Void(LSGID, P_ASG_74_1_0_17_ID, DataGet_REQ); 
+       P_ASG_74_1_0_17Get_BTN_already_pressed = 0;
+ }
+}
+on envVar P_ASG_74_1_0_17 // bus value of TimeBased_DrivingModes (17).
+{
+	// opcodes: Error-Status
+	byte param1; // ValueCount
+	word param2; // Distance_Recuperation
+	word param3; // Distance_Combustion
+	word param4; // Distance_Electrical
+	word param5; // Distance_CNG
+	word param6; // Distance_FreeRoling_Engine_OFF
+	word param7; // Distance_FreeRolling_Engine_ON
+	word param8; // Distance
+	word param9; // Extension1
+	// DATATYPE_BYTESEQUENCE / DATATYPE_FIXEDBYTESEQUENCE
+	int i;
+	byte superval[17];
+	int currentPos;
+	currentPos = 0;
+	for( i = 0; i < 17; i++ ) {
+		superval[i] = 0;
+	}
+	getValue(P_ASG_74_1_0_17, superval);
+	///////// Start param1 - UINT8 /////////
+	param1 = superval[currentPos++];
+	putValue(P_ASG_74_1_0_17_1, round((param1 * 1.0) - (0) + (0), 1.0));
+	///////// Start param2 - UINT16 /////////
+	param2 = superval[currentPos++]|(superval[currentPos++]<<8);
+	putValue(P_ASG_74_1_0_17_2, round((param2 * 0.001) - (0) + (0), 0.001));
+	///////// Start param3 - UINT16 /////////
+	param3 = superval[currentPos++]|(superval[currentPos++]<<8);
+	putValue(P_ASG_74_1_0_17_3, round((param3 * 0.001) - (0) + (0), 0.001));
+	///////// Start param4 - UINT16 /////////
+	param4 = superval[currentPos++]|(superval[currentPos++]<<8);
+	putValue(P_ASG_74_1_0_17_4, round((param4 * 0.001) - (0) + (0), 0.001));
+	///////// Start param5 - UINT16 /////////
+	param5 = superval[currentPos++]|(superval[currentPos++]<<8);
+	putValue(P_ASG_74_1_0_17_5, round((param5 * 0.001) - (0) + (0), 0.001));
+	///////// Start param6 - UINT16 /////////
+	param6 = superval[currentPos++]|(superval[currentPos++]<<8);
+	putValue(P_ASG_74_1_0_17_6, round((param6 * 0.001) - (0) + (0), 0.001));
+	///////// Start param7 - UINT16 /////////
+	param7 = superval[currentPos++]|(superval[currentPos++]<<8);
+	putValue(P_ASG_74_1_0_17_7, round((param7 * 0.001) - (0) + (0), 0.001));
+	///////// Start param8 - UINT16 /////////
+	param8 = superval[currentPos++]|(superval[currentPos++]<<8);
+	putValue(P_ASG_74_1_0_17_8, round((param8 * 0.001) - (0) + (0), 0.001));
+	///////// Start param9 - UINT16 /////////
+	param9 = superval[currentPos++]|(superval[currentPos++]<<8);
+	putValue(P_ASG_74_1_0_17_9, round((param9 * 1.0) - (0) + (0), 1.0));
+}
+
+// Updates the bus value field and other dependencies.
+P_ASG_74_1_0_17_BuildFct()
+{
+	byte param1; // ValueCount
+	word param2; // Distance_Recuperation
+	word param3; // Distance_Combustion
+	word param4; // Distance_Electrical
+	word param5; // Distance_CNG
+	word param6; // Distance_FreeRoling_Engine_OFF
+	word param7; // Distance_FreeRolling_Engine_ON
+	word param8; // Distance
+	word param9; // Extension1
+
+	int i;
+	byte superval[17];
+	int currentPos;
+	currentPos = 0;
+// gen_BuildFunc_SetSuperVals 
+	@P_ASG_74_1_0_17_1_range = round(@P_ASG_74_1_0_17_1 + (0), 1.0); // slider value + min = real value
+	param1 = round( (@P_ASG_74_1_0_17_1 + (0) - (0)) / (1.0), 1.0); // (slider value + min - offset) / step = busvalue
+	superval[currentPos++]=param1;
+// gen_BuildFunc_SetSuperVals 
+	@P_ASG_74_1_0_17_2_range = round(@P_ASG_74_1_0_17_2 + (0), 0.001); // slider value + min = real value
+	param2 = round( (@P_ASG_74_1_0_17_2 + (0) - (0)) / (0.001), 0.001); // (slider value + min - offset) / step = busvalue
+	superval[currentPos++]=param2&0x00ff;
+	superval[currentPos++]=(param2&0xff00)>>8;
+// gen_BuildFunc_SetSuperVals 
+	@P_ASG_74_1_0_17_3_range = round(@P_ASG_74_1_0_17_3 + (0), 0.001); // slider value + min = real value
+	param3 = round( (@P_ASG_74_1_0_17_3 + (0) - (0)) / (0.001), 0.001); // (slider value + min - offset) / step = busvalue
+	superval[currentPos++]=param3&0x00ff;
+	superval[currentPos++]=(param3&0xff00)>>8;
+// gen_BuildFunc_SetSuperVals 
+	@P_ASG_74_1_0_17_4_range = round(@P_ASG_74_1_0_17_4 + (0), 0.001); // slider value + min = real value
+	param4 = round( (@P_ASG_74_1_0_17_4 + (0) - (0)) / (0.001), 0.001); // (slider value + min - offset) / step = busvalue
+	superval[currentPos++]=param4&0x00ff;
+	superval[currentPos++]=(param4&0xff00)>>8;
+// gen_BuildFunc_SetSuperVals 
+	@P_ASG_74_1_0_17_5_range = round(@P_ASG_74_1_0_17_5 + (0), 0.001); // slider value + min = real value
+	param5 = round( (@P_ASG_74_1_0_17_5 + (0) - (0)) / (0.001), 0.001); // (slider value + min - offset) / step = busvalue
+	superval[currentPos++]=param5&0x00ff;
+	superval[currentPos++]=(param5&0xff00)>>8;
+// gen_BuildFunc_SetSuperVals 
+	@P_ASG_74_1_0_17_6_range = round(@P_ASG_74_1_0_17_6 + (0), 0.001); // slider value + min = real value
+	param6 = round( (@P_ASG_74_1_0_17_6 + (0) - (0)) / (0.001), 0.001); // (slider value + min - offset) / step = busvalue
+	superval[currentPos++]=param6&0x00ff;
+	superval[currentPos++]=(param6&0xff00)>>8;
+// gen_BuildFunc_SetSuperVals 
+	@P_ASG_74_1_0_17_7_range = round(@P_ASG_74_1_0_17_7 + (0), 0.001); // slider value + min = real value
+	param7 = round( (@P_ASG_74_1_0_17_7 + (0) - (0)) / (0.001), 0.001); // (slider value + min - offset) / step = busvalue
+	superval[currentPos++]=param7&0x00ff;
+	superval[currentPos++]=(param7&0xff00)>>8;
+// gen_BuildFunc_SetSuperVals 
+	@P_ASG_74_1_0_17_8_range = round(@P_ASG_74_1_0_17_8 + (0), 0.001); // slider value + min = real value
+	param8 = round( (@P_ASG_74_1_0_17_8 + (0) - (0)) / (0.001), 0.001); // (slider value + min - offset) / step = busvalue
+	superval[currentPos++]=param8&0x00ff;
+	superval[currentPos++]=(param8&0xff00)>>8;
+// gen_BuildFunc_SetSuperVals 
+	@P_ASG_74_1_0_17_9_range = round(@P_ASG_74_1_0_17_9 + (0), 1.0); // slider value + min = real value
+	param9 = 0; // underlying parameter has constant value 0.
+	superval[currentPos++]=param9&0x00ff;
+	superval[currentPos++]=(param9&0xff00)>>8;
+	putValue(P_ASG_74_1_0_17, superval, currentPos);
+}
+
+
+// Ueberwachung der Darstellungsvariable der Range.
+on envVar P_ASG_74_1_0_17_1_range // TimeBased_DrivingModes.ValueCount 
+{
+	@P_ASG_74_1_0_17_1 = @P_ASG_74_1_0_17_1_range - (0); // slider = range - min
+}
+
+on envVar P_ASG_74_1_0_17_1 // TimeBased_DrivingModes.ValueCount
+{
+	P_ASG_74_1_0_17_BuildFct();
+}
+
+// Ueberwachung der Darstellungsvariable der Range.
+on envVar P_ASG_74_1_0_17_2_range // TimeBased_DrivingModes.Distance_Recuperation 
+{
+	@P_ASG_74_1_0_17_2 = @P_ASG_74_1_0_17_2_range - (0); // slider = range - min
+}
+
+on envVar P_ASG_74_1_0_17_2 // TimeBased_DrivingModes.Distance_Recuperation
+{
+	P_ASG_74_1_0_17_BuildFct();
+}
+
+// Ueberwachung der Darstellungsvariable der Range.
+on envVar P_ASG_74_1_0_17_3_range // TimeBased_DrivingModes.Distance_Combustion 
+{
+	@P_ASG_74_1_0_17_3 = @P_ASG_74_1_0_17_3_range - (0); // slider = range - min
+}
+
+on envVar P_ASG_74_1_0_17_3 // TimeBased_DrivingModes.Distance_Combustion
+{
+	P_ASG_74_1_0_17_BuildFct();
+}
+
+// Ueberwachung der Darstellungsvariable der Range.
+on envVar P_ASG_74_1_0_17_4_range // TimeBased_DrivingModes.Distance_Electrical 
+{
+	@P_ASG_74_1_0_17_4 = @P_ASG_74_1_0_17_4_range - (0); // slider = range - min
+}
+
+on envVar P_ASG_74_1_0_17_4 // TimeBased_DrivingModes.Distance_Electrical
+{
+	P_ASG_74_1_0_17_BuildFct();
+}
+
+// Ueberwachung der Darstellungsvariable der Range.
+on envVar P_ASG_74_1_0_17_5_range // TimeBased_DrivingModes.Distance_CNG 
+{
+	@P_ASG_74_1_0_17_5 = @P_ASG_74_1_0_17_5_range - (0); // slider = range - min
+}
+
+on envVar P_ASG_74_1_0_17_5 // TimeBased_DrivingModes.Distance_CNG
+{
+	P_ASG_74_1_0_17_BuildFct();
+}
+
+// Ueberwachung der Darstellungsvariable der Range.
+on envVar P_ASG_74_1_0_17_6_range // TimeBased_DrivingModes.Distance_FreeRoling_Engine_OFF 
+{
+	@P_ASG_74_1_0_17_6 = @P_ASG_74_1_0_17_6_range - (0); // slider = range - min
+}
+
+on envVar P_ASG_74_1_0_17_6 // TimeBased_DrivingModes.Distance_FreeRoling_Engine_OFF
+{
+	P_ASG_74_1_0_17_BuildFct();
+}
+
+// Ueberwachung der Darstellungsvariable der Range.
+on envVar P_ASG_74_1_0_17_7_range // TimeBased_DrivingModes.Distance_FreeRolling_Engine_ON 
+{
+	@P_ASG_74_1_0_17_7 = @P_ASG_74_1_0_17_7_range - (0); // slider = range - min
+}
+
+on envVar P_ASG_74_1_0_17_7 // TimeBased_DrivingModes.Distance_FreeRolling_Engine_ON
+{
+	P_ASG_74_1_0_17_BuildFct();
+}
+
+// Ueberwachung der Darstellungsvariable der Range.
+on envVar P_ASG_74_1_0_17_8_range // TimeBased_DrivingModes.Distance 
+{
+	@P_ASG_74_1_0_17_8 = @P_ASG_74_1_0_17_8_range - (0); // slider = range - min
+}
+
+on envVar P_ASG_74_1_0_17_8 // TimeBased_DrivingModes.Distance
+{
+	P_ASG_74_1_0_17_BuildFct();
+}
+
+// Ueberwachung der Darstellungsvariable der Range.
+on envVar P_ASG_74_1_0_17_9_range // TimeBased_DrivingModes.Extension1 
+{
+	@P_ASG_74_1_0_17_9 = @P_ASG_74_1_0_17_9_range - (0); // slider = range - min
+}
+
+on envVar P_ASG_74_1_0_17_9 // TimeBased_DrivingModes.Extension1
+{
+	P_ASG_74_1_0_17_BuildFct();
+}
+
+on envVar P_ASG_74_1_0_18Get_BTN
+{
+ if (P_ASG_74_1_0_18Get_BTN_already_pressed == 0)
+  {
+       putValue(P_ASG_74_1_0_18_ErrCode,0);
+       SetControlBackColor(panel_name,"errField_P_ASG_74_1_0_18",MakeRGB(255,255,255));
+       P_ASG_74_1_0_18Get_BTN_already_pressed = 1;
+ }
+ else
+ {
+       Request_Void(LSGID, P_ASG_74_1_0_18_ID, DataGet_REQ); 
+       P_ASG_74_1_0_18Get_BTN_already_pressed = 0;
+ }
+}
+on envVar P_ASG_74_1_0_18 // bus value of CurrentIntervall_DrivingModes (18).
+{
+	// opcodes: Error-Status
+	byte param1; // Unit
+	word param2; // Distance_Recuperation
+	word param3; // Distance_Combustion
+	word param4; // Distance_Electrical
+	word param5; // Distance_CNG
+	word param6; // Distance_FreeRoling_Engine_OFF
+	word param7; // Distance_FreeRolling_Engine_ON
+	word param8; // Extension1
+	word param9; // Extension2
+	// DATATYPE_BYTESEQUENCE / DATATYPE_FIXEDBYTESEQUENCE
+	int i;
+	byte superval[17];
+	int currentPos;
+	currentPos = 0;
+	for( i = 0; i < 17; i++ ) {
+		superval[i] = 0;
+	}
+	getValue(P_ASG_74_1_0_18, superval);
+	///////// Start param1 - UINT8 /////////
+	param1 = superval[currentPos++];
+	putValue(P_ASG_74_1_0_18_1, param1);
+	///////// Start param2 - UINT16 /////////
+	param2 = superval[currentPos++]|(superval[currentPos++]<<8);
+	putValue(P_ASG_74_1_0_18_2, round((param2 * 0.001) - (0) + (0), 0.001));
+	///////// Start param3 - UINT16 /////////
+	param3 = superval[currentPos++]|(superval[currentPos++]<<8);
+	putValue(P_ASG_74_1_0_18_3, round((param3 * 0.001) - (0) + (0), 0.001));
+	///////// Start param4 - UINT16 /////////
+	param4 = superval[currentPos++]|(superval[currentPos++]<<8);
+	putValue(P_ASG_74_1_0_18_4, round((param4 * 0.001) - (0) + (0), 0.001));
+	///////// Start param5 - UINT16 /////////
+	param5 = superval[currentPos++]|(superval[currentPos++]<<8);
+	putValue(P_ASG_74_1_0_18_5, round((param5 * 0.001) - (0) + (0), 0.001));
+	///////// Start param6 - UINT16 /////////
+	param6 = superval[currentPos++]|(superval[currentPos++]<<8);
+	putValue(P_ASG_74_1_0_18_6, round((param6 * 0.001) - (0) + (0), 0.001));
+	///////// Start param7 - UINT16 /////////
+	param7 = superval[currentPos++]|(superval[currentPos++]<<8);
+	putValue(P_ASG_74_1_0_18_7, round((param7 * 0.001) - (0) + (0), 0.001));
+	///////// Start param8 - UINT16 /////////
+	param8 = superval[currentPos++]|(superval[currentPos++]<<8);
+	putValue(P_ASG_74_1_0_18_8, round((param8 * 1.0) - (0) + (0), 1.0));
+	///////// Start param9 - UINT16 /////////
+	param9 = superval[currentPos++]|(superval[currentPos++]<<8);
+	putValue(P_ASG_74_1_0_18_9, round((param9 * 1.0) - (0) + (0), 1.0));
+}
+
+// Updates the bus value field and other dependencies.
+P_ASG_74_1_0_18_BuildFct()
+{
+	byte param1; // Unit
+	word param2; // Distance_Recuperation
+	word param3; // Distance_Combustion
+	word param4; // Distance_Electrical
+	word param5; // Distance_CNG
+	word param6; // Distance_FreeRoling_Engine_OFF
+	word param7; // Distance_FreeRolling_Engine_ON
+	word param8; // Extension1
+	word param9; // Extension2
+
+	int i;
+	byte superval[17];
+	int currentPos;
+	currentPos = 0;
+// gen_BuildFunc_SetSuperVals 
+	param1 = getValue(P_ASG_74_1_0_18_1);
+	superval[currentPos++]=param1;
+// gen_BuildFunc_SetSuperVals 
+	@P_ASG_74_1_0_18_2_range = round(@P_ASG_74_1_0_18_2 + (0), 0.001); // slider value + min = real value
+	param2 = round( (@P_ASG_74_1_0_18_2 + (0) - (0)) / (0.001), 0.001); // (slider value + min - offset) / step = busvalue
+	superval[currentPos++]=param2&0x00ff;
+	superval[currentPos++]=(param2&0xff00)>>8;
+// gen_BuildFunc_SetSuperVals 
+	@P_ASG_74_1_0_18_3_range = round(@P_ASG_74_1_0_18_3 + (0), 0.001); // slider value + min = real value
+	param3 = round( (@P_ASG_74_1_0_18_3 + (0) - (0)) / (0.001), 0.001); // (slider value + min - offset) / step = busvalue
+	superval[currentPos++]=param3&0x00ff;
+	superval[currentPos++]=(param3&0xff00)>>8;
+// gen_BuildFunc_SetSuperVals 
+	@P_ASG_74_1_0_18_4_range = round(@P_ASG_74_1_0_18_4 + (0), 0.001); // slider value + min = real value
+	param4 = round( (@P_ASG_74_1_0_18_4 + (0) - (0)) / (0.001), 0.001); // (slider value + min - offset) / step = busvalue
+	superval[currentPos++]=param4&0x00ff;
+	superval[currentPos++]=(param4&0xff00)>>8;
+// gen_BuildFunc_SetSuperVals 
+	@P_ASG_74_1_0_18_5_range = round(@P_ASG_74_1_0_18_5 + (0), 0.001); // slider value + min = real value
+	param5 = round( (@P_ASG_74_1_0_18_5 + (0) - (0)) / (0.001), 0.001); // (slider value + min - offset) / step = busvalue
+	superval[currentPos++]=param5&0x00ff;
+	superval[currentPos++]=(param5&0xff00)>>8;
+// gen_BuildFunc_SetSuperVals 
+	@P_ASG_74_1_0_18_6_range = round(@P_ASG_74_1_0_18_6 + (0), 0.001); // slider value + min = real value
+	param6 = round( (@P_ASG_74_1_0_18_6 + (0) - (0)) / (0.001), 0.001); // (slider value + min - offset) / step = busvalue
+	superval[currentPos++]=param6&0x00ff;
+	superval[currentPos++]=(param6&0xff00)>>8;
+// gen_BuildFunc_SetSuperVals 
+	@P_ASG_74_1_0_18_7_range = round(@P_ASG_74_1_0_18_7 + (0), 0.001); // slider value + min = real value
+	param7 = round( (@P_ASG_74_1_0_18_7 + (0) - (0)) / (0.001), 0.001); // (slider value + min - offset) / step = busvalue
+	superval[currentPos++]=param7&0x00ff;
+	superval[currentPos++]=(param7&0xff00)>>8;
+// gen_BuildFunc_SetSuperVals 
+	@P_ASG_74_1_0_18_8_range = round(@P_ASG_74_1_0_18_8 + (0), 1.0); // slider value + min = real value
+	param8 = 0; // underlying parameter has constant value 0.
+	superval[currentPos++]=param8&0x00ff;
+	superval[currentPos++]=(param8&0xff00)>>8;
+// gen_BuildFunc_SetSuperVals 
+	@P_ASG_74_1_0_18_9_range = round(@P_ASG_74_1_0_18_9 + (0), 1.0); // slider value + min = real value
+	param9 = 0; // underlying parameter has constant value 0.
+	superval[currentPos++]=param9&0x00ff;
+	superval[currentPos++]=(param9&0xff00)>>8;
+	putValue(P_ASG_74_1_0_18, superval, currentPos);
+}
+
+
+on envVar P_ASG_74_1_0_18_1 // CurrentIntervall_DrivingModes.Unit
+{
+	P_ASG_74_1_0_18_BuildFct();
+}
+
+// Ueberwachung der Darstellungsvariable der Range.
+on envVar P_ASG_74_1_0_18_2_range // CurrentIntervall_DrivingModes.Distance_Recuperation 
+{
+	@P_ASG_74_1_0_18_2 = @P_ASG_74_1_0_18_2_range - (0); // slider = range - min
+}
+
+on envVar P_ASG_74_1_0_18_2 // CurrentIntervall_DrivingModes.Distance_Recuperation
+{
+	P_ASG_74_1_0_18_BuildFct();
+}
+
+// Ueberwachung der Darstellungsvariable der Range.
+on envVar P_ASG_74_1_0_18_3_range // CurrentIntervall_DrivingModes.Distance_Combustion 
+{
+	@P_ASG_74_1_0_18_3 = @P_ASG_74_1_0_18_3_range - (0); // slider = range - min
+}
+
+on envVar P_ASG_74_1_0_18_3 // CurrentIntervall_DrivingModes.Distance_Combustion
+{
+	P_ASG_74_1_0_18_BuildFct();
+}
+
+// Ueberwachung der Darstellungsvariable der Range.
+on envVar P_ASG_74_1_0_18_4_range // CurrentIntervall_DrivingModes.Distance_Electrical 
+{
+	@P_ASG_74_1_0_18_4 = @P_ASG_74_1_0_18_4_range - (0); // slider = range - min
+}
+
+on envVar P_ASG_74_1_0_18_4 // CurrentIntervall_DrivingModes.Distance_Electrical
+{
+	P_ASG_74_1_0_18_BuildFct();
+}
+
+// Ueberwachung der Darstellungsvariable der Range.
+on envVar P_ASG_74_1_0_18_5_range // CurrentIntervall_DrivingModes.Distance_CNG 
+{
+	@P_ASG_74_1_0_18_5 = @P_ASG_74_1_0_18_5_range - (0); // slider = range - min
+}
+
+on envVar P_ASG_74_1_0_18_5 // CurrentIntervall_DrivingModes.Distance_CNG
+{
+	P_ASG_74_1_0_18_BuildFct();
+}
+
+// Ueberwachung der Darstellungsvariable der Range.
+on envVar P_ASG_74_1_0_18_6_range // CurrentIntervall_DrivingModes.Distance_FreeRoling_Engine_OFF 
+{
+	@P_ASG_74_1_0_18_6 = @P_ASG_74_1_0_18_6_range - (0); // slider = range - min
+}
+
+on envVar P_ASG_74_1_0_18_6 // CurrentIntervall_DrivingModes.Distance_FreeRoling_Engine_OFF
+{
+	P_ASG_74_1_0_18_BuildFct();
+}
+
+// Ueberwachung der Darstellungsvariable der Range.
+on envVar P_ASG_74_1_0_18_7_range // CurrentIntervall_DrivingModes.Distance_FreeRolling_Engine_ON 
+{
+	@P_ASG_74_1_0_18_7 = @P_ASG_74_1_0_18_7_range - (0); // slider = range - min
+}
+
+on envVar P_ASG_74_1_0_18_7 // CurrentIntervall_DrivingModes.Distance_FreeRolling_Engine_ON
+{
+	P_ASG_74_1_0_18_BuildFct();
+}
+
+// Ueberwachung der Darstellungsvariable der Range.
+on envVar P_ASG_74_1_0_18_8_range // CurrentIntervall_DrivingModes.Extension1 
+{
+	@P_ASG_74_1_0_18_8 = @P_ASG_74_1_0_18_8_range - (0); // slider = range - min
+}
+
+on envVar P_ASG_74_1_0_18_8 // CurrentIntervall_DrivingModes.Extension1
+{
+	P_ASG_74_1_0_18_BuildFct();
+}
+
+// Ueberwachung der Darstellungsvariable der Range.
+on envVar P_ASG_74_1_0_18_9_range // CurrentIntervall_DrivingModes.Extension2 
+{
+	@P_ASG_74_1_0_18_9 = @P_ASG_74_1_0_18_9_range - (0); // slider = range - min
+}
+
+on envVar P_ASG_74_1_0_18_9 // CurrentIntervall_DrivingModes.Extension2
+{
+	P_ASG_74_1_0_18_BuildFct();
+}
+
+on envVar P_ASG_74_1_0_19Get_BTN
+{
+ if (P_ASG_74_1_0_19Get_BTN_already_pressed == 0)
+  {
+       putValue(P_ASG_74_1_0_19_ErrCode,0);
+       SetControlBackColor(panel_name,"errField_P_ASG_74_1_0_19",MakeRGB(255,255,255));
+       P_ASG_74_1_0_19Get_BTN_already_pressed = 1;
+ }
+ else
+ {
+       Request_Void(LSGID, P_ASG_74_1_0_19_ID, DataGet_REQ); 
+       P_ASG_74_1_0_19Get_BTN_already_pressed = 0;
+ }
+}
+on envVar P_ASG_74_1_0_19 // bus value of DistanceBased_DrivingModes_KM (19).
+{
+	// opcodes: Error-Status
+	byte param1; // ValueCount
+	word param2; // Distance_Recuperation
+	word param3; // Distance_Combustion
+	word param4; // Distance_Electrical
+	word param5; // Distance_CNG
+	word param6; // Distance_FreeRoling_Engine_OFF
+	word param7; // Distance_FreeRolling_Engine_ON
+	word param8; // Extension1
+	word param9; // Extension2
+	// DATATYPE_BYTESEQUENCE / DATATYPE_FIXEDBYTESEQUENCE
+	int i;
+	byte superval[17];
+	int currentPos;
+	currentPos = 0;
+	for( i = 0; i < 17; i++ ) {
+		superval[i] = 0;
+	}
+	getValue(P_ASG_74_1_0_19, superval);
+	///////// Start param1 - UINT8 /////////
+	param1 = superval[currentPos++];
+	putValue(P_ASG_74_1_0_19_1, round((param1 * 1.0) - (0) + (0), 1.0));
+	///////// Start param2 - UINT16 /////////
+	param2 = superval[currentPos++]|(superval[currentPos++]<<8);
+	putValue(P_ASG_74_1_0_19_2, round((param2 * 0.001) - (0) + (0), 0.001));
+	///////// Start param3 - UINT16 /////////
+	param3 = superval[currentPos++]|(superval[currentPos++]<<8);
+	putValue(P_ASG_74_1_0_19_3, round((param3 * 0.001) - (0) + (0), 0.001));
+	///////// Start param4 - UINT16 /////////
+	param4 = superval[currentPos++]|(superval[currentPos++]<<8);
+	putValue(P_ASG_74_1_0_19_4, round((param4 * 0.001) - (0) + (0), 0.001));
+	///////// Start param5 - UINT16 /////////
+	param5 = superval[currentPos++]|(superval[currentPos++]<<8);
+	putValue(P_ASG_74_1_0_19_5, round((param5 * 0.001) - (0) + (0), 0.001));
+	///////// Start param6 - UINT16 /////////
+	param6 = superval[currentPos++]|(superval[currentPos++]<<8);
+	putValue(P_ASG_74_1_0_19_6, round((param6 * 0.001) - (0) + (0), 0.001));
+	///////// Start param7 - UINT16 /////////
+	param7 = superval[currentPos++]|(superval[currentPos++]<<8);
+	putValue(P_ASG_74_1_0_19_7, round((param7 * 0.001) - (0) + (0), 0.001));
+	///////// Start param8 - UINT16 /////////
+	param8 = superval[currentPos++]|(superval[currentPos++]<<8);
+	putValue(P_ASG_74_1_0_19_8, round((param8 * 1.0) - (0) + (0), 1.0));
+	///////// Start param9 - UINT16 /////////
+	param9 = superval[currentPos++]|(superval[currentPos++]<<8);
+	putValue(P_ASG_74_1_0_19_9, round((param9 * 1.0) - (0) + (0), 1.0));
+}
+
+// Updates the bus value field and other dependencies.
+P_ASG_74_1_0_19_BuildFct()
+{
+	byte param1; // ValueCount
+	word param2; // Distance_Recuperation
+	word param3; // Distance_Combustion
+	word param4; // Distance_Electrical
+	word param5; // Distance_CNG
+	word param6; // Distance_FreeRoling_Engine_OFF
+	word param7; // Distance_FreeRolling_Engine_ON
+	word param8; // Extension1
+	word param9; // Extension2
+
+	int i;
+	byte superval[17];
+	int currentPos;
+	currentPos = 0;
+// gen_BuildFunc_SetSuperVals 
+	@P_ASG_74_1_0_19_1_range = round(@P_ASG_74_1_0_19_1 + (0), 1.0); // slider value + min = real value
+	param1 = round( (@P_ASG_74_1_0_19_1 + (0) - (0)) / (1.0), 1.0); // (slider value + min - offset) / step = busvalue
+	superval[currentPos++]=param1;
+// gen_BuildFunc_SetSuperVals 
+	@P_ASG_74_1_0_19_2_range = round(@P_ASG_74_1_0_19_2 + (0), 0.001); // slider value + min = real value
+	param2 = round( (@P_ASG_74_1_0_19_2 + (0) - (0)) / (0.001), 0.001); // (slider value + min - offset) / step = busvalue
+	superval[currentPos++]=param2&0x00ff;
+	superval[currentPos++]=(param2&0xff00)>>8;
+// gen_BuildFunc_SetSuperVals 
+	@P_ASG_74_1_0_19_3_range = round(@P_ASG_74_1_0_19_3 + (0), 0.001); // slider value + min = real value
+	param3 = round( (@P_ASG_74_1_0_19_3 + (0) - (0)) / (0.001), 0.001); // (slider value + min - offset) / step = busvalue
+	superval[currentPos++]=param3&0x00ff;
+	superval[currentPos++]=(param3&0xff00)>>8;
+// gen_BuildFunc_SetSuperVals 
+	@P_ASG_74_1_0_19_4_range = round(@P_ASG_74_1_0_19_4 + (0), 0.001); // slider value + min = real value
+	param4 = round( (@P_ASG_74_1_0_19_4 + (0) - (0)) / (0.001), 0.001); // (slider value + min - offset) / step = busvalue
+	superval[currentPos++]=param4&0x00ff;
+	superval[currentPos++]=(param4&0xff00)>>8;
+// gen_BuildFunc_SetSuperVals 
+	@P_ASG_74_1_0_19_5_range = round(@P_ASG_74_1_0_19_5 + (0), 0.001); // slider value + min = real value
+	param5 = round( (@P_ASG_74_1_0_19_5 + (0) - (0)) / (0.001), 0.001); // (slider value + min - offset) / step = busvalue
+	superval[currentPos++]=param5&0x00ff;
+	superval[currentPos++]=(param5&0xff00)>>8;
+// gen_BuildFunc_SetSuperVals 
+	@P_ASG_74_1_0_19_6_range = round(@P_ASG_74_1_0_19_6 + (0), 0.001); // slider value + min = real value
+	param6 = round( (@P_ASG_74_1_0_19_6 + (0) - (0)) / (0.001), 0.001); // (slider value + min - offset) / step = busvalue
+	superval[currentPos++]=param6&0x00ff;
+	superval[currentPos++]=(param6&0xff00)>>8;
+// gen_BuildFunc_SetSuperVals 
+	@P_ASG_74_1_0_19_7_range = round(@P_ASG_74_1_0_19_7 + (0), 0.001); // slider value + min = real value
+	param7 = round( (@P_ASG_74_1_0_19_7 + (0) - (0)) / (0.001), 0.001); // (slider value + min - offset) / step = busvalue
+	superval[currentPos++]=param7&0x00ff;
+	superval[currentPos++]=(param7&0xff00)>>8;
+// gen_BuildFunc_SetSuperVals 
+	@P_ASG_74_1_0_19_8_range = round(@P_ASG_74_1_0_19_8 + (0), 1.0); // slider value + min = real value
+	param8 = 0; // underlying parameter has constant value 0.
+	superval[currentPos++]=param8&0x00ff;
+	superval[currentPos++]=(param8&0xff00)>>8;
+// gen_BuildFunc_SetSuperVals 
+	@P_ASG_74_1_0_19_9_range = round(@P_ASG_74_1_0_19_9 + (0), 1.0); // slider value + min = real value
+	param9 = 0; // underlying parameter has constant value 0.
+	superval[currentPos++]=param9&0x00ff;
+	superval[currentPos++]=(param9&0xff00)>>8;
+	putValue(P_ASG_74_1_0_19, superval, currentPos);
+}
+
+
+// Ueberwachung der Darstellungsvariable der Range.
+on envVar P_ASG_74_1_0_19_1_range // DistanceBased_DrivingModes_KM.ValueCount 
+{
+	@P_ASG_74_1_0_19_1 = @P_ASG_74_1_0_19_1_range - (0); // slider = range - min
+}
+
+on envVar P_ASG_74_1_0_19_1 // DistanceBased_DrivingModes_KM.ValueCount
+{
+	P_ASG_74_1_0_19_BuildFct();
+}
+
+// Ueberwachung der Darstellungsvariable der Range.
+on envVar P_ASG_74_1_0_19_2_range // DistanceBased_DrivingModes_KM.Distance_Recuperation 
+{
+	@P_ASG_74_1_0_19_2 = @P_ASG_74_1_0_19_2_range - (0); // slider = range - min
+}
+
+on envVar P_ASG_74_1_0_19_2 // DistanceBased_DrivingModes_KM.Distance_Recuperation
+{
+	P_ASG_74_1_0_19_BuildFct();
+}
+
+// Ueberwachung der Darstellungsvariable der Range.
+on envVar P_ASG_74_1_0_19_3_range // DistanceBased_DrivingModes_KM.Distance_Combustion 
+{
+	@P_ASG_74_1_0_19_3 = @P_ASG_74_1_0_19_3_range - (0); // slider = range - min
+}
+
+on envVar P_ASG_74_1_0_19_3 // DistanceBased_DrivingModes_KM.Distance_Combustion
+{
+	P_ASG_74_1_0_19_BuildFct();
+}
+
+// Ueberwachung der Darstellungsvariable der Range.
+on envVar P_ASG_74_1_0_19_4_range // DistanceBased_DrivingModes_KM.Distance_Electrical 
+{
+	@P_ASG_74_1_0_19_4 = @P_ASG_74_1_0_19_4_range - (0); // slider = range - min
+}
+
+on envVar P_ASG_74_1_0_19_4 // DistanceBased_DrivingModes_KM.Distance_Electrical
+{
+	P_ASG_74_1_0_19_BuildFct();
+}
+
+// Ueberwachung der Darstellungsvariable der Range.
+on envVar P_ASG_74_1_0_19_5_range // DistanceBased_DrivingModes_KM.Distance_CNG 
+{
+	@P_ASG_74_1_0_19_5 = @P_ASG_74_1_0_19_5_range - (0); // slider = range - min
+}
+
+on envVar P_ASG_74_1_0_19_5 // DistanceBased_DrivingModes_KM.Distance_CNG
+{
+	P_ASG_74_1_0_19_BuildFct();
+}
+
+// Ueberwachung der Darstellungsvariable der Range.
+on envVar P_ASG_74_1_0_19_6_range // DistanceBased_DrivingModes_KM.Distance_FreeRoling_Engine_OFF 
+{
+	@P_ASG_74_1_0_19_6 = @P_ASG_74_1_0_19_6_range - (0); // slider = range - min
+}
+
+on envVar P_ASG_74_1_0_19_6 // DistanceBased_DrivingModes_KM.Distance_FreeRoling_Engine_OFF
+{
+	P_ASG_74_1_0_19_BuildFct();
+}
+
+// Ueberwachung der Darstellungsvariable der Range.
+on envVar P_ASG_74_1_0_19_7_range // DistanceBased_DrivingModes_KM.Distance_FreeRolling_Engine_ON 
+{
+	@P_ASG_74_1_0_19_7 = @P_ASG_74_1_0_19_7_range - (0); // slider = range - min
+}
+
+on envVar P_ASG_74_1_0_19_7 // DistanceBased_DrivingModes_KM.Distance_FreeRolling_Engine_ON
+{
+	P_ASG_74_1_0_19_BuildFct();
+}
+
+// Ueberwachung der Darstellungsvariable der Range.
+on envVar P_ASG_74_1_0_19_8_range // DistanceBased_DrivingModes_KM.Extension1 
+{
+	@P_ASG_74_1_0_19_8 = @P_ASG_74_1_0_19_8_range - (0); // slider = range - min
+}
+
+on envVar P_ASG_74_1_0_19_8 // DistanceBased_DrivingModes_KM.Extension1
+{
+	P_ASG_74_1_0_19_BuildFct();
+}
+
+// Ueberwachung der Darstellungsvariable der Range.
+on envVar P_ASG_74_1_0_19_9_range // DistanceBased_DrivingModes_KM.Extension2 
+{
+	@P_ASG_74_1_0_19_9 = @P_ASG_74_1_0_19_9_range - (0); // slider = range - min
+}
+
+on envVar P_ASG_74_1_0_19_9 // DistanceBased_DrivingModes_KM.Extension2
+{
+	P_ASG_74_1_0_19_BuildFct();
+}
+
+on envVar P_ASG_74_1_0_20Get_BTN
+{
+ if (P_ASG_74_1_0_20Get_BTN_already_pressed == 0)
+  {
+       putValue(P_ASG_74_1_0_20_ErrCode,0);
+       SetControlBackColor(panel_name,"errField_P_ASG_74_1_0_20",MakeRGB(255,255,255));
+       P_ASG_74_1_0_20Get_BTN_already_pressed = 1;
+ }
+ else
+ {
+       Request_Void(LSGID, P_ASG_74_1_0_20_ID, DataGet_REQ); 
+       P_ASG_74_1_0_20Get_BTN_already_pressed = 0;
+ }
+}
+on envVar P_ASG_74_1_0_20 // bus value of DistanceBased_DrivingModes_MLS (20).
+{
+	// opcodes: Error-Status
+	byte param1; // ValueCount
+	word param2; // Distance_Recuperation
+	word param3; // Distance_Combustion
+	word param4; // Distance_Electrical
+	word param5; // Distance_CNG
+	word param6; // Distance_FreeRoling_Engine_OFF
+	word param7; // Distance_FreeRolling_Engine_ON
+	word param8; // Extension1
+	word param9; // Extension2
+	// DATATYPE_BYTESEQUENCE / DATATYPE_FIXEDBYTESEQUENCE
+	int i;
+	byte superval[17];
+	int currentPos;
+	currentPos = 0;
+	for( i = 0; i < 17; i++ ) {
+		superval[i] = 0;
+	}
+	getValue(P_ASG_74_1_0_20, superval);
+	///////// Start param1 - UINT8 /////////
+	param1 = superval[currentPos++];
+	putValue(P_ASG_74_1_0_20_1, round((param1 * 1.0) - (0) + (0), 1.0));
+	///////// Start param2 - UINT16 /////////
+	param2 = superval[currentPos++]|(superval[currentPos++]<<8);
+	putValue(P_ASG_74_1_0_20_2, round((param2 * 0.001) - (0) + (0), 0.001));
+	///////// Start param3 - UINT16 /////////
+	param3 = superval[currentPos++]|(superval[currentPos++]<<8);
+	putValue(P_ASG_74_1_0_20_3, round((param3 * 0.001) - (0) + (0), 0.001));
+	///////// Start param4 - UINT16 /////////
+	param4 = superval[currentPos++]|(superval[currentPos++]<<8);
+	putValue(P_ASG_74_1_0_20_4, round((param4 * 0.001) - (0) + (0), 0.001));
+	///////// Start param5 - UINT16 /////////
+	param5 = superval[currentPos++]|(superval[currentPos++]<<8);
+	putValue(P_ASG_74_1_0_20_5, round((param5 * 0.001) - (0) + (0), 0.001));
+	///////// Start param6 - UINT16 /////////
+	param6 = superval[currentPos++]|(superval[currentPos++]<<8);
+	putValue(P_ASG_74_1_0_20_6, round((param6 * 0.001) - (0) + (0), 0.001));
+	///////// Start param7 - UINT16 /////////
+	param7 = superval[currentPos++]|(superval[currentPos++]<<8);
+	putValue(P_ASG_74_1_0_20_7, round((param7 * 0.001) - (0) + (0), 0.001));
+	///////// Start param8 - UINT16 /////////
+	param8 = superval[currentPos++]|(superval[currentPos++]<<8);
+	putValue(P_ASG_74_1_0_20_8, round((param8 * 1.0) - (0) + (0), 1.0));
+	///////// Start param9 - UINT16 /////////
+	param9 = superval[currentPos++]|(superval[currentPos++]<<8);
+	putValue(P_ASG_74_1_0_20_9, round((param9 * 1.0) - (0) + (0), 1.0));
+}
+
+// Updates the bus value field and other dependencies.
+P_ASG_74_1_0_20_BuildFct()
+{
+	byte param1; // ValueCount
+	word param2; // Distance_Recuperation
+	word param3; // Distance_Combustion
+	word param4; // Distance_Electrical
+	word param5; // Distance_CNG
+	word param6; // Distance_FreeRoling_Engine_OFF
+	word param7; // Distance_FreeRolling_Engine_ON
+	word param8; // Extension1
+	word param9; // Extension2
+
+	int i;
+	byte superval[17];
+	int currentPos;
+	currentPos = 0;
+// gen_BuildFunc_SetSuperVals 
+	@P_ASG_74_1_0_20_1_range = round(@P_ASG_74_1_0_20_1 + (0), 1.0); // slider value + min = real value
+	param1 = round( (@P_ASG_74_1_0_20_1 + (0) - (0)) / (1.0), 1.0); // (slider value + min - offset) / step = busvalue
+	superval[currentPos++]=param1;
+// gen_BuildFunc_SetSuperVals 
+	@P_ASG_74_1_0_20_2_range = round(@P_ASG_74_1_0_20_2 + (0), 0.001); // slider value + min = real value
+	param2 = round( (@P_ASG_74_1_0_20_2 + (0) - (0)) / (0.001), 0.001); // (slider value + min - offset) / step = busvalue
+	superval[currentPos++]=param2&0x00ff;
+	superval[currentPos++]=(param2&0xff00)>>8;
+// gen_BuildFunc_SetSuperVals 
+	@P_ASG_74_1_0_20_3_range = round(@P_ASG_74_1_0_20_3 + (0), 0.001); // slider value + min = real value
+	param3 = round( (@P_ASG_74_1_0_20_3 + (0) - (0)) / (0.001), 0.001); // (slider value + min - offset) / step = busvalue
+	superval[currentPos++]=param3&0x00ff;
+	superval[currentPos++]=(param3&0xff00)>>8;
+// gen_BuildFunc_SetSuperVals 
+	@P_ASG_74_1_0_20_4_range = round(@P_ASG_74_1_0_20_4 + (0), 0.001); // slider value + min = real value
+	param4 = round( (@P_ASG_74_1_0_20_4 + (0) - (0)) / (0.001), 0.001); // (slider value + min - offset) / step = busvalue
+	superval[currentPos++]=param4&0x00ff;
+	superval[currentPos++]=(param4&0xff00)>>8;
+// gen_BuildFunc_SetSuperVals 
+	@P_ASG_74_1_0_20_5_range = round(@P_ASG_74_1_0_20_5 + (0), 0.001); // slider value + min = real value
+	param5 = round( (@P_ASG_74_1_0_20_5 + (0) - (0)) / (0.001), 0.001); // (slider value + min - offset) / step = busvalue
+	superval[currentPos++]=param5&0x00ff;
+	superval[currentPos++]=(param5&0xff00)>>8;
+// gen_BuildFunc_SetSuperVals 
+	@P_ASG_74_1_0_20_6_range = round(@P_ASG_74_1_0_20_6 + (0), 0.001); // slider value + min = real value
+	param6 = round( (@P_ASG_74_1_0_20_6 + (0) - (0)) / (0.001), 0.001); // (slider value + min - offset) / step = busvalue
+	superval[currentPos++]=param6&0x00ff;
+	superval[currentPos++]=(param6&0xff00)>>8;
+// gen_BuildFunc_SetSuperVals 
+	@P_ASG_74_1_0_20_7_range = round(@P_ASG_74_1_0_20_7 + (0), 0.001); // slider value + min = real value
+	param7 = round( (@P_ASG_74_1_0_20_7 + (0) - (0)) / (0.001), 0.001); // (slider value + min - offset) / step = busvalue
+	superval[currentPos++]=param7&0x00ff;
+	superval[currentPos++]=(param7&0xff00)>>8;
+// gen_BuildFunc_SetSuperVals 
+	@P_ASG_74_1_0_20_8_range = round(@P_ASG_74_1_0_20_8 + (0), 1.0); // slider value + min = real value
+	param8 = 0; // underlying parameter has constant value 0.
+	superval[currentPos++]=param8&0x00ff;
+	superval[currentPos++]=(param8&0xff00)>>8;
+// gen_BuildFunc_SetSuperVals 
+	@P_ASG_74_1_0_20_9_range = round(@P_ASG_74_1_0_20_9 + (0), 1.0); // slider value + min = real value
+	param9 = 0; // underlying parameter has constant value 0.
+	superval[currentPos++]=param9&0x00ff;
+	superval[currentPos++]=(param9&0xff00)>>8;
+	putValue(P_ASG_74_1_0_20, superval, currentPos);
+}
+
+
+// Ueberwachung der Darstellungsvariable der Range.
+on envVar P_ASG_74_1_0_20_1_range // DistanceBased_DrivingModes_MLS.ValueCount 
+{
+	@P_ASG_74_1_0_20_1 = @P_ASG_74_1_0_20_1_range - (0); // slider = range - min
+}
+
+on envVar P_ASG_74_1_0_20_1 // DistanceBased_DrivingModes_MLS.ValueCount
+{
+	P_ASG_74_1_0_20_BuildFct();
+}
+
+// Ueberwachung der Darstellungsvariable der Range.
+on envVar P_ASG_74_1_0_20_2_range // DistanceBased_DrivingModes_MLS.Distance_Recuperation 
+{
+	@P_ASG_74_1_0_20_2 = @P_ASG_74_1_0_20_2_range - (0); // slider = range - min
+}
+
+on envVar P_ASG_74_1_0_20_2 // DistanceBased_DrivingModes_MLS.Distance_Recuperation
+{
+	P_ASG_74_1_0_20_BuildFct();
+}
+
+// Ueberwachung der Darstellungsvariable der Range.
+on envVar P_ASG_74_1_0_20_3_range // DistanceBased_DrivingModes_MLS.Distance_Combustion 
+{
+	@P_ASG_74_1_0_20_3 = @P_ASG_74_1_0_20_3_range - (0); // slider = range - min
+}
+
+on envVar P_ASG_74_1_0_20_3 // DistanceBased_DrivingModes_MLS.Distance_Combustion
+{
+	P_ASG_74_1_0_20_BuildFct();
+}
+
+// Ueberwachung der Darstellungsvariable der Range.
+on envVar P_ASG_74_1_0_20_4_range // DistanceBased_DrivingModes_MLS.Distance_Electrical 
+{
+	@P_ASG_74_1_0_20_4 = @P_ASG_74_1_0_20_4_range - (0); // slider = range - min
+}
+
+on envVar P_ASG_74_1_0_20_4 // DistanceBased_DrivingModes_MLS.Distance_Electrical
+{
+	P_ASG_74_1_0_20_BuildFct();
+}
+
+// Ueberwachung der Darstellungsvariable der Range.
+on envVar P_ASG_74_1_0_20_5_range // DistanceBased_DrivingModes_MLS.Distance_CNG 
+{
+	@P_ASG_74_1_0_20_5 = @P_ASG_74_1_0_20_5_range - (0); // slider = range - min
+}
+
+on envVar P_ASG_74_1_0_20_5 // DistanceBased_DrivingModes_MLS.Distance_CNG
+{
+	P_ASG_74_1_0_20_BuildFct();
+}
+
+// Ueberwachung der Darstellungsvariable der Range.
+on envVar P_ASG_74_1_0_20_6_range // DistanceBased_DrivingModes_MLS.Distance_FreeRoling_Engine_OFF 
+{
+	@P_ASG_74_1_0_20_6 = @P_ASG_74_1_0_20_6_range - (0); // slider = range - min
+}
+
+on envVar P_ASG_74_1_0_20_6 // DistanceBased_DrivingModes_MLS.Distance_FreeRoling_Engine_OFF
+{
+	P_ASG_74_1_0_20_BuildFct();
+}
+
+// Ueberwachung der Darstellungsvariable der Range.
+on envVar P_ASG_74_1_0_20_7_range // DistanceBased_DrivingModes_MLS.Distance_FreeRolling_Engine_ON 
+{
+	@P_ASG_74_1_0_20_7 = @P_ASG_74_1_0_20_7_range - (0); // slider = range - min
+}
+
+on envVar P_ASG_74_1_0_20_7 // DistanceBased_DrivingModes_MLS.Distance_FreeRolling_Engine_ON
+{
+	P_ASG_74_1_0_20_BuildFct();
+}
+
+// Ueberwachung der Darstellungsvariable der Range.
+on envVar P_ASG_74_1_0_20_8_range // DistanceBased_DrivingModes_MLS.Extension1 
+{
+	@P_ASG_74_1_0_20_8 = @P_ASG_74_1_0_20_8_range - (0); // slider = range - min
+}
+
+on envVar P_ASG_74_1_0_20_8 // DistanceBased_DrivingModes_MLS.Extension1
+{
+	P_ASG_74_1_0_20_BuildFct();
+}
+
+// Ueberwachung der Darstellungsvariable der Range.
+on envVar P_ASG_74_1_0_20_9_range // DistanceBased_DrivingModes_MLS.Extension2 
+{
+	@P_ASG_74_1_0_20_9 = @P_ASG_74_1_0_20_9_range - (0); // slider = range - min
+}
+
+on envVar P_ASG_74_1_0_20_9 // DistanceBased_DrivingModes_MLS.Extension2
+{
+	P_ASG_74_1_0_20_BuildFct();
+}
+
+on envVar P_ASG_74_1_0_21Get_BTN
+{
+ if (P_ASG_74_1_0_21Get_BTN_already_pressed == 0)
+  {
+       putValue(P_ASG_74_1_0_21_ErrCode,0);
+       SetControlBackColor(panel_name,"errField_P_ASG_74_1_0_21",MakeRGB(255,255,255));
+       P_ASG_74_1_0_21Get_BTN_already_pressed = 1;
+ }
+ else
+ {
+       Request_Void(LSGID, P_ASG_74_1_0_21_ID, DataGet_REQ); 
+       P_ASG_74_1_0_21Get_BTN_already_pressed = 0;
+ }
+}
+on envVar P_ASG_74_1_0_21 // bus value of DistanceBased_DrivingModes_Accumulated (21).
+{
+	// opcodes: Error-Status
+	dword param1; // Distance_Recuperation
+	dword param2; // Distance_Electrical
+	dword param3; // Distance_Combustion
+	dword param4; // Distance_CNG
+	dword param5; // Distance_FreeRoling_Engine_OFF
+	dword param6; // Distance_FreeRolling_Engine_ON
+	dword param7; // Extension1
+	dword param8; // Extension2
+	// DATATYPE_BYTESEQUENCE / DATATYPE_FIXEDBYTESEQUENCE
+	int i;
+	byte superval[32];
+	int currentPos;
+	currentPos = 0;
+	for( i = 0; i < 32; i++ ) {
+		superval[i] = 0;
+	}
+	getValue(P_ASG_74_1_0_21, superval);
+	///////// Start param1 - UINT32 /////////
+	param1 = superval[currentPos++]|(superval[currentPos++]<<8)|(superval[currentPos++]<<16)|(superval[currentPos++]<<24);
+	putValue(P_ASG_74_1_0_21_1, round((param1 * 0.001) - (0) + (0), 0.001));
+	///////// Start param2 - UINT32 /////////
+	param2 = superval[currentPos++]|(superval[currentPos++]<<8)|(superval[currentPos++]<<16)|(superval[currentPos++]<<24);
+	putValue(P_ASG_74_1_0_21_2, round((param2 * 0.001) - (0) + (0), 0.001));
+	///////// Start param3 - UINT32 /////////
+	param3 = superval[currentPos++]|(superval[currentPos++]<<8)|(superval[currentPos++]<<16)|(superval[currentPos++]<<24);
+	putValue(P_ASG_74_1_0_21_3, round((param3 * 0.001) - (0) + (0), 0.001));
+	///////// Start param4 - UINT32 /////////
+	param4 = superval[currentPos++]|(superval[currentPos++]<<8)|(superval[currentPos++]<<16)|(superval[currentPos++]<<24);
+	putValue(P_ASG_74_1_0_21_4, round((param4 * 0.001) - (0) + (0), 0.001));
+	///////// Start param5 - UINT32 /////////
+	param5 = superval[currentPos++]|(superval[currentPos++]<<8)|(superval[currentPos++]<<16)|(superval[currentPos++]<<24);
+	putValue(P_ASG_74_1_0_21_5, round((param5 * 0.001) - (0) + (0), 0.001));
+	///////// Start param6 - UINT32 /////////
+	param6 = superval[currentPos++]|(superval[currentPos++]<<8)|(superval[currentPos++]<<16)|(superval[currentPos++]<<24);
+	putValue(P_ASG_74_1_0_21_6, round((param6 * 0.001) - (0) + (0), 0.001));
+	///////// Start param7 - UINT32 /////////
+	param7 = superval[currentPos++]|(superval[currentPos++]<<8)|(superval[currentPos++]<<16)|(superval[currentPos++]<<24);
+	putValue(P_ASG_74_1_0_21_7, round((param7 * 1.0) - (0) + (0), 1.0));
+	///////// Start param8 - UINT32 /////////
+	param8 = superval[currentPos++]|(superval[currentPos++]<<8)|(superval[currentPos++]<<16)|(superval[currentPos++]<<24);
+	putValue(P_ASG_74_1_0_21_8, round((param8 * 1.0) - (0) + (0), 1.0));
+}
+
+// Updates the bus value field and other dependencies.
+P_ASG_74_1_0_21_BuildFct()
+{
+	dword param1; // Distance_Recuperation
+	dword param2; // Distance_Electrical
+	dword param3; // Distance_Combustion
+	dword param4; // Distance_CNG
+	dword param5; // Distance_FreeRoling_Engine_OFF
+	dword param6; // Distance_FreeRolling_Engine_ON
+	dword param7; // Extension1
+	dword param8; // Extension2
+
+	int i;
+	byte superval[32];
+	int currentPos;
+	currentPos = 0;
+// gen_BuildFunc_SetSuperVals 
+	@P_ASG_74_1_0_21_1_range = round(@P_ASG_74_1_0_21_1 + (0), 0.001); // slider value + min = real value
+	param1 = round( (@P_ASG_74_1_0_21_1 + (0) - (0)) / (0.001), 0.001); // (slider value + min - offset) / step = busvalue
+	superval[currentPos++]= param1&0x000000ff;
+	superval[currentPos++]=(param1&0x0000ff00)>>8;
+	superval[currentPos++]=(param1&0x00ff0000)>>16;
+	superval[currentPos++]=(param1&0xff000000)>>24;
+// gen_BuildFunc_SetSuperVals 
+	@P_ASG_74_1_0_21_2_range = round(@P_ASG_74_1_0_21_2 + (0), 0.001); // slider value + min = real value
+	param2 = round( (@P_ASG_74_1_0_21_2 + (0) - (0)) / (0.001), 0.001); // (slider value + min - offset) / step = busvalue
+	superval[currentPos++]= param2&0x000000ff;
+	superval[currentPos++]=(param2&0x0000ff00)>>8;
+	superval[currentPos++]=(param2&0x00ff0000)>>16;
+	superval[currentPos++]=(param2&0xff000000)>>24;
+// gen_BuildFunc_SetSuperVals 
+	@P_ASG_74_1_0_21_3_range = round(@P_ASG_74_1_0_21_3 + (0), 0.001); // slider value + min = real value
+	param3 = round( (@P_ASG_74_1_0_21_3 + (0) - (0)) / (0.001), 0.001); // (slider value + min - offset) / step = busvalue
+	superval[currentPos++]= param3&0x000000ff;
+	superval[currentPos++]=(param3&0x0000ff00)>>8;
+	superval[currentPos++]=(param3&0x00ff0000)>>16;
+	superval[currentPos++]=(param3&0xff000000)>>24;
+// gen_BuildFunc_SetSuperVals 
+	@P_ASG_74_1_0_21_4_range = round(@P_ASG_74_1_0_21_4 + (0), 0.001); // slider value + min = real value
+	param4 = round( (@P_ASG_74_1_0_21_4 + (0) - (0)) / (0.001), 0.001); // (slider value + min - offset) / step = busvalue
+	superval[currentPos++]= param4&0x000000ff;
+	superval[currentPos++]=(param4&0x0000ff00)>>8;
+	superval[currentPos++]=(param4&0x00ff0000)>>16;
+	superval[currentPos++]=(param4&0xff000000)>>24;
+// gen_BuildFunc_SetSuperVals 
+	@P_ASG_74_1_0_21_5_range = round(@P_ASG_74_1_0_21_5 + (0), 0.001); // slider value + min = real value
+	param5 = round( (@P_ASG_74_1_0_21_5 + (0) - (0)) / (0.001), 0.001); // (slider value + min - offset) / step = busvalue
+	superval[currentPos++]= param5&0x000000ff;
+	superval[currentPos++]=(param5&0x0000ff00)>>8;
+	superval[currentPos++]=(param5&0x00ff0000)>>16;
+	superval[currentPos++]=(param5&0xff000000)>>24;
+// gen_BuildFunc_SetSuperVals 
+	@P_ASG_74_1_0_21_6_range = round(@P_ASG_74_1_0_21_6 + (0), 0.001); // slider value + min = real value
+	param6 = round( (@P_ASG_74_1_0_21_6 + (0) - (0)) / (0.001), 0.001); // (slider value + min - offset) / step = busvalue
+	superval[currentPos++]= param6&0x000000ff;
+	superval[currentPos++]=(param6&0x0000ff00)>>8;
+	superval[currentPos++]=(param6&0x00ff0000)>>16;
+	superval[currentPos++]=(param6&0xff000000)>>24;
+// gen_BuildFunc_SetSuperVals 
+	@P_ASG_74_1_0_21_7_range = round(@P_ASG_74_1_0_21_7 + (0), 1.0); // slider value + min = real value
+	param7 = 0; // underlying parameter has constant value 0.
+	superval[currentPos++]= param7&0x000000ff;
+	superval[currentPos++]=(param7&0x0000ff00)>>8;
+	superval[currentPos++]=(param7&0x00ff0000)>>16;
+	superval[currentPos++]=(param7&0xff000000)>>24;
+// gen_BuildFunc_SetSuperVals 
+	@P_ASG_74_1_0_21_8_range = round(@P_ASG_74_1_0_21_8 + (0), 1.0); // slider value + min = real value
+	param8 = 0; // underlying parameter has constant value 0.
+	superval[currentPos++]= param8&0x000000ff;
+	superval[currentPos++]=(param8&0x0000ff00)>>8;
+	superval[currentPos++]=(param8&0x00ff0000)>>16;
+	superval[currentPos++]=(param8&0xff000000)>>24;
+	putValue(P_ASG_74_1_0_21, superval, currentPos);
+}
+
+
+// Ueberwachung der Darstellungsvariable der Range.
+on envVar P_ASG_74_1_0_21_1_range // DistanceBased_DrivingModes_Accumulated.Distance_Recuperation 
+{
+	@P_ASG_74_1_0_21_1 = @P_ASG_74_1_0_21_1_range - (0); // slider = range - min
+}
+
+on envVar P_ASG_74_1_0_21_1 // DistanceBased_DrivingModes_Accumulated.Distance_Recuperation
+{
+	P_ASG_74_1_0_21_BuildFct();
+}
+
+// Ueberwachung der Darstellungsvariable der Range.
+on envVar P_ASG_74_1_0_21_2_range // DistanceBased_DrivingModes_Accumulated.Distance_Electrical 
+{
+	@P_ASG_74_1_0_21_2 = @P_ASG_74_1_0_21_2_range - (0); // slider = range - min
+}
+
+on envVar P_ASG_74_1_0_21_2 // DistanceBased_DrivingModes_Accumulated.Distance_Electrical
+{
+	P_ASG_74_1_0_21_BuildFct();
+}
+
+// Ueberwachung der Darstellungsvariable der Range.
+on envVar P_ASG_74_1_0_21_3_range // DistanceBased_DrivingModes_Accumulated.Distance_Combustion 
+{
+	@P_ASG_74_1_0_21_3 = @P_ASG_74_1_0_21_3_range - (0); // slider = range - min
+}
+
+on envVar P_ASG_74_1_0_21_3 // DistanceBased_DrivingModes_Accumulated.Distance_Combustion
+{
+	P_ASG_74_1_0_21_BuildFct();
+}
+
+// Ueberwachung der Darstellungsvariable der Range.
+on envVar P_ASG_74_1_0_21_4_range // DistanceBased_DrivingModes_Accumulated.Distance_CNG 
+{
+	@P_ASG_74_1_0_21_4 = @P_ASG_74_1_0_21_4_range - (0); // slider = range - min
+}
+
+on envVar P_ASG_74_1_0_21_4 // DistanceBased_DrivingModes_Accumulated.Distance_CNG
+{
+	P_ASG_74_1_0_21_BuildFct();
+}
+
+// Ueberwachung der Darstellungsvariable der Range.
+on envVar P_ASG_74_1_0_21_5_range // DistanceBased_DrivingModes_Accumulated.Distance_FreeRoling_Engine_OFF 
+{
+	@P_ASG_74_1_0_21_5 = @P_ASG_74_1_0_21_5_range - (0); // slider = range - min
+}
+
+on envVar P_ASG_74_1_0_21_5 // DistanceBased_DrivingModes_Accumulated.Distance_FreeRoling_Engine_OFF
+{
+	P_ASG_74_1_0_21_BuildFct();
+}
+
+// Ueberwachung der Darstellungsvariable der Range.
+on envVar P_ASG_74_1_0_21_6_range // DistanceBased_DrivingModes_Accumulated.Distance_FreeRolling_Engine_ON 
+{
+	@P_ASG_74_1_0_21_6 = @P_ASG_74_1_0_21_6_range - (0); // slider = range - min
+}
+
+on envVar P_ASG_74_1_0_21_6 // DistanceBased_DrivingModes_Accumulated.Distance_FreeRolling_Engine_ON
+{
+	P_ASG_74_1_0_21_BuildFct();
+}
+
+// Ueberwachung der Darstellungsvariable der Range.
+on envVar P_ASG_74_1_0_21_7_range // DistanceBased_DrivingModes_Accumulated.Extension1 
+{
+	@P_ASG_74_1_0_21_7 = @P_ASG_74_1_0_21_7_range - (0); // slider = range - min
+}
+
+on envVar P_ASG_74_1_0_21_7 // DistanceBased_DrivingModes_Accumulated.Extension1
+{
+	P_ASG_74_1_0_21_BuildFct();
+}
+
+// Ueberwachung der Darstellungsvariable der Range.
+on envVar P_ASG_74_1_0_21_8_range // DistanceBased_DrivingModes_Accumulated.Extension2 
+{
+	@P_ASG_74_1_0_21_8 = @P_ASG_74_1_0_21_8_range - (0); // slider = range - min
+}
+
+on envVar P_ASG_74_1_0_21_8 // DistanceBased_DrivingModes_Accumulated.Extension2
+{
+	P_ASG_74_1_0_21_BuildFct();
+}
+
+on envVar P_ASG_74_1_0_22Get_BTN
+{
+ if (P_ASG_74_1_0_22Get_BTN_already_pressed == 0)
+  {
+       putValue(P_ASG_74_1_0_22_ErrCode,0);
+       SetControlBackColor(panel_name,"errField_P_ASG_74_1_0_22",MakeRGB(255,255,255));
+       P_ASG_74_1_0_22Get_BTN_already_pressed = 1;
+ }
+ else
+ {
+       Request_Void(LSGID, P_ASG_74_1_0_22_ID, DataGet_REQ); 
+       P_ASG_74_1_0_22Get_BTN_already_pressed = 0;
+ }
+}
+on envVar P_ASG_74_1_0_22SetGet_BTN
+{
+	byte BAPTemp[4];
+    if (P_ASG_74_1_0_22SetGet_BTN_already_pressed == 0)
+    {
+       putValue(P_ASG_74_1_0_22_ErrCode,0);
+       SetControlBackColor(panel_name,"errField_P_ASG_74_1_0_22",MakeRGB(255,255,255));
+       P_ASG_74_1_0_22SetGet_BTN_already_pressed = 1;
+    }
+    else
+    {
+       getValue(P_ASG_74_1_0_22, BAPTemp);
+       Request_ByteSequence(LSGID, P_ASG_74_1_0_22_ID, DataSetGet_REQ, BAPTemp, getValueSize(P_ASG_74_1_0_22));
+       P_ASG_74_1_0_22SetGet_BTN_already_pressed = 0;
+    }
+}
+on envVar P_ASG_74_1_0_22 // bus value of ResetIndicator (22).
+{
+	// opcodes: Error-Status
+	byte param1; // ResetStatus
+	byte param2; // Extension1
+	byte param3; // Extension2
+	byte param4; // Extension3
+	// DATATYPE_BYTESEQUENCE / DATATYPE_FIXEDBYTESEQUENCE
+	int i;
+	byte superval[4];
+	int currentPos;
+	currentPos = 0;
+	for( i = 0; i < 4; i++ ) {
+		superval[i] = 0;
+	}
+	getValue(P_ASG_74_1_0_22, superval);
+	///////// Start param1 - UINT8 /////////
+	param1 = superval[currentPos++];
+	putValue(P_ASG_74_1_0_22_1, param1);
+	///////// Start param2 - UINT8 /////////
+	param2 = superval[currentPos++];
+	putValue(P_ASG_74_1_0_22_2, round((param2 * 1.0) - (0) + (0), 1.0));
+	///////// Start param3 - UINT8 /////////
+	param3 = superval[currentPos++];
+	putValue(P_ASG_74_1_0_22_3, round((param3 * 1.0) - (0) + (0), 1.0));
+	///////// Start param4 - UINT8 /////////
+	param4 = superval[currentPos++];
+	putValue(P_ASG_74_1_0_22_4, round((param4 * 1.0) - (0) + (0), 1.0));
+}
+
+on envVar P_ASG_74_1_0_22_1_0
+{
+	byte bitval;
+	//thisval steht hier fuer den bitfield-wert, 
+	//aus Generierungsgruenden hier keine einheitliche Bezeichnung moeglich.
+	byte thisval; // ResetStatus
+	bitval= getValue(this);
+	thisval = getValue(P_ASG_74_1_0_22_1);
+	thisval = thisval&~(1<<0)|(bitval<<0);
+	putValue(P_ASG_74_1_0_22_1,thisval);
+}
+
+on envVar P_ASG_74_1_0_22_1_1
+{
+	byte bitval;
+	//thisval steht hier fuer den bitfield-wert, 
+	//aus Generierungsgruenden hier keine einheitliche Bezeichnung moeglich.
+	byte thisval; // ResetStatus
+	bitval= getValue(this);
+	thisval = getValue(P_ASG_74_1_0_22_1);
+	thisval = thisval&~(1<<1)|(bitval<<1);
+	putValue(P_ASG_74_1_0_22_1,thisval);
+}
+
+on envVar P_ASG_74_1_0_22_1_2
+{
+	byte bitval;
+	//thisval steht hier fuer den bitfield-wert, 
+	//aus Generierungsgruenden hier keine einheitliche Bezeichnung moeglich.
+	byte thisval; // ResetStatus
+	bitval= getValue(this);
+	thisval = getValue(P_ASG_74_1_0_22_1);
+	thisval = thisval&~(1<<2)|(bitval<<2);
+	putValue(P_ASG_74_1_0_22_1,thisval);
+}
+
+on envVar P_ASG_74_1_0_22_1_3
+{
+	byte bitval;
+	//thisval steht hier fuer den bitfield-wert, 
+	//aus Generierungsgruenden hier keine einheitliche Bezeichnung moeglich.
+	byte thisval; // ResetStatus
+	bitval= getValue(this);
+	thisval = getValue(P_ASG_74_1_0_22_1);
+	thisval = thisval&~(1<<3)|(bitval<<3);
+	putValue(P_ASG_74_1_0_22_1,thisval);
+}
+
+on envVar P_ASG_74_1_0_22_1_4
+{
+	byte bitval;
+	//thisval steht hier fuer den bitfield-wert, 
+	//aus Generierungsgruenden hier keine einheitliche Bezeichnung moeglich.
+	byte thisval; // ResetStatus
+	bitval= getValue(this);
+	thisval = getValue(P_ASG_74_1_0_22_1);
+	thisval = thisval&~(1<<4)|(bitval<<4);
+	putValue(P_ASG_74_1_0_22_1,thisval);
+}
+
+on envVar P_ASG_74_1_0_22_1_5
+{
+	byte bitval;
+	//thisval steht hier fuer den bitfield-wert, 
+	//aus Generierungsgruenden hier keine einheitliche Bezeichnung moeglich.
+	byte thisval; // ResetStatus
+	bitval= getValue(this);
+	thisval = getValue(P_ASG_74_1_0_22_1);
+	thisval = thisval&~(1<<5)|(bitval<<5);
+	putValue(P_ASG_74_1_0_22_1,thisval);
+}
+
+on envVar P_ASG_74_1_0_22_1 // ResetIndicator.ResetStatus
+{
+	byte superval[4];
+
+	//Update Childvalue (BitField)
+	byte mask=0x01;
+	int i = 0;
+	byte thisval; // ResetStatus
+	thisval = getValue(this);
+	if(thisval&(mask<<0))
+		putValue(P_ASG_74_1_0_22_1_0, 1);
+	else
+		putValue(P_ASG_74_1_0_22_1_0, 0);
+	if(thisval&(mask<<1))
+		putValue(P_ASG_74_1_0_22_1_1, 1);
+	else
+		putValue(P_ASG_74_1_0_22_1_1, 0);
+	if(thisval&(mask<<2))
+		putValue(P_ASG_74_1_0_22_1_2, 1);
+	else
+		putValue(P_ASG_74_1_0_22_1_2, 0);
+	if(thisval&(mask<<3))
+		putValue(P_ASG_74_1_0_22_1_3, 1);
+	else
+		putValue(P_ASG_74_1_0_22_1_3, 0);
+	if(thisval&(mask<<4))
+		putValue(P_ASG_74_1_0_22_1_4, 1);
+	else
+		putValue(P_ASG_74_1_0_22_1_4, 0);
+	if(thisval&(mask<<5))
+		putValue(P_ASG_74_1_0_22_1_5, 1);
+	else
+		putValue(P_ASG_74_1_0_22_1_5, 0);
+
+    // Update superval
+	getValue(P_ASG_74_1_0_22, superval);
+	superval[0]=thisval;
+	putValue(P_ASG_74_1_0_22,superval);
+}
+
+// Ueberwachung der Darstellungsvariable der Range.
+on envVar P_ASG_74_1_0_22_2_range // ResetIndicator.Extension1 
+{
+	@P_ASG_74_1_0_22_2 = @P_ASG_74_1_0_22_2_range - (0); // slider = range - min
+}
+
+on envVar P_ASG_74_1_0_22_2 // ResetIndicator.Extension1
+{
+	byte superval[4];
+
+	//Update Childvalue (Number)
+	byte thisval; // Extension1
+	float slider_value;
+
+	slider_value = 0; // Konstanter Parameter.
+	@P_ASG_74_1_0_22_2_range = slider_value + (0); // real value := slider value + range min.
+	thisval = (byte)round((slider_value + (0) - (0)) / (1.0), 1); // bus value := (slider value + min - offset) / step.
+
+    // Update superval
+	getValue(P_ASG_74_1_0_22, superval);
+	superval[1]=thisval;
+	putValue(P_ASG_74_1_0_22,superval);
+}
+
+// Ueberwachung der Darstellungsvariable der Range.
+on envVar P_ASG_74_1_0_22_3_range // ResetIndicator.Extension2 
+{
+	@P_ASG_74_1_0_22_3 = @P_ASG_74_1_0_22_3_range - (0); // slider = range - min
+}
+
+on envVar P_ASG_74_1_0_22_3 // ResetIndicator.Extension2
+{
+	byte superval[4];
+
+	//Update Childvalue (Number)
+	byte thisval; // Extension2
+	float slider_value;
+
+	slider_value = 0; // Konstanter Parameter.
+	@P_ASG_74_1_0_22_3_range = slider_value + (0); // real value := slider value + range min.
+	thisval = (byte)round((slider_value + (0) - (0)) / (1.0), 1); // bus value := (slider value + min - offset) / step.
+
+    // Update superval
+	getValue(P_ASG_74_1_0_22, superval);
+	superval[2]=thisval;
+	putValue(P_ASG_74_1_0_22,superval);
+}
+
+// Ueberwachung der Darstellungsvariable der Range.
+on envVar P_ASG_74_1_0_22_4_range // ResetIndicator.Extension3 
+{
+	@P_ASG_74_1_0_22_4 = @P_ASG_74_1_0_22_4_range - (0); // slider = range - min
+}
+
+on envVar P_ASG_74_1_0_22_4 // ResetIndicator.Extension3
+{
+	byte superval[4];
+
+	//Update Childvalue (Number)
+	byte thisval; // Extension3
+	float slider_value;
+
+	slider_value = 0; // Konstanter Parameter.
+	@P_ASG_74_1_0_22_4_range = slider_value + (0); // real value := slider value + range min.
+	thisval = (byte)round((slider_value + (0) - (0)) / (1.0), 1); // bus value := (slider value + min - offset) / step.
+
+    // Update superval
+	getValue(P_ASG_74_1_0_22, superval);
+	superval[3]=thisval;
+	putValue(P_ASG_74_1_0_22,superval);
+}
+
+on envVar M_ASG_74_1_0_23StartResult_BTN
+{
+    byte temp[3];
+    if (M_ASG_74_1_0_23StartResult_BTN_already_pressed == 0)
+    {
+        putValue(M_ASG_74_1_0_23_ErrCode,0);
+        SetControlBackColor(panel_name,"errField_M_ASG_74_1_0_23",MakeRGB(255,255,255));
+        M_ASG_74_1_0_23StartResult_BTN_already_pressed = 1;
+    }
+    else
+    {
+        getValue(M_ASG_74_1_0_23_Start, temp);
+        Request_ByteSequence(LSGID, M_ASG_74_1_0_23_ID, StartResult_REQ, temp, getValueSize(M_ASG_74_1_0_23_Start));
+        putValue(M_ASG_74_1_0_23_State, "Started");
+        M_ASG_74_1_0_23StartResult_BTN_already_pressed = 0;
+    }
+}
+on envVar M_ASG_74_1_0_23_Result // bus value of Reset (23).
+{
+	// opcodes: Error-Processing-Result
+	byte param1; // Result
+	// DATATYPE_BYTESEQUENCE / DATATYPE_FIXEDBYTESEQUENCE
+	int i;
+	byte superval[3];
+	int currentPos;
+	currentPos = 0;
+	for( i = 0; i < 3; i++ ) {
+		superval[i] = 0;
+	}
+	getValue(M_ASG_74_1_0_23_Result, superval);
+	///////// Start param1 - UINT8 /////////
+	param1 = superval[currentPos++];
+	putValue(M_ASG_74_1_0_23_Result_1, param1);
+}
+
+on envVar M_ASG_74_1_0_23_Result_1_0
+{
+	byte bitval;
+	//thisval steht hier fuer den bitfield-wert, 
+	//aus Generierungsgruenden hier keine einheitliche Bezeichnung moeglich.
+	byte thisval; // Result
+	bitval= getValue(this);
+	thisval = getValue(M_ASG_74_1_0_23_Result_1);
+	thisval = thisval&~(1<<0)|(bitval<<0);
+	putValue(M_ASG_74_1_0_23_Result_1,thisval);
+}
+
+on envVar M_ASG_74_1_0_23_Result_1 // Reset.Result
+{
+	byte superval[3];
+
+	//Update Childvalue (BitField)
+	byte mask=0x01;
+	int i = 0;
+	byte thisval; // Result
+	thisval = getValue(this);
+	if(thisval&(mask<<0))
+		putValue(M_ASG_74_1_0_23_Result_1_0, 1);
+	else
+		putValue(M_ASG_74_1_0_23_Result_1_0, 0);
+
+    // Update superval
+	getValue(M_ASG_74_1_0_23_Result, superval);
+	superval[0]=thisval;
+	putValue(M_ASG_74_1_0_23_Result,superval);
+}
+
+on envVar M_ASG_74_1_0_23_Processing // bus value of Reset (23).
+{
+	// opcodes: Error-Processing-Result
+	byte param1; // Menue
+	byte param2; // Extension1
+	byte param3; // Extension2
+	// DATATYPE_BYTESEQUENCE / DATATYPE_FIXEDBYTESEQUENCE
+	int i;
+	byte superval[3];
+	int currentPos;
+	currentPos = 0;
+	for( i = 0; i < 3; i++ ) {
+		superval[i] = 0;
+	}
+	getValue(M_ASG_74_1_0_23_Processing, superval);
+	///////// Start param1 - UINT8 /////////
+	param1 = superval[currentPos++];
+	putValue(M_ASG_74_1_0_23_Processing_1, param1);
+	///////// Start param2 - UINT8 /////////
+	param2 = superval[currentPos++];
+	putValue(M_ASG_74_1_0_23_Processing_2, round((param2 * 1.0) - (0) + (0), 1.0));
+	///////// Start param3 - UINT8 /////////
+	param3 = superval[currentPos++];
+	putValue(M_ASG_74_1_0_23_Processing_3, round((param3 * 1.0) - (0) + (0), 1.0));
+}
+
+on envVar M_ASG_74_1_0_23_Processing_1_0
+{
+	byte bitval;
+	//thisval steht hier fuer den bitfield-wert, 
+	//aus Generierungsgruenden hier keine einheitliche Bezeichnung moeglich.
+	byte thisval; // Menue
+	bitval= getValue(this);
+	thisval = getValue(M_ASG_74_1_0_23_Processing_1);
+	thisval = thisval&~(1<<0)|(bitval<<0);
+	putValue(M_ASG_74_1_0_23_Processing_1,thisval);
+}
+
+on envVar M_ASG_74_1_0_23_Processing_1_1
+{
+	byte bitval;
+	//thisval steht hier fuer den bitfield-wert, 
+	//aus Generierungsgruenden hier keine einheitliche Bezeichnung moeglich.
+	byte thisval; // Menue
+	bitval= getValue(this);
+	thisval = getValue(M_ASG_74_1_0_23_Processing_1);
+	thisval = thisval&~(1<<1)|(bitval<<1);
+	putValue(M_ASG_74_1_0_23_Processing_1,thisval);
+}
+
+on envVar M_ASG_74_1_0_23_Processing_1_2
+{
+	byte bitval;
+	//thisval steht hier fuer den bitfield-wert, 
+	//aus Generierungsgruenden hier keine einheitliche Bezeichnung moeglich.
+	byte thisval; // Menue
+	bitval= getValue(this);
+	thisval = getValue(M_ASG_74_1_0_23_Processing_1);
+	thisval = thisval&~(1<<2)|(bitval<<2);
+	putValue(M_ASG_74_1_0_23_Processing_1,thisval);
+}
+
+on envVar M_ASG_74_1_0_23_Processing_1_3
+{
+	byte bitval;
+	//thisval steht hier fuer den bitfield-wert, 
+	//aus Generierungsgruenden hier keine einheitliche Bezeichnung moeglich.
+	byte thisval; // Menue
+	bitval= getValue(this);
+	thisval = getValue(M_ASG_74_1_0_23_Processing_1);
+	thisval = thisval&~(1<<3)|(bitval<<3);
+	putValue(M_ASG_74_1_0_23_Processing_1,thisval);
+}
+
+on envVar M_ASG_74_1_0_23_Processing_1 // Reset.Menue
+{
+	byte superval[3];
+
+	//Update Childvalue (BitField)
+	byte mask=0x01;
+	int i = 0;
+	byte thisval; // Menue
+	thisval = getValue(this);
+	if(thisval&(mask<<0))
+		putValue(M_ASG_74_1_0_23_Processing_1_0, 1);
+	else
+		putValue(M_ASG_74_1_0_23_Processing_1_0, 0);
+	if(thisval&(mask<<1))
+		putValue(M_ASG_74_1_0_23_Processing_1_1, 1);
+	else
+		putValue(M_ASG_74_1_0_23_Processing_1_1, 0);
+	if(thisval&(mask<<2))
+		putValue(M_ASG_74_1_0_23_Processing_1_2, 1);
+	else
+		putValue(M_ASG_74_1_0_23_Processing_1_2, 0);
+	if(thisval&(mask<<3))
+		putValue(M_ASG_74_1_0_23_Processing_1_3, 1);
+	else
+		putValue(M_ASG_74_1_0_23_Processing_1_3, 0);
+
+    // Update superval
+	getValue(M_ASG_74_1_0_23_Processing, superval);
+	superval[0]=thisval;
+	putValue(M_ASG_74_1_0_23_Processing,superval);
+}
+
+// Ueberwachung der Darstellungsvariable der Range.
+on envVar M_ASG_74_1_0_23_Processing_2_range // Reset.Extension1 
+{
+	@M_ASG_74_1_0_23_Processing_2 = @M_ASG_74_1_0_23_Processing_2_range - (0); // slider = range - min
+}
+
+on envVar M_ASG_74_1_0_23_Processing_2 // Reset.Extension1
+{
+	byte superval[3];
+
+	//Update Childvalue (Number)
+	byte thisval; // Extension1
+	float slider_value;
+
+	slider_value = 0; // Konstanter Parameter.
+	@M_ASG_74_1_0_23_Processing_2_range = slider_value + (0); // real value := slider value + range min.
+	thisval = (byte)round((slider_value + (0) - (0)) / (1.0), 1); // bus value := (slider value + min - offset) / step.
+
+    // Update superval
+	getValue(M_ASG_74_1_0_23_Processing, superval);
+	superval[1]=thisval;
+	putValue(M_ASG_74_1_0_23_Processing,superval);
+}
+
+// Ueberwachung der Darstellungsvariable der Range.
+on envVar M_ASG_74_1_0_23_Processing_3_range // Reset.Extension2 
+{
+	@M_ASG_74_1_0_23_Processing_3 = @M_ASG_74_1_0_23_Processing_3_range - (0); // slider = range - min
+}
+
+on envVar M_ASG_74_1_0_23_Processing_3 // Reset.Extension2
+{
+	byte superval[3];
+
+	//Update Childvalue (Number)
+	byte thisval; // Extension2
+	float slider_value;
+
+	slider_value = 0; // Konstanter Parameter.
+	@M_ASG_74_1_0_23_Processing_3_range = slider_value + (0); // real value := slider value + range min.
+	thisval = (byte)round((slider_value + (0) - (0)) / (1.0), 1); // bus value := (slider value + min - offset) / step.
+
+    // Update superval
+	getValue(M_ASG_74_1_0_23_Processing, superval);
+	superval[2]=thisval;
+	putValue(M_ASG_74_1_0_23_Processing,superval);
+}
+
+on envVar M_ASG_74_1_0_23_Start // bus value of Reset (23).
+{
+	// opcodes: StartResult
+	byte param1; // Menue
+	byte param2; // Extension1
+	byte param3; // Extension2
+	// DATATYPE_BYTESEQUENCE / DATATYPE_FIXEDBYTESEQUENCE
+	int i;
+	byte superval[3];
+	int currentPos;
+	currentPos = 0;
+	for( i = 0; i < 3; i++ ) {
+		superval[i] = 0;
+	}
+	getValue(M_ASG_74_1_0_23_Start, superval);
+	///////// Start param1 - UINT8 /////////
+	param1 = superval[currentPos++];
+	putValue(M_ASG_74_1_0_23_Start_1, param1);
+	///////// Start param2 - UINT8 /////////
+	param2 = superval[currentPos++];
+	putValue(M_ASG_74_1_0_23_Start_2, round((param2 * 1.0) - (0) + (0), 1.0));
+	///////// Start param3 - UINT8 /////////
+	param3 = superval[currentPos++];
+	putValue(M_ASG_74_1_0_23_Start_3, round((param3 * 1.0) - (0) + (0), 1.0));
+}
+
+on envVar M_ASG_74_1_0_23_Start_1_0
+{
+	byte bitval;
+	//thisval steht hier fuer den bitfield-wert, 
+	//aus Generierungsgruenden hier keine einheitliche Bezeichnung moeglich.
+	byte thisval; // Menue
+	bitval= getValue(this);
+	thisval = getValue(M_ASG_74_1_0_23_Start_1);
+	thisval = thisval&~(1<<0)|(bitval<<0);
+	putValue(M_ASG_74_1_0_23_Start_1,thisval);
+}
+
+on envVar M_ASG_74_1_0_23_Start_1_1
+{
+	byte bitval;
+	//thisval steht hier fuer den bitfield-wert, 
+	//aus Generierungsgruenden hier keine einheitliche Bezeichnung moeglich.
+	byte thisval; // Menue
+	bitval= getValue(this);
+	thisval = getValue(M_ASG_74_1_0_23_Start_1);
+	thisval = thisval&~(1<<1)|(bitval<<1);
+	putValue(M_ASG_74_1_0_23_Start_1,thisval);
+}
+
+on envVar M_ASG_74_1_0_23_Start_1_2
+{
+	byte bitval;
+	//thisval steht hier fuer den bitfield-wert, 
+	//aus Generierungsgruenden hier keine einheitliche Bezeichnung moeglich.
+	byte thisval; // Menue
+	bitval= getValue(this);
+	thisval = getValue(M_ASG_74_1_0_23_Start_1);
+	thisval = thisval&~(1<<2)|(bitval<<2);
+	putValue(M_ASG_74_1_0_23_Start_1,thisval);
+}
+
+on envVar M_ASG_74_1_0_23_Start_1_3
+{
+	byte bitval;
+	//thisval steht hier fuer den bitfield-wert, 
+	//aus Generierungsgruenden hier keine einheitliche Bezeichnung moeglich.
+	byte thisval; // Menue
+	bitval= getValue(this);
+	thisval = getValue(M_ASG_74_1_0_23_Start_1);
+	thisval = thisval&~(1<<3)|(bitval<<3);
+	putValue(M_ASG_74_1_0_23_Start_1,thisval);
+}
+
+on envVar M_ASG_74_1_0_23_Start_1 // Reset.Menue
+{
+	byte superval[3];
+
+	//Update Childvalue (BitField)
+	byte mask=0x01;
+	int i = 0;
+	byte thisval; // Menue
+	thisval = getValue(this);
+	if(thisval&(mask<<0))
+		putValue(M_ASG_74_1_0_23_Start_1_0, 1);
+	else
+		putValue(M_ASG_74_1_0_23_Start_1_0, 0);
+	if(thisval&(mask<<1))
+		putValue(M_ASG_74_1_0_23_Start_1_1, 1);
+	else
+		putValue(M_ASG_74_1_0_23_Start_1_1, 0);
+	if(thisval&(mask<<2))
+		putValue(M_ASG_74_1_0_23_Start_1_2, 1);
+	else
+		putValue(M_ASG_74_1_0_23_Start_1_2, 0);
+	if(thisval&(mask<<3))
+		putValue(M_ASG_74_1_0_23_Start_1_3, 1);
+	else
+		putValue(M_ASG_74_1_0_23_Start_1_3, 0);
+
+    // Update superval
+	getValue(M_ASG_74_1_0_23_Start, superval);
+	superval[0]=thisval;
+	putValue(M_ASG_74_1_0_23_Start,superval);
+}
+
+// Ueberwachung der Darstellungsvariable der Range.
+on envVar M_ASG_74_1_0_23_Start_2_range // Reset.Extension1 
+{
+	@M_ASG_74_1_0_23_Start_2 = @M_ASG_74_1_0_23_Start_2_range - (0); // slider = range - min
+}
+
+on envVar M_ASG_74_1_0_23_Start_2 // Reset.Extension1
+{
+	byte superval[3];
+
+	//Update Childvalue (Number)
+	byte thisval; // Extension1
+	float slider_value;
+
+	slider_value = 0; // Konstanter Parameter.
+	@M_ASG_74_1_0_23_Start_2_range = slider_value + (0); // real value := slider value + range min.
+	thisval = (byte)round((slider_value + (0) - (0)) / (1.0), 1); // bus value := (slider value + min - offset) / step.
+
+    // Update superval
+	getValue(M_ASG_74_1_0_23_Start, superval);
+	superval[1]=thisval;
+	putValue(M_ASG_74_1_0_23_Start,superval);
+}
+
+// Ueberwachung der Darstellungsvariable der Range.
+on envVar M_ASG_74_1_0_23_Start_3_range // Reset.Extension2 
+{
+	@M_ASG_74_1_0_23_Start_3 = @M_ASG_74_1_0_23_Start_3_range - (0); // slider = range - min
+}
+
+on envVar M_ASG_74_1_0_23_Start_3 // Reset.Extension2
+{
+	byte superval[3];
+
+	//Update Childvalue (Number)
+	byte thisval; // Extension2
+	float slider_value;
+
+	slider_value = 0; // Konstanter Parameter.
+	@M_ASG_74_1_0_23_Start_3_range = slider_value + (0); // real value := slider value + range min.
+	thisval = (byte)round((slider_value + (0) - (0)) / (1.0), 1); // bus value := (slider value + min - offset) / step.
+
+    // Update superval
+	getValue(M_ASG_74_1_0_23_Start, superval);
+	superval[2]=thisval;
+	putValue(M_ASG_74_1_0_23_Start,superval);
+}
+
+
+
+/**
+*
+* Template-Funktion zum automatischen befuellen der Array-Daten, die in einer Arrayfunktion genutzt werden.
+* Die Funktion wird durch den von BAPSimGen generierten Code aufgerufen.
+*
+* Parameter:
+* - structArray: Muss mindestens nMax * Arraygroesse Bytes Platz haben, wird vom BAPSimGen automatisch generiert
+* - structElementsSizeArray: Enthaelt die Groesseangabe jedes Array-Elements. Die Arraygroesse entspricht der Elementanzahl im Array.
+*       Byte & Nibble = 1; Word = 2; usw. Bei Strings wird die maximale Stringlaenge angegeben.
+* - structElementsTypeArray: Gibt den Datentyp eines Array-Elements zurueck. Die Arraygroesse entspricht der Elmentanzahl im Array.
+*                               0x0 = Zahlenwert, also ein Slider, Enum, Bitfield,...
+*                               0xE = String (darauf folgt immer eine 2, mit der Angabe der benutzen Bytes im String)
+*                               0xF = Laenge der Nutzdaten des Strings, nur return Wert
+* - fctID: Kann zur Fallunterscheidung der Funktions-IDs verwendet werden.
+* - nMax: Array-Index
+*
+* Die Funktion kann im Switch-Case beliebig erweitert werden. Der Switch-Case wertet den Parameter fctID aus.
+*           
+*                    
+**/
+initStruct(byte structArray[], dword structElementsSizeArray[], byte structElementsTypeArray[], dword structElementsMaxSizeArray[], word fctID, word nMax )
+{
+    byte rand8;
+    word rand16;
+    word randSize;
+    word index;           //indexNr die an die String Parameter angehaengt wird.
+    dword destArraySize;   //groesse von structArray
+    dword destStructSize;  //groesse eines "Structs" also destArraySize / Anzahl Elemente (nMax))
+    dword rand32;    
+    dword i;
+    dword pos;    //aktuelle Position im structArray
+    dword elpos;  //aktuelle Position in den structElementsXXXArray's
+    
+    destArraySize = elCount(structArray);
+    destStructSize = destArraySize / nMax;    
+
+    Switch(fctID){
+
+        //Idee ist, die Arrays je nach Funcion-ID speziell initalisieren zu koennen.
+        //hierbei koennten die Daten z.B. aus einer Datei eingelesen werden,
+        //oder auch ueber spezielle init Funktionen mit festen Werten initialisiert werden.
+        //Der Default-Fall befuellt das Array mit Random-Werten und Strings mit einem vordefinierten Wort (hier test,)
+
+        default :
+        {
+            pos = 0; 
+            for(i = 1; i <= nMax; i++)
+            {
+                //walk through the array
+                
+                elpos = 0;
+                while(pos < (destStructSize * i) )
+                {   
+                    //check Element type
+                    if( structElementsTypeArray[elpos] == 0x0)          
+                    { //Params like int, word, etc.
+                        //check element length
+                        Switch(structElementsSizeArray[elpos])
+                        {
+                            case(1) : //byte / nibble
+                                rand8 = random(structElementsMaxSizeArray[elpos]);
+                                structArray[pos] = rand8;
+                                pos++;
+                                break;
+
+                            case(2) : //word / int
+                                rand16 = random(structElementsMaxSizeArray[elpos]);
+                                int2byte(structArray, pos, rand16);
+                                pos += 2;
+                                break;
+
+                            case (4) : //dword / long
+                                rand32 = random(structElementsMaxSizeArray[elpos]);
+                                long2byte(structArray, pos, rand32);
+                                pos += 4;
+                                break;                        
+                         }
+                    }
+                    else if(structElementsTypeArray[elpos] == 0xE)          
+                    { //String Params like byte[]
+                        randSize = random(structElementsSizeArray[elpos]);
+                        if(randSize < 2) randSize = 2; 
+                        index = i-1;
+                        setRandomString(structArray ,pos ,structElementsSizeArray[elpos], randSize, index);
+                        pos += structElementsSizeArray[elpos];
+                    }
+                    else if(structElementsTypeArray[elpos] == 0xF)          
+                    {
+                        int2byte(structArray, pos, randSize);
+                        pos += 2;
+                        //write("Pos: %d Strlth: %d Type: %d ",pos-1,randSize,structElementsTypeArray[elpos]);
+                    
+                    }
+                    elpos++;
+                }
+            }   
+        break;
+        }            
+    }
+}
+
+long2Byte(byte in[], dword pos, dword value)
+{
+    if( (elCount(in)-pos) < 4)
+        write("Array out ouf bounds - too small!");
+    in[pos] = value;
+    in[++pos] = (value >> 8);
+    in[++pos] = (value >> 16);
+    in[++pos] = (value >> 24);
+}
+
+int2byte (byte in[],dword pos,word value)
+{
+    if( (elCount(in)-pos) < 2 )
+        write("Array out of bounds - too small!");
+    in[pos] = value;
+    in[++pos] = (value >> 8);        
+}
+
+setRandomString (byte in[], dword pos, word strSize, word randSize, word count)
+{
+    word endPos, endString, j;
+    byte testString[4]={'t','e','s','t'};
+    
+    endPos = pos + strSize;
+    endString = pos + randSize;
+    j=0;
+    
+    int2ascii(in, pos, count);
+    pos += 2;
+    
+    for(pos; pos < endPos ;pos ++)
+    {
+        if(j > 3 )
+            j = 0;
+        if(pos < endString)
+            in[pos] = testString[j++];
+        else
+            in[pos] = 0x0;
+    }
+}
+
+int2ascii (byte in[], dword pos, word value)
+{
+    //Konvertiert nur die erste und zweite Dezimalstelle, also Zahlen zw. 0 und 99.
+    
+    //auf 2 Stellen kuerzen
+    value = value%100;
+    //10er schreiben
+    in[pos] = (value/10) + 48;    //  0x30 hex = 48 dez = ascii null
+    //1er schreiben
+    in[pos+1] = (value%10) + 48;  //  0x30 hex = 48 dez = ascii null
+}
+

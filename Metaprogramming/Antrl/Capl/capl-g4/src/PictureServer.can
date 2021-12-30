@@ -1,0 +1,1929 @@
+//-----------------------------------------------------------------------------
+//  Copyright (C) Continental Automotive All Right Reserved
+//            File        : PictureServer.can
+//            Author      : Ratheesh
+//            Environment : CAPL
+//-----------------------------------------------------------------------------
+//  Type        : CAPL script
+//  Description : This file contains PictureServer FBlock implementation
+//  Code Status : Not tested
+//  Reference   : MIB_MOST_KMatrix_V1.13.00F_20121108_MT.html
+//-----------------------------------------------------------------------------
+//  Revision History
+//  Version     Modified by         Date            Description
+//  1.0         Ratheesh            14-Jan-2013     Initial version
+//  1.1         Ratheesh            09-Apr-2013     Added picture selection panel
+//  1.2         Ratheesh            06-Apr-2013     BAP & MOST synchronization
+//                                                  Picture packet modified
+//  1.3         Ratheesh            11-Jun-2013     BAPListPos added
+//  1.4         Juvy                08-Oct-2013     BAP & MOST synchronization non-coupled
+//  1.5         Sebastian           25-May.2014     Added Panel for PictureServer 2.0
+//  1.6         Fadillah            26-Nov-2015     Added FunctionAvailability for PictureServer
+//-----------------------------------------------------------------------------
+
+includes
+{
+  #include "MostDefs.cin"
+  #include "FCatDefs.cin"
+  #include "MOST_MHP.cin"
+  #include "PicServerQ.cin"
+  #include "PicServerInterface.cin"
+}
+
+//
+// PictureServer FBlock implementation.
+// FBlockID = 0xD8
+// The function IDs supported are
+// 1. FktIDs (0x000)
+// 2. Notification (0x001)
+// 3. CoverArt (0x400)
+// 4. ActiveCallPicture (0x402)
+// 5. StationArt (0x405)
+//
+variables
+{
+  // Application phase
+  const byte kAppOff      = 0; // no power; no communication
+  const byte kAppOn       = 1; // power on
+  const byte kAppShutdown = 2; // power on; shutdown started
+  byte gAppPhase = kAppOff;
+
+  char gECU[32]  = "HU";
+
+  // Default settings will be applied in preStart before ports are invoked 
+  long  gDefaultTransportMode = kTransportMode_Packet; 
+  long  gDefaultAckMode = kAckMode_Block;
+
+  // Device address of destination data sink 
+  dword gDestDev = 0x517; // :TBD: To change 
+
+  // Data Source 1
+  dword gDSO1_FBlockID  = 0xD8;     // PictureServer
+  dword gDSO1_InstID    = 0x01;
+  dword gDSO1_FktID     = 0x400;    // CoverArt
+  dword gDSO1_OpTypeID  = 0xC;      // Status
+  char  gDSO1_Name[100] = "PictureServer.CoverArt.Status";
+
+  // Prefix for callback functions of port is passed to DLL on port creation (see PreStart())
+  // If we change it, callback functions with corresponding prefixes need to be renamed too 
+  char  gDSO1_Prefix[50] = "Pic_CoverArt_";
+
+  dword gDSO1_PortHandle;
+
+  // Data Source 2 
+  dword gDSO2_FBlockID  = 0xD8;     // PictureServer
+  dword gDSO2_InstID    = 0x1;
+  dword gDSO2_FktID     = 0x402;    // ActiveCallPicture
+  dword gDSO2_OpTypeID  = 0xC;      // Status
+  char  gDSO2_Name[100]  = "PictureServer.ActiveCallPicture.Status";
+
+  // Prefix for callback functions of port is passed to DLL on port creation (see PreStart())
+  // If we change it, callback functions with corresponding prefixes need to be renamed too 
+  char  gDSO2_Prefix[50] = "Pic_ActiveCallPicture_";
+
+  dword gDSO2_PortHandle;
+
+  // Data Source 3
+  dword gDSO3_FBlockID  = 0xD8;     // PictureServer
+  dword gDSO3_InstID    = 0x1;
+  dword gDSO3_FktID     = 0x405;    // StationArt
+  dword gDSO3_OpTypeID  = 0xC;      // Status
+  char  gDSO3_Name[100]  = "PictureServer.StationArt.Status";
+
+  // Prefix for callback functions of port is passed to DLL on port creation (see PreStart())
+  // If we change it, callback functions with corresponding prefixes need to be renamed too 
+  char  gDSO3_Prefix[50] = "Pic_StationArt_";
+
+  dword gDSO3_PortHandle;
+
+  // Data Source 4
+  dword gDSO4_FBlockID  = 0xD8;     // PictureServer
+  dword gDSO4_InstID    = 0x1;
+  dword gDSO4_FktID     = 0x403;    // StationArt
+  dword gDSO4_OpTypeID  = 0xC;      // Status
+  char  gDSO4_Name[100]  = "PictureServer.AdbContactPicture.Status";
+
+  // Prefix for callback functions of port is passed to DLL on port creation (see PreStart())
+  // If we change it, callback functions with corresponding prefixes need to be renamed too 
+  char  gDSO4_Prefix[50] = "Pic_AdbContactPicture_";
+
+  dword gDSO4_PortHandle;
+
+  // CoverArt - Address
+  char coverArt_Address[6] = {0x01, 0x30, 0x30, 0x30, 0x31, 0x00};
+  // CoverArt - AddressType
+  byte coverArt_AddressType = 0x00;
+  // CoverArt - SourceType
+  byte coverArt_SourceType = 0x14;
+  // CoverArt - CoverArtType
+  byte coverArt_CoverArtType = 0x01;
+
+  // ActiveCallPicture - CallID
+  byte activeCallPicture_CallID = 0x00;
+  // ActiveCallPicture - ActiveCallPictureType
+  byte activeCallPicture_ActiveCallPictureType = 0x01;
+
+  // StationArt - Address
+  char stationArt_Address[6] = {0x01, 0x30, 0x30, 0x30, 0x30, 0x00};
+  // StationArt - AddressType
+  byte stationArt_AddressType = 0x00;
+  // StationArt - SourceType
+  byte stationArt_SourceType = 0x09;
+  // StationArt - StationArtType
+  byte stationArt_StationArtType = 0x01;
+
+  // AdbContactPicture - Address
+  char AdbContactPicture_Address[6] = {0x01, 0x30, 0x30, 0x30, 0x30, 0x00};
+  // AdbContactPicture - AddressType
+  byte AdbContactPicture_AddressType = 0x00;
+  // AdbContactPicture - AdbContactPictureType
+  byte AdbContactPicture_AdbContactPictureType = 0x01;
+
+  // Picture transmission process timeout (ms)
+  const long ku32_ProcessPicTxTOut = 5;
+  // Picture transmission process timer
+  msTimer tProcessPicTx;
+  // Picture path
+  char gsStationArtPicPath[255] = "AFN Deutschland Bavaria_s.png";
+  char gsCoverArtPicPath[255] = "AFN Deutschland Kaiserslautern_s.png";
+  char gsActiveCallPicPath[255] = "AFN Deutschland Spangdahlem_s.png";
+  char gsAdbContactPicPath[255] = "AFN Deutschland Stuttgart_s.png";
+  // Flags indicating MHP transmission progress (0 - No Txn, 1 - Txn is active)
+  byte gb_StationArtTxnProgress = 0;
+  byte gb_CoverArtTxnProgress = 0;
+  byte gb_ActiveCallPicTxnProgress = 0;
+  byte gb_AdbContactPicTxnProgress = 0;
+  
+   //IssueList #214 - BAP and MOST non-coupled
+  //Selecting new image - user input
+   char gEmpty_string [3]   ={0,0,0};
+   //MR 63666
+   char gBapMost_Image_Path[255], gBapMost_Image_filename[255], gBapMost_Image_Path_filename[255];
+  
+// #################### PictureServer Stresstest ##############################
+  
+  // generic configuration
+  char sSeparator[2] = ";";
+  const dword ru32MaxCsvLineLength = 32768;
+  // generic variable
+  dword u32CsvEntryCount;
+
+  // specific
+  struct tstBitmapInfo
+  {
+    char sName[256];
+    byte u8Handle;
+    byte u8Format;
+  };
+  
+  struct tstPictureArray
+  {
+    struct tstBitmapInfo astBitmapInfo[20];
+    word u16SendDelay;
+    byte u8LastIdx;
+    byte u8CurrentIdx;
+    byte u8StressTestActive;
+  };
+
+  struct tstPictureArray astCoverArtPic;
+  struct tstPictureArray astStationArtPic;
+  struct tstPictureArray astActiveCallPic;
+  
+  const word gStressFuncId_CoverArt = 0x400;
+  const word gStressFuncId_StaionArt = 0x405;
+  const word gStressFuncId_ActiveCallPicture = 0x402;
+  
+  byte gStressTestType = 0;
+  byte gStressTestProgress = 0;
+  byte gStresstestStep = 0;
+  msTimer tStationArtDelayTimer;
+  msTimer tCoverArtDelayTimer;
+  msTimer tActiveCallPicTimer;
+  
+  // FunctionAvailability (0x406) parameter
+  byte CoverArtBit = 0x01;
+  byte ActiveCallPicBit = 0x02;
+  byte AdbContactPicBit = 0x04;
+  byte GetIntAddressBit = 0x08;
+  byte StationArtBit = 0x10;
+}
+
+
+//IssueList #214
+//BAP and MOST synchronization - non coupled
+on envVar env_PIC_bapMOST_setImage_button
+{
+  byte posValue =0;
+  byte picType = 0;
+  char tempPath[255];
+  byte i=0;
+  byte category = 0;
+  if (getValue(this))
+  {  
+    for(i=0;i<255;i++)
+		tempPath[i]=0;
+  
+  getValue(env_PIC_bapMOST_setImage_path,tempPath);
+  putValue(env_PIC_bapMOST_setImage_msg,"");
+    
+  //get new filename if there's new image
+  //MR 63666
+  if (strncmp(tempPath,gBapMost_Image_Path_filename,strlen(tempPath))!=0)
+  {
+    Pic_Bap_Most_getImage();
+  }
+
+    if (strncmp(gBapMost_Image_filename,gEmpty_string,3)!=0)
+    {
+    category = getValue(env_PIC_bapMOST_setImage_Cat);
+      switch (category)
+      {
+        case 0: Pic_Bap_Most_setImage(); break;
+        case 1: 
+                picType = getValue(env_FSG_MOST_ActiveCallPicType_NC);
+         
+                if (picType > 0x00 && picType < 0x06) //Not NoPicture & DefaultPicture
+                Pic_Bap_Most_setImage();
+                break;
+                
+        case 2: Pic_Bap_Most_setImage(); break;
+        default: break;
+      }
+    }
+    else
+      putValue(env_PIC_bapMOST_setImage_msg,"Invalid picture image!");
+  }
+}
+
+//IssueList #214
+//get the Path and filename of the selected image
+void Pic_Bap_Most_getImage()
+{
+  int i, j,ctr1,ctr2;
+  
+  ctr1=0;
+  ctr2=0;
+ for (i=0;i<255;i++)
+  gBapMost_Image_filename[i]=0;
+
+  for (i=0;i<255;i++)
+  gBapMost_Image_Path[i]=0;
+
+  //MR 63666
+  for (i=0;i<255;i++)
+  gBapMost_Image_Path_filename[i]=0;
+    
+	getvalue(env_PIC_bapMOST_setImage_path, gBapMost_Image_Path); //get filename & path of image from Panel
+	//MR 63666
+  	getvalue(env_PIC_bapMOST_setImage_path, gBapMost_Image_Path_filename);
+   i =0;
+
+        while (gBapMost_Image_Path[i] !=0) //scan "path"
+        {
+            if(gBapMost_Image_Path[i] ==0x5C) //count "/" to seperate later "path" & "filename" 
+                ctr1++;                
+            i++;
+        }  
+         
+        i =0; j =0; //reset values
+
+        while (gBapMost_Image_Path[i] !=0) //seperate "path" and "filename"
+        {
+            if(ctr2==ctr1) //get filename after last "\"
+            {              
+                gBapMost_Image_filename[j] =gBapMost_Image_Path[i];
+                j++;
+                gBapMost_Image_Path[i] =0;
+              
+            }
+
+            if(gBapMost_Image_Path[i]==0x5C) //count "\" to get filename after last "\"            
+                ctr2++;
+                               
+            i++;
+        }
+        write("gBapMost_Image_Path = %s",gBapMost_Image_Path);
+        write("gBapMost_Image_filename = %s", gBapMost_Image_filename);
+}
+
+void handleCsvValue(dword u32Row, dword u32Column, char sValue[], word u16FuncId)
+{
+  //write("%d, %d: %s", u32Row, u32Column, sValue);
+  switch(u16FuncId)
+  {
+    case gStressFuncId_CoverArt:
+        if (u32Row < elcount(astCoverArtPic.astBitmapInfo))
+        {
+          switch (u32Column)
+          {
+            case 0:  strncpy(astCoverArtPic.astBitmapInfo[u32Row].sName, sValue, elcount(astCoverArtPic.astBitmapInfo[u32Row].sName));  break;
+            case 1:  astCoverArtPic.astBitmapInfo[u32Row].u8Handle = atol(sValue);  break;
+            case 2:  astCoverArtPic.astBitmapInfo[u32Row].u8Format = atol(sValue);  break;
+          }
+        }
+      break;
+    
+    case gStressFuncId_StaionArt:
+        if (u32Row < elcount(astStationArtPic.astBitmapInfo))
+        {
+          switch (u32Column)
+          {
+            case 0:  strncpy(astStationArtPic.astBitmapInfo[u32Row].sName, sValue, elcount(astStationArtPic.astBitmapInfo[u32Row].sName));  break;
+            case 1:  astStationArtPic.astBitmapInfo[u32Row].u8Handle = atol(sValue);  break;
+            case 2:  astStationArtPic.astBitmapInfo[u32Row].u8Format = atol(sValue);  break;
+          }
+        }
+      break;
+    
+    case gStressFuncId_ActiveCallPicture:
+        if (u32Row < elcount(astActiveCallPic.astBitmapInfo))
+        {
+          switch (u32Column)
+          {
+            case 0:  strncpy(astActiveCallPic.astBitmapInfo[u32Row].sName, sValue, elcount(astActiveCallPic.astBitmapInfo[u32Row].sName));  break;
+            case 1:  astActiveCallPic.astBitmapInfo[u32Row].u8Handle = atol(sValue);  break;
+            case 2:  astActiveCallPic.astBitmapInfo[u32Row].u8Format = atol(sValue);  break;
+          }
+        }
+      break;
+    
+    default:
+      break;
+  }
+}
+
+void readCsv(char sCsvFileName[], word u16FuncId)
+{
+  dword u32CsvHandle;
+
+  u32CsvEntryCount = 0;
+
+  u32CsvHandle = openFileRead(sCsvFileName, /* mode = ASCII */ 0);
+  if (u32CsvHandle > 0)
+  {
+    char sCsvLine[ru32MaxCsvLineLength];
+
+    while (fileGetStringSZ(sCsvLine, elcount(sCsvLine), u32CsvHandle))
+    {
+      long i32CommentPos;
+
+      // remove comment
+      i32CommentPos = strstr(sCsvLine, "#");
+      if (i32CommentPos >= 0)
+      {
+        sCsvLine[i32CommentPos] = '\0';
+      }
+
+      // ignore line with whitespace only
+      if (str_match_regex(sCsvLine, "[ \t]*") == 0)
+      {
+        dword u32Row;
+        dword u32Column;
+        long  i32StartPos;
+
+        u32Row = u32CsvEntryCount;
+        ++u32CsvEntryCount;
+        i32StartPos = 0;
+
+        for (u32Column = 0;  ; ++u32Column)
+        {
+          long i32SeparatorPos;
+          char sValue[ru32MaxCsvLineLength];
+
+          i32SeparatorPos = strstr_off(sCsvLine, i32StartPos, sSeparator);
+          //write("%d..%d %s", i32StartPos, i32SeparatorPos, sCsvLine);
+          if (i32SeparatorPos < 0)
+          {
+            substr_cpy(sValue, sCsvLine, i32StartPos, -1, elcount(sValue));
+            handleCsvValue(u32Row, u32Column, sValue, u16FuncId);
+            break; // from for
+          }
+          else
+          {
+            // ";val2;" start = 1, pos = 5
+            substr_cpy(sValue, sCsvLine, i32StartPos, i32SeparatorPos - i32StartPos, elcount(sValue));
+            handleCsvValue(u32Row, u32Column, sValue, u16FuncId);
+            i32StartPos = i32SeparatorPos + 1;
+          }
+        } // for u32Column
+      } // if non-empty line
+    } // while (fileGetStringSZ())
+
+    fileClose(u32CsvHandle);
+  } // if (u32CsvHandle > 0)
+}
+
+
+on envVar env_PIC_StressTest_TestBtn
+{
+  long i;
+  float var1;
+  /* read image properties */
+  
+  if (getValue(this))
+  {
+  enableControl("PictureServer", "Start_Button", 0);
+  setFilePath("MOST\\Array\\", 0);
+  readCsv("ActiveCallPicture.csv",  gStressFuncId_ActiveCallPicture);
+  readCsv("CoverArt.csv",    gStressFuncId_CoverArt);
+  readCsv("StationArt.csv",  gStressFuncId_StaionArt);
+  /* test */
+  //write("Load Pictures [%d rows] from CSV", u32CsvEntryCount);
+  //for (i = 0;  i < u32CsvEntryCount;  ++i)
+  //{
+    //write("[%d]: %02X, %02X, %s", i, astActiveCallPic.astBitmapInfo[i].u8Handle, astActiveCallPic.astBitmapInfo[i].u8Format, astActiveCallPic.astBitmapInfo[i].sName);
+  //}
+  /* read test seetings */
+  astCoverArtPic.u8LastIdx = getValue(env_PIC_StressTest_CoArtCount);
+  astActiveCallPic.u8LastIdx = getValue(env_PIC_StressTest_AcCallCount);
+  astStationArtPic.u8LastIdx = getValue(env_PIC_StressTest_StArtCount);
+  
+  astCoverArtPic.u16SendDelay = getValue(env_PIC_StressTest_CoArtDelay);
+  astActiveCallPic.u16SendDelay = getValue(env_PIC_StressTest_AcCallDelay);
+  astStationArtPic.u16SendDelay = getValue(env_PIC_StressTest_StArtDelay);  
+  
+  astCoverArtPic.u8CurrentIdx = 0;
+  astActiveCallPic.u8CurrentIdx = 0;
+  astStationArtPic.u8CurrentIdx = 0;  
+    
+  gStressTestType = getValue(env_PIC_StressTest_StressType);
+  var1 = 100 / (astCoverArtPic.u8LastIdx + astActiveCallPic.u8LastIdx + astStationArtPic.u8LastIdx); 
+  gStresstestStep = _round(var1);
+  gStressTestProgress = 0;
+  putValue(env_PIC_StressTest_Progress, gStressTestProgress);
+  
+    switch(gStressTestType)
+    {
+      case 0:
+        /* Sequence */
+        if(getValue(env_PIC_StressTest_AcCallActive) == 1)
+        {
+          astActiveCallPic.u8StressTestActive = 1;
+          bPIC_ProcSequence(gStressFuncId_ActiveCallPicture);
+        }
+        else if(getValue(env_PIC_StressTest_CoArtActive) == 1)
+        {
+          astCoverArtPic.u8StressTestActive = 1;
+          bPIC_ProcSequence(gStressFuncId_CoverArt);
+        }
+        else if(getValue(env_PIC_StressTest_StArtActive) == 1)
+        {
+          astStationArtPic.u8StressTestActive = 1;
+          bPIC_ProcSequence(gStressFuncId_StaionArt);
+        }
+        else
+        {
+          /* nothing selected */
+        }
+        break;
+      case 1:
+        /* Paralell */
+        MH_SetTxPriority(gDSO1_PortHandle, 2);
+        MH_SetTxPriority(gDSO2_PortHandle, 2);
+        MH_SetTxPriority(gDSO3_PortHandle, 2);
+        MH_SetTxPriority(gDSO4_PortHandle, 2);
+        
+        if(getValue(env_PIC_StressTest_AcCallActive) == 1)
+        {
+          astActiveCallPic.u8StressTestActive = 1;
+          bPIC_ProcSequence(gStressFuncId_ActiveCallPicture);
+        }
+        
+        if(getValue(env_PIC_StressTest_CoArtActive) == 1)
+        {
+          astCoverArtPic.u8StressTestActive = 1;
+          bPIC_ProcSequence(gStressFuncId_CoverArt);
+        }
+        
+        if(getValue(env_PIC_StressTest_StArtActive) == 1)
+        {
+          astStationArtPic.u8StressTestActive = 1;
+          bPIC_ProcSequence(gStressFuncId_StaionArt);
+        }
+      
+        break;
+      default:
+        break;
+     }
+   }
+}
+
+on envVar env_PIC_Status_SendBtn
+{
+  mostMessage  PictureServer.FunctionAvailability.Status msg;
+  byte status;
+  
+  if (getValue(this))
+  {  
+    status = 0x0;
+    /* read message properties */
+    if (getValue(env_PIC_Status_CoArtActive)) status |= CoverArtBit;
+    if (getValue(env_PIC_Status_AcCallActive)) status |= ActiveCallPicBit;
+    if (getValue(env_PIC_Status_AdContactActive)) status |= AdbContactPicBit;
+    if (getValue(env_PIC_Status_GetIntAddrActive)) status |= GetIntAddressBit;
+    if (getValue(env_PIC_Status_StArtActive)) status |= StationArtBit;
+    
+    // Prepare message
+    msg.DA = gDestDev; 
+    msg.MsgChannel = mostGetChannel();  
+    msg.InstanceId = 0x01;
+    msg.BYTE(3) = status;
+    msg.BYTE(2) = 0xFF; 
+    msg.BYTE(1) = 0xFF;  
+    msg.BYTE(0) = 0xFF;      
+    msg.DLC = 0x04;  
+    output(msg);
+  }
+}
+byte bPIC_ProcSequence(word wFuncId)
+{
+  byte breturn = 0;
+  byte u8Idx = 0;
+  switch(wFuncId)
+  {
+    case gStressFuncId_CoverArt:
+      u8Idx = astCoverArtPic.u8CurrentIdx;
+      write("Stress CoverArt - [%d]: %02X, %02X, %s", u8Idx, astCoverArtPic.astBitmapInfo[u8Idx].u8Handle, astCoverArtPic.astBitmapInfo[u8Idx].u8Format, astCoverArtPic.astBitmapInfo[u8Idx].sName);
+      PicServTrigCoverArt(astCoverArtPic.astBitmapInfo[u8Idx].sName , astCoverArtPic.astBitmapInfo[u8Idx].u8Handle, 11, astCoverArtPic.astBitmapInfo[u8Idx].u8Format);
+
+      break;
+      
+    case gStressFuncId_StaionArt:
+      u8Idx = astStationArtPic.u8CurrentIdx;
+      write("Stress StaionArt - [%d]: %02X, %02X, %s", u8Idx, astStationArtPic.astBitmapInfo[u8Idx].u8Handle, astStationArtPic.astBitmapInfo[u8Idx].u8Format, astStationArtPic.astBitmapInfo[u8Idx].sName);
+      PicServTrigStationArt(astStationArtPic.astBitmapInfo[u8Idx].sName , astStationArtPic.astBitmapInfo[u8Idx].u8Handle, 1, astStationArtPic.astBitmapInfo[u8Idx].u8Format);
+
+      break;
+      
+    case gStressFuncId_ActiveCallPicture:
+      u8Idx = astActiveCallPic.u8CurrentIdx;
+      write("Stress ActiveCall - [%d]: %02X, %02X, %s", u8Idx, astActiveCallPic.astBitmapInfo[u8Idx].u8Handle, astActiveCallPic.astBitmapInfo[u8Idx].u8Format, astActiveCallPic.astBitmapInfo[u8Idx].sName);
+      PicServTrigActiveCallPic(astActiveCallPic.astBitmapInfo[u8Idx].sName , astActiveCallPic.astBitmapInfo[u8Idx].u8Handle, astActiveCallPic.astBitmapInfo[u8Idx].u8Format);
+      break;
+    
+    default:
+      
+     break;
+  }
+  return breturn;
+}
+
+on timer tStationArtDelayTimer
+{
+  /* prepare next picture */
+  astStationArtPic.u8CurrentIdx++;
+  gStressTestProgress += gStresstestStep;
+  if(gStressTestProgress > 100) gStressTestProgress = 100;
+  putValue(env_PIC_StressTest_Progress, gStressTestProgress);
+  if(gStressTestType == 0)
+  { 
+    if(astStationArtPic.u8CurrentIdx < astStationArtPic.u8LastIdx)
+    {
+      bPIC_ProcSequence(gStressFuncId_StaionArt); 
+    }
+    else
+    {
+      // Stresstest finished
+      gStressTestProgress = 100;
+      putValue(env_PIC_StressTest_Progress, gStressTestProgress);
+      astStationArtPic.u8StressTestActive = 0;
+      enableControl("PictureServer", "Start_Button", 1);
+    }
+  }
+  else
+  {
+    /* paralell */
+    if((astCoverArtPic.u8StressTestActive == 0) && (astCoverArtPic.u8StressTestActive == 0) && (astCoverArtPic.u8StressTestActive == 0))
+    {
+      gStressTestProgress = 100;
+      putValue(env_PIC_StressTest_Progress, gStressTestProgress);
+      enableControl("PictureServer", "Start_Button", 1);  
+    }
+  }
+}
+
+on timer tCoverArtDelayTimer
+{
+  /* prepare next picture */
+  astCoverArtPic.u8CurrentIdx++;
+  gStressTestProgress += gStresstestStep;
+  if(gStressTestProgress > 100) gStressTestProgress = 100;
+  putValue(env_PIC_StressTest_Progress, gStressTestProgress);
+  if(astCoverArtPic.u8CurrentIdx < astCoverArtPic.u8LastIdx)
+  {
+    bPIC_ProcSequence(gStressFuncId_CoverArt); 
+  }
+  else
+  {
+    // Stresstest finished
+    astCoverArtPic.u8StressTestActive = 0;
+    if(gStressTestType == 0)
+    { 
+      /* Sequence */
+      if(getValue(env_PIC_StressTest_StArtActive) == 1)
+      {
+        /* Trigger next Picture Type */
+        astStationArtPic.u8StressTestActive = 1;
+        bPIC_ProcSequence(gStressFuncId_StaionArt);
+      }
+      else
+      {
+        gStressTestProgress = 0;
+        putValue(env_PIC_StressTest_Progress, gStressTestProgress);
+        enableControl("PictureServer", "Start_Button", 1);
+      }
+     }
+     else
+     {
+       /* Paralell */
+      if((astCoverArtPic.u8StressTestActive == 0) && (astCoverArtPic.u8StressTestActive == 0) && (astCoverArtPic.u8StressTestActive == 0))
+      {
+        gStressTestProgress = 0;
+        putValue(env_PIC_StressTest_Progress, gStressTestProgress);
+        enableControl("PictureServer", "Start_Button", 1);  
+      }
+     }
+   }  
+}
+
+on timer tActiveCallPicTimer
+{
+  /* prepare next picture */
+  astActiveCallPic.u8CurrentIdx++;
+  gStressTestProgress += gStresstestStep;
+  if(gStressTestProgress > 100) gStressTestProgress = 100;
+  putValue(env_PIC_StressTest_Progress, gStressTestProgress);
+  if(astActiveCallPic.u8CurrentIdx < astActiveCallPic.u8LastIdx)
+  {
+    bPIC_ProcSequence(gStressFuncId_ActiveCallPicture); 
+  }
+  else
+  {
+    // Stresstest finished
+    astActiveCallPic.u8StressTestActive = 0;
+    if(gStressTestType == 0)
+    { 
+      /* Sequence */
+      if(getValue(env_PIC_StressTest_CoArtActive) == 1)
+      {
+        /* Trigger next Picture Type */
+        astCoverArtPic.u8StressTestActive = 1;
+        bPIC_ProcSequence(gStressFuncId_CoverArt);
+      }
+      else
+      {
+        gStressTestProgress = 0;
+        putValue(env_PIC_StressTest_Progress, gStressTestProgress);
+        enableControl("PictureServer", "Start_Button", 1);
+      }
+     }
+    else
+    {
+      /* Paralell */
+      if((astCoverArtPic.u8StressTestActive == 0) && (astCoverArtPic.u8StressTestActive == 0) && (astCoverArtPic.u8StressTestActive == 0))
+      {
+        gStressTestProgress = 100;
+        putValue(env_PIC_StressTest_Progress, gStressTestProgress);
+        enableControl("PictureServer", "Start_Button", 1);  
+      }
+    }
+  }  
+}
+
+
+
+
+
+//IssueList #214
+//Enable and disable the panel elements
+on envVar env_PIC_bapMOST_active_flag
+{
+	if (getValue(this))
+  {
+    EnableControl("BAP_MOST_Synchronization","CoverArt",0);
+    EnableControl("BAP_MOST_Synchronization","ActiveCall",0);
+    EnableControl("BAP_MOST_Synchronization","StationArt",0);
+    EnableControl("BAP_MOST_Synchronization","ImagePath",0);
+    EnableControl("BAP_MOST_Synchronization","POSvalue",0);
+    EnableControl("BAP_MOST_Synchronization","SetImage_button",0);
+    EnableControl("BAP_MOST_Synchronization","SetImage_msg",0);
+    putValue(env_PIC_bapMOST_setImage_msg,gEmpty_string);
+    //MR63666
+     EnableControl("BAP_MOST_Synchronization","ActiveCall_PictureType",0);
+    putvalue(env_PIC_bapMOST_setImage_path,gEmpty_string);
+    
+  }
+  else
+  {
+    EnableControl("BAP_MOST_Synchronization","CoverArt",1);
+    EnableControl("BAP_MOST_Synchronization","ActiveCall",1);
+    EnableControl("BAP_MOST_Synchronization","StationArt",1);
+    EnableControl("BAP_MOST_Synchronization","ImagePath",1);
+    EnableControl("BAP_MOST_Synchronization","POSvalue",1);
+    EnableControl("BAP_MOST_Synchronization","SetImage_button",1);
+    EnableControl("BAP_MOST_Synchronization","SetImage_msg",1);
+    //MR63666
+    EnableControl("BAP_MOST_Synchronization","ActiveCall_PictureType",0);
+  }
+  
+    
+}
+
+
+//IssueList #214
+//Send the selected image to MOST
+void Pic_Bap_Most_setImage()
+{
+  byte tempBuff[kPictureDataMaxSize];
+  byte buff[kPictureDataMaxSize];
+  long i;
+  long bufferSize;
+  dword fileHandle;
+  int idx;
+ 
+  dword PortHandle,DestDev,FBlockID,InstID,FktID,OpTypeID;
+  
+  char Address[6];
+  byte AddressType,SourceType, ArtType, ActiveCallPictureType;
+
+  
+  byte activeCall_flg,category;
+  
+  word u16_BAPpos;
+  char u8_Temp_;
+  
+ 
+  setFilePath(gBapMost_Image_Path, 0);
+  fileHandle = openFileRead(gBapMost_Image_filename, 1);
+  u16_BAPpos = getValue(env_PIC_bapMOST_setImage_POS);
+  category = getValue(env_PIC_bapMOST_setImage_Cat);
+  //MR63666
+  ActiveCallPictureType = getValue(env_FSG_MOST_ActiveCallPicType_NC);
+  
+  idx=0;
+  activeCall_flg=0;
+  FBlockID = 0xD8; //pictureServer
+  InstID = 0x1;
+  OpTypeID = 0xC;  // Status
+
+  if (fileHandle != 0)
+  {
+  //set Address for CoverArt and StationArt
+      if (category != 0x01)
+      {
+      Address[0] = 0x01;  //fixed value
+      u8_Temp_ = (char)((u16_BAPpos & 0xF000) >> 12);
+      Address[1] = H2S(u8_Temp_);
+      u8_Temp_ = (char)((u16_BAPpos & 0x0F00) >> 8);
+      Address[2] = H2S(u8_Temp_);
+      u8_Temp_ = (char)((u16_BAPpos & 0x00F0) >> 4);
+      Address[3] = H2S(u8_Temp_);
+      u8_Temp_ = (char)(u16_BAPpos & 0x000F);
+      Address[4] = H2S(u8_Temp_);
+      Address[5] = 0x00;  //fixed value
+        for (i = 0; i < 6; i++)
+        {
+          write("Address[%d] = %.2X ", i, Address[i]);
+        }
+      }
+  
+  //set other parameters
+      switch(category)
+      {
+        case 0://CoverArt
+                PortHandle = gDSO1_PortHandle;
+                FktID = gDSO1_FktID;    
+                AddressType = coverArt_AddressType;
+                SourceType = coverArt_SourceType;
+                ArtType = coverArt_CoverArtType;
+                break;
+        case 1://ActiveCallPicture
+                PortHandle = gDSO2_PortHandle;
+                FktID = gDSO2_FktID;    
+                activeCall_flg = 0x1;
+                break;
+        case 2: //StationArt
+                PortHandle = gDSO3_PortHandle;
+                FktID = gDSO3_FktID;    
+                AddressType = stationArt_AddressType;
+                SourceType = stationArt_SourceType;
+                ArtType = stationArt_StationArtType;
+                break;
+          
+        default: break;
+      }
+  
+      // Read file
+      bufferSize = fileGetBinaryBlock(tempBuff, elcount(tempBuff), fileHandle);
+
+      if (activeCall_flg == 0x01)
+      {
+         // Prepare transmit data
+      buff[0] = activeCallPicture_CallID;
+      idx++;
+      //MR63666
+      //buff[1] = activeCallPicture_ActiveCallPictureType;
+       buff[1]= ActiveCallPictureType;
+       idx++;
+        for (i = 0; i < bufferSize; i++)
+        {
+          buff[i+2] = tempBuff[i];
+        }
+      }
+      else
+      {
+       // Prepare transmit data
+        memcpy(buff, Address, elcount(Address));
+        idx = elcount(Address);
+        buff[idx] = AddressType;
+        idx++;
+        buff[idx] = SourceType;
+        idx++;
+        buff[idx] = ArtType;
+        idx++;
+        for (i = 0; i < bufferSize; i++)
+        {
+          buff[idx+i] = tempBuff[i];
+        }
+      }
+      // Close file
+      fileClose(fileHandle);
+      // Set data buffer to be transmitted. Data buffer is complete packet in
+    
+      if(MH_ReqTrans(PortHandle, 
+                   gDestDev, 
+                   FBlockID, 
+                   InstID, 
+                   FktID, 
+                   OpTypeID,buff,bufferSize + idx) == kAPIResult_Ok)
+      {
+          switch(category)
+            {
+              case 0: gb_CoverArtTxnProgress = 0x1;
+                      putValue(env_PIC_bapMOST_setImage_msg,"CoverArt image set");
+                      break;
+              case 1: gb_ActiveCallPicTxnProgress = 0x1;  
+                      putValue(env_PIC_bapMOST_setImage_msg,"ActiveCall image set");
+                      break;
+              case 2: gb_StationArtTxnProgress = 0x1;     
+                      putValue(env_PIC_bapMOST_setImage_msg,"StationArt image set");
+                      break;
+              
+              default: break;
+            }
+
+      }
+      else
+      {
+      putValue(env_PIC_bapMOST_setImage_msg,"Image NOT set");
+      }
+  }
+  else
+  {
+    write("%FILE_NAME%: Pic_CoverArt_MH_IndTxBufferRequested: file open failed! Could not set Tx buffer");
+  }
+        
+}
+
+//MR63666
+//set ActiveCallPicture Type during Non-coupled ActiveCall
+on envVar env_FSG_MOST_ActiveCallPicType_NC
+{
+	activeCallPicture_ActiveCallPictureType = getValue(this);
+}
+on preStart
+{
+  // configure CAPL node as application node (don't receive spy messages...)
+  mostApplicationNode();
+
+  // configure FBlock
+  ConfigureFBlock();
+
+  // Initialize default settings used by ports created subsequently 
+  // Note, that packet transport mode must be set BEFORE frame 
+  // sizes can be set, that are larger than allowed on the control 
+  // channel.
+  MH_SetTxTranspMode(0, gDefaultTransportMode); 
+  MH_SetTxFrameSize(0, kMaxUsrDataSize_PacketMax);
+  MH_SetTxBlockAck(0, gDefaultAckMode);
+
+  if (mostGetSpeedGrade(mostGetChannel()) == 3)
+  {
+    MH_UseProtocolRev(0, 3);
+  }
+
+  // register MHP tx port for DSO1 instance 
+  gDSO1_PortHandle = MH_CreateTxPort(gDSO1_Prefix);
+  // register MHP tx port for DSO2 instance
+  gDSO2_PortHandle = MH_CreateTxPort(gDSO2_Prefix);
+  // register MHP tx port for DSO3 instance
+  gDSO3_PortHandle = MH_CreateTxPort(gDSO3_Prefix);
+  // register MHP tx port for DSO4 instance
+  gDSO4_PortHandle = MH_CreateTxPort(gDSO4_Prefix);
+}
+
+on start
+{
+  // Start timer for processing picture transmission request
+  //setTimerCyclic(tProcessPicTx, ku32_ProcessPicTxTOut); // We don't want cyclic trigger. Use event based trigger instead!
+
+  //BAP_MOST sync - start
+  putValue(env_PIC_bapMOST_active_flag, 0x01);
+}
+
+on stopMeasurement
+{
+  //BAP_MOST sync - start
+  putValue(env_PIC_bapMOST_active_flag, 0x00);
+}
+
+void ConfigureFBlock(void)
+{
+  // Configures the FBlock.
+  // Therefore functions are registered at CANoe's Function and
+  // Notification Service.
+
+  long oldInstId = -1; // static variable
+  long newInstId;
+
+  newInstId = MostApGetInstId();
+
+  if(newInstId < 0)
+  {
+    newInstId = -1;
+  }
+
+  if(oldInstId != -1)
+  {
+    // disable Notification Service
+    mostAsNtfDisableEx(kFB_PIC, oldInstId);
+    // disable Function Service
+    mostAsFsDisableEx(kFB_PIC, oldInstId);
+  }
+
+  if(newInstId != -1)
+  {
+    // enable Notification Service
+    mostAsNtfEnable();
+    // enable Function Service
+    mostAsFsEnable();
+
+    // Enable function IDs FktIDs, Notification, CoverArt, ActiveCallPicture and StationArt
+    // Enable notification service for function IDs CoverArt, ActiveCallPicture and StationArt
+    mostAsFsFunctionEnable(kFct_PIC_CoverArt, kOpTFAllInFCat, "SendStatus_CoverArtDummy");
+    mostAsFsFunctionEnable(kFct_PIC_ActiveCallPicture, kOpTFAllInFCat, "SendStatus_ActiveCallPictureDummy");
+    mostAsFsFunctionEnable(kFct_PIC_StationArt, kOpTFAllInFCat, "SendStatus_StationArtDummy");
+    mostAsFsFunctionEnable(kFct_PIC_AdbContactPicture, kOpTFAllInFCat, "SendStatus_AdbContactPictureDummy");
+    mostAsFsFunctionEnable(kFct_PIC_GetInternalAddressID, kOpTFAllInFCat);
+  }
+  oldInstId = newInstId;
+}
+
+long SendStatus_CoverArtDummy(long destAdr)
+{
+  return 0;
+}
+
+long SendStatus_ActiveCallPictureDummy(long destAdr)
+{
+  return 0;
+}
+
+long SendStatus_StationArtDummy(long destAdr)
+{
+  return 0;
+}
+
+long SendStatus_AdbContactPictureDummy(long destAdr)
+{
+  return 0;
+}
+
+long SendStatus_CoverArt(long destAdr)
+{
+  // Description:
+  //   The SendStatus function is used for 
+  //   - the Notification Service
+  //     (status message on Notification.Set(SetFunction)
+  //     and spontaneos property change)
+  //   - for replies on OpType Get
+  // Parameter:
+  //   destAdr  Target device(s)
+  //     destadr==kAsNtfDestAdr: to all notification clients
+  //     destadr!=kAsNtfDestAdr: to destAdr
+  // Return:
+  //   0: Ok; -1: Failed (property currently not available...)
+
+  // Request for MHP transmission of DSO1
+  RequestTxDSO1();
+
+  return 0;
+}
+
+long SendStatus_ActiveCallPicture(long destAdr)
+{
+  // Description:
+  //   The SendStatus function is used for 
+  //   - the Notification Service
+  //     (status message on Notification.Set(SetFunction)
+  //     and spontaneos property change)
+  //   - for replies on OpType Get
+  // Parameter:
+  //   destAdr  Target device(s)
+  //     destadr==kAsNtfDestAdr: to all notification clients
+  //     destadr!=kAsNtfDestAdr: to destAdr
+  // Return:
+  //   0: Ok; -1: Failed (property currently not available...) 
+
+  // Request for MHP transmission of DSO2
+  RequestTxDSO2();
+
+  return 0;
+}
+
+long SendStatus_StationArt(long destAdr)
+{
+  // Description:
+  //   The SendStatus function is used for 
+  //   - the Notification Service
+  //     (status message on Notification.Set(SetFunction)
+  //     and spontaneos property change)
+  //   - for replies on OpType Get
+  // Parameter:
+  //   destAdr  Target device(s)
+  //     destadr==kAsNtfDestAdr: to all notification clients
+  //     destadr!=kAsNtfDestAdr: to destAdr
+  // Return:
+  //   0: Ok; -1: Failed (property currently not available...) 
+
+  // Request for MHP transmission of DSO3
+  RequestTxDSO3();
+
+  return 0;
+}
+
+long SendStatus_AdbContactPicture(long destAdr)
+{
+  // Description:
+  //   The SendStatus function is used for 
+  //   - the Notification Service
+  //     (status message on Notification.Set(SetFunction)
+  //     and spontaneos property change)
+  //   - for replies on OpType Get
+  // Parameter:
+  //   destAdr  Target device(s)
+  //     destadr==kAsNtfDestAdr: to all notification clients
+  //     destadr!=kAsNtfDestAdr: to destAdr
+  // Return:
+  //   0: Ok; -1: Failed (property currently not available...) 
+
+  // Request for MHP transmission of DSO3
+  RequestTxDSO4();
+
+  return 0;
+}
+
+// Function to trigger the MHP transmission on DSO1
+void RequestTxDSO1(void)
+{
+  // MH_ReqTrans creates a sender instance and tries to open a connection
+  // to the destination address. Once the connection is established, the
+  // callback ...MH_IndTxBufferRequested is called to provide the data to 
+  // be transmitted.
+  switch(MH_GetTxPortState(gDSO1_PortHandle))
+  {
+    case 0:
+    case 3:
+      if(MH_ReqTrans(gDSO1_PortHandle, 
+                 gDestDev, 
+                 gDSO1_FBlockID, 
+                 gDSO1_InstID, 
+                 gDSO1_FktID, 
+                 gDSO1_OpTypeID) == kAPIResult_Ok)  
+      {
+        gb_CoverArtTxnProgress = 1;
+        writeDbgLevel(3,"CAPL: %s: %s requests transmission on tx port %d.", 
+                      gECU, 
+                      gDSO1_Name, 
+                      gDSO1_PortHandle);
+      }
+      else
+      {
+        writeDbgLevel(3,"CAPL: %s: %s failed to request transmission on tx port %d. Port is busy or callback is missing.", 
+                      gECU, 
+                      gDSO1_Name, 
+                      gDSO1_PortHandle);
+      }
+      break;
+    case 2:
+      Pic_CoverArt_MH_IndTxBufferRequested(gDSO1_PortHandle, 1);
+      break;
+    default:
+      break;
+  }
+}
+
+// Function to trigger the MHP transmission on DSO2
+void RequestTxDSO2(void)
+{
+  // MH_ReqTrans creates a sender instance and tries to open a connection
+  // to the destination address. Once the connection is established, the
+  // callback ...MH_IndTxBufferRequested is called to provide the data to 
+  // be transmitted.
+  switch(MH_GetTxPortState(gDSO2_PortHandle))
+  {
+    case 0:
+    case 3:
+      if(MH_ReqTrans(gDSO2_PortHandle, 
+                     gDestDev, 
+                     gDSO2_FBlockID, 
+                     gDSO2_InstID, 
+                     gDSO2_FktID, 
+                     gDSO2_OpTypeID) == kAPIResult_Ok)
+      {
+        gb_ActiveCallPicTxnProgress = 1;
+        writeDbgLevel(3,"CAPL: %s: %s requests transmission on tx port %d.", 
+                      gECU, 
+                      gDSO2_Name, 
+                      gDSO2_PortHandle);
+      }
+      else
+      {
+        writeDbgLevel(3,"CAPL: %s: %s failed to request transmission on tx port %d. Port is busy or callback is missing.", 
+                      gECU, 
+                      gDSO2_Name, 
+                      gDSO2_PortHandle);
+      }
+      break;
+    case 2:
+      Pic_ActiveCallPicture_MH_IndTxBufferRequested(gDSO2_PortHandle, 1);
+      break;
+    default:
+      break;
+  }
+}
+
+// Function to trigger the MHP transmission on DSO3
+void RequestTxDSO3(void)
+{
+  // MH_ReqTrans creates a sender instance and tries to open a connection
+  // to the destination address. Once the connection is established, the
+  // callback ...MH_IndTxBufferRequested is called to provide the data to 
+  // be transmitted.
+  switch(MH_GetTxPortState(gDSO3_PortHandle))
+  {
+    case 0:
+    case 3:
+      if(MH_ReqTrans(gDSO3_PortHandle, 
+                     gDestDev, 
+                     gDSO3_FBlockID, 
+                     gDSO3_InstID, 
+                     gDSO3_FktID, 
+                     gDSO3_OpTypeID) == kAPIResult_Ok)
+      {
+        gb_StationArtTxnProgress = 1;
+        writeDbgLevel(3,"CAPL: %s: %s requests transmission on tx port %d.", 
+                      gECU, 
+                      gDSO3_Name, 
+                      gDSO3_PortHandle);
+      }
+      else
+      {
+        writeDbgLevel(3,"CAPL: %s: %s failed to request transmission on tx port %d. Port is busy or callback is missing.", 
+                      gECU, 
+                      gDSO3_Name, 
+                      gDSO3_PortHandle);
+      }
+      break;
+    case 2:
+      Pic_StationArt_MH_IndTxBufferRequested(gDSO3_PortHandle, 1);
+      break;
+    default:
+      break;
+  }
+}
+
+// Function to trigger the MHP transmission on DSO4
+void RequestTxDSO4(void)
+{
+  // MH_ReqTrans creates a sender instance and tries to open a connection
+  // to the destination address. Once the connection is established, the
+  // callback ...MH_IndTxBufferRequested is called to provide the data to 
+  // be transmitted.
+  switch(MH_GetTxPortState(gDSO4_PortHandle))
+  {
+    case 0:
+    case 3:
+      if(MH_ReqTrans(gDSO4_PortHandle, 
+                     gDestDev, 
+                     gDSO4_FBlockID, 
+                     gDSO4_InstID, 
+                     gDSO4_FktID, 
+                     gDSO4_OpTypeID) == kAPIResult_Ok)
+      {
+        gb_AdbContactPicTxnProgress = 1;
+        writeDbgLevel(3,"CAPL: %s: %s requests transmission on tx port %d.", 
+                      gECU, 
+                      gDSO4_Name, 
+                      gDSO4_PortHandle);
+      }
+      else
+      {
+        writeDbgLevel(3,"CAPL: %s: %s failed to request transmission on tx port %d. Port is busy or callback is missing.", 
+                      gECU, 
+                      gDSO4_Name, 
+                      gDSO4_PortHandle);
+      }
+      break;
+    case 2:
+      Pic_AdbContactPicture_MH_IndTxBufferRequested(gDSO4_PortHandle, 1);
+      break;
+    default:
+      break;
+  }
+}
+
+// MHP callback function
+Pic_CoverArt_MH_IndTxBufferRequested(dword handle, long isPacketBegin) 
+{
+  byte tempBuff[kPictureDataMaxSize];
+  byte buff[kPictureDataMaxSize];
+  long i;
+  long bufferSize;
+  long isMoreDataToSend = 0;  // 0: MH_IndTxBufferRequested is never called again 
+  dword fileHandle;
+  int idx;
+
+    // Prepare transmit data
+  memcpy(buff, coverArt_Address, elcount(coverArt_Address));
+  idx = elcount(coverArt_Address);
+  buff[idx] = coverArt_AddressType;
+  idx++;
+  buff[idx] = coverArt_SourceType;
+  idx++;
+  buff[idx] = coverArt_CoverArtType;
+  idx++;
+
+  if (0 == strncmp(gsCoverArtPicPath, s_PictureNull, elCount(s_PictureNull)))
+  {
+    MH_SetTxBuffer(handle, buff, idx, isMoreDataToSend);
+  }
+  else
+  {
+    setFilePath("StationArtList", 0);
+    fileHandle = openFileRead(gsCoverArtPicPath, 1);
+    if (fileHandle != 0)
+    {
+      // Read file
+      bufferSize = fileGetBinaryBlock(tempBuff, elcount(tempBuff), fileHandle);
+      for (i = 0; i < bufferSize; i++)
+      {
+        buff[idx+i] = tempBuff[i];
+      }
+      // Close file
+      fileClose(fileHandle);
+      // Set data buffer to be transmitted. Data buffer is complete packet in
+      // this application, so there's no need to re-call this callback
+      MH_SetTxBuffer(handle, buff, (bufferSize + idx), isMoreDataToSend);
+      writeDbgLevel(3,"CAPL: %s: DSO1 starts transmission of buffer with %d bytes.", gECU, bufferSize);
+    }
+    else
+    {
+      write("%FILE_NAME%: Pic_CoverArt_MH_IndTxBufferRequested: file open failed! Could not set Tx buffer");
+    }
+  }
+}
+
+// MHP callback function
+Pic_ActiveCallPicture_MH_IndTxBufferRequested(dword handle, long isPacketBegin) 
+{
+  byte tempBuff[kPictureDataMaxSize];
+  byte buff[kPictureDataMaxSize];
+  long i;
+  long bufferSize;
+  long isMoreDataToSend = 0;  // 0: MH_IndTxBufferRequested is never called again 
+  dword fileHandle;
+  int idx;
+
+  // Prepare transmit data
+  idx = 0;
+  buff[idx] = activeCallPicture_CallID;
+  idx++;
+  buff[idx] = activeCallPicture_ActiveCallPictureType;
+  idx++;
+  if (0 == strncmp(gsActiveCallPicPath, s_PictureNull, elCount(s_PictureNull)))
+  {
+    MH_SetTxBuffer(handle, buff, idx, isMoreDataToSend);
+  }
+  else
+  {
+    setFilePath("StationArtList", 0);
+    //Open file in binary mode
+    fileHandle = openFileRead(gsActiveCallPicPath, 1);
+    if (fileHandle != 0)
+    {
+      // Read file
+      bufferSize = fileGetBinaryBlock(tempBuff, elcount(tempBuff), fileHandle);
+      for (i = 0; i < bufferSize; i++)
+      {
+        buff[i+idx] = tempBuff[i];
+      }
+      // Close file
+      fileClose(fileHandle);
+      // Set data buffer to be transmitted. Data buffer is complete packet in
+      // this application, so there's no need to re-call this callback
+      MH_SetTxBuffer(handle, buff, (bufferSize + idx), isMoreDataToSend);
+      writeDbgLevel(3,"CAPL: %s: DSO2 starts transmission of buffer with %d bytes.", gECU, bufferSize);
+    }
+    else
+    {
+      write("%FILE_NAME%: Pic_ActiveCallPicture_MH_IndTxBufferRequested: file open failed! Could not set Tx buffer");
+    }
+  }
+}
+
+// MHP callback function
+Pic_StationArt_MH_IndTxBufferRequested(dword handle, long isPacketBegin) 
+{
+  byte tempBuff[kPictureDataMaxSize];
+  byte buff[kPictureDataMaxSize];
+  long i;
+  long bufferSize;
+  long isMoreDataToSend = 0;  // 0: MH_IndTxBufferRequested is never called again 
+  dword fileHandle;
+  int idx;
+
+  // Prepare transmit data
+  memcpy(buff, stationArt_Address, elcount(stationArt_Address));
+  idx = elcount(stationArt_Address);
+  buff[idx] = stationArt_AddressType;
+  idx++;
+  buff[idx] = stationArt_SourceType;
+  idx++;
+  buff[idx] = stationArt_StationArtType;
+  idx++;
+  if (0 == strncmp(gsStationArtPicPath, s_PictureNull, elCount(s_PictureNull)))
+  {
+    MH_SetTxBuffer(handle, buff, idx, isMoreDataToSend);
+  }
+  else
+  {
+    setFilePath("StationArtList", 0);
+    //Open file in binary mode
+    fileHandle = openFileRead(gsStationArtPicPath, 1);
+    if (fileHandle != 0)
+    {
+      // Read file
+      bufferSize = fileGetBinaryBlock(tempBuff, elcount(tempBuff), fileHandle);
+      for (i = 0; i < bufferSize; i++)
+      {
+        buff[idx+i] = tempBuff[i];
+      }
+      // Close file
+      fileClose(fileHandle);
+      // Set data buffer to be transmitted. Data buffer is complete packet in
+      // this application, so there's no need to re-call this callback
+      MH_SetTxBuffer(handle, buff, (bufferSize + idx), isMoreDataToSend);
+      writeDbgLevel(3,"CAPL: %s: DSO3 starts transmission of buffer with %d bytes.", gECU, bufferSize);
+    }
+    else
+    {
+      write("%FILE_NAME%: Pic_StationArt_MH_IndTxBufferRequested: file open failed! Could not set Tx buffer");
+    }
+  }
+}
+
+// MHP callback function
+Pic_AdbContactPicture_MH_IndTxBufferRequested(dword handle, long isPacketBegin) 
+{
+  byte tempBuff[kPictureDataMaxSize];
+  byte buff[kPictureDataMaxSize];
+  long i;
+  long bufferSize;
+  long isMoreDataToSend = 0;  // 0: MH_IndTxBufferRequested is never called again 
+  dword fileHandle;
+  int idx;
+
+  setFilePath("StationArtList", 0);
+  //Open file in binary mode
+  fileHandle = openFileRead(gsAdbContactPicPath, 1);
+  if (fileHandle != 0)
+  {
+    // Read file
+    bufferSize = fileGetBinaryBlock(tempBuff, elcount(tempBuff), fileHandle);
+
+    // Prepare transmit data TBD
+    memcpy(buff, AdbContactPicture_Address, elcount(AdbContactPicture_Address));
+    idx = elcount(AdbContactPicture_Address);
+    buff[idx] = AdbContactPicture_AddressType;
+    idx++;
+    buff[idx] = AdbContactPicture_AdbContactPictureType;
+    idx++;
+    for (i = 0; i < bufferSize; i++)
+    {
+      buff[idx+i] = tempBuff[i];
+    }
+    // Close file
+    fileClose(fileHandle);
+    // Set data buffer to be transmitted. Data buffer is complete packet in
+    // this application, so there's no need to re-call this callback
+    MH_SetTxBuffer(handle, buff, (bufferSize + idx), isMoreDataToSend);
+    writeDbgLevel(3,"CAPL: %s: DSO3 starts transmission of buffer with %d bytes.", gECU, bufferSize);
+  }
+  else
+  {
+    write("%FILE_NAME%: Pic_AdbContactPicture_MH_IndTxBufferRequested: file open failed! Could not set Tx buffer");
+  }
+}
+
+// MHP callback function
+Pic_CoverArt_MH_IndTxPktFinished(dword handle, long packetSize)
+{
+  // Reset the flag
+  gb_CoverArtTxnProgress = 0;
+  
+  if(1 == astCoverArtPic.u8StressTestActive)
+  {
+    /* Wait until next Picture will be send */
+    setTimer(tCoverArtDelayTimer, astCoverArtPic.u16SendDelay);
+  }
+  else
+  {
+    ProcCoverArt();
+  }
+  
+  
+  writeDbgLevel(3,"CAPL: %s: DSO1 completed transmission of packet with %d bytes.", gECU, packetSize);
+}
+
+// MHP callback function
+Pic_ActiveCallPicture_MH_IndTxPktFinished(dword handle, long packetSize)
+{
+  // Reset the flag
+  gb_ActiveCallPicTxnProgress = 0;
+  
+  if(1 == astActiveCallPic.u8StressTestActive)
+  {
+    /* Wait until next Picture will be send */
+    setTimer(tActiveCallPicTimer, astActiveCallPic.u16SendDelay);
+  }
+  else
+  {
+    ProcActiveCallPicture();
+  }
+  
+  writeDbgLevel(3,"CAPL: %s: DSO2 completed transmission of packet with %d bytes.", gECU, packetSize);
+}
+
+// MHP callback function
+Pic_StationArt_MH_IndTxPktFinished(dword handle, long packetSize)
+{
+  // Reset the flag
+  gb_StationArtTxnProgress = 0;
+  
+  if(1 == astStationArtPic.u8StressTestActive)
+  {
+    /* Wait until next Picture will be send */
+    setTimer(tStationArtDelayTimer, astStationArtPic.u16SendDelay);
+  }
+  else
+  {
+    ProcStationArt();
+  }
+  
+  writeDbgLevel(3,"CAPL: %s: DSO3 completed transmission of packet with %d bytes.", gECU, packetSize);
+}
+
+// MHP callback function
+Pic_AdbContactPicture_MH_IndTxPktFinished(dword handle, long packetSize)
+{
+  // Reset the flag
+  gb_AdbContactPicTxnProgress = 0;
+  //MH_TxStopTrans(gDSO4_PortHandle);
+  writeDbgLevel(3,"CAPL: %s: DSO4 completed transmission of packet with %d bytes.", gECU, packetSize);
+}
+
+// MHP callback function
+Pic_CoverArt_MH_IndTxConnectionClosed(dword handle, long res)
+{
+  // Reset the flag
+  gb_CoverArtTxnProgress = 0;
+  ReportErrorsToWrite (res, gDSO1_Name);
+}
+
+// MHP callback function
+Pic_ActiveCallPicture_MH_IndTxConnectionClosed(dword handle, long res)
+{
+  // Reset the flag
+  gb_ActiveCallPicTxnProgress = 0;
+  ReportErrorsToWrite (res, gDSO2_Name);
+}
+
+// MHP callback function
+Pic_StationArt_MH_IndTxConnectionClosed(dword handle, long res)
+{
+  // Reset the flag
+  gb_StationArtTxnProgress = 0;
+  ReportErrorsToWrite (res, gDSO3_Name);
+}
+
+// MHP callback function
+Pic_AdbContactPicture_MH_IndTxConnectionClosed(dword handle, long res)
+{
+  // Reset the flag
+  gb_AdbContactPicTxnProgress = 0;
+  ReportErrorsToWrite (res, gDSO4_Name);
+}
+
+ReportErrorsToWrite (long res, char sDSOName[])
+{
+  switch (res)
+  {
+    case 0:     writeDbgLevel(0, "CAPL: %s: %s Result (%d): OK", gECU, sDSOName, res);     break;
+    case 1:     writeDbgLevel(0, "CAPL: %s: %s Error (%d): Number of Send retries exceeded", gECU, sDSOName, res);          break;
+    case 2:     writeDbgLevel(0, "CAPL: %s: %s Error (%d): Number of Trans retries exceeded", gECU, sDSOName, res);         break;
+    case 3:     writeDbgLevel(0, "CAPL: %s: %s Error (%d): Number of End retries exceeded", gECU, sDSOName, res);           break;
+    case 4:     writeDbgLevel(0, "CAPL: %s: %s Error (%d): Number of Ready retries exceeded", gECU, sDSOName, res);         break;
+    case 5:     writeDbgLevel(0, "CAPL: %s: %s Error (%d): Number of Frame Retries exceeded", gECU, sDSOName, res);         break;
+    case 6:     writeDbgLevel(0, "CAPL: %s: %s Error (%d): Number of Receive retries execeeded", gECU, sDSOName, res);      break;
+    case 10:    writeDbgLevel(0, "CAPL: %s: %s Error (%d): Receive buffer could not be provided", gECU, sDSOName, res);     break;
+    case 11:    writeDbgLevel(0, "CAPL: %s: %s Error (%d): Connection rejected via higher priority", gECU, sDSOName, res);  break;
+    case 13:    writeDbgLevel(0, "CAPL: %s: %s Result (%d): Transmission terminated by receiver", gECU, sDSOName, res);     break;
+    case 14:    writeDbgLevel(0, "CAPL: %s: %s Result (%d): Transmission terminated by sender", gECU, sDSOName, res);       break;
+    case 15:    writeDbgLevel(0, "CAPL: %s: %s Error (%d): Transmission killed by sender", gECU, sDSOName, res);            break;
+    case 16:    writeDbgLevel(0, "CAPL: %s: %s Error (%d): Parameter out of range", gECU, sDSOName, res);                   break;
+    default:    writeDbgLevel(0, "CAPL: %s: %s Error (%d): Unknown error", gECU, sDSOName, res);                            break;
+  }
+}
+
+// Handling of PictureServer.CoverArt.Get message
+on mostAmsMessage PictureServer.CoverArt.Get
+{
+  if(!CheckValidReceptionAndLength(this, 8))
+    return;
+
+  if (gb_CoverArtTxnProgress == 1)
+  {
+    // Send error - busy
+    mostSendError_Code(this, kErrBusy);
+  }
+  else
+  {
+    // Store paramters
+    mostParamGetString(this, "address", coverArt_Address, elCount(coverArt_Address));
+    coverArt_AddressType = mostParamGet(this, "addressType");
+    coverArt_SourceType = mostParamGet(this, "sourceType_CoverArt");
+    SendStatus_CoverArt(this.SA);
+  }
+}
+
+// Handling of PictureServer.ActiveCallPicture.Get message
+on mostAmsMessage PictureServer.ActiveCallPicture.Get
+{
+  if(!CheckValidReceptionAndLength(this, 1))
+    return;
+
+  if (gb_ActiveCallPicTxnProgress == 1)
+  {
+    // Send error - busy
+    mostSendError_Code(this, kErrBusy);
+  }
+  else
+  {
+    // Store parameters
+    activeCallPicture_CallID = this.BYTE(0);
+    SendStatus_ActiveCallPicture(this.SA);
+  }
+}
+
+// Handling of PictureServer.StationArt.Get message
+on mostAmsMessage PictureServer.StationArt.Get
+{
+  if(!CheckValidReceptionAndLength(this, 8))
+    return;
+
+  if (gb_StationArtTxnProgress == 1)
+  {
+    // Send error - busy
+    mostSendError_Code(this, kErrBusy);
+  }
+  else
+  {
+    // Store parameters
+    mostParamGetString(this, "address", stationArt_Address, elCount(stationArt_Address));
+    stationArt_AddressType = mostParamGet(this, "addressType");
+    stationArt_SourceType = mostParamGet(this, "sourceType_StationArt");
+    SendStatus_StationArt(this.SA);
+  }
+}
+
+// Handling of PictureServer.AdbContactPicture.Get message
+on mostAmsMessage PictureServer.AdbContactPicture.Get
+{
+  if(!CheckValidReceptionAndLength(this, 7))
+    return;
+
+  if (gb_AdbContactPicTxnProgress == 1)
+  {
+    // Send error - busy
+    mostSendError_Code(this, kErrBusy);
+  }
+  else
+  {
+    // Store parameters
+    mostParamGetString(this, "address", AdbContactPicture_Address, elCount(AdbContactPicture_Address));
+    AdbContactPicture_AddressType = mostParamGet(this, "addressType");
+    SendStatus_AdbContactPicture(this.SA);
+  }
+}
+
+// Handling of PictureServer.GetInternalAddressID.Get message
+on mostAmsMessage PictureServer.GetInternalAdressID.Get
+{
+  mostAMSMessage PictureServer.GetInternalAdressID.Status msg;
+
+  if(!CheckValidReceptionAndLength(this, 0))
+    return;
+
+  msg.MsgChannel = mostGetChannel();
+  msg.DA = this.SA;
+  msg.InstanceId = MostApGetInstID();
+  msg.BYTE(0) = this.BYTE(0);
+  msg.BYTE(1) = this.BYTE(1);
+  msg.BYTE(2) = 0x00; // Indirect addressing with 2 bytes (BAP)
+  msg.BYTE(3) = this.BYTE(2);
+  msg.DLC = 0x04;
+  output(msg);
+}
+
+on timer tProcessPicTx
+{
+  //ProcStationArt();
+  //ProcCoverArt();
+  //ProcActiveCallPicture();
+  //ProcAdbContactPic();
+}
+
+void ProcStationArt(void)
+{
+  long u32_Stat;
+  char s_PicRelPath[ku8_FilePathSize];
+  word u16_BAPListPos[1];
+  byte u8_SourceType[1];
+  byte u8_StationArtType[1];
+  char u8_Temp;
+  int i;
+
+  if (gb_StationArtTxnProgress == 0)
+  {
+    u32_Stat = StationArtQGet(s_PicRelPath, u16_BAPListPos, u8_SourceType, u8_StationArtType);
+    if (u32_Stat == en_QOk)
+    {
+      write("u16_BAPListPos = %.4X", u16_BAPListPos[0]);
+      u8_Temp = (char)((u16_BAPListPos[0] & 0xF000) >> 12);
+      stationArt_Address[1] = H2S(u8_Temp);
+      u8_Temp = (char)((u16_BAPListPos[0] & 0x0F00) >> 8);
+      stationArt_Address[2] = H2S(u8_Temp);
+      u8_Temp = (char)((u16_BAPListPos[0] & 0x00F0) >> 4);
+      stationArt_Address[3] = H2S(u8_Temp);
+      u8_Temp = (char)(u16_BAPListPos[0] & 0x000F);
+      stationArt_Address[4] = H2S(u8_Temp);
+      for (i = 0; i <= 5; i++)
+      {
+        write("%.2X ", stationArt_Address[i]);
+      }
+      strncpy(gsStationArtPicPath, s_PicRelPath, elcount(gsCoverArtPicPath));
+      stationArt_SourceType = u8_SourceType[0];
+      stationArt_StationArtType = u8_StationArtType[0];
+      write("StationArt Pic = %s", gsStationArtPicPath);
+      // Trigger MHP transmission
+      SendStatus_StationArt(gDestDev);
+    }
+    else
+    {
+      // Do nothing
+    }
+  }
+  else
+  {
+    // Do nothing
+  }
+}
+
+void ProcCoverArt(void)
+{
+  long u32_Stat;
+  char s_PicRelPath[ku8_FilePathSize];
+  word u16_BAPListPos[1];
+  byte u8_SourceType[1];
+  byte u8_CoverArtType[1];
+  char u8_Temp;
+  int i;
+  
+  if (gb_CoverArtTxnProgress == 0)
+  {
+    u32_Stat = CoverArtQGet(s_PicRelPath, u16_BAPListPos, u8_SourceType, u8_CoverArtType);
+    if (u32_Stat == en_QOk)
+    {
+      u8_Temp = (char)((u16_BAPListPos[0] & 0xF000) >> 12);
+      coverArt_Address[1] = H2S(u8_Temp);
+      u8_Temp = (char)((u16_BAPListPos[0] & 0x0F00) >> 8);
+      coverArt_Address[2] = H2S(u8_Temp);
+      u8_Temp = (char)((u16_BAPListPos[0] & 0x00F0) >> 4);
+      coverArt_Address[3] = H2S(u8_Temp);
+      u8_Temp = (char)(u16_BAPListPos[0] & 0x000F);
+      coverArt_Address[4] = H2S(u8_Temp);
+      for (i = 0; i <= 5; i++)
+      {
+        write("%.2X ", coverArt_Address[i]);
+      }
+      
+      strncpy(gsCoverArtPicPath, s_PicRelPath, elcount(gsCoverArtPicPath));
+      coverArt_SourceType = u8_SourceType[0];
+      coverArt_CoverArtType = u8_CoverArtType[0];
+      write("CoverArt Pic = %s", gsCoverArtPicPath);
+      // Trigger MHP transmission
+      SendStatus_CoverArt(gDestDev);
+    }
+    else
+    {
+      // Do nothing
+    }
+  }
+  else
+  {
+    // Do nothing
+  }
+}
+
+void ProcActiveCallPicture(void)
+{
+  long u32_Stat;
+  char s_PicRelPath[ku8_FilePathSize];
+  byte u8_CallId[1];
+  byte u8_PictureType[1];
+
+  if (gb_ActiveCallPicTxnProgress == 0)
+  {
+    u32_Stat = ActiveCallPicQGet(s_PicRelPath, u8_CallId, u8_PictureType);
+    if (u32_Stat == en_QOk)
+    {
+      strncpy(gsActiveCallPicPath, s_PicRelPath, elcount(gsActiveCallPicPath));
+      write("ActiveCallPicture Pic = %s", gsActiveCallPicPath);
+      activeCallPicture_CallID = u8_CallId[0];
+      activeCallPicture_ActiveCallPictureType = u8_PictureType[0];
+      // Trigger MHP transmission
+      SendStatus_ActiveCallPicture(gDestDev);
+    }
+    else
+    {
+      // Do nothing
+    }
+  }
+  else
+  {
+    // Do nothing
+  }
+}
+
+void ProcAdbContactPic(void)
+{
+  long u32_Stat;
+  char s_PicRelPath[ku8_FilePathSize];
+  word u16_BAPListPos[1];
+  char u8_Temp;
+  int i;
+
+  if (gb_AdbContactPicTxnProgress == 0)
+  {
+    u32_Stat = AdbCntctPicQGet(s_PicRelPath, u16_BAPListPos);
+    if (u32_Stat == en_QOk)
+    {
+      u8_Temp = (char)((u16_BAPListPos[0] & 0xF000) >> 12);
+      AdbContactPicture_Address[1] = H2S(u8_Temp);
+      u8_Temp = (char)((u16_BAPListPos[0] & 0x0F00) >> 8);
+      AdbContactPicture_Address[2] = H2S(u8_Temp);
+      u8_Temp = (char)((u16_BAPListPos[0] & 0x00F0) >> 4);
+      AdbContactPicture_Address[3] = H2S(u8_Temp);
+      u8_Temp = (char)(u16_BAPListPos[0] & 0x000F);
+      AdbContactPicture_Address[4] = H2S(u8_Temp);
+      for (i = 0; i <= 5; i++)
+      {
+        write("%.2X ", AdbContactPicture_Address[i]);
+      }
+      // Find picture absolute path
+      strncpy(gsAdbContactPicPath, s_PicRelPath, elcount(gsAdbContactPicPath));
+      write("AdbContactPic Pic = %s", gsAdbContactPicPath);
+      // Trigger MHP transmission
+      SendStatus_AdbContactPicture(gDestDev);
+    }
+    else
+    {
+      // Do nothing
+    }
+  }
+  else
+  {
+    // Do nothing
+  }
+}
+
+char H2S(char u8_Val)
+{
+  char u8_Ret;
+  if (u8_Val <= 9)
+  {
+    u8_Ret = u8_Val + 0x30;
+  }
+  else
+  {
+    u8_Ret = (u8_Val - 9) + 0x40;
+  }
+  return u8_Ret;
+}
+
+on envVar env_PIC_StationArt_Tx_Event
+{
+  char s_PicRelPath[ku8_FilePathSize];
+  word u16_BAPListPos[1];
+  byte u8_SourceType[1];
+  byte u8_StationArtType[1];
+
+  getValue(env_PIC_StationArt_PicRelPath, s_PicRelPath);
+  u16_BAPListPos[0] = getValue(env_PIC_StationArt_Handle);
+  u8_SourceType[0] = getValue(env_PIC_StationArt_SourceType);
+  u8_StationArtType[0] = getValue(env_PIC_StationArt_StnArtType);
+  StationArtQPush(s_PicRelPath, u16_BAPListPos, u8_SourceType, u8_StationArtType);
+
+  ProcStationArt();
+}
+
+on envVar env_PIC_CoverArt_Tx_Event
+{
+  char s_PicRelPath[ku8_FilePathSize];
+  word u16_BAPListPos[1];
+  byte u8_SourceType[1];
+  byte u8_CoverArtType[1];
+
+  getValue(env_PIC_CoverArt_PicRelPath, s_PicRelPath);
+  u16_BAPListPos[0] = getValue(env_PIC_CoverArt_Handle);
+  u8_SourceType[0] = getValue(env_PIC_CoverArt_SourceType);
+  u8_CoverArtType[0] = getValue(env_PIC_CoverArt_CovArtType);
+  CoverArtQPush(s_PicRelPath, u16_BAPListPos, u8_SourceType,u8_CoverArtType);
+
+  ProcCoverArt();
+}
+
+on envVar env_PIC_ActCallPic_Tx_Event
+{
+  char s_PicRelPath[ku8_FilePathSize];
+  byte u8_CallId[1];
+  byte u8_PictureType[1];
+
+  getValue(env_PIC_ActCallPic_PicRelPath, s_PicRelPath);
+  u8_CallId[0] = getValue(env_PIC_ActCallPic_Handle);
+  u8_PictureType[0] = getValue(env_PIC_ActCallPic_PictureType);
+  ActiveCallPicQPush(s_PicRelPath, u8_CallId, u8_PictureType);
+
+  ProcActiveCallPicture();
+}
+
+on envVar env_PIC_AdbCntctPic_Tx_Event
+{
+  char s_PicRelPath[ku8_FilePathSize];
+  word u16_BAPListPos[1];
+
+  getValue(env_PIC_AdbCntctPic_PicRelPath, s_PicRelPath);
+  u16_BAPListPos[0] = getValue(env_PIC_AdbCntctPic_Handle);
+  AdbCntctPicQPush(s_PicRelPath, u16_BAPListPos);
+
+  ProcAdbContactPic();
+}
+
+OnMostNetState(long oldstate, long newstate)
+{
+  if(newstate == 4)
+  {
+//    MH_TxStopTrans(gDSO1_PortHandle);
+//    MH_TxStopTrans(gDSO2_PortHandle);
+//    MH_TxStopTrans(gDSO3_PortHandle);
+//    MH_TxStopTrans(gDSO4_PortHandle);
+  }
+}
+
+on mostAmsMessage PictureServer.Notification.Set
+{
+  if (this.DLC < 0x05)
+  {
+    write("%FILE_NAME%: PictureServer.Notification.Set Invalid length received!");
+  }
+  else
+  {
+    if ((this.Control == 0x00) || (this.Control == 0x01))
+    {
+      gDestDev = (((word)this.BYTE(1) << 8) | (word)this.BYTE(2));
+      //write("%FILE_NAME%: Notification address set to %.4X", gDestDev);
+    }
+  }
+}
+

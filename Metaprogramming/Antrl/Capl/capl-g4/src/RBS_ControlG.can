@@ -1,0 +1,2474 @@
+/*@!Encoding:1252*/
+variables
+{
+}
+
+on start
+{
+    // ACC_12 -->  message_ACC_12.cin
+
+    putValue( eChangeACC_13, 1 );
+    putValue( eChangeACC_13, 0 );
+
+    putValue( eChangeACC_14, 1 );
+    putValue( eChangeACC_14, 0 );
+
+    putValue( eChangeACC_20, 1 );
+    putValue( eChangeACC_20, 0 );
+
+    putValue( eChangeACC_21, 1 );
+    putValue( eChangeACC_21, 0 );
+
+    putValue( eChangeAGA_01, 1 );
+    putValue( eChangeAGA_01, 0 );
+
+    // Airbag_01 -->  message_Airbag_01.cin
+
+    putValue( eChangeAirbag_02, 1 );
+    putValue( eChangeAirbag_02, 0 );
+
+    putValue( eChangeAirbag_04, 1 );
+    putValue( eChangeAirbag_04, 0 );
+
+    putValue( eChangeAirbag_06, 1 );
+    putValue( eChangeAirbag_06, 0 );
+
+    putValue( eChangeAPS_Master, 1 );
+    putValue( eChangeAPS_Master, 0 );
+
+    putValue( eChangeARA_Status_01, 1 );
+    putValue( eChangeARA_Status_01, 0 );
+
+    // AuthTime_eCall_Resp
+
+    putValue( eChangeAWV_02, 1 );
+    putValue( eChangeAWV_02, 0 );
+
+    putValue( eChangeBEM_02, 1 );
+    putValue( eChangeBEM_02, 0 );
+
+    putValue( eChangeBEM_06, 1 );
+    putValue( eChangeBEM_06, 0 );
+
+    putValue( eChangeBMS_05, 1 );
+    putValue( eChangeBMS_05, 0 );
+
+    putValue( eChangeBMS_06, 1 );
+    putValue( eChangeBMS_06, 0 );
+
+    putValue( eChangeBMS_07, 1 );
+    putValue( eChangeBMS_07, 0 );
+
+    putValue( eChangeBMS_20, 1 );
+    putValue( eChangeBMS_20, 0 );
+
+    putValue( eChangeBMS_25, 1 );
+    putValue( eChangeBMS_25, 0 );
+
+    // Charisma_01
+
+    putValue( eChangeCharisma_03, 1 );
+    putValue( eChangeCharisma_03, 0 );
+
+    putValue( eChangeDaempfer_01, 1 );
+    putValue( eChangeDaempfer_01, 0 );
+
+    // Daempfer_04
+
+    putValue( eChangeDCDC_02, 1 );
+    putValue( eChangeDCDC_02, 0 );
+
+    putValue( eChangeDiagnose_01, 1 );
+    putValue( eChangeDiagnose_01, 0 );
+
+    // EA_02
+
+    // eCall_AuthTime_Req
+
+    putValue( eChangeEM1_HYB_13, 1 );
+    putValue( eChangeEM1_HYB_13, 0 );
+
+    // EM2_HYB_13
+
+    putValue( eChangeEPB_03, 1 );
+    putValue( eChangeEPB_03, 0 );
+
+    putValue( eChangeESP_02, 1 );
+    putValue( eChangeESP_02, 0 );
+
+    putValue( eChangeESP_10, 1 );
+    putValue( eChangeESP_10, 0 );
+
+    putValue( eChangeESP_19, 1 );
+    putValue( eChangeESP_19, 0 );
+
+    putValue( eChangeESP_20, 1 );
+    putValue( eChangeESP_20, 0 );
+
+    putValue( eChangeESP_21, 1 );
+    putValue( eChangeESP_21, 0 );
+
+    putValue( eChangeESP_24, 1 );
+    putValue( eChangeESP_24, 0 );
+
+    // ESP_30 -->  message_ESP_30.cin
+    // eTM_01
+    // FDR_04
+    // FLA_01
+    // FoD_01
+    // FoD_BCM1_Req
+
+    putValue( eChangeGateway_71, 1 );
+    putValue( eChangeGateway_71, 0 );
+
+    putValue( eChangeGateway_73, 1 );
+    putValue( eChangeGateway_73, 0 );
+
+    putValue( eChangeGateway_77, 1 );
+    putValue( eChangeGateway_77, 0 );
+
+    putValue( eChangeGateway_78, 1 );
+    putValue( eChangeGateway_78, 0 );
+
+    // Gateway_AuthTime_Req
+
+    // GNSS_01
+
+    putValue( eChangeGNSS_02, 1 );
+    putValue( eChangeGNSS_02, 0 );
+
+    putValue( eChangeGNSS_03, 1 );
+    putValue( eChangeGNSS_03, 0 );
+
+    // GNSS_05
+    // GNSS_07
+    // GRA_ACC_01   BCM and Gateway
+    // GSG_WFS_Anfrage
+    // HLR_02
+    // HVEM_02
+
+    putValue( eChangeHVEM_04, 1 );
+    putValue( eChangeHVEM_04, 0 );
+
+    putValue( eChangeHVK_01, 1 );
+    putValue( eChangeHVK_01, 0 );
+
+    putValue( eChangeHVLM_05, 1 );
+    putValue( eChangeHVLM_05, 0 );
+
+    // HVLM_10
+    // Info_El_AuthTime_Req
+    // IPA_02
+    // Kamera_Status
+    // KN_Gateway
+    // KS_BCM1_Req
+
+    putValue( eChangeKS_Kombi_Req, 1 );
+    putValue( eChangeKS_Kombi_Req, 0 );
+
+    // KS_MFG_Req
+    // LAPP_SM_01
+    // LCM_Feh_LM_L
+    // LCM_Feh_LM_R
+    // LCM_Sta_LM_L
+    // LCM_Sta_LM_R
+
+    putValue( eChangeLDW_02, 1 );
+    putValue( eChangeLDW_02, 0 );
+
+    // LED_Feh_LM_L_03
+    // LED_Feh_LM_R_03
+
+    putValue( eChangeLH_EPS_01, 1 );
+    putValue( eChangeLH_EPS_01, 0 );
+
+    // LSH_01
+
+    putValue( eChangeLSH_02, 1 );
+    putValue( eChangeLSH_02, 0 );
+
+ //   putValue( eChangeLWR_AFS_01, 1 ); // BCM and Gateway
+ //   putValue( eChangeLWR_AFS_01, 0 );
+
+    putValue( eChangeMainUnit_01, 1 );
+    putValue( eChangeMainUnit_01, 0 );
+
+    putValue( eChangeMFL_Tasten_Kon_01, 1 );
+    putValue( eChangeMFL_Tasten_Kon_01, 0 );
+
+    putValue( eChangeMotor_04, 1 );
+    putValue( eChangeMotor_04, 0 );
+
+    putValue( eChangeMotor_07, 1 );
+    putValue( eChangeMotor_07, 0 );
+
+    putValue( eChangeMotor_09, 1 );
+    putValue( eChangeMotor_09, 0 );
+
+    putValue( eChangeMotor_14, 1 );
+    putValue( eChangeMotor_14, 0 );
+
+    // Motor_16
+
+    putValue( eChangeMotor_18, 1 );
+    putValue( eChangeMotor_18, 0 );
+
+    putValue( eChangeMotor_23, 1 );
+    putValue( eChangeMotor_23, 0 );
+
+    putValue( eChangeMotor_25, 1 );
+    putValue( eChangeMotor_25, 0 );
+
+    putValue( eChangeMotor_26, 1 );
+    putValue( eChangeMotor_26, 0 );
+
+    putValue( eChangeMotor_29, 1 );
+    putValue( eChangeMotor_29, 0 );
+
+    putValue( eChangeMotor_31, 1 );
+    putValue( eChangeMotor_31, 0 );
+
+    // Motor_35
+
+    putValue( eChangeMotor_36, 1 );
+    putValue( eChangeMotor_36, 0 );
+
+    putValue( eChangeMotor_41, 1 );
+    putValue( eChangeMotor_41, 0 );
+
+    putValue( eChangeMotor_Code_01, 1 );
+    putValue( eChangeMotor_Code_01, 0 );
+
+    putValue( eChangeMotor_EV_01, 1 );
+    putValue( eChangeMotor_EV_01, 0 );
+
+    putValue( eChangeMotor_EV_03, 1 );
+    putValue( eChangeMotor_EV_03, 0 );
+
+    putValue( eChangeMotor_Gas_01, 1 );
+    putValue( eChangeMotor_Gas_01, 0 );
+
+    putValue( eChangeMotor_Hybrid_03, 1 );
+    putValue( eChangeMotor_Hybrid_03, 0 );
+
+    putValue( eChangeMotor_Hybrid_06, 1 );
+    putValue( eChangeMotor_Hybrid_06, 0 );
+
+    // MSG_HYB_30
+    // MSG1_WFS_Anfrage
+    // MSG2_WFS_Anfrage
+    // MSG3_WFS_Anfrage
+    // MSG4_WFS_Anfrage
+
+    putValue( eChangeMVK_01, 1 );
+    putValue( eChangeMVK_01, 0 );
+
+    // NavData_01
+    // NavData_02
+
+    putValue( eChangeNavPos_01, 1 );
+    putValue( eChangeNavPos_01, 0 );
+
+    putValue( eChangeNMH_Gateway, 1 );
+    putValue( eChangeNMH_Gateway, 0 );
+
+    // OBD_01
+    // OCU_WFS_Anfrage
+
+    putValue( eChangeParkhilfe_04, 1 );
+    putValue( eChangeParkhilfe_04, 0 );
+
+    // Personalisierung_02
+
+    putValue( eChangePLA_Status_02, 1 );
+    putValue( eChangePLA_Status_02, 0 );
+
+    putValue( eChangePreCrash_02, 1 );
+    putValue( eChangePreCrash_02, 0 );
+
+    // PSD_04
+    // PSD_05
+    // PSD_06  --> message_PSD_06.cin
+    // Radio_01
+    // RCTA_01
+
+    putValue( eChangeRDK_02, 1 );
+    putValue( eChangeRDK_02, 0 );
+
+    // Rear_View_01
+
+    putValue( eChangeReichweite_01, 1 );
+    putValue( eChangeReichweite_01, 0 );
+
+    putValue( eChangeReichweite_02, 1 );
+    putValue( eChangeReichweite_02, 0 );
+
+    // Reichweite_03
+
+    putValue( eChangeRKA_01, 1 );
+    putValue( eChangeRKA_01, 0 );
+
+    // SOK_NoAuthenticTime_01
+    // SOK_Zeit_BCM_Signatur_Resp_01
+    // SOK_Zeit_BCM_Zeit_Resp_01
+    // SOK_Zeit_DDA_Signatur_Resp_01
+    // SOK_Zeit_DDA_Zeit_Resp_01
+    // SOK_Zeit_Klima_Signatur_Resp_01
+    // SOK_Zeit_Klima_Zeit_Resp_01
+    // SOK_Zeit_Kombi_Signatur_Resp_01
+    // SOK_Zeit_Kombi_Zeit_Resp_01
+
+    putValue( eChangeSTH_01, 1 );
+    putValue( eChangeSTH_01, 0 );
+
+    // STH_02
+
+    putValue( eChangeSWA_01, 1 );
+    putValue( eChangeSWA_01, 0 );
+
+    // SWA_02
+
+    putValue( eChangeSysteminfo_01, 1 );
+    putValue( eChangeSysteminfo_01, 0 );
+
+    putValue( eChangeTA_01, 1 );
+    putValue( eChangeTA_01, 0 );
+
+    // Telefon_01
+
+    putValue( eChangeTM_01, 1 );
+    putValue( eChangeTM_01, 0 );
+
+    putValue( eChangeTSK_07, 1 );
+    putValue( eChangeTSK_07, 0 );
+
+    // TSK_08
+    // VMM_01
+    // VZE_05  --> message_VZE_05.cin
+
+    putValue( eChangeWaehlhebel_05, 1 );
+    putValue( eChangeWaehlhebel_05, 0 );
+
+    // WBA_03 -->  message_WBA_03.cin
+
+    putValue( eChangeWIV_01, 1 );
+    putValue( eChangeWIV_01, 0 );
+
+    putValue( eChangeZentralrechner_03, 1 );
+    putValue( eChangeZentralrechner_03, 0 );
+
+
+
+    putValue( eChangeOBDC_Funktionaler_Req_All, 1 );
+    putValue( eChangeOBDC_Funktionaler_Req_All, 0 );
+
+    putValue( eChangeDEV_Kombi_RX1, 1 );
+    putValue( eChangeDEV_Kombi_RX1, 0 );
+
+    putValue( eChangeDEV_Kombi_SUP1, 1 );
+    putValue( eChangeDEV_Kombi_SUP1, 0 );
+
+    putValue( eChangeDEV_Kombi_SUP2, 1 );
+    putValue( eChangeDEV_Kombi_SUP2, 0 );
+
+    putValue( eChangeDEV_Kombi_SUP3, 1 );
+    putValue( eChangeDEV_Kombi_SUP3, 0 );
+
+    putValue( eChangeDEV_Kombi_UD1_PC_KI_Ctrl, 1 );
+    putValue( eChangeDEV_Kombi_UD1_PC_KI_Ctrl, 0 );
+
+    putValue( eChangeDEV_Kombi_UD2_PC_KI_Data, 1 );
+    putValue( eChangeDEV_Kombi_UD2_PC_KI_Data, 0 );
+
+    putValue( eChangeISO_Funktionaler_Req_All, 1 );
+    putValue( eChangeISO_Funktionaler_Req_All, 0 );
+
+    putValue( eChangeISO_Kombi_Req, 1 );
+    putValue( eChangeISO_Kombi_Req, 0 );
+}
+
+on envVar eChangeACC_13
+{
+    if (getValue(this))
+    {
+        enableControl ("GW Messages_1", "EnvVar:eDlcACC_13", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcACC_13Dec", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcACC_13Inc", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcACC_13Def", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcOnceACC_13", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcWrongACC_13", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eBZACC_13", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eBZStepACC_13", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eBZStepACC_13Dec", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eBZStepACC_13Inc", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eBZStepACC_13Def", 1 );
+    }
+    else
+    {
+        enableControl ("GW Messages_1", "EnvVar:eDlcACC_13", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcACC_13Dec", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcACC_13Inc", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcACC_13Def", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcOnceACC_13", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcWrongACC_13", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eBZACC_13", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eBZStepACC_13", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eBZStepACC_13Dec", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eBZStepACC_13Inc", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eBZStepACC_13Def", 0 );
+    }
+}
+
+on envVar eChangeACC_14
+{
+    if (getValue(this))
+    {
+        enableControl ("GW Messages_1", "EnvVar:eDlcACC_14", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcACC_14Dec", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcACC_14Inc", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcACC_14Def", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcOnceACC_14", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcWrongACC_14", 1 );
+    }
+    else
+    {
+        enableControl ("GW Messages_1", "EnvVar:eDlcACC_14", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcACC_14Dec", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcACC_14Inc", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcACC_14Def", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcOnceACC_14", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcWrongACC_14", 0 );
+    }
+}
+
+on envVar eChangeACC_20
+{
+    if (getValue(this))
+    {
+        enableControl ("GW Messages_1", "EnvVar:eDlcACC_20", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcACC_20Dec", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcACC_20Inc", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcACC_20Def", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcOnceACC_20", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcWrongACC_20", 1 );
+    }
+    else
+    {
+        enableControl ("GW Messages_1", "EnvVar:eDlcACC_20", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcACC_20Dec", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcACC_20Inc", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcACC_20Def", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcOnceACC_20", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcWrongACC_20", 0 );
+    }
+}
+
+on envVar eChangeACC_21
+{
+    if (getValue(this))
+    {
+        enableControl ("GW Messages_1", "EnvVar:eDlcACC_21", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcACC_21Dec", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcACC_21Inc", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcACC_21Def", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcOnceACC_21", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcWrongACC_21", 1 );
+    }
+    else
+    {
+        enableControl ("GW Messages_1", "EnvVar:eDlcACC_21", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcACC_21Dec", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcACC_21Inc", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcACC_21Def", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcOnceACC_21", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcWrongACC_21", 0 );
+    }
+}
+
+on envVar eChangeAGA_01
+{
+    if (getValue(this))
+    {
+        enableControl ("GW Messages_1", "EnvVar:eDlcAGA_01", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcAGA_01Dec", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcAGA_01Inc", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcAGA_01Def", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcOnceAGA_01", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcWrongAGA_01", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eBZAGA_01", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eBZStepAGA_01", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eBZStepAGA_01Dec", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eBZStepAGA_01Inc", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eBZStepAGA_01Def", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eCrcAGA_01", 1 );
+    }
+    else
+    {
+        enableControl ("GW Messages_1", "EnvVar:eDlcAGA_01", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcAGA_01Dec", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcAGA_01Inc", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcAGA_01Def", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcOnceAGA_01", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcWrongAGA_01", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eBZAGA_01", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eBZStepAGA_01", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eBZStepAGA_01Dec", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eBZStepAGA_01Inc", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eBZStepAGA_01Def", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eCrcAGA_01", 0 );
+    }
+}
+
+on envVar eChangeAirbag_02
+{
+    if (getValue(this))
+    {
+        enableControl ("GW Messages_1", "EnvVar:eDlcAirbag_02", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcAirbag_02Dec", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcAirbag_02Inc", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcAirbag_02Def", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcOnceAirbag_02", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcWrongAirbag_02", 1 );
+    }
+    else
+    {
+        enableControl ("GW Messages_1", "EnvVar:eDlcAirbag_02", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcAirbag_02Dec", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcAirbag_02Inc", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcAirbag_02Def", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcOnceAirbag_02", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcWrongAirbag_02", 0 );
+    }
+}
+
+on envVar eChangeAirbag_04
+{
+    if (getValue(this))
+    {
+        enableControl ("GW Messages_1", "EnvVar:eDlcAirbag_04", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcAirbag_04Dec", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcAirbag_04Inc", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcAirbag_04Def", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcOnceAirbag_04", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcWrongAirbag_04", 1 );
+    }
+    else
+    {
+        enableControl ("GW Messages_1", "EnvVar:eDlcAirbag_04", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcAirbag_04Dec", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcAirbag_04Inc", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcAirbag_04Def", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcOnceAirbag_04", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcWrongAirbag_04", 0 );
+    }
+}
+
+on envVar eChangeAirbag_06
+{
+    if (getValue(this))
+    {
+        enableControl ("GW Messages_1", "EnvVar:eDlcAirbag_06", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcAirbag_06Dec", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcAirbag_06Inc", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcAirbag_06Def", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcOnceAirbag_06", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcWrongAirbag_06", 1 );
+    }
+    else
+    {
+        enableControl ("GW Messages_1", "EnvVar:eDlcAirbag_06", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcAirbag_06Dec", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcAirbag_06Inc", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcAirbag_06Def", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcOnceAirbag_06", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcWrongAirbag_06", 0 );
+    }
+}
+
+on envVar eChangeARA_Status_01
+{
+    if (getValue(this))
+    {
+        enableControl ("GW Messages_1", "EnvVar:eDlcARA_Status_01", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcARA_Status_01Dec", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcARA_Status_01Inc", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcARA_Status_01Def", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcOnceARA_Status_01", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcWrongARA_Status_01", 1 );
+    }
+    else
+    {
+        enableControl ("GW Messages_1", "EnvVar:eDlcARA_Status_01", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcARA_Status_01Dec", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcARA_Status_01Inc", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcARA_Status_01Def", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcOnceARA_Status_01", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcWrongARA_Status_01", 0 );
+    }
+}
+
+on envVar eChangeAWV_02
+{
+    if (getValue(this))
+    {
+        enableControl ("GW Messages_1", "EnvVar:eDlcAWV_02", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcAWV_02Dec", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcAWV_02Inc", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcAWV_02Def", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcOnceAWV_02", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcWrongAWV_02", 1 );
+    }
+    else
+    {
+        enableControl ("GW Messages_1", "EnvVar:eDlcAWV_02", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcAWV_02Dec", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcAWV_02Inc", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcAWV_02Def", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcOnceAWV_02", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcWrongAWV_02", 0 );
+    }
+}
+
+on envVar eChangeBEM_02
+{
+    if (getValue(this))
+    {
+        enableControl ("GW Messages_1", "EnvVar:eDlcBEM_02", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcBEM_02Dec", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcBEM_02Inc", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcBEM_02Def", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcOnceBEM_02", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcWrongBEM_02", 1 );
+    }
+    else
+    {
+        enableControl ("GW Messages_1", "EnvVar:eDlcBEM_02", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcBEM_02Dec", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcBEM_02Inc", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcBEM_02Def", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcOnceBEM_02", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcWrongBEM_02", 0 );
+    }
+}
+
+on envVar eChangeBEM_06
+{
+    if (getValue(this))
+    {
+        enableControl ("GW Messages_1", "EnvVar:eDlcBEM_06", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcBEM_06Dec", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcBEM_06Inc", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcBEM_06Def", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcOnceBEM_06", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcWrongBEM_06", 1 );
+		enableControl ("GW Messages_1", "EnvVar:eBZBEM_06", 1 );
+		enableControl ("GW Messages_1", "EnvVar:eBZStepBEM_06", 1 );
+		enableControl ("GW Messages_1", "EnvVar:eBZStepBEM_06Dec", 1 );
+		enableControl ("GW Messages_1", "EnvVar:eBZStepBEM_06Inc", 1 );
+		enableControl ("GW Messages_1", "EnvVar:eBZStepBEM_06Def", 1 );
+		enableControl ("GW Messages_1", "EnvVar:eCrcBEM_06", 1 );
+   }
+    else
+    {
+        enableControl ("GW Messages_1", "EnvVar:eDlcBEM_06", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcBEM_06Dec", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcBEM_06Inc", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcBEM_06Def", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcOnceBEM_06", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcWrongBEM_06", 0 );
+		enableControl ("GW Messages_1", "EnvVar:eBZBEM_06", 0 );
+		enableControl ("GW Messages_1", "EnvVar:eBZStepBEM_06", 0 );
+		enableControl ("GW Messages_1", "EnvVar:eBZStepBEM_06Dec", 0 );
+		enableControl ("GW Messages_1", "EnvVar:eBZStepBEM_06Inc", 0 );
+		enableControl ("GW Messages_1", "EnvVar:eBZStepBEM_06Def", 0 );
+		enableControl ("GW Messages_1", "EnvVar:eCrcBEM_06", 0 );
+    }
+}
+
+on envVar eChangeBMS_05
+{
+    if (getValue(this))
+    {
+        enableControl ("GW Messages_1", "EnvVar:eDlcBMS_05", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcBMS_05Dec", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcBMS_05Inc", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcBMS_05Def", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcOnceBMS_05", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcWrongBMS_05", 1 );
+    }
+    else
+    {
+        enableControl ("GW Messages_1", "EnvVar:eDlcBMS_05", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcBMS_05Dec", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcBMS_05Inc", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcBMS_05Def", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcOnceBMS_05", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcWrongBMS_05", 0 );
+    }
+}
+
+on envVar eChangeBMS_07
+{
+    if (getValue(this))
+    {
+        enableControl ("GW Messages_1", "EnvVar:eDlcBMS_07", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcBMS_07Dec", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcBMS_07Inc", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcBMS_07Def", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcOnceBMS_07", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcWrongBMS_07", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eBZBMS_07", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eBZStepBMS_07", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eBZStepBMS_07Dec", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eBZStepBMS_07Inc", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eBZStepBMS_07Def", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eCrcBMS_07", 1 );
+    }
+    else
+    {
+        enableControl ("GW Messages_1", "EnvVar:eDlcBMS_07", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcBMS_07Dec", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcBMS_07Inc", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcBMS_07Def", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcOnceBMS_07", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcWrongBMS_07", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eBZBMS_07", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eBZStepBMS_07", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eBZStepBMS_07Dec", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eBZStepBMS_07Inc", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eBZStepBMS_07Def", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eCrcBMS_07", 0 );
+    }
+}
+
+on envVar eChangeCharisma_03
+{
+    if (getValue(this))
+    {
+        enableControl ("GW Messages_1", "EnvVar:eDlcCharisma_03", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcCharisma_03Dec", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcCharisma_03Inc", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcCharisma_03Def", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcOnceCharisma_03", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcWrongCharisma_03", 1 );
+    }
+    else
+    {
+        enableControl ("GW Messages_1", "EnvVar:eDlcCharisma_03", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcCharisma_03Dec", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcCharisma_03Inc", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcCharisma_03Def", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcOnceCharisma_03", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcWrongCharisma_03", 0 );
+    }
+}
+
+on envVar eChangeDaempfer_01
+{
+    if (getValue(this))
+    {
+        enableControl ("GW Messages_1", "EnvVar:eDlcDaempfer_01", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcDaempfer_01Dec", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcDaempfer_01Inc", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcDaempfer_01Def", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcOnceDaempfer_01", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcWrongDaempfer_01", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eBZDaempfer_01", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eBZStepDaempfer_01", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eBZStepDaempfer_01Dec", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eBZStepDaempfer_01Inc", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eBZStepDaempfer_01Def", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eCrcDaempfer_01", 1 );
+    }
+    else
+    {
+        enableControl ("GW Messages_1", "EnvVar:eDlcDaempfer_01", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcDaempfer_01Dec", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcDaempfer_01Inc", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcDaempfer_01Def", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcOnceDaempfer_01", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcWrongDaempfer_01", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eBZDaempfer_01", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eBZStepDaempfer_01", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eBZStepDaempfer_01Dec", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eBZStepDaempfer_01Inc", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eBZStepDaempfer_01Def", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eCrcDaempfer_01", 0 );
+    }
+}
+
+on envVar eChangeDCDC_02
+{
+    if (getValue(this))
+    {
+        enableControl ("GW Messages_1", "EnvVar:eDlcDCDC_02", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcDCDC_02Dec", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcDCDC_02Inc", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcDCDC_02Def", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcOnceDCDC_02", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcWrongDCDC_02", 1 );
+    }
+    else
+    {
+        enableControl ("GW Messages_1", "EnvVar:eDlcDCDC_02", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcDCDC_02Dec", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcDCDC_02Inc", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcDCDC_02Def", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcOnceDCDC_02", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcWrongDCDC_02", 0 );
+    }
+}
+
+on envVar eChangeDiagnose_01
+{
+    if (getValue(this))
+    {
+        enableControl ("GW Messages_1", "EnvVar:eDlcDiagnose_01", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcDiagnose_01Dec", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcDiagnose_01Inc", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcDiagnose_01Def", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcOnceDiagnose_01", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcWrongDiagnose_01", 1 );
+    }
+    else
+    {
+        enableControl ("GW Messages_1", "EnvVar:eDlcDiagnose_01", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcDiagnose_01Dec", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcDiagnose_01Inc", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcDiagnose_01Def", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcOnceDiagnose_01", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcWrongDiagnose_01", 0 );
+    }
+}
+
+on envVar eChangeEM1_HYB_13
+{
+    if (getValue(this))
+    {
+        enableControl ("GW Messages_1", "EnvVar:eDlcEM1_HYB_13", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcEM1_HYB_13Dec", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcEM1_HYB_13Inc", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcEM1_HYB_13Def", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcOnceEM1_HYB_13", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcWrongEM1_HYB_13", 1 );
+    }
+    else
+    {
+        enableControl ("GW Messages_1", "EnvVar:eDlcEM1_HYB_13", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcEM1_HYB_13Dec", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcEM1_HYB_13Inc", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcEM1_HYB_13Def", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcOnceEM1_HYB_13", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcWrongEM1_HYB_13", 0 );
+    }
+}
+
+on envVar eChangeEA_02
+{
+    if (getValue(this))
+    {
+        enableControl ("GW Messages_1", "EnvVar:eDlcEA_02", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcEA_02Dec", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcEA_02Inc", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcEA_02Def", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcOnceEA_02", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcWrongEA_02", 1 );
+    }
+    else
+    {
+        enableControl ("GW Messages_1", "EnvVar:eDlcEA_02", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcEA_02Dec", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcEA_02Inc", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcEA_02Def", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcOnceEA_02", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcWrongEA_02", 0 );
+    }
+}
+
+on envVar eChangeEPB_03
+{
+    if (getValue(this))
+    {
+        enableControl ("GW Messages_1", "EnvVar:eDlcEPB_03", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcEPB_03Dec", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcEPB_03Inc", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcEPB_03Def", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcOnceEPB_03", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcWrongEPB_03", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eBZEPB_03", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eBZStepEPB_03", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eBZStepEPB_03Dec", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eBZStepEPB_03Inc", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eBZStepEPB_03Def", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eCrcEPB_03", 1 );
+    }
+    else
+    {
+        enableControl ("GW Messages_1", "EnvVar:eDlcEPB_03", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcEPB_03Dec", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcEPB_03Inc", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcEPB_03Def", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcOnceEPB_03", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcWrongEPB_03", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eBZEPB_03", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eBZStepEPB_03", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eBZStepEPB_03Dec", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eBZStepEPB_03Inc", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eBZStepEPB_03Def", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eCrcEPB_03", 0 );
+    }
+}
+
+on envVar eChangeESP_02
+{
+    if (getValue(this))
+    {
+        enableControl ("GW Messages_1", "EnvVar:eDlcESP_02", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcESP_02Dec", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcESP_02Inc", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcESP_02Def", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcOnceESP_02", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcWrongESP_02", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eBZESP_02", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eBZStepESP_02", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eBZStepESP_02Dec", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eBZStepESP_02Inc", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eBZStepESP_02Def", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eCrcESP_02", 1 );
+    }
+    else
+    {
+        enableControl ("GW Messages_1", "EnvVar:eDlcESP_02", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcESP_02Dec", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcESP_02Inc", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcESP_02Def", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcOnceESP_02", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcWrongESP_02", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eBZESP_02", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eBZStepESP_02", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eBZStepESP_02Dec", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eBZStepESP_02Inc", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eBZStepESP_02Def", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eCrcESP_02", 0 );
+    }
+}
+
+on envVar eChangeESP_20
+{
+    if (getValue(this))
+    {
+        enableControl ("GW Messages_1", "EnvVar:eDlcESP_20", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcESP_20Dec", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcESP_20Inc", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcESP_20Def", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcOnceESP_20", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcWrongESP_20", 1 );
+    }
+    else
+    {
+        enableControl ("GW Messages_1", "EnvVar:eDlcESP_20", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcESP_20Dec", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcESP_20Inc", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcESP_20Def", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcOnceESP_20", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcWrongESP_20", 0 );
+    }
+}
+
+on envVar eChangeESP_21
+{
+    if (getValue(this))
+    {
+        enableControl ("GW Messages_1", "EnvVar:eDlcESP_21", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcESP_21Dec", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcESP_21Inc", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcESP_21Def", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcOnceESP_21", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcWrongESP_21", 1 );
+		enableControl ("GW Messages_1", "EnvVar:eBZESP_21", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eBZStepESP_21", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eBZStepESP_21Dec", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eBZStepESP_21Inc", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eBZStepESP_21Def", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eCrcESP_21", 1 );
+    }
+    else
+    {
+        enableControl ("GW Messages_1", "EnvVar:eDlcESP_21", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcESP_21Dec", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcESP_21Inc", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcESP_21Def", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcOnceESP_21", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcWrongESP_21", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eBZESP_21", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eBZStepESP_21", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eBZStepESP_21Dec", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eBZStepESP_21Inc", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eBZStepESP_21Def", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eCrcESP_21", 0 ); 		
+    }
+}
+
+on envVar eChangeESP_24
+{
+    if (getValue(this))
+    {
+        enableControl ("GW Messages_1", "EnvVar:eDlcESP_24", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcESP_24Dec", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcESP_24Inc", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcESP_24Def", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcOnceESP_24", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcWrongESP_24", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eBZESP_24", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eBZStepESP_24", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eBZStepESP_24Dec", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eBZStepESP_24Inc", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eBZStepESP_24Def", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eCrcESP_24", 1 );
+    }
+    else
+    {
+        enableControl ("GW Messages_1", "EnvVar:eDlcESP_24", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcESP_24Dec", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcESP_24Inc", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcESP_24Def", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcOnceESP_24", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcWrongESP_24", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eBZESP_24", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eBZStepESP_24", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eBZStepESP_24Dec", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eBZStepESP_24Inc", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eBZStepESP_24Def", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eCrcESP_24", 0 );
+    }
+}
+
+on envVar eChangeGateway_71
+{
+    if (getValue(this))
+    {
+        enableControl ("GW Messages_1", "EnvVar:eDlcGateway_71", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcGateway_71Dec", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcGateway_71Inc", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcGateway_71Def", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcOnceGateway_71", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcWrongGateway_71", 1 );
+    }
+    else
+    {
+        enableControl ("GW Messages_1", "EnvVar:eDlcGateway_71", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcGateway_71Dec", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcGateway_71Inc", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcGateway_71Def", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcOnceGateway_71", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcWrongGateway_71", 0 );
+    }
+}
+
+on envVar eChangeGateway_73
+{
+    if (getValue(this))
+    {
+        enableControl ("GW Messages_1", "EnvVar:eDlcGateway_73", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcGateway_73Dec", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcGateway_73Inc", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcGateway_73Def", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcOnceGateway_73", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcWrongGateway_73", 1 );
+    }
+    else
+    {
+        enableControl ("GW Messages_1", "EnvVar:eDlcGateway_73", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcGateway_73Dec", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcGateway_73Inc", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcGateway_73Def", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcOnceGateway_73", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcWrongGateway_73", 0 );
+    }
+}
+
+on envVar eChangeGateway_77
+{
+    if (getValue(this))
+    {
+        enableControl ("GW Messages_1", "EnvVar:eDlcGateway_77", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcGateway_77Dec", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcGateway_77Inc", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcGateway_77Def", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcOnceGateway_77", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcWrongGateway_77", 1 );
+    }
+    else
+    {
+        enableControl ("GW Messages_1", "EnvVar:eDlcGateway_77", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcGateway_77Dec", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcGateway_77Inc", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcGateway_77Def", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcOnceGateway_77", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcWrongGateway_77", 0 );
+    }
+}
+
+on envVar eChangeGateway_78
+{
+    if (getValue(this))
+    {
+        enableControl ("GW Messages_1", "EnvVar:eDlcGateway_78", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcGateway_78Dec", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcGateway_78Inc", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcGateway_78Def", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcOnceGateway_78", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcWrongGateway_78", 1 );
+    }
+    else
+    {
+        enableControl ("GW Messages_1", "EnvVar:eDlcGateway_78", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcGateway_78Dec", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcGateway_78Inc", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcGateway_78Def", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcOnceGateway_78", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcWrongGateway_78", 0 );
+    }
+}
+
+on envVar eChangeGNSS_02
+{
+    if (getValue(this))
+    {
+        enableControl ("GW Messages_1", "EnvVar:eDlcGNSS_02", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcGNSS_02Dec", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcGNSS_02Inc", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcGNSS_02Def", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcOnceGNSS_02", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcWrongGNSS_02", 1 );
+    }
+    else
+    {
+        enableControl ("GW Messages_1", "EnvVar:eDlcGNSS_02", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcGNSS_02Dec", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcGNSS_02Inc", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcGNSS_02Def", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcOnceGNSS_02", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcWrongGNSS_02", 0 );
+    }
+}
+
+on envVar eChangeGNSS_03
+{
+    if (getValue(this))
+    {
+        enableControl ("GW Messages_1", "EnvVar:eDlcGNSS_03", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcGNSS_03Dec", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcGNSS_03Inc", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcGNSS_03Def", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcOnceGNSS_03", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcWrongGNSS_03", 1 );
+    }
+    else
+    {
+        enableControl ("GW Messages_1", "EnvVar:eDlcGNSS_03", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcGNSS_03Dec", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcGNSS_03Inc", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcGNSS_03Def", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcOnceGNSS_03", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcWrongGNSS_03", 0 );
+    }
+}
+
+on envVar eChangeHVEM_04
+{
+    if (getValue(this))
+    {
+        enableControl ("GW Messages_1", "EnvVar:eDlcHVEM_04", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcHVEM_04Dec", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcHVEM_04Inc", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcHVEM_04Def", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcOnceHVEM_04", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcWrongHVEM_04", 1 );
+    }
+    else
+    {
+        enableControl ("GW Messages_1", "EnvVar:eDlcHVEM_04", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcHVEM_04Dec", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcHVEM_04Inc", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcHVEM_04Def", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcOnceHVEM_04", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcWrongHVEM_04", 0 );
+    }
+}
+
+on envVar eChangeHVK_01
+{
+    if (getValue(this))
+    {
+        enableControl ("GW Messages_1", "EnvVar:eDlcHVK_01", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcHVK_01Dec", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcHVK_01Inc", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcHVK_01Def", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcOnceHVK_01", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcWrongHVK_01", 1 );
+    }
+    else
+    {
+        enableControl ("GW Messages_1", "EnvVar:eDlcHVK_01", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcHVK_01Dec", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcHVK_01Inc", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcHVK_01Def", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcOnceHVK_01", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcWrongHVK_01", 0 );
+    }
+}
+
+on envVar eChangeHVLM_05
+{
+    if (getValue(this))
+    {
+        enableControl ("GW Messages_1", "EnvVar:eDlcHVLM_05", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcHVLM_05Dec", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcHVLM_05Inc", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcHVLM_05Def", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcOnceHVLM_05", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcWrongHVLM_05", 1 );
+    }
+    else
+    {
+        enableControl ("GW Messages_1", "EnvVar:eDlcHVLM_05", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcHVLM_05Dec", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcHVLM_05Inc", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcHVLM_05Def", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcOnceHVLM_05", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcWrongHVLM_05", 0 );
+    }
+}
+
+on envVar eChangeKS_Kombi_Req
+{
+    if (getValue(this))
+    {
+        enableControl ("GW Messages_2", "EnvVar:eDlcKS_Kombi_Req", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcKS_Kombi_ReqDec", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcKS_Kombi_ReqInc", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcKS_Kombi_ReqDef", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcOnceKS_Kombi_Req", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcWrongKS_Kombi_Req", 1 );
+    }
+    else
+    {
+        enableControl ("GW Messages_2", "EnvVar:eDlcKS_Kombi_Req", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcKS_Kombi_ReqDec", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcKS_Kombi_ReqInc", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcKS_Kombi_ReqDef", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcOnceKS_Kombi_Req", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcWrongKS_Kombi_Req", 0 );
+    }
+}
+
+on envVar eChangeLDW_02
+{
+    if (getValue(this))
+    {
+        enableControl ("GW Messages_2", "EnvVar:eDlcLDW_02", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcLDW_02Dec", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcLDW_02Inc", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcLDW_02Def", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcOnceLDW_02", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcWrongLDW_02", 1 );
+    }
+    else
+    {
+        enableControl ("GW Messages_2", "EnvVar:eDlcLDW_02", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcLDW_02Dec", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcLDW_02Inc", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcLDW_02Def", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcOnceLDW_02", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcWrongLDW_02", 0 );
+    }
+}
+
+on envVar eChangeLH_EPS_01
+{
+    if (getValue(this))
+    {
+        enableControl ("GW Messages_2", "EnvVar:eDlcLH_EPS_01", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcLH_EPS_01Dec", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcLH_EPS_01Inc", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcLH_EPS_01Def", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcOnceLH_EPS_01", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcWrongLH_EPS_01", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eBZLH_EPS_01", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eBZStepLH_EPS_01", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eBZStepLH_EPS_01Dec", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eBZStepLH_EPS_01Inc", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eBZStepLH_EPS_01Def", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eCrcLH_EPS_01", 1 );
+    }
+    else
+    {
+        enableControl ("GW Messages_2", "EnvVar:eDlcLH_EPS_01", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcLH_EPS_01Dec", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcLH_EPS_01Inc", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcLH_EPS_01Def", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcOnceLH_EPS_01", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcWrongLH_EPS_01", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eBZLH_EPS_01", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eBZStepLH_EPS_01", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eBZStepLH_EPS_01Dec", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eBZStepLH_EPS_01Inc", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eBZStepLH_EPS_01Def", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eCrcLH_EPS_01", 0 );
+    }
+}
+
+on envVar eChangeLSH_02
+{
+    if (getValue(this))
+    {
+        enableControl ("GW Messages_2", "EnvVar:eDlcLSH_02", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcLSH_02Dec", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcLSH_02Inc", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcLSH_02Def", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcOnceLSH_02", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcWrongLSH_02", 1 );
+    }
+    else
+    {
+        enableControl ("GW Messages_2", "EnvVar:eDlcLSH_02", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcLSH_02Dec", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcLSH_02Inc", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcLSH_02Def", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcOnceLSH_02", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcWrongLSH_02", 0 );
+    }
+}
+
+on envVar eChangeMainUnit_01
+{
+    if (getValue(this))
+    {
+        enableControl ("GW Messages_2", "EnvVar:eDlcMainUnit_01", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcMainUnit_01Dec", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcMainUnit_01Inc", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcMainUnit_01Def", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcOnceMainUnit_01", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcWrongMainUnit_01", 1 );
+    }
+    else
+    {
+        enableControl ("GW Messages_2", "EnvVar:eDlcMainUnit_01", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcMainUnit_01Dec", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcMainUnit_01Inc", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcMainUnit_01Def", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcOnceMainUnit_01", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcWrongMainUnit_01", 0 );
+    }
+}
+
+on envVar eChangeMFL_Tasten_Kon_01
+{
+    if (getValue(this))
+    {
+        enableControl ("GW Messages_2", "EnvVar:eDlcMFL_Tasten_Kon_01", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcMFL_Tasten_Kon_01Dec", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcMFL_Tasten_Kon_01Inc", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcMFL_Tasten_Kon_01Def", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcOnceMFL_Tasten_Kon_01", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcWrongMFL_Tasten_Kon_01", 1 );
+    }
+    else
+    {
+        enableControl ("GW Messages_2", "EnvVar:eDlcMFL_Tasten_Kon_01", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcMFL_Tasten_Kon_01Dec", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcMFL_Tasten_Kon_01Inc", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcMFL_Tasten_Kon_01Def", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcOnceMFL_Tasten_Kon_01", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcWrongMFL_Tasten_Kon_01", 0 );
+    }
+}
+
+on envVar eChangeMotor_04
+{
+    if (getValue(this))
+    {
+        enableControl ("GW Messages_2", "EnvVar:eDlcMotor_04", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcMotor_04Dec", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcMotor_04Inc", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcMotor_04Def", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcOnceMotor_04", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcWrongMotor_04", 1 );
+    }
+    else
+    {
+        enableControl ("GW Messages_2", "EnvVar:eDlcMotor_04", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcMotor_04Dec", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcMotor_04Inc", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcMotor_04Def", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcOnceMotor_04", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcWrongMotor_04", 0 );
+    }
+}
+
+on envVar eChangeMotor_07
+{
+    if (getValue(this))
+    {
+        enableControl ("GW Messages_2", "EnvVar:eDlcMotor_07", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcMotor_07Dec", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcMotor_07Inc", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcMotor_07Def", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcOnceMotor_07", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcWrongMotor_07", 1 );
+    }
+    else
+    {
+        enableControl ("GW Messages_2", "EnvVar:eDlcMotor_07", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcMotor_07Dec", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcMotor_07Inc", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcMotor_07Def", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcOnceMotor_07", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcWrongMotor_07", 0 );
+    }
+}
+
+on envVar eChangeMotor_09
+{
+    if (getValue(this))
+    {
+        enableControl ("GW Messages_2", "EnvVar:eDlcMotor_09", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcMotor_09Dec", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcMotor_09Inc", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcMotor_09Def", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcOnceMotor_09", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcWrongMotor_09", 1 );
+    }
+    else
+    {
+        enableControl ("GW Messages_2", "EnvVar:eDlcMotor_09", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcMotor_09Dec", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcMotor_09Inc", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcMotor_09Def", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcOnceMotor_09", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcWrongMotor_09", 0 );
+    }
+}
+
+on envVar eChangeMotor_14
+{
+    if (getValue(this))
+    {
+        enableControl ("GW Messages_2", "EnvVar:eDlcMotor_14", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcMotor_14Dec", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcMotor_14Inc", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcMotor_14Def", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcOnceMotor_14", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcWrongMotor_14", 1 );
+    }
+    else
+    {
+        enableControl ("GW Messages_2", "EnvVar:eDlcMotor_14", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcMotor_14Dec", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcMotor_14Inc", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcMotor_14Def", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcOnceMotor_14", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcWrongMotor_14", 0 );
+    }
+}
+
+on envVar eChangeMotor_18
+{
+    if (getValue(this))
+    {
+        enableControl ("GW Messages_2", "EnvVar:eDlcMotor_18", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcMotor_18Dec", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcMotor_18Inc", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcMotor_18Def", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcOnceMotor_18", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcWrongMotor_18", 1 );
+    }
+    else
+    {
+        enableControl ("GW Messages_2", "EnvVar:eDlcMotor_18", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcMotor_18Dec", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcMotor_18Inc", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcMotor_18Def", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcOnceMotor_18", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcWrongMotor_18", 0 );
+    }
+}
+
+on envVar eChangeMotor_23
+{
+    if (getValue(this))
+    {
+        enableControl ("GW Messages_2", "EnvVar:eDlcMotor_23", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcMotor_23Dec", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcMotor_23Inc", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcMotor_23Def", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcOnceMotor_23", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcWrongMotor_23", 1 );
+    }
+    else
+    {
+        enableControl ("GW Messages_2", "EnvVar:eDlcMotor_23", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcMotor_23Dec", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcMotor_23Inc", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcMotor_23Def", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcOnceMotor_23", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcWrongMotor_23", 0 );
+    }
+}
+
+on envVar eChangeMotor_25
+{
+    if (getValue(this))
+    {
+        enableControl ("GW Messages_2", "EnvVar:eDlcMotor_25", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcMotor_25Dec", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcMotor_25Inc", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcMotor_25Def", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcOnceMotor_25", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcWrongMotor_25", 1 );
+    }
+    else
+    {
+        enableControl ("GW Messages_2", "EnvVar:eDlcMotor_25", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcMotor_25Dec", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcMotor_25Inc", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcMotor_25Def", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcOnceMotor_25", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcWrongMotor_25", 0 );
+    }
+}
+
+on envVar eChangeMotor_26
+{
+    if (getValue(this))
+    {
+        enableControl ("GW Messages_2", "EnvVar:eDlcMotor_26", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcMotor_26Dec", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcMotor_26Inc", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcMotor_26Def", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcOnceMotor_26", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcWrongMotor_26", 1 );
+    }
+    else
+    {
+        enableControl ("GW Messages_2", "EnvVar:eDlcMotor_26", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcMotor_26Dec", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcMotor_26Inc", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcMotor_26Def", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcOnceMotor_26", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcWrongMotor_26", 0 );
+    }
+}
+
+on envVar eChangeMotor_29
+{
+    if (getValue(this))
+    {
+        enableControl ("GW Messages_2", "EnvVar:eDlcMotor_29", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcMotor_29Dec", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcMotor_29Inc", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcMotor_29Def", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcOnceMotor_29", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcWrongMotor_29", 1 );
+    }
+    else
+    {
+        enableControl ("GW Messages_2", "EnvVar:eDlcMotor_29", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcMotor_29Dec", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcMotor_29Inc", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcMotor_29Def", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcOnceMotor_29", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcWrongMotor_29", 0 );
+    }
+}
+
+on envVar eChangeMotor_31
+{
+    if (getValue(this))
+    {
+        enableControl ("GW Messages_2", "EnvVar:eDlcMotor_31", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcMotor_31Dec", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcMotor_31Inc", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcMotor_31Def", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcOnceMotor_31", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcWrongMotor_31", 1 );
+    }
+    else
+    {
+        enableControl ("GW Messages_2", "EnvVar:eDlcMotor_31", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcMotor_31Dec", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcMotor_31Inc", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcMotor_31Def", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcOnceMotor_31", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcWrongMotor_31", 0 );
+    }
+}
+
+on envVar eChangeMotor_36
+{
+    if (getValue(this))
+    {
+        enableControl ("GW Messages_2", "EnvVar:eDlcMotor_36", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcMotor_36Dec", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcMotor_36Inc", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcMotor_36Def", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcOnceMotor_36", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcWrongMotor_36", 1 );
+    }
+    else
+    {
+        enableControl ("GW Messages_2", "EnvVar:eDlcMotor_36", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcMotor_36Dec", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcMotor_36Inc", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcMotor_36Def", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcOnceMotor_36", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcWrongMotor_36", 0 );
+    }
+}
+
+on envVar eChangeMotor_41
+{
+    if (getValue(this))
+    {
+        enableControl ("GW Messages_2", "EnvVar:eDlcMotor_41", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcMotor_41Dec", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcMotor_41Inc", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcMotor_41Def", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcOnceMotor_41", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcWrongMotor_41", 1 );
+    }
+    else
+    {
+        enableControl ("GW Messages_2", "EnvVar:eDlcMotor_41", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcMotor_41Dec", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcMotor_41Inc", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcMotor_41Def", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcOnceMotor_41", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcWrongMotor_41", 0 );
+    }
+}
+
+on envVar eChangeMotor_Code_01
+{
+    if (getValue(this))
+    {
+        enableControl ("GW Messages_2", "EnvVar:eDlcMotor_Code_01", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcMotor_Code_01Dec", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcMotor_Code_01Inc", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcMotor_Code_01Def", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcOnceMotor_Code_01", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcWrongMotor_Code_01", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eBZMotor_Code_01", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eBZStepMotor_Code_01", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eBZStepMotor_Code_01Dec", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eBZStepMotor_Code_01Inc", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eBZStepMotor_Code_01Def", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eCrcMotor_Code_01", 1 );
+    }
+    else
+    {
+        enableControl ("GW Messages_2", "EnvVar:eDlcMotor_Code_01", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcMotor_Code_01Dec", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcMotor_Code_01Inc", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcMotor_Code_01Def", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcOnceMotor_Code_01", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcWrongMotor_Code_01", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eBZMotor_Code_01", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eBZStepMotor_Code_01", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eBZStepMotor_Code_01Dec", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eBZStepMotor_Code_01Inc", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eBZStepMotor_Code_01Def", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eCrcMotor_Code_01", 0 );
+    }
+}
+
+on envVar eChangeMotor_EV_01
+{
+    if (getValue(this))
+    {
+        enableControl ("GW Messages_2", "EnvVar:eDlcMotor_EV_01", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcMotor_EV_01Dec", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcMotor_EV_01Inc", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcMotor_EV_01Def", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcOnceMotor_EV_01", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcWrongMotor_EV_01", 1 );
+    }
+    else
+    {
+        enableControl ("GW Messages_2", "EnvVar:eDlcMotor_EV_01", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcMotor_EV_01Dec", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcMotor_EV_01Inc", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcMotor_EV_01Def", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcOnceMotor_EV_01", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcWrongMotor_EV_01", 0 );
+    }
+}
+
+on envVar eChangeMotor_EV_03
+{
+    if (getValue(this))
+    {
+        enableControl ("GW Messages_2", "EnvVar:eDlcMotor_EV_03", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcMotor_EV_03Dec", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcMotor_EV_03Inc", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcMotor_EV_03Def", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcOnceMotor_EV_03", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcWrongMotor_EV_03", 1 );
+    }
+    else
+    {
+        enableControl ("GW Messages_2", "EnvVar:eDlcMotor_EV_03", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcMotor_EV_03Dec", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcMotor_EV_03Inc", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcMotor_EV_03Def", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcOnceMotor_EV_03", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcWrongMotor_EV_03", 0 );
+    }
+}
+
+on envVar eChangeMotor_Gas_01
+{
+    if (getValue(this))
+    {
+        enableControl ("GW Messages_2", "EnvVar:eDlcMotor_Gas_01", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcMotor_Gas_01Dec", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcMotor_Gas_01Inc", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcMotor_Gas_01Def", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcOnceMotor_Gas_01", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcWrongMotor_Gas_01", 1 );
+    }
+    else
+    {
+        enableControl ("GW Messages_2", "EnvVar:eDlcMotor_Gas_01", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcMotor_Gas_01Dec", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcMotor_Gas_01Inc", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcMotor_Gas_01Def", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcOnceMotor_Gas_01", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcWrongMotor_Gas_01", 0 );
+    }
+}
+
+on envVar eChangeMotor_Hybrid_03
+{
+    if (getValue(this))
+    {
+        enableControl ("GW Messages_2", "EnvVar:eDlcMotor_Hybrid_03", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcMotor_Hybrid_03Dec", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcMotor_Hybrid_03Inc", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcMotor_Hybrid_03Def", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcOnceMotor_Hybrid_03", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcWrongMotor_Hybrid_03", 1 );
+    }
+    else
+    {
+        enableControl ("GW Messages_2", "EnvVar:eDlcMotor_Hybrid_03", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcMotor_Hybrid_03Dec", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcMotor_Hybrid_03Inc", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcMotor_Hybrid_03Def", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcOnceMotor_Hybrid_03", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcWrongMotor_Hybrid_03", 0 );
+    }
+}
+
+on envVar eChangeMotor_Hybrid_06
+{
+    if (getValue(this))
+    {
+        enableControl ("GW Messages_2", "EnvVar:eDlcMotor_Hybrid_06", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcMotor_Hybrid_06Dec", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcMotor_Hybrid_06Inc", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcMotor_Hybrid_06Def", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcOnceMotor_Hybrid_06", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcWrongMotor_Hybrid_06", 1 );
+    }
+    else
+    {
+        enableControl ("GW Messages_2", "EnvVar:eDlcMotor_Hybrid_06", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcMotor_Hybrid_06Dec", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcMotor_Hybrid_06Inc", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcMotor_Hybrid_06Def", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcOnceMotor_Hybrid_06", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcWrongMotor_Hybrid_06", 0 );
+    }
+}
+
+on envVar eChangeMVK_01
+{
+    if (getValue(this))
+    {
+        enableControl ("GW Messages_2", "EnvVar:eDlcMVK_01", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcMVK_01Dec", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcMVK_01Inc", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcMVK_01Def", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcOnceMVK_01", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcWrongMVK_01", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eBZMVK_01", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eBZStepMVK_01", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eBZStepMVK_01Dec", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eBZStepMVK_01Inc", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eBZStepMVK_01Def", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eCrcMVK_01", 1 );
+    }
+    else
+    {
+        enableControl ("GW Messages_2", "EnvVar:eDlcMVK_01", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcMVK_01Dec", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcMVK_01Inc", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcMVK_01Def", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcOnceMVK_01", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcWrongMVK_01", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eBZMVK_01", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eBZStepMVK_01", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eBZStepMVK_01Dec", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eBZStepMVK_01Inc", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eBZStepMVK_01Def", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eCrcMVK_01", 0 );
+    }
+}
+
+on envVar eChangeNavPos_01
+{
+    if (getValue(this))
+    {
+        enableControl ("GW Messages_2", "EnvVar:eDlcNavPos_01", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcNavPos_01Dec", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcNavPos_01Inc", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcNavPos_01Def", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcOnceNavPos_01", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcWrongNavPos_01", 1 );
+    }
+    else
+    {
+        enableControl ("GW Messages_2", "EnvVar:eDlcNavPos_01", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcNavPos_01Dec", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcNavPos_01Inc", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcNavPos_01Def", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcOnceNavPos_01", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcWrongNavPos_01", 0 );
+    }
+}
+
+on envVar eChangeNMH_Gateway
+{
+    if (getValue(this))
+    {
+        enableControl ("GW Messages_2", "EnvVar:eDlcNMH_Gateway", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcNMH_GatewayDec", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcNMH_GatewayInc", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcNMH_GatewayDef", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcOnceNMH_Gateway", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcWrongNMH_Gateway", 1 );
+    }
+    else
+    {
+        enableControl ("GW Messages_2", "EnvVar:eDlcNMH_Gateway", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcNMH_GatewayDec", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcNMH_GatewayInc", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcNMH_GatewayDef", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcOnceNMH_Gateway", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcWrongNMH_Gateway", 0 );
+    }
+}
+
+on envVar eChangeParkhilfe_04
+{
+    if (getValue(this))
+    {
+        enableControl ("GW Messages_2", "EnvVar:eDlcParkhilfe_04", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcParkhilfe_04Dec", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcParkhilfe_04Inc", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcParkhilfe_04Def", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcOnceParkhilfe_04", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcWrongParkhilfe_04", 1 );
+    }
+    else
+    {
+        enableControl ("GW Messages_2", "EnvVar:eDlcParkhilfe_04", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcParkhilfe_04Dec", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcParkhilfe_04Inc", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcParkhilfe_04Def", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcOnceParkhilfe_04", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcWrongParkhilfe_04", 0 );
+    }
+}
+
+on envVar eChangePLA_Status_02
+{
+    if (getValue(this))
+    {
+        enableControl ("GW Messages_2", "EnvVar:eDlcPLA_Status_02", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcPLA_Status_02Dec", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcPLA_Status_02Inc", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcPLA_Status_02Def", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcOncePLA_Status_02", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcWrongPLA_Status_02", 1 );
+    }
+    else
+    {
+        enableControl ("GW Messages_2", "EnvVar:eDlcPLA_Status_02", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcPLA_Status_02Dec", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcPLA_Status_02Inc", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcPLA_Status_02Def", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcOncePLA_Status_02", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcWrongPLA_Status_02", 0 );
+    }
+}
+
+on envVar eChangePreCrash_02
+{
+    if (getValue(this))
+    {
+        enableControl ("GW Messages_2", "EnvVar:eDlcPreCrash_02", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcPreCrash_02Dec", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcPreCrash_02Inc", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcPreCrash_02Def", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcOncePreCrash_02", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcWrongPreCrash_02", 1 );
+    }
+    else
+    {
+        enableControl ("GW Messages_2", "EnvVar:eDlcPreCrash_02", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcPreCrash_02Dec", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcPreCrash_02Inc", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcPreCrash_02Def", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcOncePreCrash_02", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcWrongPreCrash_02", 0 );
+    }
+}
+
+on envVar eChangeRDK_02
+{
+    if (getValue(this))
+    {
+        enableControl ("GW Messages_2", "EnvVar:eDlcRDK_02", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcRDK_02Dec", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcRDK_02Inc", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcRDK_02Def", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcOnceRDK_02", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcWrongRDK_02", 1 );
+
+    }
+    else
+    {
+        enableControl ("GW Messages_2", "EnvVar:eDlcRDK_02", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcRDK_02Dec", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcRDK_02Inc", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcRDK_02Def", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcOnceRDK_02", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcWrongRDK_02", 0 );
+    }
+}
+
+on envVar eChangeReichweite_01
+{
+    if (getValue(this))
+    {
+        enableControl ("GW Messages_2", "EnvVar:eDlcReichweite_01", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcReichweite_01Dec", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcReichweite_01Inc", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcReichweite_01Def", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcOnceReichweite_01", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcWrongReichweite_01", 1 );
+    }
+    else
+    {
+        enableControl ("GW Messages_2", "EnvVar:eDlcReichweite_01", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcReichweite_01Dec", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcReichweite_01Inc", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcReichweite_01Def", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcOnceReichweite_01", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcWrongReichweite_01", 0 );
+    }
+}
+
+on envVar eChangeReichweite_02
+{
+    if (getValue(this))
+    {
+        enableControl ("GW Messages_2", "EnvVar:eDlcReichweite_02", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcReichweite_02Dec", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcReichweite_02Inc", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcReichweite_02Def", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcOnceReichweite_02", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcWrongReichweite_02", 1 );
+    }
+    else
+    {
+        enableControl ("GW Messages_2", "EnvVar:eDlcReichweite_02", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcReichweite_02Dec", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcReichweite_02Inc", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcReichweite_02Def", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcOnceReichweite_02", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcWrongReichweite_02", 0 );
+    }
+}
+
+on envVar eChangeRKA_01
+{
+    if (getValue(this))
+    {
+        enableControl ("GW Messages_2", "EnvVar:eDlcRKA_01", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcRKA_01Dec", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcRKA_01Inc", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcRKA_01Def", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcOnceRKA_01", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcWrongRKA_01", 1 );
+
+    }
+    else
+    {
+        enableControl ("GW Messages_2", "EnvVar:eDlcRKA_01", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcRKA_01Dec", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcRKA_01Inc", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcRKA_01Def", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcOnceRKA_01", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcWrongRKA_01", 0 );
+    }
+}
+
+on envVar eChangeSTH_01
+{
+    if (getValue(this))
+    {
+        enableControl( "Non-GW Messages", "EnvVar:eDlcSTH_01", 1 );
+        enableControl( "Non-GW Messages", "EnvVar:eDlcSTH_01Dec", 1 );
+        enableControl( "Non-GW Messages", "EnvVar:eDlcSTH_01Inc", 1 );
+        enableControl( "Non-GW Messages", "EnvVar:eDlcSTH_01Def", 1 );
+        enableControl( "Non-GW Messages", "EnvVar:eDlcOnceSTH_01", 1 );
+        enableControl( "Non-GW Messages", "EnvVar:eDlcWrongSTH_01", 1 );
+    }
+    else
+    {
+        enableControl( "Non-GW Messages", "EnvVar:eDlcSTH_01", 0 );
+        enableControl( "Non-GW Messages", "EnvVar:eDlcSTH_01Dec", 0 );
+        enableControl( "Non-GW Messages", "EnvVar:eDlcSTH_01Inc", 0 );
+        enableControl( "Non-GW Messages", "EnvVar:eDlcSTH_01Def", 0 );
+        enableControl( "Non-GW Messages", "EnvVar:eDlcOnceSTH_01", 0 );
+        enableControl( "Non-GW Messages", "EnvVar:eDlcWrongSTH_01", 0 );
+    }
+}
+
+on envVar eChangeSWA_01
+{
+    if (getValue(this))
+    {
+        enableControl ("GW Messages_2", "EnvVar:eDlcSWA_01", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcSWA_01Dec", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcSWA_01Inc", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcSWA_01Def", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcOnceSWA_01", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcWrongSWA_01", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eBZSWA_01", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eBZStepSWA_01", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eBZStepSWA_01Dec", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eBZStepSWA_01Inc", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eBZStepSWA_01Def", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eCrcSWA_01", 1 );
+    }
+    else
+    {
+        enableControl ("GW Messages_2", "EnvVar:eDlcSWA_01", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcSWA_01Dec", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcSWA_01Inc", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcSWA_01Def", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcOnceSWA_01", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcWrongSWA_01", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eBZSWA_01", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eBZStepSWA_01", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eBZStepSWA_01Dec", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eBZStepSWA_01Inc", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eBZStepSWA_01Def", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eCrcSWA_01", 0 );
+    }
+}
+
+on envVar eChangeSysteminfo_01
+{
+    if (getValue(this))
+    {
+        enableControl ("GW Messages_2", "EnvVar:eDlcSysteminfo_01", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcSysteminfo_01Dec", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcSysteminfo_01Inc", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcSysteminfo_01Def", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcOnceSysteminfo_01", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcWrongSysteminfo_01", 1 );
+    }
+    else
+    {
+        enableControl ("GW Messages_2", "EnvVar:eDlcSysteminfo_01", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcSysteminfo_01Dec", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcSysteminfo_01Inc", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcSysteminfo_01Def", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcOnceSysteminfo_01", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcWrongSysteminfo_01", 0 );
+    }
+}
+
+on envVar eChangeTA_01
+{
+    if (getValue(this))
+    {
+        enableControl ("GW Messages_2", "EnvVar:eDlcTA_01", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcTA_01Dec", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcTA_01Inc", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcTA_01Def", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcOnceTA_01", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcWrongTA_01", 1 );
+    }
+    else
+    {
+        enableControl ("GW Messages_2", "EnvVar:eDlcTA_01", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcTA_01Dec", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcTA_01Inc", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcTA_01Def", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcOnceTA_01", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcWrongTA_01", 0 );
+    }
+}
+
+on envVar eChangeTM_01
+{
+    if (getValue(this))
+    {
+        enableControl( "Non-GW Messages", "EnvVar:eDlcTM_01", 1 );
+        enableControl( "Non-GW Messages", "EnvVar:eDlcTM_01Dec", 1 );
+        enableControl( "Non-GW Messages", "EnvVar:eDlcTM_01Inc", 1 );
+        enableControl( "Non-GW Messages", "EnvVar:eDlcTM_01Def", 1 );
+        enableControl( "Non-GW Messages", "EnvVar:eDlcOnceTM_01", 1 );
+        enableControl( "Non-GW Messages", "EnvVar:eDlcWrongTM_01", 1 );
+    }
+    else
+    {
+        enableControl( "Non-GW Messages", "EnvVar:eDlcTM_01", 0 );
+        enableControl( "Non-GW Messages", "EnvVar:eDlcTM_01Dec", 0 );
+        enableControl( "Non-GW Messages", "EnvVar:eDlcTM_01Inc", 0 );
+        enableControl( "Non-GW Messages", "EnvVar:eDlcTM_01Def", 0 );
+        enableControl( "Non-GW Messages", "EnvVar:eDlcOnceTM_01", 0 );
+        enableControl( "Non-GW Messages", "EnvVar:eDlcWrongTM_01", 0 );
+    }
+}
+
+on envVar eChangeTSK_07
+{
+    if (getValue(this))
+    {
+        enableControl ("GW Messages_2", "EnvVar:eDlcTSK_07", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcTSK_07Dec", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcTSK_07Inc", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcTSK_07Def", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcOnceTSK_07", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcWrongTSK_07", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eBZTSK_07", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eBZStepTSK_07", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eBZStepTSK_07Dec", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eBZStepTSK_07Inc", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eBZStepTSK_07Def", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eCrcTSK_07", 1 );
+    }
+    else
+    {
+        enableControl ("GW Messages_2", "EnvVar:eDlcTSK_07", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcTSK_07Dec", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcTSK_07Inc", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcTSK_07Def", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcOnceTSK_07", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcWrongTSK_07", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eBZTSK_07", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eBZStepTSK_07", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eBZStepTSK_07Dec", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eBZStepTSK_07Inc", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eBZStepTSK_07Def", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eCrcTSK_07", 0 );
+    }
+}
+
+on envVar eChangeWaehlhebel_05
+{
+    if (getValue(this))
+    {
+        enableControl ("GW Messages_2", "EnvVar:eDlcWaehlhebel_05", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcWaehlhebel_05Dec", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcWaehlhebel_05Inc", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcWaehlhebel_05Def", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcOnceWaehlhebel_05", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcWrongWaehlhebel_05", 1 );
+    }
+    else
+    {
+        enableControl ("GW Messages_2", "EnvVar:eDlcWaehlhebel_05", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcWaehlhebel_05Dec", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcWaehlhebel_05Inc", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcWaehlhebel_05Def", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcOnceWaehlhebel_05", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcWrongWaehlhebel_05", 0 );
+    }
+}
+
+on envVar eChangeWIV_01
+{
+    if (getValue(this))
+    {
+        enableControl ("GW Messages_2", "EnvVar:eDlcWIV_01", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcWIV_01Dec", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcWIV_01Inc", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcWIV_01Def", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcOnceWIV_01", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcWrongWIV_01", 1 );
+    }
+    else
+    {
+        enableControl ("GW Messages_2", "EnvVar:eDlcWIV_01", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcWIV_01Dec", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcWIV_01Inc", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcWIV_01Def", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcOnceWIV_01", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcWrongWIV_01", 0 );
+    }
+}
+
+on envVar eChangeZentralrechner_03
+{
+    if (getValue(this))
+    {
+        enableControl ("GW Messages_2", "EnvVar:eDlcZentralrechner_03", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcZentralrechner_03Dec", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcZentralrechner_03Inc", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcZentralrechner_03Def", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcOnceZentralrechner_03", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcWrongZentralrechner_03", 1 );
+    }
+    else
+    {
+        enableControl ("GW Messages_2", "EnvVar:eDlcZentralrechner_03", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcZentralrechner_03Dec", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcZentralrechner_03Inc", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcZentralrechner_03Def", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcOnceZentralrechner_03", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcWrongZentralrechner_03", 0 );
+    }
+}
+
+
+
+
+on envVar eChangeDEV_Kombi_RX1
+{
+    if (getValue(this))
+    {
+        enableControl ("GW Messages_1", "EnvVar:eDlcDEV_Kombi_RX1", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcDEV_Kombi_RX1Dec", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcDEV_Kombi_RX1Inc", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcDEV_Kombi_RX1Def", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcOnceDEV_Kombi_RX1", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcWrongDEV_Kombi_RX1", 1 );
+    }
+    else
+    {
+        enableControl ("GW Messages_1", "EnvVar:eDlcDEV_Kombi_RX1", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcDEV_Kombi_RX1Dec", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcDEV_Kombi_RX1Inc", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcDEV_Kombi_RX1Def", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcOnceDEV_Kombi_RX1", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcWrongDEV_Kombi_RX1", 0 );
+    }
+}
+
+on envVar eChangeDEV_Kombi_SUP1
+{
+    if (getValue(this))
+    {
+        enableControl ("GW Messages_1", "EnvVar:eDlcDEV_Kombi_SUP1", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcDEV_Kombi_SUP1Dec", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcDEV_Kombi_SUP1Inc", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcDEV_Kombi_SUP1Def", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcOnceDEV_Kombi_SUP1", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcWrongDEV_Kombi_SUP1", 1 );
+    }
+    else
+    {
+        enableControl ("GW Messages_1", "EnvVar:eDlcDEV_Kombi_SUP1", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcDEV_Kombi_SUP1Dec", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcDEV_Kombi_SUP1Inc", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcDEV_Kombi_SUP1Def", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcOnceDEV_Kombi_SUP1", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcWrongDEV_Kombi_SUP1", 0 );
+    }
+}
+
+on envVar eChangeDEV_Kombi_SUP2
+{
+    if (getValue(this))
+    {
+        enableControl ("GW Messages_1", "EnvVar:eDlcDEV_Kombi_SUP2", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcDEV_Kombi_SUP2Dec", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcDEV_Kombi_SUP2Inc", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcDEV_Kombi_SUP2Def", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcOnceDEV_Kombi_SUP2", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcWrongDEV_Kombi_SUP2", 1 );
+    }
+    else
+    {
+        enableControl ("GW Messages_1", "EnvVar:eDlcDEV_Kombi_SUP2", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcDEV_Kombi_SUP2Dec", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcDEV_Kombi_SUP2Inc", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcDEV_Kombi_SUP2Def", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcOnceDEV_Kombi_SUP2", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcWrongDEV_Kombi_SUP2", 0 );
+    }
+}
+
+on envVar eChangeDEV_Kombi_SUP3
+{
+    if (getValue(this))
+    {
+        enableControl ("GW Messages_1", "EnvVar:eDlcDEV_Kombi_SUP3", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcDEV_Kombi_SUP3Dec", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcDEV_Kombi_SUP3Inc", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcDEV_Kombi_SUP3Def", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcOnceDEV_Kombi_SUP3", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcWrongDEV_Kombi_SUP3", 1 );
+    }
+    else
+    {
+        enableControl ("GW Messages_1", "EnvVar:eDlcDEV_Kombi_SUP3", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcDEV_Kombi_SUP3Dec", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcDEV_Kombi_SUP3Inc", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcDEV_Kombi_SUP3Def", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcOnceDEV_Kombi_SUP3", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcWrongDEV_Kombi_SUP3", 0 );
+    }
+}
+
+on envVar eChangeDEV_Kombi_UD1_PC_KI_Ctrl
+{
+    if (getValue(this))
+    {
+        enableControl ("GW Messages_1", "EnvVar:eDlcDEV_Kombi_UD1_PC_KI_Control", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcDEV_Kombi_UD1_PC_KI_ControlD", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcDEV_Kombi_UD1_PC_KI_ControlI", 1 );
+        enableControl ("GW Messages_1", "EnvVar:e00DlcDEV_Kombi_UD1_PC_KI_Contro", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcOnceDEV_Kombi_UD1_PC_KI_Cont", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcWrongDEV_Kombi_UD1_PC_KI_Con", 1 );
+    }
+    else
+    {
+        enableControl ("GW Messages_1", "EnvVar:eDlcDEV_Kombi_UD1_PC_KI_Control", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcDEV_Kombi_UD1_PC_KI_ControlD", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcDEV_Kombi_UD1_PC_KI_ControlI", 0 );
+        enableControl ("GW Messages_1", "EnvVar:e00DlcDEV_Kombi_UD1_PC_KI_Contro", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcOnceDEV_Kombi_UD1_PC_KI_Cont", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcWrongDEV_Kombi_UD1_PC_KI_Con", 0 );
+    }
+}
+
+on envVar eChangeDEV_Kombi_UD2_PC_KI_Data
+{
+    if (getValue(this))
+    {
+        enableControl ("GW Messages_1", "EnvVar:eDlcDEV_Kombi_UD2_PC_KI_Data", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcDEV_Kombi_UD2_PC_KI_DataDec", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcDEV_Kombi_UD2_PC_KI_DataInc", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcDEV_Kombi_UD2_PC_KI_DataDef", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcOnceDEV_Kombi_UD2_PC_KI_Data", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcWrongDEV_Kombi_UD2_PC_KI_Dat", 1 );
+    }
+    else
+    {
+        enableControl ("GW Messages_1", "EnvVar:eDlcDEV_Kombi_UD2_PC_KI_Data", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcDEV_Kombi_UD2_PC_KI_DataDec", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcDEV_Kombi_UD2_PC_KI_DataInc", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcDEV_Kombi_UD2_PC_KI_DataDef", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcOnceDEV_Kombi_UD2_PC_KI_Data", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcWrongDEV_Kombi_UD2_PC_KI_Dat", 0 );
+    }
+}
+
+on envVar eChangeISO_Funktionaler_Req_All
+{
+    if (getValue(this))
+    {
+        enableControl ("GW Messages_1", "EnvVar:eDlcISO_Funktionaler_Req_All", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcISO_Funktionaler_Req_AllDec", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcISO_Funktionaler_Req_AllInc", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcISO_Funktionaler_Req_AllDef", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcOnceISO_Funktionaler_Req_All", 1 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcWrongISO_Funktionaler_Req_Al", 1 );
+    }
+    else
+    {
+        enableControl ("GW Messages_1", "EnvVar:eDlcISO_Funktionaler_Req_All", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcISO_Funktionaler_Req_AllDec", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcISO_Funktionaler_Req_AllInc", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcISO_Funktionaler_Req_AllDef", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcOnceISO_Funktionaler_Req_All", 0 );
+        enableControl ("GW Messages_1", "EnvVar:eDlcWrongISO_Funktionaler_Req_Al", 0 );
+    }
+}
+
+on envVar eChangeISO_Kombi_Req
+{
+    if (getValue(this))
+    {
+        enableControl ("GW Messages_2", "EnvVar:eDlcISO_Kombi_Req", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcISO_Kombi_ReqDec", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcISO_Kombi_ReqInc", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcISO_Kombi_ReqDef", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcOnceISO_Kombi_Req", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcWrongISO_Kombi_Req", 1 );
+    }
+    else
+    {
+        enableControl ("GW Messages_2", "EnvVar:eDlcISO_Kombi_Req", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcISO_Kombi_ReqDec", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcISO_Kombi_ReqInc", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcISO_Kombi_ReqDef", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcOnceISO_Kombi_Req", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcWrongISO_Kombi_Req", 0 );
+    }
+}
+
+on envVar eChangeOBDC_Funktionaler_Req_All
+{
+    if (getValue(this))
+    {
+        enableControl ("GW Messages_2", "EnvVar:eDlcOBDC_Funktionaler_Req_All", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcOBDC_Funktionaler_Req_AllDec", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcOBDC_Funktionaler_Req_AllInc", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcOBDC_Funktionaler_Req_AllDef", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcOnceOBDC_Funktionaler_Req_All", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcWrongOBDC_Funktionaler_Req_All", 1 );
+    }
+    else
+    {
+        enableControl ("GW Messages_2", "EnvVar:eDlcOBDC_Funktionaler_Req_All", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcOBDC_Funktionaler_Req_AllDec", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcOBDC_Funktionaler_Req_AllInc", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcOBDC_Funktionaler_Req_AllDef", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcOnceOBDC_Funktionaler_Req_All", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcWrongOBDC_Funktionaler_Req_All", 0 );
+    }
+}
+
+on envVar eChangeWFS_Transponder_Req_02
+{
+    if (getValue(this))
+    {
+        enableControl ("GW Messages_2", "EnvVar:eDlcWFS_Transponder_Req_02", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcWFS_Transponder_Req_02Dec", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcWFS_Transponder_Req_02Inc", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcWFS_Transponder_Req_02Def", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcOnceWFS_Transponder_Req_02", 1 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcWrongWFS_Transponder_Req_02", 1 );
+    }
+    else
+    {
+        enableControl ("GW Messages_2", "EnvVar:eDlcWFS_Transponder_Req_02", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcWFS_Transponder_Req_02Dec", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcWFS_Transponder_Req_02Inc", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcWFS_Transponder_Req_02Def", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcOnceWFS_Transponder_Req_02", 0 );
+        enableControl ("GW Messages_2", "EnvVar:eDlcWrongWFS_Transponder_Req_02", 0 );
+    }
+}
+

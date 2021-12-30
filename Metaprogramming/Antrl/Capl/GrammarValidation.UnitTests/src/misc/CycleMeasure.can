@@ -1,0 +1,160 @@
+/***************************************************************************
+*=====================      Copyright by Continental AG      ===============
+****************************************************************************
+* Title            : CycleMeasure.can
+*
+* Description  : Test 2.1 (T_16)
+*                Measures time between two CAN messages.
+*
+* Responsible  : Christian Spahn <Christian.Spahn-EXT@continental-corporation.com>
+*
+* Revision List: (Will NOT be filled by XStudio)
+*
+* Archive: Rev. 6 WolMau: Start measurement and delete / restart on keys 't'and 'd'
+*                         Measurement start must be triggered with 't'
+*          Rev. 5 WolMau: Value output formatting 
+*          Rev. 4 WolMau: Formatting
+*          Rev. 3 ChrSpa: Added version information
+*          Rev. 2 ChrSpa: CAN DB Update
+*          Rev. 1 ChrSpa: Inital checkin
+*
+****************************************************************************/
+
+variables
+{
+    const dword sendDist = 10000; // *10 us = 100ms
+    const byte messagCnt = 7;
+
+    dword lastRx[messagCnt];
+    dword min[messagCnt];
+    dword max[messagCnt];
+    dword sum[messagCnt];
+    dword sumCount[messagCnt];
+
+    msTimer reportTimer;
+    msTimer resetTimer;
+}
+
+on message NV_Rq_IC_AR
+{
+    evaluateTime(0, this.TIME);
+}
+
+evaluateTime (byte msgNo, dword msgTime)
+{
+   if (lastRx[msgNo] != 0) {
+
+        dword delta;
+
+        delta = (msgTime - lastRx[msgNo]); // in 10 us
+
+        if (delta > max[msgNo]) {
+          max[msgNo] = delta;
+        }
+        if (delta < min[msgNo]) {
+          min[msgNo] = delta;
+        }
+        sum[msgNo] += delta;
+        sumCount[msgNo]++;
+    }
+    lastRx[msgNo] = msgTime;
+}
+
+reportResult ()
+{
+    byte i;
+    for (i = 0; i < messagCnt; i++) {
+        float avg = 0;
+
+        if (sumCount[i] > 0)
+        {
+            avg = (float)sum[i]/sumCount[i]/100;
+        }
+        write("MessageNo %3d\n Min: %0.2f\nAvg: %0.2f\nMax: %0.2f\n", i, (float)min[i]/100, avg, (float)max[i]/100);
+    }
+}
+
+on timer reportTimer
+{
+    setTimer(reportTimer, 5000);
+    reportResult();
+}
+
+on message 0x131
+{
+    evaluateTime(1, this.TIME);
+}
+
+on message 0x18B
+{
+    evaluateTime(2, this.TIME);
+}
+
+on message 0x369
+{
+    evaluateTime(3, this.TIME);
+}
+
+on message 0x30B
+{
+    evaluateTime(4, this.TIME);
+}
+
+on message 0x4C1
+{
+    evaluateTime(6, this.TIME);
+}
+
+on message 0x4C2
+{
+    evaluateTime(5, this.TIME);
+}
+
+on timer resetTimer
+{
+    byte i;
+    for (i = 0; i < messagCnt; i++) {
+        min[i] = 0xfffffff;
+        max[i] = 0;
+        sum[i] = 0;
+        sumCount[i] = 0;
+    }
+
+    setTimer(reportTimer, 2000);
+}
+
+
+on key 't'
+{
+    byte i;
+
+    write("Keypress \"t\" recieved -> Measurement starts");
+
+    for (i = 0; i < messagCnt; i++) {
+        min[i] = 0xfffffff;
+        max[i] = 0;
+        sum[i] = 0;
+        sumCount[i] = 0;
+        lastRx[i] = 0;
+    }
+
+    setTimer(reportTimer, 2000);
+}
+
+on key 'd'
+{
+    byte i;
+
+    write("Keypress \"d\" recieved -> Delete measurements and restart");
+
+    for (i = 0; i < messagCnt; i++) {
+        min[i] = 0xfffffff;
+        max[i] = 0;
+        sum[i] = 0;
+        sumCount[i] = 0;
+        lastRx[i] = 0;
+    }
+
+    setTimer(reportTimer, 2000);
+}
+

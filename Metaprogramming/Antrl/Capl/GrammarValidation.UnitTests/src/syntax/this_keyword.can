@@ -1,0 +1,15 @@
+on envVar LEDSwitch /* Triggered when LED Switch changes */
+{
+    int val;
+    val = getValue(this);
+}
+
+void printme (double num)
+{
+    write("Floating point %f", num);
+}
+
+void printme (int num, char units[])
+{
+    write("%d %s", num, units);
+}

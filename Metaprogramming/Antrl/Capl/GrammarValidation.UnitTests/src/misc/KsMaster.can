@@ -1,0 +1,274 @@
+/*@!Encoding:1252*/
+variables
+{
+  byte RX_WFS_OK=0;
+  byte RX_KS_OK=0;
+  byte TX_WFS_OK=0;
+  byte TX_KS_OK=0;
+  byte ERR = 0;
+  byte BoMeasurementRunning = 0;
+
+  byte rx_buffer[4096];
+  byte tx_buffer[4096];
+
+  byte Job=0;  // 2 = KS, 1 WFS, 0 = Idle
+
+
+  const byte MASTERECUNUMBER = 0x80;  //ECU Adress of KS-Master
+
+
+  byte udata_IO[34] ={0x80,0x03,0x22,0x4e,0xaf,0xab,0x06,0xFb,0x44,0xC9,0xEa,0xCa,0x29,0x37,0x4c,0xFb,0xD8,0x82,0x09,0x48,0x72,0xD7,0x6f,0x7b,0x56,0x79,0xFc,0x9f,0x24,0x5e,0x1b,0x53,0xB4,0x31};
+  byte udata_ERR[34]={0x80,0x03,0x22,0x4e,0xff,0xab,0x06,0xFb,0x44,0xC9,0xEa,0xCa,0x29,0x37,0x4c,0xFb,0xD8,0x82,0x09,0x48,0x72,0xD7,0x6f,0x7b,0x56,0x79,0xFc,0x9f,0x24,0x5e,0x1b,0x53,0xB4,0x31};
+  byte KSTest[11]={0x80,1,1,2,3,4,5,6,7,8,1};  
+    
+  msTimer SQIcycle, _tLinkStatus;  
+  
+  message ISO_Kombi_Req SQI_Req_MSG = {
+    dlc = 8,
+    byte(0) = 0x03,
+    byte(1) = 0x22,
+    byte(2) = 0x01,
+    byte(3) = 0x0D,
+    byte(4) = 0xFF,
+    byte(5) = 0xFF,
+    byte(6) = 0xFF,
+    byte(7) = 0xFF      
+  };  
+  
+  message ISO_Kombi_Req LinkStatus_Req_MSG = {
+    dlc = 8,
+    byte(0) = 0x06,
+    byte(1) = 0x19,
+    byte(2) = 0x06,
+    byte(3) = 0xC4,
+    byte(4) = 0x00,
+    byte(5) = 0x00,
+    byte(6) = 0x01,
+    byte(7) = 0xFF      
+  };
+}
+
+OSEKTL_DataInd (long rxCount)
+{
+  if (Job==1)
+  {
+    write("RX WFS OK");
+    RX_WFS_OK=1;
+    putValue(EvRX_WFS_OK,1);
+  }
+  else if (Job==2)
+  {
+    write("RX KS OK");
+    RX_KS_OK=1;
+    putValue(EvRX_KS_OK,1);
+  }
+  else
+  {
+    write("ERR");
+    ERR=1;
+    putValue(EvRX_ERR,1);
+  }
+  Job=0;
+}
+
+OSEKTL_ErrorInd(int error)
+{
+  write("ERR");
+  putValue(EvErrorInd,1);
+  Job=0;
+}
+
+on start
+{
+  OSEKTL_SetNrmlMode();
+  OSEKTL_UseExtId(1);
+  OSEKTL_SetEcuNumber(MASTERECUNUMBER);
+
+  OSEKTL_SetBS(15);
+  OSEKTL_SetSTMIN(5);
+
+  putValue(EvTPAddress,0x14);    //please set here the TP-Adressword of your ECU.
+  OSEKTL_SetTgtAdr(getValue(EvTPAddress));
+  
+  putvalue(EvLinkStatus, 1);
+}
+
+OSEKTL_DataCon (long txLength)
+{
+  if (Job==1)
+  {
+     TX_WFS_OK=1;
+     putValue(EvTX_WFS_OK,TX_WFS_OK);
+     write("Send WFS OK");
+  }
+  else if (Job==2)
+  {
+     TX_KS_OK=1;
+     putValue(EvTX_KS_OK,TX_KS_OK);
+     write("Send KS OK");
+  }
+  else
+  {
+     ERR=1;
+     putValue(EvTX_ERR,ERR);
+     write ("ERR");
+  }
+}
+
+
+OSEKTL_FI_PreSend (word dlc_1[], byte message_1[])
+{
+}
+
+OSEKTL_FirstFrameIndication( long sourceadr, long destadr, long rxCount )
+{
+}
+
+memcpy (byte a[],byte b[],byte c)
+{
+  byte d;
+  for (d=0; d<c; d++)
+    a[d]=b[d];
+}
+
+on envVar EvStartWFSTest
+{
+  if (getValue(EvStartWFSTest))
+  {
+    RX_WFS_OK=0;
+    TX_WFS_OK=0;
+    ERR = 0;
+    putValue(EvTX_WFS_OK,TX_WFS_OK);
+    putValue(EvRX_WFS_OK,RX_WFS_OK);
+    putValue(EvTX_ERR,ERR);
+    putValue(EvRX_ERR,ERR);
+    putValue(EvErrorInd,ERR);
+
+    Job=1;
+    OSEKTL_SetRxId(0x17F8140E);
+    OSEKTL_SetTxId(0x17FA0E14);
+    OSEKTL_DataReq(udata_ERR, 34);
+  }
+}
+
+on envVar EvStartKSTest
+{
+  if(getValue(EvStartKSTest)==1)
+  {
+    RX_KS_OK=0;
+    TX_KS_OK=0;
+    ERR = 0;
+    putValue(EvRX_KS_OK,RX_KS_OK);
+    putValue(EvTX_KS_OK,TX_KS_OK);
+    putValue(EvTX_ERR,ERR);
+    putValue(EvRX_ERR,ERR);
+    putValue(EvErrorInd,ERR);
+
+    Job=2;
+    OSEKTL_SetRxId(0x17Fe0114);
+    OSEKTL_SetTxId(0x17Fc0114);
+    OSEKTL_DataReq(KSTest, 11);
+  }
+}
+
+/*  SQI measurement functionality */
+on envVar eEthernetbtnSQIStartStop
+{
+  putValue(eEthernetBoMeasurementRunning,BoMeasurementRunning);
+  if(getValue(eEthernetbtnSQIStartStop)){
+    if (!BoMeasurementRunning)
+    {
+      // start measurement
+      BoMeasurementRunning = 1;
+      putValue(eEthernetBoMeasurementRunning,1);
+      
+      output(SQI_Req_MSG);
+
+      // set timer for next measurement cycle - every 50ms
+      setTimer(SQIcycle, 50);
+    }
+    else
+    {
+      // stop measurement
+      BoMeasurementRunning = 0; 
+      putValue(eEthernetBoMeasurementRunning,0);
+      putvalue(EvSQIData, 0);
+      cancelTimer(SQIcycle);
+    }
+  }
+}
+
+on timer SQIcycle
+{
+    output(SQI_Req_MSG);
+  
+    // set timer for next measurement cycle - every 50ms
+    setTimer(SQIcycle, 50);  
+    if(getValue(eEthernetLEDLinkStatus)==0){
+      putvalue(EvSQIData, 0);
+    }
+}
+
+
+/***  Link Status measurement ***/
+on envVar eEthernetbtnLinkStatusStartStop
+{  
+  if(getValue(eEthernetbtnLinkStatusStartStop)==1){    
+      // start measurement                 
+      output(LinkStatus_Req_MSG);
+
+      // set timer for next measurement cycle - every 50ms
+      setTimer(_tLinkStatus, 50);    
+  }
+  else
+  {
+      // stop measurement        
+      putvalue(EvLinkStatus, 0);
+      putValue(eEthernetLEDLinkStatusReg,0);
+      cancelTimer(_tLinkStatus);
+  }
+}
+
+on timer _tLinkStatus
+{
+    output(LinkStatus_Req_MSG);
+  
+    // set timer for next measurement cycle - every 50ms
+    setTimer(_tLinkStatus, 50);      
+}
+
+on message ISO_Kombi_Resp
+{
+  byte SQI, LinkStatus;
+  
+  /*** SQI ***/
+  if (BoMeasurementRunning && (this.byte(0)==0x04) && (this.byte(1)==0x62)&& (this.byte(2)==0x01)&& (this.byte(3)==0x0D))
+  {
+    SQI = this.byte(4);
+    putvalue(EvSQIData, SQI);
+  }
+  
+  /*** Link Status ***/
+  if ((getValue(eEthernetbtnLinkStatusStartStop)==1) && (this.byte(0)==0x06) && (this.byte(1)==0x59)&& (this.byte(2)==0x06) && (this.byte(3)==0xC4))
+  {
+    LinkStatus = this.byte(6);
+    putvalue(EvLinkStatus, LinkStatus);
+    if( LinkStatus == 0 || LinkStatus == 8 ){
+      putValue(eEthernetLEDLinkStatusReg,1);
+    }else if (LinkStatus == 9){
+      putValue(eEthernetLEDLinkStatusReg,0);
+    }
+  }
+  
+  if ((getValue(eEthernetbtnLinkStatusStartStop)==1) && (this.byte(0)==0x10) && (this.byte(1)==0x09)&& (this.byte(2)==0x59) && (this.byte(3)==0x06) && (this.byte(4)==0xC4))
+  {
+    LinkStatus = this.byte(7);
+    putvalue(EvLinkStatus, LinkStatus);
+    if( LinkStatus == 0 || LinkStatus == 8 ){
+      putValue(eEthernetLEDLinkStatusReg,1);
+    }else if (LinkStatus == 9){
+      putValue(eEthernetLEDLinkStatusReg,0);
+    }
+  }  
+}
+/*  End of SQI measurement */

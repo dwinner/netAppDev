@@ -1,0 +1,468 @@
+/*@!Encoding:1252*/
+
+variables 
+{
+/*
+    ImmoTest.can  fuer  MQB
+  
+    V1.0  20.06.2011  S.Krass        Bewertung der Schluesselkommunikation über MWB 2EE
+    V1.1  07.05.2015  J.Michel       Kl15 Toggle implemented
+*/
+  char SW_version[10]="V1.2";
+
+  // Zykluszeit Auswertung der KL15-Botschaft und Abfrage vom Parallelport
+  word zyklus = 50;                 // KL15-Zyklus [ms]
+  
+  word Kl15Toggle_To;
+  word Auth_To;
+  byte Kl15Toggle_PhaseOn;
+  byte Kl15Toggle_Active;
+  mstimer Kl15Toggle_Timer;  
+  mstimer Auth_Timer;     
+  mstimer Stresstest_Timer;
+  const word Stresstest_To = 400;
+  const word Kl15Toggle_LowPhase = 1000;
+  byte Stresstest_Active;
+
+  // KL15-Auswertung_CAN
+  //   0: Einlesen des KL15-Status über Parallelport (für EMV-Messung SiemensVDO)
+  //   1: Auswertung der KL15-Botschaft (0x3c0)
+  byte KL15_Auswertung_CAN;
+
+  // Zähler für Statistik
+  word gut;
+  word schlecht;
+
+  // Schalter für MSG-Simulation
+//  byte MSG_simulation = 0;         // Freischaltanfrage simulieren!
+//  byte freischaltung = 0;          // Response = Ergebnis auf die Freischaltanfrage
+//  byte zyklus_laeuft = 0;
+  byte boKeyStatusValid = 0;
+  byte boReadKeyStatusRun = 0;
+
+  // Portadressen Parallelport
+  word adr_out = 0x378;
+  word adr_in  = 0x379;
+  byte maske_input = 0x40;   // /Ack
+  byte output_ok   = 0x01;   // D0=1, Ausgabewert bei Freischaltung
+  byte output_nok  = 0x00;   // D0=0, Ausgabewert bei fehlender Freischaltung
+
+  byte KL15ein = 1;
+  byte KL15ein_alt = 1;
+  byte Port = 0;
+  byte boTestMode = 0;
+  byte boKl15 = 0; 
+  word NumberOfCycles = 0;
+  byte boCurrentInPortStatus;
+
+  // KL15-Botschaften :
+  message 0x3c0 KL15_MQB    = {DLC=4};
+  message 0x714 mTx2EE = {DLC=8};       // Transmitt-Message for service 2EE
+  message 0x77E mRx2EE = {DLC=8};       // Receiv-Message for service 2EE
+  
+  mstimer tCheckPortKl15Status;         // Timer für KL15-Botschaft
+
+}
+
+on timer Auth_Timer
+{
+  settimer(Auth_Timer,Auth_To*1000); 
+  Messzyklus_Start();  
+}
+
+on start
+{
+  
+  putValue(Env_EMV_Ergebnis_Fpke,2);
+  boTestMode = 0; // Sicher den Testmode abschalten
+  settimer(tCheckPortKl15Status,zyklus);
+  outport(adr_out,output_ok);
+
+  gut           = 0;
+  schlecht      = 0;
+  
+  Stresstest_Active = 0;
+  
+  putValue(Env_Version_Fpke, SW_version);
+  putValue(Env_Kl15AsTrigger_Fpke, 0);
+  putValue(Env_PortAsTrigger_Fpke, 0);
+  putValue(Env_Timing_Kl15Toggle_Fpke,0);
+  putValue(Env_Timing_Auth_Fpke,0);
+  putValue(Env_Anzahl_niO_Fpke, schlecht);
+  putValue(Env_Anzahl_iO_Fpke, gut);
+
+  write("");
+  write("*************************************");
+  write("*** EMV-ImmoTest    MQB           ***");
+  write("*************************************");
+  write("");
+  write(" 1. At least one key has to be learned. ");
+  write(" 2. Set KL15 as trigger to start the ");
+  write(" key communication by KL15 on.");
+  write(" 3. Set port as trigger to start");
+  write(" the key communication by port.");
+  write(" 4. If the key is authorized then OK is shown. ");
+  write(" Otherwise NOK");
+  write("  ");
+
+}
+
+on message 0x3C0
+{  // Klemmen_Status_01
+  if (KL15_Auswertung_CAN)
+    KL15ein = (this.byte(2) & 0x02) > 0;
+}
+
+on envVar Env_Timing_Auth_Fpke
+{
+  Auth_To = getValue(this);
+  
+  if (Auth_To > 10)
+  {
+    Auth_To = 10;
+    putValue(this, 10);
+  }
+  if (Auth_To > 0)
+  {
+    // gegenseitige Verriegelung; Verriegelung von Kl15Toggle 
+    cancelTimer(Kl15Toggle_Timer);
+    putValue(Env_Timing_Kl15Toggle_Fpke,0);
+    Kl15Toggle_To = 0; 
+    
+    // Radiobutton "Kl15 as Trigger" ebenso abschalten
+    putValue(Env_Kl15AsTrigger_Fpke, 0);
+    KL15_Auswertung_CAN = 0;
+  }
+  if (Auth_To == 10)
+  {
+    Stresstest_Active = 1;
+
+    //-----------
+    cancelTimer(Auth_Timer);    
+    settimer(Stresstest_Timer,200); 
+  }
+  else if (Auth_To == 0)
+  {
+    Stresstest_Active  = 0;
+    cancelTimer(Auth_Timer);
+  }  
+  else 
+  {
+      Stresstest_Active = 0;
+      //-----------
+      settimer(Auth_Timer,200); // Schneller Trigger
+  }
+}  
+
+on timer tCheckPortKl15Status
+{
+  byte in;
+
+ // write("Timer KL15 abgelaufen");   // Debugg-Ausgabe
+
+  if (!KL15_Auswertung_CAN)             // Auswertung Parallelport
+  {
+    if (boTestMode == 0)
+	  { 
+	    in = inport( adr_in );
+        KL15ein = (in & maske_input) != 0;  // Ack auf <>0 abfragen ! 
+        boCurrentInPortStatus = (in & maske_input) != 0;
+        putValue(Env_PortStatus_Fpke, boCurrentInPortStatus); 
+	  }
+    else	
+	  {
+	       KL15ein = Port; // Portsimulation ist aktiv
+         boCurrentInPortStatus = Port;
+         putValue(Env_PortStatus_Fpke, boCurrentInPortStatus); 
+	  }	   
+   }
+
+  if (!KL15ein_alt && KL15ein)
+  { // steigende Flanke KL15
+
+  if (boTestMode == 1)  { write("KL15 = %d    KL15ein_alt = %d", KL15ein , KL15ein_alt);}   // Debugg-Ausgabe
+  Messzyklus_Start();
+//    if (MSG_simulation)
+//    { 
+//      settimer(TimerAnfrage,ZyklusAnfrage);
+//    }
+  }
+
+  if (KL15ein_alt && !KL15ein)
+  {
+    // fallende Flanke KL15
+    if (boTestMode == 1)  { write("KL15 = %d    KL15ein_alt = %d", KL15ein , KL15ein_alt);}   // Debugg-Ausgabe
+    Messzyklus_Stop();
+  }
+
+ // if (!KL15_Auswertung_CAN)    // Auswertung über Parallelport ?
+ // {   
+   // KL15_senden();  KL 15  senden
+ // }
+ 
+ if (boTestMode == 1)  {  KL15_senden();  }  // KL 15 nur im Testmode senden!
+ 
+  settimer(tCheckPortKl15Status,zyklus);
+
+  KL15ein_alt = KL15ein;
+
+    //  Port-Test :
+/*
+    ++counter;
+    outport( adr_out , counter );
+    if (counter & 0x1)
+      outport( adr_out, output_ok );
+    else
+      outport( adr_out, output_nok );
+    in = inport( adr_in );
+    write("counter=%3d  inp =%2X busy=%d KL15=%d ",
+          counter, in, (in & maske_input)>0, KL15ein );
+//    write("in = %3X   KL15 = %d ", in, KL15ein );
+*/
+}
+
+on envVar Env_Timing_Kl15Toggle_Fpke
+{
+  Kl15Toggle_To = getValue(this);
+  
+  if (Kl15Toggle_To > 10)
+  {
+    Kl15Toggle_To = 10;
+    putValue(this, 10);
+  }
+  //#################################
+  
+  if (Kl15Toggle_To == 0)
+  {
+    Kl15Toggle_Active  = 0;
+    cancelTimer(Kl15Toggle_Timer);
+  }  
+  else 
+  {
+      // Gegenseitige Verriegelung : Verriegelung von Auth
+      putValue(Env_Timing_Auth_Fpke,0);  
+      cancelTimer(Auth_Timer);
+      Auth_To = 0;
+      // ----------
+      Kl15Toggle_Active  = 1;
+      Kl15Toggle_PhaseOn = 0;
+      //-----------
+      putValue(eZAS_Kl_15S,0);
+      settimer(Kl15Toggle_Timer,Kl15Toggle_LowPhase); 
+  }
+}
+
+on timer Kl15Toggle_Timer
+{
+  if(Kl15Toggle_Active == 1)
+  {
+    if(Kl15Toggle_PhaseOn == 1)
+    {
+      Kl15Toggle_PhaseOn = 0;
+      putValue(eZAS_Kl_15S,0);
+      settimer(Kl15Toggle_Timer,Kl15Toggle_LowPhase); 
+    }
+    else
+    {
+      Kl15Toggle_PhaseOn = 1;
+      putValue(eZAS_Kl_15S,1);
+      settimer(Kl15Toggle_Timer,Kl15Toggle_To*1000); 
+    }
+  }
+}
+
+on timer Stresstest_Timer
+{
+    if (Stresstest_Active==1)
+  {
+    settimer(Stresstest_Timer,Stresstest_To);
+    Messzyklus_Start();
+  }
+  
+}
+
+KL15_senden()
+{
+
+  // KL15-Botschaft senden : MQB
+  if (boKl15)
+    KL15_MQB.byte(2) = 2;                  // Nur im Testmode!
+  else
+    KL15_MQB.byte(2) = 0;
+
+// write("KL15 = %d ", KL15ein );  // Debugg-Ausgabe
+
+  output(KL15_MQB);
+}
+
+Messzyklus_Start()
+{
+  if (boTestMode == 1)  { write(" Messzyklus start  "); }  // Debugg-Ausgabe 
+
+//  freischaltung = 0;  // Flags zurücksetzen 
+//  zyklus_laeuft = 1;
+ 
+
+  // starte service 2EE
+  boKeyStatusValid = 0;
+  boReadKeyStatusRun = 1;
+  mTx2EE.byte(0) = 0x03;  // Flow control
+  mTx2EE.byte(1) = 0x22;  // Lesen
+  mTx2EE.byte(2) = 0x02;
+  mTx2EE.byte(3) = 0xEE;  // service 2EE
+  mTx2EE.byte(4) = 0xFF;
+  mTx2EE.byte(5) = 0xFF;
+  mTx2EE.byte(6) = 0xFF;
+  mTx2EE.byte(7) = 0xFF;
+  output(mTx2EE);
+  NumberOfCycles++;
+  putValue(Env_Timeout_Mwb_Fpke, NumberOfCycles);
+}
+
+Messzyklus_Stop()
+{
+ 
+  if (boTestMode == 1)  { write(" Stop timeout-Überwachung  ");}  // Debugg-Ausgabe 
+
+  if (boReadKeyStatusRun == 1 /* zyklus_laeuft */ )  // nur einmal auswerten !
+  {
+    if ( boKeyStatusValid == 1 /* freischaltung */ )
+    {
+      ++gut;
+      putValue(Env_Anzahl_iO_Fpke, gut);
+      outport(adr_out,output_ok);        // löschen des Ausgabeports
+      msgbeep(4);
+      putValue(Env_EMV_Ergebnis_Fpke,1);
+      // write("++++++++++++++++ %4d gut, %4d schlecht ",gut,schlecht);
+    }
+    else
+    {
+      ++schlecht;
+      msgbeep(2);
+      putValue(Env_Anzahl_niO_Fpke, schlecht);
+      outport(adr_out,output_nok);       // setzten des Ausgabeports
+      putValue(Env_EMV_Ergebnis_Fpke,0);
+      // write("---------------- %4d gut, %4d schlecht ",gut,schlecht);
+    }
+  }
+  boReadKeyStatusRun = 0; // stop reading key 
+//  freischaltung = 0;
+//  zyklus_laeuft = 0;
+
+  if (boTestMode == 1)  { write(" Messzyklus stop  ");}  // Debugg-Ausgabe 
+  
+  if (Stresstest_Active==1)
+  {
+    settimer(Stresstest_Timer,200);
+  }
+  
+}
+
+// on key 't'    // Testmodus aktivieren
+// {	 
+//	 if (boTestMode == 0)  { boTestMode = 1; }
+//	 else { boTestMode = 0;};
+//	 write(" Testmode :  = %d ", boTestMode );  // Debugg-Ausgabe
+//   }  
+
+//on key 'p'   // Portsimulation
+//{    
+//	 if (Port == 0)  { Port = 1; }
+//	 else { Port = 0;};
+// 	 write(" Portzustand :  = %d ", Port );  // Debugg-Ausgabe
+//}
+
+on message 0x77E
+{  
+
+// check on response pending
+if ( this.byte(0) == 0x03   &&  // single frame, 3 data bytes
+     this.byte(1) == 0x7F   &&  // negative responce
+     this.byte(2) == 0x22   &&  // 
+     this.byte(3) == 0x78       // responce pending
+   )  
+
+    {   if (boTestMode == 1)  {
+           write(" Responce pending "); // Debugg-Ausgabe 
+           write ("Data message 0x77E %x, %x, %x, %x, %x, %x, %x, %x ", this.byte(0),this.byte(1),this.byte(2),
+                this.byte(3),this.byte(4),this.byte(5),this.byte(6),this.byte(7));   } 
+    }
+
+// 10 16 62 02 EE E0 <- 7 bit key auth, 6 bit key learned,  bit 5 key locked
+
+if ( this.byte(0) == 0x10   &&  // first frame
+     /*this.byte(1) == 0x16   && */ // data length could be variable
+     this.byte(2) == 0x62   &&  // 
+     this.byte(3) == 0x02   &&  // servece id
+     this.byte(4) == 0xEE       // servece id
+    )  
+
+    {  if (boTestMode == 1)  
+       { write (" Responce 2EE ");   // Debugg-Ausgabe 
+         write (" Data message 0x77E %x, %x, %x, %x, %x, %x, %x, %x ", this.byte(0),this.byte(1),this.byte(2),
+                  this.byte(3),this.byte(4),this.byte(5),this.byte(6),this.byte(7)); }
+ 
+       if ((this.byte(5) & 0x80) == 0x80)
+        { boKeyStatusValid = 1; if (boTestMode == 1) write(" Key authent. "); }
+       else   
+        { boKeyStatusValid = 0; if (boTestMode == 1) write(" Key no authent. ");} 
+        
+       Messzyklus_Stop();
+      
+
+
+ //      if ((this.byte(5) & 0x40) == 0x40)
+ //       { boKeyStatusValid = 1; if (boTestMode == 1) write(" Key learned ");}
+ //      else   
+ //       { boKeyStatusValid = 0; if (boTestMode == 1) write(" Key no learned ");} 
+
+ //      if ((this.byte(5) & 0x20) == 0x20)
+ //       { if (boTestMode == 1) write(" Key locked ");}
+ //      else   
+ //       { if (boTestMode == 1) write(" Key unlocked ");} 
+       
+    }
+} 
+
+//on key 'k'  // switch KL15 for test
+//{      
+//     if (boTestMode == 1)
+//     { 
+//	    if (boKl15 == 0)  { boKl15 = 1; }
+//	    else { boKl15 = 0;};
+//	 	write(" Kl15 for debugging :  = %d ", boKl15 );  // Debugg-Ausgabe
+//     }
+//}
+
+on envVar Env_Kl15AsTrigger_Fpke
+{
+     write(" Env_Kl15AsTrigger_Fpke  ");
+
+     if (getValue(this) == 1) 
+      {
+         putValue(Env_PortAsTrigger_Fpke, 0);
+         KL15_Auswertung_CAN = 1;
+        
+        // Abschaltung zyklische Auth 
+         putValue(Env_Timing_Auth_Fpke,0);  
+         cancelTimer(Auth_Timer);
+         Auth_To = 0;
+      }
+}
+
+on envVar Env_PortAsTrigger_Fpke
+{
+
+     write(" Env_PortAsTrigger_Fpke  ");
+
+     if (getValue(this) == 1) 
+     {
+        putValue(Env_Kl15AsTrigger_Fpke, 0);
+        KL15_Auswertung_CAN = 0;
+        // Abschaltung zyklische Auth 
+        putValue(Env_Timing_Auth_Fpke,0);  
+        cancelTimer(Auth_Timer);
+        Auth_To = 0;
+      }
+}
+

@@ -1,0 +1,234 @@
+/*@!Encoding:1252*/
+variables
+{
+  //
+  // Constants
+  //
+  
+  const word  kStreamUniqueId = 0x0001;
+  const dword kBufferSize     = 128*1024;
+  const word  kRTPPort        = 42800;
+  
+  //
+  // Global variables
+  //
+    
+  dword gListenerHandle;        // Handle of AVB listener
+  dword gStreamListenerHandle;  // Handle of AVB stream listener
+  byte  gRxBuffer[kBufferSize]; // Receive buffer of AVB stream listener
+  
+  dword gMediaWriter;           // Media writer, which writes the receive
+                                // AVB Stream to a media file
+}
+
+on start
+{
+  //AvbSetVerbosity( 0 /* silence */ );
+  
+  // Set PTP port role
+  PtpSetProperty( "PortRole", @sysvar::HU::PtpRole ); 
+  
+  ListenerOpen();
+}
+
+on preStop
+{
+  ListenerClose();
+}
+
+/// <Listener>
+void ListenerOpen()
+{
+  long result;
+  
+  // return immediatelly, if listener is already active
+  if (gListenerHandle)
+  {
+    return;
+  }
+
+  // disble StreamReservation 
+  result = AvbSetProperty( "StreamReservation", 0 );
+
+  if (result != 0)
+  {
+    write( "<%BASE_FILE_NAME%> AvbSetProperty failed, result %d", AvbGetLastError() );
+    return;
+  }
+  
+  //
+  // Open listener
+  //
+ 
+  gListenerHandle = AvbOpenListener( kStreamUniqueId );
+  
+  if (gListenerHandle == 0)
+  {
+    write( "<%BASE_FILE_NAME%> AvbOpenListener failed, result %d", AvbGetLastError() );
+    return;
+  }
+
+  // set RTP port 
+  result = AvbSetProperty( gListenerHandle, "RtpPort", kRTPPort );
+  
+  if (result != 0)
+  {
+    write( "<%BASE_FILE_NAME%> AvbSetProperty( 'RtpPort' ) failed, result %d", AvbGetLastError() );
+    return;
+  }
+
+  // begin listening
+  result = AvbListen( gListenerHandle, "OnAvbListen" );
+
+  if ((result != 0) && (result != 460609))
+  {
+    write( "<%BASE_FILE_NAME%> AvbListen failed, result %d", AvbGetLastError() );
+    return;
+  }
+ 
+  //
+  // Open audio renderer (speaker)
+  //
+  
+  //gMediaWriter = MediaCreateCreateSinkWriter( gMediaFilename );
+  //
+  //if (gAudioRenderer == 0)
+  //{
+  //  write( "<%BASE_FILE_NAME%> MediaCreateAudioRenderer failed, result %d", MediaGetLastError() );
+  //  return;
+  //}
+  //
+  //gAudioWriter = MediaCreateSinkWriterFromMediaSink(gAudioRenderer);
+  //
+  //if (gAudioWriter == 0)
+  //{
+  //  write( "<%BASE_FILE_NAME%> MediaCreateSinkWriterFromMediaSink failed, result %d", MediaGetLastError() );
+  //}
+}
+
+/// <Listener>
+void ListenerClose()
+{
+  //if (gAudioRenderer)
+  //{
+  //  MediaReleaseAudioRenderer( gAudioRenderer );
+  //  gAudioRenderer = 0;
+  //}
+  //
+  //if (gAudioWriter)
+  //{
+  //  MediaReleaseSinkWriter( gAudioWriter );
+  //  gAudioWriter = 0;
+  //}
+  
+  if (gListenerHandle)
+  {
+    AvbCloseListener( gListenerHandle );
+    gListenerHandle = 0;
+  }
+}
+
+/// <Listener_Callback>
+void OnAvbListen(dword listenerHandle, dword _result)
+{
+  long  result;
+  dword length;
+  
+  //
+  // Accept stream and begin listening to it
+  //
+
+  gStreamListenerHandle = AvbAccept( listenerHandle );
+  
+  if (gStreamListenerHandle == 0)
+  {
+    write( "<%BASE_FILE_NAME%> AvbReceive failed, result %d", AvbGetLastError() );
+    return;
+  }
+  
+  //
+  // Begin receive
+  //
+
+  length = kBufferSize;
+  result = AvbReceive( gStreamListenerHandle, gRxBuffer, length, "OnListenerReceive" );
+  
+  if ((result != 0) && (result != 460609))
+  {
+    write( "<%BASE_FILE_NAME%> AvbReceive failed, result %d", AvbGetLastError() );
+    return;
+  }
+}
+
+/// <Listener_Callback>
+void OnListenerReceive(dword listenerHandle, long result, byte buffer[], dword length)
+{
+  dword bufferLength;
+  //dword mediaTypeHandle;
+  //dword i;
+  //int64 startTimeNs, timeNowNs;
+
+  // return immediatelly on failed result
+  if (result)
+  {
+    return;
+  }
+  
+  // count received video data
+  @sysvar::HU::RxVideoBytes += length;
+  
+  //
+  // Write to audio renderer
+  //
+
+  //if (mediaTypeHandle == 0)
+  //{
+  //  mediaTypeHandle = AvbGetMediaType(listenerHandle);
+  //  
+  //  if (mediaTypeHandle == 0)
+  //  {
+  //    write( "<%BASE_FILE_NAME%> AvbGetMediaType failed, result %d", MediaGetLastError() );
+  //    return;
+  //  }
+  //  
+  //  result = MediaSetMediaType(gAudioWriter, 0, mediaTypeHandle);
+  //   
+  //  if (result)
+  //  {
+  //    write( "<%BASE_FILE_NAME%> MediaSetMediaType failed, result %d", MediaGetLastError() );
+  //    return;
+  //  }
+  //}
+  //
+  //if (startTimeNs == 0)
+  //{
+  //  startTimeNs = PtpTimeNow();
+  //  timeNowNs = startTimeNs;
+  //}
+  //else
+  //{
+  //  timeNowNs = PtpTimeNow();
+  //}
+  //
+  //if (gAudioWriter)
+  //{
+  //  result = MediaWrite( gAudioWriter, 0, timeNowNs - startTimeNs, buffer, length);
+  //  
+  //  if (result)
+  //  {
+  //    write( "<%BASE_FILE_NAME%> MediaWrite failed, result %d", MediaGetLastError() );
+  //  }
+  //}
+  
+  //
+  // Receive next
+  //
+  
+  bufferLength = kBufferSize;
+  result       = AvbReceive( gStreamListenerHandle, gRxBuffer, bufferLength, "OnListenerReceive" );
+  
+  if ((result != 0) && (result != 460609))
+  {
+    write( "<%BASE_FILE_NAME%> AvbReceive failed, reuslt %d", AvbGetLastError() );
+  }
+}

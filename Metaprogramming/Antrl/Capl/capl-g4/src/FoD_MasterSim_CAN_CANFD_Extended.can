@@ -1,0 +1,888 @@
+/*@!Encoding:1252*/
+includes {
+  #include "..\FoD_config.cin"
+  #include "..\coreFoD\FoD_MappingTables.cin"
+  #include "..\coreFoD\cp\CompProtect.cin"
+  #include "..\coreFoD\nvm\nvm.cin"
+  #include "..\lib\isoTP\isoTP.cin"
+  #include "..\lib\libHelperFcts.cin"
+  #include "..\lib\libLogging.cin"
+  #include "..\lib\libPanMasterSim_CAN.cin"
+  #include "MasterManagerCommunication.cin"
+}
+variables {
+  const TRUE = 1;
+  const FALSE = 0;
+  char gECU[20]          = "FoD_MasterSim";
+  char panMasterName[20] = "panMasterSim";
+  char gTargetECU[20]    = "FoD_Generic_Slave";
+  char dbgTopip[20]      = "FoD-Master";
+  char gTargetManager[20] = "FoD_Generic_Manager";
+  message CAN1.FoD_01 msg_FoD_01;
+  const long MAX_FSIDS = 100;
+  struct tCanIsoTP gIsoTp_Master;
+  enum eMaster_secTransmissionFSM_State {
+    FSM_Master_Idle             = 0,
+    FSM_Master_Send_1           = 1,
+    FSM_Master_Wait4Slave_1     = 2,
+    FSM_Master_CheckResponse_1  = 3,
+    FSM_Master_Send_2           = 4,
+    FSM_Master_Wait4Slave_2     = 5,
+    FSM_Master_CheckResponse_2  = 6,
+    FSM_Master_Error            = 7,
+    FSM_Master_DEH              = 8,
+    FSM_Master_SecTransFinished = 9
+  };
+  struct tMaster_secTransmission {        
+    enum eMaster_secTransmissionFSM_State   FSM_State;
+    byte                                    TransferToken[1];
+    byte                                    TxPayload[4096];
+    word                                    TxPayloadSize;
+    long                                    TxRemoteDA;
+    byte                                    TxDataRaw[4096];
+    word                                    TxDataRawSize;
+    byte                                    RxPayload[4096];
+    word                                    RxPayloadSize;
+    long                                    RxRemoteDA;
+    byte                                    RxDataRaw[4096];
+    word                                    RxDataRawSize;
+    byte                                    Challenge1[CHALLENGE_LENGTH];
+    byte                                    Challenge2[CHALLENGE_LENGTH];
+    byte                                    CMAC_AC[CMAC_LENGTH];
+  };
+  struct tMaster_secTransmission FoD_Sim_Master_secTransmission;
+  msTimer timer_FoD_Sim_FSM_Master_secTransmission;
+  msTimer timer_FoD_Sim_Master_secTransmission_TimeOut;
+  msTimer timer_FoD_01;
+  msTimer timer_Waiting;
+  msTimer timer_ExtraWaitingForFlexRay;
+  byte newTransmissionInfoSignalSent = 0;  
+  byte lock = 0;
+  word waitCounter = 0;
+  word flexRayExtraWaitEnded = 0;
+  char logFileName[100];
+  char writeBuffer[100];
+  byte CanTPConnectionList_dummy[156];
+}
+on preStart {
+  long i;
+  if (usedBusSystem == 0 && ecuUsesCAN == 0) sysSetVariableString(sysVar::FoD_MasterSim_CAN_config::usedBusSystem, "CAN");
+  else if (usedBusSystem == 0 && ecuUsesCAN == 1) sysSetVariableString(sysVar::FoD_MasterSim_CAN_config::usedBusSystem, "CAN FD");
+  else if (usedBusSystem == 0 && ecuUsesCAN == 2) sysSetVariableString(sysVar::FoD_MasterSim_CAN_config::usedBusSystem, "CAN Extended");
+  else if (usedBusSystem == 0 && ecuUsesCAN == 3) sysSetVariableString(sysVar::FoD_MasterSim_CAN_config::usedBusSystem, "CAN FD Extended");
+  else if (usedBusSystem == 1) sysSetVariableString(sysVar::FoD_MasterSim_CAN_config::usedBusSystem, "FlexRay");
+  else sysSetVariableString(sysVar::FoD_MasterSim_CAN_config::usedBusSystem, "Configuration error!");
+  strncpy(gIsoTp_Master.LocalEcuName, gECU, elcount(gECU));
+  strncpy(gIsoTp_Master.RemoteEcuName, gTargetECU, elcount(gTargetECU));
+  if (ecuUsesCAN <2) gIsoTp_Master.TpAddrMode = kNormal; 
+  else gIsoTp_Master.TpAddrMode =kExtendedFree;
+  gIsoTp_Master.TpTxId = FoDSlaveMapping_getTxId(SLAVE_DA);
+  gIsoTp_Master.TpRxId = FoDSlaveMapping_getRxId(SLAVE_DA);
+  if (FoD_Slave_VKMS>0)
+  {
+  gIsoTp_Master.TpLocalAddr =0x01; 
+  gIsoTp_Master.TpRemoteAddr =0x01;  
+  }
+  else
+  {
+  gIsoTp_Master.TpLocalAddr =0x00; 
+  gIsoTp_Master.TpRemoteAddr =0x00;  
+  }
+  gIsoTp_Master.TpRemoteDA = SLAVE_DA;
+  gIsoTp_Master.TpLocalDA = MASTER_DA;
+  gIsoTp_Master.TpUseFC = 1;
+  gIsoTp_Master.TpBlockSize = 15;
+  gIsoTp_Master.TpSTMIN = 5;
+  gIsoTp_Master.TpUseExtId = 1;
+  gIsoTp_Master.TpBufferSize = 4096;
+  gIsoTp_Master.TpFCDelay = 10;
+  gIsoTp_Master.TpUseFCBlockSize = 1;
+  gIsoTp_Master.TpStartSN = 1;
+  gIsoTp_Master.TpPaddingValue = 0xAE;
+  gIsoTp_Master.TpMaxReceiveLength = 4096;
+  gIsoTp_Master.TpConHandle = 0;
+  if (usedBusSystem == 0) CanIsoTP_createTPConnection(gIsoTp_Master);
+  for(i=0; i < MAX_SLAVES; i++) {
+    if(FoDSlaveMappingTable[i].SlaveDA == SLAVE_DA) {
+      sysSetVariableInt(sysVar::FoD_MasterSim_CAN_config::selectSlave, i);
+    }
+  }
+}
+on start {
+  long i;
+  byte data[1];
+  char strTmp[9];
+  byte binTmp[4];
+  long lngTmp;
+  long lngLocTime[9];
+  int  year;
+  int  month;
+  int  day;
+  int  hour;
+  int  min;
+  int  sec;
+  char filepath[255];
+  byte j, pos1, pos2;
+  getLocalTime(lngLocTime);
+  year  = lngLocTime[5]+1900;
+  month = lngLocTime[4]+1;
+  day   = lngLocTime[3];
+  hour  = lngLocTime[2];
+  min   = lngLocTime[1];
+  sec   = lngLocTime[0];
+  snprintf(logFileName, elcount(logFileName), "trace\\%0.4d%0.2d%0.2d_%0.2d%0.2d%0.2d_FoD_MasterSim_CAN_Trace.asc", year, month, day, hour, min, sec);
+  CANLog(1, logFileName);
+  putValueToControl(panMasterName, "outTraceFilename", logFileName);
+  @FoD_MasterSim_CAN_cp::evCheckBox_CpStateMaster = 1;
+  @FoD_MasterSim_CAN_cp::evCheckBox_CpStateSlave = 1;
+  sysSetVariableData(sysVar::FoD_MasterSim_CAN_isoTP::TpTransmissionDataReceived, data, 0);
+  sysSetVariableData(sysVar::FoD_MasterSim_CAN_isoTP::TpTransmissionDataSent, data, 0);
+  updateIsoTpParametersOnPanel();
+  setTimer(timer_FoD_Sim_FSM_Master_secTransmission, 1000);
+  
+  // CG: Pfad zu Datei muss vorher gesetzt werden
+  str_replace(filepath, filepath, "");
+  getAbsFilePath("source\\fsid.dat",filepath,255);
+  for (j = 0; j < strlen(filepath); j++)
+  {
+    if (filepath[j] == '\\' )
+    {
+      pos2 = pos1;
+      pos1 = j;
+    }
+  }
+  substr_cpy(filepath, filepath, 0, pos2, elcount(filepath)); 
+  setFilePath(filepath,0);
+  //
+  
+  modNvm_init("FoD_Master\\source\\fsid.dat", panMasterName, "outFsid");
+//modNvm_init("source\\fsid.dat", panMasterName, "outFsid");
+  
+  for(i=1; i<=MAX_FSIDS; i++) {
+    if(modNvm_getLen() >=  i) { 
+      modNvm_get((i-1), strTmp);
+      strtoBin(strTmp, binTmp);
+      lngTmp = binTmp[0]*(256*256*256)+binTmp[1]*(256*256)+binTmp[2]*(256)+binTmp[3];
+      set_fsidAsInt(i, lngTmp);
+    }
+    set_fsidStatus(i, 0x00);
+    set_fsidStatusColor(i, 200, 200, 200);
+  }
+  sysSetVariableInt(sysVar::FoD_MasterSim_CAN_dtc::DTC_SignatureCheckFailed,          0);
+  sysSetVariableInt(sysVar::FoD_MasterSim_CAN_dtc::DTC_FSID_Mapping,                  0);
+  sysSetVariableInt(sysVar::FoD_MasterSim_CAN_dtc::DTC_CommunictaionFailureWithSlave, 0);
+  CP_setCpState(MASTER_DA, VALID);
+  CP_setCpState(SLAVE_DA, VALID);
+  sysSetVariableString(sysVar::FoD_MasterSim_CAN_slave::slaveErrCnt, "---");
+  sysSetVariableString(sysVar::FoD_MasterSim_CAN_slave::slaveFsidCnt, "---");
+  sysSetVariableString(sysVar::FoD_MasterSim_CAN_slave::slaveFsidCntLastMode, "---");
+  sysSetVariableString(sysVar::FoD_MasterSim_CAN_slave::slaveLastModeState, "---");
+  sysSetVariableData(sysVar::FoD_MasterSim_CAN_slave::slaveFsids, data, 0);
+  sysSetVariableData(sysVar::FoD_MasterSim_CAN_slave::slaveFsidsLastMode, data, 0);
+  putValueToControl(panMasterName, "outDiag", "--- Diag not refreshed ---");
+  putValueToControl(panMasterName, "outSendInfo", "--- Status not refreshed ---");
+  //if (platformNormallyUsesFoDTransmissionInfoSignal == 0)
+  //{
+  //  @FoD_MasterSim_CAN_config::evCheckBox_SendTransmissionInfo = 0;
+  //}
+  //else
+  //{
+    @FoD_MasterSim_CAN_config::evCheckBox_SendTransmissionInfo = 1;
+  //}
+  FoDSecureTransmission_sendInit();
+}
+
+on preStop
+{
+  byte i;
+  
+  // CG CanTPConnectionList Array leeren
+  for (i=0;i<156;i++)
+    CanTPConnectionList_dummy[i] = 0;
+  
+  sysSetVariableData (sysvar::isoTP::CanTPConnectionList, CanTPConnectionList_dummy, 156);
+  //
+}
+  
+on stopMeasurement
+{
+  CANLog(0, logFileName);
+}
+void updateNVMdata() {
+  int  i;
+  dword lngTmp;
+  char strTmp[9];
+  byte binTmp[4];
+  modNvm_del_all();
+  for(i=1; i<=20; i++) {
+    lngTmp = get_fsidAsInt(i);
+    binTmp[3] = lngTmp%256;
+    lngTmp /= 256;
+    binTmp[2] = lngTmp%256;
+    lngTmp /= 256;
+    binTmp[1] = lngTmp%256;
+    lngTmp /= 256;
+    binTmp[0] = lngTmp%256;
+    binToStr(binTmp, strTmp);
+    modNvm_put(strTmp);
+  }
+  modNvm_panUpdate();
+}
+void deleteButtonPressed(int nrFsid) {
+  set_fsidAsInt(nrFsid, 0x00000000);
+  set_fsidStatus(nrFsid, 0x00);
+  set_fsidStatusColor(nrFsid, 200, 200, 200);
+}
+on diagResponse * {
+  diagResponse * resp;
+  long size;
+  byte data[4096];
+  char strTmp[5100];
+  long lngTmp;
+  byte dataTmp[1];
+  long i;
+  word mv_id;
+  word mv_data_errCnt;
+  word mv_data_fsidCnt;
+  word mv_data_fsidCntLastMode;
+  word mv_data_lastModeState;
+  byte mv_data_statusFsids[100*5];
+  byte mv_data_statusFsidsLastMode[100*5];
+  size = this.GetPrimitiveSize();
+  this.GetPrimitiveData(data, elcount(data));
+  snprintf(strTmp, elcount(strTmp), "on diagResponse - data raw: 0x");
+  for(i=0; i<size; i++) {
+    snprintf(strTmp, elcount(strTmp), "%s%0.2X ", strTmp, data[i]);
+  }
+  writeVERBOSE(dbgTopip, strTmp);
+  if(data[0] == 0x62)
+  {
+    //diagInitialize(resp, "DiagnosticSessionControl_Process");
+    diagInitialize(resp, "DiagnServi_DiagnSessiContr");
+    resp.Resize(size);
+    resp.SetPrimitiveData(data, size);
+    mv_id = (data[1] << 8) + (data[2] << 0);
+    switch(mv_id){
+      case DIAG_MV_FoD_Slave_ErrorCounter:
+        mv_data_errCnt = (data[3] << 8) + (data[4] << 0);
+        snprintf(strTmp, elcount(strTmp), "%d", mv_data_errCnt);
+        sysSetVariableString(sysVar::FoD_MasterSim_CAN_slave::slaveErrCnt, strTmp);
+        snprintf(strTmp, elcount(strTmp), "on diagResponse (0x%0.4X) - error counter: %d", DIAG_MV_FoD_Slave_ErrorCounter, mv_data_errCnt);
+        writeInfo(dbgTopip, strTmp);
+        sendDiagReq(DIAG_MV_FoD_Slave_FSIDStatusLastMode);
+        break;
+      case DIAG_MV_FoD_Slave_FSIDStatusLastMode:
+        mv_data_fsidCntLastMode = data[3];
+        snprintf(strTmp, elcount(strTmp), "%d", mv_data_fsidCntLastMode);
+        sysSetVariableString(sysVar::FoD_MasterSim_CAN_slave::slaveFsidCntLastMode, strTmp);
+        lngTmp = mv_data_fsidCntLastMode*5;
+        mv_data_lastModeState = data[4];
+        if (mv_data_lastModeState == 0x00)
+        {
+          sysSetVariableString(sysVar::FoD_MasterSim_CAN_slave::slaveLastModeState, "Last Mode not active");
+        }
+        else if (mv_data_lastModeState == 0x01)
+        {
+          sysSetVariableString(sysVar::FoD_MasterSim_CAN_slave::slaveLastModeState, "Last Mode active");
+        }
+        else
+        {
+          sysSetVariableString(sysVar::FoD_MasterSim_CAN_slave::slaveLastModeState, "ERROR");
+        }
+        snprintf(strTmp, elcount(strTmp), "on diagResponse (0x%0.4X) - status fsids: 0x%0.2X 0x%0.2X ", DIAG_MV_FoD_Slave_FSIDStatusLastMode, mv_data_fsidCntLastMode, mv_data_lastModeState);
+        if(mv_data_fsidCntLastMode > 0) {
+          for(i=0; i<lngTmp; i++) {
+            mv_data_statusFsidsLastMode[i] = data[3+2+i];
+            if(i == lngTmp-1) snprintf(strTmp, elcount(strTmp), "%s%0.2X",  strTmp, mv_data_statusFsidsLastMode[i]);
+            else              snprintf(strTmp, elcount(strTmp), "%s%0.2X ", strTmp, mv_data_statusFsidsLastMode[i]);
+          }
+          sysSetVariableData(sysVar::FoD_MasterSim_CAN_slave::slaveFsidsLastMode, mv_data_statusFsidsLastMode, lngTmp);
+        }
+        writeInfo(dbgTopip, strTmp);
+        sendDiagReq(DIAG_MV_FoD_Slave_FSIDStatus);
+        break;
+      case DIAG_MV_FoD_Slave_FSIDStatus:
+        mv_data_fsidCnt = data[3];
+        snprintf(strTmp, elcount(strTmp), "%d", mv_data_fsidCnt);
+        sysSetVariableString(sysVar::FoD_MasterSim_CAN_slave::slaveFsidCnt, strTmp);
+        lngTmp = mv_data_fsidCnt*5;
+        mv_data_lastModeState = data[4];
+        snprintf(strTmp, elcount(strTmp), "on diagResponse (0x%0.4X) - status fsids: 0x%0.2X 0x%0.2X ", DIAG_MV_FoD_Slave_FSIDStatus, mv_data_fsidCnt, mv_data_lastModeState);
+        if(mv_data_fsidCnt > 0) {
+          for(i=0; i<lngTmp; i++) {
+            mv_data_statusFsids[i] = data[3+2+i];
+            if(i == lngTmp-1) snprintf(strTmp, elcount(strTmp), "%s%0.2X",  strTmp, mv_data_statusFsids[i]);
+            else              snprintf(strTmp, elcount(strTmp), "%s%0.2X ", strTmp, mv_data_statusFsids[i]);
+          }
+          sysSetVariableData(sysVar::FoD_MasterSim_CAN_slave::slaveFsids, mv_data_statusFsids, lngTmp);
+        }
+        writeInfo(dbgTopip, strTmp);
+        break;
+      default:
+        writeInfo(dbgTopip, "on diagResponse: unknown measurement received.");
+    }
+  }
+  else
+  {
+    writeInfo(dbgTopip, "on diagResponse: unknown response received.");
+  }
+}
+on sysvar FoD_MasterSim_CAN_slave::intBtnSlaveDiag {
+  byte data[1];
+  char strTmp[100];
+  long lngLocTime[9];
+  int  hour;
+  int  min;
+  int  sec;
+  if(@this) {
+    getLocalTime(lngLocTime);
+    hour  = lngLocTime[2];
+    min   = lngLocTime[1];
+    sec   = lngLocTime[0];
+    sysSetVariableString(sysVar::FoD_MasterSim_CAN_slave::slaveErrCnt, "---");
+    sysSetVariableString(sysVar::FoD_MasterSim_CAN_slave::slaveFsidCnt, "---");
+    sysSetVariableString(sysVar::FoD_MasterSim_CAN_slave::slaveFsidCntLastMode, "---");
+    sysSetVariableString(sysVar::FoD_MasterSim_CAN_slave::slaveLastModeState, "---");
+    sysSetVariableData(sysVar::FoD_MasterSim_CAN_slave::slaveFsids, data, 0);
+    sysSetVariableData(sysVar::FoD_MasterSim_CAN_slave::slaveFsidsLastMode, data, 0);
+    snprintf(strTmp, elcount(strTmp), "[%0.2d:%0.2d:%0.2d] Diag request", hour, min, sec);
+    putValueToControl(panMasterName, "outDiag", strTmp);
+    sendDiagReq(DIAG_MV_FoD_Slave_ErrorCounter);
+  }
+}
+void sendDiagReq(word did) {
+  char DiagTarget[20] = "BV_DashBoardUDS"; // "";
+  char strTmp[100];
+  long lngLocTime[9];
+  int  hour;
+  int  min;
+  int  sec;
+  //diagRequest ReadDataByIdentifier::ReadDataByIdentifier::Process ReqReadData;
+  diagRequest DiagnServi_ReadDataByIdentMeasuValue ReqReadData;
+  if (usedBusSystem == 0)  
+  {
+    snprintf(DiagTarget, elCount(DiagTarget), "BV_DashBoardUDS"); //"FoD_Slave");
+  }
+  else if (usedBusSystem == 1)  
+  {
+    snprintf(DiagTarget, elCount(DiagTarget), "FoD_Slave_FlexRay");
+  }
+  if(0 != DiagSetTarget(DiagTarget)) {
+    getLocalTime(lngLocTime);
+    hour  = lngLocTime[2];
+    min   = lngLocTime[1];
+    sec   = lngLocTime[0];
+    writeERROR(dbgTopip, "Diagnostics: Error setting target!");
+    snprintf(strTmp, elcount(strTmp), "[%0.2d:%0.2d:%0.2d] Diag error!", hour, min, sec);
+    putValueToControl(panMasterName, "outDiag", strTmp);
+  } else {
+    //DiagSetParameter(ReqReadData, "dataIdentifier", did);
+    DiagSetParameter(ReqReadData, "Param_RecorDataIdent", did);
+    DiagSendRequest(ReqReadData);
+  }
+}
+on sysvar FoD_MasterSim_CAN_fsid::intBtnSend {
+  long i;
+  long x;
+  char strTmp[100+MAX_FSIDS*(5)+2];
+  byte binTmp[4];
+  long lngTmp; //was fo type long 
+  long cntData;
+  byte bytData[MAX_FSIDS*(5)+2];
+  long lngLocTime[9];
+  int  hour;
+  int  min;
+  int  sec;
+  if(@this) {
+    cntData = 1;
+    bytData[0] = 0;
+    for(i=0; i<modNvm_getLen(); i++) {
+      modNvm_get(i, strTmp);
+      strtoBin(strTmp, binTmp);
+      lngTmp = binTmp[0]*(256*256*256)+binTmp[1]*(256*256)+binTmp[2]*(256)+binTmp[3];
+      if(lngTmp != 0) {
+        bytData[0] = bytData[0]+1;
+        bytData[cntData++] = binTmp[0];
+        bytData[cntData++] = binTmp[1];
+        bytData[cntData++] = binTmp[2];
+        bytData[cntData++] = binTmp[3];
+      }
+      bytData[cntData] = 0x00;
+    }
+    snprintf(strTmp, elcount(strTmp), "bytData[%d] (%d) = 0x", cntData, modNvm_getLen());
+    for(x=0; x<cntData; x++) {
+      snprintf(strTmp, elcount(strTmp), "%s%0.2X", strTmp, bytData[x]);
+    }
+    writeInfo(dbgTopip, strTmp);
+    FoD_Sim_Master_SecTransmissionSendData(SLAVE_DA, bytData, cntData);
+    getLocalTime(lngLocTime);
+    hour  = lngLocTime[2];
+    min   = lngLocTime[1];
+    sec   = lngLocTime[0];
+    snprintf(strTmp, elcount(strTmp), "[%0.2d:%0.2d:%0.2d] FS-IDs sent to slave", hour, min, sec);
+    putValueToControl(panMasterName, "outSendInfo", strTmp);
+    writeInfo(dbgTopip, "FS-IDs: Send button pressed");
+  }
+}
+on timer timer_FoD_Sim_FSM_Master_secTransmission {
+  FoD_Sim_FSM_Master_secTransmission();
+  setTimer(timer_FoD_Sim_FSM_Master_secTransmission, @FoD_MasterSim_CAN_config::FsmCycleTime);
+}
+on timer timer_FoD_Sim_Master_secTransmission_TimeOut {
+  writeDebug("on timer timer_FoD_Sim_Master_secTransmission_TimeOut", "Secure Transmission timeout occurred! FoD Slave did not respond within time limits!");
+  FoD_Sim_Master_secTransmission.FSM_State = FSM_Master_Error;
+}
+on envVar EnvGRA_FoD_Status
+{
+  msg_FoD_01.GRA_FoD_Status = @this;
+  output(msg_FoD_01);
+  canceltimer (timer_FoD_01);
+  setTimerCyclic (timer_FoD_01,fodTransmissionInfoCycleTime);
+}
+on envVar EnvFoD_Transmission_Info
+{
+  msg_FoD_01.FoD_Transmission_Info = @this;
+  output(msg_FoD_01);
+  canceltimer (timer_FoD_01);
+  setTimerCyclic (timer_FoD_01,fodTransmissionInfoCycleTime);
+}
+on envVar EnvFoD_Anz_Funktionsabschaltung
+{
+  msg_FoD_01.FoD_Anz_Funktionsabschaltung = @this;
+  output(msg_FoD_01);
+  canceltimer (timer_FoD_01);
+  setTimerCyclic (timer_FoD_01,fodTransmissionInfoCycleTime);
+}
+on timer timer_FoD_01
+{
+  int i = 0;
+  if (@FoD_MasterSim_CAN_config::evCheckBox_SendTransmissionInfo == 1)
+  {
+    if (usedBusSystem == 0)  
+    {
+     if ((@Timeout_FoD_01 == 0) && (@Env_GlobalAppl == 1))
+      output(msg_FoD_01);
+    }
+    else if (usedBusSystem == 1)  
+    {
+    }
+    //snprintf(writeBuffer, elCount(writeBuffer), "Transmission Info signal sent");
+    //writeInfo(dbgTopip, writeBuffer);
+  }    
+    newTransmissionInfoSignalSent = 1;  
+}
+on timer timer_Waiting
+{
+  waitCounter++;
+  WaitUntilNewTransmissionInfoSignalGotSent();
+}
+on timer timer_ExtraWaitingForFlexRay
+{
+  flexRayExtraWaitEnded = 1;
+  WaitUntilNewTransmissionInfoSignalGotSent();
+}
+on sysvar FoD_MasterSim_CAN_isoTP::evButton_Clear {
+  byte data[1];
+  if(@this) {
+    sysSetVariableData(sysVar::FoD_MasterSim_CAN_isoTP::TpTransmissionDataReceived, data, 0);
+    sysSetVariableInt(sysVar::FoD_MasterSim_CAN_isoTP::TpTransmissionNrOfBytesReceived, 0);
+    sysSetVariableData(sysVar::FoD_MasterSim_CAN_isoTP::TpTransmissionDataSent, data, 0);
+    sysSetVariableInt(sysVar::FoD_MasterSim_CAN_isoTP::TpTransmissionNrOfBytesSent, 0);
+    writeInfo(dbgTopip, "ISO-TP: Clear button pressed");
+  }
+}
+on sysvar FoD_MasterSim_CAN_dtc::evButton_ClearAllDTCs {
+  if(@this) {
+    @FoD_MasterSim_CAN_dtc::DTC_SignatureCheckFailed = 0;
+    @FoD_MasterSim_CAN_dtc::DTC_CommunictaionFailureWithSlave = 0;
+    @FoD_MasterSim_CAN_dtc::DTC_FSID_Mapping = 0;
+    writeInfo(dbgTopip, "DTC: Clear button pressed");
+  }
+}
+on sysvar_update FoD_MasterSim_CAN_cp::evCheckBox_CpStateMaster {
+  char vcrnAsStr[15] = "FF FF FF FF FF";
+  byte VCRN[5];
+  if (@this) {
+    CP_setCpState(MASTER_DA, VALID);
+  } else {
+    CP_setCpState(MASTER_DA, INVALID);
+  }
+  CP_getVCRN(MASTER_DA, VCRN);
+  snprintf(vcrnAsStr, elcount(vcrnAsStr), "%02X %02X %02X %02X %02X", VCRN[0], VCRN[1], VCRN[2], VCRN[3],VCRN[4]);
+  sysSetVariableString(sysvar::FoD_MasterSim_CAN_cp::VcrnAsStrMaster, vcrnAsStr);
+}
+on sysvar_update FoD_MasterSim_CAN_cp::evCheckBox_CpStateSlave {
+  char vcrnAsStr[15] = "FF FF FF FF FF";
+  byte VCRN[5];
+  if (@this) {
+    CP_setCpState(SLAVE_DA, VALID);
+  } else {
+    CP_setCpState(SLAVE_DA, INVALID);
+  }
+  CP_getVCRN(SLAVE_DA, VCRN);
+  snprintf(vcrnAsStr, elcount(vcrnAsStr), "%02X %02X %02X %02X %02X", VCRN[0], VCRN[1], VCRN[2], VCRN[3],VCRN[4]);
+  sysSetVariableString(sysvar::FoD_MasterSim_CAN_cp::VcrnAsStrSlave, vcrnAsStr);
+}
+void FoD_Sim_Master_isoTpSendData(long remoteDA, byte data[], word size) {
+  snprintf(gWriteBuffer, elcount(gWriteBuffer),  "Send %d byte(s) to DA: 0x%04X", size, remoteDA);
+  writeVerbose("%FILE_NAME%::FoD_Sim_Master_isoTpSendData()",  gWriteBuffer);
+  sysSetVariableData(sysVar::FoD_MasterSim_CAN_isoTP::TpTransmissionDataReceived, data, 0);
+  sysSetVariableInt(sysVar::FoD_MasterSim_CAN_isoTP::TpTransmissionNrOfBytesReceived, 0);
+  if (usedBusSystem == 0) CanIsoTP_SendData(remoteDA, data, size);
+  sysSetVariableData(sysVar::FoD_MasterSim_CAN_isoTP::TpTransmissionDataSent, data, size);
+  sysSetVariableInt(sysVar::FoD_MasterSim_CAN_isoTP::TpTransmissionNrOfBytesSent, size);
+}
+void FoD_Sim_isoTpDataReceived(long localDA, long remoteDA, byte data[], word size) {
+  if (remoteDA != MANAGER_DA && remoteDA != MASTER_DA) //Secure Transmission with Slave
+  {
+    snprintf(gWriteBuffer, elcount(gWriteBuffer),  "Received %d byte(s) from DA: 0x%04X", size, remoteDA);
+    writeVerbose("FoD_Sim_isoTpDataReceived", gWriteBuffer);
+    sysSetVariableData(sysVar::FoD_MasterSim_CAN_isoTP::TpTransmissionDataReceived, data, size);
+    sysSetVariableInt(sysVar::FoD_MasterSim_CAN_isoTP::TpTransmissionNrOfBytesReceived, size);
+    FoD_Sim_Master_SecTransmissionReceivedData(remoteDA, data, size);
+  }
+  else
+  {
+    writeInfo("FoD_Sim_isoTpDataReceived", "Received data from FoD Manager");
+    snprintf(gWriteBuffer, elcount(gWriteBuffer),  "Received %d byte(s) from DA: 0x%04X", size, MANAGER_DA);
+    writeVerbose("FoD_Sim_isoTpDataReceived", gWriteBuffer);
+    sysSetVariableData(sysVar::FoD_MasterSim_CAN_isoTPManager::TpTransmissionDataReceived, data, size);
+    sysSetVariableInt(sysVar::FoD_MasterSim_CAN_isoTPManager::TpTransmissionNrOfBytesReceived, size);
+    checkReceivedDataFromManager(localDA, remoteDA, data, size);
+  }
+}
+byte FoD_Sim_Master_SecTransmissionSendData(long remoteDA, byte data[], word size) {
+  snprintf(gWriteBuffer, elcount(gWriteBuffer),  "Send %d byte(s) to DA: 0x%04X", size, remoteDA);
+  writeVerbose("%FILE_NAME%::FoD_Sim_Master_SecTransmissionSendData()",  gWriteBuffer);
+  if (FoD_Sim_Master_secTransmission.FSM_State != FSM_Master_Idle) {
+    writeInfo("%FILE_NAME%::FoD_Sim_Master_SecTransmissionSendData()",  "NRC0x21 'Busy repeat request'. There is already a transfer ongoing");
+    return 0x21;
+  }
+  FoD_Sim_Master_secTransmission.TxRemoteDA = remoteDA;
+  memcpy(FoD_Sim_Master_secTransmission.TxPayload, data, size);
+  FoD_Sim_Master_secTransmission.TxPayloadSize = size;
+  FoD_Sim_Master_secTransmission.FSM_State = FSM_Master_Send_1;   
+  return 0;
+}
+byte FoD_Sim_Master_SecTransmissionReceivedData(long remoteDA, byte data[], word size) {
+  snprintf(gWriteBuffer, elcount(gWriteBuffer),  "Received %d byte(s) from DA: 0x%04X", size, remoteDA);
+  writeVerbose("%FILE_NAME%::FoD_Sim_Master_SecTransmissionReceivedData()", gWriteBuffer);
+  if (FoD_Sim_Master_secTransmission.TxRemoteDA != remoteDA) {
+    writeError("%FILE_NAME%::FoD_Sim_Master_SecTransmissionReceivedData()", "Unexpected response received! Wrong Remote DA!");
+    return 0x24;
+  }
+  if (FoD_Sim_Master_secTransmission.FSM_State == FSM_Master_Wait4Slave_1) {
+    writeInfo("%FILE_NAME%::FoD_Sim_Master_SecTransmissionReceivedData()", "FSM_Master_Wait4Slave_1: expected response received.");
+    FoD_Sim_Master_secTransmission.RxRemoteDA = remoteDA;
+    memcpy(FoD_Sim_Master_secTransmission.RxDataRaw, data, size);
+    FoD_Sim_Master_secTransmission.RxDataRawSize = size;
+    FoD_Sim_Master_secTransmission.FSM_State = FSM_Master_CheckResponse_1;
+    return 0;
+  } else if (FoD_Sim_Master_secTransmission.FSM_State == FSM_Master_Wait4Slave_2) {
+    writeInfo("%FILE_NAME%::FoD_Sim_Master_SecTransmissionReceivedData()", "FSM_Master_Wait4Slave_2: expected response received.");
+    FoD_Sim_Master_secTransmission.RxRemoteDA = remoteDA;
+    memcpy(FoD_Sim_Master_secTransmission.RxDataRaw, data, size);
+    FoD_Sim_Master_secTransmission.RxDataRawSize = size;
+    FoD_Sim_Master_secTransmission.FSM_State = FSM_Master_CheckResponse_2;
+    return 0;
+  } else {
+    writeError("%FILE_NAME%::FoD_Sim_Master_SecTransmissionReceivedData()", "Unexpected response received! Wrong FSM State!");
+    return 0x24;
+  }
+  return 0;
+}
+byte FoD_Sim_Master_updateFctEnableStatus(long localDA, byte data[]) {
+  long i;
+  long x;
+  long a;
+  long fsid1;
+  long fsid2;
+  writeVerbose("%FILE_NAME%::FoD_Sim_Master_updateFctEnableStatus()", " ... called.");
+  for(i=0; i<data[0]; i++) {
+    if((i+1)*5+1 <= elcount(data)) {
+      x = i*5+1;
+      fsid1 = data[x]*(256*256*256)+data[x+1]*(256*256)+data[x+2]*(256)+data[x+3];
+      a = 0;
+      while(a < 20) {
+        a++;
+        fsid2 = get_fsidAsInt(a);
+        if(fsid1 == fsid2) {
+          set_fsidStatus(a, data[x+4]);
+          switch(data[x+4]) {
+            case 0xF3: set_fsidStatusColor(a, 0, 255, 0); break;  
+            case 0x73: set_fsidStatusColor(a, 0, 255, 0); break;  
+            case 0xE3: set_fsidStatusColor(a, 255, 255, 0); break;  
+            case 0x63: set_fsidStatusColor(a, 255, 255, 0); break;  
+            case 0xC3: set_fsidStatusColor(a, 255, 255, 0); break;  
+            case 0x43: set_fsidStatusColor(a, 255, 255, 0); break;  
+            default:
+              set_fsidStatusColor(a, 255, 0, 0);  
+          }
+        }
+      }
+    }
+  }
+  return 0;
+}
+void FoD_Sim_FSM_Master_secTransmission(void) {
+  int lastState = FSM_Master_Idle;  
+  int stateEntry = 1;
+  byte tmpBuffer[4096];
+  @FoD_MasterSim_CAN_isoTP::secTransmissionFSM_State = FoD_Sim_Master_secTransmission.FSM_State;
+  switch (FoD_Sim_Master_secTransmission.FSM_State) {
+      case (FSM_Master_Idle):
+        if (stateEntry) writeDebug("%FILE_NAME%::FoD_Sim_FSM_Master_secTransmission()", ">>>FSM_Master_Idle<<<");
+        lock = 0;
+        break;
+      case (FSM_Master_Send_1):
+        writeDebug("%FILE_NAME%::FoD_Sim_FSM_Master_secTransmission()", ">>>FSM_Master_Send_1<<<");
+        if(lock == 0)
+        {
+          FoDSecureTransmission_sendStart();
+        }
+        else if(lock == 2)
+        {
+          CP_getChallenge(FoD_Sim_Master_secTransmission.Challenge1);
+          FoD_Sim_Master_secTransmission.TransferToken[0] = 0x00;
+          memcopy(FoD_Sim_Master_secTransmission.TxDataRaw, FoD_Sim_Master_secTransmission.TransferToken, 0, 0, elcount(FoD_Sim_Master_secTransmission.TransferToken));
+          memcopy(FoD_Sim_Master_secTransmission.TxDataRaw, FoD_Sim_Master_secTransmission.Challenge1, elcount(FoD_Sim_Master_secTransmission.TransferToken), 0, CHALLENGE_LENGTH);
+          FoD_Sim_Master_secTransmission.TxDataRawSize = elcount(FoD_Sim_Master_secTransmission.TransferToken) + CHALLENGE_LENGTH;
+          FoD_Sim_Master_isoTpSendData(FoD_Sim_Master_secTransmission.TxRemoteDA, FoD_Sim_Master_secTransmission.TxDataRaw, FoD_Sim_Master_secTransmission.TxDataRawSize);
+          setTimer(timer_FoD_Sim_Master_secTransmission_TimeOut, MASTER_SEC_TRANSMISSION_TIMEOUT);
+          FoD_Sim_Master_secTransmission.FSM_State = FSM_Master_Wait4Slave_1;
+        }
+        break;
+      case (FSM_Master_Wait4Slave_1):
+        if (stateEntry) writeDebug("%FILE_NAME%::FoD_Sim_FSM_Master_secTransmission()", ">>>FSM_Master_Wait4Slave_1<<<");
+        break;
+      case (FSM_Master_CheckResponse_1):
+        writeDebug("%FILE_NAME%::FoD_Sim_FSM_Master_secTransmission()", ">>>FSM_Master_CheckResponse_1<<<");
+        cancelTimer(timer_FoD_Sim_Master_secTransmission_TimeOut);
+        FoD_Sim_Master_secTransmission.TransferToken[0] = 0x01;  
+        if(   (FoD_Sim_Master_secTransmission.RxDataRawSize == (elcount(FoD_Sim_Master_secTransmission.TransferToken) + 2 * CHALLENGE_LENGTH))
+           && (!memcompare(FoD_Sim_Master_secTransmission.RxDataRaw, FoD_Sim_Master_secTransmission.Challenge1, elcount(FoD_Sim_Master_secTransmission.TransferToken), CHALLENGE_LENGTH))
+           && (!memcompare(FoD_Sim_Master_secTransmission.RxDataRaw, FoD_Sim_Master_secTransmission.TransferToken, 0, elcount(FoD_Sim_Master_secTransmission.TransferToken)  )) )
+        {
+           writeDebug("%FILE_NAME%::FoD_Sim_FSM_Master_secTransmission()",  "ResponseData correct");
+           memcopy(FoD_Sim_Master_secTransmission.Challenge2, FoD_Sim_Master_secTransmission.RxDataRaw, 0, elcount(FoD_Sim_Master_secTransmission.TransferToken)+ CHALLENGE_LENGTH, CHALLENGE_LENGTH);
+           FoD_Sim_Master_secTransmission.FSM_State = FSM_Master_Send_2;
+        }
+        else 
+        {
+          writeError("%FILE_NAME%::FoD_Sim_FSM_Master_secTransmission()",  "ResponseData *not* correct!");
+          FoD_Sim_Master_secTransmission.FSM_State = FSM_Master_Error;
+        }
+        break;
+      case (FSM_Master_Send_2):
+        writeDebug("%FILE_NAME%::FoD_Sim_FSM_Master_secTransmission()", ">>>FSM_Master_Send_2<<<");
+        memcopy(tmpBuffer, FoD_Sim_Master_secTransmission.TxPayload, 0, 0, FoD_Sim_Master_secTransmission.TxPayloadSize);
+        memcopy(tmpBuffer, FoD_Sim_Master_secTransmission.Challenge1, FoD_Sim_Master_secTransmission.TxPayloadSize, 0, CHALLENGE_LENGTH);
+        memcopy(tmpBuffer, FoD_Sim_Master_secTransmission.Challenge2, FoD_Sim_Master_secTransmission.TxPayloadSize + CHALLENGE_LENGTH, 0, CHALLENGE_LENGTH);
+        CP_getCMAC(FoD_Sim_Master_secTransmission.TxRemoteDA, tmpBuffer, (FoD_Sim_Master_secTransmission.TxPayloadSize + 2* CHALLENGE_LENGTH), FoD_Sim_Master_secTransmission.CMAC_AC);
+        FoD_Sim_Master_secTransmission.TransferToken[0] = 0x02;
+        memcopy(FoD_Sim_Master_secTransmission.TxDataRaw, FoD_Sim_Master_secTransmission.TransferToken, 0, 0, elcount(FoD_Sim_Master_secTransmission.TransferToken));
+        memcopy(FoD_Sim_Master_secTransmission.TxDataRaw, FoD_Sim_Master_secTransmission.TxPayload, elcount(FoD_Sim_Master_secTransmission.TransferToken), 0, FoD_Sim_Master_secTransmission.TxPayloadSize);
+        memcopy(FoD_Sim_Master_secTransmission.TxDataRaw, FoD_Sim_Master_secTransmission.CMAC_AC, elcount(FoD_Sim_Master_secTransmission.TransferToken) + FoD_Sim_Master_secTransmission.TxPayloadSize, 0, CMAC_LENGTH);
+        FoD_Sim_Master_secTransmission.TxDataRawSize = elcount(FoD_Sim_Master_secTransmission.TransferToken) + FoD_Sim_Master_secTransmission.TxPayloadSize + CMAC_LENGTH;
+        FoD_Sim_Master_isoTpSendData(FoD_Sim_Master_secTransmission.TxRemoteDA, FoD_Sim_Master_secTransmission.TxDataRaw, FoD_Sim_Master_secTransmission.TxDataRawSize);
+        setTimer(timer_FoD_Sim_Master_secTransmission_TimeOut, MASTER_SEC_TRANSMISSION_TIMEOUT);
+        FoD_Sim_Master_secTransmission.FSM_State = FSM_Master_Wait4Slave_2;            
+        break;
+      case (FSM_Master_Wait4Slave_2):
+        if (stateEntry) writeDebug("%FILE_NAME%::FoD_Sim_FSM_Master_secTransmission()", ">>>FSM_Master_Wait4Slave_2<<<");
+        break;
+      case (FSM_Master_CheckResponse_2):
+        writeDebug("%FILE_NAME%::FoD_Sim_FSM_Master_secTransmission()", ">>>FSM_Master_CheckResponse_2<<<");
+        cancelTimer(timer_FoD_Sim_Master_secTransmission_TimeOut);
+        FoD_Sim_Master_secTransmission.TransferToken[0] = 0x03;  
+        if (memcompare(FoD_Sim_Master_secTransmission.RxDataRaw, FoD_Sim_Master_secTransmission.TransferToken, 0, elcount(FoD_Sim_Master_secTransmission.TransferToken)))
+        {
+            writeError("%FILE_NAME%::FoD_Sim_FSM_Master_secTransmission()", "ResponseData *not* correct! Wrong Transfer Token.");
+        }
+        memcopy(tmpBuffer, FoD_Sim_Master_secTransmission.RxDataRaw, 0, elcount(FoD_Sim_Master_secTransmission.TransferToken), FoD_Sim_Master_secTransmission.RxDataRawSize - elcount(FoD_Sim_Master_secTransmission.TransferToken) - CMAC_LENGTH);
+        memcopy(tmpBuffer, FoD_Sim_Master_secTransmission.Challenge1, FoD_Sim_Master_secTransmission.RxDataRawSize - elcount(FoD_Sim_Master_secTransmission.TransferToken) - CMAC_LENGTH, 0, CHALLENGE_LENGTH);
+        memcopy(tmpBuffer, FoD_Sim_Master_secTransmission.Challenge2, FoD_Sim_Master_secTransmission.RxDataRawSize - elcount(FoD_Sim_Master_secTransmission.TransferToken) - CMAC_LENGTH + CHALLENGE_LENGTH, 0, CHALLENGE_LENGTH);
+        CP_getCMAC(gIsoTp_Master.TpRemoteDA, tmpBuffer, (FoD_Sim_Master_secTransmission.RxDataRawSize - elcount(FoD_Sim_Master_secTransmission.TransferToken) - CMAC_LENGTH + 2*CHALLENGE_LENGTH), FoD_Sim_Master_secTransmission.CMAC_AC);
+        if((0 == memcompare(FoD_Sim_Master_secTransmission.RxDataRaw, FoD_Sim_Master_secTransmission.CMAC_AC, FoD_Sim_Master_secTransmission.RxDataRawSize - CMAC_LENGTH, CMAC_LENGTH))) 
+        { 
+          memcopy(FoD_Sim_Master_secTransmission.RxPayload, FoD_Sim_Master_secTransmission.RxDataRaw, 0, elcount(FoD_Sim_Master_secTransmission.TransferToken), (FoD_Sim_Master_secTransmission.RxDataRawSize - elcount(FoD_Sim_Master_secTransmission.TransferToken) - CMAC_LENGTH));  
+          FoD_Sim_Master_updateFctEnableStatus(FoD_Sim_Master_secTransmission.RxRemoteDA, FoD_Sim_Master_secTransmission.RxPayload);
+          FoD_Sim_Master_secTransmission.FSM_State = FSM_Master_SecTransFinished;
+        } 
+        else 
+        {
+          writeError("%FILE_NAME%::FoD_Sim_FSM_Master_secTransmission()", "ResponseData *not* correct! Wrong CMAC Signature.");
+          FoD_Sim_Master_secTransmission.FSM_State = FSM_Master_Error;
+          @FoD_MasterSim_CAN_dtc::DTC_SignatureCheckFailed = 1;
+        }
+        lock = 0;
+        FoDSecureTransmission_sendFinish();
+        break;
+      case (FSM_Master_Error):
+        writeDebug("%FILE_NAME%::FoD_Sim_FSM_Master_secTransmission()", ">>>FSM_Master_Error<<<");
+        msgBeep(3);
+        @FoD_MasterSim_CAN_isoTP::TpTransmissionError = 1;
+        FoD_Sim_Master_secTransmission.FSM_State = FSM_Master_DEH;
+        break;
+      case (FSM_Master_DEH):
+        writeDebug("%FILE_NAME%::FoD_Sim_FSM_Master_secTransmission()", ">>>FSM_Master_DEH<<<");
+        @FoD_MasterSim_CAN_isoTP::TpTransmissionError = 0;
+        @FoD_MasterSim_CAN_dtc::DTC_CommunictaionFailureWithSlave = 1;
+        FoD_Sim_Master_secTransmission.FSM_State = FSM_Master_Idle;
+        break;
+      case (FSM_Master_SecTransFinished):
+        if(lock == 2)
+        {
+        writeDebug("%FILE_NAME%::FoD_Sim_FSM_Master_secTransmission()", ">>>FSM_Master_SecTransFinished<<<");
+        FoD_Sim_Master_secTransmission.FSM_State = FSM_Master_Idle;
+        }
+        break;
+      default:
+        FoD_Sim_Master_secTransmission.FSM_State = FSM_Master_Idle;
+        break;
+    }
+    stateEntry = (FoD_Sim_Master_secTransmission.FSM_State == lastState)? 0:1;
+    lastState = FoD_Sim_Master_secTransmission.FSM_State;
+}
+void FoDSecureTransmission_sendInit()
+{
+  long timePassed;
+  long firstWaitingTime;
+  byte messageContent = 0x00;
+  timePassed = fodTransmissionInfoCycleTime - timeToElapse(timer_FoD_01);
+  cancelTimer(timer_FoD_01);
+  newTransmissionInfoSignalSent = 0;
+  msg_FoD_01.FoD_Transmission_Info = messageContent;
+  if (timePassed > fodTransmissionInfoInhibitTime)
+	{
+    setTimerCyclic(timer_FoD_01, 1, fodTransmissionInfoCycleTime);
+	}
+  else
+	{
+	  firstWaitingTime = fodTransmissionInfoInhibitTime - timePassed;
+	  if (firstWaitingTime < 1)
+	  {
+	    firstWaitingTime = 1;
+	  }
+    setTimerCyclic(timer_FoD_01, firstWaitingTime, fodTransmissionInfoCycleTime);
+	}
+  snprintf(writeBuffer, elCount(writeBuffer), "Changed Transmission Info signal content to 0x%0.2X", messageContent);
+  writeInfo(dbgTopip, writeBuffer);
+  waitCounter = 0;
+  WaitUntilNewTransmissionInfoSignalGotSent();
+}
+void FoDSecureTransmission_sendStart()
+{
+  long timePassed;
+  long firstWaitingTime;
+  byte messageContent = 0x01;
+  timePassed = fodTransmissionInfoCycleTime - timeToElapse(timer_FoD_01);
+  cancelTimer(timer_FoD_01);
+  newTransmissionInfoSignalSent = 0;
+  msg_FoD_01.FoD_Transmission_Info = messageContent;
+  if (timePassed > fodTransmissionInfoInhibitTime)
+	{
+    setTimerCyclic(timer_FoD_01, 1, fodTransmissionInfoCycleTime);
+	}
+  else
+	{
+	  firstWaitingTime = fodTransmissionInfoInhibitTime - timePassed;
+	  if (firstWaitingTime < 1)
+	  {
+	    firstWaitingTime = 1;
+	  }
+    setTimerCyclic(timer_FoD_01, firstWaitingTime, fodTransmissionInfoCycleTime);
+	}
+  snprintf(writeBuffer, elCount(writeBuffer), "Changed Transmission Info signal content to 0x%0.2X", messageContent);
+  writeInfo(dbgTopip, writeBuffer);
+  waitCounter = 0;
+  WaitUntilNewTransmissionInfoSignalGotSent();
+}
+void FoDSecureTransmission_sendFinish()
+{
+  long timePassed;
+  long firstWaitingTime;
+  byte messageContent = 0x02;
+  timePassed = fodTransmissionInfoCycleTime - timeToElapse(timer_FoD_01);
+  cancelTimer(timer_FoD_01);
+  newTransmissionInfoSignalSent = 0;
+  msg_FoD_01.FoD_Transmission_Info = messageContent;
+  if (timePassed > fodTransmissionInfoInhibitTime)
+	{
+    setTimerCyclic(timer_FoD_01, 1, fodTransmissionInfoCycleTime);
+	}
+  else
+	{
+	  firstWaitingTime = fodTransmissionInfoInhibitTime - timePassed;
+	  if (firstWaitingTime < 1)
+	  {
+	    firstWaitingTime = 1;
+	  }
+    setTimerCyclic(timer_FoD_01, firstWaitingTime, fodTransmissionInfoCycleTime);
+	}
+  snprintf(writeBuffer, elCount(writeBuffer), "Changed Transmission Info signal content to 0x%0.2X", messageContent);
+  writeInfo(dbgTopip, writeBuffer);
+  waitCounter = 0;
+  WaitUntilNewTransmissionInfoSignalGotSent();
+}
+void WaitUntilNewTransmissionInfoSignalGotSent()
+{
+  const waitingTimeCAN = 10;
+  const waitingTimeFlexRay = 20;
+  const extraWaitingTimeFlexRay = 300;  
+  lock = 1;
+    if (waitCounter == 0 && usedBusSystem == 0)  
+    {
+      setTimer(timer_Waiting, waitingTimeCAN);
+    }
+    else if(waitCounter == 0 && usedBusSystem == 1)  
+    {
+      setTimer(timer_Waiting, waitingTimeFlexRay);
+    }
+    else if (waitCounter != 0)  
+    {
+      if(newTransmissionInfoSignalSent != 1)
+      {
+        if(usedBusSystem == 0) setTimer(timer_Waiting, waitingTimeCAN);  
+        else if(usedBusSystem == 1) setTimer(timer_Waiting, waitingTimeFlexRay);  
+      }
+      else  
+      {
+        if(usedBusSystem == 1)
+        {
+          if(flexRayExtraWaitEnded != 1)
+          {
+            writeInfo("%FILE_NAME%::WaitUntilNewTransmissionInfoSignalGotSent","Extra Warten für FlexRay aktiv!");
+            setTimer(timer_ExtraWaitingForFlexRay, extraWaitingTimeFlexRay);  
+            return;  
+          }
+          else
+          {
+            flexRayExtraWaitEnded = 0;  
+          }
+        }
+        writeInfo("%FILE_NAME%::WaitUntilNewTransmissionInfoSignalGotSent","newTransmissionInfoSignalSent has the right value, calling FoD_Sim_FSM_Master_secTransmission");
+        lock = 2;
+        FoD_Sim_FSM_Master_secTransmission();  
+      }
+    }
+}
+on sysvar FoD_MasterSim_CAN_config::selectMaster {
+  char strTmp[100];
+  snprintf(strTmp, elcount(strTmp), "MASTER_DA changed: 0x%0.4X [selected: 0x%0.2X]", MASTER_DA, @FoD_MasterSim_CAN_config::selectMaster);
+  writeInfo("%FILE_NAME%::FoD_MasterSim_CAN_config::selectMaster", strTmp);
+  gIsoTp_Master.TpLocalDA = MASTER_DA;
+  updateIsoTpParametersOnPanel();
+}
+on sysvar_update FoD_MasterSim_CAN_config::selectSlave {
+  char strTmp[100];
+  SLAVE_DA = FoDSlaveMappingTable[@FoD_MasterSim_CAN_config::selectSlave].SlaveDA;
+  snprintf(strTmp, elcount(strTmp), "SLAVE_DA changed: 0x%0.4X [selected: 0x%0.2X]", SLAVE_DA, @FoD_MasterSim_CAN_config::selectSlave);
+  writeInfo("%FILE_NAME%::FoD_MasterSim_CAN_config::selectSlave", strTmp);
+  gIsoTp_Master.TpTxId = FoDSlaveMapping_getTxId(SLAVE_DA);
+  gIsoTp_Master.TpRxId = FoDSlaveMapping_getRxId(SLAVE_DA);
+  gIsoTp_Master.TpLocalAddr = FoDSlaveMapping_getRxId(SLAVE_DA) & 0xFF;
+  gIsoTp_Master.TpRemoteAddr = FoDSlaveMapping_getTxId(SLAVE_DA) & 0xFF;
+  gIsoTp_Master.TpRemoteDA = SLAVE_DA;
+  updateIsoTpParametersOnPanel();
+}

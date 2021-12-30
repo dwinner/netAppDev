@@ -1,0 +1,1095 @@
+/*@!Encoding:1252*/
+variables
+{ 
+  // FRAME BYTES
+  const byte STARTBYTE  = 0xFF;  // 0b1111 1111
+  const byte EVENPARITY = 0x30;  // 0b0011 0000
+  const byte ODDPARITY  = 0xC0;  // 0b1100 0000
+  
+  // MODE BYTES
+  const byte SWITCH_RELAY  = 0x40;
+  const byte SWITCH_AUDIO  = 0x41;
+  const byte VOLTAGE       = 0x42;
+  const byte CURRENT       = 0x43;
+  const byte TIME1         = 0x44;
+  const byte TIME2         = 0x45;
+  const byte SYSTEM_STATUS = 0x23;
+  const byte RELAY_STATUS  = 0x24;
+  const byte RESEND        = 0x25;
+  const byte SYSTEM_ERROR  = 0x26;
+  
+  // RESISTOR BOARD MODES
+  const byte M_CHECK_RESISTORBOARD          = 0x4E;
+  const byte M_GET_CALIBRATION              = 0x4F;
+  const byte M_CALIBRATE_RESISTORSYSTEM     = 0x50;
+  const byte M_SET_RESISTOR_R1_1            = 0x51;
+  const byte M_SET_RESISTOR_R2_1            = 0x52;
+  const byte M_GET_RESISTANCE_R1_1          = 0x53;
+  const byte M_GET_RESISTANCE_R1_2          = 0x54;
+  const byte M_GET_RESISTANCE_R2_1          = 0x55;
+  const byte M_GET_RESISTANCE_R2_2          = 0x56;
+  const byte M_GET_R1_RANGE_EXTENSIONS      = 0x57;
+  const byte M_GET_R2_RANGE_EXTENSIONS      = 0x58;
+  const byte M_GET_POTENTIOMETER_RESISTANCE = 0x59;
+    
+  // RELAY BYTES
+  const byte RELAY_NO1   = 0x41;
+  const byte RELAY_NO2   = 0x42;
+  const byte RELAY_NO3   = 0x43;
+  const byte RELAY_NO4   = 0x44;
+  const byte RELAY_NO5   = 0x45;
+  const byte RELAY_NO6   = 0x46;
+  const byte RELAY_USB   = 0x47;
+  
+  // RELAY COMMANDS
+  const byte RELAY_NO = 0x7E;
+  const byte RELAY_NC = 0x70;
+  const byte RELAY_TR = 0x73;
+  
+  // AUDIO MODES
+  const byte AUDIO_M1 = 0x74;
+  const byte AUDIO_M2 = 0x75;
+  
+  ///// PRECONFIGURED FRAMES /////
+  // Relays
+  byte RELAY_1_NO[5] = { STARTBYTE, SWITCH_RELAY, RELAY_NO1, RELAY_NO, ODDPARITY };
+  byte RELAY_1_NC[5] = { STARTBYTE, SWITCH_RELAY, RELAY_NO1, RELAY_NC, EVENPARITY };
+  byte RELAY_1_TR[5] = { STARTBYTE, SWITCH_RELAY, RELAY_NO1, RELAY_TR, EVENPARITY };
+  
+  byte RELAY_2_NO[5] = { STARTBYTE, SWITCH_RELAY, RELAY_NO2, RELAY_NO, ODDPARITY };
+  byte RELAY_2_NC[5] = { STARTBYTE, SWITCH_RELAY, RELAY_NO2, RELAY_NC, EVENPARITY };
+  byte RELAY_2_TR[5] = { STARTBYTE, SWITCH_RELAY, RELAY_NO2, RELAY_TR, EVENPARITY };
+  
+  byte RELAY_3_NO[5] = { STARTBYTE, SWITCH_RELAY, RELAY_NO3, RELAY_NO, EVENPARITY };
+  byte RELAY_3_NC[5] = { STARTBYTE, SWITCH_RELAY, RELAY_NO3, RELAY_NC, ODDPARITY };
+  byte RELAY_3_TR[5] = { STARTBYTE, SWITCH_RELAY, RELAY_NO3, RELAY_TR, ODDPARITY };
+  
+  byte RELAY_4_NO[5] = { STARTBYTE, SWITCH_RELAY, RELAY_NO4, RELAY_NO, ODDPARITY };
+  byte RELAY_4_NC[5] = { STARTBYTE, SWITCH_RELAY, RELAY_NO4, RELAY_NC, EVENPARITY };
+  byte RELAY_4_TR[5] = { STARTBYTE, SWITCH_RELAY, RELAY_NO4, RELAY_TR, EVENPARITY };
+  
+  byte RELAY_5_NO[5] = { STARTBYTE, SWITCH_RELAY, RELAY_NO5, RELAY_NO, EVENPARITY };
+  byte RELAY_5_NC[5] = { STARTBYTE, SWITCH_RELAY, RELAY_NO5, RELAY_NC, ODDPARITY };
+  byte RELAY_5_TR[5] = { STARTBYTE, SWITCH_RELAY, RELAY_NO5, RELAY_TR, ODDPARITY };
+  
+  byte RELAY_6_NO[5] = { STARTBYTE, SWITCH_RELAY, RELAY_NO6, RELAY_NO, EVENPARITY };
+  byte RELAY_6_NC[5] = { STARTBYTE, SWITCH_RELAY, RELAY_NO6, RELAY_NC, ODDPARITY };
+  byte RELAY_6_TR[5] = { STARTBYTE, SWITCH_RELAY, RELAY_NO6, RELAY_TR, ODDPARITY };
+  
+  byte RELAY_USB_NO[5] = { STARTBYTE, SWITCH_RELAY, RELAY_USB, RELAY_NO, ODDPARITY };
+  byte RELAY_USB_NC[5] = { STARTBYTE, SWITCH_RELAY, RELAY_USB, RELAY_NC, EVENPARITY };  
+  byte RELAY_USB_TR[5] = { STARTBYTE, SWITCH_RELAY, RELAY_USB, RELAY_TR, EVENPARITY };
+  
+  byte RELAY_AUDIO_M1[5] = { STARTBYTE, SWITCH_AUDIO, AUDIO_M1, AUDIO_M1, EVENPARITY };
+  byte RELAY_AUDIO_M2[5] = { STARTBYTE, SWITCH_AUDIO, AUDIO_M2, AUDIO_M2, EVENPARITY };
+  
+  // Current & Voltage
+  byte GET_CURRENT[5] = { STARTBYTE, CURRENT, 0x00, 0x00, 0x00 };
+  byte GET_VOLTAGE[5] = { STARTBYTE, VOLTAGE, 0x00, 0x00, 0x00 };
+  
+  // Time & Date
+  byte SET_TIME[10]  = { STARTBYTE, TIME1, 0x00, 0x00, 0x00, STARTBYTE, TIME2, 0x00, 0x00, 0x00 };
+  byte SET_TIME1[5]  = { STARTBYTE, TIME1, 0x00, 0x00, 0x00 };
+  byte SET_TIME2[5]  = { STARTBYTE, TIME2, 0x00, 0x00, 0x00 };
+  
+  // Status
+  byte GET_SYSTEM_STATUS[5] = { STARTBYTE, SYSTEM_STATUS, 0x00, 0x00, ODDPARITY };
+  byte RESEND_FRAME[5] = { STARTBYTE, RESEND, 0x00, 0x00, ODDPARITY };
+  
+  // Resistance
+  byte CHECK_RESISTORBOARD[5]          = { STARTBYTE, M_CHECK_RESISTORBOARD         , 0x00, 0x00, EVENPARITY };
+  byte GET_CALIBRATION[5]              = { STARTBYTE, M_GET_CALIBRATION             , 0x00, 0x00, ODDPARITY  };
+  byte CALIBRATE_RESISTORSYSTEM[5]     = { STARTBYTE, M_CALIBRATE_RESISTORSYSTEM    , 0x00, 0x00, EVENPARITY };
+  byte GET_R1_RANGE_EXTENSIONS[5]      = { STARTBYTE, M_GET_R1_RANGE_EXTENSIONS     , 0x00, 0x00, ODDPARITY  };
+  byte GET_R2_RANGE_EXTENSIONS[5]      = { STARTBYTE, M_GET_R2_RANGE_EXTENSIONS     , 0x00, 0x00, ODDPARITY  };
+  byte GET_POTENTIOMETER_RESISTANCE[5] = { STARTBYTE, M_GET_POTENTIOMETER_RESISTANCE, 0x00, 0x00, EVENPARITY };
+  
+  byte SET_RESISTANCE_R1_1[5] = { STARTBYTE, M_SET_RESISTOR_R1_1, 0x00, 0x00, 0x00 };
+  byte SET_RESISTANCE_R2_1[5] = { STARTBYTE, M_SET_RESISTOR_R2_1, 0x00, 0x00, 0x00 };
+  
+  byte GET_RESISTANCE_R1_1[5] = { STARTBYTE, M_GET_RESISTANCE_R1_1, 0x00, 0x00, EVENPARITY };
+  byte GET_RESISTANCE_R1_2[5] = { STARTBYTE, M_GET_RESISTANCE_R1_2, 0x00, 0x00, ODDPARITY };
+  byte GET_RESISTANCE_R2_1[5] = { STARTBYTE, M_GET_RESISTANCE_R2_1, 0x00, 0x00, EVENPARITY };
+  byte GET_RESISTANCE_R2_2[5] = { STARTBYTE, M_GET_RESISTANCE_R2_2, 0x00, 0x00, EVENPARITY };
+  
+  
+  // ADDITIONAL VARIABLES
+  // Frame constants                                                                     
+  const int frameSize = 5;
+  const int bufferSize = 20;
+  
+  byte receiveBuffer[frameSize];
+  byte bufferArrays[bufferSize][frameSize];
+  int writePositionBufferArray = 0;
+  int readPositionBufferArray = 0;
+  
+  // Resistor setting operation pending
+  int resistorSettingIsPending = 0;  // 0 = no, 1 = yes
+  
+  // Time and date
+  long time[9];
+  
+  int firstCalibration = 0;  
+}
+/*******************************************************************************************************************************************
+*
+*     EVENT TRIGGERT FUNCTIONS
+*
+********************************************************************************************************************************************/
+
+on start
+{  
+  enableControl("ABKUHTS Panel","Funktionen Groupbox",0);
+  enableControl("ABKUHTS Panel","Tankgeber Groupbox",0);
+  enableControl("ABKUHTS Panel","Fehlermeldungen Groupbox",0);
+  enableControl("ABKUHTS Panel","Widerstandssystem kalibrieren Button",0);
+  enableControl("ABKUHTS Panel","Widerstandssystem erkennen Button",0);
+  enableControl("ABKUHTS Panel","Verbindungs Test Button",0);
+  enableControl("ABKUHTS Panel","Fehler quittieren Button",0);
+  enableControl("ABKUHTS Panel","Systen-Zustand Groupbox",0);
+  enableControl("ABKUHTS Panel","Zeit Sync Button",0);
+  enableControl("ABKUHTS Panel","Verbindungs Test Button",0);
+}
+
+on envVar Env_Error_No
+{
+  if(@this != 0)
+   enableControl("ABKUHTS Panel","Fehler quittieren Button",1);
+}
+
+on envVar Env_Error_Accept
+{
+  @Env_State_Error = 1;
+  @Env_Error_No = 0;
+  enableControl("ABKUHTS Panel","Fehler quittieren Button",0);
+}
+
+on envVar Env_COM_Port_No
+{
+  @Env_COM_Port_State = 1;
+}
+  
+on envvar Env_COM_Port_State
+{ 
+  if (@this == 1)                                                                      // sollte der Schalter auf Ein geschaltet werden
+  { 
+    if ( 0 != RS232Open(@Env_COM_Port_No))                                           // Wenn das öffnen des COM-Ports erfolgreich war
+    {
+      writelineex(4,0,"COM-Port %d geöffnet",@Env_COM_Port_No);                   // Ausgabe im Write Fenster
+      
+      if( 0 != RS232Configure(@Env_COM_Port_No,115200,8,1,0) )                         // Konfigurieren der Seriellen Schnittstelle und Abfragen ob die Konfiguration erfolgreich war
+      {
+        writelineex(4,0,"COM-Port %d konfguriert", @Env_COM_Port_No);                    // Ausgabe im Write Fenster
+        RS232Receive(@Env_COM_Port_No,receiveBuffer,frameSize);
+        enableControl("ABKUHTS Panel","Funktionen Groupbox",1);
+        enableControl("ABKUHTS Panel","Tankgeber Groupbox",0);
+        enableControl("ABKUHTS Panel","Fehlermeldungen Groupbox",1);
+        enableControl("ABKUHTS Panel","Widerstandssystem kalibrieren Button",0);
+        enableControl("ABKUHTS Panel","Widerstandssystem erkennen Button",1);
+        enableControl("ABKUHTS Panel","Verbindungs Test Button",1);
+        enableControl("ABKUHTS Panel","Fehler quittieren Button",0);
+        enableControl("ABKUHTS Panel","Systen-Zustand Groupbox",0);
+        enableControl("ABKUHTS Panel","Zeit Sync Button",1);
+        enableControl("ABKUHTS Panel","Verbindungs Test Button",1);
+        sendSerialData(GET_SYSTEM_STATUS);
+      }
+   
+      else
+      {                                                                             // Sollte das Konfigurieren der Seriellen Schnittstelle scheitern
+        writelineex(4,3,"COM-Port %d konnte nicht konfiguriert werden.", @Env_COM_Port_No);    // Ausgabe im Write Fenste
+        @this = 0;
+      }
+      
+    }
+           
+    else
+    { 
+      writelineex(4,3,"COM-Port %d konnte NICHT geöffnet werden",@Env_COM_Port_No);      // Ausgabe im Write Fenster}     
+      @this = 0;
+    }
+  }
+  else                                                                                 // wenn der Schalter auf Aus gestellt wird
+  {
+    @Env_State_System = 0;
+    @Env_State_Relays = 0;
+    @Env_State_SD = 0;
+    @Env_State_Time = 0;
+    @Env_State_Connection = 0;
+    @Env_State_Tankresistor = 0;
+    @Env_State_Error = 1;
+    @Env_Error_No = 0;
+    
+    ///// Set all received variables back to default value
+    @Env_Measured_Current = 0;
+    @Env_Measured_Voltage = 0;
+    @Env_Resistance_R1_1_measured = 0;
+    @Env_Resistance_R1_1_target = 0;
+    @Env_Resistance_R1_2_measured = 0;
+    @Env_Resistance_R2_1_measured = 0;
+    @Env_Resistance_R2_1_target = 0;
+    @Env_Resistance_R2_2_measured = 0;
+    @Env_R_1_1_RangeExtensionResistor = 0;
+    @Env_R_1_2_RangeExtensionResistor = 0;
+    @Env_R_1_x_MaxResistance = 0;
+    @Env_R_2_1_RangeExtensionResistor = 0;
+    @Env_R_2_2_RangeExtensionResistor = 0;
+    @Env_R_2_x_MaxResistance = 0;
+    
+    if (rs232Close(@Env_COM_Port_No) == 1)                                                                   // Sollte das schließen des COM-Ports erfolgreich sein
+    {  
+      writelineex(4,0,"COM-Port %d geschlossen",@Env_COM_Port_No);       // Ausgabe im Write Fenster
+      
+      enableControl("ABKUHTS Panel","Funktionen Groupbox",0);
+      enableControl("ABKUHTS Panel","Tankgeber Groupbox",0);
+      enableControl("ABKUHTS Panel","Fehlermeldungen Groupbox",0);
+      enableControl("ABKUHTS Panel","Widerstandssystem kalibrieren Button",0);
+      enableControl("ABKUHTS Panel","Widerstandssystem erkennen Button",0);
+      enableControl("ABKUHTS Panel","Verbindungs Test Button",0);
+      enableControl("ABKUHTS Panel","Fehler quittieren Button",0);
+      enableControl("ABKUHTS Panel","Systen-Zustand Groupbox",0);
+      enableControl("ABKUHTS Panel","Zeit Sync Button",0);
+      enableControl("ABKUHTS Panel","Verbindungs Test Button",0);
+    }
+    else                                                                               // Sollte das schließen des COM-Ports scheitern
+    {
+      writelineex(4,3,"COM-Port %d konnte NICHT geschlossen werden",@Env_COM_Port_No); // Ausgabe im Write Fenster
+    } 
+  }
+}
+
+on envVar Env_Set_Time
+{
+  byte year = 0x00; 
+  byte month = 0x00;
+  byte day = 0x00;
+  byte hour = 0x00;
+  byte minute = 0x00;
+  byte second = 0x00;
+   
+  byte byte_1 = 0x00;
+  byte byte_2 = 0x00;
+  byte byte_3 = 0x00;
+  byte byte_4 = 0x00;
+  int parity_Frame_1 = 0;
+  int parity_Frame_2 = 0;
+  
+  byte time1[5];
+  byte time2[5];
+  
+  if (@this == 1)
+  {
+    getLocalTime(time);
+    
+    year = (byte)(time[5] - 100);                               
+    month = (byte)(time[4] + 1);                                
+    day = (byte)time[3];                                        
+    hour = (byte)time[2];                                     
+    minute = (byte)time[1];                                     
+    second = (byte)time[0];                                    
+         
+    byte_1 = (month << 7) | (year << 1) | (hour >> 4);
+    byte_2  = (day << 3) | (month >> 1);
+     
+    byte_3 = (minute << 6) | second;
+    byte_4 = (hour << 4) | (minute >> 2);
+    
+    parity_Frame_1 = (getParity(byte_1) + getParity(byte_2) + getParity(SET_TIME1[1])) % 2;
+    parity_Frame_2 = (getParity(byte_3) + getParity(byte_4) + getParity(SET_TIME2[1])) % 2; 
+   /* 
+    SET_TIME[2] = byte_1;
+    SET_TIME[3] = byte_2;
+    SET_TIME[4] = 
+    SET_TIME[7] = byte_3;
+    SET_TIME[8] = byte_4;
+    SET_TIME[9] = parity_Frame_2 == 0 ? EVENPARITY : ODDPARITY;
+   */
+    SET_TIME1[2] = byte_1;
+    SET_TIME1[3] = byte_2;
+    SET_TIME1[4] = (parity_Frame_1 == 0 ? EVENPARITY : ODDPARITY);
+    
+    SET_TIME2[2] = byte_3;
+    SET_TIME2[3] = byte_4;
+    SET_TIME2[4] = (parity_Frame_2 == 0 ? EVENPARITY : ODDPARITY);
+    
+    //RS232Send(@Env_COM_Port_No,SET_TIME,10);
+    sendSerialData(SET_TIME1);
+    sendSerialData(SET_TIME2);    
+  }
+}
+
+on envvar Env_Check_Resistorboard
+{
+  if(@this == 1)
+    sendSerialData(CHECK_RESISTORBOARD);
+}
+
+on envVar Env_Calibrate_Resistorboard
+{ 
+  @Env_State_System = 2;
+  
+  if(@this == 1){
+    @Env_R_1_x_MaxResistance = 0;
+    @Env_R_2_x_MaxResistance = 0;
+    @Env_R_1_x_Potentiometer = 0;
+    @Env_R_1_x_Potentiometer = 0;
+    @Env_R_1_1_RangeExtensionResistor = 0;
+    @Env_R_1_2_RangeExtensionResistor = 0;
+    @Env_R_2_1_RangeExtensionResistor = 0;
+    @Env_R_2_2_RangeExtensionResistor = 0;
+    
+    sendSerialData(CALIBRATE_RESISTORSYSTEM);
+  }
+}
+
+on envVar Env_State_Tankresistor
+{
+  if(@this == 1)
+  {
+    sendSerialData(GET_CALIBRATION);
+    //@Env_Resistance_R1_1_target = 150;
+    //@Env_Resistance_R2_1_target = 150;
+  }
+}
+
+on envVar Env_Check_Connection // Button Verbindung Test
+{
+  if(@this == 1)
+     sendSerialData(GET_SYSTEM_STATUS);
+}
+
+on envVar Env_Get_Voltage    // Button Spannung
+{  
+  int parity;
+   
+  if (@this == 1 && @Env_Relais_Number != 0)
+  {
+    @Env_State_System = 2;
+    
+    switch (@Env_Relais_Number){
+      case 1:
+        GET_VOLTAGE[2] = RELAY_NO1;
+        break;
+      case 2:
+        GET_VOLTAGE[2] = RELAY_NO2;
+        break;
+      case 3:
+        GET_VOLTAGE[2] = RELAY_NO3;
+        break;
+      case 4:
+        GET_VOLTAGE[2] = RELAY_NO4;
+        break;
+      case 5:
+        GET_VOLTAGE[2] = RELAY_NO5;
+        break;
+      case 6:
+        GET_VOLTAGE[2] = RELAY_NO6;
+        break;
+       default:
+        return;
+    }
+    
+    parity = (getParity(GET_VOLTAGE[1]) + getParity(GET_VOLTAGE[2])) % 2;
+    
+    GET_VOLTAGE[4] = (parity == 1 ? ODDPARITY : EVENPARITY);
+    
+     sendSerialData(GET_VOLTAGE);
+  }
+}
+
+on envVar Env_Get_Current // Button Strom
+{
+  int parity;
+  
+  if (@this == 1 && @Env_Relais_Number != 0)
+  {  
+    @Env_State_System = 2;
+    
+    switch (@Env_Relais_Number){
+      case 1:
+        GET_CURRENT[2] = RELAY_NO1;
+        break;
+      case 2:
+        GET_CURRENT[2] = RELAY_NO2;
+        break;
+      case 3:
+        GET_CURRENT[2] = RELAY_NO3;
+        break;
+      case 4:
+        GET_CURRENT[2] = RELAY_NO4;
+        break;
+      case 5:
+        GET_CURRENT[2] = RELAY_NO5;
+        break;
+      case 6:
+        GET_CURRENT[2] = RELAY_NO6;
+        break;
+       default:
+        return;
+    }
+    parity = (getParity(GET_CURRENT[1]) + getParity(GET_CURRENT[2])) % 2;
+    
+    GET_CURRENT[4] = (parity == 1 ? ODDPARITY : EVENPARITY);
+       
+    sendSerialData(GET_CURRENT);
+  }
+}
+
+on envVar Env_Switch_Relay_1 // FERTIG
+{
+  @Env_State_System = 2; 
+  
+  if(@this == 1){
+    switch(@Env_State_Relay_1)
+    {    
+    case 0:
+      sendSerialData(RELAY_1_NO);  
+      break;
+    case 1:
+      sendSerialData(RELAY_1_NC); 
+      break;
+    }
+  }
+    
+  if(@this == 3)
+    sendSerialData(RELAY_1_TR);
+}
+
+on envVar Env_Switch_Relay_2 // FERTIG
+{
+  @Env_State_System = 2;
+  
+  if(@this == 1){
+    switch(@Env_State_Relay_2)
+    {    
+      case 0:
+        sendSerialData(RELAY_2_NO); 
+        break;
+      case 1:
+        sendSerialData(RELAY_2_NC);  
+        break;
+    }
+  }
+  
+  if(@this == 3)
+      sendSerialData(RELAY_2_TR); 
+      
+}
+
+on envVar Env_Switch_Relay_3 // FERTIG
+{
+  @Env_State_System = 2;
+  
+  if(@this == 1){
+    switch(@Env_State_Relay_3)
+    {
+      case 0:
+        sendSerialData(RELAY_3_NO); 
+        break;
+      case 1:
+        sendSerialData(RELAY_3_NC);  
+        break;
+    }
+  }
+  
+  if(@this == 3)
+      sendSerialData(RELAY_3_TR); 
+}
+
+on envVar Env_Switch_Relay_4 // FERTIG
+{
+  @Env_State_System = 2;
+  
+  if(@this == 1){
+    switch(@Env_State_Relay_4)
+    {
+      case 0:
+        sendSerialData(RELAY_4_NO); 
+        break;
+      case 1:
+        sendSerialData(RELAY_4_NC);  
+        break;
+    }
+  }
+  
+  if(@this == 3)
+      sendSerialData(RELAY_4_TR); 
+}
+
+on envVar Env_Switch_Relay_5 // FERTIG
+{
+  @Env_State_System = 2;
+  
+  if(@this == 1){
+    switch(@Env_State_Relay_5)
+    {
+      case 0:
+        sendSerialData(RELAY_5_NO); 
+        break;
+      case 1:
+        sendSerialData(RELAY_5_NC);  
+        break;
+    }
+  }  
+  if(@this == 3)
+      sendSerialData(RELAY_5_TR); 
+}
+
+on envVar Env_Switch_Relay_6 // FERTIG
+{
+  @Env_State_System = 2;
+  
+  if(@this == 1){
+    switch(@Env_State_Relay_6)
+    {
+      case 0:
+        sendSerialData(RELAY_6_NO); 
+        break;
+      case 1:
+        sendSerialData(RELAY_6_NC);  
+        break;
+    }
+  }
+  
+  if(@this == 3)
+      sendSerialData(RELAY_6_TR); 
+}
+
+on envVar Env_Relay_Audio // FERTIG
+{
+  @Env_State_System = 2;
+  
+  switch(@this)
+  {
+    case 0:
+      sendSerialData(RELAY_AUDIO_M1); 
+      break;
+    case 1:
+      sendSerialData(RELAY_AUDIO_M2);  
+      break;
+  }
+}
+
+on envVar Env_Switch_Relay_USB // FERTIG
+{
+  @Env_State_System = 2;
+  
+  if(@this == 1){
+    switch(@Env_State_Relay_USB)
+    {
+      case 0:
+        sendSerialData(RELAY_USB_NO); 
+        break;
+      case 1:
+        sendSerialData(RELAY_USB_NC);  
+        break;
+    }
+  }
+  
+  if(@this == 3)
+    sendSerialData(RELAY_USB_TR);
+  
+}
+
+on envVar Env_Relais_Number
+{
+  @Env_Measured_Current = 0.0;
+  @Env_Measured_Voltage = 0.0;
+}
+
+on envVar Env_Get_R1_1
+{
+  @Env_State_System = 2;
+  
+  if(@Env_State_Tankresistor == 1 && @this == 1)
+    sendSerialData(GET_RESISTANCE_R1_1);
+}
+
+on envVar Env_Get_R1_2
+{
+  @Env_State_System = 2;
+  
+  if(@Env_State_Tankresistor == 1 && @this == 1)
+    sendSerialData(GET_RESISTANCE_R1_2);
+}
+
+on envVar Env_Get_R2_1
+{
+  @Env_State_System = 2;
+  
+  if(@Env_State_Tankresistor == 1 && @this == 1)
+    sendSerialData(GET_RESISTANCE_R2_1);
+}
+
+on envVar Env_Get_R2_2
+{
+  @Env_State_System = 2;
+  
+  if(@Env_State_Tankresistor == 1 && @this == 1)
+    sendSerialData(GET_RESISTANCE_R2_2);
+}
+
+on envVar Env_Resistance_R1_1_target
+{
+  int parity = 0;
+  int resistance;
+  
+  resistance = @Env_Resistance_R1_1_target;
+  
+  resistorSettingIsPending = 1;
+  
+  @Env_State_System = 2;
+  
+  if(resistance > @Env_R_1_x_MaxResistance)
+  {
+    resistance = @Env_R_1_x_MaxResistance;
+    writeLineEx(4,1,"Widerstand R1.1 begrenzt auf %d",resistance);
+  }
+      
+  SET_RESISTANCE_R1_1[3] = getLower8Bits(resistance);
+  SET_RESISTANCE_R1_1[2] = getUpper8Bits(resistance);
+   
+  parity = (getParity(SET_RESISTANCE_R1_1[1]) + getParity(SET_RESISTANCE_R1_1[2]) + getParity(SET_RESISTANCE_R1_1[3])) % 2;
+  
+  SET_RESISTANCE_R1_1[4] = (parity == 1 ? ODDPARITY : EVENPARITY);
+  
+  sendSerialData(SET_RESISTANCE_R1_1);
+}
+
+on envVar Env_Resistance_R2_1_target
+{
+  int parity = 0;
+  
+  resistorSettingIsPending = 1;
+  
+  @Env_State_System = 2;
+  
+  if(@this >= @Env_R_2_x_MaxResistance)
+    @this = @Env_R_2_x_MaxResistance;
+  
+  else{
+    SET_RESISTANCE_R2_1[3] = getLower8Bits(@this);
+    SET_RESISTANCE_R2_1[2] = getUpper8Bits(@this);
+    
+    parity = (getParity(SET_RESISTANCE_R2_1[1]) + getParity(SET_RESISTANCE_R2_1[2]) + getParity(SET_RESISTANCE_R2_1[3])) % 2;
+    
+    SET_RESISTANCE_R2_1[4] = (parity == 1 ? ODDPARITY : EVENPARITY);
+      
+    sendSerialData(SET_RESISTANCE_R2_1);
+  }
+}
+
+on envVar Env_R_1_x_Potentiometer
+{
+  
+  if(@Env_R_1_1_RangeExtensionResistor > 0)
+    @Env_R_1_x_MaxResistance = @this + @Env_R_1_1_RangeExtensionResistor;
+  
+  else
+    sendSerialData(GET_R1_RANGE_EXTENSIONS);
+}
+
+on envVar Env_R_2_x_Potentiometer
+{
+  
+  if(@Env_R_2_1_RangeExtensionResistor > 0)
+    @Env_R_2_x_MaxResistance = @this + @Env_R_2_1_RangeExtensionResistor;
+  
+  else
+    sendSerialData(GET_R2_RANGE_EXTENSIONS);
+}
+
+on envVar Env_R_1_1_RangeExtensionResistor
+{
+  if(@Env_R_1_x_Potentiometer > 0)
+    @Env_R_1_x_MaxResistance = @this + @Env_R_1_x_Potentiometer;
+  
+  else
+    sendSerialData(GET_POTENTIOMETER_RESISTANCE);
+}
+
+on envVar Env_R_2_1_RangeExtensionResistor
+{
+  if(@Env_R_2_x_Potentiometer > 0)
+    @Env_R_2_x_MaxResistance = @this + @Env_R_2_x_Potentiometer;
+  
+  else
+    sendSerialData(GET_POTENTIOMETER_RESISTANCE);
+}
+
+ on envVar Env_State_RS232
+{
+  int i;
+  
+  //writelineex(4,1,"Env_State_RS232 hat sich geändert!");
+  
+  if(@this == 0)
+  {  
+    if(bufferArrays[readPositionBufferArray][0] == STARTBYTE && readPositionBufferArray < 10)
+    {
+      //writelineex(4,1,"SEND    : %X %X %X %X %X (Buffer)",bufferArrays[readPositionBufferArray][0],bufferArrays[readPositionBufferArray][1],bufferArrays[readPositionBufferArray][2],bufferArrays[readPositionBufferArray][3],bufferArrays[readPositionBufferArray][4]);
+      RS232Send(@Env_COM_Port_No,bufferArrays[readPositionBufferArray],5);
+      @Env_State_RS232 = 1;
+      
+      // Clear buffer
+      for(i = 0; i<5;++i)   bufferArrays[readPositionBufferArray][i] = 0;
+      
+      //writelineex(4,1,"1.Byte nächster Buffer  : %d",bufferArrays[readPositionBufferArray+1][0]);
+      
+      if(bufferArrays[readPositionBufferArray+1][0] != STARTBYTE)
+      {
+        //writelineex(4,1,"Nächste Bufferstelle leer");
+        writePositionBufferArray = 0;
+        readPositionBufferArray = 0;
+      }
+      
+      else
+      {
+        ++readPositionBufferArray;
+      }
+      
+      //writelineex(4,1,"Write-Position: %d Read-Position: %d",writePositionBufferArray,readPositionBufferArray);
+      
+    }
+    
+    else if(readPositionBufferArray > 0)
+    {  
+      //writelineex(4,1,"Bufferposition zurückgesetzt");
+      --readPositionBufferArray;
+    }
+  }  
+}
+
+/*******************************************************************************************************************************************
+*
+*     ADDITIONAL FUNCTIONS
+*
+********************************************************************************************************************************************/
+
+int getParity(byte b)
+{
+  int parity = 0;      
+	
+  parity = 0;
+  
+	while(b > 0)          // if it is 0 there are no more 1's to count    
+	{        
+		if(b & 1)        //see if LSB is 1        
+		{              
+    	parity++;         // yes it is        
+		}
+    
+		b = b >> 1; //shift to next bit    
+	} 
+  return (parity % 2);
+}
+
+int toInt(byte lowerBit, byte upperBit)
+{
+  return ((upperBit << 8) | lowerBit);
+}
+
+byte getUpper8Bits(int value)
+{
+  return value >> 8;
+}
+
+byte getLower8Bits(int value)
+{
+  return value & 0xFF;
+}
+
+void sendSerialData(byte data[])
+{
+  int i;
+  
+  if(@Env_State_RS232 == 0)
+  {
+    //writelineex(4,1,"SEND    : %X %X %X %X %X (direkt)",data[0],data[1],data[2],data[3],data[4]);
+    
+    @Env_State_RS232 = 1;
+    RS232Send(@Env_COM_Port_No,data,5);
+  }
+  
+  else if(writePositionBufferArray < 20)
+  {
+    for(i = 0; i<5;++i)   bufferArrays[writePositionBufferArray][i] = data[i];
+    
+    //writelineex(4,1,"BUFFER  : %X %X %X %X %X",bufferArrays[writePositionBufferArray][0],bufferArrays[writePositionBufferArray][1],bufferArrays[writePositionBufferArray][2],bufferArrays[writePositionBufferArray][4]);
+    
+    ++writePositionBufferArray;
+  }
+  
+  else{
+    writeLineEx(4,2,"Bufferüberlauf!");
+  }
+}
+
+void receivedStatus()
+{
+  enableControl("ABKUHTS Panel","Systen-Zustand Groupbox",1);
+     
+  @Env_State_System       = 1;
+  @Env_State_Connection   = 1;
+  @Env_State_Time         = ((receiveBuffer[2] & 0x80) == 128) ? 1 : 0;
+  @Env_State_SD           = ((receiveBuffer[2] & 0x40) == 64 ) ? 1 : 0;
+  @Env_State_Power        = ((receiveBuffer[2] & 0x20) == 32 ) ? 1 : 0;
+  @Env_State_Tankresistor = ((receiveBuffer[2] & 0x10) == 16 ) ? 1 : 0;
+  @Env_State_Relays       =  (receiveBuffer[2] & 0x0F) * 2;
+  
+  enableControl("ABKUHTS Panel","Funktionen Groupbox",@Env_State_Connection);
+  enableControl("ABKUHTS Panel","Tankgeber Groupbox",@Env_State_Tankresistor);
+  enableControl("ABKUHTS Panel","Fehlermeldungen Groupbox",1);
+  enableControl("ABKUHTS Panel","Widerstandssystem kalibrieren Button",@Env_State_Tankresistor);
+  enableControl("ABKUHTS Panel","Widerstandssystem erkennen Button",1);
+  enableControl("ABKUHTS Panel","Verbindungs Test Button",1);
+  enableControl("ABKUHTS Panel","Fehler quittieren Button",0);
+  enableControl("ABKUHTS Panel","Systen-Zustand Groupbox",0);
+  enableControl("ABKUHTS Panel","Zeit Sync Button",1);
+  enableControl("ABKUHTS Panel","Verbindungs Test Button",1);
+  
+  
+  @Env_State_Relay_1 = ((receiveBuffer[3] & 0x80) ==  128) ? 1 : 0;
+  @Env_State_Relay_2 = ((receiveBuffer[3] & 0x40) ==  64 ) ? 1 : 0;
+  @Env_State_Relay_3 = ((receiveBuffer[3] & 0x20) ==  32 ) ? 1 : 0;
+  @Env_State_Relay_4 = ((receiveBuffer[3] & 0x10) ==  16 ) ? 1 : 0;
+  @Env_State_Relay_5 = ((receiveBuffer[3] & 0x08) ==  8  ) ? 1 : 0;
+  @Env_State_Relay_6 = ((receiveBuffer[3] & 0x04) ==  4  ) ? 1 : 0;
+  @Env_Relay_Audio   = ((receiveBuffer[3] & 0x02) ==  2  ) ? 1 : 0;
+  @Env_State_Relay_USB = (receiveBuffer[3] & 0x01)==  1    ? 1 : 0;
+}
+
+void onReceivedSwitchedRelay()
+{
+  switch (receiveBuffer[2]){
+    case RELAY_NO1:
+      @Env_State_Relay_1 = (0x70 == receiveBuffer[3]) ? 0 : 1;
+      break;
+    case RELAY_NO2:
+      @Env_State_Relay_2 = (0x70 == receiveBuffer[3]) ? 0 : 1;
+      break;
+    case RELAY_NO3:
+      @Env_State_Relay_3 = (0x70 == receiveBuffer[3]) ? 0 : 1;
+      break;
+    case RELAY_NO4:
+      @Env_State_Relay_4 = (0x70 == receiveBuffer[3]) ? 0 : 1;
+      break;
+    case RELAY_NO5:
+      @Env_State_Relay_5 = (0x70 == receiveBuffer[3]) ? 0 : 1;
+      break;
+    case RELAY_NO6:
+      @Env_State_Relay_6 = (0x70 == receiveBuffer[3]) ? 0 : 1;
+      break;
+    case RELAY_USB:
+      @Env_State_Relay_USB = (0x70 == receiveBuffer[3]) ? 0 : 1;
+      break;
+    case AUDIO_M1:
+      //@Env_Relay_Audio = 1;
+      break;
+    case AUDIO_M2:
+      //@Env_Relay_Audio = 2;
+      break;
+    }
+  
+  @Env_State_System       = 1;
+}
+
+void onReceivedVoltage()
+{
+  int i = 0;
+  int value = 0;
+  float floatValue = 0.0;
+    
+  value = receiveBuffer[2];
+  value = value << 8;
+  value = value | receiveBuffer[3];
+  floatValue = (float) value;
+  
+  @Env_Measured_Voltage = floatValue / 100.0;
+  
+  @Env_State_System       = 1;
+}
+
+void onReceivedCurrent()
+{
+  int i = 0;
+  int value = 0;
+  float floatValue = 0.0;
+  
+  value = receiveBuffer[2];
+  value = value << 8;
+  value = value | receiveBuffer[3];
+  
+  floatValue = (float) value;
+  @Env_Measured_Current = floatValue / 10.0;
+  
+  @Env_State_System       = 1;
+}
+
+void onReceivedResistance()
+{
+  int resistance;
+  int difference;
+  
+  resistance = toInt(receiveBuffer[3], receiveBuffer[2]);
+  difference = 0;
+  
+  switch(receiveBuffer[1])
+  {
+    case M_GET_RESISTANCE_R1_1:
+      @Env_Resistance_R1_1_measured = resistance;
+      
+      if(resistorSettingIsPending == 1)
+      {
+        difference = abs(resistance - @Env_Resistance_R1_1_target);
+      }
+      
+      if(difference > 5 && @Env_Error_No!= 11)
+        writeLineEx(4,1,"Differenz: %d",difference);
+        //sendSerialData(GET_RESISTANCE_R1_1);
+
+      else
+        resistorSettingIsPending = 0;
+      break;
+      
+    case M_GET_RESISTANCE_R1_2:
+      @Env_Resistance_R1_2_measured = resistance;
+      break;
+      
+    case M_GET_RESISTANCE_R2_1:
+      @Env_Resistance_R2_1_measured = resistance;
+      
+      if(resistorSettingIsPending == 1)
+        difference = abs(resistance - @Env_Resistance_R2_1_target);
+      
+      if(difference > 5 && @Env_Error_No!= 11)
+        writeLineEx(4,1,"Differenz: %d",difference);
+        //sendSerialData(GET_RESISTANCE_R2_1);
+      
+      else
+      {
+        resistorSettingIsPending = 0;
+      }
+      break;
+      
+    case M_GET_RESISTANCE_R2_2:
+      @Env_Resistance_R2_2_measured = resistance;
+      break;
+  }
+  
+  @Env_State_System       = 1;
+}
+
+void onReceivedError()
+{
+  enableControl("ABKUHTS Panel","Fehler quittieren Button",1);
+  @Env_Error_No = (int)receiveBuffer[2];
+  
+  @Env_State_System       = 1;
+}
+
+RS232OnReceive( dword port, dword buffer[], dword number )
+{  
+  int checksum = 0;
+    
+  //writelineex(4,1,"RECEIVED: %X %X %X %X %X",receiveBuffer[0],receiveBuffer[1],receiveBuffer[2],receiveBuffer[3],receiveBuffer[4]);
+  
+  checksum = (getParity(receiveBuffer[1]) + getParity(receiveBuffer[2]) + getParity(receiveBuffer[3])) % 2;
+  
+  if( (checksum == 1 && receiveBuffer[4] == ODDPARITY) || (checksum == 0 && receiveBuffer[4] == EVENPARITY) )
+  {
+    switch(receiveBuffer[1]){
+      case CURRENT:
+        onReceivedCurrent();
+        break;
+        
+      case VOLTAGE:
+        onReceivedVoltage();
+        break;
+        
+      case SWITCH_RELAY:
+        onReceivedSwitchedRelay();
+        break;
+             
+      case SYSTEM_STATUS:
+        receivedStatus();
+        break;
+        
+      case SWITCH_AUDIO:
+        onReceivedSwitchedRelay();
+        break;
+        
+      case M_GET_RESISTANCE_R1_1:
+        onReceivedResistance();
+        break;
+        
+      case M_GET_RESISTANCE_R1_2:
+        onReceivedResistance();
+        break;
+        
+      case M_GET_RESISTANCE_R2_1:
+        onReceivedResistance();
+        break;
+        
+      case M_GET_RESISTANCE_R2_2:
+        onReceivedResistance();
+        break;
+        
+      case M_GET_R1_RANGE_EXTENSIONS:
+        @Env_R_1_1_RangeExtensionResistor = (int)receiveBuffer[2];
+        @Env_R_1_2_RangeExtensionResistor = (int)receiveBuffer[3];
+        @Env_State_System       = 1;
+        break;
+        
+      case M_GET_R2_RANGE_EXTENSIONS:
+        @Env_R_2_1_RangeExtensionResistor = (int)receiveBuffer[2];
+        @Env_R_2_2_RangeExtensionResistor = (int)receiveBuffer[3];
+        @Env_State_System       = 1;
+        break;
+        
+      case M_GET_POTENTIOMETER_RESISTANCE:
+        @Env_R_1_x_Potentiometer = (int)receiveBuffer[2];
+        @Env_R_2_x_Potentiometer = (int)receiveBuffer[3];
+        @Env_State_System       = 1;
+        break;
+      
+      case SYSTEM_ERROR:
+        @Env_State_Error = 2;
+        @Env_Error_No = receiveBuffer[2];
+        break;
+        
+        
+      default:
+        //writelineex(4,1,"Unbekannter Frame: empfangene Bytes -> Mode:%X D1:%X D2:%X PA:%X",receiveBuffer[1],receiveBuffer[2],receiveBuffer[3],receiveBuffer[4]);
+        if(@Env_Error_No != 7)
+          sendSerialData(RESEND_FRAME);
+        break;
+    }
+  }
+    
+  else{
+    //writelineex(4,1,"ERROR PAR: Mode:%X D1:%X D2:%X PA:%X",receiveBuffer[1],receiveBuffer[2],receiveBuffer[3],receiveBuffer[4]);
+    
+      if(@Env_Error_No != 7)
+          sendSerialData(RESEND_FRAME);
+    
+  }
+
+}
+
+RS232OnError(dword port, dword errorFlags)
+{
+   if ( errorFlags & 1 )
+      writeLineEx(4,3,"send failed");
+   if ( errorFlags & 2 )
+      writeLineEx(4,3,"receive failed");
+}
+
+on stopMeasurement
+{
+  @Env_COM_Port_State = 0; 
+}
+
+RS232OnSend(dword port, byte buffer[], dword number)
+{ 
+  @Env_State_RS232 = 0;
+}

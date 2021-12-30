@@ -1,17 +1,16 @@
-﻿// NUnit 3 tests
-// See documentation : https://github.com/nunit/docs/wiki/NUnit-Documentation
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.IO;
 using NUnit.Framework;
 
 namespace GrammarValidation.UnitTests
 {
     [TestFixture]
-    public class TestClass
+    public class CaplOperators
     {
         [Test]
-        public void TestMethod()
+        public void Arithmetic()
         {
+            var exists = File.Exists("arithmetic_operators.can");
+
             // TODO: Add your test code here
             var answer = 42;
             Assert.That(answer, Is.EqualTo(42), "Some useful error message");

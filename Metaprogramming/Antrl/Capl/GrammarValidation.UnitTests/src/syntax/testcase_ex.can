@@ -1,0 +1,150 @@
+includes
+{
+  
+}
+
+variables
+{
+  
+}
+
+void MainTest ()
+{
+    diagSetTarget("Door"); // Set the target ECU
+    supportedSessions(); // Test if 0x10 subfunctions are supported by the ECU
+}
+
+testfunction testFunctionName()
+{
+    write("testFunctionName");
+}
+
+testcase supportedSessions()
+{
+    char serviceQualifier[3][100] = {
+                                    "DefaultSession_Start", // Default Session
+                                    "ProgrammingSession_Start", // Programming Session
+                                    "ExtendedDiagnosticSession_Start" // Extended diagnostic Session
+                                    };
+    int i;
+    char tStep[10];
+  
+    for(i=0;i<elCount(serviceQualifier);i++)
+    {
+        snprintf(tStep, elCount(tStep), "%d.0",i+1);
+        teststep(0, tStep, "Test if session %s is supported", serviceQualifier[i]); // Write the current teststep to the testreport
+        if(SendRequestAndCheckResponse(serviceQualifier[i]) == 1) // Invoke function "SendRequestAndCheckResponse" and evaluate the return value
+        {
+            testStepPass(0, tStep, "Received positive response upon request %s", serviceQualifier[i]); // Write the test result to the testreport       
+        }
+        else
+        {
+            testStepFail(0, tStep, "No positive Response received upon request %s", serviceQualifier[i]); // Write the test result to the testreport  
+        }
+    }
+}
+
+/*
+  This function creates a request-object by using the given service qualifier.
+  The request is sent and the response evaluated.
+  
+  Return Values:
+  1: There was a positive response upon the request
+  0: There was no positive response or some error occured
+*/
+int SendRequestAndCheckResponse(char serviceQualifier[])
+{
+  diagRequest * req;
+  long ret, ret2, ret3;
+  
+  diagInitialize(req, serviceQualifier); // Reinitialize the request-object with the given service qualifier
+  diagSendRequest(req);
+  
+  ret = testWaitForDiagRequestSent(req, 2000); // Wait until the request has been completely sent 
+  if(ret == 1) // Request sent
+  {
+    TestReportWriteDiagObject(req); // Write the request-object to the testreport
+    write("Request %s has been successfully sent", serviceQualifier);
+    ret2=TestWaitForDiagResponse(req, 5000); // Wait for a response, here for 5000ms. Note: This is no P2 timeout!
+    
+    if(ret2==1) // Response received
+    {
+      ret3=DiagGetLastResponseCode(req); // Get the code of the response
+      if(ret3==-1) // It is a positive response 
+      { 
+        write("Received positive response upon request %s", serviceQualifier);
+        testReportWriteDiagResponse(req); // Write the response-Object to the testreport
+        return 1;
+      }
+      else // It is a negative Response
+      {
+        write("Negative Response received upon request %s. NRC: 0x%02X", serviceQualifier, (byte)ret3);
+        TestReportWriteDiagResponse(req); // Write the response-Object to the testreport
+        return 0;
+      }    
+    }
+    
+    if(ret2==0) // Timeout. No response received
+    {
+      write("Timeout specified in TestWaitForDiagResponse expired");
+      return 0;
+    }
+    if(ret2<0) // Error e.g. transport protocol level
+    {
+      if(ret2==-92) // This is the error code for P2 or P2* timeouts
+      {
+        write("TP level error %d, probably P2 or P2* timeout", ret2); 
+        return 0;
+      }
+      else
+      {
+        write("Error %d in the diagnostic or transport layer", ret2); 
+        return 0;
+      }
+    }
+  }
+  else
+  {
+    if(ret==0)
+    {
+      write("Timeout expired while trying to send request %s", serviceQualifier);
+      return 0;
+    }
+    if(ret<0)
+    {
+      write("Internal error %d occured while trying to send request %s", ret, serviceQualifier);
+      return 0;
+    }
+  }
+  return 0;
+}
+
+testcase TEST_002() 
+{  
+    if($Active == 0) 
+    {  
+        write("> PASS: DBC default value & bus-received value of CAN signal 'Active' match\n"); 
+    } 
+    else 
+    { 
+        write("> FAIL: DBC default value & bus-received value of CAN signal 'Active' do not match\n"); 
+    }
+
+    if($CarSpeed == 0) 
+    { 
+        write("> PASS: DBC default value & bus-received value of CAN signal 'CarSpeed' match\n"); 
+    } 
+    else 
+    { 
+        write("> FAIL: DBC default value & bus-received value of CAN signal 'CarSpeed' do not match\n"); 
+    } 
+   
+    if($WN_right_up == 0) 
+    { 
+        write("> PASS: DBC default value & bus-received value of CAN signal 'WN_right_up' match\n"); 
+    } 
+    else 
+    { 
+        write("> FAIL: DBC default value & bus-received value of CAN signal 'WN_right_up' do not match\n"); 
+    } 
+}

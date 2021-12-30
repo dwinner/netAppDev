@@ -1,0 +1,278 @@
+/*@!Encoding:1252*/
+includes
+{
+  //#pragma library ("C:\Program Files\Vector CANoe 10.0\Exec32\osek_tp.dll")
+}
+
+variables
+{  
+  long ATM_Connection_Handle;
+  word i;
+  int index = 0;
+  message 0x17FE1867x msg = {DLC = 8};
+  char RxBuff[375];
+  byte first29 = 0;
+  byte AuthtimeMsg[375];  
+  long txid_ATiManager =0x17FE1867;
+  long rxid_ATiMaster  =0x17FC1867;
+  //char ATM_au8DummyMsg[375] = "eyJhbGciOiJFUzI1NiIsImN0eSI6Im5vbmUiLCJraWQiOiJWV0dfRUtNRi1BLVRFU1QtQkMtQVVUSU1FLUdMT0JBTC1WVzM4WC1DT05USU5FTlRBTC0yMDE4LTAwMSIsInRzIjoiMjAyMS0wMS0wMVQwMDowMDowMFoiLCJjaGwiOiJPRXN4ZVV0UlNVRkJkRXhWV1djNGNRIn0..GutQrQjawmsNEoklIzALk--xXwZCxgYIxNUqDEt7924MW8vWGyjvMEd8nCPuLnZtud-kRx8SJc44EJOOBj1RrQ";
+  char InputMessageString[375]="";
+  //Variables for OSEK TP-Communication  
+  char gECU[10] = "ATM: ";
+}
+
+OSEKTL_FirstFrameIndication( long sourceadr, long destadr, long rxCount )
+{
+  /* Print message to write window */
+  //write("CAPL: %s: FF indication called, SA= 0x%02lx, TA= 0x%02lx, RxCount = %ld", 
+  //       gECU, sourceadr, destadr, rxCount);
+}
+
+on envVar eSendEnabled
+{
+  
+  InitOSEK_TP();
+  //OSEKTL_SetTxId(txid_ATiManager);
+  //OSEKTL_SetRxId(rxid_ATiMaster);
+}
+
+OSEKTL_FI_PreSend (word dlc_1[], byte message_1[])
+{
+}
+
+on start
+{    
+  msg.byte(0) = 0x30;
+  msg.byte(1) = 0x10;
+  msg.byte(2) = 0x00;
+  msg.byte(3) = 0xaa;
+  msg.byte(4) = 0xaa;
+  msg.byte(5) = 0xaa;
+  msg.byte(6) = 0xaa;
+  msg.byte(7) = 0xaa;
+}
+
+on preStart
+{
+  OSEKTL_SetCAN(1);  
+}
+
+
+void InitOSEK_TP()
+{
+   long OutTime = 900;                    //keine höheren Werte eintragen, sonst Probleme mit C-CAN
+   
+   OSEKTL_SetNrmlMode(); //Normale Adressierung                s.S.14
+   OSEKTL_UseExtId(1);
+  
+   // Transmit ID & Receive ID
+   //OSEKTL_SetTxId( 0x441 );               //Transmit ID setzen                 s.S.18
+   //OSEKTL_SetRxId( 0x5FF );                    //Setzt aktive Receive ID       s.S.18
+
+   //OSEKTL_SetTxId( 0x641 );
+   //OSEKTL_SetRxId( 0x5C1 );     
+  
+   // FlowControl
+   OSEKTL_SetBS (15);                    //Block size setzen                    s.S.14
+   OSEKTL_SetSTMIN(5);
+   OSEKTL_SetUseFC (1);               //FlowControl aktiv                    s.S.15
+   
+   // Zero Padding
+   OSEKTL_Set0Pattern (0);               //Zero Padding 0                    s.S.15
+   OSEKTL_Clr0Padding ();               //Switches Zero Padding off          s.S.15
+
+   // StartSN
+   //OSEKTL_SetStartSN(1);               //StartNumber of CF = 1               s.S.14
+
+   // TimeOut
+   //OSEKTL_SetTimeoutFC( OutTime );     //FlowControl - Timeout setzen  s.S.16
+   //OSEKTL_SetTimeoutCF( OutTime );     //ConsecutiveFrame - Timeout     s.S.16
+   //OSEKTL_SetTimeoutAr( OutTime );
+   //OSEKTL_SetTimeoutCr( OutTime );
+   //OSEKTL_SetTimeoutAs( OutTime );
+   //OSEKTL_SetTimeoutBs( OutTime );
+
+   OSEKTL_SetDLC8();                    //Sendelänge auf 8 Byte fixieren
+  
+  
+  ATM_Connection_Handle = CanTpCreateConnection(0);
+  if( ATM_Connection_Handle <= 0)
+  {
+    write("ATM: No CAN connection handle could be crated");
+    return; // error
+  }
+  CanTpSetRxIdentifier( ATM_Connection_Handle, 0x80000000 | rxid_ATiMaster);
+  CanTpSetTxIdentifier( ATM_Connection_Handle, 0x80000000 | txid_ATiManager);
+  
+  //OSEKTL_SetTxId(0x80000000 | txid_ATiManager);
+  //OSEKTL_SetRxId(0x80000000 | rxid_ATiMaster);
+} 
+ 
+
+
+OSEKTL_ErrorInd(int error)
+{
+  switch (error)
+  {
+    case 1:     write("CAPL: %s: Error (%d): Timeout while waiting for CF", gECU, error);     break;
+    case 2:     write("CAPL: %s: Error (%d): Timeout while waiting for FC", gECU, error);     break;
+    case 3:     write("CAPL: %s: Error (%d): Wrong Sequence Number", gECU, error);            break;
+    case 4:     write("CAPL: %s: Error (%d): TP_DLL busy", gECU, error);                      break;
+    case 5:     write("CAPL: %s: Error (%d): Unexpected PDU", gECU, error);                   break;
+    case 6:     write("CAPL: %s: Error (%d): Timeout while waiting for Tx-Ack", gECU, error); break;
+    case 7:     write("CAPL: %s: Error (%d): WFT Overrun", gECU, error);                      break;
+    default:    write("CAPL: %s: Error (%d): unknown error", gECU, error);                    break;
+  }
+}
+
+ on envVar ENV_RTC_Msg 
+{
+  if(getValue(ENV_RTC_Msg)!=0)
+  {
+    write("Bytes copied: %d",getValue(ENV_RTC_DataPack,InputMessageString));
+    //write("Message length: %d",strlen(InputMessageString));
+    
+    for (i = 0; i < strlen(InputMessageString);i++)
+    {
+      AuthtimeMsg[i] = (byte)InputMessageString[i];
+    }
+    
+    for (i = strlen(InputMessageString); i < 375;i++)
+    {
+      AuthtimeMsg[i] = 0;
+    }
+    
+    //OSEKTL_DataReq(AuthtimeMsg,375);
+    CanTpSendData(ATM_Connection_Handle, AuthtimeMsg,375);
+
+  }
+}
+
+on message AuthTime_eCall_Req
+{
+  if (((this.byte(0) & 0x0F) == 0x00) && (((this.byte(0) & 0x30)>> 4) < 0x03))
+  {    
+    output(msg);
+    //write("Answer FC");
+  }
+  if (((this.byte(0) & 0x30)>> 4) == 0x01)
+  {
+    for (i = 0;i < 6;i++)
+    {
+      RxBuff[index] = this.byte(i+2);
+   // write("%c", RxBuff[index]);
+      ++index;      
+    }
+  }
+
+  if (((this.byte(0) & 0x30)>> 4) == 0x02) 
+  {    
+    for (i = 0 ;  i < 7;i++)
+    {
+      RxBuff[index] = this.byte(i+1);
+      //          write("%c", RxBuff[index]);
+      ++index;
+    } 
+  }
+  
+  if(this.byte(0) == 0x29)
+  {
+    //write("Index %d", index);
+    
+    if(first29)
+    {
+      byte temp_int = 0;
+      
+      byte minTimeMaxByte = 20;
+      byte minTimeData[20];
+      char minTimeString[21]="";
+      
+      byte CurrentRTCMaxByte = 40;
+      byte CurrentRTCData[20];
+      char CurrentRTCString[21]="";
+  
+      byte RTCChallengeMaxByte = 84;
+      byte RTCChallengeData[44];
+      char RTCChallengeString[45]="";
+      
+      byte RTCKeyIDMaxByte = 180;
+      byte RTCKeyIDData[96];
+      char RTCKeyIDString[97]="";
+      
+      for (i = 0; i < RTCKeyIDMaxByte; i++ )
+      {   
+        if (i < minTimeMaxByte)
+        {
+          minTimeData[i] = RxBuff[i]; 
+        }
+        else if (i < CurrentRTCMaxByte)
+        {   
+          if (i== minTimeMaxByte)
+          {
+            temp_int=0;
+          }
+          CurrentRTCData[temp_int] = RxBuff[i];
+          ++temp_int;
+        }
+        else if (i < RTCChallengeMaxByte)
+        {
+          if (i== CurrentRTCMaxByte)
+          {
+            temp_int=0;
+          }
+          RTCChallengeData[temp_int] = RxBuff[i];
+          ++temp_int;
+        }
+        else if (i < RTCKeyIDMaxByte)
+        {
+          if (i== RTCChallengeMaxByte)
+          {
+            temp_int=0;
+          }
+          RTCKeyIDData[temp_int] = RxBuff[i];
+          ++temp_int;
+        }
+      }
+      
+      //conversion from byte to char
+ 
+      for (i = 0; i < minTimeMaxByte;i++)
+      {
+        minTimeString[i] = (char)minTimeData[i];
+      }
+      minTimeString[minTimeMaxByte]=0;
+
+      for (i = 0; i < CurrentRTCMaxByte - minTimeMaxByte;i++)
+      {
+        CurrentRTCString[i] = (char)CurrentRTCData[i];
+      }      
+      CurrentRTCString[CurrentRTCMaxByte - minTimeMaxByte]=0;   
+      
+      for (i = 0; i < RTCChallengeMaxByte - CurrentRTCMaxByte;i++)
+      {
+        RTCChallengeString[i] = (char)RTCChallengeData[i];
+      }
+      RTCChallengeString[RTCChallengeMaxByte - CurrentRTCMaxByte]=0; 
+      
+      for (i = 0; i <RTCKeyIDMaxByte - RTCChallengeMaxByte;i++)
+      {
+        RTCKeyIDString[i] = (char)RTCKeyIDData[i];
+      }
+      RTCKeyIDString[RTCKeyIDMaxByte - RTCChallengeMaxByte]=0; 
+      
+      putValue(ENV_minTime,minTimeString); 
+      putValue(ENV_RTC_Time,CurrentRTCString); 
+      putValue(ENV_RTC_Challenge,RTCChallengeString);
+      putValue(ENV_RTC_KeyID,RTCKeyIDString);      
+      
+    
+      index = 0;   
+      first29 = 0;
+ 
+    }
+    else
+    {
+      first29 = 1;
+    }
+  }
+}

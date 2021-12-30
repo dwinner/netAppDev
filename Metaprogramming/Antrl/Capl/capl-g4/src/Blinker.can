@@ -1,0 +1,126 @@
+/*@!Encoding:1252*/
+variables
+{
+  int     Blinkmodi_02CycleTime;
+  const   Blinkmodi_02RepTime = 5;
+  int	    Blinkfrequenz;
+  byte    Blink_Anz=0;
+  byte    timeoutzaehler;
+  byte    Takt_an = 0;
+  byte    lock=0;
+  
+  byte    timeout_flag = 0;
+}
+
+on start
+{
+  @EnvBlink_freq = 500;
+}
+
+
+on envVar EnvBlink_freq
+{
+  // Anzahl der Nachrichten berechnen (unter Beachtung der Zykluszeit)
+  if(@IL_CAN1::Message_NormalCyclePeriod::ICAS1_Gateway_Blinkmodi_02 > 0)
+	Blink_Anz = (@this/@IL_CAN1::Message_NormalCyclePeriod::ICAS1_Gateway_Blinkmodi_02);
+}
+
+on envVar EnvBlink_Blk_re
+{
+  if (@this == 1)
+  {
+    if (@IL_CAN1::Message_SelectedPeriod::ICAS1_Gateway_Blinkmodi_02 == 0) // normal
+    {
+      @IL_CAN1::Message_SelectedPeriod::ICAS1_Gateway_Blinkmodi_02 = 1; // fast
+      timeout_flag = 0;
+    }
+    timeoutzaehler = Blinkmodi_02RepTime+1;
+  }
+}
+
+on envVar EnvBlink_Blk_li
+{
+  if (@this == 1)
+  {
+     if (@IL_CAN1::Message_SelectedPeriod::ICAS1_Gateway_Blinkmodi_02 == 0) // normal
+     {
+       @IL_CAN1::Message_SelectedPeriod::ICAS1_Gateway_Blinkmodi_02 = 1; // fast
+       timeout_flag = 0;
+     }
+     timeoutzaehler = Blinkmodi_02RepTime;
+  }
+}
+
+on message Blinkmodi_02
+{
+  // Takt nur wenn Blinker rechts oder links aktiv ist
+  if (timeout_flag == 0)
+  {
+    //Blinker aktiv, an-Phase
+    if ((Blink_Anz > 0) && (Takt_an == 1))
+    {
+      Blink_Anz--;
+    
+      if ((@EnvBlink_Blk_li == 1) && (@EnvBlink_Blk_re == 0) && (lock == 0)) // rechts aus, links an
+      {
+        $Blinken_re_Kombi_Takt = 0;
+        $Blinken_li_Kombi_Takt = 1;
+        lock = 1;
+      }
+        
+      if ((@EnvBlink_Blk_li == 0) && (@EnvBlink_Blk_re == 1) && (lock == 0)) // rechts an, links aus
+      {
+        $Blinken_re_Kombi_Takt = 1;
+        $Blinken_li_Kombi_Takt = 0;
+        lock = 1;
+      }
+      
+      if ((@EnvBlink_Blk_li == 1) && (@EnvBlink_Blk_re == 1) && (lock == 0)) // rechts an, links an
+      {
+        $Blinken_re_Kombi_Takt = 1;
+        $Blinken_li_Kombi_Takt = 1;
+        lock = 1;
+      }
+    }
+    
+    //Blinker aktiv, aus-Phase
+    if ((Takt_an == 0))
+    {
+      $Blinken_re_Kombi_Takt = 0;
+      $Blinken_li_Kombi_Takt = 0;
+      
+      if (Blink_Anz > 0)
+        Blink_Anz--;
+    }
+    
+    // An/Aus Switch
+    if (Blink_Anz == 0)
+    {
+      if ((@EnvBlink_Blk_li == 0) && (@EnvBlink_Blk_re == 0) && (Takt_an == 0) && (timeoutzaehler > 0))
+      {
+        timeoutzaehler--;
+      }
+      
+      else
+      {    
+        Blink_Anz = @EnvBlink_freq/50;
+        
+        if (Takt_an == 1)
+          Takt_an = 0;
+        
+        else
+        {
+          Takt_an = 1;
+        }
+           
+      lock = 0;
+      }
+    }
+
+    if (timeoutzaehler == 0)
+    {
+      @IL_CAN1::Message_SelectedPeriod::ICAS1_Gateway_Blinkmodi_02 = 0; // normal
+      timeout_flag = 1;
+    }
+  }
+}

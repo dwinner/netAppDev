@@ -1,0 +1,1066 @@
+/*@!Encoding:1252*/
+/*
+Copyright ( C ) Continental AG 2012
+
+
+
+Based on Version  1.0, 12.05.10   from M.Dangelmeyr      IBD im Auftrag von EP/ESE   Daimler AG
+
+Date of creation :  14.04.2011
+
+Created by :                 Hans Jürgen Hipp
+
+
+Version info
+
+1.0	   10.2013	Inital versioning introduced
+1.1	09.04.2014	HMI_2014_05a database
+
+// #VERSION#
+// #VERSION_END#
+*/
+
+
+variables
+{
+    const TRUE =    0xAA;
+    const FALSE =   0x00;
+    const cManual = 0x00;
+    const cAuto =   0xAA;
+
+    msTimer t_DBKomTimer_20ms;      // Timer zum zyklischen Aufruf der DBKom-Task
+    int c_tDBKomTimer_20ms = 20;    // msec
+    msTimer t_DBKomTimer_5ms;       // Timer zum zyklischen Aufruf der DBKom-Task
+    int c_tDBKomTimer_5ms = 5;      // msec
+
+
+    // BA_DEF_ BO_  "GenMsgSendType" ENUM
+    //  0 : cyclicX
+    //  1 : spontanX
+    //  2 : cyclicIfActiveX
+    //  3 : spontanWithDelay
+    //  4 : cyclicAndSpontanX
+    //  5 : cyclicAndSpontanWithDelay
+    //  6 : spontanWithRepitition
+    //  7 : cyclicIfActiveAndSpontanWD
+    //  8 : cyclicIfActiveFast
+    //  9 : cyclicWithRepeatOnDemand
+    //  10 : none
+
+// #VAR_DEF#
+
+//  message   TCO_A1 --- Sendeart 0 cyclicX --- 
+    message   TCO_A1 _mTCO_A1;
+    int      _TCO_A1_Timebase;
+    int      _TCO_A1_CycleCount = 1;
+    int      _TCO_A1_Cnt;
+    int      _TCO_A1_StartDelay;
+    msTimer _tTCO_A1;
+
+//  message   TCO_A2 --- Sendeart 0 cyclicX --- 
+    message   TCO_A2 _mTCO_A2;
+    int      _TCO_A2_Timebase;
+    int      _TCO_A2_CycleCount = 5;
+    int      _TCO_A2_Cnt;
+    int      _TCO_A2_StartDelay;
+    msTimer _tTCO_A2;
+
+//  message   TCO_A3 --- Sendeart 0 cyclicX --- 
+    message   TCO_A3 _mTCO_A3;
+    int      _TCO_A3_Timebase;
+    int      _TCO_A3_CycleCount = 50;
+    int      _TCO_A3_Cnt;
+    int      _TCO_A3_StartDelay;
+    msTimer _tTCO_A3;
+
+//  message   TCO_A4 --- Sendeart 1 spontanX --- 
+    message   TCO_A4 _mTCO_A4;
+    int      _TCO_A4_Timebase;
+    int      _TCO_A4_SpontanFlag = 0;
+
+// #VAR_DEF_END#
+
+    char buffer[1024], stringbuffer[512];
+    int bActiveHelper;    // Hilfsvariable für "Aktive Signale"
+
+//--------------------------------------- AUTOSAR NM ------------------------------------------------
+
+    const byte cAUTO =   0;
+    const byte cMANUAL = 1;
+
+//    msTimer t_NM_Transmit;
+    long  NM_Transmit_Cycle;
+    msTimer t_NM_Wait_Bus_Sleep_Time;
+    const c_NM_Wait_Bus_Sleep_Time = 1500;
+//    msTimer t_NM_Remote_Sleep_Ind_Time;
+    const c_NM_Remote_Sleep_Ind_Time = 5000;
+    msTimer t_NM_Repeat_Message_Time;
+    const c_NM_Repeat_Message_Time = 6000;
+    msTimer t_NM_Timeout_Time;
+    const c_NM_Timeout_Time = 5000;
+
+    byte NM_Mode = 0;
+    const byte cNM_Mode_Init = 0;
+    const byte cNM_Mode_Sleep = 1;
+    const byte cNM_Mode_Prepare_Bus_Sleep = 2;
+    const byte cNM_Mode_Ready_Sleep = 3;
+    const byte cNM_Mode_Normal_Operation_State = 4;
+    const byte cNM_Mode_RepeatMsg = 5;
+
+    byte boCanNM_Rx_Indication = 0;
+    byte boCanNM_Tx_Confirmation = 0;
+    byte boCanNM_WaitBusSleep_Timer_Expired = 0;
+    byte boCanNM_RepeatMessage_Timer_Expired = 0;
+    byte boCanNM_NM_Timeout_Timer_Expired = 0;
+    byte boCanNM_RepeatMessage_Requested = 0;
+
+    const word cFLDoorNMRequest =       0x0001;
+    const word cFRDoorNMRequest =       0x0002;
+    const word cRLDoorNMRequest =       0x0004;
+    const word cRRDoorNMRequest =       0x0008;
+    const word cAllDoorNMRequest =      0x000F;
+    const word cIgnitionNMRequest =     0x0010;
+    const word cStWhlButtonNMRequest =  0x0020;
+    const word cWakeWarningNMRequest =  0x0040;
+    const word cEPKBWarningNMRequest =  0x0080;
+    const word cIlluNMRequest =         0x0100;
+    const word cCarClosureNMRequest =   0x0200;
+    const word cGearIndNMRequest =      0x0400;
+
+    const word cManualNMRequest =       0x8000;
+    const word cAllNMRequest =          0xFFFF;
+
+    const CanNmNodeId_Base =       1280; //  =  07h
+    const CanNmNodeId_EIS =           7; //  =  07h
+    const CanNmNodeId_HGW =          27; //  =  07h
+    const CanNmNodeId_TGW =          56; //  =  38h
+    const CanNmNodeId_RBTM_FR =      64; //  =  40h
+    const CanNmNodeId_IC =           65; //  =  41h
+    const CanNmNodeId_HUD =          66; //  =  42h
+    const CanNmNodeId_NV =           67; //  =  43h
+    const CanNmNodeId_RVC_SVS =      68; //  =  44h
+    const CanNmNodeId_ORC =          69; //  =  45h
+    const CanNmNodeId_RBTM_FL =      71; //  =  47h
+    const CanNmNodeId_TPM =          82; //  =  52h
+
+    const CanNmNodeDetectionEnabled          = 0; //false
+    const CanNmNodeIdEnabled                 = 1; //true
+    const CanNmUserDataEnabled               = 1; //true;
+    const CanNmUserDataLentgh                = 7;
+    const CanNmRepeatMsgIndEnabled           = 1; //true;
+    const CanNmDevErrorDetect                = 0; //false
+//    const CanNmUserDataEnabled             = 1; //true
+    const CanNmRemoteSleepIndEnabled         = 0; //false
+    const CanNmMsgReducedtime                = 80; //ms
+    const CanNmPduRxIndicationEnabled        = 0; //false
+    const CanNmStateChangeIndEnabled         = 0; //false
+    const CanNmImmediateTxconfEnabled        = 0;// false
+    const CanNmMsgTimeoutTime                = 5000; //ms
+    const CanNmPduNidPosition                = 0; //CANNM_PDU_BYTE_0;
+    const CanNmPduCbvPosition                = 0xFF; //ANNM_PDU_OFF;
+    const CanNmPduLength                     = 8;
+    const cCanNmPassiveModeEnabled           = 0; //false
+    const CanNmBusSynchronizationEnabled     = 0; //false
+    const CanNmBusLoadReductionEnabled       = 1; //true
+//    const CanNmRemoteSleepIndEnabled       = 0; //false
+//    const CanNmNodeDetectionEnabled        = 0; //false
+    const CanNmComControlEnabled             = 1; //true    
+
+    const NmAsrCanMsgStandardCycle =          2000;
+    const NmAsrCanMsgCycleOffset_EIS =          70;
+    const NmAsrCanMsgReducedTime_EIS =        1070;
+    const NmAsrCanMsgCycleOffset_HGW =          30;
+    const NmAsrCanMsgReducedTime_HGW =        1270;
+    const NmAsrCanMsgCycleOffset_HUD =          20;
+    const NmAsrCanMsgReducedTime_HUD =        1660;
+    const NmAsrCanMsgCycleOffset_IC =           10;
+    const NmAsrCanMsgReducedTime_IC =         1650;
+    const NmAsrCanMsgCycleOffset_NV =           30;
+    const NmAsrCanMsgReducedTime_NV =         1670;
+    const NmAsrCanMsgCycleOffset_ORC =          50;
+    const NmAsrCanMsgReducedTime_ORC =        1690;
+    const NmAsrCanMsgCycleOffset_RBTM_FL =       0;
+    const NmAsrCanMsgReducedTime_RBTM_FL =    1640;
+    const NmAsrCanMsgCycleOffset_RBTM_FR =      70;
+    const NmAsrCanMsgReducedTime_RBTM_FR =    1710;
+    const NmAsrCanMsgCycleOffset_RVC =          40;
+    const NmAsrCanMsgReducedTime_RVC =        1680;
+    const NmAsrCanMsgCycleOffset_SVS =          40;
+    const NmAsrCanMsgReducedTime_SVS =        1680;
+    const NmAsrCanMsgCycleOffset_TGW =           0;
+    const NmAsrCanMsgReducedTime_TGW =        1560;
+    const NmAsrCanMsgCycleOffset_TPM =          20;
+    const NmAsrCanMsgReducedTime_TPM =        1820;
+
+    char gECU[12] = "Tachogragh";
+
+    byte CanNmNodeId            = CanNmNodeId_HGW;
+    word NmNodeIdentifier       = CanNmNodeId_Base + CanNmNodeId_HGW;
+    word NmAsrCanMsgCycleOffset = NmAsrCanMsgCycleOffset_HGW;
+    word NmAsrCanMsgReducedTime = NmAsrCanMsgReducedTime_HGW;
+    word NmAsrCanMsgCycleTime   = 2000;
+    byte NM_Repeat_Message_State_Active = 0;
+    byte NM_AutomaticModeActive = 0;
+
+    // Botschaft NM_xxx_AR --- Sendeart cyclicX --- 
+//    message NM_HGW_AR _mNM_xxx_AR;
+    byte _mNM_xxx_Transmit_Allowed = 1;
+
+//--------------------------------------- AUTOSAR NM ------------------------------------------------
+
+    byte  crctable[256] = {
+        0x00, 0x1D, 0x3A, 0x27, 0x74, 0x69, 0x4E, 0x53, 0xE8, 0xF5, 0xD2, 0xCF, 0x9C, 0x81, 0xA6, 0xBB,
+        0xCD, 0xD0, 0xF7, 0xEA, 0xB9, 0xA4, 0x83, 0x9E, 0x25, 0x38, 0x1F, 0x02, 0x51, 0x4C, 0x6B, 0x76,
+        0x87, 0x9A, 0xBD, 0xA0, 0xF3, 0xEE, 0xC9, 0xD4, 0x6F, 0x72, 0x55, 0x48, 0x1B, 0x06, 0x21, 0x3C,
+        0x4A, 0x57, 0x70, 0x6D, 0x3E, 0x23, 0x04, 0x19, 0xA2, 0xBF, 0x98, 0x85, 0xD6, 0xCB, 0xEC, 0xF1,
+        0x13, 0x0E, 0x29, 0x34, 0x67, 0x7A, 0x5D, 0x40, 0xFB, 0xE6, 0xC1, 0xDC, 0x8F, 0x92, 0xB5, 0xA8,
+        0xDE, 0xC3, 0xE4, 0xF9, 0xAA, 0xB7, 0x90, 0x8D, 0x36, 0x2B, 0x0C, 0x11, 0x42, 0x5F, 0x78, 0x65,
+        0x94, 0x89, 0xAE, 0xB3, 0xE0, 0xFD, 0xDA, 0xC7, 0x7C, 0x61, 0x46, 0x5B, 0x08, 0x15, 0x32, 0x2F,
+        0x59, 0x44, 0x63, 0x7E, 0x2D, 0x30, 0x17, 0x0A, 0xB1, 0xAC, 0x8B, 0x96, 0xC5, 0xD8, 0xFF, 0xE2,
+        0x26, 0x3B, 0x1C, 0x01, 0x52, 0x4F, 0x68, 0x75, 0xCE, 0xD3, 0xF4, 0xE9, 0xBA, 0xA7, 0x80, 0x9D,
+        0xEB, 0xF6, 0xD1, 0xCC, 0x9F, 0x82, 0xA5, 0xB8, 0x03, 0x1E, 0x39, 0x24, 0x77, 0x6A, 0x4D, 0x50,
+        0xA1, 0xBC, 0x9B, 0x86, 0xD5, 0xC8, 0xEF, 0xF2, 0x49, 0x54, 0x73, 0x6E, 0x3D, 0x20, 0x07, 0x1A,
+        0x6C, 0x71, 0x56, 0x4B, 0x18, 0x05, 0x22, 0x3F, 0x84, 0x99, 0xBE, 0xA3, 0xF0, 0xED, 0xCA, 0xD7,
+        0x35, 0x28, 0x0F, 0x12, 0x41, 0x5C, 0x7B, 0x66, 0xDD, 0xC0, 0xE7, 0xFA, 0xA9, 0xB4, 0x93, 0x8E,
+        0xF8, 0xE5, 0xC2, 0xDF, 0x8C, 0x91, 0xB6, 0xAB, 0x10, 0x0D, 0x2A, 0x37, 0x64, 0x79, 0x5E, 0x43,
+        0xB2, 0xAF, 0x88, 0x95, 0xC6, 0xDB, 0xFC, 0xE1, 0x5A, 0x47, 0x60, 0x7D, 0x2E, 0x33, 0x14, 0x09,
+        0x7F, 0x62, 0x45, 0x58, 0x0B, 0x16, 0x31, 0x2C, 0x97, 0x8A, 0xAD, 0xB0, 0xE3, 0xFE, 0xD9, 0xC4
+    };
+
+    byte  crctable_profile02[256] = {
+        0x00, 0x2F, 0x5E, 0x71, 0xBC, 0x93, 0xE2, 0xCD, 0x57, 0x78, 0x09, 0x26, 0xEB, 0xC4, 0xB5, 0x9A,
+        0xAE, 0x81, 0xF0, 0xDF, 0x12, 0x3D, 0x4C, 0x63, 0xF9, 0xD6, 0xA7, 0x88, 0x45, 0x6A, 0x1B, 0x34,
+        0x73, 0x5C, 0x2D, 0x02, 0xCF, 0xE0, 0x91, 0xBE, 0x24, 0x0B, 0x7A, 0x55, 0x98, 0xB7, 0xC6, 0xE9,
+        0xDD, 0xF2, 0x83, 0xAC, 0x61, 0x4E, 0x3F, 0x10, 0x8A, 0xA5, 0xD4, 0xFB, 0x36, 0x19, 0x68, 0x47,
+        0xE6, 0xC9, 0xB8, 0x97, 0x5A, 0x75, 0x04, 0x2B, 0xB1, 0x9E, 0xEF, 0xC0, 0x0D, 0x22, 0x53, 0x7C,
+        0x48, 0x67, 0x16, 0x39, 0xF4, 0xDB, 0xAA, 0x85, 0x1F, 0x30, 0x41, 0x6E, 0xA3, 0x8C, 0xFD, 0xD2,
+        0x95, 0xBA, 0xCB, 0xE4, 0x29, 0x06, 0x77, 0x58, 0xC2, 0xED, 0x9C, 0xB3, 0x7E, 0x51, 0x20, 0x0F,
+        0x3B, 0x14, 0x65, 0x4A, 0x87, 0xA8, 0xD9, 0xF6, 0x6C, 0x43, 0x32, 0x1D, 0xD0, 0xFF, 0x8E, 0xA1,
+        0xE3, 0xCC, 0xBD, 0x92, 0x5F, 0x70, 0x01, 0x2E, 0xB4, 0x9B, 0xEA, 0xC5, 0x08, 0x27, 0x56, 0x79,
+        0x4D, 0x62, 0x13, 0x3C, 0xF1, 0xDE, 0xAF, 0x80, 0x1A, 0x35, 0x44, 0x6B, 0xA6, 0x89, 0xF8, 0xD7,
+        0x90, 0xBF, 0xCE, 0xE1, 0x2C, 0x03, 0x72, 0x5D, 0xC7, 0xE8, 0x99, 0xB6, 0x7B, 0x54, 0x25, 0x0A,
+        0x3E, 0x11, 0x60, 0x4F, 0x82, 0xAD, 0xDC, 0xF3, 0x69, 0x46, 0x37, 0x18, 0xD5, 0xFA, 0x8B, 0xA4,
+        0x05, 0x2A, 0x5B, 0x74, 0xB9, 0x96, 0xE7, 0xC8, 0x52, 0x7D, 0x0C, 0x23, 0xEE, 0xC1, 0xB0, 0x9F,
+        0xAB, 0x84, 0xF5, 0xDA, 0x17, 0x38, 0x49, 0x66, 0xFC, 0xD3, 0xA2, 0x8D, 0x40, 0x6F, 0x1E, 0x31,
+        0x76, 0x59, 0x28, 0x07, 0xCA, 0xE5, 0x94, 0xBB, 0x21, 0x0E, 0x7F, 0x50, 0x9D, 0xB2, 0xC3, 0xEC,
+        0xD8, 0xF7, 0x86, 0xA9, 0x64, 0x4B, 0x3A, 0x15, 0x8F, 0xA0, 0xD1, 0xFE, 0x33, 0x1C, 0x6D, 0x42
+    };
+}
+
+on start
+{
+    putValue( HMI__NM_EIS_NM_Request, 0 );  // reset all requests
+//    _NM_Switch_NM_Mode();
+    
+    __Init_Msg();
+    __Startup_Delay();
+   
+    putValue( HMI__NM_EIS_AutomaticModeActive, 0 );
+    putValue( HMI__NM_EIS_AutomaticModeActive, 1 );
+
+    putValue( Env_ODO_Takeover_For_TCO, 1 );   // used in EIS_VDO to synchronize ODO's
+  
+    //write("Start TCO");
+}
+
+__Init_Msg()
+{
+// #START_INIT#
+    TCO_A1_init();
+    TCO_A2_init();
+    TCO_A3_init();
+    TCO_A4_init();
+  
+    //write("TCO initialised");
+}
+
+on envVar HMI__STOP_All_MESSAGES_DEFAULT_STARTDELAY
+{
+    if( getValue( this ) )
+    {
+        __Init_Msg();
+    }
+}
+
+on envVar HMI__STOP_All_MESSAGES_SET_STARTDELAY
+{
+    if( getValue( this ) )
+    {
+        __Startup_Delay();
+    }
+}
+
+__Startup_Delay()
+{
+//    write(" Delay setzen :__TCO_Startup_Delay");
+// #START_DELAY#
+    _TCO_A1_Cnt = getValue( TCO__STMSGSD_TCO_A1 ) / _TCO_A1_Timebase;
+    _TCO_A2_Cnt = getValue( TCO__STMSGSD_TCO_A2 ) / _TCO_A2_Timebase;
+    _TCO_A3_Cnt = getValue( TCO__STMSGSD_TCO_A3 ) / _TCO_A3_Timebase;
+//    _TCO_A4_Cnt = getValue( TCO__STMSGSD_TCO_A4 ) / _TCO_A4_Timebase;
+//  write("Delay!You are late!");
+}
+
+on Timer t_DBKomTimer_5ms
+{
+// *** DBKom-Sendefunktion ***
+    // timer aufziehen für nächsten Zyklus
+    if( getValue( HMI__NM_EIS_CommActive        ) |
+        getValue( HMI__NM_EIS_RequestBusCom )   )
+    {
+        setTimer( t_DBKomTimer_5ms, c_tDBKomTimer_5ms );
+    }
+}
+
+on Timer t_DBKomTimer_20ms
+{
+// *** DBKom-Sendefunktion ***
+    // timer aufziehen für nächsten Zyklus
+    if( getValue( HMI__NM_EIS_CommActive    )/* |
+        getValue( TCO__NM_EIS_RequestBusCom ) */  )
+    {
+        setTimer( t_DBKomTimer_20ms, c_tDBKomTimer_20ms );
+    }
+// #CYC_TIMER_20_MS#
+    TCO_A1_check_output();
+    TCO_A2_check_output();
+    TCO_A3_check_output();
+    TCO_A4_check_output();
+//    NM_APPL_AR_check_output();                   // Botschaft NM_APPL_AR                   --- Sendeart  --- 
+//    NM_EIS_AR_check_output();                    // Botschaft NM_EIS_AR                    --- Sendeart  --- 
+}
+
+on EnvVar TCO__SAVE_PANEL_CONFIG_TCO
+{
+    dword hFile;
+
+    if( getValue(this) )
+    {
+        write("Saving TCO Panel Variables ...");
+
+        hFile = openFileWrite( "CONFIG\\TCO_PRESETS.ASC", 0 );
+        filePutString( "base hex timestamps absolute\n", 31, hFile );
+
+// #MSG_SAVEENVVAR#
+        TCO_A1_saveEnvVars( hFile );
+        TCO_A2_saveEnvVars( hFile );
+        TCO_A3_saveEnvVars( hFile );
+        TCO_A4_saveEnvVars( hFile );
+//        NM_APPL_AR_saveEnvVars( hFile );
+        NM_xxx_AR_saveEnvVars( hFile );
+
+        fileClose(hFile );
+    }
+}
+
+on EnvVar TCO__STOP_TCO_MESSAGES_OFF
+{
+    if( getValue(this) )
+    {
+// #MSG_OFF#
+        putValue( TCO__STMSG_TCO_A1, 1 );
+        putValue( TCO__STMSG_TCO_A2, 1 );
+        putValue( TCO__STMSG_TCO_A3, 1 );
+        putValue( TCO__STMSG_TCO_A4, 1 );
+// #MSG_OFF_END#
+//        putValue( TCO__STMSG_NM_APPL_AR, 1 );
+//        putValue( TCO__STMSG_NM_EIS_AR, 1 );
+    }
+}
+
+on envVar TCO__STOP_TCO_MESSAGES_ON
+{
+    if( getValue(this) )
+    {
+// #MSG_ON#
+        putValue( TCO__STMSG_TCO_A1, 0 );
+        putValue( TCO__STMSG_TCO_A2, 0 );
+        putValue( TCO__STMSG_TCO_A3, 0 );
+        putValue( TCO__STMSG_TCO_A4, 0 );
+// #MSG_ON_END#
+	//        putValue( TCO__STMSG_NM_APPL_AR, 0 );
+   //     putValue( TCO__STMSG_NM_EIS_AR, 0 );
+    }
+}
+
+on busOff
+{
+    resetCan();
+    write("CAN has been resetted due to BUSOFF    ( coded version )");
+}
+
+on timer t_NM_Repeat_Message_Time
+{
+    boCanNM_RepeatMessage_Timer_Expired = TRUE;
+//    _NM_Switch_NM_Mode();     // inform the state-mashine
+}
+
+on timer t_NM_Timeout_Time
+{
+    boCanNM_NM_Timeout_Timer_Expired = TRUE;
+//    _NM_Switch_NM_Mode();     // inform the state-mashine
+}
+
+on timer t_NM_Wait_Bus_Sleep_Time
+{
+    boCanNM_WaitBusSleep_Timer_Expired = TRUE;
+//    _NM_Switch_NM_Mode();     // inform the state-mashine
+}
+
+NM_xxx_AR_init()
+{
+}
+
+NM_xxx_AR_saveEnvVars( dword hFile )
+{
+    filePutString("\n// Knoten NM_EIS_AR\n", 33, hFile );
+//    snprintf(buffer, elcount(buffer), "0.0000 TCO__STMSG_NM_TCO := %X\n", getValue(TCO__STMSG_NM_TCO ));		filePutString (buffer, elcount(buffer), hFile);
+//    snprintf(buffer, elcount(buffer), "0.0000 TCO__STMSGT_NM_TCO := %X\n", getValue(TCO__STMSGT_NM_TCO ));		filePutString (buffer, elcount(buffer), hFile);
+}
+
+on envVar HMI__STMSG_NM_EIS_AR
+{
+    if( getValue( this ) == 0 )
+        _mNM_xxx_Transmit_Allowed = 1;
+    else
+        _mNM_xxx_Transmit_Allowed = 0;
+}
+
+_NM_Init()
+{
+    NM_Transmit_Cycle = NmAsrCanMsgStandardCycle;
+}
+
+_NM_NetworkMode()
+{
+    setTimer( t_DBKomTimer_5ms, 1 ); //  ms     start CAN-communication immediately
+    setTimer( t_DBKomTimer_20ms, 2 ); //  ms     start CAN-communication immediately
+    putValue( HMI__NM_EIS_CommActive, 1 );
+}
+
+_Nm_BusSleepModeInd()
+{
+    write( "_Nm_BusSleepModeInd", "Sleep Mode active");
+    __Startup_Delay();
+}
+
+void _Nm_PrepareBusSleepModeInd()
+{
+//    _Trace( "Nm_PrepareBusSleepModeInd", "Prepare Sleep Mode active");
+    putValue( HMI__NM_EIS_CommActive, 0 );
+    cancelTimer( t_DBKomTimer_5ms );
+    cancelTimer( t_DBKomTimer_20ms );
+}
+
+_Nm_StateChangeNotification( byte previousState, byte currentState )
+{
+/*
+    char line[50];
+
+    snprintf( line, elcount(line ), "Transition from %d to %d", previousState, currentState );
+    _Trace( "Nm_StateChangeNotification", "", line );
+*/
+}
+
+void _TraceCall( char functionName[], long callResult )
+{
+    char line[100];
+
+    if( callResult == 1 )
+        snprintf( line, elcount(line ), "calling %s", functionName );
+    else
+        snprintf( line, elcount(line ), "call to %s failed - wrong state?", functionName );
+    _Trace( "", "", line );
+}
+
+void _Trace( char functionName[], char info[])
+{
+    _Trace( functionName, info, "");
+}
+
+void _Trace( char functionName[], char info[], char verbose[], long argument )
+{
+    char line[100];
+
+    snprintf( line, elcount(line ), verbose, argument );
+    _Trace( functionName, info, line );
+}
+
+void _Trace( char functionName[], char info[], char verbose[])
+{
+  char sep[2] = "/";
+  sep[0] = functionName[0] ? '/' : 0;
+  if( verbose[0])
+  {
+    write( "[%.3f]%s%s%s: %s", timeNow()/100000.0, gECU
+           , sep
+           , functionName
+           , verbose
+           );
+  } else
+  {
+    write( "[%.3f]%s%s%s: %s", timeNow()/100000.0, gECU
+           , sep
+           , functionName
+           , info
+           );
+  }
+}
+
+___Template_Header()
+{
+// #FUNCTIONS#
+// #FUNCTIONS_END#
+// #TIMERS#
+// #TIMERS_END#
+// #ENVVARS#
+// #ENVVARS_END#
+}
+
+TCO_A1_check_output()
+{
+    if( !getValue( TCO__STMSG_TCO_A1 ) )
+    {
+        // Botschaft TCO_A1 ID: 944 --- Sendeart 0 cyclicX --- 
+        _TCO_A1_Cnt--;
+        if( _TCO_A1_Cnt < 1 )
+        {
+            TCO_A1_output(); // Nachricht wg. abgelaufenem Zyklus ausgeben
+            _TCO_A1_Cnt = _TCO_A1_CycleCount; // Zyklus-Zähler zurücksetzen
+        }
+    }
+}
+
+TCO_A1_init()
+{   /* Botschaft TCO_A1 ID: 944 --- Sendeart 0 cyclicX --- 
+BA_ "ApplMessage" BO_ 944 0;
+BA_ "NmAsrMessage" BO_ 944 0;
+BA_ "GenMsgMinAcceptLength" BO_ 944 8;
+BA_ "GenMsgILSupport" BO_ 944 1;
+BA_ "DiagState" BO_ 944 0;
+BA_ "DiagRequest" BO_ 944 0;
+BA_ "DiagResponse" BO_ 944 0;
+BA_ "GenMsgStartValue" BO_ 944 "0";
+BA_ "GenMsgCycleTime" BO_ 944 20;
+BA_ "GenMsgSendType" BO_ 944 0;
+    */
+    _TCO_A1_Timebase =        c_tDBKomTimer_20ms;
+    _TCO_A1_CycleCount =      20 / _TCO_A1_Timebase;
+    _TCO_A1_StartDelay =       0 / _TCO_A1_Timebase;
+    _TCO_A1_Cnt = _TCO_A1_StartDelay;
+
+    putValue( TCO__STMSGSD_TCO_A1, _TCO_A1_StartDelay * _TCO_A1_Timebase );
+
+    _mTCO_A1.D1_CARD.phys = getValue( TCO_D1_CARD );
+    _mTCO_A1.D1_TR_STAT.phys = getValue( TCO_D1_TR_STAT );
+    _mTCO_A1.D1_W_STAT.phys = getValue( TCO_D1_W_STAT );
+    _mTCO_A1.D2_CARD.phys = getValue( TCO_D2_CARD );
+    _mTCO_A1.D2_TR_STAT.phys = getValue( TCO_D2_TR_STAT );
+    _mTCO_A1.D2_W_STAT.phys = getValue( TCO_D2_W_STAT );
+    _mTCO_A1.D_REC.phys = getValue( TCO_D_REC );
+    _mTCO_A1.HAND_INFO.phys = getValue( TCO_HAND_INFO );
+    _mTCO_A1.OVERSPEED.phys = getValue( TCO_OVERSPEED );
+    _mTCO_A1.SYS_EVENT.phys = getValue( TCO_SYS_EVENT );
+    _mTCO_A1.SYS_PER.phys = getValue( TCO_SYS_PER );
+    _mTCO_A1.TACH_ROTA.phys = getValue( TCO_TACH_ROTA );
+    _mTCO_A1.TACH_SPEED.phys = getValue( TCO_TACH_SPEED );
+}
+
+TCO_A1_output()
+{
+    output( _mTCO_A1 );
+}
+
+TCO_A1_saveEnvVars( dword hFile )
+{
+    filePutString("\n// Knoten EIS: TCO_A1\n", 36, hFile );
+    snprintf( buffer, elcount( buffer ), "0.0000 TCO__STMSG_TCO_A1 := %X\n", getValue( TCO__STMSG_TCO_A1 ) );        filePutString( buffer, elcount( buffer ), hFile );
+    snprintf( buffer, elcount( buffer ), "0.0000 TCO__STMSGT_TCO_A1 := %X\n", getValue( TCO__STMSGT_TCO_A1 ) );        filePutString( buffer, elcount( buffer ), hFile );
+    snprintf( buffer, elcount( buffer ), "0.0000 TCO_D1_CARD := %f\n", getValue( TCO_D1_CARD ) );        filePutString( buffer, elcount( buffer ), hFile );
+    snprintf( buffer, elcount( buffer ), "0.0000 TCO_D1_TR_STAT := %f\n", getValue( TCO_D1_TR_STAT ) );        filePutString( buffer, elcount( buffer ), hFile );
+    snprintf( buffer, elcount( buffer ), "0.0000 TCO_D1_W_STAT := %f\n", getValue( TCO_D1_W_STAT ) );        filePutString( buffer, elcount( buffer ), hFile );
+    snprintf( buffer, elcount( buffer ), "0.0000 TCO_D2_CARD := %f\n", getValue( TCO_D2_CARD ) );        filePutString( buffer, elcount( buffer ), hFile );
+    snprintf( buffer, elcount( buffer ), "0.0000 TCO_D2_TR_STAT := %f\n", getValue( TCO_D2_TR_STAT ) );        filePutString( buffer, elcount( buffer ), hFile );
+    snprintf( buffer, elcount( buffer ), "0.0000 TCO_D2_W_STAT := %f\n", getValue( TCO_D2_W_STAT ) );        filePutString( buffer, elcount( buffer ), hFile );
+    snprintf( buffer, elcount( buffer ), "0.0000 TCO_D_REC := %f\n", getValue( TCO_D_REC ) );        filePutString( buffer, elcount( buffer ), hFile );
+    snprintf( buffer, elcount( buffer ), "0.0000 TCO_HAND_INFO := %f\n", getValue( TCO_HAND_INFO ) );        filePutString( buffer, elcount( buffer ), hFile );
+    snprintf( buffer, elcount( buffer ), "0.0000 TCO_OVERSPEED := %f\n", getValue( TCO_OVERSPEED ) );        filePutString( buffer, elcount( buffer ), hFile );
+    snprintf( buffer, elcount( buffer ), "0.0000 TCO_SYS_EVENT := %f\n", getValue( TCO_SYS_EVENT ) );        filePutString( buffer, elcount( buffer ), hFile );
+    snprintf( buffer, elcount( buffer ), "0.0000 TCO_SYS_PER := %f\n", getValue( TCO_SYS_PER ) );        filePutString( buffer, elcount( buffer ), hFile );
+    snprintf( buffer, elcount( buffer ), "0.0000 TCO_TACH_ROTA := %f\n", getValue( TCO_TACH_ROTA ) );        filePutString( buffer, elcount( buffer ), hFile );
+    snprintf( buffer, elcount( buffer ), "0.0000 TCO_TACH_SPEED := %f\n", getValue( TCO_TACH_SPEED ) );        filePutString( buffer, elcount( buffer ), hFile );
+}
+
+on timer _tTCO_A1
+{
+    putValue( TCO__STMSGT_TCO_A1, 0 );
+}
+
+on EnvVar TCO__STMSG_TCO_A1
+{
+    long tDelay;
+    if( getValue( this ) == 2 )
+    {
+        tDelay = getValue( TCO__STMSGT_TCO_A1 );
+        if( tDelay > 0)    
+            setTimer( _tTCO_A1, tDelay );
+        else
+            putValue( TCO__STMSG_TCO_A1, 0 );
+    }
+}
+
+on EnvVar TCO_D1_CARD
+{
+    _mTCO_A1.D1_CARD.phys = getValue(this);
+}
+
+on EnvVar TCO_D1_TR_STAT
+{
+    _mTCO_A1.D1_TR_STAT.phys = getValue(this);
+}
+
+on EnvVar TCO_D1_W_STAT
+{
+    _mTCO_A1.D1_W_STAT.phys = getValue(this);
+}
+
+on EnvVar TCO_D2_CARD
+{
+    _mTCO_A1.D2_CARD.phys = getValue(this);
+}
+
+on EnvVar TCO_D2_TR_STAT
+{
+    _mTCO_A1.D2_TR_STAT.phys = getValue(this);
+}
+
+on EnvVar TCO_D2_W_STAT
+{
+    _mTCO_A1.D2_W_STAT.phys = getValue(this);
+}
+
+on EnvVar TCO_D_REC
+{
+    _mTCO_A1.D_REC.phys = getValue(this);
+}
+
+on EnvVar TCO_HAND_INFO
+{
+    _mTCO_A1.HAND_INFO.phys = getValue(this);
+}
+
+on EnvVar TCO_OVERSPEED
+{
+    _mTCO_A1.OVERSPEED.phys = getValue(this);
+}
+
+on EnvVar TCO_SYS_EVENT
+{
+    _mTCO_A1.SYS_EVENT.phys = getValue(this);
+}
+
+on EnvVar TCO_SYS_PER
+{
+    _mTCO_A1.SYS_PER.phys = getValue(this);
+}
+
+on EnvVar TCO_TACH_ROTA
+{
+    _mTCO_A1.TACH_ROTA.phys = getValue(this);
+}
+
+on EnvVar TCO_TACH_SPEED
+{
+    _mTCO_A1.TACH_SPEED.phys = getValue(this);
+}
+
+TCO_A2_check_output()
+{
+    if( !getValue( TCO__STMSG_TCO_A2 ) )
+    {
+        // Botschaft TCO_A2 ID: 1200 --- Sendeart 0 cyclicX --- 
+        _TCO_A2_Cnt--;
+        if( _TCO_A2_Cnt < 1 )
+        {
+            TCO_A2_output(); // Nachricht wg. abgelaufenem Zyklus ausgeben
+            _TCO_A2_Cnt = _TCO_A2_CycleCount; // Zyklus-Zähler zurücksetzen
+        }
+    }
+    //write("Check_output message TCO_A2");
+}
+
+TCO_A2_init()
+{   /* Botschaft TCO_A2 ID: 1200 --- Sendeart 0 cyclicX --- 
+BA_ "ApplMessage" BO_ 1200 0;
+BA_ "NmAsrMessage" BO_ 1200 0;
+BA_ "GenMsgMinAcceptLength" BO_ 1200 8;
+BA_ "GenMsgILSupport" BO_ 1200 1;
+BA_ "DiagState" BO_ 1200 0;
+BA_ "DiagRequest" BO_ 1200 0;
+BA_ "DiagResponse" BO_ 1200 0;
+BA_ "GenMsgStartValue" BO_ 1200 "255";
+BA_ "GenMsgCycleTime" BO_ 1200 100;
+BA_ "GenMsgSendType" BO_ 1200 0;
+    */
+    _TCO_A2_Timebase =        c_tDBKomTimer_20ms;
+    _TCO_A2_CycleCount =     100 / _TCO_A2_Timebase;
+    _TCO_A2_StartDelay =       0 / _TCO_A2_Timebase;
+    _TCO_A2_Cnt = _TCO_A2_StartDelay;
+
+    putValue( TCO__STMSGSD_TCO_A2, _TCO_A2_StartDelay * _TCO_A2_Timebase );
+
+    _mTCO_A2.DIST_TOTAL.phys = getValue( TCO_DIST_TOTAL );
+    _mTCO_A2.DIST_TRIP.phys = getValue( TCO_DIST_TRIP );
+//  write("Initializare message TCO_A2");
+}
+
+TCO_A2_output()
+{
+    output( _mTCO_A2 );
+    //write("Output message TCO_A2");
+}
+
+TCO_A2_saveEnvVars( dword hFile )
+{
+    filePutString("\n// Knoten EIS: TCO_A2\n", 36, hFile );
+    snprintf( buffer, elcount( buffer ), "0.0000 TCO__STMSG_TCO_A2 := %X\n", getValue( TCO__STMSG_TCO_A2 ) );        filePutString( buffer, elcount( buffer ), hFile );
+    snprintf( buffer, elcount( buffer ), "0.0000 TCO__STMSGT_TCO_A2 := %X\n", getValue( TCO__STMSGT_TCO_A2 ) );        filePutString( buffer, elcount( buffer ), hFile );
+    snprintf( buffer, elcount( buffer ), "0.0000 TCO_DIST_TOTAL := %f\n", getValue( TCO_DIST_TOTAL ) );        filePutString( buffer, elcount( buffer ), hFile );
+    snprintf( buffer, elcount( buffer ), "0.0000 TCO_DIST_TRIP := %f\n", getValue( TCO_DIST_TRIP ) );        filePutString( buffer, elcount( buffer ), hFile );
+//  write("Save A2 EnVars");
+}
+
+on timer _tTCO_A2
+{
+    putValue( TCO__STMSG_TCO_A2, 0 );
+//    write("Timer start _tTCO_A2");
+}
+
+on EnvVar TCO__STMSG_TCO_A2
+{
+    long tDelay;
+    if( getValue( this ) == 2 )
+    {
+        tDelay = getValue( TCO__STMSGT_TCO_A2 );
+        if( tDelay > 0)    
+            setTimer( _tTCO_A2, tDelay );
+        else
+            putValue( TCO__STMSG_TCO_A2, 0 );
+    }
+//    write("TCO_DIST_TRIP");
+}
+
+on EnvVar TCO_DIST_TOTAL
+{
+    _mTCO_A2.DIST_TOTAL.phys = getValue(this);
+}
+
+on EnvVar TCO_DIST_TRIP
+{
+    _mTCO_A2.DIST_TRIP.phys = getValue(this);
+//   write("TCO_DIST_TRIP");
+}
+
+TCO_A3_check_output()
+{
+    if( !getValue( TCO__STMSG_TCO_A3 ) )
+    {
+        // Botschaft TCO_A3 ID: 1456 --- Sendeart 0 cyclicX --- 
+        _TCO_A3_Cnt--;
+        if( _TCO_A3_Cnt < 1 )
+        {
+            TCO_A3_increment_time(); // Update Date & Time
+            TCO_A3_output(); // Nachricht wg. abgelaufenem Zyklus ausgeben
+            _TCO_A3_Cnt = _TCO_A3_CycleCount; // Zyklus-Zähler zurücksetzen
+        }
+    }
+}
+
+TCO_A3_increment_time()
+{
+    /* If TCO is enabled, the Cluster does not use its internal time anymore, but 
+       uses the time from TCO. The TCO sends a time update every second, which we need 
+       to emulate here. This function must be called once a second.
+
+       Now: add 1 second and adjust the time & date accordingly */
+
+    int monthdays = 0;
+
+    if (_mTCO_A3.SECONDS.phys >= 59) 
+    {
+        // seconds roll over -> reset seconds and increment minutes
+        _mTCO_A3.SECONDS.phys = 0;
+        if (_mTCO_A3.MINUTES.phys >= 59) 
+        {
+            // minutes roll over -> reset minutes and increment hours
+            _mTCO_A3.MINUTES.phys = 0;
+            if (_mTCO_A3.HOURS.phys >= 23) 
+            {
+                // hours roll over -> reset hours and increment days
+                _mTCO_A3.HOURS.phys = 0;
+                if (_mTCO_A3.DAY.phys >= 28)
+                {
+                    // check for February
+                    if (_mTCO_A3.MONTH.phys == 2)
+                    {
+                        // oops... this is February: check for a leap year.
+                        if ((((int)_mTCO_A3.YEAR.phys) % 4) == 0)
+                        {
+                            // oops... this is a leap year
+                            monthdays = 29;
+                        }
+                        else 
+                        {
+                            monthdays = 28;
+                        }
+                    }
+                    // Handle other "normal" months
+                    else if ((_mTCO_A3.MONTH.phys == 4) || (_mTCO_A3.MONTH.phys == 6) || (_mTCO_A3.MONTH.phys == 9) || (_mTCO_A3.MONTH.phys == 11))
+                    {
+                        // April, June, September, November have 30 days
+                        monthdays = 30;
+                    }
+                    else
+                    {
+                        // default: 31 days in a month
+                        monthdays = 31;
+                    }
+                    // check for roll over
+                    if (_mTCO_A3.DAY.phys >= monthdays)
+                    {
+                        // days roll over -> reset days and increment months
+                        _mTCO_A3.DAY.phys = 1;
+                        if (_mTCO_A3.MONTH.phys >= 12)
+                        {
+                                // months roll over -> reset months and increment years
+                                _mTCO_A3.MONTH.phys = 1;
+                                _mTCO_A3.YEAR.phys = _mTCO_A3.YEAR.phys + 1;
+                        }
+                        else
+                        {
+                                // no months roll over -> just increment months
+                                _mTCO_A3.MONTH.phys = _mTCO_A3.MONTH.phys + 1;
+                        }
+                    }
+                    else
+                    {
+                        // no days roll over -> just increment days
+                        _mTCO_A3.DAY.phys = _mTCO_A3.DAY.phys + 1;
+                    }
+                }
+                else
+                {
+                    // no days roll over -> just increment days
+                    _mTCO_A3.DAY.phys = _mTCO_A3.DAY.phys + 1;
+                }
+            }
+            else
+            {
+                // no hours roll over -> just increment hours
+                _mTCO_A3.HOURS.phys = _mTCO_A3.HOURS.phys + 1;
+            }
+        }
+        else
+        {
+            // no minutes roll over -> just increment minutes
+            _mTCO_A3.MINUTES.phys = _mTCO_A3.MINUTES.phys + 1;
+        }
+    }
+    else
+    {
+        // no seconds roll over -> just increment seconds
+        _mTCO_A3.SECONDS.phys = _mTCO_A3.SECONDS.phys + 1;
+    }
+//    write("Clock comes from TCO!");
+}
+
+TCO_A3_init()
+{   /* Botschaft TCO_A3 ID: 1456 --- Sendeart 0 cyclicX --- 
+BA_ "ApplMessage" BO_ 1456 0;
+BA_ "NmAsrMessage" BO_ 1456 0;
+BA_ "GenMsgMinAcceptLength" BO_ 1456 8;
+BA_ "GenMsgILSupport" BO_ 1456 1;
+BA_ "DiagState" BO_ 1456 0;
+BA_ "DiagRequest" BO_ 1456 0;
+BA_ "DiagResponse" BO_ 1456 0;
+BA_ "GenMsgStartValue" BO_ 1456 "255";
+BA_ "GenMsgCycleTime" BO_ 1456 1000;
+BA_ "GenMsgSendType" BO_ 1456 0;
+    */
+    _TCO_A3_Timebase =        c_tDBKomTimer_20ms;
+    _TCO_A3_CycleCount =    1000 / _TCO_A3_Timebase;
+    _TCO_A3_StartDelay =       0 / _TCO_A3_Timebase;
+    _TCO_A3_Cnt = _TCO_A3_StartDelay;
+
+    putValue( TCO__STMSGSD_TCO_A3, _TCO_A3_StartDelay * _TCO_A3_Timebase );
+
+    _mTCO_A3.DAY.phys = getValue( TCO_DAY );
+    _mTCO_A3.H_OFFSET.phys = getValue( TCO_H_OFFSET );
+    _mTCO_A3.HOURS.phys = getValue( TCO_HOURS );
+    _mTCO_A3.M_OFFSET.phys = getValue( TCO_M_OFFSET );
+    _mTCO_A3.MINUTES.phys = getValue( TCO_MINUTES );
+    _mTCO_A3.MONTH.phys = getValue( TCO_MONTH );
+    _mTCO_A3.SECONDS.phys = getValue( TCO_SECONDS );
+    _mTCO_A3.YEAR.phys = getValue( TCO_YEAR );
+}
+
+TCO_A3_output()
+{
+    output( _mTCO_A3 );
+}
+
+TCO_A3_saveEnvVars( dword hFile )
+{
+    filePutString("\n// Knoten EIS: TCO_A3\n", 36, hFile );
+    snprintf( buffer, elcount( buffer ), "0.0000 TCO__STMSG_TCO_A3 := %X\n", getValue( TCO__STMSG_TCO_A3 ) );        filePutString( buffer, elcount( buffer ), hFile );
+    snprintf( buffer, elcount( buffer ), "0.0000 TCO__STMSGT_TCO_A3 := %X\n", getValue( TCO__STMSGT_TCO_A3 ) );        filePutString( buffer, elcount( buffer ), hFile );
+    snprintf( buffer, elcount( buffer ), "0.0000 TCO_DAY := %f\n", getValue( TCO_DAY ) );        filePutString( buffer, elcount( buffer ), hFile );
+    snprintf( buffer, elcount( buffer ), "0.0000 TCO_H_OFFSET := %f\n", getValue( TCO_H_OFFSET ) );        filePutString( buffer, elcount( buffer ), hFile );
+    snprintf( buffer, elcount( buffer ), "0.0000 TCO_HOURS := %f\n", getValue( TCO_HOURS ) );        filePutString( buffer, elcount( buffer ), hFile );
+    snprintf( buffer, elcount( buffer ), "0.0000 TCO_M_OFFSET := %f\n", getValue( TCO_M_OFFSET ) );        filePutString( buffer, elcount( buffer ), hFile );
+    snprintf( buffer, elcount( buffer ), "0.0000 TCO_MINUTES := %f\n", getValue( TCO_MINUTES ) );        filePutString( buffer, elcount( buffer ), hFile );
+    snprintf( buffer, elcount( buffer ), "0.0000 TCO_MONTH := %f\n", getValue( TCO_MONTH ) );        filePutString( buffer, elcount( buffer ), hFile );
+    snprintf( buffer, elcount( buffer ), "0.0000 TCO_SECONDS := %f\n", getValue( TCO_SECONDS ) );        filePutString( buffer, elcount( buffer ), hFile );
+    snprintf( buffer, elcount( buffer ), "0.0000 TCO_YEAR := %f\n", getValue( TCO_YEAR ) );        filePutString( buffer, elcount( buffer ), hFile );
+}
+
+on timer _tTCO_A3
+{
+    putValue( TCO__STMSG_TCO_A3, 0 );
+}
+
+on EnvVar TCO__STMSG_TCO_A3
+{
+    long tDelay;
+    if( getValue( this ) == 2 )
+    {
+        tDelay = getValue( TCO__STMSGT_TCO_A3 );
+        if( tDelay > 0)    
+            setTimer( _tTCO_A3, tDelay );
+        else
+            putValue( TCO__STMSGT_TCO_A3, 0 );
+    }
+}
+
+on EnvVar TCO_DAY
+{
+    _mTCO_A3.DAY.phys = getValue(this);
+}
+
+on EnvVar TCO_H_OFFSET
+{
+    _mTCO_A3.H_OFFSET.phys = getValue(this);
+}
+
+on EnvVar TCO_HOURS
+{
+    _mTCO_A3.HOURS.phys = getValue(this);
+}
+
+on EnvVar TCO_M_OFFSET
+{
+    _mTCO_A3.M_OFFSET.phys = getValue(this);
+}
+
+on EnvVar TCO_MINUTES
+{
+    _mTCO_A3.MINUTES.phys = getValue(this);
+}
+
+on EnvVar TCO_MONTH
+{
+    _mTCO_A3.MONTH.phys = getValue(this);
+}
+
+on EnvVar TCO_SECONDS
+{
+    _mTCO_A3.SECONDS.phys = getValue(this);
+}
+
+on EnvVar TCO_YEAR
+{
+    _mTCO_A3.YEAR.phys = getValue(this);
+}
+
+TCO_A4_check_output()
+{
+    if( !getValue( TCO__STMSG_TCO_A4 ) )
+    {
+        // Botschaft TCO_A4 --- Sendeart 1 spontanX
+        if( _TCO_A4_SpontanFlag )
+        {
+            output( _mTCO_A4 ); // Nachricht wg. spontaner Änderung ausgeben
+             _TCO_A4_SpontanFlag = 0; // Spontan-Flag zurücksetzen
+        }
+    }
+}
+
+TCO_A4_init()
+{   /* Boschaft TCO_A4 ID: 1472 --- Sendeart 1 spontanX --- 
+BA_ "ApplMessage" BO_ 1472 0;
+BA_ "NmAsrMessage" BO_ 1472 0;
+BA_ "GenMsgMinAcceptLength" BO_ 1472 8;
+BA_ "GenMsgILSupport" BO_ 1472 1;
+BA_ "DiagState" BO_ 1472 0;
+BA_ "DiagRequest" BO_ 1472 0;
+BA_ "DiagResponse" BO_ 1472 0;
+BA_ "GenMsgStartValue" BO_ 1472 "255";
+BA_ "GenMsgDelayTime" BO_ 1472 5;
+BA_ "GenMsgNrOfRepetitions" BO_ 1472 0;
+BA_ "GenMsgSendType" BO_ 1472 1;
+    */
+    _TCO_A4_Timebase =        c_tDBKomTimer_20ms;
+    _TCO_A4_SpontanFlag = 0;
+
+    _mTCO_A4.TACH_ACK.phys = getValue( TCO_TACH_ACK );
+}
+
+TCO_A4_saveEnvVars( dword hFile )
+{
+    filePutString("\n// Knoten EIS: APPL_ECU_HIL_TO_IC1\n", 25, hFile );
+    snprintf( buffer, elcount( buffer ), "0.0000 TCO__STMSG_TCO_A4 := %X\n", getValue( TCO__STMSG_TCO_A4 ) );        filePutString ( buffer, elcount( buffer ), hFile );
+    snprintf( buffer, elcount( buffer ), "0.0000 TCO__STMSGT_TCO_A4 := %X\n", getValue( TCO__STMSGT_TCO_A4 ) );        filePutString ( buffer, elcount( buffer ), hFile );
+    snprintf( buffer, elcount( buffer ), "0.0000 TCO_TACH_ACK := %X\n", getValue( TCO_TACH_ACK ) );        filePutString ( buffer, elcount( buffer ), hFile );
+}
+
+on EnvVar TCO__STMSGP_TCO_A4
+{
+    if( getValue( this ))
+    {
+        _TCO_A4_SpontanFlag = 1;
+    }
+}
+
+on EnvVar TCO_TACH_ACK
+{
+    _mTCO_A4.TACH_ACK.phys = getValue(this);
+    _TCO_A4_SpontanFlag = 1;
+}
+
+on envVar HMI_ISw_Stat
+{
+    if( (getValue( this )==0x00)||(getValue( this )==0x01) )
+    {
+      cancelTimer( t_DBKomTimer_20ms );  
+    }
+    else
+    {
+      __Startup_Delay();
+      setTimer( t_DBKomTimer_20ms, 2 ); //  ms     start CAN-communication immediately
+    }
+}
+
+//on envVar HMI__NM_EIS_CommActive
+//{
+//    if( getValue( this ) )
+//    {
+//        __Startup_Delay();
+//        setTimer( t_DBKomTimer_20ms, 2 ); //  ms     start CAN-communication immediately
+//    }
+//    else
+//    {
+//      putValue( HMI__NM_EIS_CommActive, 0 );
+//      cancelTimer( t_DBKomTimer_20ms );
+//    }
+//}
+
