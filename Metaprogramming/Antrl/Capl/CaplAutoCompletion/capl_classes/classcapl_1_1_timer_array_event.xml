@@ -1,0 +1,121 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.2" xml:lang="en-US">
+  <compounddef id="classcapl_1_1_timer_array_event" kind="class" language="C++" prot="public" abstract="yes">
+    <compoundname>capl::TimerArrayEvent</compoundname>
+    <innerclass refid="classcapl_1_1_timer_array_event_1_1_child_event" prot="public">capl::TimerArrayEvent::ChildEvent</innerclass>
+      <sectiondef kind="protected-attrib">
+      <memberdef kind="variable" id="classcapl_1_1_timer_array_event_1ae1b4fc0f4d0d99ba9b391bd7e32faf63" prot="protected" static="no" mutable="no">
+        <type>std::vector&lt; <ref refid="classcapl_1_1_timer_array_event_1_1_child_event" kindref="compound">ChildEvent</ref> &gt;</type>
+        <definition>std::vector&lt;ChildEvent&gt; capl::TimerArrayEvent::m_Events</definition>
+        <argsstring></argsstring>
+        <name>m_Events</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="CAPLPluginApi.h" line="2617" column="21" bodyfile="CAPLPluginApi.h" bodystart="2617" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classcapl_1_1_timer_array_event_1a422d995100c239786b920a8247006bb1" prot="public" static="no" const="no" explicit="yes" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>capl::TimerArrayEvent::TimerArrayEvent</definition>
+        <argsstring>(unsigned __int32 size)</argsstring>
+        <name>TimerArrayEvent</name>
+        <param>
+          <type>unsigned __int32</type>
+          <declname>size</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="CAPLPluginApi.h" line="2619" column="18" bodyfile="CAPLPluginApi.h" bodystart="2619" bodyend="2631"/>
+      </memberdef>
+      <memberdef kind="function" id="classcapl_1_1_timer_array_event_1a5e3aa6c7780a2d7f482ce7df81849c1a" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void capl::TimerArrayEvent::Create</definition>
+        <argsstring>(bool boSecond)</argsstring>
+        <name>Create</name>
+        <param>
+          <type>bool</type>
+          <declname>boSecond</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="CAPLPluginApi.h" line="2632" column="22" bodyfile="CAPLPluginApi.h" bodystart="2632" bodyend="2636"/>
+      </memberdef>
+      <memberdef kind="function" id="classcapl_1_1_timer_array_event_1aedaaed652a7bdda3ce5686f9f8f183fb" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classcapl_1_1_timer_array_event_1_1_child_event" kindref="compound">ChildEvent</ref> &amp;</type>
+        <definition>ChildEvent &amp; capl::TimerArrayEvent::operator[]</definition>
+        <argsstring>(unsigned __int32 pos)</argsstring>
+        <name>operator[]</name>
+        <param>
+          <type>unsigned __int32</type>
+          <declname>pos</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="CAPLPluginApi.h" line="2637" column="20" bodyfile="CAPLPluginApi.h" bodystart="2637" bodyend="2642"/>
+      </memberdef>
+      <memberdef kind="function" id="classcapl_1_1_timer_array_event_1a052655581807bb2ad8190d8eab79ef07" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>__int32</type>
+        <definition>__int32 capl::TimerArrayEvent::Size</definition>
+        <argsstring>() const</argsstring>
+        <name>Size</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="CAPLPluginApi.h" line="2643" column="19" bodyfile="CAPLPluginApi.h" bodystart="2643" bodyend="2650"/>
+      </memberdef>
+      <memberdef kind="function" id="classcapl_1_1_timer_array_event_1ada7ffd7b7ed04829f11204e0553944dc" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>void</type>
+        <definition>virtual void capl::TimerArrayEvent::OnEvent</definition>
+        <argsstring>(TimerArrayEvent &amp;, unsigned __int32)=0</argsstring>
+        <name>OnEvent</name>
+        <param>
+          <type><ref refid="classcapl_1_1_timer_array_event" kindref="compound">TimerArrayEvent</ref> &amp;</type>
+        </param>
+        <param>
+          <type>unsigned</type>
+          <declname>__int32</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="CAPLPluginApi.h" line="2651" column="30"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="CAPLPluginApi.h" line="2603" column="5" bodyfile="CAPLPluginApi.h" bodystart="2604" bodyend="2652"/>
+    <listofallmembers>
+      <member refid="classcapl_1_1_timer_array_event_1a5e3aa6c7780a2d7f482ce7df81849c1a" prot="public" virt="non-virtual"><scope>capl::TimerArrayEvent</scope><name>Create</name></member>
+      <member refid="classcapl_1_1_timer_array_event_1ae1b4fc0f4d0d99ba9b391bd7e32faf63" prot="protected" virt="non-virtual"><scope>capl::TimerArrayEvent</scope><name>m_Events</name></member>
+      <member refid="classcapl_1_1_timer_array_event_1ada7ffd7b7ed04829f11204e0553944dc" prot="public" virt="pure-virtual"><scope>capl::TimerArrayEvent</scope><name>OnEvent</name></member>
+      <member refid="classcapl_1_1_timer_array_event_1aedaaed652a7bdda3ce5686f9f8f183fb" prot="public" virt="non-virtual"><scope>capl::TimerArrayEvent</scope><name>operator[]</name></member>
+      <member refid="classcapl_1_1_timer_array_event_1a052655581807bb2ad8190d8eab79ef07" prot="public" virt="non-virtual"><scope>capl::TimerArrayEvent</scope><name>Size</name></member>
+      <member refid="classcapl_1_1_timer_array_event_1a422d995100c239786b920a8247006bb1" prot="public" virt="non-virtual"><scope>capl::TimerArrayEvent</scope><name>TimerArrayEvent</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

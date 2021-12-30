@@ -1,0 +1,98 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.2" xml:lang="en-US">
+  <compounddef id="classcapl_1_1_test_info" kind="class" language="C++" prot="public">
+    <compoundname>capl::TestInfo</compoundname>
+      <sectiondef kind="protected-attrib">
+      <memberdef kind="variable" id="classcapl_1_1_test_info_1a85cc9abcb9f242e4787a5c40e1d9ca1c" prot="protected" static="no" mutable="no">
+        <type>const char *</type>
+        <definition>const char* capl::TestInfo::m_sCAPLFunctionName</definition>
+        <argsstring></argsstring>
+        <name>m_sCAPLFunctionName</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="CAPLPluginApi.h" line="2274" column="21" bodyfile="CAPLPluginApi.h" bodystart="2272" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="private-func">
+      <memberdef kind="function" id="classcapl_1_1_test_info_1a79aecaf7069e1cd5f0c12073704620ab" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>capl::TestInfo::TestInfo</definition>
+        <argsstring>(const TestInfo &amp;)</argsstring>
+        <name>TestInfo</name>
+        <param>
+          <type>const <ref refid="classcapl_1_1_test_info" kindref="compound">TestInfo</ref> &amp;</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="CAPLPluginApi.h" line="2269" column="9" bodyfile="CAPLPluginApi.h" bodystart="2269" bodyend="2269"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="protected-func">
+      <memberdef kind="function" id="classcapl_1_1_test_info_1a865307d8b4156d07593f1fcf5c8bb0bc" prot="protected" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>capl::TestInfo::TestInfo</definition>
+        <argsstring>()</argsstring>
+        <name>TestInfo</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="CAPLPluginApi.h" line="2272" column="9" bodyfile="CAPLPluginApi.h" bodystart="2272" bodyend="2272"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classcapl_1_1_test_info_1a6ab0859d9bc922605462d93cf2244de6" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>capl::TestInfo::TestInfo</definition>
+        <argsstring>(const char *sCAPLFunctionName)</argsstring>
+        <name>TestInfo</name>
+        <param>
+          <type>const char *</type>
+          <declname>sCAPLFunctionName</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="CAPLPluginApi.h" line="2276" column="9" bodyfile="CAPLPluginApi.h" bodystart="2276" bodyend="2280"/>
+      </memberdef>
+      <memberdef kind="function" id="classcapl_1_1_test_info_1a75447e9a28914fc519439b5fd42cf5ec" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>capl::TestInfo::~TestInfo</definition>
+        <argsstring>()</argsstring>
+        <name>~TestInfo</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="CAPLPluginApi.h" line="2282" column="9" bodyfile="CAPLPluginApi.h" bodystart="2282" bodyend="2285"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="CAPLPluginApi.h" line="2266" column="5" bodyfile="CAPLPluginApi.h" bodystart="2267" bodyend="2286"/>
+    <listofallmembers>
+      <member refid="classcapl_1_1_test_info_1a85cc9abcb9f242e4787a5c40e1d9ca1c" prot="protected" virt="non-virtual"><scope>capl::TestInfo</scope><name>m_sCAPLFunctionName</name></member>
+      <member refid="classcapl_1_1_test_info_1a79aecaf7069e1cd5f0c12073704620ab" prot="private" virt="non-virtual"><scope>capl::TestInfo</scope><name>TestInfo</name></member>
+      <member refid="classcapl_1_1_test_info_1a865307d8b4156d07593f1fcf5c8bb0bc" prot="protected" virt="non-virtual"><scope>capl::TestInfo</scope><name>TestInfo</name></member>
+      <member refid="classcapl_1_1_test_info_1a6ab0859d9bc922605462d93cf2244de6" prot="public" virt="non-virtual"><scope>capl::TestInfo</scope><name>TestInfo</name></member>
+      <member refid="classcapl_1_1_test_info_1a75447e9a28914fc519439b5fd42cf5ec" prot="public" virt="non-virtual"><scope>capl::TestInfo</scope><name>~TestInfo</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

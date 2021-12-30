@@ -1,0 +1,138 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="capl_class_api.xsd"
+         version="1.9.2" xml:lang="en-US">
+    <compounddef id="classcapl_1_1_bus_event" kind="class" language="C++" prot="public">
+        <compoundname>capl::BusEvent</compoundname>
+        <basecompoundref refid="classcapl_1_1_i_event" prot="public" virt="non-virtual">capl::IEvent&lt; ICanError &amp; &gt;</basecompoundref>
+        <derivedcompoundref refid="classcapl_1_1_error_active_event" prot="public" virt="non-virtual">capl::ErrorActiveEvent</derivedcompoundref>
+        <derivedcompoundref refid="classcapl_1_1_error_bus_off_event" prot="public" virt="non-virtual">capl::ErrorBusOffEvent</derivedcompoundref>
+        <derivedcompoundref refid="classcapl_1_1_error_passive_event" prot="public" virt="non-virtual">capl::ErrorPassiveEvent</derivedcompoundref>
+        <derivedcompoundref refid="classcapl_1_1_warning_limit_event" prot="public" virt="non-virtual">capl::WarningLimitEvent</derivedcompoundref>
+        <sectiondef kind="public-func">
+            <memberdef kind="function" id="classcapl_1_1_bus_event_1a3a65090450db7c66d16a734b84faef32" prot="public"
+                       static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+                <type></type>
+                <definition>capl::BusEvent::BusEvent</definition>
+                <argsstring>()</argsstring>
+                <name>BusEvent</name>
+                <briefdescription>
+                </briefdescription>
+                <detaileddescription>
+                </detaileddescription>
+                <inbodydescription>
+                </inbodydescription>
+                <location file="CAPLPluginApi.h" line="2499" column="9" bodyfile="CAPLPluginApi.h" bodystart="2499"
+                          bodyend="2499" />
+            </memberdef>
+            <memberdef kind="function" id="classcapl_1_1_bus_event_1a598bda425441a950f6dcb88a0060cc60" prot="public"
+                       static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+                <type></type>
+                <definition>capl::BusEvent::BusEvent</definition>
+                <argsstring>(BusEventType enType)</argsstring>
+                <name>BusEvent</name>
+                <param>
+                    <type>BusEventType</type>
+                    <declname>enType</declname>
+                </param>
+                <briefdescription>
+                </briefdescription>
+                <detaileddescription>
+                </detaileddescription>
+                <inbodydescription>
+                </inbodydescription>
+                <location file="CAPLPluginApi.h" line="2500" column="9" />
+            </memberdef>
+            <memberdef kind="function" id="classcapl_1_1_bus_event_1ab85d301f518ebbcffde91c387c525df2" prot="public"
+                       static="no" const="no" explicit="no" inline="no" virt="virtual">
+                <type></type>
+                <definition>virtual capl::BusEvent::~BusEvent</definition>
+                <argsstring>()</argsstring>
+                <name>~BusEvent</name>
+                <briefdescription>
+                </briefdescription>
+                <detaileddescription>
+                </detaileddescription>
+                <inbodydescription>
+                </inbodydescription>
+                <location file="CAPLPluginApi.h" line="2501" column="17" />
+            </memberdef>
+        </sectiondef>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inheritancegraph>
+            <node id="2">
+                <label>capl::IEvent&lt; ICanError &amp; &gt;</label>
+                <link refid="classcapl_1_1_i_event" />
+            </node>
+            <node id="1">
+                <label>capl::BusEvent</label>
+                <link refid="classcapl_1_1_bus_event" />
+                <childnode refid="2" relation="public-inheritance">
+                </childnode>
+            </node>
+            <node id="3">
+                <label>capl::ErrorActiveEvent</label>
+                <link refid="classcapl_1_1_error_active_event" />
+                <childnode refid="1" relation="public-inheritance">
+                </childnode>
+            </node>
+            <node id="4">
+                <label>capl::ErrorBusOffEvent</label>
+                <link refid="classcapl_1_1_error_bus_off_event" />
+                <childnode refid="1" relation="public-inheritance">
+                </childnode>
+            </node>
+            <node id="5">
+                <label>capl::ErrorPassiveEvent</label>
+                <link refid="classcapl_1_1_error_passive_event" />
+                <childnode refid="1" relation="public-inheritance">
+                </childnode>
+            </node>
+            <node id="6">
+                <label>capl::WarningLimitEvent</label>
+                <link refid="classcapl_1_1_warning_limit_event" />
+                <childnode refid="1" relation="public-inheritance">
+                </childnode>
+            </node>
+        </inheritancegraph>
+        <collaborationgraph>
+            <node id="2">
+                <label>capl::IEvent&lt; ICanError &amp; &gt;</label>
+                <link refid="classcapl_1_1_i_event" />
+            </node>
+            <node id="1">
+                <label>capl::BusEvent</label>
+                <link refid="classcapl_1_1_bus_event" />
+                <childnode refid="2" relation="public-inheritance">
+                </childnode>
+            </node>
+        </collaborationgraph>
+        <location file="CAPLPluginApi.h" line="2496" column="5" bodyfile="CAPLPluginApi.h" bodystart="2497"
+                  bodyend="2502" />
+        <listofallmembers>
+            <member refid="classcapl_1_1_bus_event_1a3a65090450db7c66d16a734b84faef32" prot="public" virt="non-virtual">
+                <scope>capl::BusEvent</scope><name>BusEvent</name>
+            </member>
+            <member refid="classcapl_1_1_bus_event_1a598bda425441a950f6dcb88a0060cc60" prot="public" virt="non-virtual">
+                <scope>capl::BusEvent</scope><name>BusEvent</name>
+            </member>
+            <member refid="classcapl_1_1_i_event_1a3fb0217883734109c5ebba0e89ddc302" prot="public" virt="non-virtual">
+                <scope>capl::BusEvent</scope><name>IEvent</name>
+            </member>
+            <member refid="classcapl_1_1_i_event_1acf5a313898cfb55070e749789b31528f" prot="protected"
+                    virt="non-virtual">
+                <scope>capl::BusEvent</scope><name>m_hEvent</name>
+            </member>
+            <member refid="classcapl_1_1_i_event_1a5d6973af1cfbe659c3b0ec1ef0d92200" prot="public" virt="pure-virtual">
+                <scope>capl::BusEvent</scope><name>OnEvent</name>
+            </member>
+            <member refid="classcapl_1_1_bus_event_1ab85d301f518ebbcffde91c387c525df2" prot="public" virt="virtual">
+                <scope>capl::BusEvent</scope><name>~BusEvent</name>
+            </member>
+        </listofallmembers>
+    </compounddef>
+</doxygen>
