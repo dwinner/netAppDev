@@ -1,0 +1,2742 @@
+/*@@var:*/
+/*
+Copyright ( C ) Continental AG 2012
+
+Date of creation :  14.04.2011
+
+Created by :                 Hans Jürgen Hipp
+
+
+Version info
+
+1.00	   10.2013	Inital versioning introduced
+1.1	04.11.2013	HMI_2013_42a database
+
+*/
+
+
+variables
+{
+    const TRUE =    0xAA;
+    const FALSE =   0x00;
+    const cManual = 0x00;
+    const cAuto =   0xAA;
+
+    /* Botschaft Assyst_Rq_AR ID: 1187 --- Sendeart 5 cyclicAndSpontanWithDelay --- 
+BA_ "ApplMessage" BO_ 1187 0;
+BA_ "NmAsrMessage" BO_ 1187 0;
+BA_ "GenMsgMinAcceptLength" BO_ 1187 3;
+BA_ "GenMsgILSupport" BO_ 1187 1;
+BA_ "DiagState" BO_ 1187 0;
+BA_ "DiagRequest" BO_ 1187 0;
+BA_ "DiagResponse" BO_ 1187 0;
+BA_ "GenMsgStartValue" BO_ 1187 "0";
+BA_ "GenMsgStartDelayTime" BO_ 1187 190;
+BA_ "GenMsgDelayTime" BO_ 1187 20;
+BA_ "GenMsgNrOfRepetitions" BO_ 1187 0;
+BA_ "GenMsgCycleTime" BO_ 1187 1000;
+BA_ "GenMsgSendType" BO_ 1187 5;
+    */
+    byte       _Assyst_Rq_AR_RXcounter;
+    word       _Assyst_Rq_AR_CycleTime =           1000;
+    const word _Assyst_Rq_AR_OnEventDetectTime =    990;
+    byte       _Assyst_Rq_AR_OnEventTrap_Active =     0;
+    msTimer    tAssyst_Rq_AR_OnEventTrap;
+    msTimer    tAssyst_Rq_AR_OnEventIND;
+
+    /* Botschaft BLSM_Disp_Stat_AR ID: 157 --- Sendeart 2 --- 
+BA_ "ApplMessage" BO_ 157 0;
+BA_ "NmAsrMessage" BO_ 157 0;
+BA_ "GenMsgMinAcceptLength" BO_ 157 8;
+BA_ "GenMsgILSupport" BO_ 157 1;
+BA_ "DiagState" BO_ 157 0;
+BA_ "DiagRequest" BO_ 157 0;
+BA_ "DiagResponse" BO_ 157 0;
+BA_ "GenMsgStartValue" BO_ 157 "0";
+BA_ "GenMsgStartDelayTime" BO_ 157 0;
+BA_ "GenMsgDelayTime" BO_ 157 5;
+BA_ "GenMsgCycleTime" BO_ 157 0;
+BA_ "GenMsgCycleTimeActive" BO_ 157 20;
+BA_ "GenMsgSendType" BO_ 157 2;
+    */ 
+    word       _BLSM_Disp_Stat_AR_CycleTime =           1000;
+    const word _BLSM_Disp_Stat_AR_OnEventDetectTime =    990;
+    byte       _BLSM_Disp_Stat_AR_OnEventTrap_Active =     0;
+    msTimer    tBLSM_Disp_Stat_AR_OnEventTrap;
+    msTimer    tBLSM_Disp_Stat_AR_OnEventIND;
+
+    /* Botschaft Dimming_Stat_AR ID: 1081 --- Sendeart 5 cyclicAndSpontanWithDelay --- 
+BA_ "ApplMessage" BO_ 1081 0;
+BA_ "NmAsrMessage" BO_ 1081 0;
+BA_ "GenMsgMinAcceptLength" BO_ 1081 4;
+BA_ "GenMsgILSupport" BO_ 1081 1;
+BA_ "DiagState" BO_ 1081 0;
+BA_ "DiagRequest" BO_ 1081 0;
+BA_ "DiagResponse" BO_ 1081 0;
+BA_ "GenMsgStartValue" BO_ 1081 "0";
+BA_ "GenMsgStartDelayTime" BO_ 1081 20;
+BA_ "GenMsgDelayTime" BO_ 1081 50;
+BA_ "GenMsgNrOfRepetitions" BO_ 1081 0;
+BA_ "GenMsgCycleTime" BO_ 1081 200;
+BA_ "GenMsgSendType" BO_ 1081 5;
+    */ 
+    word       _Dimming_Stat_AR_CycleTime =            200;
+    byte       _Dimming_Stat_AR_CycleReduction =         0;
+    byte      _cDimming_Stat_AR_CycleReductionValue =    5;
+    const word _Dimming_Stat_AR_OnEventDetectTime =    190;
+    byte       _Dimming_Stat_AR_OnEventTrap_Active =     0;
+    msTimer    tDimming_Stat_AR_OnEventTrap;
+    msTimer    tDimming_Stat_AR_OnEventIND;
+
+    /* Botschaft HUD_Rq_IC_AR ID: 1139 --- Sendeart 5 cyclicAndSpontanWithDelay --- 
+BA_ "ApplMessage" BO_ 1139 0;
+BA_ "NmAsrMessage" BO_ 1139 0;
+BA_ "GenMsgMinAcceptLength" BO_ 1139 8;
+BA_ "GenMsgILSupport" BO_ 1139 1;
+BA_ "DiagState" BO_ 1139 0;
+BA_ "DiagRequest" BO_ 1139 0;
+BA_ "DiagResponse" BO_ 1139 0;
+BA_ "GenMsgStartValue" BO_ 1139 "0";
+BA_ "GenMsgStartDelayTime" BO_ 1139 50;
+BA_ "GenMsgDelayTime" BO_ 1139 40;
+BA_ "GenMsgNrOfRepetitions" BO_ 1139 0;
+BA_ "GenMsgCycleTime" BO_ 1139 1000;
+BA_ "GenMsgSendType" BO_ 1139 5;
+    */
+    word       _HUD_Rq_IC_AR_CycleTime =           1000;
+    byte       _HUD_Rq_IC_AR_CycleReduction =         0;
+    byte      _cHUD_Rq_IC_AR_CycleReductionValue =    5;
+    const word _HUD_Rq_IC_AR_OnEventDetectTime =    990;
+    byte       _HUD_Rq_IC_AR_OnEventTrap_Active =     0;
+    msTimer    tHUD_Rq_IC_AR_OnEventTrap;
+    msTimer    tHUD_Rq_IC_AR_OnEventIND;
+
+    /* Botschaft IC_BasicInfo_AR ID: 777 --- Sendeart 5 cyclicAndSpontanWithDelay --- 
+BA_ "ApplMessage" BO_ 777 0;
+BA_ "NmAsrMessage" BO_ 777 0;
+BA_ "GenMsgMinAcceptLength" BO_ 777 8;
+BA_ "GenMsgILSupport" BO_ 777 1;
+BA_ "DiagState" BO_ 777 0;
+BA_ "DiagRequest" BO_ 777 0;
+BA_ "DiagResponse" BO_ 777 0;
+BA_ "GenMsgStartValue" BO_ 777 "0";
+BA_ "GenMsgStartDelayTime" BO_ 777 295;
+BA_ "GenMsgDelayTime" BO_ 777 100;
+BA_ "GenMsgNrOfRepetitions" BO_ 777 0;
+BA_ "GenMsgCycleTime" BO_ 777 1000;
+BA_ "GenMsgSendType" BO_ 777 5;
+    */
+    word       _IC_BasicInfo_AR_CycleTime =           1000;
+    byte       _IC_BasicInfo_AR_CycleReduction =         0;
+    byte      _cIC_BasicInfo_AR_CycleReductionValue =    5;
+    const word _IC_BasicInfo_AR_OnEventDetectTime =    990;
+    byte       _IC_BasicInfo_AR_OnEventTrap_Active =     0;
+    msTimer    tIC_BasicInfo_AR_OnEventTrap;
+    msTimer    tIC_BasicInfo_AR_OnEventIND;
+
+    /* Botschaft IC_BasicInfo2_AR ID: 1216 --- Sendeart 5 cyclicAndSpontanWithDelay --- 
+BA_ "ApplMessage" BO_ 1216 0;
+BA_ "NmAsrMessage" BO_ 1216 0;
+BA_ "GenMsgMinAcceptLength" BO_ 1216 8;
+BA_ "GenMsgILSupport" BO_ 1216 1;
+BA_ "DiagState" BO_ 1216 0;
+BA_ "DiagRequest" BO_ 1216 0;
+BA_ "DiagResponse" BO_ 1216 0;
+BA_ "GenMsgStartValue" BO_ 1216 "0";
+BA_ "GenMsgStartDelayTime" BO_ 1216 260;
+BA_ "GenMsgDelayTime" BO_ 1216 100;
+BA_ "GenMsgNrOfRepetitions" BO_ 1216 0;
+BA_ "GenMsgCycleTime" BO_ 1216 1000;
+BA_ "GenMsgSendType" BO_ 1216 5;
+    */
+    word       _IC_BasicInfo2_AR_CycleTime =           1000;
+    byte       _IC_BasicInfo2_AR_CycleReduction =         0;
+    byte      _cIC_BasicInfo2_AR_CycleReductionValue =    5;
+    const word _IC_BasicInfo2_AR_OnEventDetectTime =    990;
+    byte       _IC_BasicInfo2_AR_OnEventTrap_Active =     0;
+    msTimer    tIC_BasicInfo2_AR_OnEventTrap;
+    msTimer    tIC_BasicInfo2_AR_OnEventIND;
+
+    /* Botschaft IC_Date_Time_AR ID: 779 --- Sendeart 5 cyclicAndSpontanWithDelay --- 
+BA_ "ApplMessage" BO_ 779 0;
+BA_ "NmAsrMessage" BO_ 779 0;
+BA_ "GenMsgMinAcceptLength" BO_ 779 8;
+BA_ "GenMsgILSupport" BO_ 779 1;
+BA_ "DiagState" BO_ 779 0;
+BA_ "DiagRequest" BO_ 779 0;
+BA_ "DiagResponse" BO_ 779 0;
+BA_ "GenMsgStartValue" BO_ 779 "0";
+BA_ "GenMsgStartDelayTime" BO_ 779 250;
+BA_ "GenMsgDelayTime" BO_ 779 40;
+BA_ "GenMsgNrOfRepetitions" BO_ 779 0;
+BA_ "GenMsgCycleTime" BO_ 779 1000;
+BA_ "GenMsgSendType" BO_ 779 5;
+    */
+    word       _IC_Date_Time_AR_CycleTime =           1000;
+    byte       _IC_Date_Time_AR_CycleReduction =         0;
+    byte      _cIC_Date_Time_AR_CycleReductionValue =    5;
+    const word _IC_Date_Time_AR_OnEventDetectTime =    990;
+    byte       _IC_Date_Time_AR_OnEventTrap_Active =     0;
+    msTimer    tIC_Date_Time_AR_OnEventTrap;
+    msTimer    tIC_Date_Time_AR_OnEventIND;
+
+    /* Botschaft IC_DriveAssistSys_AR ID: 305 --- Sendeart 0 cyclicX --- 
+BA_ "ApplMessage" BO_ 305 0;
+BA_ "NmAsrMessage" BO_ 305 0;
+BA_ "GenMsgMinAcceptLength" BO_ 305 8;
+BA_ "GenMsgILSupport" BO_ 305 1;
+BA_ "DiagState" BO_ 305 0;
+BA_ "DiagRequest" BO_ 305 0;
+BA_ "DiagResponse" BO_ 305 0;
+BA_ "GenMsgStartValue" BO_ 305 "0";
+BA_ "GenMsgStartDelayTime" BO_ 305 70;
+BA_ "GenMsgCycleTime" BO_ 305 100;
+BA_ "GenMsgSendType" BO_ 305 0;
+    */
+    // Botschaft IC_DriveAssistSys_AR --- Sendeart  --- 
+    message IC_DriveAssistSys_AR _mIC_DriveAssistSys_AR;
+    byte _IC_DriveAssistSys_AR_CRC_RollTestMd_SPCR_Stat_IC[16] = { 230, 165, 100,  35, 221, 156,  91,  26, 212, 147,  82,  17, 203, 138,  73,   8 };
+//    msTimer _tIC_DriveAssistSys_AR;
+
+
+    word       _IC_DriveAssistSys_AR_CycleTime =            100;
+    byte       _IC_DriveAssistSys_AR_CycleReduction =         0;
+    byte      _cIC_DriveAssistSys_AR_CycleReductionValue =   10;
+    const word _IC_DriveAssistSys_AR_OnEventDetectTime =     90;
+    byte       _IC_DriveAssistSys_AR_OnEventTrap_Active =     0;
+    msTimer    tIC_DriveAssistSys_AR_OnEventTrap;
+    msTimer    tIC_DriveAssistSys_AR_OnEventIND;
+
+    /* Botschaft IC_Immobilizer_AR ID: 871 --- Sendeart 5 cyclicAndSpontanWithDelay --- 
+BA_ "ApplMessage" BO_ 871 0;
+BA_ "NmAsrMessage" BO_ 871 0;
+BA_ "GenMsgMinAcceptLength" BO_ 871 8;
+BA_ "GenMsgILSupport" BO_ 871 1;
+BA_ "DiagState" BO_ 871 0;
+BA_ "DiagRequest" BO_ 871 0;
+BA_ "DiagResponse" BO_ 871 0;
+BA_ "GenMsgStartValue" BO_ 871 "0";
+BA_ "GenMsgStartDelayTime" BO_ 871 145;
+BA_ "GenMsgDelayTime" BO_ 871 5;
+BA_ "GenMsgNrOfRepetitions" BO_ 871 0;
+BA_ "GenMsgCycleTime" BO_ 871 1000;
+BA_ "GenMsgSendType" BO_ 871 5;
+    */
+    word       _IC_Immobilizer_AR_CycleTime =           1000;
+    byte       _IC_Immobilizer_AR_CycleReduction =         0;
+    byte      _cIC_Immobilizer_AR_CycleReductionValue =    5;
+    const word _IC_Immobilizer_AR_OnEventDetectTime =    990;
+    byte       _IC_Immobilizer_AR_OnEventTrap_Active =     0;
+    msTimer    tIC_Immobilizer_AR_OnEventTrap;
+    msTimer    tIC_Immobilizer_AR_OnEventIND;
+
+    /* Botschaft IC_Stat_AR ID: 784 --- Sendeart 5 cyclicAndSpontanWithDelay --- 
+BA_ "ApplMessage" BO_ 784 0;
+BA_ "NmAsrMessage" BO_ 784 0;
+BA_ "GenMsgMinAcceptLength" BO_ 784 8;
+BA_ "GenMsgILSupport" BO_ 784 1;
+BA_ "DiagState" BO_ 784 0;
+BA_ "DiagRequest" BO_ 784 0;
+BA_ "DiagResponse" BO_ 784 0;
+BA_ "GenMsgStartValue" BO_ 784 "0";
+BA_ "GenMsgStartDelayTime" BO_ 784 45;
+BA_ "GenMsgDelayTime" BO_ 784 20;
+BA_ "GenMsgNrOfRepetitions" BO_ 784 0;
+BA_ "GenMsgCycleTime" BO_ 784 500;
+BA_ "GenMsgSendType" BO_ 784 5;
+    */
+    word       _IC_Stat_AR_CycleTime =            500;
+    byte       _IC_Stat_AR_CycleReduction =         0;
+    byte      _cIC_Stat_AR_CycleReductionValue =    5;
+    const word _IC_Stat_AR_OnEventDetectTime =    490;
+    byte       _IC_Stat_AR_OnEventTrap_Active =     0;
+    msTimer    tIC_Stat_AR_OnEventTrap;
+    msTimer    tIC_Stat_AR_OnEventIND;
+
+    /* Botschaft IC_Settings_AR ID: 781 --- Sendeart 5 cyclicAndSpontanWithDelay --- 
+BA_ "ApplMessage" BO_ 781 0;
+BA_ "NmAsrMessage" BO_ 781 0;
+BA_ "GenMsgMinAcceptLength" BO_ 781 8;
+BA_ "GenMsgILSupport" BO_ 781 1;
+BA_ "DiagState" BO_ 781 0;
+BA_ "DiagRequest" BO_ 781 0;
+BA_ "DiagResponse" BO_ 781 0;
+BA_ "GenMsgStartValue" BO_ 781 "0";
+BA_ "GenMsgStartDelayTime" BO_ 781 100;
+BA_ "GenMsgDelayTime" BO_ 781 40;
+BA_ "GenMsgNrOfRepetitions" BO_ 781 0;
+BA_ "GenMsgCycleTime" BO_ 781 1000;
+BA_ "GenMsgSendType" BO_ 781 5;
+    */
+    word       _IC_Settings_AR_CycleTime =           1000;
+    byte       _IC_Settings_AR_CycleReduction =         0;
+    byte      _cIC_Settings_AR_CycleReductionValue =    5;
+    const word _IC_Settings_AR_OnEventDetectTime =    990;
+    byte       _IC_Settings_AR_OnEventTrap_Active =     0;
+    msTimer    tIC_Settings_AR_OnEventTrap;
+    msTimer    tIC_Settings_AR_OnEventIND;
+
+    /* Botschaft IC_StWheelSwitches_AR ID: 307 --- Sendeart 5 cyclicAndSpontanWithDelay --- 
+BA_ "ApplMessage" BO_ 307 0;
+BA_ "NmAsrMessage" BO_ 307 0;
+BA_ "GenMsgMinAcceptLength" BO_ 307 8;
+BA_ "GenMsgILSupport" BO_ 307 1;
+BA_ "DiagState" BO_ 307 0;
+BA_ "DiagRequest" BO_ 307 0;
+BA_ "DiagResponse" BO_ 307 0;
+BA_ "GenMsgStartValue" BO_ 307 "0";
+BA_ "GenMsgStartDelayTime" BO_ 307 30;
+BA_ "GenMsgDelayTime" BO_ 307 20;
+BA_ "GenMsgNrOfRepetitions" BO_ 307 0;
+BA_ "GenMsgCycleTime" BO_ 307 100;
+BA_ "GenMsgSendType" BO_ 307 5;
+    */
+    word       _IC_StWheelSwitches_AR_CycleTime =            100;
+    byte       _IC_StWheelSwitches_AR_CycleReduction =         0;
+    byte      _cIC_StWheelSwitches_AR_CycleReductionValue =   10;
+    const word _IC_StWheelSwitches_AR_OnEventDetectTime =     90;
+    byte       _IC_StWheelSwitches_AR_OnEventTrap_Active =     0;
+    msTimer    tIC_StWheelSwitches_AR_OnEventTrap;
+    msTimer    tIC_StWheelSwitches_AR_OnEventIND;
+
+    /* Botschaft IC_WIM_AR ID: 873 --- Sendeart 5 cyclicAndSpontanWithDelay --- 
+BA_ "ApplMessage" BO_ 873 0;
+BA_ "NmAsrMessage" BO_ 873 0;
+BA_ "GenMsgMinAcceptLength" BO_ 873 8;
+BA_ "GenMsgILSupport" BO_ 873 1;
+BA_ "DiagState" BO_ 873 0;
+BA_ "DiagRequest" BO_ 873 0;
+BA_ "DiagResponse" BO_ 873 0;
+BA_ "GenMsgStartValue" BO_ 873 "0";
+BA_ "GenMsgStartDelayTime" BO_ 873 185;
+BA_ "GenMsgDelayTime" BO_ 873 20;
+BA_ "GenMsgNrOfRepetitions" BO_ 873 0;
+BA_ "GenMsgCycleTime" BO_ 873 500;
+BA_ "GenMsgSendType" BO_ 873 5;
+    */
+    word       _IC_WIM_AR_CycleTime =            500;
+    byte       _IC_WIM_AR_CycleReduction =         0;
+    byte      _cIC_WIM_AR_CycleReductionValue =    2;
+    const word _IC_WIM_AR_OnEventDetectTime =    490;
+    byte       _IC_WIM_AR_OnEventTrap_Active =     0;
+    msTimer    tIC_WIM_AR_OnEventTrap;
+    msTimer    tIC_WIM_AR_OnEventIND;
+
+    /* Botschaft IC_WIM2_AR ID: 962 --- Sendeart 5 cyclicAndSpontanWithDelay --- 
+BA_ "ApplMessage" BO_ 962 0;
+BA_ "NmAsrMessage" BO_ 962 0;
+BA_ "GenMsgMinAcceptLength" BO_ 962 8;
+BA_ "GenMsgILSupport" BO_ 962 1;
+BA_ "DiagState" BO_ 962 0;
+BA_ "DiagRequest" BO_ 962 0;
+BA_ "DiagResponse" BO_ 962 0;
+BA_ "GenMsgStartValue" BO_ 962 "0";
+BA_ "GenMsgStartDelayTime" BO_ 962 145;
+BA_ "GenMsgDelayTime" BO_ 962 20;
+BA_ "GenMsgNrOfRepetitions" BO_ 962 0;
+BA_ "GenMsgCycleTime" BO_ 962 500;
+BA_ "GenMsgSendType" BO_ 962 5;
+    */
+    word       _IC_WIM2_AR_CycleTime =            500;
+    byte       _IC_WIM2_AR_CycleReduction =         0;
+    byte      _cIC_WIM2_AR_CycleReductionValue =    2;
+    const word _IC_WIM2_AR_OnEventDetectTime =    490;
+    byte       _IC_WIM2_AR_OnEventTrap_Active =     0;
+    msTimer    tIC_WIM2_AR_OnEventTrap;
+    msTimer    tIC_WIM2_AR_OnEventIND;
+
+    /* Botschaft LDC_Disp_Stat_IC_AR ID: 867 --- Sendeart 5 cyclicAndSpontanWithDelay --- 
+BA_ "ApplMessage" BO_ 867 0;
+BA_ "NmAsrMessage" BO_ 867 0;
+BA_ "GenMsgMinAcceptLength" BO_ 867 8;
+BA_ "GenMsgILSupport" BO_ 867 1;
+BA_ "DiagState" BO_ 867 0;
+BA_ "DiagRequest" BO_ 867 0;
+BA_ "DiagResponse" BO_ 867 0;
+BA_ "GenMsgStartValue" BO_ 867 "0";
+BA_ "GenMsgStartDelayTime" BO_ 867 125;
+BA_ "GenMsgDelayTime" BO_ 867 10;
+BA_ "GenMsgNrOfRepetitions" BO_ 867 0;
+BA_ "GenMsgCycleTime" BO_ 867 200;
+BA_ "GenMsgSendType" BO_ 867 5;
+    */
+    word       _LDC_Disp_Stat_IC_AR_CycleTime =            200;
+    byte       _LDC_Disp_Stat_IC_AR_CycleReduction =         0;
+    byte      _cLDC_Disp_Stat_IC_AR_CycleReductionValue =    5;
+    const word _LDC_Disp_Stat_IC_AR_OnEventDetectTime =    190;
+    byte       _LDC_Disp_Stat_IC_AR_OnEventTrap_Active =     0;
+    msTimer    tLDC_Disp_Stat_IC_AR_OnEventTrap;
+    msTimer    tLDC_Disp_Stat_IC_AR_OnEventIND;
+
+    /* Botschaft Maintenance1_AR ID: 1217 --- Sendeart 0 cyclicX --- 
+BA_ "ApplMessage" BO_ 1217 0;
+BA_ "NmAsrMessage" BO_ 1217 0;
+BA_ "GenMsgMinAcceptLength" BO_ 1217 8;
+BA_ "GenMsgILSupport" BO_ 1217 1;
+BA_ "DiagState" BO_ 1217 0;
+BA_ "DiagRequest" BO_ 1217 0;
+BA_ "DiagResponse" BO_ 1217 0;
+BA_ "GenMsgStartValue" BO_ 1217 "0";
+BA_ "GenMsgStartDelayTime" BO_ 1217 60;
+BA_ "GenMsgCycleTime" BO_ 1217 5000;
+BA_ "GenMsgSendType" BO_ 1217 0;
+    */
+    word       _Maintenance1_AR_CycleTime =           5000;
+    byte       _Maintenance1_AR_CycleReduction =         0;
+    byte      _cMaintenance1_AR_CycleReductionValue =    5;
+    const word _Maintenance1_AR_OnEventDetectTime =    990;
+    byte       _Maintenance1_AR_OnEventTrap_Active =     0;
+    msTimer    tMaintenance1_AR_OnEventTrap;
+    msTimer    tMaintenance1_AR_OnEventIND;
+
+    /* Botschaft Maintenance2_AR ID: 867 --- Sendeart 0 cyclicX --- 
+BA_ "ApplMessage" BO_ 1218 0;
+BA_ "NmAsrMessage" BO_ 1218 0;
+BA_ "GenMsgMinAcceptLength" BO_ 1218 8;
+BA_ "GenMsgILSupport" BO_ 1218 1;
+BA_ "DiagState" BO_ 1218 0;
+BA_ "DiagRequest" BO_ 1218 0;
+BA_ "DiagResponse" BO_ 1218 0;
+BA_ "GenMsgStartValue" BO_ 1218 "0";
+BA_ "GenMsgStartDelayTime" BO_ 1218 120;
+BA_ "GenMsgCycleTime" BO_ 1218 2000;
+BA_ "GenMsgSendType" BO_ 1218 0;
+    */
+    word       _Maintenance2_AR_CycleTime =           2000;
+    byte       _Maintenance2_AR_CycleReduction =         0;
+    byte      _cMaintenance2_AR_CycleReductionValue =    5;
+    const word _Maintenance2_AR_OnEventDetectTime =    990;
+    byte       _Maintenance2_AR_OnEventTrap_Active =     0;
+    msTimer    tMaintenance2_AR_OnEventTrap;
+    msTimer    tMaintenance2_AR_OnEventIND;
+
+    // Meas_IC_1
+    word       _Meas_IC_1_CycleTime =           1000;
+    byte       _Meas_IC_1_CycleReduction =         0;
+    byte      _cMeas_IC_1_CycleReductionValue =    5;
+    const word _Meas_IC_1_OnEventDetectTime =    990;
+    byte       _Meas_IC_1_OnEventTrap_Active =     0;
+    msTimer    tMeas_IC_1_OnEventTrap;
+    msTimer    tMeas_IC_1_OnEventIND;
+
+    // Meas_IC_2
+    word       _Meas_IC_2_CycleTime =           1000;
+    byte       _Meas_IC_2_CycleReduction =         0;
+    byte      _cMeas_IC_2_CycleReductionValue =    5;
+    const word _Meas_IC_2_OnEventDetectTime =    990;
+    byte       _Meas_IC_2_OnEventTrap_Active =     0;
+    msTimer    tMeas_IC_2_OnEventTrap;
+    msTimer    tMeas_IC_2_OnEventIND;
+
+    // Meas_IC_3
+    word       _Meas_IC_3_CycleTime =           1000;
+    byte       _Meas_IC_3_CycleReduction =         0;
+    byte      _cMeas_IC_3_CycleReductionValue =    5;
+    const word _Meas_IC_3_OnEventDetectTime =    990;
+    byte       _Meas_IC_3_OnEventTrap_Active =     0;
+    msTimer    tMeas_IC_3_OnEventTrap;
+    msTimer    tMeas_IC_3_OnEventIND;
+
+    // Meas_IC_4
+    word       _Meas_IC_4_CycleTime =           1000;
+    byte       _Meas_IC_4_CycleReduction =         0;
+    byte      _cMeas_IC_4_CycleReductionValue =    5;
+    const word _Meas_IC_4_OnEventDetectTime =    990;
+    byte       _Meas_IC_4_OnEventTrap_Active =     0;
+    msTimer    tMeas_IC_4_OnEventTrap;
+    msTimer    tMeas_IC_4_OnEventIND;
+
+    // Meas_IC_5
+    word       _Meas_IC_5_CycleTime =           1000;
+    byte       _Meas_IC_5_CycleReduction =         0;
+    byte      _cMeas_IC_5_CycleReductionValue =    5;
+    const word _Meas_IC_5_OnEventDetectTime =    990;
+    byte       _Meas_IC_5_OnEventTrap_Active =     0;
+    msTimer    tMeas_IC_5_OnEventTrap;
+    msTimer    tMeas_IC_5_OnEventIND;
+
+    // Meas_IC_5
+    word       _NM_IC_AR_CycleTime =           1000;
+    byte       _NM_IC_AR_CycleReduction =         0;
+    byte      _cNM_IC_AR_CycleReductionValue =    5;
+    const word _NM_IC_AR_OnEventDetectTime =    990;
+    byte       _NM_IC_AR_OnEventTrap_Active =     0;
+    msTimer    tNM_IC_AR_OnEventTrap;
+    msTimer    tNM_IC_AR_OnEventIND;
+
+    /* Botschaft NV_Rq_IC_AR ID: 309 --- Sendeart 0 cyclicX --- 
+BA_ "ApplMessage" BO_ 309 0;
+BA_ "NmAsrMessage" BO_ 309 0;
+BA_ "GenMsgMinAcceptLength" BO_ 309 8;
+BA_ "GenMsgILSupport" BO_ 309 1;
+BA_ "DiagState" BO_ 309 0;
+BA_ "DiagRequest" BO_ 309 0;
+BA_ "DiagResponse" BO_ 309 0;
+BA_ "GenMsgStartValue" BO_ 309 "0";
+BA_ "GenMsgStartDelayTime" BO_ 309 0;
+BA_ "GenMsgCycleTime" BO_ 309 80;
+BA_ "GenMsgSendType" BO_ 309 0;
+    */
+    word       _NV_Rq_IC_AR_CycleTime =             80;
+    byte       _NV_Rq_IC_AR_CycleReduction =         0;
+    byte      _cNV_Rq_IC_AR_CycleReductionValue =   13;
+    const word _NV_Rq_IC_AR_OnEventDetectTime =     70;
+    byte       _NV_Rq_IC_AR_OnEventTrap_Active =     0;
+    msTimer    tNV_Rq_IC_AR_OnEventTrap;
+    msTimer    tNV_Rq_IC_AR_OnEventIND;
+
+    /* Botschaft Park_Disp_Rs_AR ID: 395 --- Sendeart 5 cyclicAndSpontanWithDelay --- 
+BA_ "ApplMessage" BO_ 395 0;
+BA_ "NmAsrMessage" BO_ 395 0;
+BA_ "GenMsgMinAcceptLength" BO_ 395 8;
+BA_ "GenMsgILSupport" BO_ 395 1;
+BA_ "DiagState" BO_ 395 0;
+BA_ "DiagRequest" BO_ 395 0;
+BA_ "DiagResponse" BO_ 395 0;
+BA_ "GenMsgStartValue" BO_ 395 "0";
+BA_ "GenMsgStartDelayTime" BO_ 395 150;
+BA_ "GenMsgDelayTime" BO_ 395 40;
+BA_ "GenMsgNrOfRepetitions" BO_ 395 0;
+BA_ "GenMsgCycleTime" BO_ 395 200;
+BA_ "GenMsgSendType" BO_ 395 5;
+    */
+    message Park_Disp_Rs_AR _mPark_Disp_Rs_AR;
+    byte _Park_Disp_Rs_AR_CRC_Park_Disp_Rs[16] = { 237, 249,  10,  22,  34,  46,  58,  70,  82,  94, 106, 118, 130, 142, 154, 166 };
+
+
+    word       _Park_Disp_Rs_AR_CycleTime =            200;
+    byte       _Park_Disp_Rs_AR_CycleReduction =         0;
+    byte      _cPark_Disp_Rs_AR_CycleReductionValue =    5;
+    const word _Park_Disp_Rs_AR_OnEventDetectTime =    190;
+    byte       _Park_Disp_Rs_AR_OnEventTrap_Active =     0;
+    msTimer    tPark_Disp_Rs_AR_OnEventTrap;
+    msTimer    tPark_Disp_Rs_AR_OnEventIND;
+
+    /* Botschaft ROE_IC ID: 2565816576 --- Sendeart 9  --- 
+BA_ "ApplMessage" BO_ 2565816576 0;
+BA_ "NmAsrMessage" BO_ 2565816576 0;
+BA_ "GenMsgMinAcceptLength" BO_ 2565816576 8;
+BA_ "GenMsgILSupport" BO_ 2565816576 1;
+BA_ "DiagState" BO_ 2565816576 0;
+BA_ "DiagRequest" BO_ 2565816576 0;
+BA_ "DiagResponse" BO_ 2565816576 0;
+BA_ "GenMsgStartValue" BO_ 2565816576 "0";
+BA_ "GenMsgDelayTime" BO_ 2565816576 5;
+BA_ "GenMsgNrOfRepetitions" BO_ 2565816576 0;
+BA_ "GenMsgCycleTime" BO_ 2565816576 200;
+BA_ "GenMsgSendType" BO_ 2565816576 9;
+    */ 
+    word       _ROE_IC_CycleTime =            200;
+    byte       _ROE_IC_CycleReduction =         0;
+    byte      _cROE_IC_CycleReductionValue =    5;
+    const word _ROE_IC_OnEventDetectTime =    190;
+    byte       _ROE_IC_OnEventTrap_Active =     0;
+    msTimer    tROE_IC_OnEventTrap;
+    msTimer    tROE_IC_OnEventIND;
+
+    /* Botschaft TC_Dist_AR ID: 311 --- Sendeart 0 cyclicX --- 
+BA_ "ApplMessage" BO_ 311 0;
+BA_ "NmAsrMessage" BO_ 311 0;
+BA_ "GenMsgMinAcceptLength" BO_ 311 8;
+BA_ "GenMsgILSupport" BO_ 311 0;
+BA_ "DiagState" BO_ 311 0;
+BA_ "DiagRequest" BO_ 311 0;
+BA_ "DiagResponse" BO_ 311 0;
+BA_ "GenMsgStartValue" BO_ 311 "0";
+BA_ "GenMsgStartDelayTime" BO_ 311 110;
+BA_ "GenMsgCycleTime" BO_ 311 100;
+BA_ "GenMsgSendType" BO_ 311 0;
+    */
+    word       _TC_Dist_AR_CycleTime =            100;
+    byte       _TC_Dist_AR_CycleReduction =         0;
+    byte      _cTC_Dist_AR_CycleReductionValue =   10;
+    const word _TC_Dist_AR_OnEventDetectTime =     90;
+    byte       _TC_Dist_AR_OnEventTrap_Active =     0;
+    msTimer    tTC_Dist_AR_OnEventTrap;
+    msTimer    tTC_Dist_AR_OnEventIND;
+
+    /* Botschaft TP_IC_EIS_SecOdo ID: 358 --- Sendeart 0 cyclicX --- 
+BA_ "ApplMessage" BO_ 358 0;
+BA_ "NmAsrMessage" BO_ 358 0;
+BA_ "GenMsgMinAcceptLength" BO_ 358 8;
+BA_ "GenMsgILSupport" BO_ 358 0;
+BA_ "DiagState" BO_ 358 0;
+BA_ "DiagRequest" BO_ 358 0;
+BA_ "DiagResponse" BO_ 358 0;
+BA_ "GenMsgStartValue" BO_ 358 "0";
+    */
+    word       _TP_IC_EIS_SecOdo_CycleTime =            100;
+    byte       _TP_IC_EIS_SecOdo_CycleReduction =         0;
+    byte      _cTP_IC_EIS_SecOdo_CycleReductionValue =   10;
+    const word _TP_IC_EIS_SecOdo_OnEventDetectTime =     90;
+    byte       _TP_IC_EIS_SecOdo_OnEventTrap_Active =     0;
+
+    /* Botschaft TP_IC_TGW_Aud ID: 729 --- Sendeart 0 cyclicX --- 
+BA_ "ApplMessage" BO_ 729 0;
+BA_ "NmAsrMessage" BO_ 729 0;
+BA_ "GenMsgMinAcceptLength" BO_ 729 8;
+BA_ "GenMsgILSupport" BO_ 729 0;
+BA_ "DiagState" BO_ 729 0;
+BA_ "DiagRequest" BO_ 729 0;
+BA_ "DiagResponse" BO_ 729 0;
+BA_ "GenMsgStartValue" BO_ 729 "0";
+    */
+    word       _TP_IC_TGW_Aud_CycleTime =            100;
+    byte       _TP_IC_TGW_Aud_CycleReduction =         0;
+    byte      _cTP_IC_TGW_Aud_CycleReductionValue =   10;
+    const word _TP_IC_TGW_Aud_OnEventDetectTime =     90;
+    byte       _TP_IC_TGW_Aud_OnEventTrap_Active =     0;
+
+    /* Botschaft TP_IC_TGW_HUD ID: 712 --- Sendeart 0 cyclicX --- 
+BA_ "ApplMessage" BO_ 712 0;
+BA_ "NmAsrMessage" BO_ 712 0;
+BA_ "GenMsgMinAcceptLength" BO_ 712 8;
+BA_ "GenMsgILSupport" BO_ 712 0;
+BA_ "DiagState" BO_ 712 0;
+BA_ "DiagRequest" BO_ 712 0;
+BA_ "DiagResponse" BO_ 712 0;
+BA_ "GenMsgStartValue" BO_ 712 "0";
+    */
+    word       _TP_IC_TGW_HUD_CycleTime =            100;
+    byte       _TP_IC_TGW_HUD_CycleReduction =         0;
+    byte      _cTP_IC_TGW_HUD_CycleReductionValue =   10;
+    const word _TP_IC_TGW_HUD_OnEventDetectTime =     90;
+    byte       _TP_IC_TGW_HUD_OnEventTrap_Active =     0;
+
+    /* Botschaft TP_IC_TGW_Nav ID: 712 --- Sendeart 0 cyclicX --- 
+BA_ "ApplMessage" BO_ 701 0;
+BA_ "NmAsrMessage" BO_ 701 0;
+BA_ "GenMsgMinAcceptLength" BO_ 701 8;
+BA_ "GenMsgILSupport" BO_ 701 0;
+BA_ "DiagState" BO_ 701 0;
+BA_ "DiagRequest" BO_ 701 0;
+BA_ "DiagResponse" BO_ 701 0;
+BA_ "GenMsgStartValue" BO_ 701 "0";
+    */
+    word       _TP_IC_TGW_Nav_CycleTime =            100;
+    byte       _TP_IC_TGW_Nav_CycleReduction =         0;
+    byte      _cTP_IC_TGW_Nav_CycleReductionValue =   10;
+    const word _TP_IC_TGW_Nav_OnEventDetectTime =     90;
+    byte       _TP_IC_TGW_Nav_OnEventTrap_Active =     0;
+
+    /* Botschaft TP_IC_TGW_SCA ID: 749 --- Sendeart 0 cyclicX --- 
+BA_ "ApplMessage" BO_ 749 0;
+BA_ "NmAsrMessage" BO_ 749 0;
+BA_ "GenMsgMinAcceptLength" BO_ 749 8;
+BA_ "GenMsgILSupport" BO_ 749 0;
+BA_ "DiagState" BO_ 749 0;
+BA_ "DiagRequest" BO_ 749 0;
+BA_ "DiagResponse" BO_ 749 0;
+BA_ "GenMsgStartValue" BO_ 749 "0";
+    */
+    word       _TP_IC_TGW_SCA_CycleTime =            100;
+    byte       _TP_IC_TGW_SCA_CycleReduction =         0;
+    byte      _cTP_IC_TGW_SCA_CycleReductionValue =   10;
+    const word _TP_IC_TGW_SCA_OnEventDetectTime =     90;
+    byte       _TP_IC_TGW_SCA_OnEventTrap_Active =     0;
+
+    /* Botschaft TP_IC_TGW_Tel ID: 705 --- Sendeart 0 cyclicX --- 
+BA_ "ApplMessage" BO_ 705 0;
+BA_ "NmAsrMessage" BO_ 705 0;
+BA_ "GenMsgMinAcceptLength" BO_ 705 8;
+BA_ "GenMsgILSupport" BO_ 705 0;
+BA_ "DiagState" BO_ 705 0;
+BA_ "DiagRequest" BO_ 705 0;
+BA_ "DiagResponse" BO_ 705 0;
+BA_ "GenMsgStartValue" BO_ 705 "0";
+    */
+    word       _TP_IC_TGW_Tel_CycleTime =            100;
+    byte       _TP_IC_TGW_Tel_CycleReduction =         0;
+    byte      _cTP_IC_TGW_Tel_CycleReductionValue =   10;
+    const word _TP_IC_TGW_Tel_OnEventDetectTime =     90;
+    byte       _TP_IC_TGW_Tel_OnEventTrap_Active =     0;
+
+
+    byte  crctable_profile02[256] = {
+        0x00, 0x2F, 0x5E, 0x71, 0xBC, 0x93, 0xE2, 0xCD, 0x57, 0x78, 0x09, 0x26, 0xEB, 0xC4, 0xB5, 0x9A,
+        0xAE, 0x81, 0xF0, 0xDF, 0x12, 0x3D, 0x4C, 0x63, 0xF9, 0xD6, 0xA7, 0x88, 0x45, 0x6A, 0x1B, 0x34,
+        0x73, 0x5C, 0x2D, 0x02, 0xCF, 0xE0, 0x91, 0xBE, 0x24, 0x0B, 0x7A, 0x55, 0x98, 0xB7, 0xC6, 0xE9,
+        0xDD, 0xF2, 0x83, 0xAC, 0x61, 0x4E, 0x3F, 0x10, 0x8A, 0xA5, 0xD4, 0xFB, 0x36, 0x19, 0x68, 0x47,
+        0xE6, 0xC9, 0xB8, 0x97, 0x5A, 0x75, 0x04, 0x2B, 0xB1, 0x9E, 0xEF, 0xC0, 0x0D, 0x22, 0x53, 0x7C,
+        0x48, 0x67, 0x16, 0x39, 0xF4, 0xDB, 0xAA, 0x85, 0x1F, 0x30, 0x41, 0x6E, 0xA3, 0x8C, 0xFD, 0xD2,
+        0x95, 0xBA, 0xCB, 0xE4, 0x29, 0x06, 0x77, 0x58, 0xC2, 0xED, 0x9C, 0xB3, 0x7E, 0x51, 0x20, 0x0F,
+        0x3B, 0x14, 0x65, 0x4A, 0x87, 0xA8, 0xD9, 0xF6, 0x6C, 0x43, 0x32, 0x1D, 0xD0, 0xFF, 0x8E, 0xA1,
+        0xE3, 0xCC, 0xBD, 0x92, 0x5F, 0x70, 0x01, 0x2E, 0xB4, 0x9B, 0xEA, 0xC5, 0x08, 0x27, 0x56, 0x79,
+        0x4D, 0x62, 0x13, 0x3C, 0xF1, 0xDE, 0xAF, 0x80, 0x1A, 0x35, 0x44, 0x6B, 0xA6, 0x89, 0xF8, 0xD7,
+        0x90, 0xBF, 0xCE, 0xE1, 0x2C, 0x03, 0x72, 0x5D, 0xC7, 0xE8, 0x99, 0xB6, 0x7B, 0x54, 0x25, 0x0A,
+        0x3E, 0x11, 0x60, 0x4F, 0x82, 0xAD, 0xDC, 0xF3, 0x69, 0x46, 0x37, 0x18, 0xD5, 0xFA, 0x8B, 0xA4,
+        0x05, 0x2A, 0x5B, 0x74, 0xB9, 0x96, 0xE7, 0xC8, 0x52, 0x7D, 0x0C, 0x23, 0xEE, 0xC1, 0xB0, 0x9F,
+        0xAB, 0x84, 0xF5, 0xDA, 0x17, 0x38, 0x49, 0x66, 0xFC, 0xD3, 0xA2, 0x8D, 0x40, 0x6F, 0x1E, 0x31,
+        0x76, 0x59, 0x28, 0x07, 0xCA, 0xE5, 0x94, 0xBB, 0x21, 0x0E, 0x7F, 0x50, 0x9D, 0xB2, 0xC3, 0xEC,
+        0xD8, 0xF7, 0x86, 0xA9, 0x64, 0x4B, 0x3A, 0x15, 0x8F, 0xA0, 0xD1, 0xFE, 0x33, 0x1C, 0x6D, 0x42
+    };
+
+
+
+}
+/*@@end*/
+
+/*@@startStart:Start:*/
+on start
+{
+}
+/*@@end*/
+
+/*@@msg:CAN1.hmi_2014_17b::Assyst_Rq_AR (0x4A3):*/
+on message Assyst_Rq_AR
+{
+    byte bAliveCtr;
+
+    putValue( HMI_Assyst_Can_SPServ, 	    this.Assyst_Can_SPServ.phys );
+    putValue( HMI_Assyst_CurrOilQual_Para_V2,  this.Assyst_CurrOilQual_Para_V2.phys );
+    putValue( HMI_Assyst_OilQuantMeas_Trgr, this.Assyst_OilQuantMeas_Trgr.phys );
+    putValue( HMI_Assyst_SP3Serv_Trgr, 	    this.Assyst_SP3Serv_Trgr.phys );
+    putValue( HMI_Assyst_VehHndOvr_Trgr,    this.Assyst_VehHndOvr_Trgr.phys );
+
+// Evaluate if received message is on event 
+    bAliveCtr = getValue( HMI__MSGAliveCtr_Assyst_Rq_AR );
+    if( _Assyst_Rq_AR_OnEventTrap_Active )
+    {
+        putValue( HMI__MSG_OnEvent_Assyst_Rq_AR, 1 );
+        cancelTimer( tAssyst_Rq_AR_OnEventIND );
+        setTimer( tAssyst_Rq_AR_OnEventIND, 1000 );
+    }
+    else
+    {
+        if( bAliveCtr < 8 )
+        {
+            bAliveCtr = ( bAliveCtr + 1 ) & 0x07;
+        }
+        else
+        {
+            bAliveCtr = 0;
+		}
+        putValue( HMI__MSGAliveCtr_Assyst_Rq_AR, bAliveCtr );
+        _Assyst_Rq_AR_OnEventTrap_Active = 1;
+        setTimer( tAssyst_Rq_AR_OnEventTrap, _Assyst_Rq_AR_OnEventDetectTime );
+    }
+}
+/*@@end*/
+
+/*@@timer:tAssyst_Rq_AR_OnEventIND:*/
+on timer tAssyst_Rq_AR_OnEventIND
+{
+    putValue( HMI__MSG_OnEvent_Assyst_Rq_AR, 0 );
+}
+/*@@end*/
+
+/*@@timer:tAssyst_Rq_AR_OnEventTrap:*/
+on timer tAssyst_Rq_AR_OnEventTrap
+{
+    _Assyst_Rq_AR_OnEventTrap_Active = 0;
+}
+/*@@end*/
+
+/*@@msg:CAN1.hmi_2014_17b::BLSM_Disp_Stat_AR (0x9D):*/
+on message BLSM_Disp_Stat_AR
+{
+    byte bAliveCtr;
+
+    putValue( HMI_BrkLnServMd_Actv, 	   this.BrkLnServMd_Actv.phys );
+    putValue( HMI_BrkLnServMd_Back_Psd,    this.BrkLnServMd_Back_Psd.phys );
+    putValue( HMI_BrkLnServMd_Dn_Psd, 	   this.BrkLnServMd_Dn_Psd.phys );
+    putValue( HMI_BrkLnServMd_Lt_Psd, 	   this.BrkLnServMd_Lt_Psd.phys );
+    putValue( HMI_BrkLnServMd_MsgDisp_Ack, this.BrkLnServMd_MsgDisp_Ack.phys );
+    putValue( HMI_BrkLnServMd_Ok_Psd, 	   this.BrkLnServMd_Ok_Psd.phys );
+    putValue( HMI_BrkLnServMd_Rt_Psd, 	   this.BrkLnServMd_Rt_Psd.phys );
+    putValue( HMI_BrkLnServMd_Up_Psd, 	   this.BrkLnServMd_Up_Psd.phys );
+
+// --- cyclicIfActive 2 --- 
+// Evaluate if received message is on event 
+    bAliveCtr = getValue( HMI__MSGAliveCtr_BLSM_Disp_Stat_AR );
+    putValue( HMI__MSG_OnEvent_BLSM_Disp_Stat_AR, 1 );
+    cancelTimer( tBLSM_Disp_Stat_AR_OnEventIND );
+    setTimer( tBLSM_Disp_Stat_AR_OnEventIND, 1000 );
+    if( bAliveCtr < 8 )
+    {
+        bAliveCtr = ( bAliveCtr + 1 ) & 0x07;
+    }
+    else
+    {
+        bAliveCtr = 0;
+    }
+    putValue( HMI__MSGAliveCtr_BLSM_Disp_Stat_AR, bAliveCtr );
+}
+/*@@end*/
+
+/*@@timer:tBLSM_Disp_Stat_AR_OnEventIND:*/
+on timer tBLSM_Disp_Stat_AR_OnEventIND
+{
+    putValue( HMI__MSG_OnEvent_BLSM_Disp_Stat_AR, 0 );
+}
+/*@@end*/
+
+/*@@timer:tBLSM_Disp_Stat_AR_OnEventTrap:*/
+on timer tBLSM_Disp_Stat_AR_OnEventTrap
+{
+    _BLSM_Disp_Stat_AR_OnEventTrap_Active = 0;
+}
+/*@@end*/
+
+/*@@msg:CAN1.hmi_2014_17b::Dimming_Stat_AR (0x439):*/
+on message Dimming_Stat_AR
+{
+    byte bAliveCtr;
+
+    putValue( HMI_SwIll_NightDay, this.SwIll_NightDay.phys );
+    putValue( HMI_DispBrt_IC, this.DispBrt_IC.phys );
+    putValue( HMI_IP_Brt_IC, this.IP_Brt_IC.phys );
+    putValue( HMI_SwIllLvl, this.SwIllLvl.phys );
+    putValue( HMI_SwIllLvl_Dim_Md, this.SwIllLvl_Dim_Md.phys );
+
+// --- cyclicAndSpontanWithDelay 5 --- 200ms cycle time ---
+// Evaluate if received message is on event 
+    bAliveCtr = getValue( HMI__MSGAliveCtr_Dimming_Stat_AR );
+    if( _Dimming_Stat_AR_OnEventTrap_Active )
+    {
+        putValue( HMI__MSG_OnEvent_Dimming_Stat_AR, 1 );
+        cancelTimer( tDimming_Stat_AR_OnEventIND );
+        setTimer( tDimming_Stat_AR_OnEventIND, 1000 );
+    }
+    else
+    {
+        _Dimming_Stat_AR_CycleReduction++;
+        if( _Dimming_Stat_AR_CycleReduction >= _cDimming_Stat_AR_CycleReductionValue )
+        {
+            _Dimming_Stat_AR_CycleReduction = 0;
+            if( bAliveCtr < 8 )
+            {
+                bAliveCtr = ( bAliveCtr + 1 ) & 0x07;
+            }
+            else
+            {
+                bAliveCtr = 0;
+            }
+        }
+        putValue( HMI__MSGAliveCtr_Dimming_Stat_AR, bAliveCtr );
+        _Dimming_Stat_AR_OnEventTrap_Active = 1;
+        setTimer( tDimming_Stat_AR_OnEventTrap, _Dimming_Stat_AR_OnEventDetectTime );
+    }
+}
+/*@@end*/
+
+/*@@timer:tDimming_Stat_AR_OnEventIND:*/
+on timer tDimming_Stat_AR_OnEventIND
+{
+    putValue( HMI__MSG_OnEvent_Dimming_Stat_AR, 0 );
+}
+/*@@end*/
+
+/*@@timer:tDimming_Stat_AR_OnEventTrap:*/
+on timer tDimming_Stat_AR_OnEventTrap
+{
+    _Dimming_Stat_AR_OnEventTrap_Active = 0;
+}
+/*@@end*/
+
+/*@@msg:CAN1.hmi_2014_17b::HUD_Rq_IC_AR (0x473):*/
+on message HUD_Rq_IC_AR
+{
+    byte bAliveCtr;
+
+    putValue( HMI_HUD_DispBrt_Rq, 		this.HUD_DispBrt_Rq.phys );
+    putValue( HMI_HUD_Md_Rq, 			this.HUD_Md_Rq.phys );
+    putValue( HMI_HUD_Posn_Rq, 			this.HUD_Posn_Rq.phys );
+
+// --- cyclicAndSpontanWithDelay 5 --- 200ms cycle time ---
+// Evaluate if received message is on event 
+    bAliveCtr = getValue( HMI__MSGAliveCtr_HUD_Rq_IC_AR );
+    if( _HUD_Rq_IC_AR_OnEventTrap_Active )
+    {
+        putValue( HMI__MSG_OnEvent_HUD_Rq_IC_AR, 1 );
+        cancelTimer( tHUD_Rq_IC_AR_OnEventIND );
+        setTimer( tHUD_Rq_IC_AR_OnEventIND, 1000 );
+    }
+    else
+    {
+        _HUD_Rq_IC_AR_CycleReduction++;
+        if( _HUD_Rq_IC_AR_CycleReduction >= _cHUD_Rq_IC_AR_CycleReductionValue )
+        {
+            _HUD_Rq_IC_AR_CycleReduction = 0;
+            if( bAliveCtr < 8 )
+            {
+                bAliveCtr = ( bAliveCtr + 1 ) & 0x07;
+            }
+            else
+            {
+                bAliveCtr = 0;
+            }
+        }
+        putValue( HMI__MSGAliveCtr_HUD_Rq_IC_AR, bAliveCtr );
+        _HUD_Rq_IC_AR_OnEventTrap_Active = 1;
+        setTimer( tHUD_Rq_IC_AR_OnEventTrap, _HUD_Rq_IC_AR_OnEventDetectTime );
+    }
+}
+/*@@end*/
+
+/*@@timer:tHUD_Rq_IC_AR_OnEventIND:*/
+on timer tHUD_Rq_IC_AR_OnEventIND
+{
+    putValue( HMI__MSG_OnEvent_HUD_Rq_IC_AR, 0 );
+}
+/*@@end*/
+
+/*@@timer:tHUD_Rq_IC_AR_OnEventTrap:*/
+on timer tHUD_Rq_IC_AR_OnEventTrap
+{
+    _HUD_Rq_IC_AR_OnEventTrap_Active = 0;
+}
+/*@@end*/
+
+/*@@msg:CAN1.hmi_2014_17b::IC_BasicInfo2_AR (0x4C0):*/
+on message IC_BasicInfo2_AR
+{
+    byte bAliveCtr;
+
+    putValue( HMI_DayCnt, 		this.DayCnt.phys );
+    putValue( HMI_EngShutOffTm,         this.EngShutOffTm.phys );
+    putValue( HMI_HVAC_Vprzr_DryVnTmr_Stat, this.HVAC_Vprzr_DryVnTmr_Stat.phys );
+    putValue( HMI_PT_ShutOffTm,         this.PT_ShutOffTm.phys );
+
+// --- cyclicAndSpontanWithDelay 5 --- 1000ms cycle time ---
+// Evaluate if received message is on event 
+    bAliveCtr = getValue( HMI__MSGAliveCtr_IC_BasicInfo2_AR );
+    if( _IC_BasicInfo2_AR_OnEventTrap_Active )
+    {
+        putValue( HMI__MSG_OnEvent_IC_BasicInfo2_AR, 1 );
+        cancelTimer( tIC_BasicInfo2_AR_OnEventIND );
+        setTimer( tIC_BasicInfo2_AR_OnEventIND, 1000 );
+    }
+    else
+    {
+        if( bAliveCtr < 8 )
+        {
+            bAliveCtr = ( bAliveCtr + 1 ) & 0x07;
+        }
+        else
+        {
+            bAliveCtr = 0;
+		}
+        putValue( HMI__MSGAliveCtr_IC_BasicInfo2_AR, bAliveCtr );
+        _IC_BasicInfo2_AR_OnEventTrap_Active = 1;
+        setTimer( tIC_BasicInfo2_AR_OnEventTrap, _IC_BasicInfo2_AR_OnEventDetectTime );
+    }
+}
+/*@@end*/
+
+/*@@timer:tIC_BasicInfo2_AR_OnEventIND:*/
+on timer tIC_BasicInfo2_AR_OnEventIND
+{
+    putValue( HMI__MSG_OnEvent_IC_BasicInfo2_AR, 0 );
+}
+/*@@end*/
+
+/*@@timer:tIC_BasicInfo2_AR_OnEventTrap:*/
+on timer tIC_BasicInfo2_AR_OnEventTrap
+{
+    _IC_BasicInfo2_AR_OnEventTrap_Active = 0;
+}
+/*@@end*/
+
+/*@@msg:CAN1.hmi_2014_17b::IC_BasicInfo_AR (0x309):*/
+on message IC_BasicInfo_AR
+{
+    byte bAliveCtr;
+
+    putValue( HMI_AirTemp_Outsd_Disp, 		this.AirTemp_Outsd_Disp.phys );
+    putValue( HMI_EngShutOffTm_old,         this.EngShutOffTm_old.phys );
+    putValue( HMI_CoronaLgt_Stat, 			this.CoronaLgt_Stat.phys );
+    putValue( HMI_IC_TP_Alive, 				this.IC_TP_Alive.phys );//neu SLP10.08
+    putValue( HMI_IC_TP_MPM_Alive, 			this.IC_TP_MPM_Alive.phys );//neu SLP10.08
+    putValue( HMI_Odo, 						this.Odo.phys );
+    putValue( HMI_UnitVehSpd, 				this.UnitVehSpd.phys );
+    putValue( HMI_VehSpd_Disp, 				this.VehSpd_Disp.phys );
+
+// --- cyclicAndSpontanWithDelay 5 --- 1000ms cycle time ---
+// Evaluate if received message is on event 
+    bAliveCtr = getValue( HMI__MSGAliveCtr_IC_BasicInfo_AR );
+    if( _IC_BasicInfo_AR_OnEventTrap_Active )
+    {
+        putValue( HMI__MSG_OnEvent_IC_BasicInfo_AR, 1 );
+        cancelTimer( tIC_BasicInfo_AR_OnEventIND );
+        setTimer( tIC_BasicInfo_AR_OnEventIND, 1000 );
+    }
+    else
+    {
+        if( bAliveCtr < 8 )
+        {
+            bAliveCtr = ( bAliveCtr + 1 ) & 0x07;
+        }
+        else
+        {
+            bAliveCtr = 0;
+		}
+        putValue( HMI__MSGAliveCtr_IC_BasicInfo_AR, bAliveCtr );
+        _IC_BasicInfo_AR_OnEventTrap_Active = 1;
+        setTimer( tIC_BasicInfo_AR_OnEventTrap, _IC_BasicInfo_AR_OnEventDetectTime );
+    }
+}
+/*@@end*/
+
+/*@@timer:tIC_BasicInfo_AR_OnEventIND:*/
+on timer tIC_BasicInfo_AR_OnEventIND
+{
+    putValue( HMI__MSG_OnEvent_IC_BasicInfo_AR, 0 );
+}
+/*@@end*/
+
+/*@@timer:tIC_BasicInfo_AR_OnEventTrap:*/
+on timer tIC_BasicInfo_AR_OnEventTrap
+{
+    _IC_BasicInfo_AR_OnEventTrap_Active = 0;
+}
+/*@@end*/
+
+/*@@msg:CAN1.hmi_2014_17b::IC_Date_Time_AR (0x30B):*/
+on message IC_Date_Time_AR
+{
+    byte bAliveCtr;
+
+    putValue( HMI_DateTmDay, this.DateTmDay.phys );
+    putValue( HMI_DateTmHour, this.DateTmHour.phys );
+    putValue( HMI_DateTmMinute, this.DateTmMinute.phys );
+    putValue( HMI_DateTmMonth, this.DateTmMonth.phys );
+    putValue( HMI_DateTmSecond, this.DateTmSecond.phys );
+    putValue( HMI_DateTmStat, this.DateTmStat.phys );
+    putValue( HMI_DateTmWeekday, this.DateTmWeekday.phys );
+    putValue( HMI_DateTmYear, this.DateTmYear.phys );
+    putValue( HMI_ICH_Dur_Rq, this.ICH_Dur_Rq.phys );
+    putValue( HMI_ICH_HtVn_Rq_IC, this.ICH_HtVn_Rq_IC.phys );
+
+// --- cyclicAndSpontanWithDelay 5 --- 1000ms cycle time ---
+// Evaluate if received message is on event 
+    bAliveCtr = getValue( HMI__MSGAliveCtr_IC_Date_Time_AR );
+    if( _IC_Date_Time_AR_OnEventTrap_Active )
+    {
+        putValue( HMI__MSG_OnEvent_IC_Date_Time_AR, 1 );
+        cancelTimer( tIC_Date_Time_AR_OnEventIND );
+        setTimer( tIC_Date_Time_AR_OnEventIND, 1000 );
+    }
+    else
+    {
+        if( bAliveCtr < 8 )
+        {
+            bAliveCtr = ( bAliveCtr + 1 ) & 0x07;
+        }
+        else
+        {
+            bAliveCtr = 0;
+		}
+        putValue( HMI__MSGAliveCtr_IC_Date_Time_AR, bAliveCtr );
+        _IC_Date_Time_AR_OnEventTrap_Active = 1;
+        setTimer( tIC_Date_Time_AR_OnEventTrap, _IC_Date_Time_AR_OnEventDetectTime );
+    }
+}
+/*@@end*/
+
+/*@@timer:tIC_Date_Time_AR_OnEventIND:*/
+on timer tIC_Date_Time_AR_OnEventIND
+{
+    putValue( HMI__MSG_OnEvent_IC_Date_Time_AR, 0 );
+}
+/*@@end*/
+
+/*@@timer:tIC_Date_Time_AR_OnEventTrap:*/
+on timer tIC_Date_Time_AR_OnEventTrap
+{
+    _IC_Date_Time_AR_OnEventTrap_Active = 0;
+}
+/*@@end*/
+
+/*@@msg:CAN1.hmi_2014_17b::IC_DriveAssistSys_AR (0x131):*/
+on message IC_DriveAssistSys_AR
+{
+    byte bAliveCtr;
+    byte crc;
+
+    putValue( HMI_APM_RaceMd_Rq,                    this.APM_RaceMd_Rq.phys );
+    putValue( HMI_CRC_RollTestMd_SPCR_Stat_IC,      this.CRC_RollTestMd_SPCR_Stat_IC.phys );
+//    putValue( HMI_DrowDtct_Md_Rq,                   this.DrowDtct_Md_Rq.phys );
+    putValue( HMI_DrowWarnDisp_Stat,                this.DrowWarnDisp_Stat.phys );
+//    putValue( HMI_ESP_Md_Rq,                        this.ESP_Md_Rq.phys );
+    putValue( HMI_PreHtIndLmp_Flt,                  this.PreHtIndLmp_Flt.phys );
+    putValue( HMI_PTS_Disp_Stat_IC,                 this.PTS_Disp_Stat_IC.phys );
+    putValue( HMI_RollTestMd_Rq,                    this.RollTestMd_Rq.phys );
+    putValue( HMI_Rsrv1_RollTestMd_SPCR_Stat_IC,    this.Rsrv1_RollTestMd_SPCR_Stat_IC.phys );
+    putValue( HMI_Rsrv2_RollTestMd_SPCR_Stat_IC,    this.Rsrv2_RollTestMd_SPCR_Stat_IC.phys );
+    putValue( HMI_SPCR_Conf_IC,                     this.SPCR_Conf_IC.phys );
+    putValue( HMI_SPCR_Flt_IC,                      this.SPCR_Flt_IC.phys );
+    putValue( HMI_SQC_RollTestMd_SPCR_Stat_IC,      this.SQC_RollTestMd_SPCR_Stat_IC.phys );
+
+    _mIC_DriveAssistSys_AR.byte( 1 ) = this.byte( 1 );
+    _mIC_DriveAssistSys_AR.byte( 2 ) = this.byte( 2 );
+    _mIC_DriveAssistSys_AR.byte( 3 ) = this.byte( 3 );
+    _mIC_DriveAssistSys_AR.byte( 4 ) = this.byte( 4 );
+    _mIC_DriveAssistSys_AR.byte( 5 ) = this.byte( 5 );
+    _mIC_DriveAssistSys_AR.byte( 6 ) = this.byte( 6 );
+    _mIC_DriveAssistSys_AR.byte( 7 ) = this.byte( 7 );
+
+//************************************************************************************************
+
+/*    if( !getValue( HMI_SQC_RollTestMd_SPCR_Stat_IC_Auto ))
+    {
+        // berechne message counter
+        if( _mIC_DriveAssistSys_AR.SQC_RollTestMd_SPCR_Stat_IC >= 15 ) _mIC_DriveAssistSys_AR.SQC_RollTestMd_SPCR_Stat_IC = 0;
+        else _mIC_DriveAssistSys_AR.SQC_RollTestMd_SPCR_Stat_IC++;
+        putValue(HMI_SQC_RollTestMd_SPCR_Stat_IC, _mIC_DriveAssistSys_AR.SQC_RollTestMd_SPCR_Stat_IC );
+    }
+    else
+        _mIC_DriveAssistSys_AR.SQC_RollTestMd_SPCR_Stat_IC = getValue( HMI_SQC_RollTestMd_SPCR_Stat_IC );
+*/
+    if( !getValue( HMI_CRC_RollTestMd_SPCR_Stat_IC_Auto ) )
+    {   // CRC according Profile_02 ( W213 )
+        // berechne crc
+        crc = 0xFF;
+//      crc = crctable_profile02[ crc ^ _mIC_DriveAssistSys_AR.byte( 0 ) ]; // CRC
+        crc = crctable_profile02[ crc ^ _mIC_DriveAssistSys_AR.byte( 1 ) ];
+        crc = crctable_profile02[ crc ^ _mIC_DriveAssistSys_AR.byte( 2 ) ];
+        crc = crctable_profile02[ crc ^ _mIC_DriveAssistSys_AR.byte( 3 ) ];
+//      crc = crctable_profile02[ crc ^ _mIC_DriveAssistSys_AR.byte( 4 ) ];
+//      crc = crctable_profile02[ crc ^ _mIC_DriveAssistSys_AR.byte( 5 ) ];
+//      crc = crctable_profile02[ crc ^ _mIC_DriveAssistSys_AR.byte( 6 ) ];
+//      crc = crctable_profile02[ crc ^ _mIC_DriveAssistSys_AR.byte( 7 ) ];
+        crc = crctable_profile02[ crc ^ _IC_DriveAssistSys_AR_CRC_RollTestMd_SPCR_Stat_IC[ _mIC_DriveAssistSys_AR.SQC_RollTestMd_SPCR_Stat_IC ] ]; // load offset
+        crc = (crc ^ 0xFF);
+        if( getValue(  HMI_CRC_RollTestMd_SPCR_Stat_IC_Invalid ) )
+            crc++;
+        _mIC_DriveAssistSys_AR.CRC_RollTestMd_SPCR_Stat_IC = crc;
+        putValue( HMI_CRC_RollTestMd_SPCR_Stat_IC, crc );
+    }
+    else
+        _mIC_DriveAssistSys_AR.CRC_RollTestMd_SPCR_Stat_IC = getValue( HMI_CRC_RollTestMd_SPCR_Stat_IC );
+
+    _mIC_DriveAssistSys_AR.ID = 0x132;
+    output( _mIC_DriveAssistSys_AR );
+    if( this.CRC_RollTestMd_SPCR_Stat_IC.phys == _mIC_DriveAssistSys_AR.CRC_RollTestMd_SPCR_Stat_IC )
+        putvalue( Env_CRC_Check__IC_DriveAssystSys_AR, 0 );
+    else
+        putvalue( Env_CRC_Check__IC_DriveAssystSys_AR, 1 );
+
+
+//*****************************************************************************************************
+// --- cyclic 0 --- 100ms cycle time ---
+// Evaluate if received message is on event 
+    bAliveCtr = getValue( HMI__MSGAliveCtr_IC_DriveAssistSys_AR );
+    if( _IC_DriveAssistSys_AR_OnEventTrap_Active )
+    {
+        putValue( HMI__MSG_OnEvent_IC_DriveAssistSys_AR, 1 );
+        cancelTimer( tIC_DriveAssistSys_AR_OnEventIND );
+        setTimer( tIC_DriveAssistSys_AR_OnEventIND, 1000 );
+    }
+    else
+    {
+        _IC_DriveAssistSys_AR_CycleReduction++;
+        if( _IC_DriveAssistSys_AR_CycleReduction >= _cIC_DriveAssistSys_AR_CycleReductionValue )
+        {
+            _IC_DriveAssistSys_AR_CycleReduction = 0;
+            if( bAliveCtr < 8 )
+            {
+                bAliveCtr = ( bAliveCtr + 1 ) & 0x07;
+            }
+            else
+            {
+                bAliveCtr = 0;
+            }
+        }
+        putValue( HMI__MSGAliveCtr_IC_DriveAssistSys_AR, bAliveCtr );
+        _IC_DriveAssistSys_AR_OnEventTrap_Active = 1;
+        setTimer( tIC_DriveAssistSys_AR_OnEventTrap, _IC_DriveAssistSys_AR_OnEventDetectTime );
+    }
+}
+/*@@end*/
+
+/*@@timer:tIC_DriveAssistSys_AR_OnEventIND:*/
+on timer tIC_DriveAssistSys_AR_OnEventIND
+{
+    putValue( HMI__MSG_OnEvent_IC_DriveAssistSys_AR, 0 );
+}
+/*@@end*/
+
+/*@@timer:tIC_DriveAssistSys_AR_OnEventTrap:*/
+on timer tIC_DriveAssistSys_AR_OnEventTrap
+{
+    _IC_DriveAssistSys_AR_OnEventTrap_Active = 0;
+}
+/*@@end*/
+
+/*@@msg:CAN1.hmi_2014_17b::IC_Immobilizer_AR (0x367):*/
+on message IC_Immobilizer_AR
+{
+    byte bAliveCtr;
+
+    putValue( HMI_KeyId_IC_V2, this.KeyId_IC_V2.phys );
+    putValue( HMI_Odo_IC, this.Odo_IC.phys );
+
+// --- cyclicAndSpontanWithDelay 5 --- 1000ms cycle time ---
+// Evaluate if received message is on event 
+    bAliveCtr = getValue( HMI__MSGAliveCtr_IC_Immobilizer_AR );
+    if( _IC_Immobilizer_AR_OnEventTrap_Active )
+    {
+        putValue( HMI__MSG_OnEvent_IC_Immobilizer_AR, 1 );
+        cancelTimer( tIC_Immobilizer_AR_OnEventIND );
+        setTimer( tIC_Immobilizer_AR_OnEventIND, 1000 );
+    }
+    else
+    {
+        if( bAliveCtr < 8 )
+        {
+            bAliveCtr = ( bAliveCtr + 1 ) & 0x07;
+        }
+        else
+        {
+            bAliveCtr = 0;
+		}
+        putValue( HMI__MSGAliveCtr_IC_Immobilizer_AR, bAliveCtr );
+        _IC_Immobilizer_AR_OnEventTrap_Active = 1;
+        setTimer( tIC_Immobilizer_AR_OnEventTrap, _IC_Immobilizer_AR_OnEventDetectTime );
+    }
+}
+/*@@end*/
+
+/*@@timer:tIC_Immobilizer_AR_OnEventIND:*/
+on timer tIC_Immobilizer_AR_OnEventIND
+{
+    putValue( HMI__MSG_OnEvent_IC_Immobilizer_AR, 0 );
+}
+/*@@end*/
+
+/*@@timer:tIC_Immobilizer_AR_OnEventTrap:*/
+on timer tIC_Immobilizer_AR_OnEventTrap
+{
+    _IC_Immobilizer_AR_OnEventTrap_Active = 0;
+}
+/*@@end*/
+
+/*@@msg:CAN1.hmi_2014_17b::IC_Stat_AR (0x310):*/
+on message IC_Stat_AR
+{
+    byte bAliveCtr;
+
+    putValue( HMI_IC_AddSpeedo_Stat, 		     this.IC_AddSpeedo_Stat.phys );
+    putValue( HMI_IC_DesignVar_Stat, 		     this.IC_DesignVar_Stat.phys );
+    putValue( HMI_IC_DistUnit_Stat, 		     this.IC_DistUnit_Stat.phys );
+    putValue( HMI_IC_TempDisp_Stat, 		     this.IC_TempDisp_Stat.phys );
+    putValue( HMI_PIP_HUD_Add1_Rq, 		     this.PIP_HUD_Add1_Rq.phys );
+    putValue( HMI_PIP_HUD_Add2_Rq, 		     this.PIP_HUD_Add2_Rq.phys );
+    putValue( HMI_PIP_HUD_Add3_Rq, 		     this.PIP_HUD_Add3_Rq.phys );
+    putValue( HMI_PIP_HUD_Add4_Rq, 		     this.PIP_HUD_Add4_Rq.phys );
+    putValue( HMI_PIP_HUD_Apps_Rq, 		     this.PIP_HUD_Apps_Rq.phys );
+    putValue( HMI_PIP_HUD_Audio_Rq, 		     this.PIP_HUD_Audio_Rq.phys );
+    putValue( HMI_PIP_HUD_Navi_Rq, 		     this.PIP_HUD_Navi_Rq.phys );
+    putValue( HMI_PIP_HUD_Phone_Rq, 		     this.PIP_HUD_Phone_Rq.phys );
+    putValue( HMI_PIP_IC_Add1_Rq, 		     this.PIP_IC_Add1_Rq.phys );
+    putValue( HMI_PIP_IC_Add2_Rq, 		     this.PIP_IC_Add2_Rq.phys );
+    putValue( HMI_PIP_IC_Add3_Rq, 		     this.PIP_IC_Add3_Rq.phys );
+    putValue( HMI_PIP_IC_Add4_Rq, 		     this.PIP_IC_Add4_Rq.phys );
+    putValue( HMI_PIP_IC_Apps_Rq, 		     this.PIP_IC_Apps_Rq.phys );
+    putValue( HMI_PIP_IC_Area_Rq, 		     this.PIP_IC_Area_Rq.phys );
+    putValue( HMI_PIP_IC_Audio_Rq, 		     this.PIP_IC_Audio_Rq.phys );
+    putValue( HMI_PIP_IC_Navi_Rq, 		     this.PIP_IC_Navi_Rq.phys );
+    putValue( HMI_PIP_IC_Phone_Rq, 		     this.PIP_IC_Phone_Rq.phys );
+
+    if( !getValue( Env_HU_Config_AutoSync ) && getValue( Env_HU_Config_AutoSync_Trigger ) )
+    {
+        putValue( HMI_IC_AddSpeedo_Rq, this.IC_AddSpeedo_Stat.phys );
+        putValue( HMI_IC_DesignVar_Rq, this.IC_DesignVar_Stat.phys );
+        putValue( HMI_IC_DistUnit_Rq,  this.IC_DistUnit_Stat.phys );
+        putValue( HMI_IC_TempDisp_Rq,  this.IC_TempDisp_Stat.phys );
+    }
+    putValue( Env_HU_Config_AutoSync_Trigger, 0 );   //reset the trigger, will be rearmed by entering CAN-sleep
+
+// --- cyclicAndSpontanWithDelay 5 --- 1000ms cycle time ---
+// Evaluate if received message is on event 
+    bAliveCtr = getValue( HMI__MSGAliveCtr_IC_Stat_AR );
+    if( _IC_Stat_AR_OnEventTrap_Active )
+    {
+        putValue( HMI__MSG_OnEvent_IC_Stat_AR, 1 );
+        cancelTimer( tIC_Stat_AR_OnEventIND );
+        setTimer( tIC_Stat_AR_OnEventIND, 1000 );
+    }
+    else
+    {
+        if( bAliveCtr < 8 )
+        {
+            bAliveCtr = ( bAliveCtr + 1 ) & 0x07;
+        }
+        else
+        {
+            bAliveCtr = 0;
+		}
+        putValue( HMI__MSGAliveCtr_IC_Stat_AR, bAliveCtr );
+        _IC_Stat_AR_OnEventTrap_Active = 1;
+        setTimer( tIC_Stat_AR_OnEventTrap, _IC_Stat_AR_OnEventDetectTime );
+    }
+}
+/*@@end*/
+
+/*@@timer:tIC_Stat_AR_OnEventIND:*/
+on timer tIC_Stat_AR_OnEventIND
+{
+    putValue( HMI__MSG_OnEvent_IC_Stat_AR, 0 );
+}
+/*@@end*/
+
+/*@@timer:tIC_Stat_AR_OnEventTrap:*/
+on timer tIC_Stat_AR_OnEventTrap
+{
+    _IC_Stat_AR_OnEventTrap_Active = 0;
+}
+/*@@end*/
+
+/*@@msg:CAN1.hmi_2014_17b::IC_Settings_AR (0x30D):*/
+on message IC_Settings_AR
+{
+    byte bAliveCtr;
+
+    putValue( HMI_ExtFanTempIC_State,    this.ExtFanTempIC_State.phys );
+    putValue( HMI_FTW_On_Rq, 		     this.FTW_On_Rq.phys );
+    putValue( HMI_IHC_Md_Rq, 		     this.IHC_Md_Rq.phys );
+    putValue( HMI_Preview_Md_Rq, 		this.Preview_Md_Rq.phys );
+    putValue( HMI_SLA_SpdOffset_Rq_D_Unit,   this.SLA_SpdOffset_Rq_D_Unit.phys );
+    putValue( HMI_SLA_SpdOffset_Rq_D_Val,    this.SLA_SpdOffset_Rq_D_Val.phys );
+    putValue( HMI_TPM_Actv_Rq_V2, 		this.TPM_Actv_Rq_V2.phys );
+    putValue( HMI_UnitPress_Rq, 		this.UnitPress_Rq.phys );
+    putValue( HMI_UnitTemp_Rq, 			this.UnitTemp_Rq.phys );
+
+// --- cyclicAndSpontanWithDelay 5 --- 1000ms cycle time ---
+// Evaluate if received message is on event 
+    bAliveCtr = getValue( HMI__MSGAliveCtr_IC_Settings_AR );
+    if( _IC_Settings_AR_OnEventTrap_Active )
+    {
+        putValue( HMI__MSG_OnEvent_IC_Settings_AR, 1 );
+        cancelTimer( tIC_Settings_AR_OnEventIND );
+        setTimer( tIC_Settings_AR_OnEventIND, 1000 );
+    }
+    else
+    {
+        if( bAliveCtr < 8 )
+        {
+            bAliveCtr = ( bAliveCtr + 1 ) & 0x07;
+        }
+        else
+        {
+            bAliveCtr = 0;
+		}
+        putValue( HMI__MSGAliveCtr_IC_Settings_AR, bAliveCtr );
+        _IC_Settings_AR_OnEventTrap_Active = 1;
+        setTimer( tIC_Settings_AR_OnEventTrap, _IC_Settings_AR_OnEventDetectTime );
+    }
+}
+/*@@end*/
+
+/*@@timer:tIC_Settings_AR_OnEventIND:*/
+on timer tIC_Settings_AR_OnEventIND
+{
+    putValue( HMI__MSG_OnEvent_IC_Settings_AR, 0 );
+}
+/*@@end*/
+
+/*@@timer:tIC_Settings_AR_OnEventTrap:*/
+on timer tIC_Settings_AR_OnEventTrap
+{
+    _IC_Settings_AR_OnEventTrap_Active = 0;
+}
+/*@@end*/
+
+/*@@msg:CAN1.hmi_2014_17b::IC_StWheelSwitches_AR (0x133):*/
+on message IC_StWheelSwitches_AR
+{
+    byte bAliveCtr;
+
+    putValue( HMI_IC_Stat_V2, this.IC_Stat_V2.phys );
+    putValue( HMI_StW_SwBack_HU_Psd, this.StW_SwBack_HU_Psd.phys );
+    putValue( HMI_StW_SwDown_HUD_Psd, this.StW_SwDown_HUD_Psd.phys );
+    putValue( HMI_StW_SwDown_MPM_Psd, this.StW_SwDown_MPM_Psd.phys );
+    putValue( HMI_StW_SwEnd_HU_Psd, this.StW_SwEnd_HU_Psd.phys );
+    putValue( HMI_StW_SwEnd_TELEAID_Psd, this.StW_SwEnd_TELEAID_Psd.phys );
+    putValue( HMI_StW_SwFav_HU_Psd, this.StW_SwFav_HU_Psd.phys );
+    putValue( HMI_StW_SwMinus_HU_Psd, this.StW_SwMinus_HU_Psd.phys );
+    putValue( HMI_StW_SwMinus_MPM_Psd, this.StW_SwMinus_MPM_Psd.phys );
+    putValue( HMI_StW_SwMinus_TELEAID_Psd, this.StW_SwMinus_TELEAID_Psd.phys );
+    putValue( HMI_StW_SwMute_MPM_Psd, this.StW_SwMute_MPM_Psd.phys );
+    putValue( HMI_StW_SwOFN_Ok_HU_Psd, this.StW_SwOFN_Ok_HU_Psd.phys );
+    putValue( HMI_StW_SwOk_MPM_Psd, this.StW_SwOk_MPM_Psd.phys );
+    putValue( HMI_StW_SwPlus_HU_Psd, this.StW_SwPlus_HU_Psd.phys );
+    putValue( HMI_StW_SwPlus_MPM_Psd, this.StW_SwPlus_MPM_Psd.phys );
+    putValue( HMI_StW_SwPlus_TELEAID_Psd, this.StW_SwPlus_TELEAID_Psd.phys );
+    putValue( HMI_StW_SwSDS_Can_HU_Psd, this.StW_SwSDS_Can_HU_Psd.phys );
+    putValue( HMI_StW_SwSDS_Mute_HU_Psd, this.StW_SwSDS_Mute_HU_Psd.phys );
+    putValue( HMI_StW_SwSDS_Start_HU_Psd, this.StW_SwSDS_Start_HU_Psd.phys );
+    putValue( HMI_StW_SwSend_HU_Psd, this.StW_SwSend_HU_Psd.phys );
+    putValue( HMI_StW_SwUp_HUD_Psd, this.StW_SwUp_HUD_Psd.phys );
+    putValue( HMI_StW_SwUp_MPM_Psd, this.StW_SwUp_MPM_Psd.phys );
+
+// --- cyclicAndSpontanWithDelay 5 --- 100ms cycle time ---
+// Evaluate if received message is on event 
+    bAliveCtr = getValue( HMI__MSGAliveCtr_IC_StWheelSwitches_AR );
+    if( _IC_StWheelSwitches_AR_OnEventTrap_Active )
+    {
+        putValue( HMI__MSG_OnEvent_IC_StWheelSwitches_AR, 1 );
+        cancelTimer( tIC_StWheelSwitches_AR_OnEventIND );
+        setTimer( tIC_StWheelSwitches_AR_OnEventIND, 1000 );
+    }
+    else
+    {
+        _IC_StWheelSwitches_AR_CycleReduction++;
+        if( _IC_StWheelSwitches_AR_CycleReduction >= _cIC_StWheelSwitches_AR_CycleReductionValue )
+        {
+            _IC_StWheelSwitches_AR_CycleReduction = 0;
+            if( bAliveCtr < 8 )
+            {
+                bAliveCtr = ( bAliveCtr + 1 ) & 0x07;
+            }
+            else
+            {
+                bAliveCtr = 0;
+            }
+        }
+        putValue( HMI__MSGAliveCtr_IC_StWheelSwitches_AR, bAliveCtr );
+        _IC_StWheelSwitches_AR_OnEventTrap_Active = 1;
+        setTimer( tIC_StWheelSwitches_AR_OnEventTrap, _IC_StWheelSwitches_AR_OnEventDetectTime );
+    }
+}
+/*@@end*/
+
+/*@@timer:tIC_StWheelSwitches_AR_OnEventIND:*/
+on timer tIC_StWheelSwitches_AR_OnEventIND
+{
+    putValue( HMI__MSG_OnEvent_IC_StWheelSwitches_AR, 0 );
+}
+/*@@end*/
+
+/*@@timer:tIC_StWheelSwitches_AR_OnEventTrap:*/
+on timer tIC_StWheelSwitches_AR_OnEventTrap
+{
+    _IC_StWheelSwitches_AR_OnEventTrap_Active = 0;
+}
+/*@@end*/
+
+/*@@msg:CAN1.hmi_2014_17b::IC_WIM_AR (0x369):*/
+on message IC_WIM_AR
+{
+    byte bAliveCtr;
+
+    putValue( HMI_AcustWarn_Actv_IC, this.AcustWarn_Actv_IC.phys );
+    putValue( HMI_IC_Msg_Disp_Stat, this.IC_Msg_Disp_Stat.phys );
+    putValue( HMI_IC_Msg_Disp_Stat2, this.IC_Msg_Disp_Stat2.phys );
+    putValue( HMI_WarnPrio1_Mute_Rq, this.WarnPrio1_Mute_Rq.phys );
+
+// --- cyclicAndSpontanWithDelay 5 --- 500ms cycle time ---
+// Evaluate if received message is on event 
+    bAliveCtr = getValue( HMI__MSGAliveCtr_IC_WIM_AR );
+    if( _IC_WIM_AR_OnEventTrap_Active )
+    {
+        putValue( HMI__MSG_OnEvent_IC_WIM_AR, 1 );
+        cancelTimer( tIC_WIM_AR_OnEventIND );
+        setTimer( tIC_WIM_AR_OnEventIND, 1000 );
+    }
+    else
+    {
+        _IC_WIM_AR_CycleReduction++;
+        if( _IC_WIM_AR_CycleReduction >= _cIC_WIM_AR_CycleReductionValue )
+        {
+            _IC_WIM_AR_CycleReduction = 0;
+            if( bAliveCtr < 8 )
+            {
+                bAliveCtr = ( bAliveCtr + 1 ) & 0x07;
+            }
+            else
+            {
+                bAliveCtr = 0;
+            }
+        }
+        putValue( HMI__MSGAliveCtr_IC_WIM_AR, bAliveCtr );
+        _IC_WIM_AR_OnEventTrap_Active = 1;
+        setTimer( tIC_WIM_AR_OnEventTrap, _IC_WIM_AR_OnEventDetectTime );
+    }
+}
+/*@@end*/
+
+/*@@timer:tIC_WIM_AR_OnEventIND:*/
+on timer tIC_WIM_AR_OnEventIND
+{
+    putValue( HMI__MSG_OnEvent_IC_WIM_AR, 0 );
+}
+/*@@end*/
+
+/*@@timer:tIC_WIM_AR_OnEventTrap:*/
+on timer tIC_WIM_AR_OnEventTrap
+{
+    _IC_WIM_AR_OnEventTrap_Active = 0;
+}
+/*@@end*/
+
+/*@@msg:CAN1.hmi_2014_17b::IC_WIM2_AR (0x3C2):*/
+on message IC_WIM2_AR
+{
+    byte bAliveCtr;
+
+    putValue( HMI_IC_Indicator1_Disp_Stat, this.IC_Indicator1_Disp_Stat.phys );
+    putValue( HMI_IC_Indicator2_Disp_Stat, this.IC_Indicator2_Disp_Stat.phys );
+    putValue( HMI_IC_Indicator3_Disp_Stat, this.IC_Indicator3_Disp_Stat.phys );
+    putValue( HMI_IC_Indicator4_Disp_Stat, this.IC_Indicator4_Disp_Stat.phys );
+    putValue( HMI_IC_Indicator5_Disp_Stat, this.IC_Indicator5_Disp_Stat.phys );
+    putValue( HMI_IC_Indicator6_Disp_Stat, this.IC_Indicator6_Disp_Stat.phys );
+    putValue( HMI_IC_Indicator7_Disp_Stat, this.IC_Indicator7_Disp_Stat.phys );
+    putValue( HMI_IC_Indicator8_Disp_Stat, this.IC_Indicator8_Disp_Stat.phys );
+    putValue( HMI_IC_Indicator9_Disp_Stat, this.IC_Indicator9_Disp_Stat.phys );
+    putValue( HMI_IC_Indicator10_Disp_Stat, this.IC_Indicator10_Disp_Stat.phys );
+    putValue( HMI_IC_Indicator11_Disp_Stat, this.IC_Indicator11_Disp_Stat.phys );
+    putValue( HMI_IC_Indicator12_Disp_Stat, this.IC_Indicator12_Disp_Stat.phys );
+    putValue( HMI_IC_Indicator13_Disp_Stat, this.IC_Indicator13_Disp_Stat.phys );
+    putValue( HMI_IC_Indicator14_Disp_Stat, this.IC_Indicator14_Disp_Stat.phys );
+    putValue( HMI_IC_Indicator15_Disp_Stat, this.IC_Indicator15_Disp_Stat.phys );
+    putValue( HMI_IC_Indicator16_Disp_Stat, this.IC_Indicator16_Disp_Stat.phys );
+    putValue( HMI_IC_Indicator17_Disp_Stat, this.IC_Indicator17_Disp_Stat.phys );
+    putValue( HMI_IC_Indicator18_Disp_Stat, this.IC_Indicator18_Disp_Stat.phys );
+    putValue( HMI_IC_Indicator19_Disp_Stat, this.IC_Indicator19_Disp_Stat.phys );
+    putValue( HMI_IC_Indicator20_Disp_Stat, this.IC_Indicator20_Disp_Stat.phys );
+    putValue( HMI_IC_Indicator21_Disp_Stat, this.IC_Indicator21_Disp_Stat.phys );
+    putValue( HMI_IC_Indicator22_Disp_Stat, this.IC_Indicator22_Disp_Stat.phys );
+    putValue( HMI_IC_Indicator23_Disp_Stat, this.IC_Indicator23_Disp_Stat.phys );
+    putValue( HMI_IC_Indicator24_Disp_Stat, this.IC_Indicator24_Disp_Stat.phys );
+    putValue( HMI_IC_Indicator25_Disp_Stat, this.IC_Indicator25_Disp_Stat.phys );
+    putValue( HMI_IC_Indicator26_Disp_Stat, this.IC_Indicator26_Disp_Stat.phys );
+    putValue( HMI_IC_Indicator27_Disp_Stat, this.IC_Indicator27_Disp_Stat.phys );
+    putValue( HMI_IC_Indicator28_Disp_Stat, this.IC_Indicator28_Disp_Stat.phys );
+    putValue( HMI_IC_Indicator29_Disp_Stat, this.IC_Indicator29_Disp_Stat.phys );
+
+// --- cyclicAndSpontanWithDelay 5 --- 500ms cycle time ---
+// Evaluate if received message is on event 
+    bAliveCtr = getValue( HMI__MSGAliveCtr_IC_WIM2_AR );
+    if( _IC_WIM2_AR_OnEventTrap_Active )
+    {
+        putValue( HMI__MSG_OnEvent_IC_WIM2_AR, 1 );
+        cancelTimer( tIC_WIM2_AR_OnEventIND );
+        setTimer( tIC_WIM2_AR_OnEventIND, 1000 );
+    }
+    else
+    {
+        _IC_WIM2_AR_CycleReduction++;
+        if( _IC_WIM2_AR_CycleReduction >= _cIC_WIM2_AR_CycleReductionValue )
+        {
+            _IC_WIM2_AR_CycleReduction = 0;
+            if( bAliveCtr < 8 )
+            {
+                bAliveCtr = ( bAliveCtr + 1 ) & 0x07;
+            }
+            else
+            {
+                bAliveCtr = 0;
+            }
+        }
+        putValue( HMI__MSGAliveCtr_IC_WIM2_AR, bAliveCtr );
+        _IC_WIM2_AR_OnEventTrap_Active = 1;
+        setTimer( tIC_WIM2_AR_OnEventTrap, _IC_WIM2_AR_OnEventDetectTime );
+    }
+}
+/*@@end*/
+
+/*@@timer:tIC_WIM2_AR_OnEventIND:*/
+on timer tIC_WIM2_AR_OnEventIND
+{
+    putValue( HMI__MSG_OnEvent_IC_WIM2_AR, 0 );
+}
+/*@@end*/
+
+/*@@timer:tIC_WIM2_AR_OnEventTrap:*/
+on timer tIC_WIM2_AR_OnEventTrap
+{
+    _IC_WIM2_AR_OnEventTrap_Active = 0;
+}
+/*@@end*/
+
+/*@@msg:CAN1.hmi_2014_17b::LDC_Disp_Stat_IC_AR (0x363):*/
+on message LDC_Disp_Stat_IC_AR
+{
+    byte bAliveCtr;
+
+    putValue( HMI_BSM_DispIfc_ok, this.BSM_DispIfc_ok.phys );
+    putValue( HMI_DTQ_DispIfc_ok, this.DTQ_DispIfc_ok.phys );
+    putValue( HMI_FCW_Ifc_ok, this.FCW_Ifc_ok.phys );
+    putValue( HMI_LDC_Ifc_ok_ESP, this.LDC_Ifc_ok_ESP.phys );
+    putValue( HMI_LDC_Ifc_ok_RDU, this.LDC_Ifc_ok_RDU.phys );
+    putValue( HMI_LDC_SpdUnit_Rq, this.LDC_SpdUnit_Rq.phys );
+    putValue( HMI_LDC_SPEEDO_Cal, this.LDC_SPEEDO_Cal.phys );
+    putValue( HMI_LDC_SPEEDO_SegRing_Avl, this.LDC_SPEEDO_SegRing_Avl.phys );
+    putValue( HMI_LDP_Ifc_Ok, this.LDP_Ifc_Ok.phys );
+    putValue( HMI_Rsrv1_LDC_Disp_Stat_IC, this.Rsrv1_LDC_Disp_Stat_IC.phys );
+    putValue( HMI_Rsrv3_LDC_Disp_Stat_IC, this.Rsrv3_LDC_Disp_Stat_IC.phys );
+    putValue( HMI_Rsrv4_LDC_Disp_Stat_IC, this.Rsrv4_LDC_Disp_Stat_IC.phys );
+    putValue( HMI_SQC_LDC_Disp_Stat_IC, this.SQC_LDC_Disp_Stat_IC.phys );
+
+// --- cyclicAndSpontanWithDelay 5 --- 200ms cycle time ---
+// Evaluate if received message is on event 
+    bAliveCtr = getValue( HMI__MSGAliveCtr_LDC_Disp_Stat_IC_AR );
+    if( _LDC_Disp_Stat_IC_AR_OnEventTrap_Active )
+    {
+        putValue( HMI__MSG_OnEvent_LDC_Disp_Stat_IC_AR, 1 );
+        cancelTimer( tLDC_Disp_Stat_IC_AR_OnEventIND );
+        setTimer( tLDC_Disp_Stat_IC_AR_OnEventIND, 1000 );
+    }
+    else
+    {
+        _LDC_Disp_Stat_IC_AR_CycleReduction++;
+        if( _LDC_Disp_Stat_IC_AR_CycleReduction >= _cLDC_Disp_Stat_IC_AR_CycleReductionValue )
+        {
+            _LDC_Disp_Stat_IC_AR_CycleReduction = 0;
+            if( bAliveCtr < 8 )
+            {
+                bAliveCtr = ( bAliveCtr + 1 ) & 0x07;
+            }
+            else
+            {
+                bAliveCtr = 0;
+            }
+        }
+        putValue( HMI__MSGAliveCtr_LDC_Disp_Stat_IC_AR, bAliveCtr );
+        _LDC_Disp_Stat_IC_AR_OnEventTrap_Active = 1;
+        setTimer( tLDC_Disp_Stat_IC_AR_OnEventTrap, _LDC_Disp_Stat_IC_AR_OnEventDetectTime );
+    }
+}
+/*@@end*/
+
+/*@@timer:tLDC_Disp_Stat_IC_AR_OnEventIND:*/
+on timer tLDC_Disp_Stat_IC_AR_OnEventIND
+{
+    putValue( HMI__MSG_OnEvent_LDC_Disp_Stat_IC_AR, 0 );
+}
+/*@@end*/
+
+/*@@timer:tLDC_Disp_Stat_IC_AR_OnEventTrap:*/
+on timer tLDC_Disp_Stat_IC_AR_OnEventTrap
+{
+    _LDC_Disp_Stat_IC_AR_OnEventTrap_Active = 0;
+}
+/*@@end*/
+
+/*@@msg:CAN1.hmi_2014_17b::Maintenance1_AR (0x4C1):*/
+on message Maintenance1_AR
+{
+    byte bAliveCtr;
+
+    putValue( HMI_MtData_Ok,        this.MtData_Ok.phys );
+    putValue( HMI_MtPckt_1_Due,     this.MtPckt_1_Due.phys );
+    putValue( HMI_MtPckt_2_Due,     this.MtPckt_2_Due.phys );
+    putValue( HMI_MtPckt_3_Due,     this.MtPckt_3_Due.phys );
+    putValue( HMI_MtPckt_4_Due,     this.MtPckt_4_Due.phys );
+    putValue( HMI_MtPckt_5_Due,     this.MtPckt_5_Due.phys );
+    putValue( HMI_MtPckt_6_Due,     this.MtPckt_6_Due.phys );
+    putValue( HMI_MtPckt_7_Due,     this.MtPckt_7_Due.phys );
+    putValue( HMI_Prio_ResDistTm,   this.Prio_ResDistTm.phys );
+    putValue( HMI_ResDist,          this.ResDist.phys );
+    putValue( HMI_ResTm_V2,         this.ResTm_V2.phys );
+    putValue( HMI_ServCode_Digit1,  this.ServCode_Digit1.phys );
+    putValue( HMI_ServCode_Digit2,  this.ServCode_Digit2.phys );
+    putValue( HMI_ServCont,         this.ServCont.phys );
+    putValue( HMI_ServDispMd,       this.ServDispMd.phys );
+    putValue( HMI_ServWarn,         this.ServWarn.phys );
+    putValue( HMI_SpecServ_Disp_Rq, this.SpecServ_Disp_Rq.phys );
+    putValue( HMI_Unit_ResDist,     this.Unit_ResDist.phys );
+
+// --- cyclicAndSpontanWithDelay 5 --- 5000ms cycle time ---
+// Evaluate if received message is on event 
+    bAliveCtr = getValue( HMI__MSGAliveCtr_Maintenance1_AR );
+    if( _Maintenance1_AR_OnEventTrap_Active )
+    {
+        putValue( HMI__MSG_OnEvent_Maintenance1_AR, 1 );
+        cancelTimer( tMaintenance1_AR_OnEventIND );
+        setTimer( tMaintenance1_AR_OnEventIND, 1000 );
+    }
+    else
+    {
+        if( bAliveCtr < 8 )
+        {
+            bAliveCtr = ( bAliveCtr + 1 ) & 0x07;
+        }
+        else
+        {
+            bAliveCtr = 0;
+		}
+        putValue( HMI__MSGAliveCtr_Maintenance1_AR, bAliveCtr );
+        _Maintenance1_AR_OnEventTrap_Active = 1;
+        setTimer( tMaintenance1_AR_OnEventTrap, _Maintenance1_AR_OnEventDetectTime );
+    }
+}
+/*@@end*/
+
+/*@@timer:tMaintenance1_AR_OnEventIND:*/
+on timer tMaintenance1_AR_OnEventIND
+{
+    putValue( HMI__MSG_OnEvent_Maintenance1_AR, 0 );
+}
+/*@@end*/
+
+/*@@timer:tMaintenance1_AR_OnEventTrap:*/
+on timer tMaintenance1_AR_OnEventTrap
+{
+    _Maintenance1_AR_OnEventTrap_Active = 0;
+}
+/*@@end*/
+
+/*@@msg:CAN1.hmi_2014_17b::Maintenance2_AR (0x4C2):*/
+on message Maintenance2_AR
+{
+    byte bAliveCtr;
+
+    putValue( HMI_ServCode_BitGrp_0, this.ServCode_BitGrp_0.phys );//neu SLP10.08
+    putValue( HMI_ServCode_BitGrp_1, this.ServCode_BitGrp_1.phys );
+    putValue( HMI_ServCode_BitGrp_2, this.ServCode_BitGrp_2.phys );
+    putValue( HMI_ServCode_BitGrp_3, this.ServCode_BitGrp_3.phys );
+    putValue( HMI_ServCode_BitGrp_4, this.ServCode_BitGrp_4.phys );
+    putValue( HMI_ServCode_BitGrp_5, this.ServCode_BitGrp_5.phys );
+    putValue( HMI_ServCode_BitGrp_6, this.ServCode_BitGrp_6.phys );
+    putValue( HMI_ServCode_Country_V2, this.ServCode_Country_V2.phys );
+    putValue( HMI_ServCode_CRC_Hi, this.ServCode_CRC_Hi.phys );
+    putValue( HMI_ServCode_CRC_Lo, this.ServCode_CRC_Lo.phys );
+    putValue( HMI_ServCode_BitGrp_minus1, this.ServCode_BitGrp_minus1.phys );//neu SLP10.08
+    putValue( HMI_ServCode_BitGrp_minus2, this.ServCode_BitGrp_minus2.phys );//neu SLP10.08
+    putValue( HMI_ServCode_BitGrp_minus2, this.ServCode_BitGrp_minus3.phys );//neu SLP10.08
+
+// --- cyclicAndSpontanWithDelay 5 --- 2000ms cycle time ---
+// Evaluate if received message is on event 
+    bAliveCtr = getValue( HMI__MSGAliveCtr_Maintenance2_AR );
+    if( _Maintenance2_AR_OnEventTrap_Active )
+    {
+        putValue( HMI__MSG_OnEvent_Maintenance2_AR, 1 );
+        cancelTimer( tMaintenance2_AR_OnEventIND );
+        setTimer( tMaintenance2_AR_OnEventIND, 1000 );
+    }
+    else
+    {
+        if( bAliveCtr < 8 )
+        {
+            bAliveCtr = ( bAliveCtr + 1 ) & 0x07;
+        }
+        else
+        {
+            bAliveCtr = 0;
+		}
+        putValue( HMI__MSGAliveCtr_Maintenance2_AR, bAliveCtr );
+        _Maintenance2_AR_OnEventTrap_Active = 1;
+        setTimer( tMaintenance2_AR_OnEventTrap, _Maintenance2_AR_OnEventDetectTime );
+    }
+}
+/*@@end*/
+
+/*@@timer:tMaintenance2_AR_OnEventIND:*/
+on timer tMaintenance2_AR_OnEventIND
+{
+    putValue( HMI__MSG_OnEvent_Maintenance2_AR, 0 );
+}
+/*@@end*/
+
+/*@@timer:tMaintenance2_AR_OnEventTrap:*/
+on timer tMaintenance2_AR_OnEventTrap
+{
+    _Maintenance2_AR_OnEventTrap_Active = 0;
+}
+/*@@end*/
+
+/*@@msg:CAN1.HIL_W213::Meas_IC_1 (0x18EF4103X):*/
+on message Meas_IC_1
+{
+    byte bAliveCtr;
+
+    putValue( HMI_Meas_IC_1A, 						this.Meas_IC_1A.phys );
+    putValue( HMI_Meas_IC_1B, 						this.Meas_IC_1B.phys );
+    putValue( HMI_Meas_IC_1C, 						this.Meas_IC_1C.phys );
+    putValue( HMI_Meas_IC_1D, 						this.Meas_IC_1D.phys );
+    putValue( HMI_Meas_IC_1E, 						this.Meas_IC_1E.phys );
+    putValue( HMI_Meas_IC_1F, 						this.Meas_IC_1F.phys );
+    putValue( HMI_Meas_IC_1G, 						this.Meas_IC_1G.phys );
+    putValue( HMI_Meas_IC_1H, 						this.Meas_IC_1H.phys );
+    putValue( Env_HIL_ControlLampPreheatDiesel, this.HIL_ControlLampPreheatDiesel.phys );
+    putValue( Env_HIL_ControlLampABS_Defect, this.HIL_ControlLampABS_Defect.phys );
+    putValue( Env_HIL_FuelReserve, this.HIL_FuelReserve.phys );
+    putValue( Env_HIL_ControlLampFlash_L, this.HIL_ControlLampFlash_L.phys );
+    putValue( Env_HIL_ControlLampFlash_R, this.HIL_ControlLampFlash_R.phys );
+    putValue( Env_HIL_ControlLampChkEngine_EOBD, this.HIL_ControlLampChkEngine_EOBD.phys );
+    putValue( Env_HIL_ControlLampTirePressWarn, this.HIL_ControlLampTirePressWarn.phys );
+    putValue( Env_HIL_ControlLampSeatbelts, this.HIL_ControlLampSeatbelts.phys );
+    putValue( Env_HIL_ControlLampSRS, this.HIL_ControlLampSRS.phys );
+    putValue( Env_HIL_ControlLampESP_ASR, this.HIL_ControlLampESP_ASR.phys );
+    putValue( Env_HIL_ControlLampHighBeam, this.HIL_ControlLampHighBeam.phys );
+    putValue( Env_HIL_ControlLampPositionLamp, this.HIL_ControlLampPositionLamp.phys );
+    putValue( Env_HIL_ControlLampDTR_Red, this.HIL_ControlLampDTR_Red.phys );
+    putValue( Env_HIL_ControlLampBrake, this.HIL_ControlLampBrake.phys );
+    putValue( Env_HIL_ControlLampBrake_USA, this.HIL_ControlLampBrake_USA.phys );
+    putValue( Env_HIL_OffroadStatusIcon, this.HIL_OffroadStatusIcon.phys );
+    putValue( Env_HIL_ControlLampESP_Off, this.HIL_ControlLampESP_Off.phys );
+    putValue( Env_HIL_ControlLampWaterTemp, this.HIL_ControlLampWaterTemp.phys );
+    putValue( Env_HIL_ControlLampLowBeam, this.HIL_ControlLampLowBeam.phys );
+    putValue( Env_HIL_ControlLampFogLamp, this.HIL_ControlLampFogLamp.phys );
+    putValue( Env_HIL_ControlLampFogLampRear, this.HIL_ControlLampFogLampRear.phys );
+    putValue( Env_HIL_ControlLampRBS, this.HIL_ControlLampRBS.phys );
+    putValue( Env_HIL_ReadyStatIcon_Hyb, this.HIL_ReadyStatIcon_Hyb.phys );
+    putValue( Env_HIL_ControlLampYellowBrakeSymbol, this.HIL_ControlLampYellowBrakeSymbol.phys );
+ //   putValue( Env_HIL_ControlLampCheckEngineUSA, this.HIL_ControlLampCheckEngineUSA.phys );
+    putValue( Env_HIL_ReadyPassivStatIcon_Hyb, this.HIL_ReadyPassivStatIcon_Hyb.phys );
+    putValue( Env_HIL_ControlLampParkBrkActRed, this.HIL_ControlLampParkBrkActRed.phys );
+    putValue( Env_HIL_ControlLampParkBrkActRedUSA, this.HIL_ControlLampParkBrkActRedUSA.phys );
+    putValue( Env_HIL_ControlLampParkBrkDefYel, this.HIL_ControlLampParkBrkDefYel.phys );
+    putValue( Env_HIL_ControlLampParkBrkDefYelUSA, this.HIL_ControlLampParkBrkDefYelUSA.phys );
+    putValue( Env_HIL_SpeedometerMode, this.HIL_SpeedometerMode.phys );
+    putValue( Env_HIL_AmbientTemp, this.HIL_AmbientTemp.phys );
+    putValue( Env_HIL_ECO_PassivIcon, this.HIL_ECO_PassivIcon.phys );
+    putValue( Env_HIL_StatusIcon_LowRange, this.HIL_StatusIcon_LowRange.phys );
+    putValue( Env_HIL_SupplySystemIndLamp, this.HIL_SupplySystemIndLamp.phys );
+    putValue( Env_HIL_DigitalClock, this.HIL_DigitalClock.phys );
+    putValue( Env_HIL_Limiter, this.HIL_Limiter.phys );
+    putValue( Env_HIL_Tempomat, this.HIL_Tempomat.phys );
+    putValue( Env_HIL_DTR_Speaker, this.HIL_DTR_Speaker.phys );
+    putValue( Env_HIL_CNG, this.HIL_CNG.phys );
+    putValue( Env_HIL_RearWiperActive, this.HIL_RearWiperActive.phys );
+    putValue( Env_HIL_UK_Speedometer, this.HIL_UK_Speedometer.phys );
+    putValue( Env_HIL_DigiTachoInStatusArea, this.HIL_DigiTachoInStatusArea.phys );
+    putValue( Env_HIL_H2_DFTSigDispStat, this.HIL_H2_DFTSigDispStat.phys );
+    putValue( Env_HIL_Acoustic_Volume, this.HIL_Acoustic_Volume.phys );
+    putValue( Env_HIL_SBC_H, this.HIL_SBC_H.phys );
+    putValue( Env_HIL_ElectricRange, this.HIL_ElectricRange.phys );
+    putValue( Env_HIL_EngineRun, this.HIL_EngineRun.phys );
+    putValue( Env_HIL_GearSelectInd, this.HIL_GearSelectInd.phys );
+  //  putValue( Env_HIL_DrivingProgramMeas1, this.HIL_DrivingProgramMeas1.phys );
+    putValue( Env_HIL_AttentionAssistIcon, this.HIL_AttentionAssistIcon.phys );
+    putValue( Env_HIL_AutoHighBeam, this.HIL_AutoHighBeam.phys );
+    putValue( Env_HIL_LaneDeptWarnIconYellow, this.HIL_LaneDeptWarnIconYellow.phys );
+    putValue( Env_HIL_CoolantTemp, this.HIL_CoolantTemp.phys );
+    putValue( Env_HIL_LaneDeptWarnIconWhite, this.HIL_LaneDeptWarnIconWhite.phys );
+
+// --- spontan 1 --- 
+// Evaluate if received message is on event 
+    bAliveCtr = getValue( HMI__MSGAliveCtr_Meas_IC_1 );
+    if( _Meas_IC_1_OnEventTrap_Active )
+    {
+        putValue( HMI__MSG_OnEvent_Meas_IC_1, 1 );
+        cancelTimer( tMeas_IC_1_OnEventIND );
+        setTimer( tMeas_IC_1_OnEventIND, 1000 );
+    }
+    else
+    {
+        if( bAliveCtr < 8 )
+        {
+            bAliveCtr = ( bAliveCtr + 1 ) & 0x07;
+        }
+        else
+        {
+            bAliveCtr = 0;
+		}
+        putValue( HMI__MSGAliveCtr_Meas_IC_1, bAliveCtr );
+        _Meas_IC_1_OnEventTrap_Active = 1;
+        setTimer( tMeas_IC_1_OnEventTrap, _Meas_IC_1_OnEventDetectTime );
+    }
+}
+/*@@end*/
+
+/*@@timer:tMeas_IC_1_OnEventIND:*/
+on timer tMeas_IC_1_OnEventIND
+{
+    putValue( HMI__MSG_OnEvent_Meas_IC_1, 0 );
+}
+/*@@end*/
+
+/*@@timer:tMeas_IC_1_OnEventTrap:*/
+on timer tMeas_IC_1_OnEventTrap
+{
+    _Meas_IC_1_OnEventTrap_Active = 0;
+}
+/*@@end*/
+
+/*@@msg:CAN1.HIL_W213::Meas_IC_2 (0x18EF4104X):*/
+on message Meas_IC_2
+{
+    byte bAliveCtr;
+
+    putValue( HMI_Meas_IC_2A, 		   this.Meas_IC_2A.phys );
+    putValue( HMI_Meas_IC_2B, 		   this.Meas_IC_2B.phys );
+    putValue( HMI_Meas_IC_2C, 		   this.Meas_IC_2C.phys );
+    putValue( HMI_Meas_IC_2D, 		   this.Meas_IC_2D.phys );
+    putValue( HMI_Meas_IC_2E, 		   this.Meas_IC_2E.phys );
+    putValue( HMI_Meas_IC_2F, 		   this.Meas_IC_2F.phys );
+    putValue( HMI_Meas_IC_2G, 		   this.Meas_IC_2G.phys );
+    putValue( HMI_Meas_IC_2H, 		   this.Meas_IC_2H.phys );
+    putValue( Env_HIL_RelVolumeAcoust,		this.HIL_RelVolumeAcoust.phys );
+    putValue( Env_HIL_EngineSpeed,		this.HIL_EngineSpeed.phys );
+//    putValue( Env_HIL_System,			this.HIL_System.phys );
+    putValue( Env_HIL_GulfstateWarnIconStat,	this.HIL_GulfstateWarnIconStat.phys );
+    putValue( Env_HIL_DrivingProgram_C_E,	this.HIL_DrivingProgram_C_E.phys );
+//    putValue( Env_HIL_DrivingProgramMeas2,	this.HIL_DrivingProgramMeas2.phys );
+    putValue( Env_HIL_DisplayedUnit,		this.HIL_DisplayedUnit.phys );
+    putValue( Env_HIL_CMS_StatusIconMeas2,	this.HIL_CMS_StatusIconMeas2.phys );
+//  putValue( Env_HIL_DrivingPosition,		this.HIL_DrivingPosition.phys );
+    putValue( Env_HIL_DisplayedLayoutVar,	this.HIL_DisplayedLayoutVar.phys );
+    putValue( Env_HIL_SelectedSpeed,		this.HIL_SelectedSpeed.phys );
+    putValue( Env_HIL_Cruise_Text_Symbol,	this.HIL_Cruise_Text_Symbol.phys );
+    putValue( Env_HIL_StatusLine,		this.HIL_StatusLine.phys );
+
+// --- spontan 1 --- 
+// Evaluate if received message is on event 
+    bAliveCtr = getValue( HMI__MSGAliveCtr_Meas_IC_2 );
+    if( _Meas_IC_2_OnEventTrap_Active )
+    {
+        putValue( HMI__MSG_OnEvent_Meas_IC_2, 1 );
+        cancelTimer( tMeas_IC_2_OnEventIND );
+        setTimer( tMeas_IC_2_OnEventIND, 1000 );
+    }
+    else
+    {
+        if( bAliveCtr < 8 )
+        {
+            bAliveCtr = ( bAliveCtr + 1 ) & 0x07;
+        }
+        else
+        {
+            bAliveCtr = 0;
+		}
+        putValue( HMI__MSGAliveCtr_Meas_IC_2, bAliveCtr );
+        _Meas_IC_2_OnEventTrap_Active = 1;
+        setTimer( tMeas_IC_2_OnEventTrap, _Meas_IC_2_OnEventDetectTime );
+    }
+}
+/*@@end*/
+
+/*@@timer:tMeas_IC_2_OnEventIND:*/
+on timer tMeas_IC_2_OnEventIND
+{
+    putValue( HMI__MSG_OnEvent_Meas_IC_2, 0 );
+}
+/*@@end*/
+
+/*@@timer:tMeas_IC_2_OnEventTrap:*/
+on timer tMeas_IC_2_OnEventTrap
+{
+    _Meas_IC_2_OnEventTrap_Active = 0;
+}
+/*@@end*/
+
+/*@@msg:CAN1.HIL_W213::Meas_IC_3 (0x18EF4105X):*/
+on message Meas_IC_3
+{
+    byte bAliveCtr;
+
+    putValue( HMI_Meas_IC_3A, 		        this.Meas_IC_3A.phys );
+    putValue( HMI_Meas_IC_3B, 		        this.Meas_IC_3B.phys );
+    putValue( HMI_Meas_IC_3C, 		        this.Meas_IC_3C.phys );
+    putValue( HMI_Meas_IC_3D, 		        this.Meas_IC_3D.phys );
+    putValue( HMI_Meas_IC_3E, 		        this.Meas_IC_3E.phys );
+    putValue( HMI_Meas_IC_3F, 		        this.Meas_IC_3F.phys );
+    putValue( HMI_Meas_IC_3G, 		        this.Meas_IC_3G.phys );
+    putValue( HMI_Meas_IC_3H, 		        this.Meas_IC_3H.phys );
+    putValue( Env_HIL_SpeedLimitAssistInvert,	this.HIL_SpeedLimitAssistInvert.phys );
+    putValue( Env_HIL_SpeedLimitAssist,		this.HIL_SpeedLimitAssist.phys );
+    putValue( Env_HIL_CNG_StatusIconMeas3,	this.HIL_CNG_StatusIconMeas3.phys );
+    putValue( Env_HIL_TurnIndSounder,		this.HIL_TurnIndSounder.phys );
+    putValue( Env_HIL_ShiftRecTargetGear,	this.HIL_ShiftRecTargetGear.phys );
+    putValue( Env_HIL_ShiftRecommArrows,	this.HIL_ShiftRecommArrows.phys );
+    putValue( Env_HIL_ParktronicLeft,		this.HIL_ParktronicLeft.phys );
+    putValue( Env_HIL_ParkingSpaceSearchAct,	this.HIL_ParkingSpaceSearchAct.phys );
+    putValue( Env_HIL_ParkingSpaceRight,	this.HIL_ParkingSpaceRight.phys );
+    putValue( Env_HIL_ParkingSpaceLeft,		this.HIL_ParkingSpaceLeft.phys );
+    putValue( Env_HIL_ParkingSpaceFound,	this.HIL_ParkingSpaceFound.phys );
+    putValue( Env_HIL_ECO_Icon,			this.HIL_ECO_Icon.phys );
+    putValue( Env_HIL_Chime,			this.HIL_Chime.phys );
+    putValue( Env_HIL_Buzzer,			this.HIL_Buzzer.phys );
+    putValue( Env_HIL_BritishEnglish,		this.HIL_BritishEnglish.phys );
+    putValue( Env_HIL_BlindSpotMonitoring,	this.HIL_BlindSpotMonitoring.phys );
+    putValue( Env_HIL_ParktronicRight,		this.HIL_ParktronicRight.phys );
+    putValue( Env_HIL_DisplayColor,		this.HIL_DisplayColor.phys );
+    putValue( Env_HIL_Language,			this.HIL_Language.phys );
+    putValue( Env_HIL_Submenu_Msg_Byte2,	this.HIL_Submenu_Msg_Byte2 );
+    putValue( Env_HIL_Submenu_Msg_Byte1,	this.HIL_Submenu_Msg_Byte1 );
+    putValue( Env_HIL_MainMenu,			this.HIL_MainMenu );
+//  write(" HIL_Meas_3 ID -> %02X %02X %02X ",this.HIL_MainMenu,  this.HIL_Submenu_Msg_Byte1, this.HIL_Submenu_Msg_Byte2 );
+
+// --- spontan 1 --- 
+// Evaluate if received message is on event 
+    bAliveCtr = getValue( HMI__MSGAliveCtr_Meas_IC_3 );
+    if( _Meas_IC_3_OnEventTrap_Active )
+    {
+        putValue( HMI__MSG_OnEvent_Meas_IC_3, 1 );
+        cancelTimer( tMeas_IC_3_OnEventIND );
+        setTimer( tMeas_IC_3_OnEventIND, 1000 );
+    }
+    else
+    {
+        if( bAliveCtr < 8 )
+        {
+            bAliveCtr = ( bAliveCtr + 1 ) & 0x07;
+        }
+        else
+        {
+            bAliveCtr = 0;
+		}
+        putValue( HMI__MSGAliveCtr_Meas_IC_3, bAliveCtr );
+        _Meas_IC_3_OnEventTrap_Active = 1;
+        setTimer( tMeas_IC_3_OnEventTrap, _Meas_IC_3_OnEventDetectTime );
+    }
+}
+/*@@end*/
+
+/*@@timer:tMeas_IC_3_OnEventIND:*/
+on timer tMeas_IC_3_OnEventIND
+{
+    putValue( HMI__MSG_OnEvent_Meas_IC_3, 0 );
+}
+/*@@end*/
+
+/*@@timer:tMeas_IC_3_OnEventTrap:*/
+on timer tMeas_IC_3_OnEventTrap
+{
+    _Meas_IC_3_OnEventTrap_Active = 0;
+}
+/*@@end*/
+
+/*@@msg:CAN1.HIL_W213::Meas_IC_4 (0x18EF4106X):*/
+on message Meas_IC_4
+{
+    byte bAliveCtr;
+
+    putValue( HMI_Meas_IC_4A, 		this.Meas_IC_4A.phys );
+    putValue( HMI_Meas_IC_4B, 		this.Meas_IC_4B.phys );
+    putValue( HMI_Meas_IC_4C, 		this.Meas_IC_4C.phys );
+    putValue( HMI_Meas_IC_4D, 		this.Meas_IC_4D.phys );
+    putValue( HMI_Meas_IC_4E, 		this.Meas_IC_4E.phys );
+    putValue( HMI_Meas_IC_4F, 		this.Meas_IC_4F.phys );
+    putValue( HMI_Meas_IC_4G, 		this.Meas_IC_4G.phys );
+    putValue( HMI_Meas_IC_4H, 		this.Meas_IC_4H.phys );
+    putValue( Env_HIL_LayoutNumber, 		this.Meas_IC_4H.phys );
+
+    switch( this.HIL_LayoutNumber.phys )
+    {
+        case 0x01:
+                    /* MESS_IC4 (LV 0x01) - Trip Computer Ab Start */
+                    bAliveCtr = getValue( Env_HIL_RX_01_Alive );
+                    if( bAliveCtr < 8 )
+                    {
+                        bAliveCtr = ( bAliveCtr + 1 ) & 0x07;
+                    }
+                    else
+                    {
+                        bAliveCtr = 0;
+                    }
+                    putValue( Env_HIL_RX_01_Alive, bAliveCtr );
+                    putValue( Env_HIL_TimeSinceStart,            this.HIL_TimeSinceStart.phys );
+                    putValue( Env_HIL_DistanceSinceStart,        this.HIL_DistanceSinceStart.phys );
+                    putValue( Env_HIL_AvgSpeedSinceStart,        this.HIL_AvgSpeedSinceStart.phys );
+                    putValue( Env_HIL_AvgConsSinceStart,        this.HIL_AvgConsSinceStart.phys );
+                    break;
+        case 0x02:
+                    /* MESS_IC4 (LV 0x02) - Trip Computer Ab Reset */
+                    bAliveCtr = getValue( Env_HIL_RX_02_Alive );
+                    if( bAliveCtr < 8 )
+                    {
+                        bAliveCtr = ( bAliveCtr + 1 ) & 0x07;
+                    }
+                    else
+                    {
+                        bAliveCtr = 0;
+                    }
+                    putValue( Env_HIL_RX_02_Alive, bAliveCtr );
+                    putValue( Env_HIL_TimeSinceReset,            this.HIL_TimeSinceReset.phys );
+                    putValue( Env_HIL_DistanceSinceReset,        this.HIL_DistanceSinceReset.phys );
+                    putValue( Env_HIL_AvgSpeedSinceReset,        this.HIL_AvgSpeedSinceReset.phys );
+                    putValue( Env_HIL_AvgConsSinceReset,        this.HIL_AvgConsSinceReset.phys );
+                    break;
+        case 0x03:
+                    /* MESS_IC4 (LV 0x03) - Speedometer and Fuellevel */
+                    bAliveCtr = getValue( Env_HIL_RX_03_Alive );
+                    if( bAliveCtr < 8 )
+                    {
+                        bAliveCtr = ( bAliveCtr + 1 ) & 0x07;
+                    }
+                    else
+                    {
+                        bAliveCtr = 0;
+                    }
+                    putValue( Env_HIL_RX_03_Alive, bAliveCtr );
+                    putValue( Env_HIL_IconVehicleMeas4_3,        this.HIL_IconVehicleMeas4_3.phys );
+                    putValue( Env_HIL_FuelLevelIntTargetVal,    this.HIL_FuelLevelIntTargetVal.phys );
+                    putValue( Env_HIL_FuelLevelDisplayedVal,    this.HIL_FuelLevelDisplayedVal.phys );
+                    putValue( Env_HIL_FuelLevelBargraph,        this.HIL_FuelLevelBargraph_CNG.phys );
+                    putValue( Env_HIL_SpeedoPointervalue,        this.HIL_SpeedoPointervalue.phys );
+                    putValue( Env_HIL_LayoutNumber,                this.HIL_LayoutNumber.phys );
+                    putValue( Env_HIL_TripRecorder_Daily,        this.HIL_TripRecorder_Daily.phys );
+                    break;
+        case 0x05:
+                    bAliveCtr = getValue( Env_HIL_RX_05_Alive );
+                    if( bAliveCtr < 8 )
+                    {
+                        bAliveCtr = ( bAliveCtr + 1 ) & 0x07;
+                    }
+                    else
+                    {
+                        bAliveCtr = 0;
+                    }
+                    putValue( Env_HIL_RX_05_Alive, bAliveCtr );
+                    /* MESS_IC4 (LV 0x05) - Hybrid */
+                
+                    break;
+        case 0x07:
+                    /* MESS_IC4 (LV 0x07) - Verbrauch & Reichweite / Taxi */
+                
+                    break;
+        case 0x08:
+                    /* MESS_IC4 (LV 0x08) - Outside Temperature and Adblue */
+                    bAliveCtr = getValue( Env_HIL_RX_08_Alive );
+                    if( bAliveCtr < 8 )
+                    {
+                        bAliveCtr = ( bAliveCtr + 1 ) & 0x07;
+                    }
+                    else
+                    {
+                        bAliveCtr = 0;
+                    }
+                    putValue( Env_HIL_RX_08_Alive, bAliveCtr );
+                    putValue( Env_HIL_HeatCompCounter,            this.HIL_HeatCompCounter.phys );
+                    putValue( Env_HIL_EngSt_Remain,                this.HIL_EngSt_Remain.phys );
+                    putValue( Env_HIL_EngineTempCounter,        this.HIL_EngineTempCounter.phys );
+                    putValue( Env_HIL_AdblueEU6_RemainDist,        this.HIL_AdblueEU6_RemainDist.phys );
+                    break;
+        case 0x09:
+                    /* MESS_IC4 (LV 0x09) - Speed Limit Assist */
+/*                    bAliveCtr = getValue( Env_HIL_RX_09_Alive );
+                    if( bAliveCtr < 8 )
+                    {
+                        bAliveCtr = ( bAliveCtr + 1 ) & 0x07;
+                    }
+                    else
+                    {
+                        bAliveCtr = 0;
+                    }
+                    putValue( Env_HIL_RX_09_Alive, bAliveCtr );*/
+                    break;
+        case 0x0A:
+                    /* MESS_IC4 (LV 0x0A) - Belt Status Rear */
+                    bAliveCtr = getValue( Env_HIL_RX_0A_Alive );
+                    if( bAliveCtr < 8 )
+                    {
+                        bAliveCtr = ( bAliveCtr + 1 ) & 0x07;
+                    }
+                    else
+                    {
+                        bAliveCtr = 0;
+                    }
+                    putValue( Env_HIL_RX_0A_Alive, bAliveCtr );
+                    putValue( Env_HIL_VehicleLine,                this.HIL_VehicleLine.phys );
+                    putValue( Env_HIL_SeatRows,                    this.HIL_SeatRows.phys );
+                    putValue( Env_HIL_IconVehicleMeas4_10,        this.HIL_IconVehicleMeas4_10.phys );
+                    putValue( Env_HIL_Icon3rdRowRight,            this.HIL_Icon3rdRowRight.phys );
+                    putValue( Env_HIL_Icon3rdRowLeft,            this.HIL_Icon3rdRowLeft.phys );
+                    putValue( Env_HIL_Icon2ndRowRight,            this.HIL_Icon2ndRowRight.phys );
+                    putValue( Env_HIL_Icon2ndRowMiddle,            this.HIL_Icon2ndRowMiddle.phys );
+                    putValue( Env_HIL_Icon2ndRowLeft,            this.HIL_Icon2ndRowLeft.phys );
+                    break;
+        case 0x0D:
+                    /* MESS_IC4 (LV 0x0D) - DTR2 (Distronic 2) */
+                    bAliveCtr = getValue( Env_HIL_RX_0D_Alive );
+                    if( bAliveCtr < 8 )
+                    {
+                        bAliveCtr = ( bAliveCtr + 1 ) & 0x07;
+                    }
+                    else
+                    {
+                        bAliveCtr = 0;
+                    }
+                    putValue( Env_HIL_RX_0D_Alive, bAliveCtr );
+                    break;
+        case 0x0E:
+                    /* MESS_IC4 (LV 0x0E) - Tire Pressure Monitoring */
+                    bAliveCtr = getValue( Env_HIL_RX_0E_Alive );
+                    if( bAliveCtr < 8 )
+                    {
+                        bAliveCtr = ( bAliveCtr + 1 ) & 0x07;
+                    }
+                    else
+                    {
+                        bAliveCtr = 0;
+                    }
+                    putValue( Env_HIL_RX_0E_Alive, bAliveCtr );
+                    break;
+        case 0x0F:
+                    /* MESS_IC4 (LV 0x0F) - TSA */
+                    bAliveCtr = getValue( Env_HIL_RX_0F_Alive );
+                    if( bAliveCtr < 8 )
+                    {
+                        bAliveCtr = ( bAliveCtr + 1 ) & 0x07;
+                    }
+                    else
+                    {
+                        bAliveCtr = 0;
+                    }
+                    putValue( Env_HIL_RX_0F_Alive, bAliveCtr );
+                    putValue( Env_HIL_TSA_WarnText,                this.HIL_TSA_WarnText.phys );
+                    putValue( Env_HIL_TSA_SpeedUnit,            this.HIL_TSA_SpeedUnit.phys );
+                    putValue( Env_HIL_TSA_IconSet,                this.HIL_TSA_IconSet.phys );
+                    putValue( Env_HIL_TSA_DispPopupActiv,        this.HIL_TSA_DispPopupActiv.phys );
+                    putValue( Env_HIL_TSA_DispPermanentActiv,    this.HIL_TSA_DispPermanentActiv.phys );
+                    putValue( Env_HIL_TSA_AddInfoAlign,            this.HIL_TSA_AddInfoAlign.phys );
+                    putValue( Env_HIL_TSA_AddInfo,                this.HIL_TSA_AddInfo.phys );
+                    putValue( Env_HIL_SLA_Sign2,                this.HIL_SLA_Sign2.phys );
+                    putValue( Env_HIL_SLA_Sign1,                this.HIL_SLA_Sign1.phys );
+                    break;
+        case 0x10:
+                    /* MESS_IC4 (LV 0x10) - Acoustics and Coolant Temperature */
+                    bAliveCtr = getValue( Env_HIL_RX_10_Alive );
+                    if( bAliveCtr < 8 )
+                    {
+                        bAliveCtr = ( bAliveCtr + 1 ) & 0x07;
+                    }
+                    else
+                    {
+                        bAliveCtr = 0;
+                    }
+                    putValue( Env_HIL_RX_10_Alive, bAliveCtr );
+                    putValue( Env_HIL_CoolantTempUnit,            this.HIL_CoolantTempUnit.phys );
+                    putValue( Env_HIL_CoolantTempTellTale,        this.HIL_CoolantTempTellTale.phys );
+                    putValue( Env_HIL_CoolantTempDisplayed,        this.HIL_CoolantTempDisplayed.phys );
+                    putValue( Env_HIL_AcoustTurnSignalOn,        this.HIL_AcoustTurnSignalOn.phys );
+                    putValue( Env_HIL_AcoustTurnSignalOff,        this.HIL_AcoustTurnSignalOff.phys );
+                    putValue( Env_HIL_AcoustSeatBeltWarniLvl2,    this.HIL_AcoustSeatBeltWarniLvl2.phys );
+                    putValue( Env_HIL_AcoustSeatBeltWarniLvl1,    this.HIL_AcoustSeatBeltWarniLvl1.phys );
+                    putValue( Env_HIL_AcoustPrio2Warn,            this.HIL_AcoustPrio2Warn.phys );
+                    putValue( Env_HIL_AcoustPrio1Warn,            this.HIL_AcoustPrio1Warn.phys );
+                    putValue( Env_HIL_AcoustParktronicSound,    this.HIL_AcoustParktronicSound.phys );
+                    putValue( Env_HIL_AcoustLatCollWarn,        this.HIL_AcoustLatCollWarn.phys );
+                    putValue( Env_HIL_AcoustFrontCollWarn,        this.HIL_AcoustFrontCollWarn.phys );
+                    putValue( Env_HIL_AcoustContWarn,            this.HIL_AcoustContWarn.phys );
+                    putValue( Env_HIL_AcoustAttentionAssWarn,    this.HIL_AcoustAttentionAssWarn.phys );
+                    putValue( Env_HIL_AcoustAcknowledgement,    this.HIL_AcoustAcknowledgement.phys );
+                    break;
+        case 0x11:
+                    /* MESS_IC4 (LV 0x11) - Eco Score */
+                    bAliveCtr = getValue( Env_HIL_RX_11_Alive );
+                    if( bAliveCtr < 8 )
+                    {
+                        bAliveCtr = ( bAliveCtr + 1 ) & 0x07;
+                    }
+                    else
+                    {
+                        bAliveCtr = 0;
+                    }
+                    putValue( Env_HIL_RX_11_Alive, bAliveCtr );
+                    putValue( Env_HIL_ECO_Score_Total_Disp_Rq,    this.HIL_ECO_Score_Total_Disp_Rq.phys );
+                    putValue( Env_HIL_ECO_Score_FreeWhl_Disp_Rq,this.HIL_ECO_Score_FreeWhl_Disp_Rq.phys );
+                    putValue( Env_HIL_ECO_Score_Const_Disp_Rq,    this.HIL_ECO_Score_Const_Disp_Rq.phys );
+                    putValue( Env_HIL_ECO_Score_Accel_Disp_Rq,    this.HIL_ECO_Score_Accel_Disp_Rq.phys );
+                    break;
+   }
+
+// --- spontan 1 --- 
+// Evaluate if received message is on event 
+    bAliveCtr = getValue( HMI__MSGAliveCtr_Meas_IC_4 );
+    if( _Meas_IC_4_OnEventTrap_Active )
+    {
+        putValue( HMI__MSG_OnEvent_Meas_IC_4, 1 );
+        cancelTimer( tMeas_IC_4_OnEventIND );
+        setTimer( tMeas_IC_4_OnEventIND, 1000 );
+    }
+    else
+    {
+        if( bAliveCtr < 8 )
+        {
+            bAliveCtr = ( bAliveCtr + 1 ) & 0x07;
+        }
+        else
+        {
+            bAliveCtr = 0;
+		}
+        putValue( HMI__MSGAliveCtr_Meas_IC_4, bAliveCtr );
+        _Meas_IC_4_OnEventTrap_Active = 1;
+        setTimer( tMeas_IC_4_OnEventTrap, _Meas_IC_4_OnEventDetectTime );
+    }
+}
+/*@@end*/
+
+/*@@timer:tMeas_IC_4_OnEventIND:*/
+on timer tMeas_IC_4_OnEventIND
+{
+    putValue( HMI__MSG_OnEvent_Meas_IC_4, 0 );
+}
+/*@@end*/
+
+/*@@timer:tMeas_IC_4_OnEventTrap:*/
+on timer tMeas_IC_4_OnEventTrap
+{
+    _Meas_IC_4_OnEventTrap_Active = 0;
+}
+/*@@end*/
+
+/*@@msg:CAN1.HIL_W213::Meas_IC_5 (0x18EF4108X):*/
+on message Meas_IC_5
+{
+    byte bAliveCtr;
+
+    putValue( HMI_Meas_IC_5A, 	        this.Meas_IC_5A.phys );
+    putValue( HMI_Meas_IC_5B, 	        this.Meas_IC_5B.phys );
+    putValue( HMI_Meas_IC_5C, 	        this.Meas_IC_5C.phys );
+    putValue( HMI_Meas_IC_5D, 	        this.Meas_IC_5D.phys );
+    putValue( HMI_Meas_IC_5E, 	        this.Meas_IC_5E.phys );
+    putValue( HMI_Meas_IC_5F, 	        this.Meas_IC_5F.phys );
+    putValue( HMI_Meas_IC_5G, 	        this.Meas_IC_5G.phys );
+    putValue( HMI_Meas_IC_5H, 	        this.Meas_IC_5H.phys );
+
+// --- spontan 1 --- 
+// Evaluate if received message is on event 
+    bAliveCtr = getValue( HMI__MSGAliveCtr_Meas_IC_5 );
+    if( _Meas_IC_5_OnEventTrap_Active )
+    {
+        putValue( HMI__MSG_OnEvent_Meas_IC_5, 1 );
+        cancelTimer( tMeas_IC_5_OnEventIND );
+        setTimer( tMeas_IC_5_OnEventIND, 1000 );
+    }
+    else
+    {
+        if( bAliveCtr < 8 )
+        {
+            bAliveCtr = ( bAliveCtr + 1 ) & 0x07;
+        }
+        else
+        {
+            bAliveCtr = 0;
+		}
+        putValue( HMI__MSGAliveCtr_Meas_IC_5, bAliveCtr );
+        setTimer( tMeas_IC_5_OnEventTrap, _Meas_IC_5_OnEventDetectTime );
+    }
+}
+/*@@end*/
+
+/*@@timer:tMeas_IC_5_OnEventIND:*/
+on timer tMeas_IC_5_OnEventIND
+{
+    putValue( HMI__MSG_OnEvent_Meas_IC_5, 0 );
+}
+/*@@end*/
+
+/*@@timer:tMeas_IC_5_OnEventTrap:*/
+on timer tMeas_IC_5_OnEventTrap
+{
+    _Meas_IC_5_OnEventTrap_Active = 0;
+}
+/*@@end*/
+
+/*@@msg:CAN1.hmi_NM::NM_IC_AR (0x541):*/
+on message NM_IC_AR
+{
+    byte bAliveCtr;
+
+//	putValue( HMI_Awake_Diag_Actv_IC, this.Awake_Diag_Actv.phys );
+//	putValue( HMI_Awake_IgnitionAccessory_On, this.Awake_IgnitionAccessory_On.phys );
+	putValue( HMI_WakeupRsn_IC, this.WakeupRsn_IC.phys );
+
+// --- spontan 1 --- 
+// Evaluate if received message is on event 
+    bAliveCtr = getValue( HMI__MSGAliveCtr_NM_IC_AR );
+    if( _NM_IC_AR_OnEventTrap_Active )
+    {
+        putValue( HMI__MSG_OnEvent_NM_IC_AR, 1 );
+        cancelTimer( tNM_IC_AR_OnEventIND );
+        setTimer( tNM_IC_AR_OnEventIND, 1000 );
+    }
+    else
+    {
+        if( bAliveCtr < 8 )
+        {
+            bAliveCtr = ( bAliveCtr + 1 ) & 0x07;
+        }
+        else
+        {
+            bAliveCtr = 0;
+		}
+        putValue( HMI__MSGAliveCtr_NM_IC_AR, bAliveCtr );
+        _NM_IC_AR_OnEventTrap_Active = 1;
+        setTimer( tNM_IC_AR_OnEventTrap, _NM_IC_AR_OnEventDetectTime );
+    }
+}
+/*@@end*/
+
+/*@@timer:tNM_IC_AR_OnEventIND:*/
+on timer tNM_IC_AR_OnEventIND
+{
+    putValue( HMI__MSG_OnEvent_NM_IC_AR, 0 );
+}
+/*@@end*/
+
+/*@@timer:tNM_IC_AR_OnEventTrap:*/
+on timer tNM_IC_AR_OnEventTrap
+{
+    _NM_IC_AR_OnEventTrap_Active = 0;
+}
+/*@@end*/
+
+/*@@msg:CAN1.hmi_2014_17b::NV_Rq_IC_AR (0x135):*/
+on message NV_Rq_IC_AR
+{
+    byte bAliveCtr;
+
+	putValue( HMI_NVP_Disp_Actv,    this.NVP_Disp_Actv.phys );
+	putValue( HMI_NVP_DispLnk_Stat, this.NVP_DispLnk_Stat.phys );
+	putValue( HMI_NVP_DispMd,       this.NVP_DispMd.phys );
+	putValue( HMI_NVP_SPL_Md,       this.NVP_SPL_Md.phys );
+
+// --- spontan 1 --- 
+// Evaluate if received message is on event 
+    bAliveCtr = getValue( HMI__MSGAliveCtr_NV_Rq_IC_AR );
+    if( _NV_Rq_IC_AR_OnEventTrap_Active )
+    {
+        putValue( HMI__MSG_OnEvent_NV_Rq_IC_AR, 1 );
+        cancelTimer( tNV_Rq_IC_AR_OnEventIND );
+        setTimer( tNV_Rq_IC_AR_OnEventIND, 1000 );
+    }
+    else
+    {
+        if( bAliveCtr < 8 )
+        {
+            bAliveCtr = ( bAliveCtr + 1 ) & 0x07;
+        }
+        else
+        {
+            bAliveCtr = 0;
+		}
+        putValue( HMI__MSGAliveCtr_NV_Rq_IC_AR, bAliveCtr );
+        _NV_Rq_IC_AR_OnEventTrap_Active = 1;
+        setTimer( tNV_Rq_IC_AR_OnEventTrap, _NV_Rq_IC_AR_OnEventDetectTime );
+    }
+}
+/*@@end*/
+
+/*@@timer:tNV_Rq_IC_AR_OnEventIND:*/
+on timer tNV_Rq_IC_AR_OnEventIND
+{
+    putValue( HMI__MSG_OnEvent_NV_Rq_IC_AR, 0 );
+}
+/*@@end*/
+
+/*@@timer:tNV_Rq_IC_AR_OnEventTrap:*/
+on timer tNV_Rq_IC_AR_OnEventTrap
+{
+    _NV_Rq_IC_AR_OnEventTrap_Active = 0;
+}
+/*@@end*/
+
+/*@@msg:CAN1.hmi_2014_17b::Park_Disp_Rs_AR (0x18B):*/
+on message Park_Disp_Rs_AR
+{
+    byte bAliveCtr;
+    byte crc;
+
+    putValue( HMI_CRC_Park_Disp_Rs,   ( this.CRC_Park_Disp_Rs ) );
+    putValue( HMI_IC_Err_Stat,   ( this.IC_Err_Stat ) );
+    putValue( HMI_IC_Func_Stat,   ( this.IC_Func_Stat ) );
+    putValue( HMI_Park_IconDisp_Rs,   ( this.Park_IconDisp_Rs ) );
+    putValue( HMI_Park_IconDisp_Stat_IC,   ( this.Park_IconDisp_Stat_IC ) );
+    putValue( HMI_Park_Warn1_Disp_Rs,   ( this.Park_Warn1_Disp_Rs ) );
+    putValue( HMI_Park_Warn1_Disp_Stat_IC,   ( this.Park_Warn1_Disp_Stat_IC ) );
+    putValue( HMI_Rsrv0_Park_Disp_Rs,   ( this.Rsrv0_Park_Disp_Rs ) );
+    putValue( HMI_Rsrv1_Park_Disp_Rs,   ( this.Rsrv1_Park_Disp_Rs ) );
+    putValue( HMI_Rsrv2_Park_Disp_Rs,   ( this.Rsrv2_Park_Disp_Rs ) );
+    putValue( HMI_Rsrv3_Park_Disp_Rs,   ( this.Rsrv3_Park_Disp_Rs ) );
+    putValue( HMI_Rsrv4_Park_Disp_Rs,   ( this.Rsrv4_Park_Disp_Rs ) );
+    putValue( HMI_Rsrv5_Park_Disp_Rs,   ( this.Rsrv5_Park_Disp_Rs ) );
+    putValue( HMI_Rsrv6_Park_Disp_Rs,   ( this.Rsrv6_Park_Disp_Rs ) );
+    putValue( HMI_Rsrv7_Park_Disp_Rs,   ( this.Rsrv7_Park_Disp_Rs ) );
+    putValue( HMI_SQC_Park_Disp_Rs,   ( this.SQC_Park_Disp_Rs ) );
+
+    _mPark_Disp_Rs_AR.byte( 1 ) = this.byte( 1 );
+    _mPark_Disp_Rs_AR.byte( 2 ) = this.byte( 2 );
+    _mPark_Disp_Rs_AR.byte( 3 ) = this.byte( 3 );
+    _mPark_Disp_Rs_AR.byte( 4 ) = this.byte( 4 );
+    _mPark_Disp_Rs_AR.byte( 5 ) = this.byte( 5 );
+    _mPark_Disp_Rs_AR.byte( 6 ) = this.byte( 6 );
+    _mPark_Disp_Rs_AR.byte( 7 ) = this.byte( 7 );
+
+//************************************************************************************************
+
+/*    if( !getValue( HMI_SQC_RollTestMd_SPCR_Stat_IC_Auto ))
+    {
+        // berechne message counter
+        if( _mIC_DriveAssistSys_AR.SQC_RollTestMd_SPCR_Stat_IC >= 15 ) _mIC_DriveAssistSys_AR.SQC_RollTestMd_SPCR_Stat_IC = 0;
+        else _mIC_DriveAssistSys_AR.SQC_RollTestMd_SPCR_Stat_IC++;
+        putValue(HMI_SQC_RollTestMd_SPCR_Stat_IC, _mIC_DriveAssistSys_AR.SQC_RollTestMd_SPCR_Stat_IC );
+    }
+    else
+        _mIC_DriveAssistSys_AR.SQC_RollTestMd_SPCR_Stat_IC = getValue( HMI_SQC_RollTestMd_SPCR_Stat_IC );
+*/
+    if( !getValue( HMI_CRC_Park_Disp_Rs_Auto ) )
+    {   // CRC according Profile_02 ( W213 )
+        // berechne crc
+        crc = 0xFF;
+//      crc = crctable_profile02[ crc ^ _mPark_Disp_Rs_AR.byte( 0 ) ]; // CRC
+        crc = crctable_profile02[ crc ^ _mPark_Disp_Rs_AR.byte( 1 ) ];
+        crc = crctable_profile02[ crc ^ _mPark_Disp_Rs_AR.byte( 2 ) ];
+        crc = crctable_profile02[ crc ^ _mPark_Disp_Rs_AR.byte( 3 ) ];
+        crc = crctable_profile02[ crc ^ _mPark_Disp_Rs_AR.byte( 4 ) ];
+        crc = crctable_profile02[ crc ^ _mPark_Disp_Rs_AR.byte( 5 ) ];
+        crc = crctable_profile02[ crc ^ _mPark_Disp_Rs_AR.byte( 6 ) ];
+        crc = crctable_profile02[ crc ^ _mPark_Disp_Rs_AR.byte( 7 ) ];
+        crc = crctable_profile02[ crc ^ _Park_Disp_Rs_AR_CRC_Park_Disp_Rs[ _mPark_Disp_Rs_AR.SQC_Park_Disp_Rs ] ]; // load offset
+        crc = (crc ^ 0xFF);
+        if( getValue(  HMI_CRC_Park_Disp_Rs_Invalid ) )
+            crc++;
+        _mPark_Disp_Rs_AR.CRC_Park_Disp_Rs = crc;
+        putValue( HMI_CRC_Park_Disp_Rs, crc );
+    }
+    else
+        _mPark_Disp_Rs_AR.CRC_Park_Disp_Rs = getValue( HMI_CRC_Park_Disp_Rs );
+
+    _mPark_Disp_Rs_AR.ID = 0x18C;
+    output( _mPark_Disp_Rs_AR );
+    if( this.CRC_Park_Disp_Rs.phys == _mPark_Disp_Rs_AR.CRC_Park_Disp_Rs )
+        putvalue( Env_CRC_Check__Park_Disp_Rs_AR, 0 );
+    else
+        putvalue( Env_CRC_Check__Park_Disp_Rs_AR, 1 );
+
+
+//*****************************************************************************************************
+// --- cyclicAndSpontanWithDelay 5 --- 200ms cycle time ---
+// Evaluate if received message is on event 
+    bAliveCtr = getValue( HMI__MSGAliveCtr_Park_Disp_Rs_AR );
+    if( _Park_Disp_Rs_AR_OnEventTrap_Active )
+    {
+        putValue( HMI__MSG_OnEvent_Park_Disp_Rs_AR, 1 );
+        cancelTimer( tPark_Disp_Rs_AR_OnEventIND );
+        setTimer( tPark_Disp_Rs_AR_OnEventIND, 1000 );
+    }
+    else
+    {
+        _Park_Disp_Rs_AR_CycleReduction++;
+        if( _Park_Disp_Rs_AR_CycleReduction >= _cPark_Disp_Rs_AR_CycleReductionValue )
+        {
+            _Park_Disp_Rs_AR_CycleReduction = 0;
+            if( bAliveCtr < 8 )
+            {
+                bAliveCtr = ( bAliveCtr + 1 ) & 0x07;
+            }
+            else
+            {
+                bAliveCtr = 0;
+            }
+        }
+        putValue( HMI__MSGAliveCtr_Park_Disp_Rs_AR, bAliveCtr );
+        setTimer( tPark_Disp_Rs_AR_OnEventTrap, _Park_Disp_Rs_AR_OnEventDetectTime );
+    }
+}
+/*@@end*/
+
+/*@@timer:tPark_Disp_Rs_AR_OnEventIND:*/
+on timer tPark_Disp_Rs_AR_OnEventIND
+{
+    putValue( HMI__MSG_OnEvent_Park_Disp_Rs_AR, 0 );
+}
+/*@@end*/
+
+/*@@timer:tPark_Disp_Rs_AR_OnEventTrap:*/
+on timer tPark_Disp_Rs_AR_OnEventTrap
+{
+    _Park_Disp_Rs_AR_OnEventTrap_Active = 0;
+}
+/*@@end*/
+
+/*@@msg:CAN1.hmi_2014_17b::ROE_IC (0x18EF4100X):*/
+on message ROE_IC
+{
+    byte bAliveCtr;
+
+	putValue( HMI_ROE_DTC_IC, this.ROE_DTC_IC.phys );
+	putValue( HMI_ROE_DTC_Stat_IC, this.ROE_DTC_Stat_IC.phys );
+	putValue( HMI_ROE_Header_IC, this.ROE_Header_IC.phys );
+
+// --- spontan 1 --- 
+// Evaluate if received message is on event 
+    bAliveCtr = getValue( HMI__MSGAliveCtr_ROE_IC );
+    if( _ROE_IC_OnEventTrap_Active )
+    {
+        putValue( HMI__MSG_OnEvent_ROE_IC, 1 );
+        cancelTimer( tROE_IC_OnEventIND );
+        setTimer( tROE_IC_OnEventIND, 1000 );
+    }
+    else
+    {
+        if( bAliveCtr < 8 )
+        {
+            bAliveCtr = ( bAliveCtr + 1 ) & 0x07;
+        }
+        else
+        {
+            bAliveCtr = 0;
+		}
+        putValue( HMI__MSGAliveCtr_ROE_IC, bAliveCtr );
+        _ROE_IC_OnEventTrap_Active = 1;
+        setTimer( tROE_IC_OnEventTrap, _ROE_IC_OnEventDetectTime );
+    }
+}
+/*@@end*/
+
+/*@@timer:tROE_IC_OnEventIND:*/
+on timer tROE_IC_OnEventIND
+{
+    putValue( HMI__MSG_OnEvent_ROE_IC, 0 );
+}
+/*@@end*/
+
+/*@@timer:tROE_IC_OnEventTrap:*/
+on timer tROE_IC_OnEventTrap
+{
+    _ROE_IC_OnEventTrap_Active = 0;
+}
+/*@@end*/
+
+/*@@msg:CAN1.hmi_2014_17b::TC_Dist_AR (0x137):*/
+on message TC_Dist_AR
+{
+    byte bAliveCtr;
+
+//	putValue( HMI_CNG_FuelMdChg_Rq, 	this.CNG_FuelMdChg_Rq.phys );
+	putValue( HMI_TC_Distance_Sel, 	this.TC_FuelType_TC_DIST.phys );
+	if( this.TC_FuelType_TC_DIST == 0 ) // Gas
+	{
+		putValue( HMI_TC_GasFuelDist_Reset, this.TC_GasFuelDist_Reset.phys );
+		putValue( HMI_TC_GasFuelDist_Start, this.TC_GasFuelDist_Start.phys );
+		putValue( HMI_TC_GasFuelTankLvl, 	this.TC_GasFuelTankLvl.phys );
+	}
+	if( this.TC_FuelType_TC_DIST == 1 ) // Liquid
+	{
+		putValue( HMI_TC_LiquidFuelDist_Reset, this.TC_LiquidFuelDist_Reset.phys );
+		putValue( HMI_TC_LiquidFuelDist_Start, this.TC_LiquidFuelDist_Start.phys );
+		putValue( HMI_TC_LiquidFuelRefillEvent_Dtct, this.TC_LiquidFuelRefillEvent_Dtct.phys );
+		putValue( HMI_TC_LiquidFuelTankLvl, this.TC_LiquidFuelTankLvl.phys );
+	}
+	if( this.TC_FuelType_TC_DIST == 2 ) // Electric
+	{
+		putValue( HMI_TC_ElecEnergyDist_Reset, this.TC_ElecEnergyDist_Reset.phys );
+		putValue( HMI_TC_ElecEnergyDist_Start, this.TC_ElecEnergyDist_Start.phys );
+	}
+
+// --- spontan 1 --- 
+// Evaluate if received message is on event 
+    bAliveCtr = getValue( HMI__MSGAliveCtr_TC_Dist_AR );
+    _TC_Dist_AR_CycleReduction = _TC_Dist_AR_CycleReduction + 1;
+    if( _TC_Dist_AR_OnEventTrap_Active )
+    {
+        putValue( HMI__MSG_OnEvent_TC_Dist_AR, 1 );
+        cancelTimer( tTC_Dist_AR_OnEventIND );
+        setTimer( tTC_Dist_AR_OnEventIND, 1000 );
+    }
+    else
+    {
+        if( bAliveCtr < 8 )
+        {
+            if( _TC_Dist_AR_CycleReduction == _cTC_Dist_AR_CycleReductionValue )
+            {
+                bAliveCtr = ( bAliveCtr + 1 ) & 0x07;
+                _TC_Dist_AR_CycleReduction = 0;
+            }
+        }
+        else
+        {
+            bAliveCtr = 0;
+		}
+        putValue( HMI__MSGAliveCtr_TC_Dist_AR, bAliveCtr );
+        _TC_Dist_AR_OnEventTrap_Active = 1;
+        setTimer( tTC_Dist_AR_OnEventTrap, _TC_Dist_AR_OnEventDetectTime );
+    }
+}
+/*@@end*/
+
+/*@@timer:tTC_Dist_AR_OnEventIND:*/
+on timer tTC_Dist_AR_OnEventIND
+{
+    putValue( HMI__MSG_OnEvent_TC_Dist_AR, 0 );
+}
+/*@@end*/
+
+/*@@timer:tTC_Dist_AR_OnEventTrap:*/
+on timer tTC_Dist_AR_OnEventTrap
+{
+    _TC_Dist_AR_OnEventTrap_Active = 0;
+}
+/*@@end*/
+
+/*@@msg:TP_IC_MPM (0x749):*/
+/*on message TP_IC_MPM
+{
+    putValue( HMI_TP_IC_MPM_0, this.byte(0) );
+    putValue( HMI_TP_IC_MPM_1, this.byte(1) );
+    putValue( HMI_TP_IC_MPM_2, this.byte(2) );
+    putValue( HMI_TP_IC_MPM_3, this.byte(3) );
+    putValue( HMI_TP_IC_MPM_4, this.byte(4) );
+    putValue( HMI_TP_IC_MPM_5, this.byte(5) );
+    putValue( HMI_TP_IC_MPM_6, this.byte(6) );
+    putValue( HMI_TP_IC_MPM_7, this.byte(7) );
+}*/
+/*@@end*/
+
+/*@@msg:TP_IC_TELEAID (0x2DD):*/
+/*on message TP_IC_TELEAID
+{
+	putValue( HMI_ICTPA_IC_TELEAIDTP_IC_TEL_0_, this.byte(0) );
+	putValue( HMI_ICTPA_IC_TELEAIDTP_IC_TEL_1_, this.byte(1) );
+	putValue( HMI_ICTPA_IC_TELEAIDTP_IC_TEL_2_, this.byte(2) );
+	putValue( HMI_ICTPA_IC_TELEAIDTP_IC_TEL_3_, this.byte(3) );
+	putValue( HMI_ICTPA_IC_TELEAIDTP_IC_TEL_4_, this.byte(4) );
+	putValue( HMI_ICTPA_IC_TELEAIDTP_IC_TEL_5_, this.byte(5) );
+	putValue( HMI_ICTPA_IC_TELEAIDTP_IC_TEL_6_, this.byte(6) );
+	putValue( HMI_ICTPA_IC_TELEAIDTP_IC_TEL_7_, this.byte(7) );
+}*/
+/*@@end*/
+
+/*@@msg:CAN1.hmi_2014_17b::TP_IC_TGW_Aud (0x2D9):*/
+on message TP_IC_TGW_Aud
+{
+    putValue( HMI_TP_IC_TGW_Aud_0, this.byte(0) );
+    putValue( HMI_TP_IC_TGW_Aud_1, this.byte(1) );
+    putValue( HMI_TP_IC_TGW_Aud_2, this.byte(2) );
+    putValue( HMI_TP_IC_TGW_Aud_3, this.byte(3) );
+    putValue( HMI_TP_IC_TGW_Aud_4, this.byte(4) );
+    putValue( HMI_TP_IC_TGW_Aud_5, this.byte(5) );
+    putValue( HMI_TP_IC_TGW_Aud_6, this.byte(6) );
+    putValue( HMI_TP_IC_TGW_Aud_7, this.byte(7) );
+
+}
+/*@@end*/
+
+/*@@msg:TP_IC_TGW_Nav (0x2BD):*/
+/*on message TP_IC_TGW_Nav
+{
+    putValue( HMI_TP_IC_TGW_Nav_0, this.byte(0) );
+    putValue( HMI_TP_IC_TGW_Nav_1, this.byte(1) );
+    putValue( HMI_TP_IC_TGW_Nav_2, this.byte(2) );
+    putValue( HMI_TP_IC_TGW_Nav_3, this.byte(3) );
+    putValue( HMI_TP_IC_TGW_Nav_4, this.byte(4) );
+    putValue( HMI_TP_IC_TGW_Nav_5, this.byte(5) );
+    putValue( HMI_TP_IC_TGW_Nav_6, this.byte(6) );
+    putValue( HMI_TP_IC_TGW_Nav_7, this.byte(7) );
+}*/
+/*@@end*/
+
+/*@@msg:TP_IC_TGW_Tel (0x2C1):*/
+/*on message TP_IC_TGW_Tel
+{
+    putValue( HMI_TP_IC_TGW_Tel_0, this.byte(0) );
+    putValue( HMI_TP_IC_TGW_Tel_1, this.byte(1) );
+    putValue( HMI_TP_IC_TGW_Tel_2, this.byte(2) );
+    putValue( HMI_TP_IC_TGW_Tel_3, this.byte(3) );
+    putValue( HMI_TP_IC_TGW_Tel_4, this.byte(4) );
+    putValue( HMI_TP_IC_TGW_Tel_5, this.byte(5) );
+    putValue( HMI_TP_IC_TGW_Tel_6, this.byte(6) );
+    putValue( HMI_TP_IC_TGW_Tel_7, this.byte(7) );
+}*/
+/*@@end*/
+
+/*@@envVar:Env_HU_Config_AutoSync_Trigger:*/
+on envVar Env_HU_Config_AutoSync_Trigger
+{
+    if( getValue( Env_HU_Config_AutoSync_Trigger ) )
+    {
+        putValue( HMI_IC_AddSpeedo_Rq, getValue( HMI_IC_AddSpeedo_Stat ) );
+        putValue( HMI_IC_DesignVar_Rq, getValue( HMI_IC_DesignVar_Stat ) );
+        putValue( HMI_IC_DistUnit_Rq,  getValue( HMI_IC_DistUnit_Stat ) );
+        putValue( HMI_IC_TempDisp_Rq,  getValue( HMI_IC_TempDisp_Stat ) );
+    }
+}
+/*@@end*/
+

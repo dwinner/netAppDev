@@ -1,150 +1,176 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.2" xml:lang="en-US">
-  <compounddef id="classcapl_1_1_i_signal" kind="class" language="C++" prot="public" abstract="yes">
-    <compoundname>capl::ISignal</compoundname>
-    <basecompoundref refid="classcapl_1_1_i_phys_raw_value" prot="public" virt="non-virtual">capl::IPhysRawValue</basecompoundref>
-      <sectiondef kind="public-func">
-      <memberdef kind="function" id="classcapl_1_1_i_signal_1a82c254f5fa182f6af25428bb4a815dcf" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
-        <type><ref refid="classcapl_1_1_i_message" kindref="compound">IMessage</ref> &amp;</type>
-        <definition>virtual IMessage &amp; capl::ISignal::GetMessage</definition>
-        <argsstring>() const =0</argsstring>
-        <name>GetMessage</name>
+
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd"
+         version="1.9.2" xml:lang="en-US">
+    <compounddef id="classcapl_1_1_i_signal" kind="class" language="C++" prot="public" abstract="yes">
+        <compoundname>capl::ISignal</compoundname>
+        <basecompoundref refid="classcapl_1_1_i_phys_raw_value" prot="public" virt="non-virtual">capl::IPhysRawValue</basecompoundref>
+        <sectiondef kind="public-func">
+            <memberdef kind="function" id="classcapl_1_1_i_signal_1a82c254f5fa182f6af25428bb4a815dcf" prot="public"
+                       static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+                <type><ref refid="classcapl_1_1_i_message" kindref="compound">IMessage</ref> &amp;</type>
+                <definition>virtual IMessage &amp; capl::ISignal::GetMessage</definition>
+                <argsstring>() const =0</argsstring>
+                <name>GetMessage</name>
+                <briefdescription>
+                </briefdescription>
+                <detaileddescription>
+                </detaileddescription>
+                <inbodydescription>
+                </inbodydescription>
+                <location file="CAPLPluginApi.h" line="781" column="34" />
+            </memberdef>
+            <memberdef kind="function" id="classcapl_1_1_i_signal_1ad7b0075294f5e0a0034451b40ae1be0d" prot="public"
+                       static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+                <type>QWORD</type>
+                <definition>virtual QWORD capl::ISignal::GetHexValue</definition>
+                <argsstring>() const =0</argsstring>
+                <name>GetHexValue</name>
+                <briefdescription>
+                </briefdescription>
+                <detaileddescription>
+                </detaileddescription>
+                <inbodydescription>
+                </inbodydescription>
+                <location file="CAPLPluginApi.h" line="782" column="31" />
+            </memberdef>
+            <memberdef kind="function" id="classcapl_1_1_i_signal_1afbf75bdd9f5e49b2eaa41dc70508bbb3" prot="public"
+                       static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+                <type>void</type>
+                <definition>virtual void capl::ISignal::SetHexValue</definition>
+                <argsstring>(QWORD val) const =0</argsstring>
+                <name>SetHexValue</name>
+                <param>
+                    <type>QWORD</type>
+                    <declname>val</declname>
+                </param>
+                <briefdescription>
+                </briefdescription>
+                <detaileddescription>
+                </detaileddescription>
+                <inbodydescription>
+                </inbodydescription>
+                <location file="CAPLPluginApi.h" line="783" column="30" />
+            </memberdef>
+            <memberdef kind="function" id="classcapl_1_1_i_signal_1adc9d4b8bb4c79c25aa5cbf54ce23e7e8" prot="public"
+                       static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+                <type>DWORD</type>
+                <definition>virtual DWORD capl::ISignal::GetHexValueArray</definition>
+                <argsstring>(unsigned __int8 *data, __int32 dataLength) const =0</argsstring>
+                <name>GetHexValueArray</name>
+                <param>
+                    <type>unsigned __int8 *</type>
+                    <declname>data</declname>
+                </param>
+                <param>
+                    <type>__int32</type>
+                    <declname>dataLength</declname>
+                </param>
+                <briefdescription>
+                </briefdescription>
+                <detaileddescription>
+                </detaileddescription>
+                <inbodydescription>
+                </inbodydescription>
+                <location file="CAPLPluginApi.h" line="784" column="31" />
+            </memberdef>
+            <memberdef kind="function" id="classcapl_1_1_i_signal_1a3a83cedaf81ee842f473601cf1b3e029" prot="public"
+                       static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+                <type>DWORD</type>
+                <definition>virtual DWORD capl::ISignal::SetHexValueArray</definition>
+                <argsstring>(unsigned __int8 *data, __int32 dataLength) const =0</argsstring>
+                <name>SetHexValueArray</name>
+                <param>
+                    <type>unsigned __int8 *</type>
+                    <declname>data</declname>
+                </param>
+                <param>
+                    <type>__int32</type>
+                    <declname>dataLength</declname>
+                </param>
+                <briefdescription>
+                </briefdescription>
+                <detaileddescription>
+                </detaileddescription>
+                <inbodydescription>
+                </inbodydescription>
+                <location file="CAPLPluginApi.h" line="785" column="31" />
+            </memberdef>
+            <memberdef kind="function" id="classcapl_1_1_i_signal_1aceea01696ca601f80ad9c6c8b7dd5f3b" prot="public"
+                       static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+                <type><ref refid="classcapl_1_1_i_attribute" kindref="compound">IAttribute</ref> *</type>
+                <definition>virtual IAttribute * capl::ISignal::GetAttribute</definition>
+                <argsstring>(const char *sAttrName)=0</argsstring>
+                <name>GetAttribute</name>
+                <param>
+                    <type>const char *</type>
+                    <declname>sAttrName</declname>
+                </param>
+                <briefdescription>
+                </briefdescription>
+                <detaileddescription>
+                </detaileddescription>
+                <inbodydescription>
+                </inbodydescription>
+                <location file="CAPLPluginApi.h" line="787" column="37" />
+            </memberdef>
+        </sectiondef>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
         </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="CAPLPluginApi.h" line="781" column="34"/>
-      </memberdef>
-      <memberdef kind="function" id="classcapl_1_1_i_signal_1ad7b0075294f5e0a0034451b40ae1be0d" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
-        <type>QWORD</type>
-        <definition>virtual QWORD capl::ISignal::GetHexValue</definition>
-        <argsstring>() const =0</argsstring>
-        <name>GetHexValue</name>
-        <briefdescription>
-        </briefdescription>
-        <detaileddescription>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="CAPLPluginApi.h" line="782" column="31"/>
-      </memberdef>
-      <memberdef kind="function" id="classcapl_1_1_i_signal_1afbf75bdd9f5e49b2eaa41dc70508bbb3" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
-        <type>void</type>
-        <definition>virtual void capl::ISignal::SetHexValue</definition>
-        <argsstring>(QWORD val) const =0</argsstring>
-        <name>SetHexValue</name>
-        <param>
-          <type>QWORD</type>
-          <declname>val</declname>
-        </param>
-        <briefdescription>
-        </briefdescription>
-        <detaileddescription>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="CAPLPluginApi.h" line="783" column="30"/>
-      </memberdef>
-      <memberdef kind="function" id="classcapl_1_1_i_signal_1adc9d4b8bb4c79c25aa5cbf54ce23e7e8" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
-        <type>DWORD</type>
-        <definition>virtual DWORD capl::ISignal::GetHexValueArray</definition>
-        <argsstring>(unsigned __int8 *data, __int32 dataLength) const =0</argsstring>
-        <name>GetHexValueArray</name>
-        <param>
-          <type>unsigned __int8 *</type>
-          <declname>data</declname>
-        </param>
-        <param>
-          <type>__int32</type>
-          <declname>dataLength</declname>
-        </param>
-        <briefdescription>
-        </briefdescription>
-        <detaileddescription>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="CAPLPluginApi.h" line="784" column="31"/>
-      </memberdef>
-      <memberdef kind="function" id="classcapl_1_1_i_signal_1a3a83cedaf81ee842f473601cf1b3e029" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
-        <type>DWORD</type>
-        <definition>virtual DWORD capl::ISignal::SetHexValueArray</definition>
-        <argsstring>(unsigned __int8 *data, __int32 dataLength) const =0</argsstring>
-        <name>SetHexValueArray</name>
-        <param>
-          <type>unsigned __int8 *</type>
-          <declname>data</declname>
-        </param>
-        <param>
-          <type>__int32</type>
-          <declname>dataLength</declname>
-        </param>
-        <briefdescription>
-        </briefdescription>
-        <detaileddescription>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="CAPLPluginApi.h" line="785" column="31"/>
-      </memberdef>
-      <memberdef kind="function" id="classcapl_1_1_i_signal_1aceea01696ca601f80ad9c6c8b7dd5f3b" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
-        <type><ref refid="classcapl_1_1_i_attribute" kindref="compound">IAttribute</ref> *</type>
-        <definition>virtual IAttribute * capl::ISignal::GetAttribute</definition>
-        <argsstring>(const char *sAttrName)=0</argsstring>
-        <name>GetAttribute</name>
-        <param>
-          <type>const char *</type>
-          <declname>sAttrName</declname>
-        </param>
-        <briefdescription>
-        </briefdescription>
-        <detaileddescription>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="CAPLPluginApi.h" line="787" column="37"/>
-      </memberdef>
-      </sectiondef>
-    <briefdescription>
-    </briefdescription>
-    <detaileddescription>
-    </detaileddescription>
-    <inheritancegraph>
-      <node id="2">
-        <label>capl::IPhysRawValue</label>
-        <link refid="classcapl_1_1_i_phys_raw_value"/>
-      </node>
-      <node id="1">
-        <label>capl::ISignal</label>
-        <link refid="classcapl_1_1_i_signal"/>
-        <childnode refid="2" relation="public-inheritance">
-        </childnode>
-      </node>
-    </inheritancegraph>
-    <collaborationgraph>
-      <node id="2">
-        <label>capl::IPhysRawValue</label>
-        <link refid="classcapl_1_1_i_phys_raw_value"/>
-      </node>
-      <node id="1">
-        <label>capl::ISignal</label>
-        <link refid="classcapl_1_1_i_signal"/>
-        <childnode refid="2" relation="public-inheritance">
-        </childnode>
-      </node>
-    </collaborationgraph>
-    <location file="CAPLPluginApi.h" line="778" column="5" bodyfile="CAPLPluginApi.h" bodystart="779" bodyend="788"/>
-    <listofallmembers>
-      <member refid="classcapl_1_1_i_signal_1aceea01696ca601f80ad9c6c8b7dd5f3b" prot="public" virt="pure-virtual"><scope>capl::ISignal</scope><name>GetAttribute</name></member>
-      <member refid="classcapl_1_1_i_signal_1ad7b0075294f5e0a0034451b40ae1be0d" prot="public" virt="pure-virtual"><scope>capl::ISignal</scope><name>GetHexValue</name></member>
-      <member refid="classcapl_1_1_i_signal_1adc9d4b8bb4c79c25aa5cbf54ce23e7e8" prot="public" virt="pure-virtual"><scope>capl::ISignal</scope><name>GetHexValueArray</name></member>
-      <member refid="classcapl_1_1_i_signal_1a82c254f5fa182f6af25428bb4a815dcf" prot="public" virt="pure-virtual"><scope>capl::ISignal</scope><name>GetMessage</name></member>
-      <member refid="classcapl_1_1_i_signal_1afbf75bdd9f5e49b2eaa41dc70508bbb3" prot="public" virt="pure-virtual"><scope>capl::ISignal</scope><name>SetHexValue</name></member>
-      <member refid="classcapl_1_1_i_signal_1a3a83cedaf81ee842f473601cf1b3e029" prot="public" virt="pure-virtual"><scope>capl::ISignal</scope><name>SetHexValueArray</name></member>
-      <member refid="classcapl_1_1_i_phys_raw_value_1af6e1bd8906f99f9496db2124df6eca09" prot="public" virt="pure-virtual"><scope>capl::ISignal</scope><name>ValueHex</name></member>
-      <member refid="classcapl_1_1_i_phys_raw_value_1aca4b51fb2ea3eb5024d07fd01e25c370" prot="public" virt="pure-virtual"><scope>capl::ISignal</scope><name>ValuePhys</name></member>
-    </listofallmembers>
-  </compounddef>
+        <inheritancegraph>
+            <node id="2">
+                <label>capl::IPhysRawValue</label>
+                <link refid="classcapl_1_1_i_phys_raw_value" />
+            </node>
+            <node id="1">
+                <label>capl::ISignal</label>
+                <link refid="classcapl_1_1_i_signal" />
+                <childnode refid="2" relation="public-inheritance">
+                </childnode>
+            </node>
+        </inheritancegraph>
+        <collaborationgraph>
+            <node id="2">
+                <label>capl::IPhysRawValue</label>
+                <link refid="classcapl_1_1_i_phys_raw_value" />
+            </node>
+            <node id="1">
+                <label>capl::ISignal</label>
+                <link refid="classcapl_1_1_i_signal" />
+                <childnode refid="2" relation="public-inheritance">
+                </childnode>
+            </node>
+        </collaborationgraph>
+        <location file="CAPLPluginApi.h" line="778" column="5" bodyfile="CAPLPluginApi.h" bodystart="779" bodyend="788" />
+        <listofallmembers>
+            <member refid="classcapl_1_1_i_signal_1aceea01696ca601f80ad9c6c8b7dd5f3b" prot="public" virt="pure-virtual">
+                <scope>capl::ISignal</scope><name>GetAttribute</name>
+            </member>
+            <member refid="classcapl_1_1_i_signal_1ad7b0075294f5e0a0034451b40ae1be0d" prot="public" virt="pure-virtual">
+                <scope>capl::ISignal</scope><name>GetHexValue</name>
+            </member>
+            <member refid="classcapl_1_1_i_signal_1adc9d4b8bb4c79c25aa5cbf54ce23e7e8" prot="public" virt="pure-virtual">
+                <scope>capl::ISignal</scope><name>GetHexValueArray</name>
+            </member>
+            <member refid="classcapl_1_1_i_signal_1a82c254f5fa182f6af25428bb4a815dcf" prot="public" virt="pure-virtual">
+                <scope>capl::ISignal</scope><name>GetMessage</name>
+            </member>
+            <member refid="classcapl_1_1_i_signal_1afbf75bdd9f5e49b2eaa41dc70508bbb3" prot="public" virt="pure-virtual">
+                <scope>capl::ISignal</scope><name>SetHexValue</name>
+            </member>
+            <member refid="classcapl_1_1_i_signal_1a3a83cedaf81ee842f473601cf1b3e029" prot="public" virt="pure-virtual">
+                <scope>capl::ISignal</scope><name>SetHexValueArray</name>
+            </member>
+            <member refid="classcapl_1_1_i_phys_raw_value_1af6e1bd8906f99f9496db2124df6eca09" prot="public"
+                    virt="pure-virtual">
+                <scope>capl::ISignal</scope><name>ValueHex</name>
+            </member>
+            <member refid="classcapl_1_1_i_phys_raw_value_1aca4b51fb2ea3eb5024d07fd01e25c370" prot="public"
+                    virt="pure-virtual">
+                <scope>capl::ISignal</scope><name>ValuePhys</name>
+            </member>
+        </listofallmembers>
+    </compounddef>
 </doxygen>

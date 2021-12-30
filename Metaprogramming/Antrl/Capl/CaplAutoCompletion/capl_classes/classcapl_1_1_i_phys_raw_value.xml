@@ -1,63 +1,73 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.2" xml:lang="en-US">
-  <compounddef id="classcapl_1_1_i_phys_raw_value" kind="class" language="C++" prot="public" abstract="yes">
-    <compoundname>capl::IPhysRawValue</compoundname>
-    <derivedcompoundref refid="classcapl_1_1_i_signal" prot="public" virt="non-virtual">capl::ISignal</derivedcompoundref>
-    <derivedcompoundref refid="classcapl_1_1_i_signal_val" prot="public" virt="non-virtual">capl::ISignalVal</derivedcompoundref>
-      <sectiondef kind="public-func">
-      <memberdef kind="function" id="classcapl_1_1_i_phys_raw_value_1aca4b51fb2ea3eb5024d07fd01e25c370" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
-        <type><ref refid="classcapl_1_1_i_property" kindref="compound">IProperty</ref>&lt; double &gt; &amp;</type>
-        <definition>virtual IProperty&lt; double &gt; &amp; capl::IPhysRawValue::ValuePhys</definition>
-        <argsstring>()=0</argsstring>
-        <name>ValuePhys</name>
+
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd"
+         version="1.9.2" xml:lang="en-US">
+    <compounddef id="classcapl_1_1_i_phys_raw_value" kind="class" language="C++" prot="public" abstract="yes">
+        <compoundname>capl::IPhysRawValue</compoundname>
+        <derivedcompoundref refid="classcapl_1_1_i_signal" prot="public" virt="non-virtual">capl::ISignal</derivedcompoundref>
+        <derivedcompoundref refid="classcapl_1_1_i_signal_val" prot="public" virt="non-virtual">capl::ISignalVal</derivedcompoundref>
+        <sectiondef kind="public-func">
+            <memberdef kind="function" id="classcapl_1_1_i_phys_raw_value_1aca4b51fb2ea3eb5024d07fd01e25c370"
+                       prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+                <type><ref refid="classcapl_1_1_i_property" kindref="compound">IProperty</ref>&lt; double &gt; &amp;</type>
+                <definition>virtual IProperty&lt; double &gt; &amp; capl::IPhysRawValue::ValuePhys</definition>
+                <argsstring>()=0</argsstring>
+                <name>ValuePhys</name>
+                <briefdescription>
+                </briefdescription>
+                <detaileddescription>
+                </detaileddescription>
+                <inbodydescription>
+                </inbodydescription>
+                <location file="CAPLPluginApi.h" line="773" column="35" />
+            </memberdef>
+            <memberdef kind="function" id="classcapl_1_1_i_phys_raw_value_1af6e1bd8906f99f9496db2124df6eca09"
+                       prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+                <type><ref refid="classcapl_1_1_i_property" kindref="compound">IProperty</ref>&lt; QWORD &gt; &amp;</type>
+                <definition>virtual IProperty&lt; QWORD &gt; &amp; capl::IPhysRawValue::ValueHex</definition>
+                <argsstring>()=0</argsstring>
+                <name>ValueHex</name>
+                <briefdescription>
+                </briefdescription>
+                <detaileddescription>
+                </detaileddescription>
+                <inbodydescription>
+                </inbodydescription>
+                <location file="CAPLPluginApi.h" line="774" column="35" />
+            </memberdef>
+        </sectiondef>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
         </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="CAPLPluginApi.h" line="773" column="35"/>
-      </memberdef>
-      <memberdef kind="function" id="classcapl_1_1_i_phys_raw_value_1af6e1bd8906f99f9496db2124df6eca09" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
-        <type><ref refid="classcapl_1_1_i_property" kindref="compound">IProperty</ref>&lt; QWORD &gt; &amp;</type>
-        <definition>virtual IProperty&lt; QWORD &gt; &amp; capl::IPhysRawValue::ValueHex</definition>
-        <argsstring>()=0</argsstring>
-        <name>ValueHex</name>
-        <briefdescription>
-        </briefdescription>
-        <detaileddescription>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="CAPLPluginApi.h" line="774" column="35"/>
-      </memberdef>
-      </sectiondef>
-    <briefdescription>
-    </briefdescription>
-    <detaileddescription>
-    </detaileddescription>
-    <inheritancegraph>
-      <node id="1">
-        <label>capl::IPhysRawValue</label>
-        <link refid="classcapl_1_1_i_phys_raw_value"/>
-      </node>
-      <node id="2">
-        <label>capl::ISignal</label>
-        <link refid="classcapl_1_1_i_signal"/>
-        <childnode refid="1" relation="public-inheritance">
-        </childnode>
-      </node>
-      <node id="3">
-        <label>capl::ISignalVal</label>
-        <link refid="classcapl_1_1_i_signal_val"/>
-        <childnode refid="1" relation="public-inheritance">
-        </childnode>
-      </node>
-    </inheritancegraph>
-    <location file="CAPLPluginApi.h" line="770" column="5" bodyfile="CAPLPluginApi.h" bodystart="771" bodyend="775"/>
-    <listofallmembers>
-      <member refid="classcapl_1_1_i_phys_raw_value_1af6e1bd8906f99f9496db2124df6eca09" prot="public" virt="pure-virtual"><scope>capl::IPhysRawValue</scope><name>ValueHex</name></member>
-      <member refid="classcapl_1_1_i_phys_raw_value_1aca4b51fb2ea3eb5024d07fd01e25c370" prot="public" virt="pure-virtual"><scope>capl::IPhysRawValue</scope><name>ValuePhys</name></member>
-    </listofallmembers>
-  </compounddef>
+        <inheritancegraph>
+            <node id="1">
+                <label>capl::IPhysRawValue</label>
+                <link refid="classcapl_1_1_i_phys_raw_value" />
+            </node>
+            <node id="2">
+                <label>capl::ISignal</label>
+                <link refid="classcapl_1_1_i_signal" />
+                <childnode refid="1" relation="public-inheritance">
+                </childnode>
+            </node>
+            <node id="3">
+                <label>capl::ISignalVal</label>
+                <link refid="classcapl_1_1_i_signal_val" />
+                <childnode refid="1" relation="public-inheritance">
+                </childnode>
+            </node>
+        </inheritancegraph>
+        <location file="CAPLPluginApi.h" line="770" column="5" bodyfile="CAPLPluginApi.h" bodystart="771" bodyend="775" />
+        <listofallmembers>
+            <member refid="classcapl_1_1_i_phys_raw_value_1af6e1bd8906f99f9496db2124df6eca09" prot="public"
+                    virt="pure-virtual">
+                <scope>capl::IPhysRawValue</scope><name>ValueHex</name>
+            </member>
+            <member refid="classcapl_1_1_i_phys_raw_value_1aca4b51fb2ea3eb5024d07fd01e25c370" prot="public"
+                    virt="pure-virtual">
+                <scope>capl::IPhysRawValue</scope><name>ValuePhys</name>
+            </member>
+        </listofallmembers>
+    </compounddef>
 </doxygen>

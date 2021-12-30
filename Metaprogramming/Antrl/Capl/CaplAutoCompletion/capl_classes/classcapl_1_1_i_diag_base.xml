@@ -1,783 +1,937 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.2" xml:lang="en-US">
-  <compounddef id="classcapl_1_1_i_diag_base" kind="class" language="C++" prot="public" abstract="yes">
-    <compoundname>capl::IDiagBase</compoundname>
-    <derivedcompoundref refid="classcapl_1_1_i_diag_request" prot="public" virt="non-virtual">capl::IDiagRequest</derivedcompoundref>
-    <derivedcompoundref refid="classcapl_1_1_i_diag_response" prot="public" virt="non-virtual">capl::IDiagResponse</derivedcompoundref>
-      <sectiondef kind="public-func">
-      <memberdef kind="function" id="classcapl_1_1_i_diag_base_1ae37d1083454aa19fc2a903d60339f065" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
-        <type>__int32</type>
-        <definition>virtual __int32 capl::IDiagBase::Initialize</definition>
-        <argsstring>()=0</argsstring>
-        <name>Initialize</name>
+
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd"
+         version="1.9.2" xml:lang="en-US">
+    <compounddef id="classcapl_1_1_i_diag_base" kind="class" language="C++" prot="public" abstract="yes">
+        <compoundname>capl::IDiagBase</compoundname>
+        <derivedcompoundref refid="classcapl_1_1_i_diag_request" prot="public" virt="non-virtual">capl::IDiagRequest</derivedcompoundref>
+        <derivedcompoundref refid="classcapl_1_1_i_diag_response" prot="public" virt="non-virtual">capl::IDiagResponse</derivedcompoundref>
+        <sectiondef kind="public-func">
+            <memberdef kind="function" id="classcapl_1_1_i_diag_base_1ae37d1083454aa19fc2a903d60339f065" prot="public"
+                       static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+                <type>__int32</type>
+                <definition>virtual __int32 capl::IDiagBase::Initialize</definition>
+                <argsstring>()=0</argsstring>
+                <name>Initialize</name>
+                <briefdescription>
+                </briefdescription>
+                <detaileddescription>
+                    <para>
+                        Reinitializes the object for the given service or primitive. Diagnostics request will be initialized with the default request parameters of the service, while diagnostic responses will be initialized with the default parameters of the first or specified primitive of the service. If the service is not defined, or the primitive is not defined at the given service, nothing happens and an error code is returned
+                        <parameterlist kind="param">
+                            <parameteritem>
+                                <parameternamelist>
+                                    <parametername>object</parametername>
+                                </parameternamelist>
+                                <parameterdescription>
+                                    <para>Diagnostics object to re-initialize </para>
+                                </parameterdescription>
+                            </parameteritem>
+                            <parameteritem>
+                                <parameternamelist>
+                                    <parametername>serviceQualifier</parametername>
+                                </parameternamelist>
+                                <parameterdescription>
+                                    <para>Qualifier of the service that should be used for reinterpretation </para>
+                                </parameterdescription>
+                            </parameteritem>
+                            <parameteritem>
+                                <parameternamelist>
+                                    <parametername>Qualifier</parametername>
+                                </parameternamelist>
+                                <parameterdescription>
+                                    <para>of the service primitive that should be used for reinterpretation </para>
+                                </parameterdescription>
+                            </parameteritem>
+                        </parameterlist>
+                        <simplesect kind="return">
+                            <para>0: No error, OK </para>
+                        </simplesect>
+                        <simplesect kind="return">
+                            <para>&lt;0: Error code </para>
+                        </simplesect>
+                        <simplesect kind="note">
+                            <para>diagReponse::Initialize( ); </para>
+                        </simplesect>
+                    </para>
+                </detaileddescription>
+                <inbodydescription>
+                </inbodydescription>
+                <location file="CAPLPluginApi.h" line="984" column="35" />
+            </memberdef>
+            <memberdef kind="function" id="classcapl_1_1_i_diag_base_1ac58c1dfb40c485d55c627507deb74059" prot="public"
+                       static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+                <type>__int32</type>
+                <definition>virtual __int32 capl::IDiagBase::Initialize</definition>
+                <argsstring>(const char serviceQualifier[])=0</argsstring>
+                <name>Initialize</name>
+                <param>
+                    <type>const char</type>
+                    <declname>serviceQualifier</declname>
+                    <array>[]</array>
+                </param>
+                <briefdescription>
+                </briefdescription>
+                <detaileddescription>
+                    <para>
+                        Reinitializes the object for the given service or primitive. Diagnostics request will be initialized with the default request parameters of the service, while diagnostic responses will be initialized with the default parameters of the first or specified primitive of the service. If the service is not defined, or the primitive is not defined at the given service, nothing happens and an error code is returned
+                        <parameterlist kind="param">
+                            <parameteritem>
+                                <parameternamelist>
+                                    <parametername>serviceQualifier</parametername>
+                                </parameternamelist>
+                                <parameterdescription>
+                                    <para>Qualifier of the service that should be used for reinterpretation </para>
+                                </parameterdescription>
+                            </parameteritem>
+                        </parameterlist>
+                        <simplesect kind="return">
+                            <para>0: No error, OK </para>
+                        </simplesect>
+                        <simplesect kind="return">
+                            <para>&lt;0: Error code </para>
+                        </simplesect>
+                        <simplesect kind="note">
+                            <para>diagReponse::Initialize( char serviceQualifier[]); </para>
+                        </simplesect>
+                    </para>
+                </detaileddescription>
+                <inbodydescription>
+                </inbodydescription>
+                <location file="CAPLPluginApi.h" line="993" column="35" />
+            </memberdef>
+            <memberdef kind="function" id="classcapl_1_1_i_diag_base_1aee83a16cbc69c1b8ec143ddb10e46134" prot="public"
+                       static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+                <type>__int32</type>
+                <definition>virtual __int32 capl::IDiagBase::SetParameter</definition>
+                <argsstring>(char parameterName[], double newValue)=0</argsstring>
+                <name>SetParameter</name>
+                <param>
+                    <type>char</type>
+                    <declname>parameterName</declname>
+                    <array>[]</array>
+                </param>
+                <param>
+                    <type>double</type>
+                    <declname>newValue</declname>
+                </param>
+                <briefdescription>
+                </briefdescription>
+                <detaileddescription>
+                    <para>
+                        Sets the numeric parameter to the specified value
+                        <parameterlist kind="param">
+                            <parameteritem>
+                                <parameternamelist>
+                                    <parametername>parameterName</parametername>
+                                </parameternamelist>
+                                <parameterdescription>
+                                    <para>Parameter qualifier (NOT the language-dependent name of the parameter!) </para>
+                                </parameterdescription>
+                            </parameteritem>
+                            <parameteritem>
+                                <parameternamelist>
+                                    <parametername>newValue</parametername>
+                                </parameternamelist>
+                                <parameterdescription>
+                                    <para>Numeric value to which the parameter should be set </para>
+                                </parameterdescription>
+                            </parameteritem>
+                        </parameterlist>
+                        <simplesect kind="return">
+                            <para>Error code </para>
+                        </simplesect>
+                        <simplesect kind="note">
+                            <para>diagResponse::SetParameter (char parameterName[], double newValue) </para>
+                        </simplesect>
+                    </para>
+                </detaileddescription>
+                <inbodydescription>
+                </inbodydescription>
+                <location file="CAPLPluginApi.h" line="1002" column="35" />
+            </memberdef>
+            <memberdef kind="function" id="classcapl_1_1_i_diag_base_1a98befa42c8861f9e9c4b9a108c6d791b" prot="public"
+                       static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+                <type>__int32</type>
+                <definition>virtual __int32 capl::IDiagBase::SetParameter</definition>
+                <argsstring>(__int32 mode, char parameterName[], double newValue)=0</argsstring>
+                <name>SetParameter</name>
+                <param>
+                    <type>__int32</type>
+                    <declname>mode</declname>
+                </param>
+                <param>
+                    <type>char</type>
+                    <declname>parameterName</declname>
+                    <array>[]</array>
+                </param>
+                <param>
+                    <type>double</type>
+                    <declname>newValue</declname>
+                </param>
+                <briefdescription>
+                </briefdescription>
+                <detaileddescription>
+                    <para>
+                        Sets the numeric parameter to the specified value
+                        <parameterlist kind="param">
+                            <parameteritem>
+                                <parameternamelist>
+                                    <parametername>parameterName</parametername>
+                                </parameternamelist>
+                                <parameterdescription>
+                                    <para>Parameter qualifier (NOT the language-dependent name of the parameter!) </para>
+                                </parameterdescription>
+                            </parameteritem>
+                            <parameteritem>
+                                <parameternamelist>
+                                    <parametername>newValue</parametername>
+                                </parameternamelist>
+                                <parameterdescription>
+                                    <para>Numeric value to which the parameter should be set </para>
+                                </parameterdescription>
+                            </parameteritem>
+                            <parameteritem>
+                                <parameternamelist>
+                                    <parametername>mode</parametername>
+                                </parameternamelist>
+                                <parameterdescription>
+                                    <para>Access mode </para>
+                                </parameterdescription>
+                            </parameteritem>
+                        </parameterlist>
+                        <simplesect kind="return">
+                            <para>Error code </para>
+                        </simplesect>
+                        <simplesect kind="note">
+                            <para>diagResponse::SetParameter (long mode, char parameterName[], double newValue) </para>
+                        </simplesect>
+                    </para>
+                </detaileddescription>
+                <inbodydescription>
+                </inbodydescription>
+                <location file="CAPLPluginApi.h" line="1012" column="35" />
+            </memberdef>
+            <memberdef kind="function" id="classcapl_1_1_i_diag_base_1a8d561ac405f4631fb3982a2a3e52419e" prot="public"
+                       static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+                <type>__int32</type>
+                <definition>virtual __int32 capl::IDiagBase::SetParameter</definition>
+                <argsstring>(char parameterName[], char newValue[])=0</argsstring>
+                <name>SetParameter</name>
+                <param>
+                    <type>char</type>
+                    <declname>parameterName</declname>
+                    <array>[]</array>
+                </param>
+                <param>
+                    <type>char</type>
+                    <declname>newValue</declname>
+                    <array>[]</array>
+                </param>
+                <briefdescription>
+                </briefdescription>
+                <detaileddescription>
+                    <para>
+                        Sets a parameter to the symbolically-specified value. This is possible for all parameters, also numeric ones
+                        <parameterlist kind="param">
+                            <parameteritem>
+                                <parameternamelist>
+                                    <parametername>parameterName</parametername>
+                                </parameternamelist>
+                                <parameterdescription>
+                                    <para>Parameter qualifier </para>
+                                </parameterdescription>
+                            </parameteritem>
+                            <parameteritem>
+                                <parameternamelist>
+                                    <parametername>newValue</parametername>
+                                </parameternamelist>
+                                <parameterdescription>
+                                    <para>Symbolic value </para>
+                                </parameterdescription>
+                            </parameteritem>
+                        </parameterlist>
+                        <simplesect kind="return">
+                            <para>Error code </para>
+                        </simplesect>
+                        <simplesect kind="note">
+                            <para>diagResponse::SetParameter (char parameterName[], char newValue[]) </para>
+                        </simplesect>
+                    </para>
+                </detaileddescription>
+                <inbodydescription>
+                </inbodydescription>
+                <location file="CAPLPluginApi.h" line="1021" column="35" />
+            </memberdef>
+            <memberdef kind="function" id="classcapl_1_1_i_diag_base_1a8f0c89c287b4d74ba803017d46cf33c9" prot="public"
+                       static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+                <type>__int32</type>
+                <definition>virtual __int32 capl::IDiagBase::GetParameter</definition>
+                <argsstring>(char parameterName[], double output[1]) const =0</argsstring>
+                <name>GetParameter</name>
+                <param>
+                    <type>char</type>
+                    <declname>parameterName</declname>
+                    <array>[]</array>
+                </param>
+                <param>
+                    <type>double</type>
+                    <declname>output</declname>
+                    <array>[1]</array>
+                </param>
+                <briefdescription>
+                </briefdescription>
+                <detaileddescription>
+                    <para>
+                        Returns the value of the numeric parameter, either in an output field or as return value (without the possibility of checking the correct function)
+                        <parameterlist kind="param">
+                            <parameteritem>
+                                <parameternamelist>
+                                    <parametername>parameterName</parametername>
+                                </parameternamelist>
+                                <parameterdescription>
+                                    <para></para>
+                                </parameterdescription>
+                            </parameteritem>
+                            <parameteritem>
+                                <parameternamelist>
+                                    <parametername>Output</parametername>
+                                </parameternamelist>
+                                <parameterdescription>
+                                    <para>Parameter qualifier </para>
+                                </parameterdescription>
+                            </parameteritem>
+                        </parameterlist>
+                        <simplesect kind="return">
+                            <para>Error code or value of the parameter or 0.0 if this could not be acquired </para>
+                        </simplesect>
+                        <simplesect kind="note">
+                            <para>long diagResponse::GetParameter (char parameterName[], double output[1]) </para>
+                        </simplesect>
+                    </para>
+                </detaileddescription>
+                <inbodydescription>
+                </inbodydescription>
+                <location file="CAPLPluginApi.h" line="1030" column="35" />
+            </memberdef>
+            <memberdef kind="function" id="classcapl_1_1_i_diag_base_1a7b5b26cb7365d462e2ad8e18936076d3" prot="public"
+                       static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+                <type>double</type>
+                <definition>virtual double capl::IDiagBase::GetParameter</definition>
+                <argsstring>(char parameterName[]) const =0</argsstring>
+                <name>GetParameter</name>
+                <param>
+                    <type>char</type>
+                    <declname>parameterName</declname>
+                    <array>[]</array>
+                </param>
+                <briefdescription>
+                </briefdescription>
+                <detaileddescription>
+                    <para>
+                        Returns the value of the numeric parameter, either in an output field or as return value (without the possibility of checking the correct function)
+                        <parameterlist kind="param">
+                            <parameteritem>
+                                <parameternamelist>
+                                    <parametername>parameterName</parametername>
+                                </parameternamelist>
+                                <parameterdescription>
+                                    <para>Parameter qualifier </para>
+                                </parameterdescription>
+                            </parameteritem>
+                        </parameterlist>
+                        <simplesect kind="return">
+                            <para>Error code or value of the parameter or 0.0 if this could not be acquired </para>
+                        </simplesect>
+                        <simplesect kind="note">
+                            <para>long diagResponse::GetParameter (char parameterName[]) </para>
+                        </simplesect>
+                    </para>
+                </detaileddescription>
+                <inbodydescription>
+                </inbodydescription>
+                <location file="CAPLPluginApi.h" line="1038" column="32" />
+            </memberdef>
+            <memberdef kind="function" id="classcapl_1_1_i_diag_base_1a0de1a3a2d8f5f3ebda110ca984f849ca" prot="public"
+                       static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+                <type>__int32</type>
+                <definition>virtual __int32 capl::IDiagBase::GetParameter</definition>
+                <argsstring>(__int32 mode, char parameterName[], double output[1]) const =0</argsstring>
+                <name>GetParameter</name>
+                <param>
+                    <type>__int32</type>
+                    <declname>mode</declname>
+                </param>
+                <param>
+                    <type>char</type>
+                    <declname>parameterName</declname>
+                    <array>[]</array>
+                </param>
+                <param>
+                    <type>double</type>
+                    <declname>output</declname>
+                    <array>[1]</array>
+                </param>
+                <briefdescription>
+                </briefdescription>
+                <detaileddescription>
+                    <para>
+                        Returns the value of the numeric parameter, either in an output field or as return value (without the possibility of checking the correct function)
+                        <parameterlist kind="param">
+                            <parameteritem>
+                                <parameternamelist>
+                                    <parametername>parameterName</parametername>
+                                </parameternamelist>
+                                <parameterdescription>
+                                    <para>Parameter qualifier </para>
+                                </parameterdescription>
+                            </parameteritem>
+                            <parameteritem>
+                                <parameternamelist>
+                                    <parametername>Output</parametername>
+                                </parameternamelist>
+                                <parameterdescription>
+                                    <para>Parameter qualifier </para>
+                                </parameterdescription>
+                            </parameteritem>
+                            <parameteritem>
+                                <parameternamelist>
+                                    <parametername>mode</parametername>
+                                </parameternamelist>
+                                <parameterdescription>
+                                    <para>Access mode </para>
+                                </parameterdescription>
+                            </parameteritem>
+                        </parameterlist>
+                        <simplesect kind="return">
+                            <para>Error code or value of the parameter or 0.0 if this could not be acquired </para>
+                        </simplesect>
+                        <simplesect kind="note">
+                            <para>long diagResponse::GetParameter (long mode, char parameterName[], double output[1]) </para>
+                        </simplesect>
+                    </para>
+                </detaileddescription>
+                <inbodydescription>
+                </inbodydescription>
+                <location file="CAPLPluginApi.h" line="1048" column="35" />
+            </memberdef>
+            <memberdef kind="function" id="classcapl_1_1_i_diag_base_1a7820250580688aa6f91dfcb39e8daf5e" prot="public"
+                       static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+                <type>double</type>
+                <definition>virtual double capl::IDiagBase::GetParameter</definition>
+                <argsstring>(__int32 mode, char parameterName[]) const =0</argsstring>
+                <name>GetParameter</name>
+                <param>
+                    <type>__int32</type>
+                    <declname>mode</declname>
+                </param>
+                <param>
+                    <type>char</type>
+                    <declname>parameterName</declname>
+                    <array>[]</array>
+                </param>
+                <briefdescription>
+                </briefdescription>
+                <detaileddescription>
+                    <para>
+                        Returns the value of the numeric parameter, either in an output field or as return value (without the possibility of checking the correct function)
+                        <parameterlist kind="param">
+                            <parameteritem>
+                                <parameternamelist>
+                                    <parametername>parameterName</parametername>
+                                </parameternamelist>
+                                <parameterdescription>
+                                    <para>Parameter qualifier </para>
+                                </parameterdescription>
+                            </parameteritem>
+                            <parameteritem>
+                                <parameternamelist>
+                                    <parametername>mode</parametername>
+                                </parameternamelist>
+                                <parameterdescription>
+                                    <para>Access mode </para>
+                                </parameterdescription>
+                            </parameteritem>
+                        </parameterlist>
+                        <simplesect kind="return">
+                            <para>Error code or value of the parameter or 0.0 if this could not be acquired </para>
+                        </simplesect>
+                        <simplesect kind="note">
+                            <para>long diagResponse::GetParameter (long mode, char parameterName[]) </para>
+                        </simplesect>
+                    </para>
+                </detaileddescription>
+                <inbodydescription>
+                </inbodydescription>
+                <location file="CAPLPluginApi.h" line="1057" column="32" />
+            </memberdef>
+            <memberdef kind="function" id="classcapl_1_1_i_diag_base_1ab07b4e3bcac59b2d80b04d5530a1ee01" prot="public"
+                       static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+                <type>__int32</type>
+                <definition>virtual __int32 capl::IDiagBase::GetParameter</definition>
+                <argsstring>(char parameterName[], char buffer[], unsigned __int32 buffersize) const =0</argsstring>
+                <name>GetParameter</name>
+                <param>
+                    <type>char</type>
+                    <declname>parameterName</declname>
+                    <array>[]</array>
+                </param>
+                <param>
+                    <type>char</type>
+                    <declname>buffer</declname>
+                    <array>[]</array>
+                </param>
+                <param>
+                    <type>unsigned __int32</type>
+                    <declname>buffersize</declname>
+                </param>
+                <briefdescription>
+                </briefdescription>
+                <detaileddescription>
+                    <para>
+                        Returns the symbolic value of the parameter. This functions for all parameters. The values received can be used for setting the parameter
+                        <parameterlist kind="param">
+                            <parameteritem>
+                                <parameternamelist>
+                                    <parametername>parameterName</parametername>
+                                </parameternamelist>
+                                <parameterdescription>
+                                    <para>Parameter qualifier </para>
+                                </parameterdescription>
+                            </parameteritem>
+                            <parameteritem>
+                                <parameternamelist>
+                                    <parametername>buffer</parametername>
+                                </parameternamelist>
+                                <parameterdescription>
+                                    <para>Output field </para>
+                                </parameterdescription>
+                            </parameteritem>
+                            <parameteritem>
+                                <parameternamelist>
+                                    <parametername>buffersize</parametername>
+                                </parameternamelist>
+                                <parameterdescription>
+                                    <para>Size of the buffer </para>
+                                </parameterdescription>
+                            </parameteritem>
+                        </parameterlist>
+                        <simplesect kind="return">
+                            <para>Number of chars written to buffer or error code </para>
+                        </simplesect>
+                        <simplesect kind="note">
+                            <para>diagResponse::GetParameter (char parameterName[], char buffer[], dword buffersize) </para>
+                        </simplesect>
+                    </para>
+                </detaileddescription>
+                <inbodydescription>
+                </inbodydescription>
+                <location file="CAPLPluginApi.h" line="1067" column="35" />
+            </memberdef>
+            <memberdef kind="function" id="classcapl_1_1_i_diag_base_1ab45d8dbb993847cb5562cf2d2b434f2f" prot="public"
+                       static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+                <type>__int32</type>
+                <definition>virtual __int32 capl::IDiagBase::SetPrimitiveData</definition>
+                <argsstring>(unsigned __int8 buffer[], unsigned __int32 buffersize)=0</argsstring>
+                <name>SetPrimitiveData</name>
+                <param>
+                    <type>unsigned __int8</type>
+                    <declname>buffer</declname>
+                    <array>[]</array>
+                </param>
+                <param>
+                    <type>unsigned __int32</type>
+                    <declname>buffersize</declname>
+                </param>
+                <briefdescription>
+                </briefdescription>
+                <detaileddescription>
+                    <para>
+                        Reads/sets the raw data of the complete service primitive (all data that is transmitted via the transport protocol). When setting the data the length of the primitive is not changed
+                        <parameterlist kind="param">
+                            <parameteritem>
+                                <parameternamelist>
+                                    <parametername>buffer</parametername>
+                                </parameternamelist>
+                                <parameterdescription>
+                                    <para>Input/output buffer </para>
+                                </parameterdescription>
+                            </parameteritem>
+                            <parameteritem>
+                                <parameternamelist>
+                                    <parametername>buffersize</parametername>
+                                </parameternamelist>
+                                <parameterdescription>
+                                    <para>Buffer size </para>
+                                </parameterdescription>
+                            </parameteritem>
+                        </parameterlist>
+                        <simplesect kind="return">
+                            <para>Number of bytes copied into the buffer or error code </para>
+                        </simplesect>
+                        <simplesect kind="note">
+                            <para>diagResponse::SetPrimitiveData (byte* buffer, DWORD buffersize) </para>
+                        </simplesect>
+                    </para>
+                </detaileddescription>
+                <inbodydescription>
+                </inbodydescription>
+                <location file="CAPLPluginApi.h" line="1076" column="35" />
+            </memberdef>
+            <memberdef kind="function" id="classcapl_1_1_i_diag_base_1a265da697768555012a35f46bd9304b24" prot="public"
+                       static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+                <type>__int32</type>
+                <definition>virtual __int32 capl::IDiagBase::GetPrimitiveData</definition>
+                <argsstring>(unsigned __int8 buffer[], unsigned __int32 buffersize) const =0</argsstring>
+                <name>GetPrimitiveData</name>
+                <param>
+                    <type>unsigned __int8</type>
+                    <declname>buffer</declname>
+                    <array>[]</array>
+                </param>
+                <param>
+                    <type>unsigned __int32</type>
+                    <declname>buffersize</declname>
+                </param>
+                <briefdescription>
+                </briefdescription>
+                <detaileddescription>
+                    <para>
+                        Reads/sets the raw data of the complete service primitive (all data that is transmitted via the transport protocol). When setting the data the length of the primitive is not changed
+                        <parameterlist kind="param">
+                            <parameteritem>
+                                <parameternamelist>
+                                    <parametername>buffer</parametername>
+                                </parameternamelist>
+                                <parameterdescription>
+                                    <para>Input/output buffer </para>
+                                </parameterdescription>
+                            </parameteritem>
+                            <parameteritem>
+                                <parameternamelist>
+                                    <parametername>buffersize</parametername>
+                                </parameternamelist>
+                                <parameterdescription>
+                                    <para>Buffer size </para>
+                                </parameterdescription>
+                            </parameteritem>
+                        </parameterlist>
+                        <simplesect kind="return">
+                            <para>Number of bytes copied into the buffer or error code </para>
+                        </simplesect>
+                        <simplesect kind="note">
+                            <para>diagResponse::GetPrimitiveData (byte* buffer, DWORD buffersize) </para>
+                        </simplesect>
+                    </para>
+                </detaileddescription>
+                <inbodydescription>
+                </inbodydescription>
+                <location file="CAPLPluginApi.h" line="1085" column="35" />
+            </memberdef>
+            <memberdef kind="function" id="classcapl_1_1_i_diag_base_1a9d1e99be3c7208b65d67d15e905c5e27" prot="public"
+                       static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+                <type>__int32</type>
+                <definition>virtual __int32 capl::IDiagBase::Resize</definition>
+                <argsstring>(unsigned __int32 byteCount)=0</argsstring>
+                <name>Resize</name>
+                <param>
+                    <type>unsigned __int32</type>
+                    <declname>byteCount</declname>
+                </param>
+                <briefdescription>
+                </briefdescription>
+                <detaileddescription>
+                    <para>
+                        Adapt size of a diagnostic object to match specified parameter iterations, or set size of bus message to given number of byte
+                        <parameterlist kind="param">
+                            <parameteritem>
+                                <parameternamelist>
+                                    <parametername>byteCount</parametername>
+                                </parameternamelist>
+                                <parameterdescription>
+                                    <para>Length of data to send </para>
+                                </parameterdescription>
+                            </parameteritem>
+                        </parameterlist>
+                        <simplesect kind="return">
+                            <para>Error code </para>
+                        </simplesect>
+                        <simplesect kind="note">
+                            <para>diagResponse::Resize (dword byteCount) </para>
+                        </simplesect>
+                    </para>
+                </detaileddescription>
+                <inbodydescription>
+                </inbodydescription>
+                <location file="CAPLPluginApi.h" line="1093" column="35" />
+            </memberdef>
+            <memberdef kind="function" id="classcapl_1_1_i_diag_base_1a99d72429fad0910ea6224972b9eac982" prot="public"
+                       static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+                <type>__int32</type>
+                <definition>virtual __int32 capl::IDiagBase::GetPrimitiveSize</definition>
+                <argsstring>() const =0</argsstring>
+                <name>GetPrimitiveSize</name>
+                <briefdescription>
+                </briefdescription>
+                <detaileddescription>
+                    <para>
+                        Returns the byte length of the object
+                        <simplesect kind="return">
+                            <para>&gt;0: Number of bytes </para>
+                        </simplesect>
+                        <simplesect kind="return">
+                            <para>&lt;0: Error code </para>
+                        </simplesect>
+                        <simplesect kind="note">
+                            <para>diagRequest::GetPrimitiveSize(); </para>
+                        </simplesect>
+                    </para>
+                </detaileddescription>
+                <inbodydescription>
+                </inbodydescription>
+                <location file="CAPLPluginApi.h" line="1101" column="35" />
+            </memberdef>
+            <memberdef kind="function" id="classcapl_1_1_i_diag_base_1a6dff5b84ffaf844c807385da35660c58" prot="public"
+                       static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+                <type>void</type>
+                <definition>virtual void capl::IDiagBase::CopyData</definition>
+                <argsstring>(IDiagBase &amp;msg)=0</argsstring>
+                <name>CopyData</name>
+                <param>
+                    <type><ref refid="classcapl_1_1_i_diag_base" kindref="compound">IDiagBase</ref> &amp;</type>
+                    <declname>msg</declname>
+                </param>
+                <briefdescription>
+                </briefdescription>
+                <detaileddescription>
+                </detaileddescription>
+                <inbodydescription>
+                </inbodydescription>
+                <location file="CAPLPluginApi.h" line="1103" column="30" />
+            </memberdef>
+            <memberdef kind="function" id="classcapl_1_1_i_diag_base_1afe62039c746863c521cd7c09b48e5a42" prot="public"
+                       static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+                <type>__int32</type>
+                <definition>virtual __int32 capl::IDiagBase::GetParameterRaw</definition>
+                <argsstring>(const char parameter[], BYTE buffer[], unsigned __int32 buffersize) const =0</argsstring>
+                <name>GetParameterRaw</name>
+                <param>
+                    <type>const char</type>
+                    <declname>parameter</declname>
+                    <array>[]</array>
+                </param>
+                <param>
+                    <type>BYTE</type>
+                    <declname>buffer</declname>
+                    <array>[]</array>
+                </param>
+                <param>
+                    <type>unsigned __int32</type>
+                    <declname>buffersize</declname>
+                </param>
+                <briefdescription>
+                </briefdescription>
+                <detaileddescription>
+                    <para>
+                        Sets or specifies the value of a (complex) parameter directly via uncoded data bytes
+                        <parameterlist kind="param">
+                            <parameteritem>
+                                <parameternamelist>
+                                    <parametername>parameterName</parametername>
+                                </parameternamelist>
+                                <parameterdescription>
+                                    <para>Parameter qualifier </para>
+                                </parameterdescription>
+                            </parameteritem>
+                            <parameteritem>
+                                <parameternamelist>
+                                    <parametername>buffer</parametername>
+                                </parameternamelist>
+                                <parameterdescription>
+                                    <para>Input/output buffer </para>
+                                </parameterdescription>
+                            </parameteritem>
+                            <parameteritem>
+                                <parameternamelist>
+                                    <parametername>buffersize</parametername>
+                                </parameternamelist>
+                                <parameterdescription>
+                                    <para>Buffer size </para>
+                                </parameterdescription>
+                            </parameteritem>
+                        </parameterlist>
+                        <simplesect kind="return">
+                            <para>0 if bytes were copied, otherwise &lt;0 for an error code </para>
+                        </simplesect>
+                        <simplesect kind="note">
+                            <para>long diagResponse::GetParameterRaw (char parameterName[], byte* buffer, DWORD buffersize) </para>
+                        </simplesect>
+                    </para>
+                </detaileddescription>
+                <inbodydescription>
+                </inbodydescription>
+                <location file="CAPLPluginApi.h" line="1113" column="35" />
+            </memberdef>
+            <memberdef kind="function" id="classcapl_1_1_i_diag_base_1a32f62926dd0e35872b45a3c1eb754522" prot="public"
+                       static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+                <type>__int32</type>
+                <definition>virtual __int32 capl::IDiagBase::SetParameterRaw</definition>
+                <argsstring>(const char parameter[], BYTE buffer[], unsigned __int32 buffersize) const =0</argsstring>
+                <name>SetParameterRaw</name>
+                <param>
+                    <type>const char</type>
+                    <declname>parameter</declname>
+                    <array>[]</array>
+                </param>
+                <param>
+                    <type>BYTE</type>
+                    <declname>buffer</declname>
+                    <array>[]</array>
+                </param>
+                <param>
+                    <type>unsigned __int32</type>
+                    <declname>buffersize</declname>
+                </param>
+                <briefdescription>
+                </briefdescription>
+                <detaileddescription>
+                    <para>
+                        Sets or specifies the value of a (complex) parameter directly via uncoded data bytes
+                        <parameterlist kind="param">
+                            <parameteritem>
+                                <parameternamelist>
+                                    <parametername>parameterName</parametername>
+                                </parameternamelist>
+                                <parameterdescription>
+                                    <para>Parameter qualifier </para>
+                                </parameterdescription>
+                            </parameteritem>
+                            <parameteritem>
+                                <parameternamelist>
+                                    <parametername>buffer</parametername>
+                                </parameternamelist>
+                                <parameterdescription>
+                                    <para>Input/output buffer </para>
+                                </parameterdescription>
+                            </parameteritem>
+                            <parameteritem>
+                                <parameternamelist>
+                                    <parametername>buffersize</parametername>
+                                </parameternamelist>
+                                <parameterdescription>
+                                    <para>Buffer size </para>
+                                </parameterdescription>
+                            </parameteritem>
+                        </parameterlist>
+                        <simplesect kind="return">
+                            <para>0 if bytes were copied, otherwise </para>
+                        </simplesect>
+                        <simplesect kind="return">
+                            <para>&lt;0 for an error code </para>
+                        </simplesect>
+                        <simplesect kind="note">
+                            <para>long diagResponse::SetParameterRaw (char parameterName[], byte* buffer, DWORD buffersize) </para>
+                        </simplesect>
+                    </para>
+                </detaileddescription>
+                <inbodydescription>
+                </inbodydescription>
+                <location file="CAPLPluginApi.h" line="1124" column="35" />
+            </memberdef>
+        </sectiondef>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
-<para>Reinitializes the object for the given service or primitive. Diagnostics request will be initialized with the default request parameters of the service, while diagnostic responses will be initialized with the default parameters of the first or specified primitive of the service. If the service is not defined, or the primitive is not defined at the given service, nothing happens and an error code is returned <parameterlist kind="param"><parameteritem>
-<parameternamelist>
-<parametername>object</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>Diagnostics object to re-initialize </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>serviceQualifier</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>Qualifier of the service that should be used for reinterpretation </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>Qualifier</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>of the service primitive that should be used for reinterpretation </para>
-</parameterdescription>
-</parameteritem>
-</parameterlist>
-<simplesect kind="return"><para>0: No error, OK </para>
-</simplesect>
-<simplesect kind="return"><para>&lt;0: Error code </para>
-</simplesect>
-<simplesect kind="note"><para>diagReponse::Initialize( ); </para>
-</simplesect>
-</para>
         </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="CAPLPluginApi.h" line="984" column="35"/>
-      </memberdef>
-      <memberdef kind="function" id="classcapl_1_1_i_diag_base_1ac58c1dfb40c485d55c627507deb74059" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
-        <type>__int32</type>
-        <definition>virtual __int32 capl::IDiagBase::Initialize</definition>
-        <argsstring>(const char serviceQualifier[])=0</argsstring>
-        <name>Initialize</name>
-        <param>
-          <type>const char</type>
-          <declname>serviceQualifier</declname>
-          <array>[]</array>
-        </param>
-        <briefdescription>
-        </briefdescription>
-        <detaileddescription>
-<para>Reinitializes the object for the given service or primitive. Diagnostics request will be initialized with the default request parameters of the service, while diagnostic responses will be initialized with the default parameters of the first or specified primitive of the service. If the service is not defined, or the primitive is not defined at the given service, nothing happens and an error code is returned <parameterlist kind="param"><parameteritem>
-<parameternamelist>
-<parametername>serviceQualifier</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>Qualifier of the service that should be used for reinterpretation </para>
-</parameterdescription>
-</parameteritem>
-</parameterlist>
-<simplesect kind="return"><para>0: No error, OK </para>
-</simplesect>
-<simplesect kind="return"><para>&lt;0: Error code </para>
-</simplesect>
-<simplesect kind="note"><para>diagReponse::Initialize( char serviceQualifier[]); </para>
-</simplesect>
-</para>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="CAPLPluginApi.h" line="993" column="35"/>
-      </memberdef>
-      <memberdef kind="function" id="classcapl_1_1_i_diag_base_1aee83a16cbc69c1b8ec143ddb10e46134" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
-        <type>__int32</type>
-        <definition>virtual __int32 capl::IDiagBase::SetParameter</definition>
-        <argsstring>(char parameterName[], double newValue)=0</argsstring>
-        <name>SetParameter</name>
-        <param>
-          <type>char</type>
-          <declname>parameterName</declname>
-          <array>[]</array>
-        </param>
-        <param>
-          <type>double</type>
-          <declname>newValue</declname>
-        </param>
-        <briefdescription>
-        </briefdescription>
-        <detaileddescription>
-<para>Sets the numeric parameter to the specified value <parameterlist kind="param"><parameteritem>
-<parameternamelist>
-<parametername>parameterName</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>Parameter qualifier (NOT the language-dependent name of the parameter!) </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>newValue</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>Numeric value to which the parameter should be set </para>
-</parameterdescription>
-</parameteritem>
-</parameterlist>
-<simplesect kind="return"><para>Error code </para>
-</simplesect>
-<simplesect kind="note"><para>diagResponse::SetParameter (char parameterName[], double newValue) </para>
-</simplesect>
-</para>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="CAPLPluginApi.h" line="1002" column="35"/>
-      </memberdef>
-      <memberdef kind="function" id="classcapl_1_1_i_diag_base_1a98befa42c8861f9e9c4b9a108c6d791b" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
-        <type>__int32</type>
-        <definition>virtual __int32 capl::IDiagBase::SetParameter</definition>
-        <argsstring>(__int32 mode, char parameterName[], double newValue)=0</argsstring>
-        <name>SetParameter</name>
-        <param>
-          <type>__int32</type>
-          <declname>mode</declname>
-        </param>
-        <param>
-          <type>char</type>
-          <declname>parameterName</declname>
-          <array>[]</array>
-        </param>
-        <param>
-          <type>double</type>
-          <declname>newValue</declname>
-        </param>
-        <briefdescription>
-        </briefdescription>
-        <detaileddescription>
-<para>Sets the numeric parameter to the specified value <parameterlist kind="param"><parameteritem>
-<parameternamelist>
-<parametername>parameterName</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>Parameter qualifier (NOT the language-dependent name of the parameter!) </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>newValue</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>Numeric value to which the parameter should be set </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>mode</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>Access mode </para>
-</parameterdescription>
-</parameteritem>
-</parameterlist>
-<simplesect kind="return"><para>Error code </para>
-</simplesect>
-<simplesect kind="note"><para>diagResponse::SetParameter (long mode, char parameterName[], double newValue) </para>
-</simplesect>
-</para>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="CAPLPluginApi.h" line="1012" column="35"/>
-      </memberdef>
-      <memberdef kind="function" id="classcapl_1_1_i_diag_base_1a8d561ac405f4631fb3982a2a3e52419e" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
-        <type>__int32</type>
-        <definition>virtual __int32 capl::IDiagBase::SetParameter</definition>
-        <argsstring>(char parameterName[], char newValue[])=0</argsstring>
-        <name>SetParameter</name>
-        <param>
-          <type>char</type>
-          <declname>parameterName</declname>
-          <array>[]</array>
-        </param>
-        <param>
-          <type>char</type>
-          <declname>newValue</declname>
-          <array>[]</array>
-        </param>
-        <briefdescription>
-        </briefdescription>
-        <detaileddescription>
-<para>Sets a parameter to the symbolically-specified value. This is possible for all parameters, also numeric ones <parameterlist kind="param"><parameteritem>
-<parameternamelist>
-<parametername>parameterName</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>Parameter qualifier </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>newValue</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>Symbolic value </para>
-</parameterdescription>
-</parameteritem>
-</parameterlist>
-<simplesect kind="return"><para>Error code </para>
-</simplesect>
-<simplesect kind="note"><para>diagResponse::SetParameter (char parameterName[], char newValue[]) </para>
-</simplesect>
-</para>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="CAPLPluginApi.h" line="1021" column="35"/>
-      </memberdef>
-      <memberdef kind="function" id="classcapl_1_1_i_diag_base_1a8f0c89c287b4d74ba803017d46cf33c9" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
-        <type>__int32</type>
-        <definition>virtual __int32 capl::IDiagBase::GetParameter</definition>
-        <argsstring>(char parameterName[], double output[1]) const =0</argsstring>
-        <name>GetParameter</name>
-        <param>
-          <type>char</type>
-          <declname>parameterName</declname>
-          <array>[]</array>
-        </param>
-        <param>
-          <type>double</type>
-          <declname>output</declname>
-          <array>[1]</array>
-        </param>
-        <briefdescription>
-        </briefdescription>
-        <detaileddescription>
-<para>Returns the value of the numeric parameter, either in an output field or as return value (without the possibility of checking the correct function) <parameterlist kind="param"><parameteritem>
-<parameternamelist>
-<parametername>parameterName</parametername>
-</parameternamelist>
-<parameterdescription>
-<para></para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>Output</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>Parameter qualifier </para>
-</parameterdescription>
-</parameteritem>
-</parameterlist>
-<simplesect kind="return"><para>Error code or value of the parameter or 0.0 if this could not be acquired </para>
-</simplesect>
-<simplesect kind="note"><para>long diagResponse::GetParameter (char parameterName[], double output[1]) </para>
-</simplesect>
-</para>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="CAPLPluginApi.h" line="1030" column="35"/>
-      </memberdef>
-      <memberdef kind="function" id="classcapl_1_1_i_diag_base_1a7b5b26cb7365d462e2ad8e18936076d3" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
-        <type>double</type>
-        <definition>virtual double capl::IDiagBase::GetParameter</definition>
-        <argsstring>(char parameterName[]) const =0</argsstring>
-        <name>GetParameter</name>
-        <param>
-          <type>char</type>
-          <declname>parameterName</declname>
-          <array>[]</array>
-        </param>
-        <briefdescription>
-        </briefdescription>
-        <detaileddescription>
-<para>Returns the value of the numeric parameter, either in an output field or as return value (without the possibility of checking the correct function) <parameterlist kind="param"><parameteritem>
-<parameternamelist>
-<parametername>parameterName</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>Parameter qualifier </para>
-</parameterdescription>
-</parameteritem>
-</parameterlist>
-<simplesect kind="return"><para>Error code or value of the parameter or 0.0 if this could not be acquired </para>
-</simplesect>
-<simplesect kind="note"><para>long diagResponse::GetParameter (char parameterName[]) </para>
-</simplesect>
-</para>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="CAPLPluginApi.h" line="1038" column="32"/>
-      </memberdef>
-      <memberdef kind="function" id="classcapl_1_1_i_diag_base_1a0de1a3a2d8f5f3ebda110ca984f849ca" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
-        <type>__int32</type>
-        <definition>virtual __int32 capl::IDiagBase::GetParameter</definition>
-        <argsstring>(__int32 mode, char parameterName[], double output[1]) const =0</argsstring>
-        <name>GetParameter</name>
-        <param>
-          <type>__int32</type>
-          <declname>mode</declname>
-        </param>
-        <param>
-          <type>char</type>
-          <declname>parameterName</declname>
-          <array>[]</array>
-        </param>
-        <param>
-          <type>double</type>
-          <declname>output</declname>
-          <array>[1]</array>
-        </param>
-        <briefdescription>
-        </briefdescription>
-        <detaileddescription>
-<para>Returns the value of the numeric parameter, either in an output field or as return value (without the possibility of checking the correct function) <parameterlist kind="param"><parameteritem>
-<parameternamelist>
-<parametername>parameterName</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>Parameter qualifier </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>Output</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>Parameter qualifier </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>mode</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>Access mode </para>
-</parameterdescription>
-</parameteritem>
-</parameterlist>
-<simplesect kind="return"><para>Error code or value of the parameter or 0.0 if this could not be acquired </para>
-</simplesect>
-<simplesect kind="note"><para>long diagResponse::GetParameter (long mode, char parameterName[], double output[1]) </para>
-</simplesect>
-</para>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="CAPLPluginApi.h" line="1048" column="35"/>
-      </memberdef>
-      <memberdef kind="function" id="classcapl_1_1_i_diag_base_1a7820250580688aa6f91dfcb39e8daf5e" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
-        <type>double</type>
-        <definition>virtual double capl::IDiagBase::GetParameter</definition>
-        <argsstring>(__int32 mode, char parameterName[]) const =0</argsstring>
-        <name>GetParameter</name>
-        <param>
-          <type>__int32</type>
-          <declname>mode</declname>
-        </param>
-        <param>
-          <type>char</type>
-          <declname>parameterName</declname>
-          <array>[]</array>
-        </param>
-        <briefdescription>
-        </briefdescription>
-        <detaileddescription>
-<para>Returns the value of the numeric parameter, either in an output field or as return value (without the possibility of checking the correct function) <parameterlist kind="param"><parameteritem>
-<parameternamelist>
-<parametername>parameterName</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>Parameter qualifier </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>mode</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>Access mode </para>
-</parameterdescription>
-</parameteritem>
-</parameterlist>
-<simplesect kind="return"><para>Error code or value of the parameter or 0.0 if this could not be acquired </para>
-</simplesect>
-<simplesect kind="note"><para>long diagResponse::GetParameter (long mode, char parameterName[]) </para>
-</simplesect>
-</para>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="CAPLPluginApi.h" line="1057" column="32"/>
-      </memberdef>
-      <memberdef kind="function" id="classcapl_1_1_i_diag_base_1ab07b4e3bcac59b2d80b04d5530a1ee01" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
-        <type>__int32</type>
-        <definition>virtual __int32 capl::IDiagBase::GetParameter</definition>
-        <argsstring>(char parameterName[], char buffer[], unsigned __int32 buffersize) const =0</argsstring>
-        <name>GetParameter</name>
-        <param>
-          <type>char</type>
-          <declname>parameterName</declname>
-          <array>[]</array>
-        </param>
-        <param>
-          <type>char</type>
-          <declname>buffer</declname>
-          <array>[]</array>
-        </param>
-        <param>
-          <type>unsigned __int32</type>
-          <declname>buffersize</declname>
-        </param>
-        <briefdescription>
-        </briefdescription>
-        <detaileddescription>
-<para>Returns the symbolic value of the parameter. This functions for all parameters. The values received can be used for setting the parameter <parameterlist kind="param"><parameteritem>
-<parameternamelist>
-<parametername>parameterName</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>Parameter qualifier </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>buffer</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>Output field </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>buffersize</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>Size of the buffer </para>
-</parameterdescription>
-</parameteritem>
-</parameterlist>
-<simplesect kind="return"><para>Number of chars written to buffer or error code </para>
-</simplesect>
-<simplesect kind="note"><para>diagResponse::GetParameter (char parameterName[], char buffer[], dword buffersize) </para>
-</simplesect>
-</para>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="CAPLPluginApi.h" line="1067" column="35"/>
-      </memberdef>
-      <memberdef kind="function" id="classcapl_1_1_i_diag_base_1ab45d8dbb993847cb5562cf2d2b434f2f" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
-        <type>__int32</type>
-        <definition>virtual __int32 capl::IDiagBase::SetPrimitiveData</definition>
-        <argsstring>(unsigned __int8 buffer[], unsigned __int32 buffersize)=0</argsstring>
-        <name>SetPrimitiveData</name>
-        <param>
-          <type>unsigned __int8</type>
-          <declname>buffer</declname>
-          <array>[]</array>
-        </param>
-        <param>
-          <type>unsigned __int32</type>
-          <declname>buffersize</declname>
-        </param>
-        <briefdescription>
-        </briefdescription>
-        <detaileddescription>
-<para>Reads/sets the raw data of the complete service primitive (all data that is transmitted via the transport protocol). When setting the data the length of the primitive is not changed <parameterlist kind="param"><parameteritem>
-<parameternamelist>
-<parametername>buffer</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>Input/output buffer </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>buffersize</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>Buffer size </para>
-</parameterdescription>
-</parameteritem>
-</parameterlist>
-<simplesect kind="return"><para>Number of bytes copied into the buffer or error code </para>
-</simplesect>
-<simplesect kind="note"><para>diagResponse::SetPrimitiveData (byte* buffer, DWORD buffersize) </para>
-</simplesect>
-</para>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="CAPLPluginApi.h" line="1076" column="35"/>
-      </memberdef>
-      <memberdef kind="function" id="classcapl_1_1_i_diag_base_1a265da697768555012a35f46bd9304b24" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
-        <type>__int32</type>
-        <definition>virtual __int32 capl::IDiagBase::GetPrimitiveData</definition>
-        <argsstring>(unsigned __int8 buffer[], unsigned __int32 buffersize) const =0</argsstring>
-        <name>GetPrimitiveData</name>
-        <param>
-          <type>unsigned __int8</type>
-          <declname>buffer</declname>
-          <array>[]</array>
-        </param>
-        <param>
-          <type>unsigned __int32</type>
-          <declname>buffersize</declname>
-        </param>
-        <briefdescription>
-        </briefdescription>
-        <detaileddescription>
-<para>Reads/sets the raw data of the complete service primitive (all data that is transmitted via the transport protocol). When setting the data the length of the primitive is not changed <parameterlist kind="param"><parameteritem>
-<parameternamelist>
-<parametername>buffer</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>Input/output buffer </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>buffersize</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>Buffer size </para>
-</parameterdescription>
-</parameteritem>
-</parameterlist>
-<simplesect kind="return"><para>Number of bytes copied into the buffer or error code </para>
-</simplesect>
-<simplesect kind="note"><para>diagResponse::GetPrimitiveData (byte* buffer, DWORD buffersize) </para>
-</simplesect>
-</para>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="CAPLPluginApi.h" line="1085" column="35"/>
-      </memberdef>
-      <memberdef kind="function" id="classcapl_1_1_i_diag_base_1a9d1e99be3c7208b65d67d15e905c5e27" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
-        <type>__int32</type>
-        <definition>virtual __int32 capl::IDiagBase::Resize</definition>
-        <argsstring>(unsigned __int32 byteCount)=0</argsstring>
-        <name>Resize</name>
-        <param>
-          <type>unsigned __int32</type>
-          <declname>byteCount</declname>
-        </param>
-        <briefdescription>
-        </briefdescription>
-        <detaileddescription>
-<para>Adapt size of a diagnostic object to match specified parameter iterations, or set size of bus message to given number of byte <parameterlist kind="param"><parameteritem>
-<parameternamelist>
-<parametername>byteCount</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>Length of data to send </para>
-</parameterdescription>
-</parameteritem>
-</parameterlist>
-<simplesect kind="return"><para>Error code </para>
-</simplesect>
-<simplesect kind="note"><para>diagResponse::Resize (dword byteCount) </para>
-</simplesect>
-</para>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="CAPLPluginApi.h" line="1093" column="35"/>
-      </memberdef>
-      <memberdef kind="function" id="classcapl_1_1_i_diag_base_1a99d72429fad0910ea6224972b9eac982" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
-        <type>__int32</type>
-        <definition>virtual __int32 capl::IDiagBase::GetPrimitiveSize</definition>
-        <argsstring>() const =0</argsstring>
-        <name>GetPrimitiveSize</name>
-        <briefdescription>
-        </briefdescription>
-        <detaileddescription>
-<para>Returns the byte length of the object <simplesect kind="return"><para>&gt;0: Number of bytes </para>
-</simplesect>
-<simplesect kind="return"><para>&lt;0: Error code </para>
-</simplesect>
-<simplesect kind="note"><para>diagRequest::GetPrimitiveSize(); </para>
-</simplesect>
-</para>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="CAPLPluginApi.h" line="1101" column="35"/>
-      </memberdef>
-      <memberdef kind="function" id="classcapl_1_1_i_diag_base_1a6dff5b84ffaf844c807385da35660c58" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
-        <type>void</type>
-        <definition>virtual void capl::IDiagBase::CopyData</definition>
-        <argsstring>(IDiagBase &amp;msg)=0</argsstring>
-        <name>CopyData</name>
-        <param>
-          <type><ref refid="classcapl_1_1_i_diag_base" kindref="compound">IDiagBase</ref> &amp;</type>
-          <declname>msg</declname>
-        </param>
-        <briefdescription>
-        </briefdescription>
-        <detaileddescription>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="CAPLPluginApi.h" line="1103" column="30"/>
-      </memberdef>
-      <memberdef kind="function" id="classcapl_1_1_i_diag_base_1afe62039c746863c521cd7c09b48e5a42" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
-        <type>__int32</type>
-        <definition>virtual __int32 capl::IDiagBase::GetParameterRaw</definition>
-        <argsstring>(const char parameter[], BYTE buffer[], unsigned __int32 buffersize) const =0</argsstring>
-        <name>GetParameterRaw</name>
-        <param>
-          <type>const char</type>
-          <declname>parameter</declname>
-          <array>[]</array>
-        </param>
-        <param>
-          <type>BYTE</type>
-          <declname>buffer</declname>
-          <array>[]</array>
-        </param>
-        <param>
-          <type>unsigned __int32</type>
-          <declname>buffersize</declname>
-        </param>
-        <briefdescription>
-        </briefdescription>
-        <detaileddescription>
-<para>Sets or specifies the value of a (complex) parameter directly via uncoded data bytes <parameterlist kind="param"><parameteritem>
-<parameternamelist>
-<parametername>parameterName</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>Parameter qualifier </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>buffer</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>Input/output buffer </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>buffersize</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>Buffer size </para>
-</parameterdescription>
-</parameteritem>
-</parameterlist>
-<simplesect kind="return"><para>0 if bytes were copied, otherwise &lt;0 for an error code </para>
-</simplesect>
-<simplesect kind="note"><para>long diagResponse::GetParameterRaw (char parameterName[], byte* buffer, DWORD buffersize) </para>
-</simplesect>
-</para>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="CAPLPluginApi.h" line="1113" column="35"/>
-      </memberdef>
-      <memberdef kind="function" id="classcapl_1_1_i_diag_base_1a32f62926dd0e35872b45a3c1eb754522" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
-        <type>__int32</type>
-        <definition>virtual __int32 capl::IDiagBase::SetParameterRaw</definition>
-        <argsstring>(const char parameter[], BYTE buffer[], unsigned __int32 buffersize) const =0</argsstring>
-        <name>SetParameterRaw</name>
-        <param>
-          <type>const char</type>
-          <declname>parameter</declname>
-          <array>[]</array>
-        </param>
-        <param>
-          <type>BYTE</type>
-          <declname>buffer</declname>
-          <array>[]</array>
-        </param>
-        <param>
-          <type>unsigned __int32</type>
-          <declname>buffersize</declname>
-        </param>
-        <briefdescription>
-        </briefdescription>
-        <detaileddescription>
-<para>Sets or specifies the value of a (complex) parameter directly via uncoded data bytes <parameterlist kind="param"><parameteritem>
-<parameternamelist>
-<parametername>parameterName</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>Parameter qualifier </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>buffer</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>Input/output buffer </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>buffersize</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>Buffer size </para>
-</parameterdescription>
-</parameteritem>
-</parameterlist>
-<simplesect kind="return"><para>0 if bytes were copied, otherwise </para>
-</simplesect>
-<simplesect kind="return"><para>&lt;0 for an error code </para>
-</simplesect>
-<simplesect kind="note"><para>long diagResponse::SetParameterRaw (char parameterName[], byte* buffer, DWORD buffersize) </para>
-</simplesect>
-</para>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="CAPLPluginApi.h" line="1124" column="35"/>
-      </memberdef>
-      </sectiondef>
-    <briefdescription>
-    </briefdescription>
-    <detaileddescription>
-    </detaileddescription>
-    <inheritancegraph>
-      <node id="1">
-        <label>capl::IDiagBase</label>
-        <link refid="classcapl_1_1_i_diag_base"/>
-      </node>
-      <node id="2">
-        <label>capl::IDiagRequest</label>
-        <link refid="classcapl_1_1_i_diag_request"/>
-        <childnode refid="1" relation="public-inheritance">
-        </childnode>
-      </node>
-      <node id="3">
-        <label>capl::IDiagResponse</label>
-        <link refid="classcapl_1_1_i_diag_response"/>
-        <childnode refid="1" relation="public-inheritance">
-        </childnode>
-      </node>
-    </inheritancegraph>
-    <location file="CAPLPluginApi.h" line="971" column="5" bodyfile="CAPLPluginApi.h" bodystart="972" bodyend="1125"/>
-    <listofallmembers>
-      <member refid="classcapl_1_1_i_diag_base_1a6dff5b84ffaf844c807385da35660c58" prot="public" virt="pure-virtual"><scope>capl::IDiagBase</scope><name>CopyData</name></member>
-      <member refid="classcapl_1_1_i_diag_base_1a8f0c89c287b4d74ba803017d46cf33c9" prot="public" virt="pure-virtual"><scope>capl::IDiagBase</scope><name>GetParameter</name></member>
-      <member refid="classcapl_1_1_i_diag_base_1a7b5b26cb7365d462e2ad8e18936076d3" prot="public" virt="pure-virtual"><scope>capl::IDiagBase</scope><name>GetParameter</name></member>
-      <member refid="classcapl_1_1_i_diag_base_1a0de1a3a2d8f5f3ebda110ca984f849ca" prot="public" virt="pure-virtual"><scope>capl::IDiagBase</scope><name>GetParameter</name></member>
-      <member refid="classcapl_1_1_i_diag_base_1a7820250580688aa6f91dfcb39e8daf5e" prot="public" virt="pure-virtual"><scope>capl::IDiagBase</scope><name>GetParameter</name></member>
-      <member refid="classcapl_1_1_i_diag_base_1ab07b4e3bcac59b2d80b04d5530a1ee01" prot="public" virt="pure-virtual"><scope>capl::IDiagBase</scope><name>GetParameter</name></member>
-      <member refid="classcapl_1_1_i_diag_base_1afe62039c746863c521cd7c09b48e5a42" prot="public" virt="pure-virtual"><scope>capl::IDiagBase</scope><name>GetParameterRaw</name></member>
-      <member refid="classcapl_1_1_i_diag_base_1a265da697768555012a35f46bd9304b24" prot="public" virt="pure-virtual"><scope>capl::IDiagBase</scope><name>GetPrimitiveData</name></member>
-      <member refid="classcapl_1_1_i_diag_base_1a99d72429fad0910ea6224972b9eac982" prot="public" virt="pure-virtual"><scope>capl::IDiagBase</scope><name>GetPrimitiveSize</name></member>
-      <member refid="classcapl_1_1_i_diag_base_1ae37d1083454aa19fc2a903d60339f065" prot="public" virt="pure-virtual"><scope>capl::IDiagBase</scope><name>Initialize</name></member>
-      <member refid="classcapl_1_1_i_diag_base_1ac58c1dfb40c485d55c627507deb74059" prot="public" virt="pure-virtual"><scope>capl::IDiagBase</scope><name>Initialize</name></member>
-      <member refid="classcapl_1_1_i_diag_base_1a9d1e99be3c7208b65d67d15e905c5e27" prot="public" virt="pure-virtual"><scope>capl::IDiagBase</scope><name>Resize</name></member>
-      <member refid="classcapl_1_1_i_diag_base_1aee83a16cbc69c1b8ec143ddb10e46134" prot="public" virt="pure-virtual"><scope>capl::IDiagBase</scope><name>SetParameter</name></member>
-      <member refid="classcapl_1_1_i_diag_base_1a98befa42c8861f9e9c4b9a108c6d791b" prot="public" virt="pure-virtual"><scope>capl::IDiagBase</scope><name>SetParameter</name></member>
-      <member refid="classcapl_1_1_i_diag_base_1a8d561ac405f4631fb3982a2a3e52419e" prot="public" virt="pure-virtual"><scope>capl::IDiagBase</scope><name>SetParameter</name></member>
-      <member refid="classcapl_1_1_i_diag_base_1a32f62926dd0e35872b45a3c1eb754522" prot="public" virt="pure-virtual"><scope>capl::IDiagBase</scope><name>SetParameterRaw</name></member>
-      <member refid="classcapl_1_1_i_diag_base_1ab45d8dbb993847cb5562cf2d2b434f2f" prot="public" virt="pure-virtual"><scope>capl::IDiagBase</scope><name>SetPrimitiveData</name></member>
-    </listofallmembers>
-  </compounddef>
+        <inheritancegraph>
+            <node id="1">
+                <label>capl::IDiagBase</label>
+                <link refid="classcapl_1_1_i_diag_base" />
+            </node>
+            <node id="2">
+                <label>capl::IDiagRequest</label>
+                <link refid="classcapl_1_1_i_diag_request" />
+                <childnode refid="1" relation="public-inheritance">
+                </childnode>
+            </node>
+            <node id="3">
+                <label>capl::IDiagResponse</label>
+                <link refid="classcapl_1_1_i_diag_response" />
+                <childnode refid="1" relation="public-inheritance">
+                </childnode>
+            </node>
+        </inheritancegraph>
+        <location file="CAPLPluginApi.h" line="971" column="5" bodyfile="CAPLPluginApi.h" bodystart="972"
+                  bodyend="1125" />
+        <listofallmembers>
+            <member refid="classcapl_1_1_i_diag_base_1a6dff5b84ffaf844c807385da35660c58" prot="public"
+                    virt="pure-virtual">
+                <scope>capl::IDiagBase</scope><name>CopyData</name>
+            </member>
+            <member refid="classcapl_1_1_i_diag_base_1a8f0c89c287b4d74ba803017d46cf33c9" prot="public"
+                    virt="pure-virtual">
+                <scope>capl::IDiagBase</scope><name>GetParameter</name>
+            </member>
+            <member refid="classcapl_1_1_i_diag_base_1a7b5b26cb7365d462e2ad8e18936076d3" prot="public"
+                    virt="pure-virtual">
+                <scope>capl::IDiagBase</scope><name>GetParameter</name>
+            </member>
+            <member refid="classcapl_1_1_i_diag_base_1a0de1a3a2d8f5f3ebda110ca984f849ca" prot="public"
+                    virt="pure-virtual">
+                <scope>capl::IDiagBase</scope><name>GetParameter</name>
+            </member>
+            <member refid="classcapl_1_1_i_diag_base_1a7820250580688aa6f91dfcb39e8daf5e" prot="public"
+                    virt="pure-virtual">
+                <scope>capl::IDiagBase</scope><name>GetParameter</name>
+            </member>
+            <member refid="classcapl_1_1_i_diag_base_1ab07b4e3bcac59b2d80b04d5530a1ee01" prot="public"
+                    virt="pure-virtual">
+                <scope>capl::IDiagBase</scope><name>GetParameter</name>
+            </member>
+            <member refid="classcapl_1_1_i_diag_base_1afe62039c746863c521cd7c09b48e5a42" prot="public"
+                    virt="pure-virtual">
+                <scope>capl::IDiagBase</scope><name>GetParameterRaw</name>
+            </member>
+            <member refid="classcapl_1_1_i_diag_base_1a265da697768555012a35f46bd9304b24" prot="public"
+                    virt="pure-virtual">
+                <scope>capl::IDiagBase</scope><name>GetPrimitiveData</name>
+            </member>
+            <member refid="classcapl_1_1_i_diag_base_1a99d72429fad0910ea6224972b9eac982" prot="public"
+                    virt="pure-virtual">
+                <scope>capl::IDiagBase</scope><name>GetPrimitiveSize</name>
+            </member>
+            <member refid="classcapl_1_1_i_diag_base_1ae37d1083454aa19fc2a903d60339f065" prot="public"
+                    virt="pure-virtual">
+                <scope>capl::IDiagBase</scope><name>Initialize</name>
+            </member>
+            <member refid="classcapl_1_1_i_diag_base_1ac58c1dfb40c485d55c627507deb74059" prot="public"
+                    virt="pure-virtual">
+                <scope>capl::IDiagBase</scope><name>Initialize</name>
+            </member>
+            <member refid="classcapl_1_1_i_diag_base_1a9d1e99be3c7208b65d67d15e905c5e27" prot="public"
+                    virt="pure-virtual">
+                <scope>capl::IDiagBase</scope><name>Resize</name>
+            </member>
+            <member refid="classcapl_1_1_i_diag_base_1aee83a16cbc69c1b8ec143ddb10e46134" prot="public"
+                    virt="pure-virtual">
+                <scope>capl::IDiagBase</scope><name>SetParameter</name>
+            </member>
+            <member refid="classcapl_1_1_i_diag_base_1a98befa42c8861f9e9c4b9a108c6d791b" prot="public"
+                    virt="pure-virtual">
+                <scope>capl::IDiagBase</scope><name>SetParameter</name>
+            </member>
+            <member refid="classcapl_1_1_i_diag_base_1a8d561ac405f4631fb3982a2a3e52419e" prot="public"
+                    virt="pure-virtual">
+                <scope>capl::IDiagBase</scope><name>SetParameter</name>
+            </member>
+            <member refid="classcapl_1_1_i_diag_base_1a32f62926dd0e35872b45a3c1eb754522" prot="public"
+                    virt="pure-virtual">
+                <scope>capl::IDiagBase</scope><name>SetParameterRaw</name>
+            </member>
+            <member refid="classcapl_1_1_i_diag_base_1ab45d8dbb993847cb5562cf2d2b434f2f" prot="public"
+                    virt="pure-virtual">
+                <scope>capl::IDiagBase</scope><name>SetPrimitiveData</name>
+            </member>
+        </listofallmembers>
+    </compounddef>
 </doxygen>

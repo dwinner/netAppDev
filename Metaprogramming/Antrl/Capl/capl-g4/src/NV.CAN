@@ -1,0 +1,2089 @@
+/*@@var:*/
+/*
+Copyright ( C ) Continental AG 2012
+
+
+
+Based on Version  1.0, 12.05.10   from M.Dangelmeyr      IBD im Auftrag von EP/ESE   Daimler AG
+
+Date of creation :  14.04.2011
+
+Created by :                 Hans Jürgen Hipp
+
+
+Version info
+
+1.0	   10.2013	Inital versioning introduced
+1.1	04.11.2013	HMI_2013_42a database
+// #VERSION#
+// #VERSION_END#
+*/
+
+
+variables
+{
+    const TRUE =    0xAA;
+    const FALSE =   0x00;
+    const cManual = 0x00;
+    const cAuto =   0xAA;
+
+    msTimer t_DBKomTimer_20ms;      // Timer zum zyklischen Aufruf der DBKom-Task
+    int c_tDBKomTimer_20ms = 20;    // msec
+    msTimer t_DBKomTimer_5ms;       // Timer zum zyklischen Aufruf der DBKom-Task
+    int c_tDBKomTimer_5ms = 5;      // msec
+
+
+    // BA_DEF_ BO_  "GenMsgSendType" ENUM
+    //  0 : cyclicX
+    //  1 : spontanX
+    //  2 : cyclicIfActiveX
+    //  3 : spontanWithDelay
+    //  4 : cyclicAndSpontanX
+    //  5 : cyclicAndSpontanWithDelay
+    //  6 : spontanWithRepitition
+    //  7 : cyclicIfActiveAndSpontanWD
+    //  8 : cyclicIfActiveFast
+    //  9 : cyclicWithRepeatOnDemand
+    //  10 : none
+
+// #VAR_DEF#
+    // Botschaft NVP_Stat1_AR ID: 721 --- Sendeart cyclicX --- 
+    message NVP_Stat1_AR _mNVP_Stat1_AR;
+    int _NVP_Stat1_AR_Timebase;
+    int _NVP_Stat1_AR_CycleCount = 4;
+    int _NVP_Stat1_AR_StartDelay;
+    int _NVP_Stat1_AR_Cnt;
+    byte _NVP_Stat1_AR_CRC_Offset[16] = {  49, 10, 222, 183, 144, 105,  66,  27, 239, 200, 161, 122,  83,  44,   5, 217 };
+    msTimer _tNVP_Stat1_AR;
+
+    // Botschaft ROE_NV ID: 2565817088 --- Sendeart cyclicWithRepeatOnDemand --- 
+    message ROE_NV _mROE_NV;
+    int _ROE_NV_Timebase;
+    int _ROE_NV_CycleCount = 3276;
+    int _ROE_NV_StartDelay;
+    int _ROE_NV_Cnt;
+    int _ROE_NV_MsgRepetitions;
+
+    // Botschaft SPL_Obj1_Obj2_NV_AR  ID: 385 --- Sendeart 8 cyclicIfActiveFast --- 
+    message SPL_Obj1_Obj2_NV_AR _mSPL_Obj1_Obj2_NV_AR;
+    int _SPL_Obj1_Obj2_NV_AR_Timebase;
+    int _SPL_Obj1_Obj2_NV_AR_CycleCountSlow = 52;
+    int _SPL_Obj1_Obj2_NV_AR_CycleCountFast = 4;
+    int _SPL_Obj1_Obj2_NV_AR_StartDelay;
+    int _SPL_Obj1_Obj2_NV_AR_Cnt;
+    int _SPL_Obj1_Obj2_NV_AR_SigActivity = 0;
+
+    int _SPL_Obj1_Obj2_NV_AR_Rsrv1_SPL_Obj1_Obj2_NV_LastState = 0;
+    int _SPL_Obj1_Obj2_NV_AR_Rsrv2_SPL_Obj1_Obj2_NV_LastState = 0;
+    int _SPL_Obj1_Obj2_NV_AR_Rsrv3_SPL_Obj1_Obj2_NV_LastState = 0;
+    int _SPL_Obj1_Obj2_NV_AR_SPL_Obj1_Dist_NV_LastState = 0;
+    int _SPL_Obj1_Obj2_NV_AR_SPL_Obj1_HrztAngl_NV_LastState = 0;
+    int _SPL_Obj1_Obj2_NV_AR_SPL_Obj1_Id_NV_LastState = 0;
+    int _SPL_Obj1_Obj2_NV_AR_SPL_Obj1_Ill_Rq_NV_LastState = 0;
+    int _SPL_Obj1_Obj2_NV_AR_SPL_Obj1_Type_NV_LastState = 0;
+    int _SPL_Obj1_Obj2_NV_AR_SPL_Obj2_Dist_NV_LastState = 0;
+    int _SPL_Obj1_Obj2_NV_AR_SPL_Obj2_HrztAngl_NV_LastState = 0;
+    int _SPL_Obj1_Obj2_NV_AR_SPL_Obj2_Id_NV_LastState = 0;
+    int _SPL_Obj1_Obj2_NV_AR_SPL_Obj2_Ill_Rq_NV_LastState = 0;
+    int _SPL_Obj1_Obj2_NV_AR_SPL_Obj2_Type_NV_LastState = 0;
+    byte _SPL_Obj1_Obj2_NV_AR_CRC_Offset[16] = { 251,  43,  86, 129, 172, 215,   7,  50,  93, 136, 179, 222,  14,  57, 100, 143 };
+    msTimer _tSPL_Obj1_Obj2_NV_AR;
+
+// #VAR_DEF_END#
+    // Botschaft Meas_NV_1 ---- Sendeart spontanX
+    message Meas_NV_1 _mMeas_NV_1;
+    int _Meas_NV_1_SpontanFlag = 0;
+    msTimer _tMeas_NV_1;
+
+    // Botschaft Meas_NV_2 ---- Sendeart spontanX
+    message Meas_NV_2 _mMeas_NV_2;
+    int _Meas_NV_2_SpontanFlag = 0;
+    msTimer _tMeas_NV_2;
+
+    // Botschaft Meas_NV_3 ---- Sendeart spontanX
+    message Meas_NV_3 _mMeas_NV_3;
+    int _Meas_NV_3_SpontanFlag = 0;
+    msTimer _tMeas_NV_3;
+
+    // Botschaft Meas_NV_4 ---- Sendeart spontanX
+    message Meas_NV_4 _mMeas_NV_4;
+    int _Meas_NV_4_SpontanFlag = 0;
+    msTimer _tMeas_NV_4;
+
+    Timer t_DoorNMCancelTimer;
+    Timer t_KeyInLockNMCancelTimer;
+    Timer t_StWhlButtonNMCancelTimer;
+    Timer t_WakeWarningNMCancelTimer;
+    Timer t_CarClosureNMCancelTimer;
+    Timer t_EPKBWarningNMCancelTimer;
+    Timer t_IlluNMCancelTimer;
+    Timer t_GearIndNMCancelTimer;
+    const byte c_NMCancelTimer_05sec = 5;
+    const byte c_NMCancelTimer_30sec = 30;
+
+    char buffer[1024], stringbuffer[512];
+    int bActiveHelper;    // Hilfsvariable für "Aktive Signale"
+
+//--------------------------------------- AUTOSAR NM ------------------------------------------------
+
+    const byte cAUTO =   0;
+    const byte cMANUAL = 1;
+
+    msTimer t_NM_Transmit;
+    long  NM_Transmit_Cycle;
+    msTimer t_NM_Wait_Bus_Sleep_Time;
+    const c_NM_Wait_Bus_Sleep_Time = 1500;
+//    msTimer t_NM_Remote_Sleep_Ind_Time;
+    const c_NM_Remote_Sleep_Ind_Time = 5000;
+    msTimer t_NM_Repeat_Message_Time;
+    const c_NM_Repeat_Message_Time = 6000;
+    msTimer t_NM_Timeout_Time;
+    const c_NM_Timeout_Time = 5000;
+
+    byte NM_Mode = 0;
+    const byte cNM_Mode_Init = 0;
+    const byte cNM_Mode_Sleep = 1;
+    const byte cNM_Mode_Prepare_Bus_Sleep = 2;
+    const byte cNM_Mode_Ready_Sleep = 3;
+    const byte cNM_Mode_Normal_Operation_State = 4;
+    const byte cNM_Mode_RepeatMsg = 5;
+
+    byte boCanNM_Rx_Indication = 0;
+    byte boCanNM_Tx_Confirmation = 0;
+    byte boCanNM_WaitBusSleep_Timer_Expired = 0;
+    byte boCanNM_RepeatMessage_Timer_Expired = 0;
+    byte boCanNM_NM_Timeout_Timer_Expired = 0;
+    byte boCanNM_RepeatMessage_Requested = 0;
+
+    const word cFLDoorNMRequest =       0x0001;
+    const word cFRDoorNMRequest =       0x0002;
+    const word cRLDoorNMRequest =       0x0004;
+    const word cRRDoorNMRequest =       0x0008;
+    const word cAllDoorNMRequest =      0x000F;
+    const word cIgnitionNMRequest =     0x0010;
+    const word cStWhlButtonNMRequest =  0x0020;
+    const word cWakeWarningNMRequest =  0x0040;
+    const word cEPKBWarningNMRequest =  0x0080;
+    const word cIlluNMRequest =         0x0100;
+    const word cCarClosureNMRequest =   0x0200;
+    const word cGearIndNMRequest =      0x0400;
+
+    const word cManualNMRequest =       0x8000;
+    const word cAllNMRequest =          0xFFFF;
+
+    const CanNmNodeId_Base =       1280; //  =  07h
+    const CanNmNodeId_APM =          76; //  =  4Ch
+    const CanNmNodeId_DRVU =         77; //  =  4Dh
+    const CanNmNodeId_EIS =           7; //  =  07h
+    const CanNmNodeId_HGW =          27; //  =  07h
+    const CanNmNodeId_TGW =          56; //  =  38h
+    const CanNmNodeId_RBTM_FR =      64; //  =  40h
+    const CanNmNodeId_IC =           65; //  =  41h
+    const CanNmNodeId_HUD =          66; //  =  42h
+    const CanNmNodeId_NV =           67; //  =  43h
+    const CanNmNodeId_RVC_SVS =      68; //  =  44h
+    const CanNmNodeId_ORC =          69; //  =  45h
+    const CanNmNodeId_RBTM_FL =      71; //  =  47h
+    const CanNmNodeId_TPM =          82; //  =  52h
+
+    const CanNmNodeDetectionEnabled          = 0; //false
+    const CanNmNodeIdEnabled                 = 1; //true
+    const CanNmUserDataEnabled               = 1; //true;
+    const CanNmUserDataLentgh                = 7;
+    const CanNmRepeatMsgIndEnabled           = 1; //true;
+    const CanNmDevErrorDetect                = 0; //false
+//    const CanNmUserDataEnabled             = 1; //true
+    const CanNmRemoteSleepIndEnabled         = 0; //false
+    const CanNmMsgReducedtime                = 80; //ms
+    const CanNmPduRxIndicationEnabled        = 0; //false
+    const CanNmStateChangeIndEnabled         = 0; //false
+    const CanNmImmediateTxconfEnabled        = 0;// false
+    const CanNmMsgTimeoutTime                = 5000; //ms
+    const CanNmPduNidPosition                = 0; //CANNM_PDU_BYTE_0;
+    const CanNmPduCbvPosition                = 0xFF; //ANNM_PDU_OFF;
+    const CanNmPduLength                     = 8;
+    const cCanNmPassiveModeEnabled           = 0; //false
+    const CanNmBusSynchronizationEnabled     = 0; //false
+    const CanNmBusLoadReductionEnabled       = 1; //true
+//    const CanNmRemoteSleepIndEnabled       = 0; //false
+//    const CanNmNodeDetectionEnabled        = 0; //false
+    const CanNmComControlEnabled             = 1; //true    
+
+    const NmAsrCanMsgStandardCycle =          2000;
+    const NmAsrCanMsgCycleOffset_APM =          40;
+    const NmAsrCanMsgReducedTime_APM =        1760;
+    const NmAsrCanMsgCycleOffset_DRVU =         50;
+    const NmAsrCanMsgReducedTime_DRVU =       1770;
+    const NmAsrCanMsgCycleOffset_EIS =          70;
+    const NmAsrCanMsgReducedTime_EIS =        1070;
+    const NmAsrCanMsgCycleOffset_HGW =          30;
+    const NmAsrCanMsgReducedTime_HGW =        1270;
+    const NmAsrCanMsgCycleOffset_HUD =          20;
+    const NmAsrCanMsgReducedTime_HUD =        1660;
+    const NmAsrCanMsgCycleOffset_IC =           10;
+    const NmAsrCanMsgReducedTime_IC =         1650;
+    const NmAsrCanMsgCycleOffset_NV =           30;
+    const NmAsrCanMsgReducedTime_NV =         1670;
+    const NmAsrCanMsgCycleOffset_ORC =          50;
+    const NmAsrCanMsgReducedTime_ORC =        1690;
+    const NmAsrCanMsgCycleOffset_RBTM_FL =       0;
+    const NmAsrCanMsgReducedTime_RBTM_FL =    1640;
+    const NmAsrCanMsgCycleOffset_RBTM_FR =      70;
+    const NmAsrCanMsgReducedTime_RBTM_FR =    1710;
+    const NmAsrCanMsgCycleOffset_RVC =          40;
+    const NmAsrCanMsgReducedTime_RVC =        1680;
+    const NmAsrCanMsgCycleOffset_SVS =          40;
+    const NmAsrCanMsgReducedTime_SVS =        1680;
+    const NmAsrCanMsgCycleOffset_TGW =           0;
+    const NmAsrCanMsgReducedTime_TGW =        1560;
+    const NmAsrCanMsgCycleOffset_TPM =          20;
+    const NmAsrCanMsgReducedTime_TPM =        1820;
+
+    char gECU[12] = "HMI_NV";
+
+    byte CanNmNodeId            = CanNmNodeId_NV;
+    word NmNodeIdentifier       = CanNmNodeId_Base + CanNmNodeId_NV;
+    word NmAsrCanMsgCycleOffset = NmAsrCanMsgCycleOffset_NV;
+    word NmAsrCanMsgReducedTime = NmAsrCanMsgReducedTime_NV;
+    word NmAsrCanMsgCycleTime   = 2000;
+    byte NM_Repeat_Message_State_Active = 0;
+    byte NM_AutomaticModeActive = 0;
+
+    // Botschaft NM_xxx_AR --- Sendeart cyclicX --- 
+    message NM_NV_AR _mNM_xxx_AR;
+    byte _mNM_xxx_Transmit_Allowed = 1;
+
+//--------------------------------------- AUTOSAR NM ------------------------------------------------
+
+    byte  crctable[256] = {
+        0x00, 0x1D, 0x3A, 0x27, 0x74, 0x69, 0x4E, 0x53, 0xE8, 0xF5, 0xD2, 0xCF, 0x9C, 0x81, 0xA6, 0xBB,
+        0xCD, 0xD0, 0xF7, 0xEA, 0xB9, 0xA4, 0x83, 0x9E, 0x25, 0x38, 0x1F, 0x02, 0x51, 0x4C, 0x6B, 0x76,
+        0x87, 0x9A, 0xBD, 0xA0, 0xF3, 0xEE, 0xC9, 0xD4, 0x6F, 0x72, 0x55, 0x48, 0x1B, 0x06, 0x21, 0x3C,
+        0x4A, 0x57, 0x70, 0x6D, 0x3E, 0x23, 0x04, 0x19, 0xA2, 0xBF, 0x98, 0x85, 0xD6, 0xCB, 0xEC, 0xF1,
+        0x13, 0x0E, 0x29, 0x34, 0x67, 0x7A, 0x5D, 0x40, 0xFB, 0xE6, 0xC1, 0xDC, 0x8F, 0x92, 0xB5, 0xA8,
+        0xDE, 0xC3, 0xE4, 0xF9, 0xAA, 0xB7, 0x90, 0x8D, 0x36, 0x2B, 0x0C, 0x11, 0x42, 0x5F, 0x78, 0x65,
+        0x94, 0x89, 0xAE, 0xB3, 0xE0, 0xFD, 0xDA, 0xC7, 0x7C, 0x61, 0x46, 0x5B, 0x08, 0x15, 0x32, 0x2F,
+        0x59, 0x44, 0x63, 0x7E, 0x2D, 0x30, 0x17, 0x0A, 0xB1, 0xAC, 0x8B, 0x96, 0xC5, 0xD8, 0xFF, 0xE2,
+        0x26, 0x3B, 0x1C, 0x01, 0x52, 0x4F, 0x68, 0x75, 0xCE, 0xD3, 0xF4, 0xE9, 0xBA, 0xA7, 0x80, 0x9D,
+        0xEB, 0xF6, 0xD1, 0xCC, 0x9F, 0x82, 0xA5, 0xB8, 0x03, 0x1E, 0x39, 0x24, 0x77, 0x6A, 0x4D, 0x50,
+        0xA1, 0xBC, 0x9B, 0x86, 0xD5, 0xC8, 0xEF, 0xF2, 0x49, 0x54, 0x73, 0x6E, 0x3D, 0x20, 0x07, 0x1A,
+        0x6C, 0x71, 0x56, 0x4B, 0x18, 0x05, 0x22, 0x3F, 0x84, 0x99, 0xBE, 0xA3, 0xF0, 0xED, 0xCA, 0xD7,
+        0x35, 0x28, 0x0F, 0x12, 0x41, 0x5C, 0x7B, 0x66, 0xDD, 0xC0, 0xE7, 0xFA, 0xA9, 0xB4, 0x93, 0x8E,
+        0xF8, 0xE5, 0xC2, 0xDF, 0x8C, 0x91, 0xB6, 0xAB, 0x10, 0x0D, 0x2A, 0x37, 0x64, 0x79, 0x5E, 0x43,
+        0xB2, 0xAF, 0x88, 0x95, 0xC6, 0xDB, 0xFC, 0xE1, 0x5A, 0x47, 0x60, 0x7D, 0x2E, 0x33, 0x14, 0x09,
+        0x7F, 0x62, 0x45, 0x58, 0x0B, 0x16, 0x31, 0x2C, 0x97, 0x8A, 0xAD, 0xB0, 0xE3, 0xFE, 0xD9, 0xC4
+    };
+
+    byte  crctable_profile02[256] = {
+        0x00, 0x2F, 0x5E, 0x71, 0xBC, 0x93, 0xE2, 0xCD, 0x57, 0x78, 0x09, 0x26, 0xEB, 0xC4, 0xB5, 0x9A,
+        0xAE, 0x81, 0xF0, 0xDF, 0x12, 0x3D, 0x4C, 0x63, 0xF9, 0xD6, 0xA7, 0x88, 0x45, 0x6A, 0x1B, 0x34,
+        0x73, 0x5C, 0x2D, 0x02, 0xCF, 0xE0, 0x91, 0xBE, 0x24, 0x0B, 0x7A, 0x55, 0x98, 0xB7, 0xC6, 0xE9,
+        0xDD, 0xF2, 0x83, 0xAC, 0x61, 0x4E, 0x3F, 0x10, 0x8A, 0xA5, 0xD4, 0xFB, 0x36, 0x19, 0x68, 0x47,
+        0xE6, 0xC9, 0xB8, 0x97, 0x5A, 0x75, 0x04, 0x2B, 0xB1, 0x9E, 0xEF, 0xC0, 0x0D, 0x22, 0x53, 0x7C,
+        0x48, 0x67, 0x16, 0x39, 0xF4, 0xDB, 0xAA, 0x85, 0x1F, 0x30, 0x41, 0x6E, 0xA3, 0x8C, 0xFD, 0xD2,
+        0x95, 0xBA, 0xCB, 0xE4, 0x29, 0x06, 0x77, 0x58, 0xC2, 0xED, 0x9C, 0xB3, 0x7E, 0x51, 0x20, 0x0F,
+        0x3B, 0x14, 0x65, 0x4A, 0x87, 0xA8, 0xD9, 0xF6, 0x6C, 0x43, 0x32, 0x1D, 0xD0, 0xFF, 0x8E, 0xA1,
+        0xE3, 0xCC, 0xBD, 0x92, 0x5F, 0x70, 0x01, 0x2E, 0xB4, 0x9B, 0xEA, 0xC5, 0x08, 0x27, 0x56, 0x79,
+        0x4D, 0x62, 0x13, 0x3C, 0xF1, 0xDE, 0xAF, 0x80, 0x1A, 0x35, 0x44, 0x6B, 0xA6, 0x89, 0xF8, 0xD7,
+        0x90, 0xBF, 0xCE, 0xE1, 0x2C, 0x03, 0x72, 0x5D, 0xC7, 0xE8, 0x99, 0xB6, 0x7B, 0x54, 0x25, 0x0A,
+        0x3E, 0x11, 0x60, 0x4F, 0x82, 0xAD, 0xDC, 0xF3, 0x69, 0x46, 0x37, 0x18, 0xD5, 0xFA, 0x8B, 0xA4,
+        0x05, 0x2A, 0x5B, 0x74, 0xB9, 0x96, 0xE7, 0xC8, 0x52, 0x7D, 0x0C, 0x23, 0xEE, 0xC1, 0xB0, 0x9F,
+        0xAB, 0x84, 0xF5, 0xDA, 0x17, 0x38, 0x49, 0x66, 0xFC, 0xD3, 0xA2, 0x8D, 0x40, 0x6F, 0x1E, 0x31,
+        0x76, 0x59, 0x28, 0x07, 0xCA, 0xE5, 0x94, 0xBB, 0x21, 0x0E, 0x7F, 0x50, 0x9D, 0xB2, 0xC3, 0xEC,
+        0xD8, 0xF7, 0x86, 0xA9, 0x64, 0x4B, 0x3A, 0x15, 0x8F, 0xA0, 0xD1, 0xFE, 0x33, 0x1C, 0x6D, 0x42
+    };
+}
+/*@@end*/
+
+/*@@startStart:Start:*/
+on start
+{
+    putValue( HMI__NM_NV_NM_Request, 0 );  // reset all requests
+    _NM_Switch_NM_Mode();
+    
+    // DBKom-Task starten
+    
+    __NV_Init_Msg();
+    __NV_Startup_Delay();
+
+    putValue( HMI__NM_NV_AutomaticModeActive, 0 );
+    putValue( HMI__NM_NV_AutomaticModeActive, 1 );
+}
+/*@@end*/
+
+/*@@caplFunc:__NV_Init_Msg():*///function
+__NV_Init_Msg()
+{
+// #START_INIT#
+    NVP_Stat1_AR_init();                 // Botschaft NVP_Stat1_AR                 --- Sendeart 0 cyclicX --- 
+    ROE_NV_init();                       // Botschaft ROE_NV                       --- Sendeart  cyclicWithRepeatOnDemand --- 
+    SPL_Obj1_Obj2_NV_AR_init();          // Botschaft SPL_Obj1_Obj2_NV_AR          --- Sendeart   --- 
+
+// #START_INIT_END#
+    Meas_NV_1_init();                    // Botschaft Meas_NV_1                    --- Sendeart  spontanX --- 
+    Meas_NV_2_init();                    // Botschaft Meas_NV_2                    --- Sendeart  spontanX --- 
+    Meas_NV_3_init();                    // Botschaft Meas_NV_3                    --- Sendeart  spontanX --- 
+    Meas_NV_4_init();                    // Botschaft Meas_NV_4                    --- Sendeart  spontanX --- 
+}
+/*@@end*/
+
+/*@@envVar:HMI__STOP_All_MESSAGES_DEFAULT_STARTDELAY:*/
+on envVar HMI__STOP_All_MESSAGES_DEFAULT_STARTDELAY
+{
+    if( getValue( this ) )
+    {
+        __NV_Init_Msg();
+        __NV_Startup_Delay();
+    }
+}
+/*@@end*/
+
+/*@@envVar:HMI__STOP_All_MESSAGES_SET_STARTDELAY:*/
+on envVar HMI__STOP_All_MESSAGES_SET_STARTDELAY
+{
+    if( getValue( this ) )
+    {
+        __NV_Startup_Delay();
+    }
+}
+/*@@end*/
+
+/*@@caplFunc:__NV_Startup_Delay():*/
+__NV_Startup_Delay ()
+{
+    write(" Delay setzen :__NV_Startup_Delay");
+
+// #START_DELAY#
+    _NVP_Stat1_AR_Cnt =         getValue( HMI__STMSGSD_NVP_Stat1_AR        ) / _NVP_Stat1_AR_Timebase;
+    _ROE_NV_Cnt =               getValue( HMI__STMSGSD_ROE_NV              ) / _ROE_NV_Timebase;
+    _SPL_Obj1_Obj2_NV_AR_Cnt  = getValue( HMI__STMSGSD_SPL_Obj1_Obj2_NV_AR ) / _SPL_Obj1_Obj2_NV_AR_Timebase;
+// #START_DELAY_END#
+}
+/*@@end*/
+
+/*@@timer:t_DBKomTimer_5ms:*/
+on Timer t_DBKomTimer_5ms
+{
+// *** DBKom-Sendefunktion ***
+    // timer aufziehen für nächsten Zyklus
+    if( getValue( HMI__NM_NV_CommActive    ) |
+        getValue( HMI__NM_NV_RequestBusCom )   )
+    {
+        setTimer( t_DBKomTimer_5ms, c_tDBKomTimer_5ms );
+    }
+// #CYC_TIMER_5_MS#
+//    CLkS_Rq_AR_check_output();                   // Botschaft CLkS_Rq_AR                   --- Sendeart 8 cyclicIfActiveFast --- 
+// #CYC_TIMER_5_MS_END#
+}
+/*@@end*/
+
+/*@@timer:t_DBKomTimer_20ms:*/
+on Timer t_DBKomTimer_20ms
+{
+// *** DBKom-Sendefunktion ***
+    // timer aufziehen für nächsten Zyklus
+    if( getValue( HMI__NM_NV_CommActive    ) |
+        getValue( HMI__NM_NV_RequestBusCom )   )
+    {
+        setTimer( t_DBKomTimer_20ms, c_tDBKomTimer_20ms );
+    }
+// #CYC_TIMER_20_MS#
+    NVP_Stat1_AR_check_output();
+    ROE_NV_check_output();                  // Botschaft ROE_NV                 --- Sendeart cyclicWithRepeatOnDemand            
+    SPL_Obj1_Obj2_NV_AR_check_output();     // Botschaft SPL_Obj1_Obj2_NV_AR    --- Sendeart  ---
+// #CYC_TIMER_20_MS_END#
+
+    Meas_NV_1_check_output();
+    Meas_NV_2_check_output();
+    Meas_NV_3_check_output();
+    Meas_NV_4_check_output();
+}
+/*@@end*/
+
+/*@@envVar:HMI__SAVE_PANEL_CONFIG_NV:*/
+on EnvVar HMI__SAVE_PANEL_CONFIG_NV
+{
+    dword hFile;
+
+    if( getValue(this) )
+    {
+        write("Saving HMI Panel Variables ...");
+
+        hFile = openFileWrite( "CONFIG\\HMI_PRESETS.ASC", 0 );
+        filePutString( "base hex timestamps absolute\n", 31, hFile );
+
+// #MSG_SAVEENVVAR#
+        NVP_Stat1_AR_saveEnvVars( hFile );
+        ROE_NV_saveEnvVars( hFile );
+        SPL_Obj1_Obj2_NV_AR_saveEnvVars( hFile );
+// #MSG_SAVEENVVAR_END#
+
+//        Meas_NV_1_saveEnvVars( hFile );
+//        Meas_NV_2_saveEnvVars( hFile );
+//        Meas_NV_3_saveEnvVars( hFile );
+//        Meas_NV_4_saveEnvVars( hFile );
+
+        fileClose(hFile );
+    }
+}
+/*@@end*/
+
+/*@@envVar:HMI__STOP_NV_MESSAGES_OFF:*/
+on EnvVar HMI__STOP_NV_MESSAGES_OFF
+{
+    if( getValue(this) )
+    {
+// #MSG_OFF#
+        putValue(HMI__STMSG_NM_NV_AR, 1);
+        putValue(HMI__STMSG_NVP_Stat1_AR, 1);
+        putValue(HMI__STMSG_ROE_NV, 1);
+        putValue(HMI__STMSG_SPL_Obj1_Obj2_NV_AR, 1);
+// #MSG_OFF_END#
+
+        putValue(HMI__STMSG_Meas_NV_1, 1);
+        putValue(HMI__STMSG_Meas_NV_2, 1);
+        putValue(HMI__STMSG_Meas_NV_3, 1);
+        putValue(HMI__STMSG_Meas_NV_4, 1);
+    }
+}
+/*@@end*/
+
+/*@@envVar:HMI__STOP_NV_MESSAGES_ON:*/
+on envVar HMI__STOP_NV_MESSAGES_ON
+{
+    if( getValue(this) )
+    {
+// #MSG_ON#
+        putValue(HMI__STMSG_NVP_Stat1_AR, 0);
+        putValue(HMI__STMSG_ROE_NV, 0);
+        putValue(HMI__STMSG_SPL_Obj1_Obj2_NV_AR, 0);
+// #MSG_ON_END#
+
+        putValue(HMI__STMSG_NM_NV_AR, 0);
+        putValue(HMI__STMSG_Meas_NV_1, 0);
+        putValue(HMI__STMSG_Meas_NV_2, 0);
+        putValue(HMI__STMSG_Meas_NV_3, 0);
+        putValue(HMI__STMSG_Meas_NV_4, 0);
+    }
+}
+/*@@end*/
+
+/*@@busOff:BusOff:*/
+on busOff
+{
+    resetCan();
+    write("CAN has been resetted due to BUSOFF    ( coded version )");
+}
+/*@@end*/
+
+/*@@msg:0x500-0x57F:*/
+on message 0x500-0x57F
+{
+    byte Identifier;
+
+    Identifier = this.byte( 1 );
+
+    if( this.byte( 1 ) == CanNmNodeId )    // check, wether the received NM-Frame is an own one
+    {
+        boCanNM_Tx_Confirmation = TRUE;    // so it is a TX-confirmation
+    }
+    else
+    {
+        boCanNM_Rx_Indication = TRUE;     // else it is a NM-Frame from another ECU
+    }
+    _NM_Switch_NM_Mode();     // inform the state-mashine
+}
+/*@@end*/
+
+/*@@timer:t_DoorNMCancelTimer:*/
+on timer t_DoorNMCancelTimer
+{
+    if( getValue( HMI__NM_EIS_AutomaticModeActive ) == 1 )
+    {
+        _ReleaseCommRequest( 15 );  // all doors reset their requests
+    }
+}
+/*@@end*/
+
+/*@@timer:t_KeyInLockNMCancelTimer:*/
+on timer t_KeyInLockNMCancelTimer
+{
+    if( getValue( HMI__NM_EIS_AutomaticModeActive ) == 1 )
+    {
+        _ReleaseCommRequest( cIgnitionNMRequest );
+    }
+}
+/*@@end*/
+
+/*@@timer:t_StWhlButtonNMCancelTimer:*/
+on timer t_StWhlButtonNMCancelTimer
+{
+    if( getValue( HMI__NM_EIS_AutomaticModeActive ) == 1 )
+    {
+        _ReleaseCommRequest( cStWhlButtonNMRequest );  // all keys reset their requests
+    }
+}
+/*@@end*/
+
+/*@@timer:t_WakeWarningNMCancelTimer:*/
+on timer t_WakeWarningNMCancelTimer
+{
+    if( getValue( HMI__NM_EIS_AutomaticModeActive ) == 1 )
+    {
+        _ReleaseCommRequest( cWakeWarningNMRequest );  // all keys reset their requests
+    }
+}
+/*@@end*/
+
+/*@@timer:t_EPKBWarningNMCancelTimer:*/
+on timer t_EPKBWarningNMCancelTimer
+{
+    if( getValue( HMI__NM_EIS_AutomaticModeActive ) == 1 )
+    {
+        _ReleaseCommRequest( cEPKBWarningNMRequest );  // all keys reset their requests
+    }
+}
+/*@@end*/
+
+/*@@timer:t_IlluNMCancelTimer:*/
+on timer t_IlluNMCancelTimer
+{
+    if( getValue( HMI__NM_EIS_AutomaticModeActive ) == 1 )
+    {
+        _ReleaseCommRequest( cIlluNMRequest );  // all keys reset their requests
+    }
+}
+/*@@end*/
+
+/*@@timer:t_CarClosureNMCancelTimer:*/
+on timer t_CarClosureNMCancelTimer
+{
+    if( getValue( HMI__NM_EIS_AutomaticModeActive ) == 1 )
+    {
+        _ReleaseCommRequest( cCarClosureNMRequest );  // all keys reset their requests
+    }
+}
+/*@@end*/
+
+/*@@timer:t_GearIndNMCancelTimer:*/
+on timer t_GearIndNMCancelTimer
+{
+    if( getValue( HMI__NM_EIS_AutomaticModeActive ) == 1 )
+    {
+        _ReleaseCommRequest( cGearIndNMRequest );  // all keys reset their requests
+    }
+}
+/*@@end*/
+
+/*@@timer:t_NM_Repeat_Message_Time:*/
+on timer t_NM_Repeat_Message_Time
+{
+    boCanNM_RepeatMessage_Timer_Expired = TRUE;
+    _NM_Switch_NM_Mode();     // inform the state-mashine
+}
+/*@@end*/
+
+/*@@timer:t_NM_Timeout_Time:*/
+on timer t_NM_Timeout_Time
+{
+    boCanNM_NM_Timeout_Timer_Expired = TRUE;
+    _NM_Switch_NM_Mode();     // inform the state-mashine
+}
+/*@@end*/
+
+/*@@timer:t_NM_Transmit:*/
+on timer t_NM_Transmit
+{
+    setTimer( t_NM_Transmit, NM_Transmit_Cycle );
+    _mNM_xxx_AR.byte( 1 ) = CanNmNodeId;
+    if( _mNM_xxx_Transmit_Allowed )
+        output( _mNM_xxx_AR );
+}
+/*@@end*/
+
+/*@@timer:t_NM_Wait_Bus_Sleep_Time:*/
+on timer t_NM_Wait_Bus_Sleep_Time
+{
+    boCanNM_WaitBusSleep_Timer_Expired = TRUE;
+    _NM_Switch_NM_Mode();     // inform the state-mashine
+}
+/*@@end*/
+
+/*@@caplFunc:NM_xxx_AR_init():*/
+NM_xxx_AR_init()
+{
+    _mNM_xxx_AR.Awake_Diag_Actv.phys = getValue(HMI_Awake_Diag_Actv_NV );
+    _mNM_xxx_AR.Awake_Ignition_On.phys = getValue(HMI_Awake_Ignition_On_NV );
+    _mNM_xxx_AR.WakeupRsn_NV.phys = getValue(HMI_WakeupRsn_NV );
+}
+/*@@end*/
+
+/*@@caplFunc:NM_xxx_AR_saveEnvVars(dword):*/
+NM_xxx_AR_saveEnvVars( dword hFile )
+{
+    filePutString("\n// Knoten NM_NV_AR\n", 33, hFile );
+    snprintf(buffer, elcount(buffer), "0.0000 HMI__STMSG_NM_NV_AR := %X\n", getValue(HMI__STMSG_NM_NV_AR ));		filePutString (buffer, elcount(buffer), hFile);
+    snprintf(buffer, elcount(buffer), "0.0000 HMI__STMSGT_NM_NV_AR := %X\n", getValue(HMI__STMSGT_NM_NV_AR ));		filePutString (buffer, elcount(buffer), hFile);
+    snprintf(buffer, elcount(buffer), "0.0000 HMI_HMI_Awake_Diag_Actv_NV := %X\n", getValue( HMI_Awake_Diag_Actv_NV ) );		filePutString (buffer, elcount(buffer), hFile);
+    snprintf(buffer, elcount(buffer), "0.0000 HMI_HMI_Awake_Ignition_On_NV := %X\n", getValue( HMI_Awake_Ignition_On_NV ) );		filePutString (buffer, elcount(buffer), hFile);
+    snprintf(buffer, elcount(buffer), "0.0000 HMI_WakeupRsn_NV := %X\n", getValue( HMI_WakeupRsn_NV ) );		filePutString (buffer, elcount(buffer), hFile);
+}
+/*@@end*/
+
+/*@@envVar:HMI__STMSG_NM_NV_AR:*/
+on envVar HMI__STMSG_NM_NV_AR
+{
+    if( getValue( this ) == 0 )
+        _mNM_xxx_Transmit_Allowed = 1;
+    else
+        _mNM_xxx_Transmit_Allowed = 0;    
+}
+/*@@end*/
+
+/*@@envVar:HMI_Awake_Diag_Actv_NV:*/
+on EnvVar HMI_Awake_Diag_Actv_NV
+{
+    _mNM_xxx_AR.Awake_Diag_Actv = getValue(this);
+}
+/*@@end*/
+
+/*@@envVar:HMI_Awake_Ignition_On_NV:*/
+on EnvVar HMI_Awake_Ignition_On_NV
+{
+    _mNM_xxx_AR.Awake_Ignition_On = getValue(this);
+}
+/*@@end*/
+
+/*@@envVar:HMI_WakeupRsn_NV:*/
+on EnvVar HMI_WakeupRsn_NV
+{
+    _mNM_xxx_AR.WakeupRsn_NV.phys = getValue(this);
+}
+/*@@end*/
+
+/*@@caplFunc:_NM_Switch_NM_Mode():*/
+_NM_Switch_NM_Mode()
+{
+    byte bOld_NM_Mode;
+    word NM_Request_State;
+
+    bOld_NM_Mode = NM_Mode;
+    NM_Request_State = getValue( HMI__NM_NV_NM_Request );
+    switch( NM_Mode )
+    {
+        case cNM_Mode_Init:                   _NM_Init();
+                                              NM_Mode = cNM_Mode_Sleep;
+                                              break;
+        case cNM_Mode_Sleep:                  if( boCanNM_Rx_Indication == TRUE )
+                                              {
+                                                  // _NM_NetworkStartIndication();   nothing to do
+                                                  // _NM_PassiveStartUp();    is content of _NM_NetworkMode();
+                                                  setTimer( t_NM_Transmit, NmAsrCanMsgCycleOffset );    // send NM-Frame delayed
+                                                  boCanNM_Rx_Indication = FALSE;
+                                                  cancelTimer( t_NM_Timeout_Time );
+                                                  setTimer( t_NM_Timeout_Time, c_NM_Timeout_Time );
+                                                  setTimer( t_NM_Repeat_Message_Time, c_NM_Repeat_Message_Time );
+                                                  NM_Transmit_Cycle = NmAsrCanMsgStandardCycle;
+                                                  _NM_NetworkMode();
+                                                  NM_Mode = cNM_Mode_RepeatMsg;
+                                              }
+                                              if( NM_Request_State )
+                                              {
+                                                  setTimer( t_NM_Transmit, 1 );    //send NM-Franme immediately
+                                                  NM_Transmit_Cycle = NmAsrCanMsgStandardCycle;
+                                                  cancelTimer( t_NM_Timeout_Time );
+                                                  setTimer( t_NM_Timeout_Time, c_NM_Timeout_Time );
+                                                  setTimer( t_NM_Repeat_Message_Time, c_NM_Repeat_Message_Time );
+                                                  NM_Transmit_Cycle = NmAsrCanMsgStandardCycle;
+                                                  _NM_NetworkMode();
+                                                  NM_Mode = cNM_Mode_RepeatMsg;
+                                              }
+                                              break;
+        case cNM_Mode_Prepare_Bus_Sleep:      if( boCanNM_WaitBusSleep_Timer_Expired == TRUE )
+                                              {
+                                                  _NM_BusSleepModeInd();   // set message startup delay
+                                                  NM_Mode = cNM_Mode_Sleep;
+                                                  boCanNM_WaitBusSleep_Timer_Expired = FALSE;
+                                              }
+                                              if( boCanNM_NM_Timeout_Timer_Expired == TRUE )
+                                                  boCanNM_NM_Timeout_Timer_Expired = FALSE;
+                                              if( ( boCanNM_Rx_Indication == TRUE ) ||  NM_Request_State )
+                                              {
+                                                  boCanNM_Rx_Indication = FALSE;
+                                                  if( NM_Request_State )
+                                                  {
+                                                      setTimer( t_NM_Transmit, 1 );    //send NM-Franme immediately
+                                                  }
+                                                  cancelTimer( t_NM_Timeout_Time );
+                                                  setTimer( t_NM_Timeout_Time, c_NM_Timeout_Time );
+                                                  setTimer( t_NM_Repeat_Message_Time, c_NM_Repeat_Message_Time );
+                                                  _NM_NetworkMode();
+                                                  NM_Transmit_Cycle = NmAsrCanMsgStandardCycle;
+                                                  NM_Mode = cNM_Mode_RepeatMsg;
+                                              }
+                                              break;
+        case cNM_Mode_Ready_Sleep:            if( boCanNM_Rx_Indication == TRUE )
+                                              {
+                                                  cancelTimer( t_NM_Timeout_Time );
+                                                  setTimer( t_NM_Timeout_Time, c_NM_Timeout_Time );
+                                                  boCanNM_Rx_Indication = FALSE;
+                                              }
+                                              if( boCanNM_Tx_Confirmation == TRUE )
+                                              {
+                                                  cancelTimer( t_NM_Timeout_Time );
+                                                  setTimer( t_NM_Timeout_Time, c_NM_Timeout_Time );
+                                                  boCanNM_Tx_Confirmation = FALSE;
+                                              }
+                                              if( NM_Request_State )
+                                              {
+                                                  setTimer( t_NM_Transmit, 1 );    //send NM-Franme immediately
+                                                  cancelTimer( t_NM_Timeout_Time );
+                                                  setTimer( t_NM_Timeout_Time, c_NM_Timeout_Time );
+                                                  NM_Transmit_Cycle = NmAsrCanMsgReducedTime;
+                                                  NM_Mode = cNM_Mode_Normal_Operation_State;
+                                              }
+                                              if( boCanNM_RepeatMessage_Requested == TRUE )
+                                              {
+                                                  setTimer( t_NM_Transmit, NmAsrCanMsgCycleOffset );    // send NM-Frame delayed
+                                                  cancelTimer( t_NM_Timeout_Time );
+                                                  setTimer( t_NM_Timeout_Time, c_NM_Timeout_Time );
+                                                  setTimer( t_NM_Repeat_Message_Time, c_NM_Repeat_Message_Time );
+                                                  NM_Transmit_Cycle = NmAsrCanMsgStandardCycle;
+                                                  boCanNM_RepeatMessage_Requested = FALSE;
+                                                  NM_Mode = cNM_Mode_RepeatMsg;
+                                              }
+                                              if( boCanNM_NM_Timeout_Timer_Expired == TRUE )
+                                              {
+                                                  setTimer( t_NM_Wait_Bus_Sleep_Time, c_NM_Wait_Bus_Sleep_Time );
+                                                  _NM_PrepareBusSleepModeInd();    // here t_DBKonTimer is stopped
+                                                  NM_Mode = cNM_Mode_Prepare_Bus_Sleep;
+                                                  boCanNM_NM_Timeout_Timer_Expired = FALSE;
+                                              }
+                                              break;
+        case cNM_Mode_Normal_Operation_State: if( boCanNM_NM_Timeout_Timer_Expired == TRUE )
+                                              {
+                                                  setTimer( t_NM_Timeout_Time, c_NM_Timeout_Time );
+                                                  // _NM_TimeoutExeption();    // no action to be done
+                                                  boCanNM_NM_Timeout_Timer_Expired = FALSE;
+                                              }
+                                              if( boCanNM_Rx_Indication == TRUE )
+                                              {
+                                                  cancelTimer( t_NM_Timeout_Time );
+                                                  setTimer( t_NM_Timeout_Time, c_NM_Timeout_Time );
+                                                  cancelTimer( t_NM_Transmit );
+                                                  setTimer( t_NM_Transmit, NmAsrCanMsgReducedTime );
+                                                  boCanNM_Rx_Indication = FALSE;
+                                              }
+                                              if( boCanNM_Tx_Confirmation == TRUE )
+                                              {
+                                                  cancelTimer( t_NM_Timeout_Time );
+                                                  setTimer( t_NM_Timeout_Time, c_NM_Timeout_Time );
+                                                  cancelTimer( t_NM_Transmit );
+                                                  setTimer( t_NM_Transmit, NmAsrCanMsgStandardCycle );
+                                                  boCanNM_Tx_Confirmation = FALSE;
+                                              }
+                                              if( NM_Request_State == 0 )    //no network requested
+                                              {
+                                                  cancelTimer( t_NM_Transmit );    // stop NM-Franme immediately
+                                                  NM_Mode = cNM_Mode_Ready_Sleep;
+                                              }
+                                              if( boCanNM_RepeatMessage_Requested == TRUE )
+                                              {
+                                                  setTimer( t_NM_Transmit, NmAsrCanMsgCycleOffset );    // send NM-Frame delayed
+                                                  cancelTimer( t_NM_Timeout_Time );
+                                                  setTimer( t_NM_Timeout_Time, c_NM_Timeout_Time );
+                                                  setTimer( t_NM_Repeat_Message_Time, c_NM_Repeat_Message_Time );
+                                                  boCanNM_RepeatMessage_Requested = FALSE;
+                                                  NM_Transmit_Cycle = NmAsrCanMsgStandardCycle;
+                                                  NM_Mode = cNM_Mode_RepeatMsg;
+                                              }
+                                              break;
+        case cNM_Mode_RepeatMsg:              if( boCanNM_NM_Timeout_Timer_Expired == TRUE )
+                                              {
+                                                  setTimer( t_NM_Timeout_Time, c_NM_Timeout_Time );
+                                                  boCanNM_NM_Timeout_Timer_Expired = FALSE;
+                                              }
+                                              if( boCanNM_Rx_Indication == TRUE )
+                                              {
+                                                  cancelTimer( t_NM_Timeout_Time );
+                                                  setTimer( t_NM_Timeout_Time, c_NM_Timeout_Time );
+                                                  boCanNM_Rx_Indication = FALSE;
+                                              }
+                                              if( boCanNM_Tx_Confirmation == TRUE )
+                                              {
+                                                  cancelTimer( t_NM_Timeout_Time );
+                                                  setTimer( t_NM_Timeout_Time, c_NM_Timeout_Time );
+                                                  boCanNM_Tx_Confirmation = FALSE;
+                                              }
+                                              if( boCanNM_RepeatMessage_Timer_Expired == TRUE )
+                                              {
+                                                  boCanNM_RepeatMessage_Timer_Expired = FALSE;
+                                                  if( NM_Request_State )
+                                                  {
+                                                      NM_Mode = cNM_Mode_Normal_Operation_State;
+                                                      NM_Transmit_Cycle = NmAsrCanMsgReducedTime;
+                                                  }
+                                                  else
+                                                  {
+                                                      cancelTimer( t_NM_Transmit );    // stop NM-Franme immediately
+                                                      NM_Mode = cNM_Mode_Ready_Sleep;
+                                                  }
+                                              }
+                                              break;
+    }
+    if( bOld_NM_Mode != NM_Mode )
+    {
+        _Nm_StateChangeNotification( bOld_NM_Mode, NM_Mode );    // does the Trace
+        putValue( HMI__NM_NV_ActualState, NM_Mode );
+    }
+}
+/*@@end*/
+
+/*@@caplFunc:_NM_Init():*/
+_NM_Init()
+{
+    NM_Transmit_Cycle = NmAsrCanMsgStandardCycle;
+}
+/*@@end*/
+
+/*@@caplFunc:_NM_NetworkMode():*/
+_NM_NetworkMode()
+{
+    setTimer( t_DBKomTimer_5ms, 1 ); //  ms     start CAN-communication immediately
+    setTimer( t_DBKomTimer_20ms, 2 ); //  ms     start CAN-communication immediately
+    putValue( HMI__NM_NV_CommActive, 1 );
+}
+/*@@end*/
+
+/*@@caplFunc:_Nm_BusSleepModeInd():*/
+_Nm_BusSleepModeInd()
+{
+//    _Trace( "_Nm_BusSleepModeInd", "Sleep Mode active");
+    __NV_Startup_Delay();
+}
+/*@@end*/
+
+/*@@caplFunc:_Nm_PrepareBusSleepModeInd():*/
+void _Nm_PrepareBusSleepModeInd()
+{
+//    _Trace( "Nm_PrepareBusSleepModeInd", "Prepare Sleep Mode active");
+    putValue( HMI__NM_NV_CommActive, 0 );
+    cancelTimer( t_DBKomTimer_20ms );
+    cancelTimer( t_DBKomTimer_5ms );
+}
+/*@@end*/
+
+/*@@caplFunc:_Nm_StateChangeNotification(byte,byte):*/
+_Nm_StateChangeNotification( byte previousState, byte currentState )
+{
+/*
+    char line[50];
+
+    snprintf( line, elcount(line ), "Transition from %d to %d", previousState, currentState );
+    _Trace( "Nm_StateChangeNotification", "", line );
+*/
+}
+/*@@end*/
+
+/*@@caplFunc:_ReleaseCommRequest(word):*/
+_ReleaseCommRequest( word RequestID )
+{
+    word temp; // actual NM request status
+
+    temp = getValue( HMI__NM_NV_NM_Request );
+    temp &= ~RequestID; // reset NM request 
+    putValue( HMI__NM_NV_NM_Request, temp );
+    _NM_Switch_NM_Mode();
+}
+/*@@end*/
+
+/*@@caplFunc:_SetCommRequest(word):*/
+_SetCommRequest( word RequestID )
+{
+    word temp; // actual NM request status
+
+    temp = getValue( HMI__NM_NV_NM_Request );
+    temp |= RequestID; // set NM request 
+    putValue( HMI__NM_NV_NM_Request, temp );
+    _NM_Switch_NM_Mode();
+}
+/*@@end*/
+
+/*@@caplFunc:_TraceCall(char[],long):*/
+void _TraceCall( char functionName[], long callResult )
+{
+    char line[100];
+
+    if( callResult == 1 )
+        snprintf( line, elcount(line ), "calling %s", functionName );
+    else
+        snprintf( line, elcount(line ), "call to %s failed - wrong state?", functionName );
+    _Trace( "", "", line );
+}
+/*@@end*/
+
+/*@@caplFunc:_Trace(char[],char[]):*/
+void _Trace( char functionName[], char info[])
+{
+    _Trace( functionName, info, "");
+}
+/*@@end*/
+
+/*@@caplFunc:_Trace(char[],char[],char[],long):*/
+void _Trace( char functionName[], char info[], char verbose[], long argument )
+{
+    char line[100];
+
+    snprintf( line, elcount(line ), verbose, argument );
+    _Trace( functionName, info, line );
+}
+/*@@end*/
+
+/*@@caplFunc:_Trace(char[],char[],char[]):*/
+void _Trace( char functionName[], char info[], char verbose[])
+{
+  char sep[2] = "/";
+  sep[0] = functionName[0] ? '/' : 0;
+  if( verbose[0])
+  {
+    write( "[%.3f]%s%s%s: %s", timeNow()/100000.0, gECU
+           , sep
+           , functionName
+           , verbose
+           );
+  } else
+  {
+    write( "[%.3f]%s%s%s: %s", timeNow()/100000.0, gECU
+           , sep
+           , functionName
+           , info
+           );
+  }
+}
+/*@@end*/
+
+/*@@caplFunc:___Template_Header():*/
+___Template_Header()
+{
+// #FUNCTIONS#
+// #FUNCTIONS_END#
+// #TIMERS#
+// #TIMERS_END#
+// #ENVVARS#
+// #ENVVARS_END#
+}
+/*@@end*/
+
+/*@@caplFunc:Meas_NV_1_check_output():*/
+Meas_NV_1_check_output()
+{
+      if( !getValue( HMI__STMSG_Meas_NV_1 ) )
+    {
+        // Botschaft Meas_NV_1 --- Sendeart spontanX
+        if( _Meas_NV_1_SpontanFlag )
+        {
+            // Nachricht wg. spontaner Änderung ausgeben
+            output( _mMeas_NV_1 );
+            // Spontan-Flag zurücksetzen
+             _Meas_NV_1_SpontanFlag = 0;
+        }
+    }
+}
+/*@@end*/
+
+/*@@caplFunc:Meas_NV_1_init():*/
+Meas_NV_1_init()
+{
+    // Botschaft Meas_NV_1 ---- Sendeart spontanX
+    _Meas_NV_1_SpontanFlag = 0;
+    _mMeas_NV_1.Meas_NV_1A.phys = getValue(HMI_Meas_NV_1A);
+    _mMeas_NV_1.Meas_NV_1B.phys = getValue(HMI_Meas_NV_1B);
+    _mMeas_NV_1.Meas_NV_1C.phys = getValue(HMI_Meas_NV_1C);
+    _mMeas_NV_1.Meas_NV_1D.phys = getValue(HMI_Meas_NV_1D);
+    _mMeas_NV_1.Meas_NV_1E.phys = getValue(HMI_Meas_NV_1E);
+    _mMeas_NV_1.Meas_NV_1F.phys = getValue(HMI_Meas_NV_1F);
+    _mMeas_NV_1.Meas_NV_1G.phys = getValue(HMI_Meas_NV_1G);
+    _mMeas_NV_1.Meas_NV_1H.phys = getValue(HMI_Meas_NV_1H);
+}
+/*@@end*/
+
+/*@@timer:_tMeas_NV_1:*/
+on timer _tMeas_NV_1
+{
+    putValue( HMI__STMSG_Meas_NV_1, 0 );
+}
+/*@@end*/
+
+/*@@envVar:HMI__STMSG_Meas_NV_1:*/
+on EnvVar HMI__STMSG_Meas_NV_1
+{
+    long tDelay;
+    if( getValue( this ) == 2 )
+    {
+        tDelay = getValue( HMI__STMSGT_Meas_NV_1 );
+        if( tDelay > 0)    
+            setTimer( _tMeas_NV_1, tDelay );
+        else
+            putValue( HMI__STMSG_Meas_NV_1, 0 );
+    }
+}
+/*@@end*/
+
+/*@@envVar:HMI_Meas_NV_1A:*/
+on EnvVar HMI_Meas_NV_1A
+{
+    _mMeas_NV_1.Meas_NV_1A.phys = getValue(this);
+    _Meas_NV_1_SpontanFlag = 1;
+}
+/*@@end*/
+
+/*@@envVar:HMI_Meas_NV_1B:*/
+on EnvVar HMI_Meas_NV_1B
+{
+    _mMeas_NV_1.Meas_NV_1B.phys = getValue(this);
+    _Meas_NV_1_SpontanFlag = 1;
+}
+/*@@end*/
+
+/*@@envVar:HMI_Meas_NV_1C:*/
+on EnvVar HMI_Meas_NV_1C
+{
+    _mMeas_NV_1.Meas_NV_1C.phys = getValue(this);
+    _Meas_NV_1_SpontanFlag = 1;
+}
+/*@@end*/
+
+/*@@envVar:HMI_Meas_NV_1D:*/
+on EnvVar HMI_Meas_NV_1D
+{
+    _mMeas_NV_1.Meas_NV_1D.phys = getValue(this);
+    _Meas_NV_1_SpontanFlag = 1;
+}
+/*@@end*/
+
+/*@@envVar:HMI_Meas_NV_1E:*/
+on EnvVar HMI_Meas_NV_1E
+{
+    _mMeas_NV_1.Meas_NV_1E.phys = getValue(this);
+    _Meas_NV_1_SpontanFlag = 1;
+}
+/*@@end*/
+
+/*@@envVar:HMI_Meas_NV_1F:*/
+on EnvVar HMI_Meas_NV_1F
+{
+    _mMeas_NV_1.Meas_NV_1F.phys = getValue(this);
+    _Meas_NV_1_SpontanFlag = 1;
+}
+/*@@end*/
+
+/*@@envVar:HMI_Meas_NV_1G:*/
+on EnvVar HMI_Meas_NV_1G
+{
+    _mMeas_NV_1.Meas_NV_1G.phys = getValue(this);
+    _Meas_NV_1_SpontanFlag = 1;
+}
+/*@@end*/
+
+/*@@envVar:HMI_Meas_NV_1H:*/
+on EnvVar HMI_Meas_NV_1H
+{
+    _mMeas_NV_1.Meas_NV_1H.phys = getValue(this);
+    _Meas_NV_1_SpontanFlag = 1;
+}
+/*@@end*/
+
+/*@@caplFunc:Meas_NV_2_check_output():*/
+Meas_NV_2_check_output()
+{
+      if( !getValue( HMI__STMSG_Meas_NV_2 ) )
+    {
+        // Botschaft Meas_NV_2 --- Sendeart spontanX
+        if( _Meas_NV_2_SpontanFlag )
+        {
+            // Nachricht wg. spontaner Änderung ausgeben
+            output( _mMeas_NV_2 );
+            // Spontan-Flag zurücksetzen
+             _Meas_NV_2_SpontanFlag = 0;
+        }
+    }
+}
+/*@@end*/
+
+/*@@caplFunc:Meas_NV_2_init():*/
+Meas_NV_2_init()
+{
+    // Botschaft Meas_NV_2 ---- Sendeart spontanX
+    _Meas_NV_2_SpontanFlag = 0;
+    _mMeas_NV_2.Meas_NV_2A.phys = getValue(HMI_Meas_NV_2A);
+    _mMeas_NV_2.Meas_NV_2B.phys = getValue(HMI_Meas_NV_2B);
+    _mMeas_NV_2.Meas_NV_2C.phys = getValue(HMI_Meas_NV_2C);
+    _mMeas_NV_2.Meas_NV_2D.phys = getValue(HMI_Meas_NV_2D);
+    _mMeas_NV_2.Meas_NV_2E.phys = getValue(HMI_Meas_NV_2E);
+    _mMeas_NV_2.Meas_NV_2F.phys = getValue(HMI_Meas_NV_2F);
+    _mMeas_NV_2.Meas_NV_2G.phys = getValue(HMI_Meas_NV_2G);
+    _mMeas_NV_2.Meas_NV_2H.phys = getValue(HMI_Meas_NV_2H);
+}
+/*@@end*/
+
+/*@@timer:_tMeas_NV_2:*/
+on timer _tMeas_NV_2
+{
+    putValue( HMI__STMSG_Meas_NV_2, 0 );
+}
+/*@@end*/
+
+/*@@envVar:HMI__STMSG_Meas_NV_2:*/
+on EnvVar HMI__STMSG_Meas_NV_2
+{
+    long tDelay;
+    if( getValue( this ) == 2 )
+    {
+        tDelay = getValue( HMI__STMSGT_Meas_NV_2 );
+        if( tDelay > 0 )
+            setTimer( _tMeas_NV_2, tDelay );
+        else
+            putValue( HMI__STMSG_Meas_NV_2, 0 );
+    }
+}
+/*@@end*/
+
+/*@@envVar:HMI_Meas_NV_2A:*/
+on EnvVar HMI_Meas_NV_2A
+{
+    _mMeas_NV_2.Meas_NV_2A.phys = getValue(this);
+    _Meas_NV_2_SpontanFlag = 1;
+}
+/*@@end*/
+
+/*@@envVar:HMI_Meas_NV_2B:*/
+on EnvVar HMI_Meas_NV_2B
+{
+    _mMeas_NV_2.Meas_NV_2B.phys = getValue(this);
+    _Meas_NV_2_SpontanFlag = 1;
+}
+/*@@end*/
+
+/*@@envVar:HMI_Meas_NV_2C:*/
+on EnvVar HMI_Meas_NV_2C
+{
+    _mMeas_NV_2.Meas_NV_2C.phys = getValue(this);
+    _Meas_NV_2_SpontanFlag = 1;
+}
+/*@@end*/
+
+/*@@envVar:HMI_Meas_NV_2D:*/
+on EnvVar HMI_Meas_NV_2D
+{
+    _mMeas_NV_2.Meas_NV_2D.phys = getValue(this);
+    _Meas_NV_2_SpontanFlag = 1;
+}
+/*@@end*/
+
+/*@@envVar:HMI_Meas_NV_2E:*/
+on EnvVar HMI_Meas_NV_2E
+{
+    _mMeas_NV_2.Meas_NV_2E.phys = getValue(this);
+    _Meas_NV_2_SpontanFlag = 1;
+}
+/*@@end*/
+
+/*@@envVar:HMI_Meas_NV_2F:*/
+on EnvVar HMI_Meas_NV_2F
+{
+    _mMeas_NV_2.Meas_NV_2F.phys = getValue(this);
+    _Meas_NV_2_SpontanFlag = 1;
+}
+/*@@end*/
+
+/*@@envVar:HMI_Meas_NV_2G:*/
+on EnvVar HMI_Meas_NV_2G
+{
+    _mMeas_NV_2.Meas_NV_2G.phys = getValue(this);
+    _Meas_NV_2_SpontanFlag = 1;
+}
+/*@@end*/
+
+/*@@envVar:HMI_Meas_NV_2H:*/
+on EnvVar HMI_Meas_NV_2H
+{
+    _mMeas_NV_2.Meas_NV_2H.phys = getValue(this);
+    _Meas_NV_2_SpontanFlag = 1;
+}
+/*@@end*/
+
+/*@@caplFunc:Meas_NV_3_check_output():*/
+Meas_NV_3_check_output()
+{
+      if( !getValue( HMI__STMSG_Meas_NV_3 ) )
+    {
+        // Botschaft Meas_NV_3 --- Sendeart spontanX
+        if( _Meas_NV_3_SpontanFlag )
+        {
+            // Nachricht wg. spontaner Änderung ausgeben
+            output( _mMeas_NV_3 );
+            // Spontan-Flag zurücksetzen
+             _Meas_NV_3_SpontanFlag = 0;
+        }
+    }
+}
+/*@@end*/
+
+/*@@caplFunc:Meas_NV_3_init():*/
+Meas_NV_3_init()
+{
+    // Botschaft Meas_NV_3 ---- Sendeart spontanX
+    _Meas_NV_3_SpontanFlag = 0;
+    _mMeas_NV_3.Meas_NV_3A.phys = getValue(HMI_Meas_NV_3A);
+    _mMeas_NV_3.Meas_NV_3B.phys = getValue(HMI_Meas_NV_3B);
+    _mMeas_NV_3.Meas_NV_3C.phys = getValue(HMI_Meas_NV_3C);
+    _mMeas_NV_3.Meas_NV_3D.phys = getValue(HMI_Meas_NV_3D);
+    _mMeas_NV_3.Meas_NV_3E.phys = getValue(HMI_Meas_NV_3E);
+    _mMeas_NV_3.Meas_NV_3F.phys = getValue(HMI_Meas_NV_3F);
+    _mMeas_NV_3.Meas_NV_3G.phys = getValue(HMI_Meas_NV_3G);
+    _mMeas_NV_3.Meas_NV_3H.phys = getValue(HMI_Meas_NV_3H);
+}
+/*@@end*/
+
+/*@@timer:_tMeas_NV_3:*/
+on timer _tMeas_NV_3
+{
+    putValue( HMI__STMSG_Meas_NV_3, 0 );
+}
+/*@@end*/
+
+/*@@envVar:HMI__STMSG_Meas_NV_3:*/
+on EnvVar HMI__STMSG_Meas_NV_3
+{
+    long tDelay;
+    if( getValue( this ) == 2 )
+    {
+        tDelay = getValue( HMI__STMSGT_Meas_NV_3 );
+        if( tDelay > 0)    
+            setTimer( _tMeas_NV_3, tDelay );
+        else
+            putValue( HMI__STMSG_Meas_NV_3, 0 );
+    }
+}
+/*@@end*/
+
+/*@@envVar:HMI_Meas_NV_3A:*/
+on EnvVar HMI_Meas_NV_3A
+{
+    _mMeas_NV_3.Meas_NV_3A.phys = getValue(this);
+    _Meas_NV_3_SpontanFlag = 1;
+}
+/*@@end*/
+
+/*@@envVar:HMI_Meas_NV_3B:*/
+on EnvVar HMI_Meas_NV_3B
+{
+    _mMeas_NV_3.Meas_NV_3B.phys = getValue(this);
+    _Meas_NV_3_SpontanFlag = 1;
+}
+/*@@end*/
+
+/*@@envVar:HMI_Meas_NV_3C:*/
+on EnvVar HMI_Meas_NV_3C
+{
+    _mMeas_NV_3.Meas_NV_3C.phys = getValue(this);
+    _Meas_NV_3_SpontanFlag = 1;
+}
+/*@@end*/
+
+/*@@envVar:HMI_Meas_NV_3D:*/
+on EnvVar HMI_Meas_NV_3D
+{
+    _mMeas_NV_3.Meas_NV_3D.phys = getValue(this);
+    _Meas_NV_3_SpontanFlag = 1;
+}
+/*@@end*/
+
+/*@@envVar:HMI_Meas_NV_3E:*/
+on EnvVar HMI_Meas_NV_3E
+{
+    _mMeas_NV_3.Meas_NV_3E.phys = getValue(this);
+    _Meas_NV_3_SpontanFlag = 1;
+}
+/*@@end*/
+
+/*@@envVar:HMI_Meas_NV_3F:*/
+on EnvVar HMI_Meas_NV_3F
+{
+    _mMeas_NV_3.Meas_NV_3F.phys = getValue(this);
+    _Meas_NV_3_SpontanFlag = 1;
+}
+/*@@end*/
+
+/*@@envVar:HMI_Meas_NV_3G:*/
+on EnvVar HMI_Meas_NV_3G
+{
+    _mMeas_NV_3.Meas_NV_3G.phys = getValue(this);
+    _Meas_NV_3_SpontanFlag = 1;
+}
+/*@@end*/
+
+/*@@envVar:HMI_Meas_NV_3H:*/
+on EnvVar HMI_Meas_NV_3H
+{
+    _mMeas_NV_3.Meas_NV_3H.phys = getValue(this);
+    _Meas_NV_3_SpontanFlag = 1;
+}
+/*@@end*/
+
+/*@@caplFunc:Meas_NV_4_check_output():*/
+Meas_NV_4_check_output()
+{
+      if( !getValue( HMI__STMSG_Meas_NV_4 ) )
+    {
+        // Botschaft Meas_NV_4 --- Sendeart spontanX
+        if( _Meas_NV_4_SpontanFlag )
+        {
+            // Nachricht wg. spontaner Änderung ausgeben
+            output( _mMeas_NV_4 );
+            // Spontan-Flag zurücksetzen
+             _Meas_NV_4_SpontanFlag = 0;
+        }
+    }
+}
+/*@@end*/
+
+/*@@caplFunc:Meas_NV_4_init():*/
+Meas_NV_4_init()
+{
+    // Botschaft Meas_NV_4 ---- Sendeart spontanX
+    _Meas_NV_4_SpontanFlag = 0;
+    _mMeas_NV_4.Meas_NV_4A.phys = getValue(HMI_Meas_NV_4A);
+    _mMeas_NV_4.Meas_NV_4B.phys = getValue(HMI_Meas_NV_4B);
+    _mMeas_NV_4.Meas_NV_4C.phys = getValue(HMI_Meas_NV_4C);
+    _mMeas_NV_4.Meas_NV_4D.phys = getValue(HMI_Meas_NV_4D);
+    _mMeas_NV_4.Meas_NV_4E.phys = getValue(HMI_Meas_NV_4E);
+    _mMeas_NV_4.Meas_NV_4F.phys = getValue(HMI_Meas_NV_4F);
+    _mMeas_NV_4.Meas_NV_4G.phys = getValue(HMI_Meas_NV_4G);
+    _mMeas_NV_4.Meas_NV_4H.phys = getValue(HMI_Meas_NV_4H);
+}
+/*@@end*/
+
+/*@@timer:_tMeas_NV_4:*/
+on timer _tMeas_NV_4
+{
+    putValue( HMI__STMSG_Meas_NV_4, 0 );
+}
+/*@@end*/
+
+/*@@envVar:HMI__STMSG_Meas_NV_4:*/
+on EnvVar HMI__STMSG_Meas_NV_4
+{
+    long tDelay;
+    if( getValue( this ) == 2 )
+    {
+        tDelay = getValue( HMI__STMSGT_Meas_NV_4 );
+        if( tDelay > 0)    
+            setTimer( _tMeas_NV_4, tDelay );
+        else
+            putValue( HMI__STMSG_Meas_NV_4, 0 );
+    }
+}
+/*@@end*/
+
+/*@@envVar:HMI_Meas_NV_4A:*/
+on EnvVar HMI_Meas_NV_4A
+{
+    _mMeas_NV_4.Meas_NV_4A.phys = getValue(this);
+    _Meas_NV_4_SpontanFlag = 1;
+}
+/*@@end*/
+
+/*@@envVar:HMI_Meas_NV_4B:*/
+on EnvVar HMI_Meas_NV_4B
+{
+    _mMeas_NV_4.Meas_NV_4B.phys = getValue(this);
+    _Meas_NV_4_SpontanFlag = 1;
+}
+/*@@end*/
+
+/*@@envVar:HMI_Meas_NV_4C:*/
+on EnvVar HMI_Meas_NV_4C
+{
+    _mMeas_NV_4.Meas_NV_4C.phys = getValue(this);
+    _Meas_NV_4_SpontanFlag = 1;
+}
+/*@@end*/
+
+/*@@envVar:HMI_Meas_NV_4D:*/
+on EnvVar HMI_Meas_NV_4D
+{
+    _mMeas_NV_4.Meas_NV_4D.phys = getValue(this);
+    _Meas_NV_4_SpontanFlag = 1;
+}
+/*@@end*/
+
+/*@@envVar:HMI_Meas_NV_4E:*/
+on EnvVar HMI_Meas_NV_4E
+{
+    _mMeas_NV_4.Meas_NV_4E.phys = getValue(this);
+    _Meas_NV_4_SpontanFlag = 1;
+}
+/*@@end*/
+
+/*@@envVar:HMI_Meas_NV_4F:*/
+on EnvVar HMI_Meas_NV_4F
+{
+    _mMeas_NV_4.Meas_NV_4F.phys = getValue(this);
+    _Meas_NV_4_SpontanFlag = 1;
+}
+/*@@end*/
+
+/*@@envVar:HMI_Meas_NV_4G:*/
+on EnvVar HMI_Meas_NV_4G
+{
+    _mMeas_NV_4.Meas_NV_4G.phys = getValue(this);
+    _Meas_NV_4_SpontanFlag = 1;
+}
+/*@@end*/
+
+/*@@envVar:HMI_Meas_NV_4H:*/
+on EnvVar HMI_Meas_NV_4H
+{
+    _mMeas_NV_4.Meas_NV_4H.phys = getValue(this);
+    _Meas_NV_4_SpontanFlag = 1;
+}
+/*@@end*/
+
+/*@@caplFunc:NVP_Stat1_AR_check_output():*/
+NVP_Stat1_AR_check_output()
+{
+    if( !getValue(HMI__STMSG_NVP_Stat1_AR ))
+    {
+        // Botschaft NVP_Stat1_AR ID: 721 --- Sendeart 0 cyclicX --- 
+        _NVP_Stat1_AR_Cnt--;
+        if( _NVP_Stat1_AR_Cnt < 1)
+        {
+            // Nachricht wg. abgelaufenem Zyklus ausgeben
+            NVP_Stat1_AR_output();
+            _NVP_Stat1_AR_Cnt = _NVP_Stat1_AR_CycleCount; // Zyklus-Zähler zurücksetzen
+        }
+    }
+}
+/*@@end*/
+
+/*@@caplFunc:NVP_Stat1_AR_init():*/
+NVP_Stat1_AR_init()
+{   /* Botschaft NVP_Stat1_AR ID: 721 --- Sendeart 0 cyclicX --- 
+BA_ "ApplMessage" BO_ 721 0;
+BA_ "NmAsrMessage" BO_ 721 0;
+BA_ "GenMsgMinAcceptLength" BO_ 721 8;
+BA_ "GenMsgILSupport" BO_ 721 1;
+BA_ "DiagState" BO_ 721 0;
+BA_ "DiagRequest" BO_ 721 0;
+BA_ "DiagResponse" BO_ 721 0;
+BA_ "GenMsgStartValue" BO_ 721 "0";
+BA_ "GenMsgCycleTime" BO_ 721 80;
+BA_ "GenMsgSendType" BO_ 721 0;
+    */
+    _NVP_Stat1_AR_Timebase =             c_tDBKomTimer_20ms;
+    _NVP_Stat1_AR_CycleCount =           80 / _NVP_Stat1_AR_Timebase;
+    _NVP_Stat1_AR_StartDelay =            0 / _NVP_Stat1_AR_Timebase;
+    _NVP_Stat1_AR_Cnt = _NVP_Stat1_AR_StartDelay;
+
+    putValue( HMI__STMSGSD_NVP_Stat1_AR, _NVP_Stat1_AR_StartDelay );
+    
+    _mNVP_Stat1_AR.NVP_Disp_Rq.phys = getValue( HMI_NVP_Disp_Rq );
+    _mNVP_Stat1_AR.NVP_DispMd_Stat.phys = getValue( HMI_NVP_DispMd_Stat );
+    _mNVP_Stat1_AR.NVP_Icon_Stat.phys = getValue( HMI_NVP_Icon_Stat );
+    _mNVP_Stat1_AR.NVP_IrLmp_On_Rq.phys = getValue( HMI_NVP_IrLmp_On_Rq );
+    _mNVP_Stat1_AR.NVP_MenuSubs_Rq.phys = getValue( HMI_NVP_MenuSubs_Rq );
+    _mNVP_Stat1_AR.NVP_SPL_Icon_Stat.phys = getValue( HMI_NVP_SPL_Icon_Stat );
+    _mNVP_Stat1_AR.NVP_SPL_Md_Stat.phys = getValue( HMI_NVP_SPL_Md_Stat );
+    _mNVP_Stat1_AR.NVP_SPL_Warn_Stat.phys = getValue( HMI_NVP_SPL_Warn_Stat );
+    _mNVP_Stat1_AR.NVP_Sys_Stat.phys = getValue( HMI_NVP_Sys_Stat );
+    _mNVP_Stat1_AR.NVP_Warn_Stat.phys = getValue( HMI_NVP_Warn_Stat );
+    _mNVP_Stat1_AR.NVP_Warn_TrgrRq.phys = getValue( HMI_NVP_Warn_TrgrRq );
+    _mNVP_Stat1_AR.NVP_Wpr_Rq.phys = getValue( HMI_NVP_Wpr_Rq );
+    _mNVP_Stat1_AR.NVP_WshHt_Rq.phys = getValue( HMI_NVP_WshHt_Rq );
+    _mNVP_Stat1_AR.SPL_MenuSubs_Rq.phys = getValue( HMI_SPL_MenuSubs_Rq );
+}
+/*@@end*/
+
+/*@@caplFunc:NVP_Stat1_AR_output():*/
+NVP_Stat1_AR_output(void)
+{
+    byte crc;
+
+    if( !getValue( HMI_SQC_NVP_Stat1_Auto ) )
+    {
+        // berechne message counter
+        if( _mNVP_Stat1_AR.SQC_NVP_Stat1 >= 15) _mNVP_Stat1_AR.SQC_NVP_Stat1 = 0;
+        else _mNVP_Stat1_AR.SQC_NVP_Stat1++;
+        putValue( HMI_SQC_NVP_Stat1, _mNVP_Stat1_AR.SQC_NVP_Stat1 );
+    }
+    else
+         _mNVP_Stat1_AR.SQC_NVP_Stat1 = getValue(HMI_SQC_NVP_Stat1);
+
+    if( getValue( HMI_CRC_NVP_Stat1_Profile_02 ) )
+    {
+        if( !getValue( HMI_CRC_NVP_Stat1_Auto ) )
+        {   // CRC according Profile_02 ( W213 )
+            // berechne crc
+            crc = 0xFF;
+//            crc = crctable_profile02[crc ^ _mNVP_Stat1_AR.byte( 0 )];  CRC
+            crc = crctable_profile02[crc ^ _mNVP_Stat1_AR.byte( 1 )];
+            crc = crctable_profile02[crc ^ _mNVP_Stat1_AR.byte( 2 )];
+            crc = crctable_profile02[crc ^ _mNVP_Stat1_AR.byte( 3 )];
+            crc = crctable_profile02[crc ^ _mNVP_Stat1_AR.byte( 4 )];
+//            crc = crctable_profile02[crc ^ _mNVP_Stat1_AR.byte( 5 )];
+//            crc = crctable_profile02[crc ^ _mNVP_Stat1_AR.byte( 6 )];
+//            crc = crctable_profile02[crc ^ _mNVP_Stat1_AR.byte( 7 )];
+            crc = crctable_profile02[ crc ^ _NVP_Stat1_AR_CRC_Offset[ _mNVP_Stat1_AR.SQC_NVP_Stat1 ] ]; // load offset
+            crc = (crc ^ 0xFF);
+            if( getValue(  HMI_CRC_NVP_Stat1_Invalid ) )
+                crc++;
+            _mNVP_Stat1_AR.CRC_NVP_Stat1 = crc;
+            putValue( HMI_CRC_NVP_Stat1, crc );
+        }
+        else
+            _mNVP_Stat1_AR.CRC_NVP_Stat1 = getValue(HMI_CRC_NVP_Stat1);
+    }
+    else
+    {
+        if( !getValue( HMI_CRC_NVP_Stat1_Auto ) )
+        {
+            // berechne crc
+            crc = 0xFF;
+//            crc = crctable[crc ^ _mNVP_Stat1_AR.byte( 0 )];  CRC
+            crc = crctable[crc ^ _mNVP_Stat1_AR.byte( 1 )];
+            crc = crctable[crc ^ _mNVP_Stat1_AR.byte( 2 )];
+            crc = crctable[crc ^ _mNVP_Stat1_AR.byte( 3 )];
+            crc = crctable[crc ^ _mNVP_Stat1_AR.byte( 4 )];
+//            crc = crctable[crc ^ _mNVP_Stat1_AR.byte( 5 )];
+//            crc = crctable[crc ^ _mNVP_Stat1_AR.byte( 6 )];
+//            crc = crctable[crc ^ _mNVP_Stat1_AR.byte( 7 )];
+            crc = (crc ^ 0xFF);
+            if( getValue(  HMI_CRC_NVP_Stat1_Invalid ) )
+                crc++;
+            _mNVP_Stat1_AR.CRC_NVP_Stat1 = crc;
+            putValue( HMI_CRC_NVP_Stat1, crc );
+        }
+        else
+            _mNVP_Stat1_AR.CRC_NVP_Stat1 = getValue(HMI_CRC_NVP_Stat1);
+    }
+    output( _mNVP_Stat1_AR );
+}
+/*@@end*/
+
+/*@@caplFunc:NVP_Stat1_AR_saveEnvVars(dword):*/
+void NVP_Stat1_AR_saveEnvVars(dword hFile)
+{
+        filePutString("\n// Knoten NV: NVP_Stat1_AR\n", 25, hFile);
+        snprintf(buffer, elcount(buffer), "0.0000 HMI__STMSG_NVP_Stat1 := %X\n", getValue( HMI__STMSG_NVP_Stat1_AR ) );        filePutString (buffer, elcount(buffer), hFile);
+        snprintf(buffer, elcount(buffer), "0.0000 HMI__STMSGT_NVP_Stat1 := %X\n", getValue( HMI__STMSGT_NVP_Stat1_AR ) );        filePutString (buffer, elcount(buffer), hFile);
+        snprintf(buffer, elcount(buffer), "0.0000 HMI_CRC_NVP_Stat1 := %X\n", getValue( HMI_CRC_NVP_Stat1 ) );        filePutString (buffer, elcount(buffer), hFile);
+        snprintf(buffer, elcount(buffer), "0.0000 HMI_CRC_NVP_Stat1_Auto := %X\n", getValue( HMI_CRC_NVP_Stat1_Auto ) );        filePutString (buffer, elcount(buffer), hFile);
+        snprintf(buffer, elcount(buffer), "0.0000 HMI_NVP_Disp_Rq := %X\n", getValue( HMI_NVP_Disp_Rq ) );        filePutString (buffer, elcount(buffer), hFile);
+        snprintf(buffer, elcount(buffer), "0.0000 HMI_NVP_DispMd_Stat := %X\n", getValue( HMI_NVP_DispMd_Stat ) );        filePutString (buffer, elcount(buffer), hFile);
+        snprintf(buffer, elcount(buffer), "0.0000 HMI_NVP_Icon_Stat := %X\n", getValue( HMI_NVP_Icon_Stat ) );        filePutString (buffer, elcount(buffer), hFile);
+        snprintf(buffer, elcount(buffer), "0.0000 HMI_NVP_IrLmp_On_Rq := %X\n", getValue( HMI_NVP_IrLmp_On_Rq ) );        filePutString (buffer, elcount(buffer), hFile);
+        snprintf(buffer, elcount(buffer), "0.0000 HMI_NVP_MenuSubs_Rq := %X\n", getValue( HMI_NVP_MenuSubs_Rq ) );        filePutString (buffer, elcount(buffer), hFile);
+        snprintf(buffer, elcount(buffer), "0.0000 HMI_NVP_SPL_Icon_Stat := %X\n", getValue( HMI_NVP_SPL_Icon_Stat ) );        filePutString (buffer, elcount(buffer), hFile);
+        snprintf(buffer, elcount(buffer), "0.0000 HMI_NVP_SPL_Md_Stat := %X\n", getValue( HMI_NVP_SPL_Md_Stat ) );        filePutString (buffer, elcount(buffer), hFile);
+        snprintf(buffer, elcount(buffer), "0.0000 HMI_NVP_SPL_Warn_Stat := %X\n", getValue( HMI_NVP_SPL_Warn_Stat ) );        filePutString (buffer, elcount(buffer), hFile);
+        snprintf(buffer, elcount(buffer), "0.0000 HMI_NVP_Sys_Stat := %X\n", getValue( HMI_NVP_Sys_Stat ) );        filePutString (buffer, elcount(buffer), hFile);
+        snprintf(buffer, elcount(buffer), "0.0000 HMI_NVP_Warn_Stat := %X\n", getValue( HMI_NVP_Warn_Stat ) );        filePutString (buffer, elcount(buffer), hFile);
+        snprintf(buffer, elcount(buffer), "0.0000 HMI_NVP_Warn_TrgrRq := %X\n", getValue( HMI_NVP_Warn_TrgrRq ) );        filePutString (buffer, elcount(buffer), hFile);
+        snprintf(buffer, elcount(buffer), "0.0000 HMI_NVP_Wpr_Rq := %X\n", getValue( HMI_NVP_Wpr_Rq ) );        filePutString (buffer, elcount(buffer), hFile);
+        snprintf(buffer, elcount(buffer), "0.0000 HMI_NVP_WshHt_Rq := %X\n", getValue( HMI_NVP_WshHt_Rq ) );        filePutString (buffer, elcount(buffer), hFile);
+        snprintf(buffer, elcount(buffer), "0.0000 HMI_SPL_MenuSubs_Rq := %X\n", getValue( HMI_SPL_MenuSubs_Rq ) );        filePutString (buffer, elcount(buffer), hFile);
+        snprintf(buffer, elcount(buffer), "0.0000 HMI_SQC_NVP_Stat1 := %X\n", getValue( HMI_SQC_NVP_Stat1 ) );        filePutString (buffer, elcount(buffer), hFile);
+        snprintf(buffer, elcount(buffer), "0.0000 HMI_SQC_NVP_Stat1_Auto := %X\n", getValue( HMI_SQC_NVP_Stat1_Auto ) );        filePutString (buffer, elcount(buffer), hFile);
+}
+/*@@end*/
+
+/*@@timer:_tNVP_Stat1_AR:*/
+on timer _tNVP_Stat1_AR
+{
+    putValue( HMI__STMSG_NVP_Stat1_AR, 0 );
+}
+/*@@end*/
+
+/*@@envVar:HMI__STMSG_NVP_Stat1_AR:*/
+on EnvVar HMI__STMSG_NVP_Stat1_AR
+{
+    long tDelay;
+    if( getValue( this ) == 2 )
+    {
+        tDelay = getValue( HMI__STMSGT_NVP_Stat1_AR );
+        if( tDelay > 0 )
+            setTimer( _tNVP_Stat1_AR, tDelay );
+        else
+            putValue( HMI__STMSG_NVP_Stat1_AR, 0 );
+    }
+}
+/*@@end*/
+
+/*@@envVar:HMI_NVP_Disp_Rq:*/
+on EnvVar HMI_NVP_Disp_Rq
+{
+    _mNVP_Stat1_AR.NVP_Disp_Rq.phys = getValue(this);
+}
+/*@@end*/
+
+/*@@envVar:HMI_NVP_DispMd_Stat:*/
+on EnvVar HMI_NVP_DispMd_Stat
+{
+    _mNVP_Stat1_AR.NVP_DispMd_Stat.phys = getValue(this);
+}
+/*@@end*/
+
+/*@@envVar:HMI_NVP_Icon_Stat:*/
+on EnvVar HMI_NVP_Icon_Stat
+{
+    _mNVP_Stat1_AR.NVP_Icon_Stat.phys = getValue(this);
+}
+/*@@end*/
+
+/*@@envVar:HMI_NVP_IrLmp_On_Rq:*/
+on EnvVar HMI_NVP_IrLmp_On_Rq
+{
+    _mNVP_Stat1_AR.NVP_IrLmp_On_Rq.phys = getValue(this);
+}
+/*@@end*/
+
+/*@@envVar:HMI_NVP_MenuSubs_Rq:*/
+on EnvVar HMI_NVP_MenuSubs_Rq
+{
+   _mNVP_Stat1_AR.NVP_MenuSubs_Rq.phys = getValue(this);
+}
+/*@@end*/
+
+/*@@envVar:HMI_NVP_SPL_Icon_Stat:*/
+on EnvVar HMI_NVP_SPL_Icon_Stat
+{
+    _mNVP_Stat1_AR.NVP_SPL_Icon_Stat.phys = getValue(this);
+}
+/*@@end*/
+
+/*@@envVar:HMI_NVP_SPL_Md_Stat:*/
+on EnvVar HMI_NVP_SPL_Md_Stat
+{
+    _mNVP_Stat1_AR.NVP_SPL_Md_Stat.phys = getValue(this);
+}
+/*@@end*/
+
+/*@@envVar:HMI_NVP_SPL_Warn_Stat:*/
+on EnvVar HMI_NVP_SPL_Warn_Stat
+{
+    _mNVP_Stat1_AR.NVP_SPL_Warn_Stat.phys = getValue(this);
+}
+/*@@end*/
+
+/*@@envVar:HMI_NVP_Sys_Stat:*/
+on EnvVar HMI_NVP_Sys_Stat
+{
+    _mNVP_Stat1_AR.NVP_Sys_Stat.phys = getValue(this);
+}
+/*@@end*/
+
+/*@@envVar:HMI_NVP_Warn_Stat:*/
+on EnvVar HMI_NVP_Warn_Stat
+{
+    _mNVP_Stat1_AR.NVP_Warn_Stat.phys = getValue(this);
+}
+/*@@end*/
+
+/*@@envVar:HMI_NVP_Warn_TrgrRq:*/
+on EnvVar HMI_NVP_Warn_TrgrRq
+{
+    _mNVP_Stat1_AR.NVP_Warn_TrgrRq.phys = getValue(this);
+}
+/*@@end*/
+
+/*@@envVar:HMI_NVP_Wpr_Rq:*/
+on EnvVar HMI_NVP_Wpr_Rq
+{
+    _mNVP_Stat1_AR.NVP_Wpr_Rq.phys = getValue(this);
+}
+/*@@end*/
+
+/*@@envVar:HMI_NVP_WshHt_Rq:*/
+on EnvVar HMI_NVP_WshHt_Rq
+{
+    _mNVP_Stat1_AR.NVP_WshHt_Rq.phys = getValue(this);
+}
+/*@@end*/
+
+/*@@envVar:HMI_SPL_MenuSubs_Rq:*/
+on EnvVar HMI_SPL_MenuSubs_Rq
+{
+    _mNVP_Stat1_AR.SPL_MenuSubs_Rq.phys = getValue(this);
+}
+/*@@end*/
+
+/*@@caplFunc:ROE_NV_check_output():*/
+ROE_NV_check_output()
+{
+    if( !getValue(HMI__STMSG_ROE_NV ) )
+    {
+        // Botschaft ROE_NV --- Sendeart cyclicWithRepeatOnDemand
+        if( _ROE_NV_Cnt > 0 )
+        {
+            _ROE_NV_Cnt--;
+            if( _ROE_NV_Cnt < 1 )
+            {
+                // Nachricht wg. abgelaufenem Zyklus ausgeben
+                output( _mROE_NV );
+                _ROE_NV_MsgRepetitions--;
+                if( _ROE_NV_MsgRepetitions > 0 ) _ROE_NV_Cnt = _ROE_NV_CycleCount;
+            }
+        }
+    }
+}
+/*@@end*/
+
+/*@@caplFunc:ROE_NV_init():*/
+ROE_NV_init()
+{   /* Botschaft ROE_NV ID: 2565817088 --- Sendeart 9 cyclicWithRepeatOnDemand --- 
+BA_ "ApplMessage" BO_ 2565817088 0;
+BA_ "NmAsrMessage" BO_ 2565817088 0;
+BA_ "GenMsgMinAcceptLength" BO_ 2565817088 8;
+BA_ "GenMsgILSupport" BO_ 2565817088 1;
+BA_ "DiagState" BO_ 2565817088 0;
+BA_ "DiagRequest" BO_ 2565817088 0;
+BA_ "DiagResponse" BO_ 2565817088 0;
+BA_ "GenMsgStartValue" BO_ 2565817088 "0";
+BA_ "GenMsgDelayTime" BO_ 2565817088 5;
+BA_ "GenMsgNrOfRepetitions" BO_ 2565817088 0;
+BA_ "GenMsgCycleTime" BO_ 2565817088 200;
+BA_ "GenMsgSendType" BO_ 2565817088 9;
+    */
+    _ROE_NV_Timebase =         c_tDBKomTimer_20ms;
+    _ROE_NV_CycleCount =     200 / _ROE_NV_Timebase;
+    _ROE_NV_StartDelay =       0 / _ROE_NV_Timebase;
+    _ROE_NV_Cnt = _ROE_NV_StartDelay;
+    _ROE_NV_MsgRepetitions = 0;
+
+    putValue( HMI__STMSGSD_ROE_NV, _ROE_NV_StartDelay );
+
+    _mROE_NV.ROE_Header_NV.phys = getValue(HMI_ROE_Header_NV);
+    _mROE_NV.ROE_DTC_Stat_NV.phys = getValue(HMI_ROE_DTC_Stat_NV);
+    _mROE_NV.ROE_DTC_NV.phys = getValue(HMI_ROE_DTC_NV);
+}
+/*@@end*/
+
+/*@@caplFunc:ROE_NV_restart(int):*/
+ROE_NV_restart(int nNumRepetitions)
+{
+    if( nNumRepetitions > _ROE_NV_MsgRepetitions)
+    {
+        if( _ROE_NV_MsgRepetitions < 1 )
+            _ROE_NV_Cnt = 1;
+        _ROE_NV_MsgRepetitions = nNumRepetitions;
+    }
+}
+/*@@end*/
+
+/*@@caplFunc:ROE_NV_saveEnvVars(dword):*/
+ROE_NV_saveEnvVars( dword hFile )
+{
+    filePutString("\n// Knoten ROE_NV\n", 33, hFile );
+    snprintf(buffer, elcount(buffer), "0.0000 HMI__STMSG_ROE_NV := %X\n", getValue(HMI__STMSG_ROE_NV ));		filePutString (buffer, elcount(buffer), hFile);
+    snprintf(buffer, elcount(buffer), "0.0000 HMI__STMSGT_ROE_NV := %X\n", getValue(HMI__STMSGT_ROE_NV ));		filePutString (buffer, elcount(buffer), hFile);
+    snprintf(buffer, elcount(buffer), "0.0000 HMI_ROE_Header_NV := %X\n", getValue( HMI_ROE_Header_NV ) );		filePutString (buffer, elcount(buffer), hFile);
+    snprintf(buffer, elcount(buffer), "0.0000 HMI_ROE_DTC_Stat_NV := %X\n", getValue( HMI_ROE_DTC_Stat_NV ) );		filePutString (buffer, elcount(buffer), hFile);
+    snprintf(buffer, elcount(buffer), "0.0000 HMI_ROE_DTC_NV := %X\n", getValue( HMI_ROE_DTC_NV ) );		filePutString (buffer, elcount(buffer), hFile);
+}
+/*@@end*/
+
+/*@@envVar:HMI_ROE_Header_NV:*/
+on EnvVar HMI_ROE_Header_NV
+{
+    _mROE_NV.ROE_Header_NV.phys = getValue(this);
+    ROE_NV_restart(1);
+}
+/*@@end*/
+
+/*@@envVar:HMI_ROE_DTC_Stat_NV:*/
+on EnvVar HMI_ROE_DTC_Stat_NV
+{
+    _mROE_NV.ROE_DTC_Stat_NV.phys = getValue(this);
+    ROE_NV_restart(1);
+}
+/*@@end*/
+
+/*@@envVar:HMI_ROE_DTC_NV:*/
+on EnvVar HMI_ROE_DTC_NV
+{
+    _mROE_NV.ROE_DTC_NV.phys = getValue(this);
+    ROE_NV_restart(1);
+}
+/*@@end*/
+
+/*@@caplFunc:SPL_Obj1_Obj2_NV_AR_Activity(int):*/
+void SPL_Obj1_Obj2_NV_AR_Activity(int active )
+{
+      if( active )
+      {
+          if( _SPL_Obj1_Obj2_NV_AR_SigActivity == 0)
+            _SPL_Obj1_Obj2_NV_AR_Cnt = 1;
+        _SPL_Obj1_Obj2_NV_AR_SigActivity++;
+      }
+    else
+    {
+        _SPL_Obj1_Obj2_NV_AR_SigActivity--;
+      }
+}
+/*@@end*/
+
+/*@@caplFunc:SPL_Obj1_Obj2_NV_AR_Change(int,int,int):*/
+int SPL_Obj1_Obj2_NV_AR_Change(int lastValue, int sigValue, int inActValue )
+{
+    bActiveHelper = (sigValue != inActValue );
+      if( !lastValue && bActiveHelper )
+        SPL_Obj1_Obj2_NV_AR_Activity( 1 );
+      else if( lastValue && !bActiveHelper )
+        SPL_Obj1_Obj2_NV_AR_Activity(0 );
+    return bActiveHelper;
+}
+/*@@end*/
+
+/*@@caplFunc:SPL_Obj1_Obj2_NV_AR_check_output():*/
+SPL_Obj1_Obj2_NV_AR_check_output()
+{
+      if( !getValue( HMI__STMSG_SPL_Obj1_Obj2_NV_AR ) )
+    {
+        // Botschaft SPL_Obj1_Obj2_NV_AR ID: 385 --- Sendeart 8 cyclicIfActiveFast --- 
+        _SPL_Obj1_Obj2_NV_AR_Cnt--;
+        if( _SPL_Obj1_Obj2_NV_AR_Cnt < 1 )
+        {
+            // Zyklus abgelaufen, Nachricht senden
+            SPL_Obj1_Obj2_NV_AR_output();
+            _SPL_Obj1_Obj2_NV_AR_Cnt = _SPL_Obj1_Obj2_NV_AR_SigActivity ? _SPL_Obj1_Obj2_NV_AR_CycleCountFast : _SPL_Obj1_Obj2_NV_AR_CycleCountSlow;
+        }
+    }
+}
+/*@@end*/
+
+/*@@caplFunc:SPL_Obj1_Obj2_NV_AR_init():*/
+SPL_Obj1_Obj2_NV_AR_init()
+{   /* Botschaft SPL_Obj1_Obj2_NV_AR ID: 385 --- Sendeart 8 cyclicIfActiveFast --- 
+BA_ "ApplMessage" BO_ 385 0;
+BA_ "NmAsrMessage" BO_ 385 0;
+BA_ "GenMsgMinAcceptLength" BO_ 385 8;
+BA_ "GenMsgILSupport" BO_ 385 1;
+BA_ "DiagState" BO_ 385 0;
+BA_ "DiagRequest" BO_ 385 0;
+BA_ "DiagResponse" BO_ 385 0;
+BA_ "GenMsgStartValue" BO_ 385 "0";
+BA_ "GenMsgStartDelayTime" BO_ 385 40;
+BA_ "GenMsgDelayTime" BO_ 385 5;
+BA_ "GenMsgCycleTime" BO_ 385 1040;
+BA_ "GenMsgCycleTimeActive" BO_ 385 80;
+BA_ "GenMsgSendType" BO_ 385 8;
+    */
+    _SPL_Obj1_Obj2_NV_AR_Timebase =             c_tDBKomTimer_20ms;
+    _SPL_Obj1_Obj2_NV_AR_CycleCountSlow =     1040 / _SPL_Obj1_Obj2_NV_AR_Timebase;
+    _SPL_Obj1_Obj2_NV_AR_CycleCountFast =       80 / _SPL_Obj1_Obj2_NV_AR_Timebase;
+    _SPL_Obj1_Obj2_NV_AR_StartDelay =           40 / _SPL_Obj1_Obj2_NV_AR_Timebase;
+    _SPL_Obj1_Obj2_NV_AR_Cnt = _SPL_Obj1_Obj2_NV_AR_StartDelay;
+    _SPL_Obj1_Obj2_NV_AR_SigActivity = 0;
+
+    putValue( HMI__STMSGSD_SPL_Obj1_Obj2_NV_AR, _SPL_Obj1_Obj2_NV_AR_StartDelay );
+    
+    _mSPL_Obj1_Obj2_NV_AR.Rsrv1_SPL_Obj1_Obj2_NV.phys = getValue( HMI_Rsrv1_SPL_Obj1_Obj2_NV );
+    _mSPL_Obj1_Obj2_NV_AR.Rsrv2_SPL_Obj1_Obj2_NV.phys = getValue( HMI_Rsrv2_SPL_Obj1_Obj2_NV );
+    _mSPL_Obj1_Obj2_NV_AR.Rsrv3_SPL_Obj1_Obj2_NV.phys = getValue( HMI_Rsrv3_SPL_Obj1_Obj2_NV );
+    _mSPL_Obj1_Obj2_NV_AR.SPL_Obj1_Dist_NV.phys = getValue( HMI_SPL_Obj1_Dist_NV );
+    _mSPL_Obj1_Obj2_NV_AR.SPL_Obj1_HrztAngl_NV.phys = getValue( HMI_SPL_Obj1_HrztAngl_NV );
+    _mSPL_Obj1_Obj2_NV_AR.SPL_Obj1_Id_NV.phys = getValue( HMI_SPL_Obj1_Id_NV );
+    _mSPL_Obj1_Obj2_NV_AR.SPL_Obj1_Ill_Rq_NV.phys = getValue( HMI_SPL_Obj1_Ill_Rq_NV );
+    _mSPL_Obj1_Obj2_NV_AR.SPL_Obj1_Type_NV.phys = getValue( HMI_SPL_Obj1_Type_NV );
+    _mSPL_Obj1_Obj2_NV_AR.SPL_Obj2_Dist_NV.phys = getValue( HMI_SPL_Obj2_Dist_NV );
+    _mSPL_Obj1_Obj2_NV_AR.SPL_Obj2_HrztAngl_NV.phys = getValue( HMI_SPL_Obj2_HrztAngl_NV );
+    _mSPL_Obj1_Obj2_NV_AR.SPL_Obj2_Id_NV.phys = getValue( HMI_SPL_Obj2_Id_NV );
+    _mSPL_Obj1_Obj2_NV_AR.SPL_Obj2_Ill_Rq_NV.phys = getValue( HMI_SPL_Obj2_Ill_Rq_NV );
+    _mSPL_Obj1_Obj2_NV_AR.SPL_Obj2_Type_NV.phys = getValue( HMI_SPL_Obj2_Type_NV );
+}
+/*@@end*/
+
+/*@@caplFunc:SPL_Obj1_Obj2_NV_AR_output():*/
+SPL_Obj1_Obj2_NV_AR_output(void)
+{
+    output( _mSPL_Obj1_Obj2_NV_AR );
+}
+/*@@end*/
+
+/*@@caplFunc:SPL_Obj1_Obj2_NV_AR_saveEnvVars(dword):*/
+SPL_Obj1_Obj2_NV_AR_saveEnvVars( dword hFile )
+{
+    filePutString("\n// Knoten SPL_Obj1_Obj2_NV_AR\n", 33, hFile );
+    snprintf(buffer, elcount(buffer), "0.0000 HMI__STMSG_SPL_Obj1_Obj2_NV_AR := %X\n", getValue(HMI__STMSG_SPL_Obj1_Obj2_NV_AR ));		filePutString (buffer, elcount(buffer), hFile);
+    snprintf(buffer, elcount(buffer), "0.0000 HMI__STMSGT_SPL_Obj1_Obj2_NV_AR := %X\n", getValue(HMI__STMSGT_SPL_Obj1_Obj2_NV_AR ));		filePutString (buffer, elcount(buffer), hFile);
+    snprintf(buffer, elcount(buffer), "0.0000 HMI_CRC_SPL_Obj1_Obj2_NV := %X\n", getValue( HMI_CRC_SPL_Obj1_Obj2_NV ) );		filePutString (buffer, elcount(buffer), hFile);
+    snprintf(buffer, elcount(buffer), "0.0000 HMI_CRC_SPL_Obj1_Obj2_NV_Auto := %X\n", getValue( HMI_CRC_SPL_Obj1_Obj2_NV_Auto ) );		filePutString (buffer, elcount(buffer), hFile);
+    snprintf(buffer, elcount(buffer), "0.0000 HMI_CRC_SPL_Obj1_Obj2_NV_Profile_02 := %X\n", getValue( HMI_CRC_SPL_Obj1_Obj2_NV_Profile_02 ) );		filePutString (buffer, elcount(buffer), hFile);
+    snprintf(buffer, elcount(buffer), "0.0000 HMI_Rsrv1_SPL_Obj1_Obj2_NV := %X\n", getValue( HMI_Rsrv1_SPL_Obj1_Obj2_NV ) );		filePutString (buffer, elcount(buffer), hFile);
+    snprintf(buffer, elcount(buffer), "0.0000 HMI_Rsrv2_SPL_Obj1_Obj2_NV := %X\n", getValue( HMI_Rsrv2_SPL_Obj1_Obj2_NV ) );		filePutString (buffer, elcount(buffer), hFile);
+    snprintf(buffer, elcount(buffer), "0.0000 HMI_Rsrv3_SPL_Obj1_Obj2_NV := %X\n", getValue( HMI_Rsrv3_SPL_Obj1_Obj2_NV ) );		filePutString (buffer, elcount(buffer), hFile);
+    snprintf(buffer, elcount(buffer), "0.0000 HMI_SPL_Obj1_Dist_NV := %X\n", getValue( HMI_SPL_Obj1_Dist_NV ) );		filePutString (buffer, elcount(buffer), hFile);
+    snprintf(buffer, elcount(buffer), "0.0000 HMI_SPL_Obj1_HrztAngl_NV := %X\n", getValue( HMI_SPL_Obj1_HrztAngl_NV ) );		filePutString (buffer, elcount(buffer), hFile);
+    snprintf(buffer, elcount(buffer), "0.0000 HMI_SPL_Obj1_Id_NV := %X\n", getValue( HMI_SPL_Obj1_Id_NV ) );		filePutString (buffer, elcount(buffer), hFile);
+    snprintf(buffer, elcount(buffer), "0.0000 HMI_SPL_Obj1_Ill_Rq_NV := %X\n", getValue( HMI_SPL_Obj1_Ill_Rq_NV ) );		filePutString (buffer, elcount(buffer), hFile);
+    snprintf(buffer, elcount(buffer), "0.0000 HMI_SPL_Obj1_Type_NV := %X\n", getValue( HMI_SPL_Obj1_Type_NV ) );		filePutString (buffer, elcount(buffer), hFile);
+    snprintf(buffer, elcount(buffer), "0.0000 HMI_SPL_Obj2_Dist_NV := %X\n", getValue( HMI_SPL_Obj2_Dist_NV ) );		filePutString (buffer, elcount(buffer), hFile);
+    snprintf(buffer, elcount(buffer), "0.0000 HMI_SPL_Obj2_HrztAngl_NV := %X\n", getValue( HMI_SPL_Obj2_HrztAngl_NV ) );		filePutString (buffer, elcount(buffer), hFile);
+    snprintf(buffer, elcount(buffer), "0.0000 HMI_SPL_Obj2_Id_NV := %X\n", getValue( HMI_SPL_Obj2_Id_NV ) );		filePutString (buffer, elcount(buffer), hFile);
+    snprintf(buffer, elcount(buffer), "0.0000 HMI_SPL_Obj2_Ill_Rq_NV := %X\n", getValue( HMI_SPL_Obj2_Ill_Rq_NV ) );		filePutString (buffer, elcount(buffer), hFile);
+    snprintf(buffer, elcount(buffer), "0.0000 HMI_SPL_Obj2_Type_NV := %X\n", getValue( HMI_SPL_Obj2_Type_NV ) );		filePutString (buffer, elcount(buffer), hFile);
+    snprintf(buffer, elcount(buffer), "0.0000 HMI_SQC_SPL_Obj1_Obj2_NV := %X\n", getValue( HMI_SQC_SPL_Obj1_Obj2_NV ) );		filePutString (buffer, elcount(buffer), hFile);
+    snprintf(buffer, elcount(buffer), "0.0000 HMI_SQC_SPL_Obj1_Obj2_NV_Auto := %X\n", getValue( HMI_SQC_SPL_Obj1_Obj2_NV_Auto ) );		filePutString (buffer, elcount(buffer), hFile);
+}
+/*@@end*/
+
+/*@@timer:_tSPL_Obj1_Obj2_NV_AR:*/
+on timer _tSPL_Obj1_Obj2_NV_AR
+{
+    putValue( HMI__STMSG_SPL_Obj1_Obj2_NV_AR, 0 );
+}
+/*@@end*/
+
+/*@@envVar:HMI__STMSG_SPL_Obj1_Obj2_NV_AR:*/
+on EnvVar HMI__STMSG_SPL_Obj1_Obj2_NV_AR
+{
+    long tDelay;
+    if( getValue( this ) == 2 )
+    {
+        tDelay = getValue( HMI__STMSGT_SPL_Obj1_Obj2_NV_AR );
+        if( tDelay > 0)    
+            setTimer( _tSPL_Obj1_Obj2_NV_AR, tDelay );
+        else
+            putValue( HMI__STMSG_SPL_Obj1_Obj2_NV_AR, 0 );
+    }
+}
+/*@@end*/
+
+/*@@envVar:HMI__ALLDEF_SPL_Obj1_Obj2_NV_AR:*/
+on EnvVar HMI__ALLDEF_SPL_Obj1_Obj2_NV_AR
+{
+    if( getValue(this) )
+    {
+        // alle signale auf default einstellen
+        putValue( HMI_Rsrv1_SPL_Obj1_Obj2_NV, 0 );
+        putValue( HMI_Rsrv2_SPL_Obj1_Obj2_NV, 0 );
+        putValue( HMI_Rsrv3_SPL_Obj1_Obj2_NV, 0 );
+        putValue( HMI_SPL_Obj1_Dist_NV, 0 );
+        putValue( HMI_SPL_Obj1_HrztAngl_NV, 0 );
+        putValue( HMI_SPL_Obj1_Id_NV, 0 );
+        putValue( HMI_SPL_Obj1_Ill_Rq_NV, 0 );
+        putValue( HMI_SPL_Obj1_Type_NV, 0 );
+        putValue( HMI_SPL_Obj2_Dist_NV, 0 );
+        putValue( HMI_SPL_Obj2_HrztAngl_NV, 0 );
+        putValue( HMI_SPL_Obj2_Id_NV, 0 );
+        putValue( HMI_SPL_Obj2_Ill_Rq_NV, 0 );
+        putValue( HMI_SPL_Obj2_Type_NV, 0 );
+    }
+}
+/*@@end*/
+
+/*@@envVar:HMI_Rsrv1_SPL_Obj1_Obj2_NV:*/
+on EnvVar HMI_Rsrv1_SPL_Obj1_Obj2_NV
+{
+    _mSPL_Obj1_Obj2_NV_AR.Rsrv1_SPL_Obj1_Obj2_NV.phys = getValue(this);
+    _SPL_Obj1_Obj2_NV_AR_Rsrv1_SPL_Obj1_Obj2_NV_LastState = SPL_Obj1_Obj2_NV_AR_Change( _SPL_Obj1_Obj2_NV_AR_Rsrv1_SPL_Obj1_Obj2_NV_LastState, _mSPL_Obj1_Obj2_NV_AR.Rsrv1_SPL_Obj1_Obj2_NV, 0 );
+}
+/*@@end*/
+
+/*@@envVar:HMI_Rsrv2_SPL_Obj1_Obj2_NV:*/
+on EnvVar HMI_Rsrv2_SPL_Obj1_Obj2_NV
+{
+    _mSPL_Obj1_Obj2_NV_AR.Rsrv2_SPL_Obj1_Obj2_NV.phys = getValue(this);
+    _SPL_Obj1_Obj2_NV_AR_Rsrv2_SPL_Obj1_Obj2_NV_LastState = SPL_Obj1_Obj2_NV_AR_Change( _SPL_Obj1_Obj2_NV_AR_Rsrv2_SPL_Obj1_Obj2_NV_LastState, _mSPL_Obj1_Obj2_NV_AR.Rsrv2_SPL_Obj1_Obj2_NV, 0 );
+}
+/*@@end*/
+
+/*@@envVar:HMI_Rsrv3_SPL_Obj1_Obj2_NV:*/
+on EnvVar HMI_Rsrv3_SPL_Obj1_Obj2_NV
+{
+    _mSPL_Obj1_Obj2_NV_AR.Rsrv3_SPL_Obj1_Obj2_NV.phys = getValue(this);
+    _SPL_Obj1_Obj2_NV_AR_Rsrv3_SPL_Obj1_Obj2_NV_LastState = SPL_Obj1_Obj2_NV_AR_Change( _SPL_Obj1_Obj2_NV_AR_Rsrv3_SPL_Obj1_Obj2_NV_LastState, _mSPL_Obj1_Obj2_NV_AR.Rsrv3_SPL_Obj1_Obj2_NV, 0 );
+}
+/*@@end*/
+
+/*@@envVar:HMI_SPL_Obj1_Dist_NV:*/
+on EnvVar HMI_SPL_Obj1_Dist_NV
+{
+    _mSPL_Obj1_Obj2_NV_AR.SPL_Obj1_Dist_NV.phys = getValue(this);
+    _SPL_Obj1_Obj2_NV_AR_SPL_Obj1_Dist_NV_LastState = SPL_Obj1_Obj2_NV_AR_Change( _SPL_Obj1_Obj2_NV_AR_SPL_Obj1_Dist_NV_LastState, _mSPL_Obj1_Obj2_NV_AR.SPL_Obj1_Dist_NV, 0 );
+}
+/*@@end*/
+
+/*@@envVar:HMI_SPL_Obj1_HrztAngl_NV:*/
+on EnvVar HMI_SPL_Obj1_HrztAngl_NV
+{
+    _mSPL_Obj1_Obj2_NV_AR.SPL_Obj1_HrztAngl_NV.phys = getValue(this);
+    _SPL_Obj1_Obj2_NV_AR_SPL_Obj1_HrztAngl_NV_LastState = SPL_Obj1_Obj2_NV_AR_Change( _SPL_Obj1_Obj2_NV_AR_SPL_Obj1_HrztAngl_NV_LastState, _mSPL_Obj1_Obj2_NV_AR.SPL_Obj1_HrztAngl_NV, 0 );
+}
+/*@@end*/
+
+/*@@envVar:HMI_SPL_Obj1_Id_NV:*/
+on EnvVar HMI_SPL_Obj1_Id_NV
+{
+    _mSPL_Obj1_Obj2_NV_AR.SPL_Obj1_Id_NV.phys = getValue(this);
+    _SPL_Obj1_Obj2_NV_AR_SPL_Obj1_Id_NV_LastState = SPL_Obj1_Obj2_NV_AR_Change( _SPL_Obj1_Obj2_NV_AR_SPL_Obj1_Id_NV_LastState, _mSPL_Obj1_Obj2_NV_AR.SPL_Obj1_Id_NV, 0 );
+}
+/*@@end*/
+
+/*@@envVar:HMI_SPL_Obj1_Ill_Rq_NV:*/
+on EnvVar HMI_SPL_Obj1_Ill_Rq_NV
+{
+    _mSPL_Obj1_Obj2_NV_AR.SPL_Obj1_Ill_Rq_NV.phys = getValue(this);
+    _SPL_Obj1_Obj2_NV_AR_SPL_Obj1_Ill_Rq_NV_LastState = SPL_Obj1_Obj2_NV_AR_Change( _SPL_Obj1_Obj2_NV_AR_SPL_Obj1_Ill_Rq_NV_LastState, _mSPL_Obj1_Obj2_NV_AR.SPL_Obj1_Ill_Rq_NV, 0 );
+}
+/*@@end*/
+
+/*@@envVar:HMI_SPL_Obj1_Type_NV:*/
+on EnvVar HMI_SPL_Obj1_Type_NV
+{
+    _mSPL_Obj1_Obj2_NV_AR.SPL_Obj1_Type_NV.phys = getValue(this);
+    _SPL_Obj1_Obj2_NV_AR_SPL_Obj1_Type_NV_LastState = SPL_Obj1_Obj2_NV_AR_Change( _SPL_Obj1_Obj2_NV_AR_SPL_Obj1_Type_NV_LastState, _mSPL_Obj1_Obj2_NV_AR.SPL_Obj1_Type_NV, 0 );
+}
+/*@@end*/
+
+/*@@envVar:HMI_SPL_Obj2_Dist_NV:*/
+on EnvVar HMI_SPL_Obj2_Dist_NV
+{
+    _mSPL_Obj1_Obj2_NV_AR.SPL_Obj2_Dist_NV.phys = getValue(this);
+    _SPL_Obj1_Obj2_NV_AR_SPL_Obj2_Dist_NV_LastState = SPL_Obj1_Obj2_NV_AR_Change( _SPL_Obj1_Obj2_NV_AR_SPL_Obj2_Dist_NV_LastState, _mSPL_Obj1_Obj2_NV_AR.SPL_Obj2_Dist_NV, 0 );
+}
+/*@@end*/
+
+/*@@envVar:HMI_SPL_Obj2_HrztAngl_NV:*/
+on EnvVar HMI_SPL_Obj2_HrztAngl_NV
+{
+    _mSPL_Obj1_Obj2_NV_AR.SPL_Obj2_HrztAngl_NV.phys = getValue(this);
+    _SPL_Obj1_Obj2_NV_AR_SPL_Obj2_HrztAngl_NV_LastState = SPL_Obj1_Obj2_NV_AR_Change( _SPL_Obj1_Obj2_NV_AR_SPL_Obj2_HrztAngl_NV_LastState, _mSPL_Obj1_Obj2_NV_AR.SPL_Obj2_HrztAngl_NV, 0 );
+}
+/*@@end*/
+
+/*@@envVar:HMI_SPL_Obj2_Id_NV:*/
+on EnvVar HMI_SPL_Obj2_Id_NV
+{
+    _mSPL_Obj1_Obj2_NV_AR.SPL_Obj2_Id_NV.phys = getValue(this);
+    _SPL_Obj1_Obj2_NV_AR_SPL_Obj2_Id_NV_LastState = SPL_Obj1_Obj2_NV_AR_Change( _SPL_Obj1_Obj2_NV_AR_SPL_Obj2_Id_NV_LastState, _mSPL_Obj1_Obj2_NV_AR.SPL_Obj2_Id_NV, 0 );
+}
+/*@@end*/
+
+/*@@envVar:HMI_SPL_Obj2_Ill_Rq_NV:*/
+on EnvVar HMI_SPL_Obj2_Ill_Rq_NV
+{
+    _mSPL_Obj1_Obj2_NV_AR.SPL_Obj2_Ill_Rq_NV.phys = getValue(this);
+    _SPL_Obj1_Obj2_NV_AR_SPL_Obj2_Ill_Rq_NV_LastState = SPL_Obj1_Obj2_NV_AR_Change( _SPL_Obj1_Obj2_NV_AR_SPL_Obj2_Ill_Rq_NV_LastState, _mSPL_Obj1_Obj2_NV_AR.SPL_Obj2_Ill_Rq_NV, 0 );
+}
+/*@@end*/
+
+/*@@envVar:HMI_SPL_Obj2_Type_NV:*/
+on EnvVar HMI_SPL_Obj2_Type_NV
+{
+    _mSPL_Obj1_Obj2_NV_AR.SPL_Obj2_Type_NV.phys = getValue(this);
+    _SPL_Obj1_Obj2_NV_AR_SPL_Obj2_Type_NV_LastState = SPL_Obj1_Obj2_NV_AR_Change( _SPL_Obj1_Obj2_NV_AR_SPL_Obj2_Type_NV_LastState, _mSPL_Obj1_Obj2_NV_AR.SPL_Obj2_Type_NV, 0 );
+}
+/*@@end*/
+

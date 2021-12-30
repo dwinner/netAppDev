@@ -1,89 +1,112 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.2" xml:lang="en-US">
-  <compounddef id="classcapl_1_1_diag_response_event" kind="class" language="C++" prot="public">
-    <compoundname>capl::DiagResponseEvent</compoundname>
-    <basecompoundref refid="classcapl_1_1_i_event" prot="public" virt="non-virtual">capl::IEvent&lt; IDiagResponse &amp; &gt;</basecompoundref>
-      <sectiondef kind="public-func">
-      <memberdef kind="function" id="classcapl_1_1_diag_response_event_1a9dcf40855e1bd9c22d092164bbeb7beb" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
-        <type></type>
-        <definition>capl::DiagResponseEvent::DiagResponseEvent</definition>
-        <argsstring>()</argsstring>
-        <name>DiagResponseEvent</name>
+
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd"
+         version="1.9.2" xml:lang="en-US">
+    <compounddef id="classcapl_1_1_diag_response_event" kind="class" language="C++" prot="public">
+        <compoundname>capl::DiagResponseEvent</compoundname>
+        <basecompoundref refid="classcapl_1_1_i_event" prot="public" virt="non-virtual">capl::IEvent&lt; IDiagResponse &amp; &gt;</basecompoundref>
+        <sectiondef kind="public-func">
+            <memberdef kind="function" id="classcapl_1_1_diag_response_event_1a9dcf40855e1bd9c22d092164bbeb7beb"
+                       prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+                <type></type>
+                <definition>capl::DiagResponseEvent::DiagResponseEvent</definition>
+                <argsstring>()</argsstring>
+                <name>DiagResponseEvent</name>
+                <briefdescription>
+                </briefdescription>
+                <detaileddescription>
+                </detaileddescription>
+                <inbodydescription>
+                </inbodydescription>
+                <location file="CAPLPluginApi.h" line="2571" column="9" bodyfile="CAPLPluginApi.h" bodystart="2571"
+                          bodyend="2573" />
+            </memberdef>
+            <memberdef kind="function" id="classcapl_1_1_diag_response_event_1a16badca499593b93a0450c1f6fde4612"
+                       prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+                <type></type>
+                <definition>capl::DiagResponseEvent::DiagResponseEvent</definition>
+                <argsstring>(const char *sIds)</argsstring>
+                <name>DiagResponseEvent</name>
+                <param>
+                    <type>const char *</type>
+                    <declname>sIds</declname>
+                </param>
+                <briefdescription>
+                </briefdescription>
+                <detaileddescription>
+                </detaileddescription>
+                <inbodydescription>
+                </inbodydescription>
+                <location file="CAPLPluginApi.h" line="2574" column="9" />
+            </memberdef>
+            <memberdef kind="function" id="classcapl_1_1_diag_response_event_1a4f33b88e25e57bec0a19d6489a57d6a8"
+                       prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+                <type></type>
+                <definition>virtual capl::DiagResponseEvent::~DiagResponseEvent</definition>
+                <argsstring>()</argsstring>
+                <name>~DiagResponseEvent</name>
+                <briefdescription>
+                </briefdescription>
+                <detaileddescription>
+                </detaileddescription>
+                <inbodydescription>
+                </inbodydescription>
+                <location file="CAPLPluginApi.h" line="2575" column="17" />
+            </memberdef>
+        </sectiondef>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
         </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="CAPLPluginApi.h" line="2571" column="9" bodyfile="CAPLPluginApi.h" bodystart="2571" bodyend="2573"/>
-      </memberdef>
-      <memberdef kind="function" id="classcapl_1_1_diag_response_event_1a16badca499593b93a0450c1f6fde4612" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
-        <type></type>
-        <definition>capl::DiagResponseEvent::DiagResponseEvent</definition>
-        <argsstring>(const char *sIds)</argsstring>
-        <name>DiagResponseEvent</name>
-        <param>
-          <type>const char *</type>
-          <declname>sIds</declname>
-        </param>
-        <briefdescription>
-        </briefdescription>
-        <detaileddescription>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="CAPLPluginApi.h" line="2574" column="9"/>
-      </memberdef>
-      <memberdef kind="function" id="classcapl_1_1_diag_response_event_1a4f33b88e25e57bec0a19d6489a57d6a8" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
-        <type></type>
-        <definition>virtual capl::DiagResponseEvent::~DiagResponseEvent</definition>
-        <argsstring>()</argsstring>
-        <name>~DiagResponseEvent</name>
-        <briefdescription>
-        </briefdescription>
-        <detaileddescription>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="CAPLPluginApi.h" line="2575" column="17"/>
-      </memberdef>
-      </sectiondef>
-    <briefdescription>
-    </briefdescription>
-    <detaileddescription>
-    </detaileddescription>
-    <inheritancegraph>
-      <node id="2">
-        <label>capl::IEvent&lt; IDiagResponse &amp; &gt;</label>
-        <link refid="classcapl_1_1_i_event"/>
-      </node>
-      <node id="1">
-        <label>capl::DiagResponseEvent</label>
-        <link refid="classcapl_1_1_diag_response_event"/>
-        <childnode refid="2" relation="public-inheritance">
-        </childnode>
-      </node>
-    </inheritancegraph>
-    <collaborationgraph>
-      <node id="2">
-        <label>capl::IEvent&lt; IDiagResponse &amp; &gt;</label>
-        <link refid="classcapl_1_1_i_event"/>
-      </node>
-      <node id="1">
-        <label>capl::DiagResponseEvent</label>
-        <link refid="classcapl_1_1_diag_response_event"/>
-        <childnode refid="2" relation="public-inheritance">
-        </childnode>
-      </node>
-    </collaborationgraph>
-    <location file="CAPLPluginApi.h" line="2568" column="5" bodyfile="CAPLPluginApi.h" bodystart="2569" bodyend="2577"/>
-    <listofallmembers>
-      <member refid="classcapl_1_1_diag_response_event_1a9dcf40855e1bd9c22d092164bbeb7beb" prot="public" virt="non-virtual"><scope>capl::DiagResponseEvent</scope><name>DiagResponseEvent</name></member>
-      <member refid="classcapl_1_1_diag_response_event_1a16badca499593b93a0450c1f6fde4612" prot="public" virt="non-virtual"><scope>capl::DiagResponseEvent</scope><name>DiagResponseEvent</name></member>
-      <member refid="classcapl_1_1_i_event_1a3fb0217883734109c5ebba0e89ddc302" prot="public" virt="non-virtual"><scope>capl::DiagResponseEvent</scope><name>IEvent</name></member>
-      <member refid="classcapl_1_1_i_event_1acf5a313898cfb55070e749789b31528f" prot="protected" virt="non-virtual"><scope>capl::DiagResponseEvent</scope><name>m_hEvent</name></member>
-      <member refid="classcapl_1_1_i_event_1a5d6973af1cfbe659c3b0ec1ef0d92200" prot="public" virt="pure-virtual"><scope>capl::DiagResponseEvent</scope><name>OnEvent</name></member>
-      <member refid="classcapl_1_1_diag_response_event_1a4f33b88e25e57bec0a19d6489a57d6a8" prot="public" virt="virtual"><scope>capl::DiagResponseEvent</scope><name>~DiagResponseEvent</name></member>
-    </listofallmembers>
-  </compounddef>
+        <inheritancegraph>
+            <node id="2">
+                <label>capl::IEvent&lt; IDiagResponse &amp; &gt;</label>
+                <link refid="classcapl_1_1_i_event" />
+            </node>
+            <node id="1">
+                <label>capl::DiagResponseEvent</label>
+                <link refid="classcapl_1_1_diag_response_event" />
+                <childnode refid="2" relation="public-inheritance">
+                </childnode>
+            </node>
+        </inheritancegraph>
+        <collaborationgraph>
+            <node id="2">
+                <label>capl::IEvent&lt; IDiagResponse &amp; &gt;</label>
+                <link refid="classcapl_1_1_i_event" />
+            </node>
+            <node id="1">
+                <label>capl::DiagResponseEvent</label>
+                <link refid="classcapl_1_1_diag_response_event" />
+                <childnode refid="2" relation="public-inheritance">
+                </childnode>
+            </node>
+        </collaborationgraph>
+        <location file="CAPLPluginApi.h" line="2568" column="5" bodyfile="CAPLPluginApi.h" bodystart="2569"
+                  bodyend="2577" />
+        <listofallmembers>
+            <member refid="classcapl_1_1_diag_response_event_1a9dcf40855e1bd9c22d092164bbeb7beb" prot="public"
+                    virt="non-virtual">
+                <scope>capl::DiagResponseEvent</scope><name>DiagResponseEvent</name>
+            </member>
+            <member refid="classcapl_1_1_diag_response_event_1a16badca499593b93a0450c1f6fde4612" prot="public"
+                    virt="non-virtual">
+                <scope>capl::DiagResponseEvent</scope><name>DiagResponseEvent</name>
+            </member>
+            <member refid="classcapl_1_1_i_event_1a3fb0217883734109c5ebba0e89ddc302" prot="public" virt="non-virtual">
+                <scope>capl::DiagResponseEvent</scope><name>IEvent</name>
+            </member>
+            <member refid="classcapl_1_1_i_event_1acf5a313898cfb55070e749789b31528f" prot="protected"
+                    virt="non-virtual">
+                <scope>capl::DiagResponseEvent</scope><name>m_hEvent</name>
+            </member>
+            <member refid="classcapl_1_1_i_event_1a5d6973af1cfbe659c3b0ec1ef0d92200" prot="public" virt="pure-virtual">
+                <scope>capl::DiagResponseEvent</scope><name>OnEvent</name>
+            </member>
+            <member refid="classcapl_1_1_diag_response_event_1a4f33b88e25e57bec0a19d6489a57d6a8" prot="public"
+                    virt="virtual">
+                <scope>capl::DiagResponseEvent</scope><name>~DiagResponseEvent</name>
+            </member>
+        </listofallmembers>
+    </compounddef>
 </doxygen>

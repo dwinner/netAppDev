@@ -1,0 +1,630 @@
+/*@@var:*/
+/*
+Copyright ( C ) Continental AG 2012
+
+Created by generator, do not modify
+
+Based on Version  1.0, 12.05.10   from M.Dangelmeyr      IBD im Auftrag von EP/ESE   Daimler AG
+
+Date of creation :  14.04.2011
+
+Created by :                 Hans Jürgen Hipp
+
+*/
+
+
+variables
+{
+    const TRUE  = 0xAA;
+    const FALSE = 0x00;
+
+//    msTimer t_DBKomTimer;      // Timer zum zyklischen Aufruf der DBKom-Task
+    int c_tDBKomTimer = 20;    // msec
+
+
+    // BA_DEF_ BO_  "GenMsgSendType" ENUM
+    //  0 : cyclicX
+    //  1 : spontanX
+    //  2 : cyclicIfActiveX
+    //  3 : spontanWithDelay
+    //  4 : cyclicAndSpontanX
+    //  5 : cyclicAndSpontanWithDelay
+    //  6 : spontanWithRepitition
+    //  7 : cyclicIfActiveAndSpontanWD
+    //  8 : cyclicIfActiveFast
+    //  9 : cyclicWithRepeatOnDemand
+    //  10 : none
+
+    // Botschaft Ctrl_C_Stat2_AR ---- Sendeart 0 cyclic ---- Beginn Variablenblock
+    message Ctrl_C_Stat2_AR _mCtrl_C_Stat2_AR;
+    int _Ctrl_C_Stat2_AR_CycleCount = 2;
+    int _Ctrl_C_Stat2_AR_Cnt;
+//   msTimer _tCtrl_C_Stat2_AR;
+
+   // Botschaft ECU_APPL_TPAD1 ---- Sendeart 1 spontanX
+   message ECU_APPL_TPAD1 _mECU_APPL_TPAD1;
+   int _ECU_APPL_TPAD1_SpontanFlag = 0;
+//   msTimer _tECU_APPL_TPAD1;
+
+   // Botschaft ROE_TPAD ---- Sendeart 9 cyclicWithRepeatOnDemand
+   message ROE_TPAD _mROE_TPAD;
+   int _ROE_TPAD_CycleCount = 3276;  
+   int _ROE_TPAD_Cnt;
+   int _ROE_TPAD_MsgRepetitions;
+//   msTimer _tROE_TPAD;
+
+   // Botschaft TPAD_Characters_AR ---- Sendeart 0 cyclicX
+   message TPAD_Characters_AR _mTPAD_Characters_AR;
+   int _TPAD_Characters_AR_CycleCount = 1;
+   int _TPAD_Characters_AR_Cnt;
+//   msTimer _tTPAD_Characters_AR;
+
+   // Botschaft TPAD_Gesture1_AR ---- Sendeart 0 cyclicX
+   message TPAD_Gesture1_AR _mTPAD_Gesture1_AR;
+   int _TPAD_Gesture1_AR_CycleCount = 1;
+   int _TPAD_Gesture1_AR_Cnt;
+//   msTimer _tTPAD_Gesture1_AR;
+
+   // Botschaft TPAD_Gesture2_AR ---- Sendeart 0 cyclicX
+   message TPAD_Gesture2_AR _mTPAD_Gesture2_AR;
+   int _TPAD_Gesture2_AR_CycleCount = 1;
+   int _TPAD_Gesture2_AR_Cnt;
+//   msTimer _tTPAD_Gesture2_AR;
+
+
+
+
+
+
+//    Timer _tDoorNMCancelTimer;
+//    Timer _tKeyInLockNMCancelTimer;
+
+    char buffer[1024], stringbuffer[512];
+    int bActiveHelper;    // Hilfsvariable für "Aktive Signale"
+
+//--------------------------------------- AUTOSAR NM ------------------------------------------------
+
+    const byte cAUTO =   0;
+    const byte cMANUAL = 1;
+
+//    msTimer t_NM_Transmit;
+    long  NM_Transmit_Cycle;
+//    msTimer t_NM_Wait_Bus_Sleep_Time;
+    const c_NM_Wait_Bus_Sleep_Time = 1500;
+//    msTimer t_NM_Remote_Sleep_Ind_Time;
+    const c_NM_Remote_Sleep_Ind_Time = 5000;
+//    msTimer t_NM_Repeat_Message_Time;
+    const c_NM_Repeat_Message_Time = 6000;
+//    msTimer t_NM_Timeout_Time;
+    const c_NM_Timeout_Time = 5000;
+
+    byte NM_Mode = 0;
+    const byte cNM_Mode_Init = 0;
+    const byte cNM_Mode_Sleep = 1;
+    const byte cNM_Mode_Prepare_Bus_Sleep = 2;
+    const byte cNM_Mode_Ready_Sleep = 3;
+    const byte cNM_Mode_Normal_Operation_State = 4;
+    const byte cNM_Mode_RepeatMsg = 5;
+
+    byte boCanNM_Rx_Indication = 0; 
+    byte boCanNM_Tx_Confirmation = 0; 
+    byte boCanNM_WaitBusSleep_Timer_Expired = 0; 
+    byte boCanNM_RepeatMessage_Timer_Expired = 0; 
+    byte boCanNM_NM_Timeout_Timer_Expired = 0; 
+    byte boCanNM_RepeatMessage_Requested = 0; 
+
+    const cFLDoorNMRequest =     1;
+    const cFRDoorNMRequest =     2;
+    const cRLDoorNMRequest =     4;
+    const cRRDoorNMRequest =     8;
+    const cIgnitionNMRequest =  16;
+    const cManualNMRequest =   128;
+
+    const CanNmNodeId_Base =       1280; //  = 400h
+    const CanNmNodeId_TPAD =         55;
+    const CanNmNodeId_TGW =          56; //  =  38h
+    const CanNmNodeId_DISP_RL =      57;
+    const CanNmNodeId_CTRL_C =       58;
+    const CanNmNodeId_DISP_C =       59;
+    const CanNmNodeId_FU =           60;
+    const CanNmNodeId_DISP_RR =      61;
+
+    const CanNmNodeDetectionEnabled          = 0; //false
+    const CanNmNodeIdEnabled                 = 1; //true
+    const CanNmUserDataEnabled               = 1; //true;
+    const CanNmUserDataLentgh                = 7;
+    const CanNmRepeatMsgIndEnabled           = 1; //true;
+    const CanNmDevErrorDetect                = 0; //false
+//    const CanNmUserDataEnabled             = 1; //true
+    const CanNmRemoteSleepIndEnabled         = 0; //false
+    const CanNmMsgReducedtime                = 80; //ms
+    const CanNmPduRxIndicationEnabled        = 0; //false
+    const CanNmStateChangeIndEnabled         = 0; //false
+    const CanNmImmediateTxconfEnabled        = 0;// false
+    const CanNmMsgTimeoutTime                = 5000; //ms
+    const CanNmPduNidPosition                = 0; //CANNM_PDU_BYTE_0;
+    const CanNmPduCbvPosition                = 0xFF; //ANNM_PDU_OFF;
+    const CanNmPduLength                     = 8;
+    const cCanNmPassiveModeEnabled           = 0; //false
+    const CanNmBusSynchronizationEnabled     = 0; //false
+    const CanNmBusLoadReductionEnabled       = 1; //true
+//    const CanNmRemoteSleepIndEnabled       = 0; //false
+//    const CanNmNodeDetectionEnabled        = 0; //false
+    const CanNmComControlEnabled             = 1; //true    
+
+    const NmAsrCanMsgStandardCycle =          2000;
+    const NmAsrCanMsgCycleOffset_TPAD =         70;
+    const NmAsrCanMsgReducedTime_TPAD =       1550;
+    const NmAsrCanMsgCycleOffset_TGW =           0;
+    const NmAsrCanMsgReducedTime_TGW =        1560;
+    const NmAsrCanMsgCycleOffset_DISP_RL =      10;
+    const NmAsrCanMsgReducedTime_DISP_RL =    1570;
+    const NmAsrCanMsgCycleOffset_CTRL_C =       20;
+    const NmAsrCanMsgReducedTime_CTRL_C =     1580;
+    const NmAsrCanMsgCycleOffset_DISP_C =       30;
+    const NmAsrCanMsgReducedTime_DISP_C =     1590;
+    const NmAsrCanMsgCycleOffset_FU =           40;
+    const NmAsrCanMsgReducedTime_FU =         1600;
+    const NmAsrCanMsgCycleOffset_DISP_RR =      50;
+    const NmAsrCanMsgReducedTime_DISP_RR =    1610;
+
+    char gECU[10] = "HU_CTRL_C";
+
+    byte CanNmNodeId            = CanNmNodeId_TPAD;
+    word NmNodeIdentifier       = CanNmNodeId_Base + CanNmNodeId_TPAD;
+    word NmAsrCanMsgCycleOffset = NmAsrCanMsgCycleOffset_TPAD;
+    word NmAsrCanMsgReducedTime = NmAsrCanMsgReducedTime_TPAD;
+    word NmAsrCanMsgCycleTime   = 2000;
+    byte NM_Repeat_Message_State_Active = 0;
+    byte NM_AutomaticModeActive = 0;
+
+    // Botschaft NM_xxx_AR ---- Sendeart cyclicX
+      message CAN1.HU_NM::NM_TPAD_AR _mNM_xxx_AR;
+
+//--------------------------------------- AUTOSAR NM ------------------------------------------------
+
+   byte  crctable[256] = {
+      0x00, 0x1D, 0x3A, 0x27, 0x74, 0x69, 0x4E, 0x53,
+      0xE8, 0xF5, 0xD2, 0xCF, 0x9C, 0x81, 0xA6, 0xBB,
+      0xCD, 0xD0, 0xF7, 0xEA, 0xB9, 0xA4, 0x83, 0x9E,
+      0x25, 0x38, 0x1F, 0x02, 0x51, 0x4C, 0x6B, 0x76,
+      0x87, 0x9A, 0xBD, 0xA0, 0xF3, 0xEE, 0xC9, 0xD4,
+      0x6F, 0x72, 0x55, 0x48, 0x1B, 0x06, 0x21, 0x3C,
+      0x4A, 0x57, 0x70, 0x6D, 0x3E, 0x23, 0x04, 0x19,
+      0xA2, 0xBF, 0x98, 0x85, 0xD6, 0xCB, 0xEC, 0xF1,
+      0x13, 0x0E, 0x29, 0x34, 0x67, 0x7A, 0x5D, 0x40,
+      0xFB, 0xE6, 0xC1, 0xDC, 0x8F, 0x92, 0xB5, 0xA8,
+      0xDE, 0xC3, 0xE4, 0xF9, 0xAA, 0xB7, 0x90, 0x8D,
+      0x36, 0x2B, 0x0C, 0x11, 0x42, 0x5F, 0x78, 0x65,
+      0x94, 0x89, 0xAE, 0xB3, 0xE0, 0xFD, 0xDA, 0xC7,
+      0x7C, 0x61, 0x46, 0x5B, 0x08, 0x15, 0x32, 0x2F,
+      0x59, 0x44, 0x63, 0x7E, 0x2D, 0x30, 0x17, 0x0A,
+      0xB1, 0xAC, 0x8B, 0x96, 0xC5, 0xD8, 0xFF, 0xE2,
+      0x26, 0x3B, 0x1C, 0x01, 0x52, 0x4F, 0x68, 0x75,
+      0xCE, 0xD3, 0xF4, 0xE9, 0xBA, 0xA7, 0x80, 0x9D,
+      0xEB, 0xF6, 0xD1, 0xCC, 0x9F, 0x82, 0xA5, 0xB8,
+      0x03, 0x1E, 0x39, 0x24, 0x77, 0x6A, 0x4D, 0x50,
+      0xA1, 0xBC, 0x9B, 0x86, 0xD5, 0xC8, 0xEF, 0xF2,
+      0x49, 0x54, 0x73, 0x6E, 0x3D, 0x20, 0x07, 0x1A,
+      0x6C, 0x71, 0x56, 0x4B, 0x18, 0x05, 0x22, 0x3F,
+      0x84, 0x99, 0xBE, 0xA3, 0xF0, 0xED, 0xCA, 0xD7,
+      0x35, 0x28, 0x0F, 0x12, 0x41, 0x5C, 0x7B, 0x66,
+      0xDD, 0xC0, 0xE7, 0xFA, 0xA9, 0xB4, 0x93, 0x8E,
+      0xF8, 0xE5, 0xC2, 0xDF, 0x8C, 0x91, 0xB6, 0xAB,
+      0x10, 0x0D, 0x2A, 0x37, 0x64, 0x79, 0x5E, 0x43,
+      0xB2, 0xAF, 0x88, 0x95, 0xC6, 0xDB, 0xFC, 0xE1,
+      0x5A, 0x47, 0x60, 0x7D, 0x2E, 0x33, 0x14, 0x09,
+      0x7F, 0x62, 0x45, 0x58, 0x0B, 0x16, 0x31, 0x2C,
+      0x97, 0x8A, 0xAD, 0xB0, 0xE3, 0xFE, 0xD9, 0xC4
+   };
+
+
+    byte CANape_ActSensorValue[140];
+    byte CANape_AdditionalInfo[40];
+
+    long readPara1;
+    long readPara2;
+    long defVal = -1;
+
+}
+/*@@end*/
+
+/*@@startStart:Start:*/
+on start
+{
+    putValue( HU__NM_TPAD_NM_Request, 0 );  // reset all requests
+//    _NM_Switch_NM_Mode();
+
+    putValue( HU__NM_TPAD_AutomaticModeActive, 0 );
+    putValue( HU__NM_TPAD_AutomaticModeActive, 1 );
+
+}
+/*@@end*/
+
+/*@@msg:CAN1.HU_213_2014_29a::Ctrl_C_Stat2_AR (0x1F5):*/
+on message Ctrl_C_Stat2_AR
+{
+	putValue( HU_NumPadKey0_Psd,          this.NumPadKey0_Psd.phys );
+	putValue( HU_NumPadKey1_Psd,          this.NumPadKey1_Psd.phys );
+	putValue( HU_NumPadKey2_Psd,          this.NumPadKey2_Psd.phys );
+	putValue( HU_NumPadKey3_Psd,          this.NumPadKey3_Psd.phys );
+	putValue( HU_NumPadKey4_Psd,          this.NumPadKey4_Psd.phys );
+	putValue( HU_NumPadKey5_Psd,          this.NumPadKey5_Psd.phys );
+	putValue( HU_NumPadKey6_Psd,          this.NumPadKey6_Psd.phys );
+	putValue( HU_NumPadKey7_Psd,          this.NumPadKey7_Psd.phys );
+	putValue( HU_NumPadKey8_Psd,          this.NumPadKey8_Psd.phys );
+	putValue( HU_NumPadKey9_Psd,          this.NumPadKey9_Psd.phys );
+	putValue( HU_NumPadKeyClr_Psd,        this.NumPadKeyClr_Psd.phys );
+	putValue( HU_NumPadKeyEnd_Psd,        this.NumPadKeyEnd_Psd.phys );
+	putValue( HU_NumPadKeyFav_Psd,        this.NumPadKeyFav_Psd.phys );
+	putValue( HU_NumPadKeyPound_Psd,      this.NumPadKeyPound_Psd.phys );
+	putValue( HU_NumPadKeySend_Psd,       this.NumPadKeySend_Psd.phys );
+	putValue( HU_NumPadKeyStar_Psd,       this.NumPadKeyStar_Psd.phys );
+	putValue( HU_TPAD_KeyBkGrndAudio_Psd, this.TPAD_KeyBkGrndAudio_Psd.phys );
+	putValue( HU_TPAD_KeyMenu_Psd,        this.TPAD_KeyMenu_Psd.phys );
+	putValue( HU_TPAD_KeyReturn_Psd,      this.TPAD_KeyReturn_Psd.phys );
+	putValue( HU_TPAD_SensArea_Psd,       this.TPAD_SensArea_Psd.phys );
+}
+/*@@end*/
+
+/*@@msg:CAN1.HU_213_2014_29a::ECU_APPL_TPAD1 (0x7BC):*/
+on message ECU_APPL_TPAD1
+{
+    byte temp = 0;
+
+    temp = this.ECU_APPL_TPAD1A;
+    switch( temp )
+    {
+        case 0x00: //   0 ..   6
+        case 0x01: //   7 ..  13
+        case 0x02: //  14 ..  20
+        case 0x03: //  21 ..  27
+        case 0x04: //  28 ..  34
+        case 0x05: //  35 ..  41
+        case 0x06: //  42 ..  48
+        case 0x07: //  49 ..  55
+        case 0x08: //  56 ..  62
+        case 0x09: //  63 ..  69
+        case 0x0A: //  70 ..  76
+        case 0x0B: //  77 ..  83
+        case 0x0C: //  84 ..  90
+        case 0x0D: //  91 ..  97
+        case 0x0E: //  98 .. 104
+        case 0x0F: // 105 .. 111
+        case 0x10: // 112 .. 118
+        case 0x11: // 119 .. 125
+                 CANape_ActSensorValue[ ( temp * 7 )     ] = this.ECU_APPL_TPAD1B;
+                 CANape_ActSensorValue[ ( temp * 7 ) + 1 ] = this.ECU_APPL_TPAD1C;
+                 CANape_ActSensorValue[ ( temp * 7 ) + 2 ] = this.ECU_APPL_TPAD1D;
+                 CANape_ActSensorValue[ ( temp * 7 ) + 3 ] = this.ECU_APPL_TPAD1E;
+                 CANape_ActSensorValue[ ( temp * 7 ) + 4 ] = this.ECU_APPL_TPAD1F;
+                 CANape_ActSensorValue[ ( temp * 7 ) + 5 ] = this.ECU_APPL_TPAD1G;
+                 CANape_ActSensorValue[ ( temp * 7 ) + 6 ] = this.ECU_APPL_TPAD1H;
+                 break;
+        case 0x12: // 126 .. 132
+                 CANape_ActSensorValue[ ( temp * 7 )     ] = this.ECU_APPL_TPAD1B;
+                 CANape_ActSensorValue[ ( temp * 7 ) + 1 ] = this.ECU_APPL_TPAD1C;
+                 CANape_ActSensorValue[ ( temp * 7 ) + 2 ] = this.ECU_APPL_TPAD1D;
+                 CANape_AdditionalInfo[  0 ]  = this.ECU_APPL_TPAD1E;
+                 CANape_AdditionalInfo[  1 ]  = this.ECU_APPL_TPAD1F;
+                 CANape_AdditionalInfo[  2 ]  = this.ECU_APPL_TPAD1G;
+                 CANape_AdditionalInfo[  3 ]  = this.ECU_APPL_TPAD1H;
+                 break;
+        case 0x13: // 133.. 139
+                 CANape_AdditionalInfo[  4 ]  = this.ECU_APPL_TPAD1B;
+                 CANape_AdditionalInfo[  5 ]  = this.ECU_APPL_TPAD1C;
+                 CANape_AdditionalInfo[  6 ]  = this.ECU_APPL_TPAD1D;
+                 CANape_AdditionalInfo[  7 ]  = this.ECU_APPL_TPAD1E;
+                 CANape_AdditionalInfo[  8 ]  = this.ECU_APPL_TPAD1F;
+                 CANape_AdditionalInfo[  9 ]  = this.ECU_APPL_TPAD1G;
+                 CANape_AdditionalInfo[ 10 ]  = this.ECU_APPL_TPAD1H;
+                 break;
+        case 0x14: // 140.. 145
+                 CANape_AdditionalInfo[ 11 ]  = this.ECU_APPL_TPAD1B;
+                 CANape_AdditionalInfo[ 12 ]  = this.ECU_APPL_TPAD1C;
+                 CANape_AdditionalInfo[ 13 ]  = this.ECU_APPL_TPAD1D;
+                 CANape_AdditionalInfo[ 14 ]  = this.ECU_APPL_TPAD1E;
+                 CANape_AdditionalInfo[ 15 ]  = this.ECU_APPL_TPAD1F;
+                 CANape_AdditionalInfo[ 16 ]  = this.ECU_APPL_TPAD1G;
+                 CANape_AdditionalInfo[ 17 ]  = this.ECU_APPL_TPAD1H;
+                 CANape_Eval_Data();
+                 break;
+        default: break;
+    }
+}
+/*@@end*/
+
+/*@@msg:CAN1.HU_NM::NM_TPAD_AR (0x537):*/
+on message NM_TPAD_AR
+{
+	putValue( HU_Awake_Diag_Actv_TPAD, 		this.Awake_Diag_Actv.phys );
+	putValue( HU_Awake_Ignition_On_TPAD, 	this.Awake_Ignition_On.phys );
+	putValue( HU_WakeupRsn_TPAD, 		    this.WakeupRsn_TPAD.phys );
+}
+/*@@end*/
+
+/*@@msg:CAN1.HU_213_2014_29a::ROE_TPAD (0x7BD):*/
+on message ROE_TPAD
+{
+	putValue( HU_ROE_DTC_Stat_TPAD, 	this.ROE_DTC_Stat_TPAD.phys );
+	putValue( HU_ROE_DTC_TPAD, 	        this.ROE_DTC_TPAD.phys );
+	putValue( HU_ROE_Header_TPAD, 		this.ROE_Header_TPAD.phys );
+}
+/*@@end*/
+
+/*@@msg:CAN1.HU_213_2014_29a::TPAD_Characters_AR (0xCA):*/
+on message TPAD_Characters_AR
+{
+	putValue( HU_TPAD_List_Char, 		this.TPAD_List_Char.phys );
+	putValue( HU_TPAD_List_CharRec, 	    this.TPAD_List_CharRec.phys );
+	putValue( HU_TPAD_List_Entry, 		this.TPAD_List_Entry.phys );
+	putValue( HU_TPAD_List_Probb, 		this.TPAD_List_Probb.phys );
+	putValue( HU_TPAD_List_Stat, 	    this.TPAD_List_Stat.phys );
+	putValue( HU_TPAD_NumCharSet_Stat, 		this.TPAD_NumCharSet_Stat.phys );
+	putValue( HU_TPAD_StatId_Char, 		this.TPAD_StatId_Char.phys );
+}
+/*@@end*/
+
+/*@@msg:CAN1.HU_213_2014_29a::TPAD_Gesture1_AR (0xC6):*/
+on message TPAD_Gesture1_AR
+{
+	putValue( HU_TPAD_Gest_Posn_x, 		this.TPAD_Gest_Posn_x.phys );
+	putValue( HU_TPAD_Gest_Posn_y, 	    this.TPAD_Gest_Posn_y.phys );
+	putValue( HU_TPAD_Gest_Stnry, 		this.TPAD_Gest_Stnry.phys );
+	putValue( HU_TPAD_Haptics_Stat, 	this.TPAD_Haptics_Stat.phys );
+	putValue( HU_TPAD_StatId_Gest1, 	this.TPAD_StatId_Gest1.phys );
+	putValue( HU_TPAD_Touch_Bcen_x, 	this.TPAD_Touch_Bcen_x.phys );
+	putValue( HU_TPAD_Touch_Bcen_y, 	this.TPAD_Touch_Bcen_y.phys );
+	putValue( HU_TPAD_Touch_Stat, 		this.TPAD_Touch_Stat.phys );
+}
+/*@@end*/
+
+/*@@msg:CAN1.HU_213_2014_29a::TPAD_Gesture2_AR (0xC8):*/
+on message TPAD_Gesture2_AR
+{
+	putValue( HU_TPAD_Gest_Drag, 		this.TPAD_Gest_Drag.phys );
+	putValue( HU_TPAD_Gest_Hold, 	    this.TPAD_Gest_Hold.phys );
+	putValue( HU_TPAD_Gest_Rot, 		this.TPAD_Gest_Rot.phys );
+	putValue( HU_TPAD_Gest_Zoom, 		this.TPAD_Gest_Zoom.phys );
+	putValue( HU_TPAD_OpMode_Stat, 	    this.TPAD_OpMode_Stat.phys );
+	putValue( HU_TPAD_Spd_Angl, 		this.TPAD_Spd_Angl.phys );
+	putValue( HU_TPAD_Spd_Long, 		this.TPAD_Spd_Long.phys );
+	putValue( HU_TPAD_Spd_Rad, 		    this.TPAD_Spd_Rad.phys );
+	putValue( HU_TPAD_Spd_Trans, 		this.TPAD_Spd_Trans.phys );
+	putValue( HU_TPAD_StatId_Gest2, 	this.TPAD_StatId_Gest2.phys );
+}
+/*@@end*/
+
+/*@@caplFunc:CANape_Eval_Data():*///function
+CANape_Eval_Data()
+{
+                 putValue( HIL_Area_01_01, ( CANape_ActSensorValue[   0 ] +3 ) /4 ); // 0
+                 putValue( HIL_Area_01_02, ( CANape_ActSensorValue[   1 ] +3 ) /4 );
+                 putValue( HIL_Area_01_03, ( CANape_ActSensorValue[   2 ] +3 ) /4 );
+                 putValue( HIL_Area_01_04, ( CANape_ActSensorValue[   3 ] +3 ) /4 );
+                 putValue( HIL_Area_01_05, ( CANape_ActSensorValue[   4 ] +3 ) /4 );
+                 putValue( HIL_Area_01_06, ( CANape_ActSensorValue[   5 ] +3 ) /4 );
+                 putValue( HIL_Area_01_07, ( CANape_ActSensorValue[   6 ] +3 ) /4 );
+
+                 putValue( HIL_Area_01_08, ( CANape_ActSensorValue[   7 ] +3 ) /4 ); // 1 
+                 putValue( HIL_Area_01_09, ( CANape_ActSensorValue[   8 ] +3 ) /4 );
+                 putValue( HIL_Area_02_01, ( CANape_ActSensorValue[   9 ] +3 ) /4 );
+                 putValue( HIL_Area_02_02, ( CANape_ActSensorValue[  10 ] +3 ) /4 );
+                 putValue( HIL_Area_02_03, ( CANape_ActSensorValue[  11 ] +3 ) /4 );
+                 putValue( HIL_Area_02_04, ( CANape_ActSensorValue[  12 ] +3 ) /4 );
+                 putValue( HIL_Area_02_05, ( CANape_ActSensorValue[  13 ] +3 ) /4 );
+
+                 putValue( HIL_Area_02_06, ( CANape_ActSensorValue[  14 ] +3 ) /4 ); // 2 
+                 putValue( HIL_Area_02_07, ( CANape_ActSensorValue[  15 ] +3 ) /4 );
+                 putValue( HIL_Area_02_08, ( CANape_ActSensorValue[  16 ] +3 ) /4 );
+                 putValue( HIL_Area_02_09, ( CANape_ActSensorValue[  17 ] +3 ) /4 );
+                 putValue( HIL_Area_03_01, ( CANape_ActSensorValue[  18 ] +3 ) /4 );
+                 putValue( HIL_Area_03_02, ( CANape_ActSensorValue[  19 ] +3 ) /4 );
+                 putValue( HIL_Area_03_03, ( CANape_ActSensorValue[  20 ] +3 ) /4 );
+
+                 putValue( HIL_Area_03_04, ( CANape_ActSensorValue[  21 ] +3 ) /4 ); // 3 
+                 putValue( HIL_Area_03_05, ( CANape_ActSensorValue[  22 ] +3 ) /4 );
+                 putValue( HIL_Area_03_06, ( CANape_ActSensorValue[  23 ] +3 ) /4 );
+                 putValue( HIL_Area_03_07, ( CANape_ActSensorValue[  24 ] +3 ) /4 );
+                 putValue( HIL_Area_03_08, ( CANape_ActSensorValue[  25 ] +3 ) /4 );
+                 putValue( HIL_Area_03_09, ( CANape_ActSensorValue[  26 ] +3 ) /4 );
+                 putValue( HIL_Area_04_01, ( CANape_ActSensorValue[  27 ] +3 ) /4 );
+
+                 putValue( HIL_Area_04_02, ( CANape_ActSensorValue[  28 ] +3 ) /4 ); // 4 
+                 putValue( HIL_Area_04_03, ( CANape_ActSensorValue[  29 ] +3 ) /4 );
+                 putValue( HIL_Area_04_04, ( CANape_ActSensorValue[  30 ] +3 ) /4 );
+                 putValue( HIL_Area_04_05, ( CANape_ActSensorValue[  31 ] +3 ) /4 );
+                 putValue( HIL_Area_04_06, ( CANape_ActSensorValue[  32 ] +3 ) /4 );
+                 putValue( HIL_Area_04_07, ( CANape_ActSensorValue[  33 ] +3 ) /4 );
+                 putValue( HIL_Area_04_08, ( CANape_ActSensorValue[  34 ] +3 ) /4 );
+
+                 putValue( HIL_Area_04_09, ( CANape_ActSensorValue[  35 ] +3 ) /4 ); // 5 
+                 putValue( HIL_Area_05_01, ( CANape_ActSensorValue[  36 ] +3 ) /4 );
+                 putValue( HIL_Area_05_02, ( CANape_ActSensorValue[  37 ] +3 ) /4 );
+                 putValue( HIL_Area_05_03, ( CANape_ActSensorValue[  38 ] +3 ) /4 );
+                 putValue( HIL_Area_05_04, ( CANape_ActSensorValue[  39 ] +3 ) /4 );
+                 putValue( HIL_Area_05_05, ( CANape_ActSensorValue[  40 ] +3 ) /4 );
+                 putValue( HIL_Area_05_06, ( CANape_ActSensorValue[  41 ] +3 ) /4 );
+
+                 putValue( HIL_Area_05_07, ( CANape_ActSensorValue[  42 ] +3 ) /4 ); // 6 
+                 putValue( HIL_Area_05_08, ( CANape_ActSensorValue[  43 ] +3 ) /4 );
+                 putValue( HIL_Area_05_09, ( CANape_ActSensorValue[  44 ] +3 ) /4 );
+                 putValue( HIL_Area_06_01, ( CANape_ActSensorValue[  45 ] +3 ) /4 );
+                 putValue( HIL_Area_06_02, ( CANape_ActSensorValue[  46 ] +3 ) /4 );
+                 putValue( HIL_Area_06_03, ( CANape_ActSensorValue[  47 ] +3 ) /4 );
+                 putValue( HIL_Area_06_04, ( CANape_ActSensorValue[  48 ] +3 ) /4 );
+
+                 putValue( HIL_Area_06_05, ( CANape_ActSensorValue[  49 ] +3 ) /4 ); // 7
+                 putValue( HIL_Area_06_06, ( CANape_ActSensorValue[  50 ] +3 ) /4 );
+                 putValue( HIL_Area_06_07, ( CANape_ActSensorValue[  51 ] +3 ) /4 );
+                 putValue( HIL_Area_06_08, ( CANape_ActSensorValue[  52 ] +3 ) /4 );
+                 putValue( HIL_Area_06_09, ( CANape_ActSensorValue[  53 ] +3 ) /4 );
+                 putValue( HIL_Area_07_01, ( CANape_ActSensorValue[  54 ] +3 ) /4 );
+                 putValue( HIL_Area_07_02, ( CANape_ActSensorValue[  55 ] +3 ) /4 );
+
+                 putValue( HIL_Area_07_03, ( CANape_ActSensorValue[  56 ] +3 ) /4 ); // 8
+                 putValue( HIL_Area_07_04, ( CANape_ActSensorValue[  57 ] +3 ) /4 );
+                 putValue( HIL_Area_07_05, ( CANape_ActSensorValue[  58 ] +3 ) /4 );
+                 putValue( HIL_Area_07_06, ( CANape_ActSensorValue[  59 ] +3 ) /4 );
+                 putValue( HIL_Area_07_07, ( CANape_ActSensorValue[  60 ] +3 ) /4 );
+                 putValue( HIL_Area_07_08, ( CANape_ActSensorValue[  61 ] +3 ) /4 );
+                 putValue( HIL_Area_07_09, ( CANape_ActSensorValue[  62 ] +3 ) /4 );
+
+                 putValue( HIL_Area_08_01, ( CANape_ActSensorValue[  63 ] +3 ) /4 ); // 9
+                 putValue( HIL_Area_08_02, ( CANape_ActSensorValue[  64 ] +3 ) /4 );
+                 putValue( HIL_Area_08_03, ( CANape_ActSensorValue[  65 ] +3 ) /4 );
+                 putValue( HIL_Area_08_04, ( CANape_ActSensorValue[  66 ] +3 ) /4 );
+                 putValue( HIL_Area_08_05, ( CANape_ActSensorValue[  67 ] +3 ) /4 );
+                 putValue( HIL_Area_08_06, ( CANape_ActSensorValue[  68 ] +3 ) /4 );
+                 putValue( HIL_Area_08_07, ( CANape_ActSensorValue[  69 ] +3 ) /4 );
+
+                 putValue( HIL_Area_08_08, ( CANape_ActSensorValue[  70 ] +3 ) /4 ); // A
+                 putValue( HIL_Area_08_09, ( CANape_ActSensorValue[  71 ] +3 ) /4 );
+                 putValue( HIL_Area_09_01, ( CANape_ActSensorValue[  72 ] +3 ) /4 );
+                 putValue( HIL_Area_09_02, ( CANape_ActSensorValue[  73 ] +3 ) /4 );
+                 putValue( HIL_Area_09_03, ( CANape_ActSensorValue[  74 ] +3 ) /4 );
+                 putValue( HIL_Area_09_04, ( CANape_ActSensorValue[  75 ] +3 ) /4 );
+                 putValue( HIL_Area_09_05, ( CANape_ActSensorValue[  76 ] +3 ) /4 );
+
+                 putValue( HIL_Area_09_06, ( CANape_ActSensorValue[  77 ] +3 ) /4 ); // B
+                 putValue( HIL_Area_09_07, ( CANape_ActSensorValue[  78 ] +3 ) /4 );
+                 putValue( HIL_Area_09_08, ( CANape_ActSensorValue[  79 ] +3 ) /4 );
+                 putValue( HIL_Area_09_09, ( CANape_ActSensorValue[  80 ] +3 ) /4 );
+                 putValue( HIL_Area_10_01, ( CANape_ActSensorValue[  81 ] +3 ) /4 );
+                 putValue( HIL_Area_10_02, ( CANape_ActSensorValue[  82 ] +3 ) /4 );
+                 putValue( HIL_Area_10_03, ( CANape_ActSensorValue[  83 ] +3 ) /4 );
+
+                 putValue( HIL_Area_10_04, ( CANape_ActSensorValue[  84 ] +3 ) /4 ); // C
+                 putValue( HIL_Area_10_05, ( CANape_ActSensorValue[  85 ] +3 ) /4 );
+                 putValue( HIL_Area_10_06, ( CANape_ActSensorValue[  86 ] +3 ) /4 );
+                 putValue( HIL_Area_10_07, ( CANape_ActSensorValue[  87 ] +3 ) /4 );
+                 putValue( HIL_Area_10_08, ( CANape_ActSensorValue[  88 ] +3 ) /4 );
+                 putValue( HIL_Area_10_09, ( CANape_ActSensorValue[  89 ] +3 ) /4 );
+                 putValue( HIL_Area_11_01, ( CANape_ActSensorValue[  90 ] +3 ) /4 );
+
+                 putValue( HIL_Area_11_02, ( CANape_ActSensorValue[  91 ] +3 ) /4 ); // D
+                 putValue( HIL_Area_11_03, ( CANape_ActSensorValue[  92 ] +3 ) /4 );
+                 putValue( HIL_Area_11_04, ( CANape_ActSensorValue[  93 ] +3 ) /4 );
+                 putValue( HIL_Area_11_05, ( CANape_ActSensorValue[  94 ] +3 ) /4 );
+                 putValue( HIL_Area_11_06, ( CANape_ActSensorValue[  95 ] +3 ) /4 );
+                 putValue( HIL_Area_11_07, ( CANape_ActSensorValue[  96 ] +3 ) /4 );
+                 putValue( HIL_Area_11_08, ( CANape_ActSensorValue[  97 ] +3 ) /4 );
+
+                 putValue( HIL_Area_11_09, ( CANape_ActSensorValue[  98 ] +3 ) /4 ); // E
+                 putValue( HIL_Area_12_01, ( CANape_ActSensorValue[  99 ] +3 ) /4 );
+                 putValue( HIL_Area_12_02, ( CANape_ActSensorValue[ 100 ] +3 ) /4 );
+                 putValue( HIL_Area_12_03, ( CANape_ActSensorValue[ 101 ] +3 ) /4 );
+                 putValue( HIL_Area_12_04, ( CANape_ActSensorValue[ 102 ] +3 ) /4 );
+                 putValue( HIL_Area_12_05, ( CANape_ActSensorValue[ 103 ] +3 ) /4 );
+                 putValue( HIL_Area_12_06, ( CANape_ActSensorValue[ 104 ] +3 ) /4 );
+
+                 putValue( HIL_Area_12_07, ( CANape_ActSensorValue[ 105 ] +3 ) /4 ); // F
+                 putValue( HIL_Area_12_08, ( CANape_ActSensorValue[ 106 ] +3 ) /4 );
+                 putValue( HIL_Area_12_09, ( CANape_ActSensorValue[ 107 ] +3 ) /4 );
+                 putValue( HIL_Area_13_01, ( CANape_ActSensorValue[ 108 ] +3 ) /4 );
+                 putValue( HIL_Area_13_02, ( CANape_ActSensorValue[ 109 ] +3 ) /4 );
+                 putValue( HIL_Area_13_03, ( CANape_ActSensorValue[ 110 ] +3 ) /4 );
+                 putValue( HIL_Area_13_04, ( CANape_ActSensorValue[ 111 ] +3 ) /4 );
+
+                 putValue( HIL_Area_13_05, ( CANape_ActSensorValue[ 112 ] +3 ) /4 ); // 10
+                 putValue( HIL_Area_13_06, ( CANape_ActSensorValue[ 113 ] +3 ) /4 );
+                 putValue( HIL_Area_13_07, ( CANape_ActSensorValue[ 114 ] +3 ) /4 );
+                 putValue( HIL_Area_13_08, ( CANape_ActSensorValue[ 115 ] +3 ) /4 );
+                 putValue( HIL_Area_13_09, ( CANape_ActSensorValue[ 116 ] +3 ) /4 );
+
+                 putValue( HIL_Key_Num_NW, ( CANape_ActSensorValue[ 117 ] +3 ) /4 );
+                 putValue( HIL_Key_Num_NO, ( CANape_ActSensorValue[ 118 ] +3 ) /4 );
+                 putValue( HIL_Key_Num_SW, ( CANape_ActSensorValue[ 119 ] +3 ) /4 );
+                 putValue( HIL_Key_Num_SO, ( CANape_ActSensorValue[ 120 ] +3 ) /4 );
+
+                 putValue( HIL_Key_Fav_NW, ( CANape_ActSensorValue[ 121 ] +3 ) /4 );
+                 putValue( HIL_Key_Fav_NO, ( CANape_ActSensorValue[ 122 ] +3 ) /4 );
+                 putValue( HIL_Key_Fav_SW, ( CANape_ActSensorValue[ 123 ] +3 ) /4 );
+                 putValue( HIL_Key_Fav_SO, ( CANape_ActSensorValue[ 124 ] +3 ) /4 );
+
+                 putValue( HIL_Key_Char_NW, ( CANape_ActSensorValue[ 125 ] +3 ) /4 );
+                 putValue( HIL_Key_Char_NO, ( CANape_ActSensorValue[ 126 ] +3 ) /4 );
+                 putValue( HIL_Key_Char_SW, ( CANape_ActSensorValue[ 127 ] +3 ) /4 );
+                 putValue( HIL_Key_Char_SO, ( CANape_ActSensorValue[ 128 ] +3 ) /4 );
+
+                 putValue( HIL_NoiseRatioNotEdgeCompensated_03, CANape_AdditionalInfo[  0 ] );
+                 putValue( HIL_NoiseRatioNotEdgeCompensated_02, CANape_AdditionalInfo[  1 ] );
+                 putValue( HIL_NoiseRatioNotEdgeCompensated_01, CANape_AdditionalInfo[  2 ] );
+                 putValue( HIL_NoiseRatioNotEdgeCompensated_00, CANape_AdditionalInfo[  3 ] );
+                 putValue( HIL_NoiseRatio_01, CANape_AdditionalInfo[  4 ] );
+                 putValue( HIL_NoiseRatio_00, CANape_AdditionalInfo[  5 ] );
+                 putValue( HIL_GradientAverage_01, CANape_AdditionalInfo[  6 ] );
+                 putValue( HIL_GradientAverage_00, CANape_AdditionalInfo[  7 ] );
+                 putValue( HIL_GradientRatio_01, CANape_AdditionalInfo[  8 ] );
+                 putValue( HIL_GradientRatio_00, CANape_AdditionalInfo[  9 ] );
+                 putValue( HIL_NoOfFingersAlgo, CANape_AdditionalInfo[ 10 ] );
+                 putValue( HIL_NoiseRatioNotEdgeCompensated_03, CANape_AdditionalInfo[ 11 ] );
+                 putValue( HIL_NoiseRatioNotEdgeCompensated_01, CANape_AdditionalInfo[ 12 ] );
+                 putValue( HIL_NoiseRatioNotEdgeCompensated_02, CANape_AdditionalInfo[ 13 ] );
+                 putValue( HIL_NoiseRatioNotEdgeCompensated_00, CANape_AdditionalInfo[ 14 ] );
+                 putValue( HIL_AutoBaselineCounter_01, CANape_AdditionalInfo[ 15 ] );
+                 putValue( HIL_AutoBaselineCounter_00, CANape_AdditionalInfo[ 16 ] );
+}
+/*@@end*/
+
+/*@@caplFunc:Trace(char[],char[]):*///function
+void Trace( char functionName[], char info[])
+{
+    Trace( functionName, info, "");
+}
+/*@@end*/
+
+/*@@caplFunc:Trace(char[],char[],char[]):*///function
+void Trace( char functionName[], char info[], char verbose[])
+{
+    char sep[2] = "/";
+    sep[0] = functionName[0] ? '/' : 0;
+    if( verbose[0])
+    {
+        write( "[%.3f] HGW_VDO %s%s: %s", timeNow()/100000.0, sep, functionName, verbose );
+    }
+    else
+    {
+        write( "[%.3f] HGW_VDO %s%s: %s", timeNow()/100000.0, sep, functionName, info );
+    }
+}
+/*@@end*/
+
+/*@@caplFunc:Trace(char[],char[],char[],long):*///function
+void Trace( char functionName[], char info[], char verbose[], long argument)
+{
+  char line[100];
+  snprintf( line, elcount(line ), verbose, argument);
+  Trace( functionName, info, line );
+}
+/*@@end*/
+
+/*@@caplFunc:TraceCall(char[],long):*///function
+void TraceCall( char functionName[], long callResult)
+{
+    char line[100];
+    if( callResult == 1 )
+        snprintf( line, elcount(line ), "calling %s", functionName );
+    else
+        snprintf( line, elcount(line ), "call to %s failed - wrong state?", functionName );
+    Trace( "", "", line );
+}
+/*@@end*/
+
+/*@@envVar:HU_ISw_Stat:*/
+on envVar HU_ISw_Stat
+{
+ //  if( getvalue(Env_Modus_Manuell) == 0)
+    {
+        switch( getValue(this) )
+        {
+            case 0: putValue( Env_Ign_Switch, 0 ); break;
+            case 1: putValue( Env_Ign_Switch, 1 ); break;
+            case 2: putValue( Env_Ign_Switch, 2 ); break;
+            case 4: putValue( Env_Ign_Switch, 3 ); break;
+            case 5: putValue( Env_Ign_Switch, 4 ); break;
+        }
+    }
+}
+/*@@end*/
+

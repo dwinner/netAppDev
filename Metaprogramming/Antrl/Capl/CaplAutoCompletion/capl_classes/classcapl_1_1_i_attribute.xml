@@ -1,198 +1,248 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.2" xml:lang="en-US">
-  <compounddef id="classcapl_1_1_i_attribute" kind="class" language="C++" prot="public" abstract="yes">
-    <compoundname>capl::IAttribute</compoundname>
-      <sectiondef kind="public-func">
-      <memberdef kind="function" id="classcapl_1_1_i_attribute_1a916d3497cc3d2186a807598e4a124feb" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
-        <type>bool</type>
-        <definition>virtual bool capl::IAttribute::ReleaseMe</definition>
-        <argsstring>() const =0</argsstring>
-        <name>ReleaseMe</name>
+
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd"
+         version="1.9.2" xml:lang="en-US">
+    <compounddef id="classcapl_1_1_i_attribute" kind="class" language="C++" prot="public" abstract="yes">
+        <compoundname>capl::IAttribute</compoundname>
+        <sectiondef kind="public-func">
+            <memberdef kind="function" id="classcapl_1_1_i_attribute_1a916d3497cc3d2186a807598e4a124feb" prot="public"
+                       static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+                <type>bool</type>
+                <definition>virtual bool capl::IAttribute::ReleaseMe</definition>
+                <argsstring>() const =0</argsstring>
+                <name>ReleaseMe</name>
+                <briefdescription>
+                </briefdescription>
+                <detaileddescription>
+                </detaileddescription>
+                <inbodydescription>
+                </inbodydescription>
+                <location file="CAPLPluginApi.h" line="466" column="30" />
+            </memberdef>
+            <memberdef kind="function" id="classcapl_1_1_i_attribute_1a9232ab50f6e87f47690be914674185e9" prot="public"
+                       static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+                <type>AttributeTypes</type>
+                <definition>virtual AttributeTypes capl::IAttribute::GetType</definition>
+                <argsstring>() const =0</argsstring>
+                <name>GetType</name>
+                <briefdescription>
+                </briefdescription>
+                <detaileddescription>
+                </detaileddescription>
+                <inbodydescription>
+                </inbodydescription>
+                <location file="CAPLPluginApi.h" line="467" column="40" />
+            </memberdef>
+            <memberdef kind="function" id="classcapl_1_1_i_attribute_1aa4fccd06063ebba67c3564538853a252" prot="public"
+                       static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+                <type>int</type>
+                <definition>virtual int capl::IAttribute::GetInt</definition>
+                <argsstring>() const =0</argsstring>
+                <name>GetInt</name>
+                <briefdescription>
+                </briefdescription>
+                <detaileddescription>
+                </detaileddescription>
+                <inbodydescription>
+                </inbodydescription>
+                <location file="CAPLPluginApi.h" line="469" column="29" />
+            </memberdef>
+            <memberdef kind="function" id="classcapl_1_1_i_attribute_1a8e933de3192ee723c5ae68ed240072d0" prot="public"
+                       static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+                <type>double</type>
+                <definition>virtual double capl::IAttribute::GetDouble</definition>
+                <argsstring>() const =0</argsstring>
+                <name>GetDouble</name>
+                <briefdescription>
+                </briefdescription>
+                <detaileddescription>
+                </detaileddescription>
+                <inbodydescription>
+                </inbodydescription>
+                <location file="CAPLPluginApi.h" line="470" column="32" />
+            </memberdef>
+            <memberdef kind="function" id="classcapl_1_1_i_attribute_1a8b2cf08a35c0079a4c4516a917f15950" prot="public"
+                       static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+                <type>__int32</type>
+                <definition>virtual __int32 capl::IAttribute::GetLong</definition>
+                <argsstring>() const =0</argsstring>
+                <name>GetLong</name>
+                <briefdescription>
+                </briefdescription>
+                <detaileddescription>
+                </detaileddescription>
+                <inbodydescription>
+                </inbodydescription>
+                <location file="CAPLPluginApi.h" line="471" column="35" />
+            </memberdef>
+            <memberdef kind="function" id="classcapl_1_1_i_attribute_1ad916dc18b29128221ef6e8bef2e6c880" prot="public"
+                       static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+                <type>const char *</type>
+                <definition>virtual const char * capl::IAttribute::GetEnum</definition>
+                <argsstring>() const =0</argsstring>
+                <name>GetEnum</name>
+                <briefdescription>
+                </briefdescription>
+                <detaileddescription>
+                </detaileddescription>
+                <inbodydescription>
+                </inbodydescription>
+                <location file="CAPLPluginApi.h" line="472" column="36" />
+            </memberdef>
+            <memberdef kind="function" id="classcapl_1_1_i_attribute_1a56f576b935861330ed0fefac00ff1176" prot="public"
+                       static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+                <type>const char *</type>
+                <definition>virtual const char * capl::IAttribute::GetString</definition>
+                <argsstring>() const =0</argsstring>
+                <name>GetString</name>
+                <briefdescription>
+                </briefdescription>
+                <detaileddescription>
+                </detaileddescription>
+                <inbodydescription>
+                </inbodydescription>
+                <location file="CAPLPluginApi.h" line="473" column="36" />
+            </memberdef>
+            <memberdef kind="function" id="classcapl_1_1_i_attribute_1af0c3af5d7c1d0db139b5a445c80c2771" prot="public"
+                       static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+                <type>int</type>
+                <definition>virtual int capl::IAttribute::SetInt</definition>
+                <argsstring>(const int &amp;)=0</argsstring>
+                <name>SetInt</name>
+                <param>
+                    <type>const int &amp;</type>
+                </param>
+                <briefdescription>
+                </briefdescription>
+                <detaileddescription>
+                </detaileddescription>
+                <inbodydescription>
+                </inbodydescription>
+                <location file="CAPLPluginApi.h" line="475" column="29" />
+            </memberdef>
+            <memberdef kind="function" id="classcapl_1_1_i_attribute_1aab7846aaae67afe57ec1fd57d2590bbe" prot="public"
+                       static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+                <type>double</type>
+                <definition>virtual double capl::IAttribute::SetDouble</definition>
+                <argsstring>(const double &amp;)=0</argsstring>
+                <name>SetDouble</name>
+                <param>
+                    <type>const double &amp;</type>
+                </param>
+                <briefdescription>
+                </briefdescription>
+                <detaileddescription>
+                </detaileddescription>
+                <inbodydescription>
+                </inbodydescription>
+                <location file="CAPLPluginApi.h" line="476" column="32" />
+            </memberdef>
+            <memberdef kind="function" id="classcapl_1_1_i_attribute_1a96b7bd6249bb4c38ebbeb72142084854" prot="public"
+                       static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+                <type>__int32</type>
+                <definition>virtual __int32 capl::IAttribute::SetLong</definition>
+                <argsstring>(const __int32 &amp;)=0</argsstring>
+                <name>SetLong</name>
+                <param>
+                    <type>const __int32 &amp;</type>
+                </param>
+                <briefdescription>
+                </briefdescription>
+                <detaileddescription>
+                </detaileddescription>
+                <inbodydescription>
+                </inbodydescription>
+                <location file="CAPLPluginApi.h" line="477" column="35" />
+            </memberdef>
+            <memberdef kind="function" id="classcapl_1_1_i_attribute_1a57d6c74869cfb6de9346f89c0bac2191" prot="public"
+                       static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+                <type>const char *</type>
+                <definition>virtual const char * capl::IAttribute::SetEnum</definition>
+                <argsstring>(const char *&amp;)=0</argsstring>
+                <name>SetEnum</name>
+                <param>
+                    <type>const char *&amp;</type>
+                </param>
+                <briefdescription>
+                </briefdescription>
+                <detaileddescription>
+                </detaileddescription>
+                <inbodydescription>
+                </inbodydescription>
+                <location file="CAPLPluginApi.h" line="478" column="36" />
+            </memberdef>
+            <memberdef kind="function" id="classcapl_1_1_i_attribute_1a5d403d080af45221fbc9c9dd21fc3bcf" prot="public"
+                       static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+                <type>const char *</type>
+                <definition>virtual const char * capl::IAttribute::SetString</definition>
+                <argsstring>(const char *&amp;)=0</argsstring>
+                <name>SetString</name>
+                <param>
+                    <type>const char *&amp;</type>
+                </param>
+                <briefdescription>
+                </briefdescription>
+                <detaileddescription>
+                </detaileddescription>
+                <inbodydescription>
+                </inbodydescription>
+                <location file="CAPLPluginApi.h" line="479" column="36" />
+            </memberdef>
+        </sectiondef>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
         </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="CAPLPluginApi.h" line="466" column="30"/>
-      </memberdef>
-      <memberdef kind="function" id="classcapl_1_1_i_attribute_1a9232ab50f6e87f47690be914674185e9" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
-        <type>AttributeTypes</type>
-        <definition>virtual AttributeTypes capl::IAttribute::GetType</definition>
-        <argsstring>() const =0</argsstring>
-        <name>GetType</name>
-        <briefdescription>
-        </briefdescription>
-        <detaileddescription>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="CAPLPluginApi.h" line="467" column="40"/>
-      </memberdef>
-      <memberdef kind="function" id="classcapl_1_1_i_attribute_1aa4fccd06063ebba67c3564538853a252" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
-        <type>int</type>
-        <definition>virtual int capl::IAttribute::GetInt</definition>
-        <argsstring>() const =0</argsstring>
-        <name>GetInt</name>
-        <briefdescription>
-        </briefdescription>
-        <detaileddescription>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="CAPLPluginApi.h" line="469" column="29"/>
-      </memberdef>
-      <memberdef kind="function" id="classcapl_1_1_i_attribute_1a8e933de3192ee723c5ae68ed240072d0" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
-        <type>double</type>
-        <definition>virtual double capl::IAttribute::GetDouble</definition>
-        <argsstring>() const =0</argsstring>
-        <name>GetDouble</name>
-        <briefdescription>
-        </briefdescription>
-        <detaileddescription>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="CAPLPluginApi.h" line="470" column="32"/>
-      </memberdef>
-      <memberdef kind="function" id="classcapl_1_1_i_attribute_1a8b2cf08a35c0079a4c4516a917f15950" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
-        <type>__int32</type>
-        <definition>virtual __int32 capl::IAttribute::GetLong</definition>
-        <argsstring>() const =0</argsstring>
-        <name>GetLong</name>
-        <briefdescription>
-        </briefdescription>
-        <detaileddescription>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="CAPLPluginApi.h" line="471" column="35"/>
-      </memberdef>
-      <memberdef kind="function" id="classcapl_1_1_i_attribute_1ad916dc18b29128221ef6e8bef2e6c880" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
-        <type>const char *</type>
-        <definition>virtual const char * capl::IAttribute::GetEnum</definition>
-        <argsstring>() const =0</argsstring>
-        <name>GetEnum</name>
-        <briefdescription>
-        </briefdescription>
-        <detaileddescription>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="CAPLPluginApi.h" line="472" column="36"/>
-      </memberdef>
-      <memberdef kind="function" id="classcapl_1_1_i_attribute_1a56f576b935861330ed0fefac00ff1176" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
-        <type>const char *</type>
-        <definition>virtual const char * capl::IAttribute::GetString</definition>
-        <argsstring>() const =0</argsstring>
-        <name>GetString</name>
-        <briefdescription>
-        </briefdescription>
-        <detaileddescription>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="CAPLPluginApi.h" line="473" column="36"/>
-      </memberdef>
-      <memberdef kind="function" id="classcapl_1_1_i_attribute_1af0c3af5d7c1d0db139b5a445c80c2771" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
-        <type>int</type>
-        <definition>virtual int capl::IAttribute::SetInt</definition>
-        <argsstring>(const int &amp;)=0</argsstring>
-        <name>SetInt</name>
-        <param>
-          <type>const int &amp;</type>
-        </param>
-        <briefdescription>
-        </briefdescription>
-        <detaileddescription>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="CAPLPluginApi.h" line="475" column="29"/>
-      </memberdef>
-      <memberdef kind="function" id="classcapl_1_1_i_attribute_1aab7846aaae67afe57ec1fd57d2590bbe" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
-        <type>double</type>
-        <definition>virtual double capl::IAttribute::SetDouble</definition>
-        <argsstring>(const double &amp;)=0</argsstring>
-        <name>SetDouble</name>
-        <param>
-          <type>const double &amp;</type>
-        </param>
-        <briefdescription>
-        </briefdescription>
-        <detaileddescription>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="CAPLPluginApi.h" line="476" column="32"/>
-      </memberdef>
-      <memberdef kind="function" id="classcapl_1_1_i_attribute_1a96b7bd6249bb4c38ebbeb72142084854" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
-        <type>__int32</type>
-        <definition>virtual __int32 capl::IAttribute::SetLong</definition>
-        <argsstring>(const __int32 &amp;)=0</argsstring>
-        <name>SetLong</name>
-        <param>
-          <type>const __int32 &amp;</type>
-        </param>
-        <briefdescription>
-        </briefdescription>
-        <detaileddescription>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="CAPLPluginApi.h" line="477" column="35"/>
-      </memberdef>
-      <memberdef kind="function" id="classcapl_1_1_i_attribute_1a57d6c74869cfb6de9346f89c0bac2191" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
-        <type>const char *</type>
-        <definition>virtual const char * capl::IAttribute::SetEnum</definition>
-        <argsstring>(const char *&amp;)=0</argsstring>
-        <name>SetEnum</name>
-        <param>
-          <type>const char *&amp;</type>
-        </param>
-        <briefdescription>
-        </briefdescription>
-        <detaileddescription>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="CAPLPluginApi.h" line="478" column="36"/>
-      </memberdef>
-      <memberdef kind="function" id="classcapl_1_1_i_attribute_1a5d403d080af45221fbc9c9dd21fc3bcf" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
-        <type>const char *</type>
-        <definition>virtual const char * capl::IAttribute::SetString</definition>
-        <argsstring>(const char *&amp;)=0</argsstring>
-        <name>SetString</name>
-        <param>
-          <type>const char *&amp;</type>
-        </param>
-        <briefdescription>
-        </briefdescription>
-        <detaileddescription>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="CAPLPluginApi.h" line="479" column="36"/>
-      </memberdef>
-      </sectiondef>
-    <briefdescription>
-    </briefdescription>
-    <detaileddescription>
-    </detaileddescription>
-    <location file="CAPLPluginApi.h" line="463" column="5" bodyfile="CAPLPluginApi.h" bodystart="464" bodyend="480"/>
-    <listofallmembers>
-      <member refid="classcapl_1_1_i_attribute_1a8e933de3192ee723c5ae68ed240072d0" prot="public" virt="pure-virtual"><scope>capl::IAttribute</scope><name>GetDouble</name></member>
-      <member refid="classcapl_1_1_i_attribute_1ad916dc18b29128221ef6e8bef2e6c880" prot="public" virt="pure-virtual"><scope>capl::IAttribute</scope><name>GetEnum</name></member>
-      <member refid="classcapl_1_1_i_attribute_1aa4fccd06063ebba67c3564538853a252" prot="public" virt="pure-virtual"><scope>capl::IAttribute</scope><name>GetInt</name></member>
-      <member refid="classcapl_1_1_i_attribute_1a8b2cf08a35c0079a4c4516a917f15950" prot="public" virt="pure-virtual"><scope>capl::IAttribute</scope><name>GetLong</name></member>
-      <member refid="classcapl_1_1_i_attribute_1a56f576b935861330ed0fefac00ff1176" prot="public" virt="pure-virtual"><scope>capl::IAttribute</scope><name>GetString</name></member>
-      <member refid="classcapl_1_1_i_attribute_1a9232ab50f6e87f47690be914674185e9" prot="public" virt="pure-virtual"><scope>capl::IAttribute</scope><name>GetType</name></member>
-      <member refid="classcapl_1_1_i_attribute_1a916d3497cc3d2186a807598e4a124feb" prot="public" virt="pure-virtual"><scope>capl::IAttribute</scope><name>ReleaseMe</name></member>
-      <member refid="classcapl_1_1_i_attribute_1aab7846aaae67afe57ec1fd57d2590bbe" prot="public" virt="pure-virtual"><scope>capl::IAttribute</scope><name>SetDouble</name></member>
-      <member refid="classcapl_1_1_i_attribute_1a57d6c74869cfb6de9346f89c0bac2191" prot="public" virt="pure-virtual"><scope>capl::IAttribute</scope><name>SetEnum</name></member>
-      <member refid="classcapl_1_1_i_attribute_1af0c3af5d7c1d0db139b5a445c80c2771" prot="public" virt="pure-virtual"><scope>capl::IAttribute</scope><name>SetInt</name></member>
-      <member refid="classcapl_1_1_i_attribute_1a96b7bd6249bb4c38ebbeb72142084854" prot="public" virt="pure-virtual"><scope>capl::IAttribute</scope><name>SetLong</name></member>
-      <member refid="classcapl_1_1_i_attribute_1a5d403d080af45221fbc9c9dd21fc3bcf" prot="public" virt="pure-virtual"><scope>capl::IAttribute</scope><name>SetString</name></member>
-    </listofallmembers>
-  </compounddef>
+        <location file="CAPLPluginApi.h" line="463" column="5" bodyfile="CAPLPluginApi.h" bodystart="464" bodyend="480" />
+        <listofallmembers>
+            <member refid="classcapl_1_1_i_attribute_1a8e933de3192ee723c5ae68ed240072d0" prot="public"
+                    virt="pure-virtual">
+                <scope>capl::IAttribute</scope><name>GetDouble</name>
+            </member>
+            <member refid="classcapl_1_1_i_attribute_1ad916dc18b29128221ef6e8bef2e6c880" prot="public"
+                    virt="pure-virtual">
+                <scope>capl::IAttribute</scope><name>GetEnum</name>
+            </member>
+            <member refid="classcapl_1_1_i_attribute_1aa4fccd06063ebba67c3564538853a252" prot="public"
+                    virt="pure-virtual">
+                <scope>capl::IAttribute</scope><name>GetInt</name>
+            </member>
+            <member refid="classcapl_1_1_i_attribute_1a8b2cf08a35c0079a4c4516a917f15950" prot="public"
+                    virt="pure-virtual">
+                <scope>capl::IAttribute</scope><name>GetLong</name>
+            </member>
+            <member refid="classcapl_1_1_i_attribute_1a56f576b935861330ed0fefac00ff1176" prot="public"
+                    virt="pure-virtual">
+                <scope>capl::IAttribute</scope><name>GetString</name>
+            </member>
+            <member refid="classcapl_1_1_i_attribute_1a9232ab50f6e87f47690be914674185e9" prot="public"
+                    virt="pure-virtual">
+                <scope>capl::IAttribute</scope><name>GetType</name>
+            </member>
+            <member refid="classcapl_1_1_i_attribute_1a916d3497cc3d2186a807598e4a124feb" prot="public"
+                    virt="pure-virtual">
+                <scope>capl::IAttribute</scope><name>ReleaseMe</name>
+            </member>
+            <member refid="classcapl_1_1_i_attribute_1aab7846aaae67afe57ec1fd57d2590bbe" prot="public"
+                    virt="pure-virtual">
+                <scope>capl::IAttribute</scope><name>SetDouble</name>
+            </member>
+            <member refid="classcapl_1_1_i_attribute_1a57d6c74869cfb6de9346f89c0bac2191" prot="public"
+                    virt="pure-virtual">
+                <scope>capl::IAttribute</scope><name>SetEnum</name>
+            </member>
+            <member refid="classcapl_1_1_i_attribute_1af0c3af5d7c1d0db139b5a445c80c2771" prot="public"
+                    virt="pure-virtual">
+                <scope>capl::IAttribute</scope><name>SetInt</name>
+            </member>
+            <member refid="classcapl_1_1_i_attribute_1a96b7bd6249bb4c38ebbeb72142084854" prot="public"
+                    virt="pure-virtual">
+                <scope>capl::IAttribute</scope><name>SetLong</name>
+            </member>
+            <member refid="classcapl_1_1_i_attribute_1a5d403d080af45221fbc9c9dd21fc3bcf" prot="public"
+                    virt="pure-virtual">
+                <scope>capl::IAttribute</scope><name>SetString</name>
+            </member>
+        </listofallmembers>
+    </compounddef>
 </doxygen>

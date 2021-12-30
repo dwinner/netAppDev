@@ -1,274 +1,335 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.2" xml:lang="en-US">
-  <compounddef id="classcapl_1_1_timer_event" kind="class" language="C++" prot="public">
-    <compoundname>capl::TimerEvent</compoundname>
-    <basecompoundref refid="classcapl_1_1_i_event" prot="public" virt="non-virtual">capl::IEvent&lt; ITimer &amp; &gt;</basecompoundref>
-    <derivedcompoundref refid="classcapl_1_1_timer_array_event_1_1_child_event" prot="public" virt="non-virtual">capl::TimerArrayEvent::ChildEvent</derivedcompoundref>
-      <sectiondef kind="private-attrib">
-      <memberdef kind="variable" id="classcapl_1_1_timer_event_1ac593736c8ac5b58ebfa166f0dc3e4c3d" prot="private" static="no" mutable="no">
-        <type><ref refid="classcapl_1_1_i_timer" kindref="compound">ITimer</ref> *</type>
-        <definition>ITimer* capl::TimerEvent::m_pTimer</definition>
-        <argsstring></argsstring>
-        <name>m_pTimer</name>
+
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd"
+         version="1.9.2" xml:lang="en-US">
+    <compounddef id="classcapl_1_1_timer_event" kind="class" language="C++" prot="public">
+        <compoundname>capl::TimerEvent</compoundname>
+        <basecompoundref refid="classcapl_1_1_i_event" prot="public" virt="non-virtual">capl::IEvent&lt; ITimer &amp; &gt;</basecompoundref>
+        <derivedcompoundref refid="classcapl_1_1_timer_array_event_1_1_child_event" prot="public" virt="non-virtual">capl::TimerArrayEvent::ChildEvent</derivedcompoundref>
+        <sectiondef kind="private-attrib">
+            <memberdef kind="variable" id="classcapl_1_1_timer_event_1ac593736c8ac5b58ebfa166f0dc3e4c3d" prot="private"
+                       static="no" mutable="no">
+                <type><ref refid="classcapl_1_1_i_timer" kindref="compound">ITimer</ref> *</type>
+                <definition>ITimer* capl::TimerEvent::m_pTimer</definition>
+                <argsstring></argsstring>
+                <name>m_pTimer</name>
+                <briefdescription>
+                </briefdescription>
+                <detaileddescription>
+                </detaileddescription>
+                <inbodydescription>
+                </inbodydescription>
+                <location file="CAPLPluginApi.h" line="2390" column="16" bodyfile="CAPLPluginApi.h" bodystart="2390"
+                          bodyend="-1" />
+            </memberdef>
+        </sectiondef>
+        <sectiondef kind="public-func">
+            <memberdef kind="function" id="classcapl_1_1_timer_event_1a0d3b5da4727f481b8339959518a8f343" prot="public"
+                       static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+                <type></type>
+                <definition>capl::TimerEvent::TimerEvent</definition>
+                <argsstring>()</argsstring>
+                <name>TimerEvent</name>
+                <briefdescription>
+                </briefdescription>
+                <detaileddescription>
+                </detaileddescription>
+                <inbodydescription>
+                </inbodydescription>
+                <location file="CAPLPluginApi.h" line="2392" column="9" />
+            </memberdef>
+            <memberdef kind="function" id="classcapl_1_1_timer_event_1abe98306b58b955bd31c463cbc5a9eb86" prot="public"
+                       static="no" const="no" explicit="no" inline="no" virt="virtual">
+                <type></type>
+                <definition>virtual capl::TimerEvent::~TimerEvent</definition>
+                <argsstring>()</argsstring>
+                <name>~TimerEvent</name>
+                <briefdescription>
+                </briefdescription>
+                <detaileddescription>
+                </detaileddescription>
+                <inbodydescription>
+                </inbodydescription>
+                <location file="CAPLPluginApi.h" line="2393" column="17" />
+            </memberdef>
+            <memberdef kind="function" id="classcapl_1_1_timer_event_1ac7dc6fead60ac1a578f261178d2a2f5c" prot="public"
+                       static="no" const="no" explicit="no" inline="no" virt="virtual">
+                <type>void</type>
+                <definition>virtual void capl::TimerEvent::Create</definition>
+                <argsstring>(bool boSecond)</argsstring>
+                <name>Create</name>
+                <param>
+                    <type>bool</type>
+                    <declname>boSecond</declname>
+                </param>
+                <briefdescription>
+                </briefdescription>
+                <detaileddescription>
+                </detaileddescription>
+                <inbodydescription>
+                </inbodydescription>
+                <location file="CAPLPluginApi.h" line="2394" column="30" />
+            </memberdef>
+            <memberdef kind="function" id="classcapl_1_1_timer_event_1a55a939376140abe53ab6e0ee96f24530" prot="public"
+                       static="no" const="no" explicit="no" inline="no" virt="virtual">
+                <type><ref refid="classcapl_1_1_i_timer" kindref="compound">ITimer</ref> &amp;</type>
+                <definition>virtual ITimer &amp; capl::TimerEvent::GetTimer</definition>
+                <argsstring>()</argsstring>
+                <name>GetTimer</name>
+                <briefdescription>
+                </briefdescription>
+                <detaileddescription>
+                </detaileddescription>
+                <inbodydescription>
+                </inbodydescription>
+                <location file="CAPLPluginApi.h" line="2397" column="32" />
+            </memberdef>
+            <memberdef kind="function" id="classcapl_1_1_timer_event_1a3be23ea6e9ce2b4fef1a136f6f190a4c" prot="public"
+                       static="no" const="no" explicit="no" inline="no" virt="virtual">
+                <type>void</type>
+                <definition>virtual void capl::TimerEvent::Set</definition>
+                <argsstring>(DWORD u32Timer)</argsstring>
+                <name>Set</name>
+                <param>
+                    <type>DWORD</type>
+                    <declname>u32Timer</declname>
+                </param>
+                <briefdescription>
+                </briefdescription>
+                <detaileddescription>
+                    <para>
+                        Sets a timer
+                        <parameterlist kind="param">
+                            <parameteritem>
+                                <parameternamelist>
+                                    <parametername>Timer</parametername>
+                                </parameternamelist>
+                                <parameterdescription>
+                                    <para>variable </para>
+                                </parameterdescription>
+                            </parameteritem>
+                            <parameteritem>
+                                <parameternamelist>
+                                    <parametername>msTimer</parametername>
+                                </parameternamelist>
+                                <parameterdescription>
+                                    <para>variable </para>
+                                </parameterdescription>
+                            </parameteritem>
+                        </parameterlist>
+                        <simplesect kind="note">
+                            <para>void msTimer::set(long); </para>
+                        </simplesect>
+                    </para>
+                </detaileddescription>
+                <inbodydescription>
+                </inbodydescription>
+                <location file="CAPLPluginApi.h" line="2405" column="30" />
+            </memberdef>
+            <memberdef kind="function" id="classcapl_1_1_timer_event_1adabf6aec9863f035347eeef499543c7a" prot="public"
+                       static="no" const="no" explicit="no" inline="no" virt="virtual">
+                <type>void</type>
+                <definition>virtual void capl::TimerEvent::SetCyclic</definition>
+                <argsstring>(__int32 firstDuration, __int32 period=-1)</argsstring>
+                <name>SetCyclic</name>
+                <param>
+                    <type>__int32</type>
+                    <declname>firstDuration</declname>
+                </param>
+                <param>
+                    <type>__int32</type>
+                    <declname>period</declname>
+                    <defval>-1</defval>
+                </param>
+                <briefdescription>
+                </briefdescription>
+                <detaileddescription>
+                    <para>
+                        Sets a cyclical timer
+                        <parameterlist kind="param">
+                            <parameteritem>
+                                <parameternamelist>
+                                    <parametername>firstDuration</parametername>
+                                </parameternamelist>
+                                <parameterdescription>
+                                    <para>Time in milliseconds until the timer runs out for the first time </para>
+                                </parameterdescription>
+                            </parameteritem>
+                            <parameteritem>
+                                <parameternamelist>
+                                    <parametername>period</parametername>
+                                </parameternamelist>
+                                <parameterdescription>
+                                    <para>Time in milliseconds in which the timer is restarted in case of expiration </para>
+                                </parameterdescription>
+                            </parameteritem>
+                        </parameterlist>
+                        <simplesect kind="note">
+                            <para>void msTimer::setCyclic(long firstDuration, long period); </para>
+                        </simplesect>
+                    </para>
+                </detaileddescription>
+                <inbodydescription>
+                </inbodydescription>
+                <location file="CAPLPluginApi.h" line="2413" column="30" />
+            </memberdef>
+            <memberdef kind="function" id="classcapl_1_1_timer_event_1afef3960d8894eb62462eb8765af06f94" prot="public"
+                       static="no" const="no" explicit="no" inline="no" virt="virtual">
+                <type>void</type>
+                <definition>virtual void capl::TimerEvent::Kill</definition>
+                <argsstring>()</argsstring>
+                <name>Kill</name>
+                <briefdescription>
+                </briefdescription>
+                <detaileddescription>
+                    <para>
+                        Stops an active timer
+                        <simplesect kind="note">
+                            <para>void msTimer::cancel(); </para>
+                        </simplesect>
+                    </para>
+                </detaileddescription>
+                <inbodydescription>
+                </inbodydescription>
+                <location file="CAPLPluginApi.h" line="2419" column="30" />
+            </memberdef>
+            <memberdef kind="function" id="classcapl_1_1_timer_event_1a252b84e467ed20cc8fa77aec477dbb7e" prot="public"
+                       static="no" const="yes" explicit="no" inline="no" virt="virtual">
+                <type>DWORD</type>
+                <definition>virtual DWORD capl::TimerEvent::GetTime</definition>
+                <argsstring>() const</argsstring>
+                <name>GetTime</name>
+                <briefdescription>
+                </briefdescription>
+                <detaileddescription>
+                    <para>
+                        Returns a value indicating how much more time will elapse before an on timer event procedure is called. For form 1, the time value is returned in seconds; for form 2, the time value is returned in milliseconds. If the timer is not active, -1 is returned. This is also the case in the on timer event procedure itself
+                        <parameterlist kind="param">
+                            <parameteritem>
+                                <parameternamelist>
+                                    <parametername>timer</parametername>
+                                </parameternamelist>
+                                <parameterdescription>
+                                    <para>variable </para>
+                                </parameterdescription>
+                            </parameteritem>
+                            <parameteritem>
+                                <parameternamelist>
+                                    <parametername>mstimer</parametername>
+                                </parameternamelist>
+                                <parameterdescription>
+                                    <para>variable </para>
+                                </parameterdescription>
+                            </parameteritem>
+                        </parameterlist>
+                        <simplesect kind="return">
+                            <para>Time to go until the timer elapses and the event procedure is called </para>
+                        </simplesect>
+                        <simplesect kind="note">
+                            <para>long msTimer::timeToElapse(); </para>
+                        </simplesect>
+                    </para>
+                </detaileddescription>
+                <inbodydescription>
+                </inbodydescription>
+                <location file="CAPLPluginApi.h" line="2428" column="31" />
+            </memberdef>
+            <memberdef kind="function" id="classcapl_1_1_timer_event_1aa2d6892474351d772f8d3ec5f0a4c96e" prot="public"
+                       static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+                <type></type>
+                <definition>capl::TimerEvent::operator ITimer &amp;</definition>
+                <argsstring>()</argsstring>
+                <name>operator ITimer &amp;</name>
+                <briefdescription>
+                </briefdescription>
+                <detaileddescription>
+                </detaileddescription>
+                <inbodydescription>
+                </inbodydescription>
+                <location file="CAPLPluginApi.h" line="2431" column="9" bodyfile="CAPLPluginApi.h" bodystart="2431"
+                          bodyend="2434" />
+            </memberdef>
+        </sectiondef>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
         </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="CAPLPluginApi.h" line="2390" column="16" bodyfile="CAPLPluginApi.h" bodystart="2390" bodyend="-1"/>
-      </memberdef>
-      </sectiondef>
-      <sectiondef kind="public-func">
-      <memberdef kind="function" id="classcapl_1_1_timer_event_1a0d3b5da4727f481b8339959518a8f343" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
-        <type></type>
-        <definition>capl::TimerEvent::TimerEvent</definition>
-        <argsstring>()</argsstring>
-        <name>TimerEvent</name>
-        <briefdescription>
-        </briefdescription>
-        <detaileddescription>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="CAPLPluginApi.h" line="2392" column="9"/>
-      </memberdef>
-      <memberdef kind="function" id="classcapl_1_1_timer_event_1abe98306b58b955bd31c463cbc5a9eb86" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
-        <type></type>
-        <definition>virtual capl::TimerEvent::~TimerEvent</definition>
-        <argsstring>()</argsstring>
-        <name>~TimerEvent</name>
-        <briefdescription>
-        </briefdescription>
-        <detaileddescription>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="CAPLPluginApi.h" line="2393" column="17"/>
-      </memberdef>
-      <memberdef kind="function" id="classcapl_1_1_timer_event_1ac7dc6fead60ac1a578f261178d2a2f5c" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
-        <type>void</type>
-        <definition>virtual void capl::TimerEvent::Create</definition>
-        <argsstring>(bool boSecond)</argsstring>
-        <name>Create</name>
-        <param>
-          <type>bool</type>
-          <declname>boSecond</declname>
-        </param>
-        <briefdescription>
-        </briefdescription>
-        <detaileddescription>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="CAPLPluginApi.h" line="2394" column="30"/>
-      </memberdef>
-      <memberdef kind="function" id="classcapl_1_1_timer_event_1a55a939376140abe53ab6e0ee96f24530" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
-        <type><ref refid="classcapl_1_1_i_timer" kindref="compound">ITimer</ref> &amp;</type>
-        <definition>virtual ITimer &amp; capl::TimerEvent::GetTimer</definition>
-        <argsstring>()</argsstring>
-        <name>GetTimer</name>
-        <briefdescription>
-        </briefdescription>
-        <detaileddescription>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="CAPLPluginApi.h" line="2397" column="32"/>
-      </memberdef>
-      <memberdef kind="function" id="classcapl_1_1_timer_event_1a3be23ea6e9ce2b4fef1a136f6f190a4c" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
-        <type>void</type>
-        <definition>virtual void capl::TimerEvent::Set</definition>
-        <argsstring>(DWORD u32Timer)</argsstring>
-        <name>Set</name>
-        <param>
-          <type>DWORD</type>
-          <declname>u32Timer</declname>
-        </param>
-        <briefdescription>
-        </briefdescription>
-        <detaileddescription>
-<para>Sets a timer <parameterlist kind="param"><parameteritem>
-<parameternamelist>
-<parametername>Timer</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>variable </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>msTimer</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>variable </para>
-</parameterdescription>
-</parameteritem>
-</parameterlist>
-<simplesect kind="note"><para>void msTimer::set(long); </para>
-</simplesect>
-</para>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="CAPLPluginApi.h" line="2405" column="30"/>
-      </memberdef>
-      <memberdef kind="function" id="classcapl_1_1_timer_event_1adabf6aec9863f035347eeef499543c7a" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
-        <type>void</type>
-        <definition>virtual void capl::TimerEvent::SetCyclic</definition>
-        <argsstring>(__int32 firstDuration, __int32 period=-1)</argsstring>
-        <name>SetCyclic</name>
-        <param>
-          <type>__int32</type>
-          <declname>firstDuration</declname>
-        </param>
-        <param>
-          <type>__int32</type>
-          <declname>period</declname>
-          <defval>-1</defval>
-        </param>
-        <briefdescription>
-        </briefdescription>
-        <detaileddescription>
-<para>Sets a cyclical timer <parameterlist kind="param"><parameteritem>
-<parameternamelist>
-<parametername>firstDuration</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>Time in milliseconds until the timer runs out for the first time </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>period</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>Time in milliseconds in which the timer is restarted in case of expiration </para>
-</parameterdescription>
-</parameteritem>
-</parameterlist>
-<simplesect kind="note"><para>void msTimer::setCyclic(long firstDuration, long period); </para>
-</simplesect>
-</para>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="CAPLPluginApi.h" line="2413" column="30"/>
-      </memberdef>
-      <memberdef kind="function" id="classcapl_1_1_timer_event_1afef3960d8894eb62462eb8765af06f94" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
-        <type>void</type>
-        <definition>virtual void capl::TimerEvent::Kill</definition>
-        <argsstring>()</argsstring>
-        <name>Kill</name>
-        <briefdescription>
-        </briefdescription>
-        <detaileddescription>
-<para>Stops an active timer <simplesect kind="note"><para>void msTimer::cancel(); </para>
-</simplesect>
-</para>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="CAPLPluginApi.h" line="2419" column="30"/>
-      </memberdef>
-      <memberdef kind="function" id="classcapl_1_1_timer_event_1a252b84e467ed20cc8fa77aec477dbb7e" prot="public" static="no" const="yes" explicit="no" inline="no" virt="virtual">
-        <type>DWORD</type>
-        <definition>virtual DWORD capl::TimerEvent::GetTime</definition>
-        <argsstring>() const</argsstring>
-        <name>GetTime</name>
-        <briefdescription>
-        </briefdescription>
-        <detaileddescription>
-<para>Returns a value indicating how much more time will elapse before an on timer event procedure is called. For form 1, the time value is returned in seconds; for form 2, the time value is returned in milliseconds. If the timer is not active, -1 is returned. This is also the case in the on timer event procedure itself <parameterlist kind="param"><parameteritem>
-<parameternamelist>
-<parametername>timer</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>variable </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>mstimer</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>variable </para>
-</parameterdescription>
-</parameteritem>
-</parameterlist>
-<simplesect kind="return"><para>Time to go until the timer elapses and the event procedure is called </para>
-</simplesect>
-<simplesect kind="note"><para>long msTimer::timeToElapse(); </para>
-</simplesect>
-</para>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="CAPLPluginApi.h" line="2428" column="31"/>
-      </memberdef>
-      <memberdef kind="function" id="classcapl_1_1_timer_event_1aa2d6892474351d772f8d3ec5f0a4c96e" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
-        <type></type>
-        <definition>capl::TimerEvent::operator ITimer &amp;</definition>
-        <argsstring>()</argsstring>
-        <name>operator ITimer &amp;</name>
-        <briefdescription>
-        </briefdescription>
-        <detaileddescription>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="CAPLPluginApi.h" line="2431" column="9" bodyfile="CAPLPluginApi.h" bodystart="2431" bodyend="2434"/>
-      </memberdef>
-      </sectiondef>
-    <briefdescription>
-    </briefdescription>
-    <detaileddescription>
-    </detaileddescription>
-    <inheritancegraph>
-      <node id="2">
-        <label>capl::IEvent&lt; ITimer &amp; &gt;</label>
-        <link refid="classcapl_1_1_i_event"/>
-      </node>
-      <node id="3">
-        <label>capl::TimerArrayEvent::ChildEvent</label>
-        <link refid="classcapl_1_1_timer_array_event_1_1_child_event"/>
-        <childnode refid="1" relation="public-inheritance">
-        </childnode>
-      </node>
-      <node id="1">
-        <label>capl::TimerEvent</label>
-        <link refid="classcapl_1_1_timer_event"/>
-        <childnode refid="2" relation="public-inheritance">
-        </childnode>
-      </node>
-    </inheritancegraph>
-    <collaborationgraph>
-      <node id="2">
-        <label>capl::IEvent&lt; ITimer &amp; &gt;</label>
-        <link refid="classcapl_1_1_i_event"/>
-      </node>
-      <node id="1">
-        <label>capl::TimerEvent</label>
-        <link refid="classcapl_1_1_timer_event"/>
-        <childnode refid="2" relation="public-inheritance">
-        </childnode>
-      </node>
-    </collaborationgraph>
-    <location file="CAPLPluginApi.h" line="2388" column="5" bodyfile="CAPLPluginApi.h" bodystart="2389" bodyend="2435"/>
-    <listofallmembers>
-      <member refid="classcapl_1_1_timer_event_1ac7dc6fead60ac1a578f261178d2a2f5c" prot="public" virt="virtual"><scope>capl::TimerEvent</scope><name>Create</name></member>
-      <member refid="classcapl_1_1_timer_event_1a252b84e467ed20cc8fa77aec477dbb7e" prot="public" virt="virtual"><scope>capl::TimerEvent</scope><name>GetTime</name></member>
-      <member refid="classcapl_1_1_timer_event_1a55a939376140abe53ab6e0ee96f24530" prot="public" virt="virtual"><scope>capl::TimerEvent</scope><name>GetTimer</name></member>
-      <member refid="classcapl_1_1_i_event_1a3fb0217883734109c5ebba0e89ddc302" prot="public" virt="non-virtual"><scope>capl::TimerEvent</scope><name>IEvent</name></member>
-      <member refid="classcapl_1_1_timer_event_1afef3960d8894eb62462eb8765af06f94" prot="public" virt="virtual"><scope>capl::TimerEvent</scope><name>Kill</name></member>
-      <member refid="classcapl_1_1_i_event_1acf5a313898cfb55070e749789b31528f" prot="protected" virt="non-virtual"><scope>capl::TimerEvent</scope><name>m_hEvent</name></member>
-      <member refid="classcapl_1_1_timer_event_1ac593736c8ac5b58ebfa166f0dc3e4c3d" prot="private" virt="non-virtual"><scope>capl::TimerEvent</scope><name>m_pTimer</name></member>
-      <member refid="classcapl_1_1_i_event_1a5d6973af1cfbe659c3b0ec1ef0d92200" prot="public" virt="pure-virtual"><scope>capl::TimerEvent</scope><name>OnEvent</name></member>
-      <member refid="classcapl_1_1_timer_event_1aa2d6892474351d772f8d3ec5f0a4c96e" prot="public" virt="non-virtual"><scope>capl::TimerEvent</scope><name>operator ITimer &amp;</name></member>
-      <member refid="classcapl_1_1_timer_event_1a3be23ea6e9ce2b4fef1a136f6f190a4c" prot="public" virt="virtual"><scope>capl::TimerEvent</scope><name>Set</name></member>
-      <member refid="classcapl_1_1_timer_event_1adabf6aec9863f035347eeef499543c7a" prot="public" virt="virtual"><scope>capl::TimerEvent</scope><name>SetCyclic</name></member>
-      <member refid="classcapl_1_1_timer_event_1a0d3b5da4727f481b8339959518a8f343" prot="public" virt="non-virtual"><scope>capl::TimerEvent</scope><name>TimerEvent</name></member>
-      <member refid="classcapl_1_1_timer_event_1abe98306b58b955bd31c463cbc5a9eb86" prot="public" virt="virtual"><scope>capl::TimerEvent</scope><name>~TimerEvent</name></member>
-    </listofallmembers>
-  </compounddef>
+        <inheritancegraph>
+            <node id="2">
+                <label>capl::IEvent&lt; ITimer &amp; &gt;</label>
+                <link refid="classcapl_1_1_i_event" />
+            </node>
+            <node id="3">
+                <label>capl::TimerArrayEvent::ChildEvent</label>
+                <link refid="classcapl_1_1_timer_array_event_1_1_child_event" />
+                <childnode refid="1" relation="public-inheritance">
+                </childnode>
+            </node>
+            <node id="1">
+                <label>capl::TimerEvent</label>
+                <link refid="classcapl_1_1_timer_event" />
+                <childnode refid="2" relation="public-inheritance">
+                </childnode>
+            </node>
+        </inheritancegraph>
+        <collaborationgraph>
+            <node id="2">
+                <label>capl::IEvent&lt; ITimer &amp; &gt;</label>
+                <link refid="classcapl_1_1_i_event" />
+            </node>
+            <node id="1">
+                <label>capl::TimerEvent</label>
+                <link refid="classcapl_1_1_timer_event" />
+                <childnode refid="2" relation="public-inheritance">
+                </childnode>
+            </node>
+        </collaborationgraph>
+        <location file="CAPLPluginApi.h" line="2388" column="5" bodyfile="CAPLPluginApi.h" bodystart="2389"
+                  bodyend="2435" />
+        <listofallmembers>
+            <member refid="classcapl_1_1_timer_event_1ac7dc6fead60ac1a578f261178d2a2f5c" prot="public" virt="virtual">
+                <scope>capl::TimerEvent</scope><name>Create</name>
+            </member>
+            <member refid="classcapl_1_1_timer_event_1a252b84e467ed20cc8fa77aec477dbb7e" prot="public" virt="virtual">
+                <scope>capl::TimerEvent</scope><name>GetTime</name>
+            </member>
+            <member refid="classcapl_1_1_timer_event_1a55a939376140abe53ab6e0ee96f24530" prot="public" virt="virtual">
+                <scope>capl::TimerEvent</scope><name>GetTimer</name>
+            </member>
+            <member refid="classcapl_1_1_i_event_1a3fb0217883734109c5ebba0e89ddc302" prot="public" virt="non-virtual">
+                <scope>capl::TimerEvent</scope><name>IEvent</name>
+            </member>
+            <member refid="classcapl_1_1_timer_event_1afef3960d8894eb62462eb8765af06f94" prot="public" virt="virtual">
+                <scope>capl::TimerEvent</scope><name>Kill</name>
+            </member>
+            <member refid="classcapl_1_1_i_event_1acf5a313898cfb55070e749789b31528f" prot="protected"
+                    virt="non-virtual">
+                <scope>capl::TimerEvent</scope><name>m_hEvent</name>
+            </member>
+            <member refid="classcapl_1_1_timer_event_1ac593736c8ac5b58ebfa166f0dc3e4c3d" prot="private"
+                    virt="non-virtual">
+                <scope>capl::TimerEvent</scope><name>m_pTimer</name>
+            </member>
+            <member refid="classcapl_1_1_i_event_1a5d6973af1cfbe659c3b0ec1ef0d92200" prot="public" virt="pure-virtual">
+                <scope>capl::TimerEvent</scope><name>OnEvent</name>
+            </member>
+            <member refid="classcapl_1_1_timer_event_1aa2d6892474351d772f8d3ec5f0a4c96e" prot="public"
+                    virt="non-virtual">
+                <scope>capl::TimerEvent</scope><name>operator ITimer &amp;</name>
+            </member>
+            <member refid="classcapl_1_1_timer_event_1a3be23ea6e9ce2b4fef1a136f6f190a4c" prot="public" virt="virtual">
+                <scope>capl::TimerEvent</scope><name>Set</name>
+            </member>
+            <member refid="classcapl_1_1_timer_event_1adabf6aec9863f035347eeef499543c7a" prot="public" virt="virtual">
+                <scope>capl::TimerEvent</scope><name>SetCyclic</name>
+            </member>
+            <member refid="classcapl_1_1_timer_event_1a0d3b5da4727f481b8339959518a8f343" prot="public"
+                    virt="non-virtual">
+                <scope>capl::TimerEvent</scope><name>TimerEvent</name>
+            </member>
+            <member refid="classcapl_1_1_timer_event_1abe98306b58b955bd31c463cbc5a9eb86" prot="public" virt="virtual">
+                <scope>capl::TimerEvent</scope><name>~TimerEvent</name>
+            </member>
+        </listofallmembers>
+    </compounddef>
 </doxygen>

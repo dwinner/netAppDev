@@ -1,0 +1,1096 @@
+/*@!Encoding:1252*/
+/*
+Copyright ( C ) Continental AG 2012
+
+
+
+Based on Version  1.0, 12.05.10   from M.Dangelmeyr      IBD im Auftrag von EP/ESE   Daimler AG
+
+Date of creation :  14.04.2011
+
+Created by :                 Hans Jürgen Hipp
+
+
+Version info
+
+1.0	   01.2014	Inital versioning introduced
+1.1	04.11.2013	HMI_2013_42a database
+// #VERSION#
+// #VERSION_END#
+*/
+
+
+variables
+{
+    const TRUE =    0xAA;
+    const FALSE =   0x00;
+    const cManual = 0x00;
+    const cAuto =   0xAA;
+
+    msTimer t_DBKomTimer_20ms;      // Timer zum zyklischen Aufruf der DBKom-Task
+    int c_tDBKomTimer_20ms = 20;    // msec
+    msTimer t_DBKomTimer_5ms;       // Timer zum zyklischen Aufruf der DBKom-Task
+    int c_tDBKomTimer_5ms = 5;      // msec
+
+
+    // BA_DEF_ BO_  "GenMsgSendType" ENUM
+    //  0 : cyclicX
+    //  1 : spontanX
+    //  2 : cyclicIfActiveX
+    //  3 : spontanWithDelay
+    //  4 : cyclicAndSpontanX
+    //  5 : cyclicAndSpontanWithDelay
+    //  6 : spontanWithRepitition
+    //  7 : cyclicIfActiveAndSpontanWD
+    //  8 : cyclicIfActiveFast
+    //  9 : cyclicWithRepeatOnDemand
+    //  10 : none
+
+// #VAR_DEF#
+    // Botschaft RBTM_FR_Stat_AR ID: 983 --- Sendeart 5 cyclicAndSpontanWithDelay --- 
+    message RBTM_FR_Stat_AR _mRBTM_FR_Stat_AR;
+    int _RBTM_FR_Stat_AR_Timebase;
+    int _RBTM_FR_Stat_AR_CycleCount;
+    int _RBTM_FR_Stat_AR_StartDelay;
+    int _RBTM_FR_Stat_AR_Cnt;
+    int _RBTM_FR_Stat_AR_SpontanFlag;
+    msTimer _tRBTM_FR_Stat_AR;
+
+    // Botschaft ROE_RBTM_FR ID: 2565818112  --- Sendeart 9 cyclicWithRepeatOnDemand --- 
+    message ROE_RBTM_FR _mROE_RBTM_FR;
+    int _ROE_RBTM_FR_Timebase;
+    int _ROE_RBTM_FR_CycleCount;
+    int _ROE_RBTM_FR_StartDelay;
+    int _ROE_RBTM_FR_Cnt;
+    int _ROE_RBTM_FR_MsgRepetitions;
+
+// #VAR_DEF_END#
+    // Botschaft XCP_Rs_RBTM_FR ID:  --- Sendeart cyclicAndSpontanWithDelay --- 
+//    message XCP_Rs_RBTM_FR _mXCP_Rs_RBTM_FR;
+//    int _XCP_Rs_RBTM_FR_Timebase;
+//    int _XCP_Rs_RBTM_FR_CycleCount;
+//    int _XCP_Rs_RBTM_FR_StartDelay;
+//    int _XCP_Rs_RBTM_FR_MinDelay;
+//    int _XCP_Rs_RBTM_FR_Cnt;
+//    int _XCP_Rs_RBTM_FR_SpontanFlag;
+//    int _XCP_Rs_RBTM_FR_DelayCnt;
+
+
+    Timer t_DoorNMCancelTimer;
+    Timer t_KeyInLockNMCancelTimer;
+    Timer t_StWhlButtonNMCancelTimer;
+    Timer t_WakeWarningNMCancelTimer;
+    Timer t_CarClosureNMCancelTimer;
+    Timer t_EPKBWarningNMCancelTimer;
+    Timer t_IlluNMCancelTimer;
+    Timer t_GearIndNMCancelTimer;
+    const byte c_NMCancelTimer_05sec = 5;
+    const byte c_NMCancelTimer_30sec = 30;
+
+    char buffer[1024], stringbuffer[512];
+    int bActiveHelper;    // Hilfsvariable für "Aktive Signale"
+
+//--------------------------------------- AUTOSAR NM ------------------------------------------------
+
+    const byte cAUTO =   0;
+    const byte cMANUAL = 1;
+
+    msTimer t_NM_Transmit;
+    long  NM_Transmit_Cycle;
+    msTimer t_NM_Wait_Bus_Sleep_Time;
+    const c_NM_Wait_Bus_Sleep_Time = 1500;
+//    msTimer t_NM_Remote_Sleep_Ind_Time;
+    const c_NM_Remote_Sleep_Ind_Time = 5000;
+    msTimer t_NM_Repeat_Message_Time;
+    const c_NM_Repeat_Message_Time = 6000;
+    msTimer t_NM_Timeout_Time;
+    const c_NM_Timeout_Time = 5000;
+
+    byte NM_Mode = 0;
+    const byte cNM_Mode_Init = 0;
+    const byte cNM_Mode_Sleep = 1;
+    const byte cNM_Mode_Prepare_Bus_Sleep = 2;
+    const byte cNM_Mode_Ready_Sleep = 3;
+    const byte cNM_Mode_Normal_Operation_State = 4;
+    const byte cNM_Mode_RepeatMsg = 5;
+
+    byte boCanNM_Rx_Indication = 0;
+    byte boCanNM_Tx_Confirmation = 0;
+    byte boCanNM_WaitBusSleep_Timer_Expired = 0;
+    byte boCanNM_RepeatMessage_Timer_Expired = 0;
+    byte boCanNM_NM_Timeout_Timer_Expired = 0;
+    byte boCanNM_RepeatMessage_Requested = 0;
+
+    const word cFLDoorNMRequest =       0x0001;
+    const word cFRDoorNMRequest =       0x0002;
+    const word cRLDoorNMRequest =       0x0004;
+    const word cRRDoorNMRequest =       0x0008;
+    const word cAllDoorNMRequest =      0x000F;
+    const word cIgnitionNMRequest =     0x0010;
+    const word cStWhlButtonNMRequest =  0x0020;
+    const word cWakeWarningNMRequest =  0x0040;
+    const word cEPKBWarningNMRequest =  0x0080;
+    const word cIlluNMRequest =         0x0100;
+    const word cCarClosureNMRequest =   0x0200;
+    const word cGearIndNMRequest =      0x0400;
+
+    const word cManualNMRequest =       0x8000;
+    const word cAllNMRequest =          0xFFFF;
+
+    const CanNmNodeId_Base =       1280; //  =  07h
+    const CanNmNodeId_APM =          76; //  =  4Ch
+    const CanNmNodeId_DRVU =         77; //  =  4Dh
+    const CanNmNodeId_EIS =           7; //  =  07h
+    const CanNmNodeId_HGW =          27; //  =  07h
+    const CanNmNodeId_TGW =          56; //  =  38h
+    const CanNmNodeId_RBTM_FR =      64; //  =  40h
+    const CanNmNodeId_IC =           65; //  =  41h
+    const CanNmNodeId_HUD =          66; //  =  42h
+    const CanNmNodeId_NV =           67; //  =  43h
+    const CanNmNodeId_RVC_SVS =      68; //  =  44h
+    const CanNmNodeId_ORC =          69; //  =  45h
+    const CanNmNodeId_RBTM_FL =      71; //  =  47h
+    const CanNmNodeId_TPM =          82; //  =  52h
+
+    const CanNmNodeDetectionEnabled          = 0; //false
+    const CanNmNodeIdEnabled                 = 1; //true
+    const CanNmUserDataEnabled               = 1; //true;
+    const CanNmUserDataLentgh                = 7;
+    const CanNmRepeatMsgIndEnabled           = 1; //true;
+    const CanNmDevErrorDetect                = 0; //false
+//    const CanNmUserDataEnabled             = 1; //true
+    const CanNmRemoteSleepIndEnabled         = 0; //false
+    const CanNmMsgReducedtime                = 80; //ms
+    const CanNmPduRxIndicationEnabled        = 0; //false
+    const CanNmStateChangeIndEnabled         = 0; //false
+    const CanNmImmediateTxconfEnabled        = 0;// false
+    const CanNmMsgTimeoutTime                = 5000; //ms
+    const CanNmPduNidPosition                = 0; //CANNM_PDU_BYTE_0;
+    const CanNmPduCbvPosition                = 0xFF; //ANNM_PDU_OFF;
+    const CanNmPduLength                     = 8;
+    const cCanNmPassiveModeEnabled           = 0; //false
+    const CanNmBusSynchronizationEnabled     = 0; //false
+    const CanNmBusLoadReductionEnabled       = 1; //true
+//    const CanNmRemoteSleepIndEnabled       = 0; //false
+//    const CanNmNodeDetectionEnabled        = 0; //false
+    const CanNmComControlEnabled             = 1; //true    
+
+    const NmAsrCanMsgStandardCycle =          2000;
+    const NmAsrCanMsgCycleOffset_APM =          40;
+    const NmAsrCanMsgReducedTime_APM =        1760;
+    const NmAsrCanMsgCycleOffset_DRVU =         50;
+    const NmAsrCanMsgReducedTime_DRVU =       1770;
+    const NmAsrCanMsgCycleOffset_EIS =          70;
+    const NmAsrCanMsgReducedTime_EIS =        1070;
+    const NmAsrCanMsgCycleOffset_HGW =          30;
+    const NmAsrCanMsgReducedTime_HGW =        1270;
+    const NmAsrCanMsgCycleOffset_HUD =          20;
+    const NmAsrCanMsgReducedTime_HUD =        1660;
+    const NmAsrCanMsgCycleOffset_IC =           10;
+    const NmAsrCanMsgReducedTime_IC =         1650;
+    const NmAsrCanMsgCycleOffset_NV =           30;
+    const NmAsrCanMsgReducedTime_NV =         1670;
+    const NmAsrCanMsgCycleOffset_ORC =          50;
+    const NmAsrCanMsgReducedTime_ORC =        1690;
+    const NmAsrCanMsgCycleOffset_RBTM_FL =       0;
+    const NmAsrCanMsgReducedTime_RBTM_FL =    1640;
+    const NmAsrCanMsgCycleOffset_RBTM_FR =      70;
+    const NmAsrCanMsgReducedTime_RBTM_FR =    1710;
+    const NmAsrCanMsgCycleOffset_RVC =          40;
+    const NmAsrCanMsgReducedTime_RVC =        1680;
+    const NmAsrCanMsgCycleOffset_SVS =          40;
+    const NmAsrCanMsgReducedTime_SVS =        1680;
+    const NmAsrCanMsgCycleOffset_TGW =           0;
+    const NmAsrCanMsgReducedTime_TGW =        1560;
+    const NmAsrCanMsgCycleOffset_TPM =          20;
+    const NmAsrCanMsgReducedTime_TPM =        1820;
+
+    char gECU[12] = "HMI_RBTM_FR";
+
+    byte CanNmNodeId            = CanNmNodeId_RBTM_FR;
+    word NmNodeIdentifier       = CanNmNodeId_Base + CanNmNodeId_RBTM_FR;
+    word NmAsrCanMsgCycleOffset = NmAsrCanMsgCycleOffset_RBTM_FR;
+    word NmAsrCanMsgReducedTime = NmAsrCanMsgReducedTime_RBTM_FR;
+    word NmAsrCanMsgCycleTime   = 2000;
+    byte NM_Repeat_Message_State_Active = 0;
+    byte NM_AutomaticModeActive = 0;
+
+    // Botschaft NM_xxx_AR --- Sendeart cyclicX --- 
+    //message NM_RBTM_FR_AR _mNM_xxx_AR;
+    byte _mNM_xxx_Transmit_Allowed = 1;
+
+//--------------------------------------- AUTOSAR NM ------------------------------------------------
+
+    byte  crctable[256] = {
+        0x00, 0x1D, 0x3A, 0x27, 0x74, 0x69, 0x4E, 0x53, 0xE8, 0xF5, 0xD2, 0xCF, 0x9C, 0x81, 0xA6, 0xBB,
+        0xCD, 0xD0, 0xF7, 0xEA, 0xB9, 0xA4, 0x83, 0x9E, 0x25, 0x38, 0x1F, 0x02, 0x51, 0x4C, 0x6B, 0x76,
+        0x87, 0x9A, 0xBD, 0xA0, 0xF3, 0xEE, 0xC9, 0xD4, 0x6F, 0x72, 0x55, 0x48, 0x1B, 0x06, 0x21, 0x3C,
+        0x4A, 0x57, 0x70, 0x6D, 0x3E, 0x23, 0x04, 0x19, 0xA2, 0xBF, 0x98, 0x85, 0xD6, 0xCB, 0xEC, 0xF1,
+        0x13, 0x0E, 0x29, 0x34, 0x67, 0x7A, 0x5D, 0x40, 0xFB, 0xE6, 0xC1, 0xDC, 0x8F, 0x92, 0xB5, 0xA8,
+        0xDE, 0xC3, 0xE4, 0xF9, 0xAA, 0xB7, 0x90, 0x8D, 0x36, 0x2B, 0x0C, 0x11, 0x42, 0x5F, 0x78, 0x65,
+        0x94, 0x89, 0xAE, 0xB3, 0xE0, 0xFD, 0xDA, 0xC7, 0x7C, 0x61, 0x46, 0x5B, 0x08, 0x15, 0x32, 0x2F,
+        0x59, 0x44, 0x63, 0x7E, 0x2D, 0x30, 0x17, 0x0A, 0xB1, 0xAC, 0x8B, 0x96, 0xC5, 0xD8, 0xFF, 0xE2,
+        0x26, 0x3B, 0x1C, 0x01, 0x52, 0x4F, 0x68, 0x75, 0xCE, 0xD3, 0xF4, 0xE9, 0xBA, 0xA7, 0x80, 0x9D,
+        0xEB, 0xF6, 0xD1, 0xCC, 0x9F, 0x82, 0xA5, 0xB8, 0x03, 0x1E, 0x39, 0x24, 0x77, 0x6A, 0x4D, 0x50,
+        0xA1, 0xBC, 0x9B, 0x86, 0xD5, 0xC8, 0xEF, 0xF2, 0x49, 0x54, 0x73, 0x6E, 0x3D, 0x20, 0x07, 0x1A,
+        0x6C, 0x71, 0x56, 0x4B, 0x18, 0x05, 0x22, 0x3F, 0x84, 0x99, 0xBE, 0xA3, 0xF0, 0xED, 0xCA, 0xD7,
+        0x35, 0x28, 0x0F, 0x12, 0x41, 0x5C, 0x7B, 0x66, 0xDD, 0xC0, 0xE7, 0xFA, 0xA9, 0xB4, 0x93, 0x8E,
+        0xF8, 0xE5, 0xC2, 0xDF, 0x8C, 0x91, 0xB6, 0xAB, 0x10, 0x0D, 0x2A, 0x37, 0x64, 0x79, 0x5E, 0x43,
+        0xB2, 0xAF, 0x88, 0x95, 0xC6, 0xDB, 0xFC, 0xE1, 0x5A, 0x47, 0x60, 0x7D, 0x2E, 0x33, 0x14, 0x09,
+        0x7F, 0x62, 0x45, 0x58, 0x0B, 0x16, 0x31, 0x2C, 0x97, 0x8A, 0xAD, 0xB0, 0xE3, 0xFE, 0xD9, 0xC4
+    };
+
+    byte  crctable_profile02[256] = {
+        0x00, 0x2F, 0x5E, 0x71, 0xBC, 0x93, 0xE2, 0xCD, 0x57, 0x78, 0x09, 0x26, 0xEB, 0xC4, 0xB5, 0x9A,
+        0xAE, 0x81, 0xF0, 0xDF, 0x12, 0x3D, 0x4C, 0x63, 0xF9, 0xD6, 0xA7, 0x88, 0x45, 0x6A, 0x1B, 0x34,
+        0x73, 0x5C, 0x2D, 0x02, 0xCF, 0xE0, 0x91, 0xBE, 0x24, 0x0B, 0x7A, 0x55, 0x98, 0xB7, 0xC6, 0xE9,
+        0xDD, 0xF2, 0x83, 0xAC, 0x61, 0x4E, 0x3F, 0x10, 0x8A, 0xA5, 0xD4, 0xFB, 0x36, 0x19, 0x68, 0x47,
+        0xE6, 0xC9, 0xB8, 0x97, 0x5A, 0x75, 0x04, 0x2B, 0xB1, 0x9E, 0xEF, 0xC0, 0x0D, 0x22, 0x53, 0x7C,
+        0x48, 0x67, 0x16, 0x39, 0xF4, 0xDB, 0xAA, 0x85, 0x1F, 0x30, 0x41, 0x6E, 0xA3, 0x8C, 0xFD, 0xD2,
+        0x95, 0xBA, 0xCB, 0xE4, 0x29, 0x06, 0x77, 0x58, 0xC2, 0xED, 0x9C, 0xB3, 0x7E, 0x51, 0x20, 0x0F,
+        0x3B, 0x14, 0x65, 0x4A, 0x87, 0xA8, 0xD9, 0xF6, 0x6C, 0x43, 0x32, 0x1D, 0xD0, 0xFF, 0x8E, 0xA1,
+        0xE3, 0xCC, 0xBD, 0x92, 0x5F, 0x70, 0x01, 0x2E, 0xB4, 0x9B, 0xEA, 0xC5, 0x08, 0x27, 0x56, 0x79,
+        0x4D, 0x62, 0x13, 0x3C, 0xF1, 0xDE, 0xAF, 0x80, 0x1A, 0x35, 0x44, 0x6B, 0xA6, 0x89, 0xF8, 0xD7,
+        0x90, 0xBF, 0xCE, 0xE1, 0x2C, 0x03, 0x72, 0x5D, 0xC7, 0xE8, 0x99, 0xB6, 0x7B, 0x54, 0x25, 0x0A,
+        0x3E, 0x11, 0x60, 0x4F, 0x82, 0xAD, 0xDC, 0xF3, 0x69, 0x46, 0x37, 0x18, 0xD5, 0xFA, 0x8B, 0xA4,
+        0x05, 0x2A, 0x5B, 0x74, 0xB9, 0x96, 0xE7, 0xC8, 0x52, 0x7D, 0x0C, 0x23, 0xEE, 0xC1, 0xB0, 0x9F,
+        0xAB, 0x84, 0xF5, 0xDA, 0x17, 0x38, 0x49, 0x66, 0xFC, 0xD3, 0xA2, 0x8D, 0x40, 0x6F, 0x1E, 0x31,
+        0x76, 0x59, 0x28, 0x07, 0xCA, 0xE5, 0x94, 0xBB, 0x21, 0x0E, 0x7F, 0x50, 0x9D, 0xB2, 0xC3, 0xEC,
+        0xD8, 0xF7, 0x86, 0xA9, 0x64, 0x4B, 0x3A, 0x15, 0x8F, 0xA0, 0xD1, 0xFE, 0x33, 0x1C, 0x6D, 0x42
+    };
+}
+
+on start
+{
+    putValue( HMI__NM_RBTM_FR_NM_Request, 0 );  // reset all requests
+    _NM_Switch_NM_Mode();
+    
+    // DBKom-Task starten
+    
+    __RBTM_FR_Init_Msg();
+    __RBTM_FR_Startup_Delay();
+
+    putValue( HMI__NM_RBTM_FR_AutomaticModeActive, 0 );
+    putValue( HMI__NM_RBTM_FR_AutomaticModeActive, 1 );
+}
+
+__RBTM_FR_Init_Msg()
+{
+// #START_INIT#
+    RBTM_FR_Stat_AR_init();
+    ROE_RBTM_FR_init();
+
+// #START_INIT_END#
+    NM_xxx_AR_init();
+//    XCP_Rs_RBTM_FR_init();
+}
+
+on envVar HMI__STOP_All_MESSAGES_DEFAULT_STARTDELAY
+{
+    if( getValue( this ) )
+    {
+        __RBTM_FR_Init_Msg();
+        __RBTM_FR_Startup_Delay();
+    }
+}
+
+on envVar HMI__STOP_All_MESSAGES_SET_STARTDELAY
+{
+    if( getValue( this ) )
+    {
+        __RBTM_FR_Startup_Delay();
+    }
+}
+
+__RBTM_FR_Startup_Delay()
+{
+//    write(" Delay setzen :__RBTM_FR_Startup_Delay");
+
+// #START_DELAY#
+    _RBTM_FR_Stat_AR_Cnt =        getValue( HMI__STMSGSD_RBTM_FR_Stat_AR   ) / _RBTM_FR_Stat_AR_Timebase;
+    _ROE_RBTM_FR_Cnt =            getValue( HMI__STMSGSD_ROE_RBTM_FR       ) / _ROE_RBTM_FR_Timebase;
+// #START_DELAY_END#
+}
+
+on Timer t_DBKomTimer_5ms
+{
+// *** DBKom-Sendefunktion ***
+    // timer aufziehen für nächsten Zyklus
+    if( getValue( HMI__NM_RBTM_FR_CommActive ) |
+        getValue( HMI__NM_RBTM_FR_RequestBusCom )   )
+    {
+        setTimer( t_DBKomTimer_5ms, c_tDBKomTimer_5ms );
+    }
+// #CYC_TIMER_5_MS#
+//    CLkS_Rq_AR_check_output();                   // Botschaft CLkS_Rq_AR                   --- Sendeart 8 cyclicIfActiveFast --- 
+// #CYC_TIMER_5_MS_END#
+}
+
+on Timer t_DBKomTimer_20ms
+{
+// *** DBKom-Sendefunktion ***
+    // timer aufziehen für nächsten Zyklus
+    if( getValue( HMI__NM_RBTM_FR_CommActive    ) |
+        getValue( HMI__NM_RBTM_FR_RequestBusCom )   )
+    {
+        setTimer( t_DBKomTimer_20ms, c_tDBKomTimer_20ms );
+    }
+// #CYC_TIMER_20_MS#
+    RBTM_FR_Stat_AR_check_output();
+    ROE_RBTM_FR_check_output();
+// #CYC_TIMER_20_MS_END#
+//    NM_RBTM_FR_AR_check_output();
+//    XCP_Rs_RBTM_FR_check_output();
+}
+
+on EnvVar HMI__SAVE_PANEL_CONFIG_RBTM_FR
+{
+    dword hFile;
+
+    if( getValue(this) )
+    {
+        write("Saving HMI Panel Variables ...");
+
+        hFile = openFileWrite( "CONFIG\\HMI_PRESETS.ASC", 0 );
+        filePutString( "base hex timestamps absolute\n", 31, hFile );
+
+// #MSG_SAVEENVVAR#
+        RBTM_FR_Stat_AR_saveEnvVars( hFile );   
+        ROE_RBTM_FR_saveEnvVars( hFile );   
+// #MSG_SAVEENVVAR_END#
+        NM_xxx_AR_saveEnvVars( hFile );
+//        XCP_Rs_RBTM_FR_saveEnvVars( hFile );   
+
+        fileClose(hFile );
+    }
+}
+
+on EnvVar HMI__STOP_RBTM_FR_MESSAGES_OFF
+{
+    if( getValue(this) )
+    {
+// #MSG_OFF#
+        putValue(HMI__STMSG_RBTM_FR_Stat_AR, 1);
+        putValue(HMI__STMSG_ROE_RBTM_FR, 1);
+// #MSG_OFF_END#
+
+        putValue(HMI__STMSG_NM_RBTM_FR_AR, 1);
+        putValue(HMI__STMSG_XCP_Rs_RBTM_FR, 1);
+    }
+}
+
+on envVar HMI__STOP_RBTM_FR_MESSAGES_ON
+{
+    if( getValue(this) )
+    {
+// #MSG_ON#
+        putValue(HMI__STMSG_RBTM_FR_Stat_AR, 0);
+        putValue(HMI__STMSG_ROE_RBTM_FR, 0);
+// #MSG_ON_END#
+        putValue(HMI__STMSG_NM_RBTM_FR_AR, 0);
+        putValue(HMI__STMSG_XCP_Rs_RBTM_FR, 0);
+    }
+}
+
+on busOff
+{
+    resetCan();
+    write("CAN has been resetted due to BUSOFF    ( coded version )");
+}
+
+on message 0x500-0x57F
+{
+    byte Identifier;
+
+    Identifier = this.byte( 1 );
+
+    if( this.byte( 1 ) == CanNmNodeId )    // check, wether the received NM-Frame is an own one
+    {
+        boCanNM_Tx_Confirmation = TRUE;    // so it is a TX-confirmation
+    }
+    else
+    {
+        boCanNM_Rx_Indication = TRUE;     // else it is a NM-Frame from another ECU
+    }
+    _NM_Switch_NM_Mode();     // inform the state-mashine
+}
+
+on timer t_DoorNMCancelTimer
+{
+    if( getValue( HMI__NM_EIS_AutomaticModeActive ) == 1 )
+    {
+        _ReleaseCommRequest( 15 );  // all doors reset their requests
+    }
+}
+
+on timer t_KeyInLockNMCancelTimer
+{
+    if( getValue( HMI__NM_EIS_AutomaticModeActive ) == 1 )
+    {
+        _ReleaseCommRequest( cIgnitionNMRequest );
+    }
+}
+
+on timer t_StWhlButtonNMCancelTimer
+{
+    if( getValue( HMI__NM_EIS_AutomaticModeActive ) == 1 )
+    {
+        _ReleaseCommRequest( cStWhlButtonNMRequest );  // all keys reset their requests
+    }
+}
+
+on timer t_WakeWarningNMCancelTimer
+{
+    if( getValue( HMI__NM_EIS_AutomaticModeActive ) == 1 )
+    {
+        _ReleaseCommRequest( cWakeWarningNMRequest );  // all keys reset their requests
+    }
+}
+
+on timer t_EPKBWarningNMCancelTimer
+{
+    if( getValue( HMI__NM_EIS_AutomaticModeActive ) == 1 )
+    {
+        _ReleaseCommRequest( cEPKBWarningNMRequest );  // all keys reset their requests
+    }
+}
+
+on timer t_IlluNMCancelTimer
+{
+    if( getValue( HMI__NM_EIS_AutomaticModeActive ) == 1 )
+    {
+        _ReleaseCommRequest( cIlluNMRequest );  // all keys reset their requests
+    }
+}
+
+on timer t_CarClosureNMCancelTimer
+{
+    if( getValue( HMI__NM_EIS_AutomaticModeActive ) == 1 )
+    {
+        _ReleaseCommRequest( cCarClosureNMRequest );  // all keys reset their requests
+    }
+}
+
+on timer t_GearIndNMCancelTimer
+{
+    if( getValue( HMI__NM_EIS_AutomaticModeActive ) == 1 )
+    {
+        _ReleaseCommRequest( cGearIndNMRequest );  // all keys reset their requests
+    }
+}
+
+on timer t_NM_Repeat_Message_Time
+{
+    boCanNM_RepeatMessage_Timer_Expired = TRUE;
+    _NM_Switch_NM_Mode();     // inform the state-mashine
+}
+
+on timer t_NM_Timeout_Time
+{
+    boCanNM_NM_Timeout_Timer_Expired = TRUE;
+    _NM_Switch_NM_Mode();     // inform the state-mashine
+}
+
+on timer t_NM_Transmit
+{
+//    setTimer( t_NM_Transmit, NM_Transmit_Cycle );
+//    _mNM_xxx_AR.byte( 1 ) = CanNmNodeId;
+//    if( _mNM_xxx_Transmit_Allowed )
+//        output( _mNM_xxx_AR );
+}
+
+on timer t_NM_Wait_Bus_Sleep_Time
+{
+    boCanNM_WaitBusSleep_Timer_Expired = TRUE;
+    _NM_Switch_NM_Mode();     // inform the state-mashine
+}
+
+NM_xxx_AR_init()
+{
+//    _mNM_xxx_AR.Awake_Diag_Actv.phys = getValue(HMI_Awake_Diag_Actv_RBTM_FR);
+//    _mNM_xxx_AR.Awake_Ignition_On.phys = getValue(HMI_Awake_Ignition_On_RBTM_FR);
+//    _mNM_xxx_AR.WakeupRsn_RBTM_FR.phys = getValue(HMI_WakeupRsn_RBTM_FR);
+}
+
+NM_xxx_AR_saveEnvVars( dword hFile )
+{
+    filePutString("\n// Knoten NM_RBTM_FR_AR\n", 33, hFile );
+    snprintf(buffer, elcount(buffer), "0.0000 HMI__STMSG_NM_RBTM_FR_AR := %X\n", getValue(HMI__STMSG_NM_RBTM_FR_AR ));		filePutString (buffer, elcount(buffer), hFile);
+    snprintf(buffer, elcount(buffer), "0.0000 HMI__STMSGT_NM_RBTM_FR_AR := %X\n", getValue(HMI__STMSGT_NM_RBTM_FR_AR ));		filePutString (buffer, elcount(buffer), hFile);
+    snprintf(buffer, elcount(buffer), "0.0000 HMI_HMI_Awake_Diag_Actv_RBTM_FR := %X\n", getValue( HMI_Awake_Diag_Actv_RBTM_FR ) );		filePutString (buffer, elcount(buffer), hFile);
+    snprintf(buffer, elcount(buffer), "0.0000 HMI_HMI_Awake_Ignition_On_RBTM_FR := %X\n", getValue( HMI_Awake_Ignition_On_RBTM_FR ) );		filePutString (buffer, elcount(buffer), hFile);
+    snprintf(buffer, elcount(buffer), "0.0000 HMI_WakeupRsn_RBTM_FR := %X\n", getValue( HMI_WakeupRsn_RBTM_FR ) );		filePutString (buffer, elcount(buffer), hFile);
+}
+
+on envVar HMI__STMSG_NM_RBTM_FR_AR
+{
+    if( getValue( this ) == 0 )
+        _mNM_xxx_Transmit_Allowed = 1;
+    else
+        _mNM_xxx_Transmit_Allowed = 0;    
+}
+
+on EnvVar HMI_Awake_Diag_Actv_RBTM_FR
+{
+//    _mNM_xxx_AR.Awake_Diag_Actv = getValue(this);
+}
+
+on EnvVar HMI_Awake_Ignition_On_RBTM_FR
+{
+//    _mNM_xxx_AR.Awake_Ignition_On = getValue(this);
+}
+
+on EnvVar HMI_WakeupRsn_RBTM_FR
+{
+//    _mNM_xxx_AR.WakeupRsn_RBTM_FR.phys = getValue(this);
+}
+
+_NM_Switch_NM_Mode()
+{
+    byte bOld_NM_Mode;
+    word NM_Request_State;
+
+    bOld_NM_Mode = NM_Mode;
+    NM_Request_State = getValue( HMI__NM_RBTM_FR_NM_Request );
+    switch( NM_Mode )
+    {
+        case cNM_Mode_Init:                   _NM_Init();
+                                              NM_Mode = cNM_Mode_Sleep;
+                                              break;
+        case cNM_Mode_Sleep:                  if( boCanNM_Rx_Indication == TRUE )
+                                              {
+                                                  // _NM_NetworkStartIndication();   nothing to do
+                                                  // _NM_PassiveStartUp();    is content of _NM_NetworkMode();
+                                                  setTimer( t_NM_Transmit, NmAsrCanMsgCycleOffset );    // send NM-Frame delayed
+                                                  boCanNM_Rx_Indication = FALSE;
+                                                  cancelTimer( t_NM_Timeout_Time );
+                                                  setTimer( t_NM_Timeout_Time, c_NM_Timeout_Time );
+                                                  setTimer( t_NM_Repeat_Message_Time, c_NM_Repeat_Message_Time );
+                                                  NM_Transmit_Cycle = NmAsrCanMsgStandardCycle;
+                                                  _NM_NetworkMode();
+                                                  NM_Mode = cNM_Mode_RepeatMsg;
+                                              }
+                                              if( NM_Request_State )
+                                              {
+                                                  setTimer( t_NM_Transmit, 1 );    //send NM-Franme immediately
+                                                  NM_Transmit_Cycle = NmAsrCanMsgStandardCycle;
+                                                  cancelTimer( t_NM_Timeout_Time );
+                                                  setTimer( t_NM_Timeout_Time, c_NM_Timeout_Time );
+                                                  setTimer( t_NM_Repeat_Message_Time, c_NM_Repeat_Message_Time );
+                                                  NM_Transmit_Cycle = NmAsrCanMsgStandardCycle;
+                                                  _NM_NetworkMode();
+                                                  NM_Mode = cNM_Mode_RepeatMsg;
+                                              }
+                                              break;
+        case cNM_Mode_Prepare_Bus_Sleep:      if( boCanNM_WaitBusSleep_Timer_Expired == TRUE )
+                                              {
+                                                  _NM_BusSleepModeInd();   // set message startup delay
+                                                  NM_Mode = cNM_Mode_Sleep;
+                                                  boCanNM_WaitBusSleep_Timer_Expired = FALSE;
+                                              }
+                                              if( boCanNM_NM_Timeout_Timer_Expired == TRUE )
+                                                  boCanNM_NM_Timeout_Timer_Expired = FALSE;
+                                              if( ( boCanNM_Rx_Indication == TRUE ) ||  NM_Request_State )
+                                              {
+                                                  boCanNM_Rx_Indication = FALSE;
+                                                  if( NM_Request_State )
+                                                  {
+                                                      setTimer( t_NM_Transmit, 1 );    //send NM-Franme immediately
+                                                  }
+                                                  cancelTimer( t_NM_Timeout_Time );
+                                                  setTimer( t_NM_Timeout_Time, c_NM_Timeout_Time );
+                                                  setTimer( t_NM_Repeat_Message_Time, c_NM_Repeat_Message_Time );
+                                                  _NM_NetworkMode();
+                                                  NM_Transmit_Cycle = NmAsrCanMsgStandardCycle;
+                                                  NM_Mode = cNM_Mode_RepeatMsg;
+                                              }
+                                              break;
+        case cNM_Mode_Ready_Sleep:            if( boCanNM_Rx_Indication == TRUE )
+                                              {
+                                                  cancelTimer( t_NM_Timeout_Time );
+                                                  setTimer( t_NM_Timeout_Time, c_NM_Timeout_Time );
+                                                  boCanNM_Rx_Indication = FALSE;
+                                              }
+                                              if( boCanNM_Tx_Confirmation == TRUE )
+                                              {
+                                                  cancelTimer( t_NM_Timeout_Time );
+                                                  setTimer( t_NM_Timeout_Time, c_NM_Timeout_Time );
+                                                  boCanNM_Tx_Confirmation = FALSE;
+                                              }
+                                              if( NM_Request_State )
+                                              {
+                                                  setTimer( t_NM_Transmit, 1 );    //send NM-Franme immediately
+                                                  cancelTimer( t_NM_Timeout_Time );
+                                                  setTimer( t_NM_Timeout_Time, c_NM_Timeout_Time );
+                                                  NM_Transmit_Cycle = NmAsrCanMsgReducedTime;
+                                                  NM_Mode = cNM_Mode_Normal_Operation_State;
+                                              }
+                                              if( boCanNM_RepeatMessage_Requested == TRUE )
+                                              {
+                                                  setTimer( t_NM_Transmit, NmAsrCanMsgCycleOffset );    // send NM-Frame delayed
+                                                  cancelTimer( t_NM_Timeout_Time );
+                                                  setTimer( t_NM_Timeout_Time, c_NM_Timeout_Time );
+                                                  setTimer( t_NM_Repeat_Message_Time, c_NM_Repeat_Message_Time );
+                                                  NM_Transmit_Cycle = NmAsrCanMsgStandardCycle;
+                                                  boCanNM_RepeatMessage_Requested = FALSE;
+                                                  NM_Mode = cNM_Mode_RepeatMsg;
+                                              }
+                                              if( boCanNM_NM_Timeout_Timer_Expired == TRUE )
+                                              {
+                                                  setTimer( t_NM_Wait_Bus_Sleep_Time, c_NM_Wait_Bus_Sleep_Time );
+                                                  _NM_PrepareBusSleepModeInd();    // here t_DBKonTimer is stopped
+                                                  NM_Mode = cNM_Mode_Prepare_Bus_Sleep;
+                                                  boCanNM_NM_Timeout_Timer_Expired = FALSE;
+                                              }
+                                              break;
+        case cNM_Mode_Normal_Operation_State: if( boCanNM_NM_Timeout_Timer_Expired == TRUE )
+                                              {
+                                                  setTimer( t_NM_Timeout_Time, c_NM_Timeout_Time );
+                                                  // _NM_TimeoutExeption();    // no action to be done
+                                                  boCanNM_NM_Timeout_Timer_Expired = FALSE;
+                                              }
+                                              if( boCanNM_Rx_Indication == TRUE )
+                                              {
+                                                  cancelTimer( t_NM_Timeout_Time );
+                                                  setTimer( t_NM_Timeout_Time, c_NM_Timeout_Time );
+                                                  cancelTimer( t_NM_Transmit );
+                                                  setTimer( t_NM_Transmit, NmAsrCanMsgReducedTime );
+                                                  boCanNM_Rx_Indication = FALSE;
+                                              }
+                                              if( boCanNM_Tx_Confirmation == TRUE )
+                                              {
+                                                  cancelTimer( t_NM_Timeout_Time );
+                                                  setTimer( t_NM_Timeout_Time, c_NM_Timeout_Time );
+                                                  cancelTimer( t_NM_Transmit );
+                                                  setTimer( t_NM_Transmit, NmAsrCanMsgStandardCycle );
+                                                  boCanNM_Tx_Confirmation = FALSE;
+                                              }
+                                              if( NM_Request_State == 0 )    //no network requested
+                                              {
+                                                  cancelTimer( t_NM_Transmit );    // stop NM-Franme immediately
+                                                  NM_Mode = cNM_Mode_Ready_Sleep;
+                                              }
+                                              if( boCanNM_RepeatMessage_Requested == TRUE )
+                                              {
+                                                  setTimer( t_NM_Transmit, NmAsrCanMsgCycleOffset );    // send NM-Frame delayed
+                                                  cancelTimer( t_NM_Timeout_Time );
+                                                  setTimer( t_NM_Timeout_Time, c_NM_Timeout_Time );
+                                                  setTimer( t_NM_Repeat_Message_Time, c_NM_Repeat_Message_Time );
+                                                  boCanNM_RepeatMessage_Requested = FALSE;
+                                                  NM_Transmit_Cycle = NmAsrCanMsgStandardCycle;
+                                                  NM_Mode = cNM_Mode_RepeatMsg;
+                                              }
+                                              break;
+        case cNM_Mode_RepeatMsg:              if( boCanNM_NM_Timeout_Timer_Expired == TRUE )
+                                              {
+                                                  setTimer( t_NM_Timeout_Time, c_NM_Timeout_Time );
+                                                  boCanNM_NM_Timeout_Timer_Expired = FALSE;
+                                              }
+                                              if( boCanNM_Rx_Indication == TRUE )
+                                              {
+                                                  cancelTimer( t_NM_Timeout_Time );
+                                                  setTimer( t_NM_Timeout_Time, c_NM_Timeout_Time );
+                                                  boCanNM_Rx_Indication = FALSE;
+                                              }
+                                              if( boCanNM_Tx_Confirmation == TRUE )
+                                              {
+                                                  cancelTimer( t_NM_Timeout_Time );
+                                                  setTimer( t_NM_Timeout_Time, c_NM_Timeout_Time );
+                                                  boCanNM_Tx_Confirmation = FALSE;
+                                              }
+                                              if( boCanNM_RepeatMessage_Timer_Expired == TRUE )
+                                              {
+                                                  boCanNM_RepeatMessage_Timer_Expired = FALSE;
+                                                  if( NM_Request_State )
+                                                  {
+                                                      NM_Mode = cNM_Mode_Normal_Operation_State;
+                                                      NM_Transmit_Cycle = NmAsrCanMsgReducedTime;
+                                                  }
+                                                  else
+                                                  {
+                                                      cancelTimer( t_NM_Transmit );    // stop NM-Franme immediately
+                                                      NM_Mode = cNM_Mode_Ready_Sleep;
+                                                  }
+                                              }
+                                              break;
+    }
+    if( bOld_NM_Mode != NM_Mode )
+    {
+        _Nm_StateChangeNotification( bOld_NM_Mode, NM_Mode );    // does the Trace
+        putValue( HMI__NM_RBTM_FR_ActualState, NM_Mode );
+    }
+}
+
+_NM_Init()
+{
+    NM_Transmit_Cycle = NmAsrCanMsgStandardCycle;
+}
+
+_NM_NetworkMode()
+{
+    setTimer( t_DBKomTimer_5ms, 1 ); //  ms     start CAN-communication immediately
+    setTimer( t_DBKomTimer_20ms, 2 ); //  ms     start CAN-communication immediately
+    putValue( HMI__NM_RBTM_FR_CommActive, 1 );
+}
+
+_Nm_BusSleepModeInd()
+{
+//    _Trace( "_Nm_BusSleepModeInd", "Sleep Mode active");
+    __RBTM_FR_Startup_Delay();
+}
+
+void _Nm_PrepareBusSleepModeInd()
+{
+//    _Trace( "Nm_PrepareBusSleepModeInd", "Prepare Sleep Mode active");
+    putValue( HMI__NM_RBTM_FR_CommActive, 0 );
+    cancelTimer( t_DBKomTimer_20ms );
+    cancelTimer( t_DBKomTimer_5ms );
+}
+
+_Nm_StateChangeNotification( byte previousState, byte currentState )
+{
+/*
+    char line[50];
+
+    snprintf( line, elcount(line ), "Transition from %d to %d", previousState, currentState );
+    _Trace( "Nm_StateChangeNotification", "", line );
+*/
+}
+
+_ReleaseCommRequest( word RequestID )
+{
+    word temp; // actual NM request status
+
+    temp = getValue( HMI__NM_RBTM_FR_NM_Request );
+    temp &= ~RequestID; // reset NM request 
+    putValue( HMI__NM_RBTM_FR_NM_Request, temp );
+    _NM_Switch_NM_Mode();
+}
+
+_SetCommRequest( word RequestID )
+{
+    word temp; // actual NM request status
+
+    temp = getValue( HMI__NM_RBTM_FR_NM_Request );
+    temp |= RequestID; // set NM request 
+        putValue( HMI__NM_RBTM_FR_NM_Request, temp );
+    _NM_Switch_NM_Mode();
+}
+
+void _TraceCall( char functionName[], long callResult )
+{
+    char line[100];
+
+    if( callResult == 1 )
+        snprintf( line, elcount(line ), "calling %s", functionName );
+    else
+        snprintf( line, elcount(line ), "call to %s failed - wrong state?", functionName );
+    _Trace( "", "", line );
+}
+
+void _Trace( char functionName[], char info[])
+{
+    _Trace( functionName, info, "");
+}
+
+void _Trace( char functionName[], char info[], char verbose[], long argument )
+{
+    char line[100];
+
+    snprintf( line, elcount(line ), verbose, argument );
+    _Trace( functionName, info, line );
+}
+
+void _Trace( char functionName[], char info[], char verbose[])
+{
+  char sep[2] = "/";
+  sep[0] = functionName[0] ? '/' : 0;
+  if( verbose[0])
+  {
+    write( "[%.3f]%s%s%s: %s", timeNow()/100000.0, gECU
+           , sep
+           , functionName
+           , verbose
+           );
+  } else
+  {
+    write( "[%.3f]%s%s%s: %s", timeNow()/100000.0, gECU
+           , sep
+           , functionName
+           , info
+           );
+  }
+}
+
+___Template_Header()
+{
+// #FUNCTIONS#
+// #FUNCTIONS_END#
+// #TIMERS#
+// #TIMERS_END#
+// #ENVVARS#
+// #ENVVARS_END#
+}
+
+RBTM_FR_Stat_AR_check_output()
+{
+    if (!getValue(HMI__STMSG_RBTM_FR_Stat_AR ))
+    {
+        // Botschaft RBTM_FR_Stat ID:983 --- Sendeart 5 cyclicAndSpontanWithDelay --- 
+        _RBTM_FR_Stat_AR_Cnt--;
+        if (_RBTM_FR_Stat_AR_Cnt < 1)
+        {
+            // Nachricht wg. abgelaufenem Zyklus ausgeben
+            RBTM_FR_Stat_output();
+            _RBTM_FR_Stat_AR_Cnt = _RBTM_FR_Stat_AR_CycleCount; // Zyklus-Zähler zurücksetzen
+            _RBTM_FR_Stat_AR_SpontanFlag = 0; // Spontan-Flag zurücksetzen
+        }
+        else if (_RBTM_FR_Stat_AR_SpontanFlag)
+        {
+            // Nachricht wg. spontaner Änderung ausgeben
+            RBTM_FR_Stat_output();
+            _RBTM_FR_Stat_AR_SpontanFlag = 0; // Spontan-Flag zurücksetzen
+        }
+    }
+}
+
+RBTM_FR_Stat_AR_init()
+{   /* Botschaft RBTM_FR_Stat_AR ID: 983 --- Sendeart 5 cyclicAndSpontanWithDelay --- 
+BA_ "ApplMessage" BO_ 983 0;
+BA_ "NmAsrMessage" BO_ 983 0;
+BA_ "GenMsgMinAcceptLength" BO_ 983 2;
+BA_ "GenMsgILSupport" BO_ 983 1;
+BA_ "DiagState" BO_ 983 0;
+BA_ "DiagRequest" BO_ 983 0;
+BA_ "DiagResponse" BO_ 983 0;
+BA_ "GenMsgStartValue" BO_ 983 "0";
+BA_ "GenMsgStartDelayTime" BO_ 983 0;
+BA_ "GenMsgDelayTime" BO_ 983 5;
+BA_ "GenMsgNrOfRepetitions" BO_ 983 0;
+BA_ "GenMsgCycleTime" BO_ 983 1000;
+BA_ "GenMsgSendType" BO_ 983 5;
+    */
+    _RBTM_FR_Stat_AR_Timebase =             c_tDBKomTimer_20ms;
+    _RBTM_FR_Stat_AR_CycleCount =         1000 / _RBTM_FR_Stat_AR_Timebase;
+    _RBTM_FR_Stat_AR_StartDelay =            0 / _RBTM_FR_Stat_AR_Timebase;
+    _RBTM_FR_Stat_AR_Cnt = _RBTM_FR_Stat_AR_StartDelay;
+    _RBTM_FR_Stat_AR_SpontanFlag = 0;
+
+    putValue( HMI__STMSGSD_RBTM_FR_Stat_AR, _RBTM_FR_Stat_AR_StartDelay );
+    
+    _mRBTM_FR_Stat_AR.BltSlckDec_Md_FR_Stat.phys = getValue( HMI_BltSlckDec_Md_FR_Stat );
+    _mRBTM_FR_Stat_AR.RBTM_FR_ComfCyc_Actv.phys = getValue( HMI_RBTM_FR_ComfCyc_Actv );
+    _mRBTM_FR_Stat_AR.RBTM_FR_Disp_Rq.phys = getValue( HMI_RBTM_FR_Disp_Rq );
+    _mRBTM_FR_Stat_AR.RBTM_FR_SafeCyc_Actv.phys = getValue( HMI_RBTM_FR_SafeCyc_Actv );
+    _mRBTM_FR_Stat_AR.RBTM_FR_Tgl.phys = getValue( HMI_RBTM_FR_Tgl );
+}
+
+void RBTM_FR_Stat_output(void)
+{
+	if ( !getValue( HMI_RBTM_FR_Tgl_Auto ))
+	{
+	   // berechne message counter
+		if ( _mRBTM_FR_Stat_AR.RBTM_FR_Tgl >= 1 ) _mRBTM_FR_Stat_AR.RBTM_FR_Tgl = 0;
+		else _mRBTM_FR_Stat_AR.RBTM_FR_Tgl++;
+		//putValue(HMI_RBTM_FR_Tgl, _mRBTM_FR_Stat_AR.RBTM_FR_Tgl);
+	}
+	else
+  		_mRBTM_FR_Stat_AR.RBTM_FR_Tgl = getValue( HMI_RBTM_FR_Tgl );
+
+    output( _mRBTM_FR_Stat_AR );
+}
+
+RBTM_FR_Stat_AR_saveEnvVars( dword hFile )
+{
+		filePutString("\n// Knoten RBTM_FR: RBTM_FR_Stat_AR\n", 33, hFile );
+		snprintf(buffer, elcount(buffer), "0.0000 HMI__STMSG_RBTM_FR_Stat := %X\n", getValue(HMI__STMSG_RBTM_FR_Stat_AR ));		filePutString (buffer, elcount(buffer), hFile);
+		snprintf(buffer, elcount(buffer), "0.0000 HMI__STMSGT_RBTM_FR_Stat := %X\n", getValue(HMI__STMSGT_RBTM_FR_Stat_AR ));		filePutString (buffer, elcount(buffer), hFile);
+		snprintf(buffer, elcount(buffer), "0.0000 HMI_BltSlckDec_Md_FR_Stat := %X\n", getValue( HMI_BltSlckDec_Md_FR_Stat ) );		filePutString (buffer, elcount(buffer), hFile);
+		snprintf(buffer, elcount(buffer), "0.0000 HMI_RBTM_FR_ComfCyc_Actv := %X\n", getValue( HMI_RBTM_FR_ComfCyc_Actv ) );		filePutString (buffer, elcount(buffer), hFile);
+		snprintf(buffer, elcount(buffer), "0.0000 HMI_RBTM_FR_Disp_Rq := %X\n", getValue( HMI_RBTM_FR_Disp_Rq ) );		filePutString (buffer, elcount(buffer), hFile);
+		snprintf(buffer, elcount(buffer), "0.0000 HMI_RBTM_FR_SafeCyc_Actv := %X\n", getValue( HMI_RBTM_FR_SafeCyc_Actv ) );		filePutString (buffer, elcount(buffer), hFile);
+		snprintf(buffer, elcount(buffer), "0.0000 HMI_RBTM_FR_Tgl := %X\n", getValue( HMI_RBTM_FR_Tgl ) );		filePutString (buffer, elcount(buffer), hFile);
+		snprintf(buffer, elcount(buffer), "0.0000 HMI_RBTM_FR_Tgl_Auto := %X\n", getValue( HMI_RBTM_FR_Tgl_Auto ) );		filePutString (buffer, elcount(buffer), hFile);
+}
+
+on timer _tRBTM_FR_Stat_AR
+{
+    putValue( HMI__STMSG_RBTM_FR_Stat_AR, 0 );
+}
+
+on EnvVar HMI__STMSG_RBTM_FR_Stat_AR
+{
+    long tDelay;
+    if( getValue( this ) == 2 )
+    {
+        tDelay = getValue( HMI__STMSGT_RBTM_FR_Stat_AR );
+        if( tDelay > 0 )
+            setTimer( _tRBTM_FR_Stat_AR, tDelay );
+        else
+            putValue( HMI__STMSG_RBTM_FR_Stat_AR, 0 );
+    }
+}
+
+on EnvVar HMI_BltSlckDec_Md_FR_Stat
+{
+    _mRBTM_FR_Stat_AR.BltSlckDec_Md_FR_Stat.phys = getValue(this);
+    _RBTM_FR_Stat_AR_SpontanFlag = 1;
+}
+
+on EnvVar HMI_RBTM_FR_ComfCyc_Actv
+{
+    _mRBTM_FR_Stat_AR.RBTM_FR_ComfCyc_Actv.phys = getValue(this);
+    _RBTM_FR_Stat_AR_SpontanFlag = 1;
+}
+
+on EnvVar HMI_RBTM_FR_Disp_Rq
+{
+    _mRBTM_FR_Stat_AR.RBTM_FR_Disp_Rq.phys = getValue(this);
+    _RBTM_FR_Stat_AR_SpontanFlag = 1;
+}
+
+on EnvVar HMI_RBTM_FR_SafeCyc_Actv
+{
+    _mRBTM_FR_Stat_AR.RBTM_FR_SafeCyc_Actv.phys = getValue(this);
+    _RBTM_FR_Stat_AR_SpontanFlag = 1;
+}
+
+on EnvVar HMI_RBTM_FR_Tgl
+{
+    _mRBTM_FR_Stat_AR.RBTM_FR_Tgl.phys = getValue(this);
+    _RBTM_FR_Stat_AR_SpontanFlag = 1;
+}
+
+void ROE_RBTM_FR_check_output()
+{
+    if (!getValue( HMI__STMSG_ROE_RBTM_FR ))
+    {
+        // Botschaft ROE_RBTM_FR --- Sendeart 9 cyclicWithRepeatOnDemand --- 
+        if( _ROE_RBTM_FR_Cnt > 0 )
+        {
+            _ROE_RBTM_FR_Cnt--;
+            if( _ROE_RBTM_FR_Cnt < 1 )
+            {
+                // Nachricht wg. abgelaufenem Zyklus ausgeben
+                output( _mROE_RBTM_FR );
+                _ROE_RBTM_FR_MsgRepetitions--;
+                if( _ROE_RBTM_FR_MsgRepetitions > 0 ) _ROE_RBTM_FR_Cnt = _ROE_RBTM_FR_CycleCount;
+            }
+        }
+    }
+}
+
+void ROE_RBTM_FR_init()
+{   /* Botschaft ROE_RBTM_FR ID: 2565818112  --- Sendeart 9 cyclicWithRepeatOnDemand ---- 
+BA_ "ApplMessage" BO_ 2565818112 0;
+BA_ "NmAsrMessage" BO_ 2565818112 0;
+BA_ "GenMsgMinAcceptLength" BO_ 2565818112 8;
+BA_ "GenMsgILSupport" BO_ 2565818112 1;
+BA_ "DiagState" BO_ 2565818112 0;
+BA_ "DiagRequest" BO_ 2565818112 0;
+BA_ "DiagResponse" BO_ 2565818112 0;
+BA_ "GenMsgStartValue" BO_ 2565818112 "0";
+BA_ "GenMsgDelayTime" BO_ 2565818112 5;
+BA_ "GenMsgNrOfRepetitions" BO_ 2565818112 0;
+BA_ "GenMsgCycleTime" BO_ 2565818112 200;
+BA_ "GenMsgSendType" BO_ 2565818112 9;
+    */
+    _ROE_RBTM_FR_Timebase =         c_tDBKomTimer_20ms;
+    _ROE_RBTM_FR_CycleCount =     200 / _ROE_RBTM_FR_Timebase;
+    _ROE_RBTM_FR_StartDelay =       5 / _ROE_RBTM_FR_Timebase;
+    _ROE_RBTM_FR_Cnt = _ROE_RBTM_FR_StartDelay;
+    _ROE_RBTM_FR_MsgRepetitions = 0;
+
+    putValue( HMI__STMSGSD_ROE_RBTM_FR, _ROE_RBTM_FR_StartDelay );
+
+    _mROE_RBTM_FR.ROE_Header_RBTM_FR.phys = getValue( HMI_ROE_Header_RBTM_FR );
+    _mROE_RBTM_FR.ROE_DTC_Stat_RBTM_FR.phys = getValue( HMI_ROE_DTC_Stat_RBTM_FR );
+    _mROE_RBTM_FR.ROE_DTC_RBTM_FR.phys = getValue( HMI_ROE_DTC_RBTM_FR );
+}
+
+void ROE_RBTM_FR_restart(int nNumRepetitions)
+{
+    if (nNumRepetitions > _ROE_RBTM_FR_MsgRepetitions)
+    {
+        if (_ROE_RBTM_FR_MsgRepetitions < 1)
+            _ROE_RBTM_FR_Cnt = 1;
+        _ROE_RBTM_FR_MsgRepetitions = nNumRepetitions;
+    }
+}
+
+ROE_RBTM_FR_saveEnvVars( dword hFile )
+{
+    filePutString("\n// Knoten ROE_RBTM_FR\n", 33, hFile );
+    snprintf(buffer, elcount(buffer), "0.0000 HMI__STMSG_ROE_RBTM_FR := %X\n", getValue(HMI__STMSG_ROE_RBTM_FR ));		filePutString (buffer, elcount(buffer), hFile);
+    snprintf(buffer, elcount(buffer), "0.0000 HMI__STMSGT_ROE_RBTM_FR := %X\n", getValue(HMI__STMSGT_ROE_RBTM_FR ));		filePutString (buffer, elcount(buffer), hFile);
+    snprintf(buffer, elcount(buffer), "0.0000 HMI_ROE_Header_RBTM_FR := %X\n", getValue( HMI_ROE_Header_RBTM_FR ) );		filePutString (buffer, elcount(buffer), hFile);
+    snprintf(buffer, elcount(buffer), "0.0000 HMI_ROE_DTC_Stat_RBTM_FR := %X\n", getValue( HMI_ROE_DTC_Stat_RBTM_FR ) );		filePutString (buffer, elcount(buffer), hFile);
+    snprintf(buffer, elcount(buffer), "0.0000 HMI_ROE_DTC_RBTM_FR := %X\n", getValue( HMI_ROE_DTC_RBTM_FR ) );		filePutString (buffer, elcount(buffer), hFile);
+}
+
+on EnvVar HMI_ROE_Header_RBTM_FR
+{
+    _mROE_RBTM_FR.ROE_Header_RBTM_FR.phys = getValue(this);
+    ROE_RBTM_FR_restart(1);
+}
+
+on EnvVar HMI_ROE_DTC_Stat_RBTM_FR
+{
+    _mROE_RBTM_FR.ROE_DTC_Stat_RBTM_FR.phys = getValue(this);
+    ROE_RBTM_FR_restart(1);
+}
+
+on EnvVar HMI_ROE_DTC_RBTM_FR
+{
+    _mROE_RBTM_FR.ROE_DTC_RBTM_FR.phys = getValue(this);
+    ROE_RBTM_FR_restart(1);
+}
+
+//on EnvVar HMI_XCP_Rs_RBTM_FR1
+//{
+//    _mXCP_Rs_RBTM_FR.XCP_Rs_RBTM_FR1.phys = getValue(this);
+//    _XCP_Rs_RBTM_FR_SpontanFlag = 1;
+//}
+//
+//on EnvVar HMI_XCP_Rs_RBTM_FR2
+//{
+//    _mXCP_Rs_RBTM_FR.XCP_Rs_RBTM_FR2.phys = getValue(this);
+//    _XCP_Rs_RBTM_FR_SpontanFlag = 1;
+//}
+//
+//on EnvVar HMI_XCP_Rs_RBTM_FR3
+//{
+//    _mXCP_Rs_RBTM_FR.XCP_Rs_RBTM_FR3.phys = getValue(this);
+//    _XCP_Rs_RBTM_FR_SpontanFlag = 1;
+//}
+//
+//on EnvVar HMI_XCP_Rs_RBTM_FR4
+//{
+//    _mXCP_Rs_RBTM_FR.XCP_Rs_RBTM_FR4.phys = getValue(this);
+//    _XCP_Rs_RBTM_FR_SpontanFlag = 1;
+//}
+//
+//on EnvVar HMI_XCP_Rs_RBTM_FR5
+//{
+//    _mXCP_Rs_RBTM_FR.XCP_Rs_RBTM_FR5.phys = getValue(this);
+//    _XCP_Rs_RBTM_FR_SpontanFlag = 1;
+//}
+//
+//on EnvVar HMI_XCP_Rs_RBTM_FR6
+//{
+//    _mXCP_Rs_RBTM_FR.XCP_Rs_RBTM_FR6.phys = getValue(this);
+//    _XCP_Rs_RBTM_FR_SpontanFlag = 1;
+//}
+//
+//on EnvVar HMI_XCP_Rs_RBTM_FR7
+//{
+//    _mXCP_Rs_RBTM_FR.XCP_Rs_RBTM_FR7.phys = getValue(this);
+//    _XCP_Rs_RBTM_FR_SpontanFlag = 1;
+//}
+//
+//on EnvVar HMI_XCP_Rs_RBTM_FR8
+//{
+//    _mXCP_Rs_RBTM_FR.XCP_Rs_RBTM_FR8.phys = getValue(this);
+//    _XCP_Rs_RBTM_FR_SpontanFlag = 1;
+//}
+

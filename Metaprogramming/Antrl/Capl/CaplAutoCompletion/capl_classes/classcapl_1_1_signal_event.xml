@@ -1,107 +1,133 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.2" xml:lang="en-US">
-  <compounddef id="classcapl_1_1_signal_event" kind="class" language="C++" prot="public">
-    <compoundname>capl::SignalEvent</compoundname>
-    <basecompoundref refid="classcapl_1_1_i_event" prot="public" virt="non-virtual">capl::IEvent&lt; ISignalVal &amp; &gt;</basecompoundref>
-      <sectiondef kind="public-func">
-      <memberdef kind="function" id="classcapl_1_1_signal_event_1ada659820441c49f940c3dc310912bce8" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
-        <type></type>
-        <definition>capl::SignalEvent::SignalEvent</definition>
-        <argsstring>()</argsstring>
-        <name>SignalEvent</name>
+
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd"
+         version="1.9.2" xml:lang="en-US">
+    <compounddef id="classcapl_1_1_signal_event" kind="class" language="C++" prot="public">
+        <compoundname>capl::SignalEvent</compoundname>
+        <basecompoundref refid="classcapl_1_1_i_event" prot="public" virt="non-virtual">capl::IEvent&lt; ISignalVal &amp; &gt;</basecompoundref>
+        <sectiondef kind="public-func">
+            <memberdef kind="function" id="classcapl_1_1_signal_event_1ada659820441c49f940c3dc310912bce8" prot="public"
+                       static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+                <type></type>
+                <definition>capl::SignalEvent::SignalEvent</definition>
+                <argsstring>()</argsstring>
+                <name>SignalEvent</name>
+                <briefdescription>
+                </briefdescription>
+                <detaileddescription>
+                </detaileddescription>
+                <inbodydescription>
+                </inbodydescription>
+                <location file="CAPLPluginApi.h" line="2367" column="9" bodyfile="CAPLPluginApi.h" bodystart="2367"
+                          bodyend="2369" />
+            </memberdef>
+            <memberdef kind="function" id="classcapl_1_1_signal_event_1a28b5419e77856b3c47fbeecf3d2d4b55" prot="public"
+                       static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+                <type></type>
+                <definition>capl::SignalEvent::SignalEvent</definition>
+                <argsstring>(const char *sIds)</argsstring>
+                <name>SignalEvent</name>
+                <param>
+                    <type>const char *</type>
+                    <declname>sIds</declname>
+                </param>
+                <briefdescription>
+                </briefdescription>
+                <detaileddescription>
+                </detaileddescription>
+                <inbodydescription>
+                </inbodydescription>
+                <location file="CAPLPluginApi.h" line="2370" column="9" />
+            </memberdef>
+            <memberdef kind="function" id="classcapl_1_1_signal_event_1af1b394847805bf50ab0dc31461678955" prot="public"
+                       static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+                <type></type>
+                <definition>capl::SignalEvent::SignalEvent</definition>
+                <argsstring>(ISignalVal &amp;sig)</argsstring>
+                <name>SignalEvent</name>
+                <param>
+                    <type><ref refid="classcapl_1_1_i_signal_val" kindref="compound">ISignalVal</ref> &amp;</type>
+                    <declname>sig</declname>
+                </param>
+                <briefdescription>
+                </briefdescription>
+                <detaileddescription>
+                </detaileddescription>
+                <inbodydescription>
+                </inbodydescription>
+                <location file="CAPLPluginApi.h" line="2371" column="9" />
+            </memberdef>
+            <memberdef kind="function" id="classcapl_1_1_signal_event_1ac710f175d5ae7ac1f6ab4960d445623c" prot="public"
+                       static="no" const="no" explicit="no" inline="no" virt="virtual">
+                <type></type>
+                <definition>virtual capl::SignalEvent::~SignalEvent</definition>
+                <argsstring>()</argsstring>
+                <name>~SignalEvent</name>
+                <briefdescription>
+                </briefdescription>
+                <detaileddescription>
+                </detaileddescription>
+                <inbodydescription>
+                </inbodydescription>
+                <location file="CAPLPluginApi.h" line="2372" column="17" />
+            </memberdef>
+        </sectiondef>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
         </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="CAPLPluginApi.h" line="2367" column="9" bodyfile="CAPLPluginApi.h" bodystart="2367" bodyend="2369"/>
-      </memberdef>
-      <memberdef kind="function" id="classcapl_1_1_signal_event_1a28b5419e77856b3c47fbeecf3d2d4b55" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
-        <type></type>
-        <definition>capl::SignalEvent::SignalEvent</definition>
-        <argsstring>(const char *sIds)</argsstring>
-        <name>SignalEvent</name>
-        <param>
-          <type>const char *</type>
-          <declname>sIds</declname>
-        </param>
-        <briefdescription>
-        </briefdescription>
-        <detaileddescription>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="CAPLPluginApi.h" line="2370" column="9"/>
-      </memberdef>
-      <memberdef kind="function" id="classcapl_1_1_signal_event_1af1b394847805bf50ab0dc31461678955" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
-        <type></type>
-        <definition>capl::SignalEvent::SignalEvent</definition>
-        <argsstring>(ISignalVal &amp;sig)</argsstring>
-        <name>SignalEvent</name>
-        <param>
-          <type><ref refid="classcapl_1_1_i_signal_val" kindref="compound">ISignalVal</ref> &amp;</type>
-          <declname>sig</declname>
-        </param>
-        <briefdescription>
-        </briefdescription>
-        <detaileddescription>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="CAPLPluginApi.h" line="2371" column="9"/>
-      </memberdef>
-      <memberdef kind="function" id="classcapl_1_1_signal_event_1ac710f175d5ae7ac1f6ab4960d445623c" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
-        <type></type>
-        <definition>virtual capl::SignalEvent::~SignalEvent</definition>
-        <argsstring>()</argsstring>
-        <name>~SignalEvent</name>
-        <briefdescription>
-        </briefdescription>
-        <detaileddescription>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="CAPLPluginApi.h" line="2372" column="17"/>
-      </memberdef>
-      </sectiondef>
-    <briefdescription>
-    </briefdescription>
-    <detaileddescription>
-    </detaileddescription>
-    <inheritancegraph>
-      <node id="2">
-        <label>capl::IEvent&lt; ISignalVal &amp; &gt;</label>
-        <link refid="classcapl_1_1_i_event"/>
-      </node>
-      <node id="1">
-        <label>capl::SignalEvent</label>
-        <link refid="classcapl_1_1_signal_event"/>
-        <childnode refid="2" relation="public-inheritance">
-        </childnode>
-      </node>
-    </inheritancegraph>
-    <collaborationgraph>
-      <node id="2">
-        <label>capl::IEvent&lt; ISignalVal &amp; &gt;</label>
-        <link refid="classcapl_1_1_i_event"/>
-      </node>
-      <node id="1">
-        <label>capl::SignalEvent</label>
-        <link refid="classcapl_1_1_signal_event"/>
-        <childnode refid="2" relation="public-inheritance">
-        </childnode>
-      </node>
-    </collaborationgraph>
-    <location file="CAPLPluginApi.h" line="2364" column="5" bodyfile="CAPLPluginApi.h" bodystart="2365" bodyend="2374"/>
-    <listofallmembers>
-      <member refid="classcapl_1_1_i_event_1a3fb0217883734109c5ebba0e89ddc302" prot="public" virt="non-virtual"><scope>capl::SignalEvent</scope><name>IEvent</name></member>
-      <member refid="classcapl_1_1_i_event_1acf5a313898cfb55070e749789b31528f" prot="protected" virt="non-virtual"><scope>capl::SignalEvent</scope><name>m_hEvent</name></member>
-      <member refid="classcapl_1_1_i_event_1a5d6973af1cfbe659c3b0ec1ef0d92200" prot="public" virt="pure-virtual"><scope>capl::SignalEvent</scope><name>OnEvent</name></member>
-      <member refid="classcapl_1_1_signal_event_1ada659820441c49f940c3dc310912bce8" prot="public" virt="non-virtual"><scope>capl::SignalEvent</scope><name>SignalEvent</name></member>
-      <member refid="classcapl_1_1_signal_event_1a28b5419e77856b3c47fbeecf3d2d4b55" prot="public" virt="non-virtual"><scope>capl::SignalEvent</scope><name>SignalEvent</name></member>
-      <member refid="classcapl_1_1_signal_event_1af1b394847805bf50ab0dc31461678955" prot="public" virt="non-virtual"><scope>capl::SignalEvent</scope><name>SignalEvent</name></member>
-      <member refid="classcapl_1_1_signal_event_1ac710f175d5ae7ac1f6ab4960d445623c" prot="public" virt="virtual"><scope>capl::SignalEvent</scope><name>~SignalEvent</name></member>
-    </listofallmembers>
-  </compounddef>
+        <inheritancegraph>
+            <node id="2">
+                <label>capl::IEvent&lt; ISignalVal &amp; &gt;</label>
+                <link refid="classcapl_1_1_i_event" />
+            </node>
+            <node id="1">
+                <label>capl::SignalEvent</label>
+                <link refid="classcapl_1_1_signal_event" />
+                <childnode refid="2" relation="public-inheritance">
+                </childnode>
+            </node>
+        </inheritancegraph>
+        <collaborationgraph>
+            <node id="2">
+                <label>capl::IEvent&lt; ISignalVal &amp; &gt;</label>
+                <link refid="classcapl_1_1_i_event" />
+            </node>
+            <node id="1">
+                <label>capl::SignalEvent</label>
+                <link refid="classcapl_1_1_signal_event" />
+                <childnode refid="2" relation="public-inheritance">
+                </childnode>
+            </node>
+        </collaborationgraph>
+        <location file="CAPLPluginApi.h" line="2364" column="5" bodyfile="CAPLPluginApi.h" bodystart="2365"
+                  bodyend="2374" />
+        <listofallmembers>
+            <member refid="classcapl_1_1_i_event_1a3fb0217883734109c5ebba0e89ddc302" prot="public" virt="non-virtual">
+                <scope>capl::SignalEvent</scope><name>IEvent</name>
+            </member>
+            <member refid="classcapl_1_1_i_event_1acf5a313898cfb55070e749789b31528f" prot="protected"
+                    virt="non-virtual">
+                <scope>capl::SignalEvent</scope><name>m_hEvent</name>
+            </member>
+            <member refid="classcapl_1_1_i_event_1a5d6973af1cfbe659c3b0ec1ef0d92200" prot="public" virt="pure-virtual">
+                <scope>capl::SignalEvent</scope><name>OnEvent</name>
+            </member>
+            <member refid="classcapl_1_1_signal_event_1ada659820441c49f940c3dc310912bce8" prot="public"
+                    virt="non-virtual">
+                <scope>capl::SignalEvent</scope><name>SignalEvent</name>
+            </member>
+            <member refid="classcapl_1_1_signal_event_1a28b5419e77856b3c47fbeecf3d2d4b55" prot="public"
+                    virt="non-virtual">
+                <scope>capl::SignalEvent</scope><name>SignalEvent</name>
+            </member>
+            <member refid="classcapl_1_1_signal_event_1af1b394847805bf50ab0dc31461678955" prot="public"
+                    virt="non-virtual">
+                <scope>capl::SignalEvent</scope><name>SignalEvent</name>
+            </member>
+            <member refid="classcapl_1_1_signal_event_1ac710f175d5ae7ac1f6ab4960d445623c" prot="public" virt="virtual">
+                <scope>capl::SignalEvent</scope><name>~SignalEvent</name>
+            </member>
+        </listofallmembers>
+    </compounddef>
 </doxygen>

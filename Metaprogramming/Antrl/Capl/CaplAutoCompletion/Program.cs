@@ -10,7 +10,6 @@ namespace CaplAutoCompletion
 {
     internal static class Program
     {
-        private static readonly XElement XRoot;
         private const string CaplApiXml = "capl_api.xml";
         private const string CaplApiXsd = "capl_api.xsd";
         private const string InnerClsEl = "innerclass";
@@ -27,29 +26,23 @@ namespace CaplAutoCompletion
         private const string DefaultDetailedDesc = "No detailed description";
         private const string ArgStrEl = "argsstring";
         private const string DeclNameEl = "declname";
+        private static readonly XElement XRoot;
 
-        static Program()
-        {
-            XRoot = XElement.Load(CaplApiXml);
-        }
+        static Program() => XRoot = XElement.Load(CaplApiXml);
 
         private static void Main()
         {
-            bool validated;
-            string errorMessage;
             using (var validator = new DoxygenValidator(CaplApiXml, CaplApiXsd))
             {
-                validated = validator.Validate(out errorMessage);
+                var validated = validator.Validate(out var errorMessage);
+                if (!validated)
+                {
+                    Console.Error.WriteLine(errorMessage);
+                    Environment.Exit(-1);
+                }
             }
 
-            if (validated)
-            {
-                Console.WriteLine("Validation is Ok");
-            }
-            else
-            {
-                Console.WriteLine("Validation error: {0}", errorMessage);
-            }
+            var caplFuncDoxygens = GetCaplFunctions(XRoot);
 
             // Get all classes API
             var doxygenFiles = Directory.EnumerateFiles("capl_classes", "*.xml").ToArray();

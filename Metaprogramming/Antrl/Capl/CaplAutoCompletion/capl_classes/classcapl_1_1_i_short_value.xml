@@ -1,47 +1,58 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.2" xml:lang="en-US">
-  <compounddef id="classcapl_1_1_i_short_value" kind="class" language="C++" prot="public" abstract="yes">
-    <compoundname>capl::IShortValue</compoundname>
-      <sectiondef kind="public-func">
-      <memberdef kind="function" id="classcapl_1_1_i_short_value_1afb5e5a1ca19f966567287ffc130e4973" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
-        <type>__int16</type>
-        <definition>virtual __int16 capl::IShortValue::operator=</definition>
-        <argsstring>(__int16 value)=0</argsstring>
-        <name>operator=</name>
-        <param>
-          <type>__int16</type>
-          <declname>value</declname>
-        </param>
+
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd"
+         version="1.9.2" xml:lang="en-US">
+    <compounddef id="classcapl_1_1_i_short_value" kind="class" language="C++" prot="public" abstract="yes">
+        <compoundname>capl::IShortValue</compoundname>
+        <sectiondef kind="public-func">
+            <memberdef kind="function" id="classcapl_1_1_i_short_value_1afb5e5a1ca19f966567287ffc130e4973"
+                       prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+                <type>__int16</type>
+                <definition>virtual __int16 capl::IShortValue::operator=</definition>
+                <argsstring>(__int16 value)=0</argsstring>
+                <name>operator=</name>
+                <param>
+                    <type>__int16</type>
+                    <declname>value</declname>
+                </param>
+                <briefdescription>
+                </briefdescription>
+                <detaileddescription>
+                </detaileddescription>
+                <inbodydescription>
+                </inbodydescription>
+                <location file="CAPLPluginApi.h" line="1269" column="35" />
+            </memberdef>
+            <memberdef kind="function" id="classcapl_1_1_i_short_value_1ac76f9a8b3dd34544b9849495ba52109f"
+                       prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+                <type></type>
+                <definition>virtual capl::IShortValue::operator __int16</definition>
+                <argsstring>()=0</argsstring>
+                <name>operator __int16</name>
+                <briefdescription>
+                </briefdescription>
+                <detaileddescription>
+                </detaileddescription>
+                <inbodydescription>
+                </inbodydescription>
+                <location file="CAPLPluginApi.h" line="1270" column="22" />
+            </memberdef>
+        </sectiondef>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
         </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="CAPLPluginApi.h" line="1269" column="35"/>
-      </memberdef>
-      <memberdef kind="function" id="classcapl_1_1_i_short_value_1ac76f9a8b3dd34544b9849495ba52109f" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
-        <type></type>
-        <definition>virtual capl::IShortValue::operator __int16</definition>
-        <argsstring>()=0</argsstring>
-        <name>operator __int16</name>
-        <briefdescription>
-        </briefdescription>
-        <detaileddescription>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="CAPLPluginApi.h" line="1270" column="22"/>
-      </memberdef>
-      </sectiondef>
-    <briefdescription>
-    </briefdescription>
-    <detaileddescription>
-    </detaileddescription>
-    <location file="CAPLPluginApi.h" line="1266" column="5" bodyfile="CAPLPluginApi.h" bodystart="1267" bodyend="1271"/>
-    <listofallmembers>
-      <member refid="classcapl_1_1_i_short_value_1ac76f9a8b3dd34544b9849495ba52109f" prot="public" virt="pure-virtual"><scope>capl::IShortValue</scope><name>operator __int16</name></member>
-      <member refid="classcapl_1_1_i_short_value_1afb5e5a1ca19f966567287ffc130e4973" prot="public" virt="pure-virtual"><scope>capl::IShortValue</scope><name>operator=</name></member>
-    </listofallmembers>
-  </compounddef>
+        <location file="CAPLPluginApi.h" line="1266" column="5" bodyfile="CAPLPluginApi.h" bodystart="1267"
+                  bodyend="1271" />
+        <listofallmembers>
+            <member refid="classcapl_1_1_i_short_value_1ac76f9a8b3dd34544b9849495ba52109f" prot="public"
+                    virt="pure-virtual">
+                <scope>capl::IShortValue</scope><name>operator __int16</name>
+            </member>
+            <member refid="classcapl_1_1_i_short_value_1afb5e5a1ca19f966567287ffc130e4973" prot="public"
+                    virt="pure-virtual">
+                <scope>capl::IShortValue</scope><name>operator=</name>
+            </member>
+        </listofallmembers>
+    </compounddef>
 </doxygen>

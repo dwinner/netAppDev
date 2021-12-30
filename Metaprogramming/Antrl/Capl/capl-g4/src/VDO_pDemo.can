@@ -1,0 +1,492 @@
+/*@@var:*/
+/*
+Copyright ( C ) Continental AG 2012
+
+Date of creation :  14.04.2011
+
+Created by :                 Hans Jürgen Hipp
+
+
+Version info
+
+1.00	   10.2013	Inital versioning introduced
+1.01	21.12.2010	Der DIMM regler schaltet jetzt immer auf POTI nicht mehr auf Incrementalgeber
+*/
+
+
+variables
+	{
+    char sCurrentVersion[35]                = "VDO-pDemo (Version:03.00) [@DaWa]";       // define the vurrent version number
+
+
+    byte bNotFirstCall_pDemo_Dimming        = 0;
+    byte bNotFirstCall_pDemo_DistronicBegin = 0;
+    byte bNotFirstCall_pDemo_DistronicCar   = 0;
+    byte bNotFirstCall_pDemo_DistronicEnd   = 0;
+    byte bNotFirstCall_pDemo_DistronicRadar = 0;
+    byte bNotFirstCall_pDemo_KL15           = 0;
+    byte bNotFirstCall_pDemo_NightView      = 0;
+    byte bNotFirstCall_pDemo_ParkLeft       = 0;
+    byte bNotFirstCall_pDemo_ParkRight      = 0;
+    byte bNotFirstCall_pDemo_Style          = 0;
+    char sActiveReplay[32];
+    char sNavi_ActiveReplay[32];
+
+    mstimer _tCheckReplayState;
+    mstimer _tNavi_CheckReplayState;
+    const int cCheckReplayStateInterval = 100;
+    byte bReplayState = 0;
+    }
+/*@@end*/
+
+/*@@envVar:pDemo_ParkLeft:*/
+// function  	: demo for left parking finnen
+// parameters	: in  -> void
+//                out -> void
+// author    	: Daniel Warnicki 22.10.2010
+on envVar pDemo_ParkLeft
+	{
+	if (bNotFirstCall_pDemo_ParkLeft)
+		{// prevent actions after first change event
+		if (getvalue(this))
+			{// parking left active
+			putvalue(HMI_EVC_79_PTS_Avl,1);						// activate park warning
+			putvalue(HMI_ParkWarnVol_Ft,1);						// volume mid
+			putvalue(HMI_ParkWarnSnd_FL,getvalue(this)); 		// sound 1-15
+			if (getvalue(this) > 8)
+				putvalue(HMI_ParkWarnElem_FL_Stat,getvalue(this)-6);// left finnen 1-9
+			else
+				putvalue(HMI_ParkWarnElem_FL_Stat,3);			// left finnen 1-9
+			}
+		else
+			{// parking left inactive
+			putvalue(HMI_ParkWarnElem_FL_Stat,0); 				// left finnen off
+			putvalue(HMI_ParkWarnSnd_FL,0); 					// sound off
+			if (!(15-getvalue(pDemo_ParkRight)))
+				{// park left and right inactive
+				putvalue(HMI_EVC_79_PTS_Avl,0);					// deactivate park warning
+				}
+			}
+		}
+	bNotFirstCall_pDemo_ParkLeft = 1;
+	}
+/*@@end*/
+
+/*@@envVar:pDemo_NightView:*/
+// function  	: Turning NightView on/off
+// parameters	: in  -> void
+//                out -> void
+// author    	: Daniel Warnicki 22.10.2010
+on envVar pDemo_NightView
+	{
+	if (bNotFirstCall_pDemo_NightView)
+		{// prevent actions after first change event
+		if (getvalue(this))
+			{// turn NightView on
+			putvalue(HMI_EVC_75_NV_Avl, 1);// HMI_EVC_75_NV_Avl ON
+			putvalue(HMI_NVP_Disp_Rq,4);   // slow on request
+			}
+		else
+			{// turn NightView off
+			putvalue(HMI_EVC_75_NV_Avl, 1);// HMI_EVC_75_NV_Avl ON
+			putvalue(HMI_NVP_Disp_Rq,3);   // slow off request
+			}
+		}
+	bNotFirstCall_pDemo_NightView = 1;
+	}
+/*@@end*/
+
+/*@@envVar:pDemo_ParkRight:*/
+// function  	: demo for right parking finnen
+// parameters	: in  -> void
+//                out -> void
+// author    	: Daniel Warnicki 22.10.2010
+on envVar pDemo_ParkRight
+	{
+	int iValue;
+
+	if (bNotFirstCall_pDemo_ParkRight)
+		{// prevent actions after first change event
+		iValue = 15-getvalue(this);
+		if (iValue)
+			{// parking right active
+			putvalue(HMI_EVC_79_PTS_Avl,1);						// activate park warning
+			putvalue(HMI_ParkWarnVol_Ft,1);						// volume mid
+			putvalue(HMI_ParkWarnSnd_FR,iValue); 				// sound 1-15
+			if (iValue > 8)
+				putvalue(HMI_ParkWarnElem_FR_Stat,iValue-6);	// right finnen 1-9
+			else
+				putvalue(HMI_ParkWarnElem_FR_Stat,3);			// right finnen 1-9
+			}
+		else
+			{// parking right inactive
+			putvalue(HMI_ParkWarnElem_FR_Stat,0); 				// right finnen off
+			putvalue(HMI_ParkWarnSnd_FR,0); 					// sound off
+			if (!getvalue(pDemo_ParkLeft))
+				{// park left and right inactive
+				putvalue(HMI_EVC_79_PTS_Avl,0);					// deactivate park warning
+				}
+			}
+		}
+	bNotFirstCall_pDemo_ParkRight = 1;
+	}
+/*@@end*/
+
+/*@@startStart:Start:*/
+on start
+	{
+	putvalue(pDemo_KL15,0);
+	putvalue(pDemo_NightView,0);
+	putvalue(pDemo_ParkLeft,0);
+	putvalue(pDemo_ParkRight,0xF);
+	//....................................prevent change event after initialisation
+	if (getvalue(pDemo_KL15))
+		putvalue(pDemo_KL15,0);
+	else
+		bNotFirstCall_pDemo_KL15 = 1;
+	//....................................deactivate NightView
+	bNotFirstCall_pDemo_NightView = 1;
+	putvalue(pDemo_NightView,0);
+    putvalue(pDemo_NightView,getvalue(HMI_EIS_Msg3));
+    //....................................
+    srTelephone_ButtonsAllEnable();   // activate all buttons at demo panel
+    srNavi_ButtonsAllEnable();   // activate all buttons at demo panel
+}
+/*@@end*/
+
+/*@@envVar:pDemo_Dimming:*/
+// function  	: demo for display ilumination
+// parameters	: in  -> void
+//                out -> void
+// author    	: Daniel Warnicki 22.10.2010
+on envVar pDemo_Dimming
+{
+    if (bNotFirstCall_pDemo_Dimming)
+    { // prevent actions after first change event
+        putvalue(HMI_SwIllLvl_Ctrl_Style, 0); 		// set poti mode
+        putvalue(HMI_IP_Brt, 0); 					// set brigness sensor 0
+        putvalue(HMI_LgtSens_SNA,0); 				// no error
+        putvalue(HMI_LgtSens_Night,1); 				// night mode (bigger range)
+        putvalue(HMI_SwIllLvl_Raw, getvalue(this));	// set switch ilumination level
+    }
+    bNotFirstCall_pDemo_Dimming = 1;
+}
+/*@@end*/
+
+/*@@envVar:pDemo_DistronicBegin:*/
+// function  	: demo for distronic
+// parameters	: in  -> void
+//                out -> void
+// author    	: Daniel Warnicki 22.10.2010
+on envVar pDemo_DistronicBegin
+{
+    if (bNotFirstCall_pDemo_DistronicBegin)
+    {// prevent actions after first change event
+        if (getvalue(this))
+        {
+            putvalue( HMI_EVC_6F_ADTR_Avl, 1 );				// activate distronic config
+            putvalue( HMI_LDC_DTR_Stat_RDU_V2, 1 );					// DTR on
+            putValue( HMI_LDC_Master, 0 );
+            putValue( HMI_LDC_SPEEDO_SegRing_Disp_Rq, 1 );
+            putvalue( HMI_LDC_Spd_Add, getvalue( this ) );	// set DTR value
+            putvalue( HMI_LDC_Spd_Add_RDU, getvalue( this ) );	// set DTR value
+        }
+        else
+        {
+            if ( !getvalue( pDemo_DistronicEnd ) )				// both slider 0 -> DTR turn off
+                putvalue( HMI_LDC_DTR_Stat_RDU_V2, 0 );				// DTR off
+        }
+    }
+    bNotFirstCall_pDemo_DistronicBegin = 1;
+}
+/*@@end*/
+
+/*@@envVar:pDemo_DistronicEnd:*/
+on envVar pDemo_DistronicEnd
+{
+    if ( bNotFirstCall_pDemo_DistronicEnd )
+    {   // prevent actions after first change event
+        if (getvalue(this))
+        {
+            putvalue( HMI_EVC_6F_ADTR_Avl, 1 );              // activate distronic config
+            putvalue( HMI_LDC_DTR_Stat_RDU_V2, 1 );               // DTR on
+            putValue( HMI_LDC_Master, 0 );
+            putValue( HMI_LDC_SPEEDO_SegRing_Disp_Rq, 1 );
+            putvalue( HMI_LDC_Spd_Dsr, getvalue(this) ); // set DTR value
+            putvalue( HMI_LDC_Spd_Dsr_RDU, getvalue(this) ); // set DTR value
+        }
+        else
+        {
+            if ( !getvalue( pDemo_DistronicBegin ) )             // both slider 0 -> DTR turn off
+                putvalue( HMI_LDC_DTR_Stat_RDU_V2, 0 );             // DTR off
+        }
+    }
+    bNotFirstCall_pDemo_DistronicEnd = 1;
+}
+/*@@end*/
+
+/*@@envVar:pDemo_DistronicCar:*/
+// function  	: demo for distronic
+// parameters	: in  -> void
+//                out -> void
+// author    	: Daniel Warnicki 22.10.2010
+on envVar pDemo_DistronicCar
+	{
+	if (bNotFirstCall_pDemo_DistronicCar)
+		{// prevent actions after first change event
+		if (getvalue(this))
+			{
+			putvalue( HMI_EVC_6F_ADTR_Avl, 1 );				// activate distronic config
+			putvalue( HMI_LDC_DTR_Stat_RDU_V2, 1 );				// activate distronic config
+			putvalue( HMI_LDC_Dist_RDU, getvalue( this ) );		// set car value
+			}
+		}
+	bNotFirstCall_pDemo_DistronicCar = 1;
+
+	}
+/*@@end*/
+
+/*@@envVar:pDemo_DistronicRadar:*/
+// function  	: demo for distronic
+// parameters	: in  -> void
+//                out -> void
+// author    	: Daniel Warnicki 22.10.2010
+on envVar pDemo_DistronicRadar
+	{
+	if (bNotFirstCall_pDemo_DistronicRadar)
+		{// prevent actions after first change event
+		if (getvalue(this))
+			{
+			putvalue(HMI_EVC_6F_ADTR_Avl,1);				// activate distronic config
+			putvalue(HMI_LDC_DTR_Stat_RDU_V2,1);				// activate distronic config
+			putvalue(HMI_LDC_Dist_Dsr_RDU,getvalue(this));	// set radar value
+			}
+		}
+	bNotFirstCall_pDemo_DistronicRadar = 1;
+	}
+/*@@end*/
+
+/*@@preStart:PreStart:*/
+on preStart
+	{
+	}
+/*@@end*/
+
+/*@@envVar:pDemo_ADC_InitButton:*/
+on envVar pDemo_ADC_InitButton
+    {
+    if (getvalue(Env_Ign_Switch) > 2)
+        {// only if ingnition >= 15r
+        if (getvalue(this) == 1)
+            {
+            // deactivate buttons
+            srTelephone_ButtonsAllDisable();
+            // set timer to init-time
+            settimer(_tCheckReplayState, cCheckReplayStateInterval);
+            // play init
+            strncpy(sActiveReplay, "ADC_Init", elcount(sActiveReplay));
+            ReplayStart(sActiveReplay);
+            }
+        }
+    }
+/*@@end*/
+
+/*@@envVar:pDemo_ADC_CatJumpButton:*/
+on envVar pDemo_ADC_CatJumpButton
+    {
+    if (getvalue(Env_Ign_Switch) > 2)
+        {// only if ingnition >= 15r
+        if (getvalue(this) == 1)
+            {
+            // deactivate buttons
+            srTelephone_ButtonsAllDisable();
+            // set timer to "jump ani"-time
+            settimer(_tCheckReplayState, cCheckReplayStateInterval);
+            // play jump ani
+            strncpy(sActiveReplay, "ADC_CategoryJumpAnimation", elcount(sActiveReplay));
+            ReplayStart(sActiveReplay);
+            }
+        }
+    }
+/*@@end*/
+
+/*@@envVar:pDemo_ADC_ListAniButton:*/
+on envVar pDemo_ADC_ListAniButton
+    {
+    if (getvalue(Env_Ign_Switch) > 2)
+        {// only if ingnition >= 15r
+        if (getvalue(this) == 1)
+            {
+            // deactivate buttons
+            srTelephone_ButtonsAllDisable();
+            // set timer to "list ani"-time 11sec
+            settimer(_tCheckReplayState, cCheckReplayStateInterval);
+            // play list ani
+            strncpy(sActiveReplay, "ADC_ListAnimation", elcount(sActiveReplay));
+            ReplayStart(sActiveReplay);
+            }
+        }
+    }
+/*@@end*/
+
+/*@@envVar:pDemo_ADC_UpdAniButton:*/
+on envVar pDemo_ADC_UpdAniButton
+    {
+    if (getvalue(Env_Ign_Switch) > 2)
+        {// only if ingnition >= 15r
+        if (getvalue(this) == 1)
+            {
+            // deactivate buttons
+            srTelephone_ButtonsAllDisable();
+            // set timer to "jump ani"-time
+            settimer(_tCheckReplayState, cCheckReplayStateInterval);
+            // play jump ani
+            strncpy(sActiveReplay, "ADC_ListUpdateAnimation", elcount(sActiveReplay));
+            ReplayStart(sActiveReplay);
+            }
+        }
+    }
+/*@@end*/
+
+/*@@timer:_tCheckReplayState:*/
+on timer _tCheckReplayState
+{
+    switch (ReplayState(sActiveReplay))
+    {
+        case 1: // Execution of the Replay file was started (state: running)
+                settimer(_tCheckReplayState, cCheckReplayStateInterval);
+                break;
+        case 0: // Replay Block is stopped (state: stopped)
+        case 2: // Execution of the Replay file was stopped (state: suspended)
+                // reactivate buttons
+                srTelephone_ButtonsAllEnable();
+                break;
+    }
+
+}
+/*@@end*/
+
+/*@@caplFunc:srTelephone_ButtonsAllDisable():*///function
+srTelephone_ButtonsAllDisable()
+{
+    EnableControl( sCurrentVersion, "elADC_InitButton", 0 );
+    EnableControl( sCurrentVersion, "elADC_ListAniButton", 0 );
+    EnableControl( sCurrentVersion, "elADC_UpdateAniButton", 0 );
+    EnableControl( sCurrentVersion, "elADC_CategoryJumpButton", 0 );
+    EnableControl( sCurrentVersion, "elADC_Radio_List", 0 );
+}
+/*@@end*/
+
+/*@@caplFunc:srTelephone_ButtonsAllEnable():*///function
+srTelephone_ButtonsAllEnable()
+{
+    EnableControl( sCurrentVersion, "elADC_InitButton", 1 );
+    EnableControl( sCurrentVersion, "elADC_ListAniButton", 1 );
+    EnableControl( sCurrentVersion, "elADC_UpdateAniButton", 1 );
+    EnableControl( sCurrentVersion, "elADC_CategoryJumpButton", 1 );
+    EnableControl( sCurrentVersion, "elADC_Radio_List", 1 );
+}
+/*@@end*/
+
+/*@@errorActive:ErrorActive:*/
+/*@@end*/
+
+/*@@envVar:pDemo_ADC_Navi_01:*/
+on envVar pDemo_ADC_Navi_01
+    {
+    if (getvalue(Env_Ign_Switch) > 2)
+        {// only if ingnition >= 15r
+        if (getvalue(this) == 1)
+            {
+            // deactivate buttons
+            srNavi_ButtonsAllDisable();
+            // set timer to init-time
+            settimer(_tNavi_CheckReplayState, cCheckReplayStateInterval);
+            // play init
+            strncpy(sNavi_ActiveReplay, "ADC_Navi_01", elcount(sNavi_ActiveReplay));
+            ReplayStart(sNavi_ActiveReplay);
+            }
+        }    
+    }
+/*@@end*/
+
+/*@@caplFunc:srNavi_ButtonsAllDisable():*///function
+srNavi_ButtonsAllDisable()
+{
+    EnableControl( sCurrentVersion, "elADC_Navi_01", 0 );
+    EnableControl( sCurrentVersion, "elADC_Navi_02", 0 );
+}
+/*@@end*/
+
+/*@@caplFunc:srNavi_ButtonsAllEnable():*///function
+srNavi_ButtonsAllEnable()
+{
+    EnableControl( sCurrentVersion, "elADC_Navi_01", 1 );
+    EnableControl( sCurrentVersion, "elADC_Navi_02", 1 );
+}
+/*@@end*/
+
+/*@@timer:_tNavi_CheckReplayState:*/
+on timer _tNavi_CheckReplayState
+{
+    switch (ReplayState(sNavi_ActiveReplay))
+    {
+        case 1: // Execution of the Replay file was started (state: running)
+                settimer(_tNavi_CheckReplayState, cCheckReplayStateInterval);
+                break;
+        case 0: // Replay Block is stopped (state: stopped)
+        case 2: // Execution of the Replay file was stopped (state: suspended)
+                // reactivate buttons
+                srNavi_ButtonsAllEnable();
+                break;
+    }
+
+}
+/*@@end*/
+
+/*@@envVar:pDemo_ADC_Navi_02:*/
+on envVar pDemo_ADC_Navi_02
+    {
+    if (getvalue(Env_Ign_Switch) > 2)
+        {// only if ingnition >= 15r
+        if (getvalue(this) == 1)
+            {
+            // deactivate buttons
+            srNavi_ButtonsAllDisable();
+            // set timer to init-time
+            settimer(_tNavi_CheckReplayState, cCheckReplayStateInterval);
+            // play init
+            strncpy(sNavi_ActiveReplay, "ADC_Navi_02", elcount(sNavi_ActiveReplay));
+            ReplayStart(sNavi_ActiveReplay);
+            }
+        }    
+    }
+/*@@end*/
+
+/*@@envVar:pDemo_Style:*/
+// function  	: Change Style
+// parameters	: in  -> void
+//                out -> void
+// author    	: Daniel Warnicki 03.09.2014
+on envVar pDemo_Style
+{
+	//if (bNotFirstCall_pDemo_Style) {
+        // prevent actions after first change event
+        //putvalue(Env_HU_Config_AutoSync,1); // activate auto sync
+    putvalue(HMI_IC_DesignVar_Rq,getvalue(this)); // set the request
+        //}
+	//bNotFirstCall_pDemo_Style = 1;
+}
+/*@@end*/
+
+/*@@envVar:HMI_IC_DesignVar_Rq:*/
+// function  	: when the syle was changed
+// parameters	: in  -> void
+//                out -> void
+// author    	: Daniel Warnicki 03.09.2014
+on envVar HMI_IC_DesignVar_Rq
+{
+    putvalue(pDemo_Style,getvalue(this)); // set demo value
+}
+/*@@end*/
+

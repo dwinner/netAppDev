@@ -1,87 +1,115 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.2" xml:lang="en-US">
-  <compounddef id="structcapl_1_1_d_b_lookup_msg_ret" kind="struct" language="C++" prot="public">
-    <compoundname>capl::DBLookupMsgRet</compoundname>
-      <sectiondef kind="public-attrib">
-      <memberdef kind="variable" id="structcapl_1_1_d_b_lookup_msg_ret_1a2fdda666206ed9c3f3ddc71024223b44" prot="public" static="no" mutable="no">
-        <type>bool</type>
-        <definition>bool capl::DBLookupMsgRet::valid</definition>
-        <argsstring></argsstring>
-        <name>valid</name>
+
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd"
+         version="1.9.2" xml:lang="en-US">
+    <compounddef id="structcapl_1_1_d_b_lookup_msg_ret" kind="struct" language="C++" prot="public">
+        <compoundname>capl::DBLookupMsgRet</compoundname>
+        <sectiondef kind="public-attrib">
+            <memberdef kind="variable" id="structcapl_1_1_d_b_lookup_msg_ret_1a2fdda666206ed9c3f3ddc71024223b44"
+                       prot="public" static="no" mutable="no">
+                <type>bool</type>
+                <definition>bool capl::DBLookupMsgRet::valid</definition>
+                <argsstring></argsstring>
+                <name>valid</name>
+                <briefdescription>
+                </briefdescription>
+                <detaileddescription>
+                </detaileddescription>
+                <inbodydescription>
+                </inbodydescription>
+                <location file="CAPLPluginApi.h" line="7500" column="14" bodyfile="CAPLPluginApi.h" bodystart="7500"
+                          bodyend="-1" />
+            </memberdef>
+            <memberdef kind="variable" id="structcapl_1_1_d_b_lookup_msg_ret_1ad3ec920f286ea7cef230cf77257a9554"
+                       prot="public" static="no" mutable="no">
+                <type>char</type>
+                <definition>char capl::DBLookupMsgRet::Name[250]</definition>
+                <argsstring>[250]</argsstring>
+                <name>Name</name>
+                <briefdescription>
+                </briefdescription>
+                <detaileddescription>
+                </detaileddescription>
+                <inbodydescription>
+                </inbodydescription>
+                <location file="CAPLPluginApi.h" line="7501" column="14" bodyfile="CAPLPluginApi.h" bodystart="7501"
+                          bodyend="-1" />
+            </memberdef>
+            <memberdef kind="variable" id="structcapl_1_1_d_b_lookup_msg_ret_1a54a9b2d3877828cf1cdfed789f5df377"
+                       prot="public" static="no" mutable="no">
+                <type>__int32</type>
+                <definition>__int32 capl::DBLookupMsgRet::DLC</definition>
+                <argsstring></argsstring>
+                <name>DLC</name>
+                <briefdescription>
+                </briefdescription>
+                <detaileddescription>
+                </detaileddescription>
+                <inbodydescription>
+                </inbodydescription>
+                <location file="CAPLPluginApi.h" line="7502" column="19" bodyfile="CAPLPluginApi.h" bodystart="7502"
+                          bodyend="-1" />
+            </memberdef>
+            <memberdef kind="variable" id="structcapl_1_1_d_b_lookup_msg_ret_1ac85da0b4143d7bb93f3517008321dd64"
+                       prot="public" static="no" mutable="no">
+                <type>char</type>
+                <definition>char capl::DBLookupMsgRet::Transmitter[250]</definition>
+                <argsstring>[250]</argsstring>
+                <name>Transmitter</name>
+                <briefdescription>
+                </briefdescription>
+                <detaileddescription>
+                </detaileddescription>
+                <inbodydescription>
+                </inbodydescription>
+                <location file="CAPLPluginApi.h" line="7503" column="14" bodyfile="CAPLPluginApi.h" bodystart="7503"
+                          bodyend="-1" />
+            </memberdef>
+        </sectiondef>
+        <sectiondef kind="public-func">
+            <memberdef kind="function" id="structcapl_1_1_d_b_lookup_msg_ret_1a41a32ab5d83d893d536395b0cc2fcafc"
+                       prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+                <type></type>
+                <definition>capl::DBLookupMsgRet::operator unsigned __int8</definition>
+                <argsstring>() const</argsstring>
+                <name>operator unsigned __int8</name>
+                <briefdescription>
+                </briefdescription>
+                <detaileddescription>
+                </detaileddescription>
+                <inbodydescription>
+                </inbodydescription>
+                <location file="CAPLPluginApi.h" line="7504" column="9" bodyfile="CAPLPluginApi.h" bodystart="7504"
+                          bodyend="7507" />
+            </memberdef>
+        </sectiondef>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
         </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="CAPLPluginApi.h" line="7500" column="14" bodyfile="CAPLPluginApi.h" bodystart="7500" bodyend="-1"/>
-      </memberdef>
-      <memberdef kind="variable" id="structcapl_1_1_d_b_lookup_msg_ret_1ad3ec920f286ea7cef230cf77257a9554" prot="public" static="no" mutable="no">
-        <type>char</type>
-        <definition>char capl::DBLookupMsgRet::Name[250]</definition>
-        <argsstring>[250]</argsstring>
-        <name>Name</name>
-        <briefdescription>
-        </briefdescription>
-        <detaileddescription>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="CAPLPluginApi.h" line="7501" column="14" bodyfile="CAPLPluginApi.h" bodystart="7501" bodyend="-1"/>
-      </memberdef>
-      <memberdef kind="variable" id="structcapl_1_1_d_b_lookup_msg_ret_1a54a9b2d3877828cf1cdfed789f5df377" prot="public" static="no" mutable="no">
-        <type>__int32</type>
-        <definition>__int32 capl::DBLookupMsgRet::DLC</definition>
-        <argsstring></argsstring>
-        <name>DLC</name>
-        <briefdescription>
-        </briefdescription>
-        <detaileddescription>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="CAPLPluginApi.h" line="7502" column="19" bodyfile="CAPLPluginApi.h" bodystart="7502" bodyend="-1"/>
-      </memberdef>
-      <memberdef kind="variable" id="structcapl_1_1_d_b_lookup_msg_ret_1ac85da0b4143d7bb93f3517008321dd64" prot="public" static="no" mutable="no">
-        <type>char</type>
-        <definition>char capl::DBLookupMsgRet::Transmitter[250]</definition>
-        <argsstring>[250]</argsstring>
-        <name>Transmitter</name>
-        <briefdescription>
-        </briefdescription>
-        <detaileddescription>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="CAPLPluginApi.h" line="7503" column="14" bodyfile="CAPLPluginApi.h" bodystart="7503" bodyend="-1"/>
-      </memberdef>
-      </sectiondef>
-      <sectiondef kind="public-func">
-      <memberdef kind="function" id="structcapl_1_1_d_b_lookup_msg_ret_1a41a32ab5d83d893d536395b0cc2fcafc" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
-        <type></type>
-        <definition>capl::DBLookupMsgRet::operator unsigned __int8</definition>
-        <argsstring>() const</argsstring>
-        <name>operator unsigned __int8</name>
-        <briefdescription>
-        </briefdescription>
-        <detaileddescription>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="CAPLPluginApi.h" line="7504" column="9" bodyfile="CAPLPluginApi.h" bodystart="7504" bodyend="7507"/>
-      </memberdef>
-      </sectiondef>
-    <briefdescription>
-    </briefdescription>
-    <detaileddescription>
-    </detaileddescription>
-    <location file="CAPLPluginApi.h" line="7498" column="5" bodyfile="CAPLPluginApi.h" bodystart="7499" bodyend="7508"/>
-    <listofallmembers>
-      <member refid="structcapl_1_1_d_b_lookup_msg_ret_1a54a9b2d3877828cf1cdfed789f5df377" prot="public" virt="non-virtual"><scope>capl::DBLookupMsgRet</scope><name>DLC</name></member>
-      <member refid="structcapl_1_1_d_b_lookup_msg_ret_1ad3ec920f286ea7cef230cf77257a9554" prot="public" virt="non-virtual"><scope>capl::DBLookupMsgRet</scope><name>Name</name></member>
-      <member refid="structcapl_1_1_d_b_lookup_msg_ret_1a41a32ab5d83d893d536395b0cc2fcafc" prot="public" virt="non-virtual"><scope>capl::DBLookupMsgRet</scope><name>operator unsigned __int8</name></member>
-      <member refid="structcapl_1_1_d_b_lookup_msg_ret_1ac85da0b4143d7bb93f3517008321dd64" prot="public" virt="non-virtual"><scope>capl::DBLookupMsgRet</scope><name>Transmitter</name></member>
-      <member refid="structcapl_1_1_d_b_lookup_msg_ret_1a2fdda666206ed9c3f3ddc71024223b44" prot="public" virt="non-virtual"><scope>capl::DBLookupMsgRet</scope><name>valid</name></member>
-    </listofallmembers>
-  </compounddef>
+        <location file="CAPLPluginApi.h" line="7498" column="5" bodyfile="CAPLPluginApi.h" bodystart="7499"
+                  bodyend="7508" />
+        <listofallmembers>
+            <member refid="structcapl_1_1_d_b_lookup_msg_ret_1a54a9b2d3877828cf1cdfed789f5df377" prot="public"
+                    virt="non-virtual">
+                <scope>capl::DBLookupMsgRet</scope><name>DLC</name>
+            </member>
+            <member refid="structcapl_1_1_d_b_lookup_msg_ret_1ad3ec920f286ea7cef230cf77257a9554" prot="public"
+                    virt="non-virtual">
+                <scope>capl::DBLookupMsgRet</scope><name>Name</name>
+            </member>
+            <member refid="structcapl_1_1_d_b_lookup_msg_ret_1a41a32ab5d83d893d536395b0cc2fcafc" prot="public"
+                    virt="non-virtual">
+                <scope>capl::DBLookupMsgRet</scope><name>operator unsigned __int8</name>
+            </member>
+            <member refid="structcapl_1_1_d_b_lookup_msg_ret_1ac85da0b4143d7bb93f3517008321dd64" prot="public"
+                    virt="non-virtual">
+                <scope>capl::DBLookupMsgRet</scope><name>Transmitter</name>
+            </member>
+            <member refid="structcapl_1_1_d_b_lookup_msg_ret_1a2fdda666206ed9c3f3ddc71024223b44" prot="public"
+                    virt="non-virtual">
+                <scope>capl::DBLookupMsgRet</scope><name>valid</name>
+            </member>
+        </listofallmembers>
+    </compounddef>
 </doxygen>

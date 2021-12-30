@@ -1,165 +1,200 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.2" xml:lang="en-US">
-  <compounddef id="classcapl_1_1_i_timer" kind="class" language="C++" prot="public" abstract="yes">
-    <compoundname>capl::ITimer</compoundname>
-      <sectiondef kind="public-func">
-      <memberdef kind="function" id="classcapl_1_1_i_timer_1aa0591e31c86fd5ea399537b8292df029" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
-        <type>void</type>
-        <definition>virtual void capl::ITimer::Set</definition>
-        <argsstring>(DWORD u32Timer, DWORD u32Nano=0)=0</argsstring>
-        <name>Set</name>
-        <param>
-          <type>DWORD</type>
-          <declname>u32Timer</declname>
-        </param>
-        <param>
-          <type>DWORD</type>
-          <declname>u32Nano</declname>
-          <defval>0</defval>
-        </param>
+
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd"
+         version="1.9.2" xml:lang="en-US">
+    <compounddef id="classcapl_1_1_i_timer" kind="class" language="C++" prot="public" abstract="yes">
+        <compoundname>capl::ITimer</compoundname>
+        <sectiondef kind="public-func">
+            <memberdef kind="function" id="classcapl_1_1_i_timer_1aa0591e31c86fd5ea399537b8292df029" prot="public"
+                       static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+                <type>void</type>
+                <definition>virtual void capl::ITimer::Set</definition>
+                <argsstring>(DWORD u32Timer, DWORD u32Nano=0)=0</argsstring>
+                <name>Set</name>
+                <param>
+                    <type>DWORD</type>
+                    <declname>u32Timer</declname>
+                </param>
+                <param>
+                    <type>DWORD</type>
+                    <declname>u32Nano</declname>
+                    <defval>0</defval>
+                </param>
+                <briefdescription>
+                </briefdescription>
+                <detaileddescription>
+                    <para>
+                        Sets a timer
+                        <parameterlist kind="param">
+                            <parameteritem>
+                                <parameternamelist>
+                                    <parametername>Timer</parametername>
+                                </parameternamelist>
+                                <parameterdescription>
+                                    <para>variable </para>
+                                </parameterdescription>
+                            </parameteritem>
+                            <parameteritem>
+                                <parameternamelist>
+                                    <parametername>msTimer</parametername>
+                                </parameternamelist>
+                                <parameterdescription>
+                                    <para>variable </para>
+                                </parameterdescription>
+                            </parameteritem>
+                        </parameterlist>
+                        <simplesect kind="note">
+                            <para>void msTimer::set(long); </para>
+                        </simplesect>
+                    </para>
+                </detaileddescription>
+                <inbodydescription>
+                </inbodydescription>
+                <location file="CAPLPluginApi.h" line="825" column="30" />
+            </memberdef>
+            <memberdef kind="function" id="classcapl_1_1_i_timer_1a74fbaba78a2f43c7b1eac64317489404" prot="public"
+                       static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+                <type>void</type>
+                <definition>virtual void capl::ITimer::SetCyclic</definition>
+                <argsstring>(__int32 firstDuration, __int32 period=-1)=0</argsstring>
+                <name>SetCyclic</name>
+                <param>
+                    <type>__int32</type>
+                    <declname>firstDuration</declname>
+                </param>
+                <param>
+                    <type>__int32</type>
+                    <declname>period</declname>
+                    <defval>-1</defval>
+                </param>
+                <briefdescription>
+                </briefdescription>
+                <detaileddescription>
+                    <para>
+                        Sets a cyclical timer
+                        <parameterlist kind="param">
+                            <parameteritem>
+                                <parameternamelist>
+                                    <parametername>firstDuration</parametername>
+                                </parameternamelist>
+                                <parameterdescription>
+                                    <para>Time in milliseconds until the timer runs out for the first time </para>
+                                </parameterdescription>
+                            </parameteritem>
+                            <parameteritem>
+                                <parameternamelist>
+                                    <parametername>period</parametername>
+                                </parameternamelist>
+                                <parameterdescription>
+                                    <para>Time in milliseconds in which the timer is restarted in case of expiration </para>
+                                </parameterdescription>
+                            </parameteritem>
+                        </parameterlist>
+                        <simplesect kind="note">
+                            <para>void msTimer::setCyclic(long firstDuration, long period); </para>
+                        </simplesect>
+                    </para>
+                </detaileddescription>
+                <inbodydescription>
+                </inbodydescription>
+                <location file="CAPLPluginApi.h" line="833" column="30" />
+            </memberdef>
+            <memberdef kind="function" id="classcapl_1_1_i_timer_1ae3218a70e2f7a7164876a39ad654eac7" prot="public"
+                       static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+                <type>void</type>
+                <definition>virtual void capl::ITimer::Kill</definition>
+                <argsstring>()=0</argsstring>
+                <name>Kill</name>
+                <briefdescription>
+                </briefdescription>
+                <detaileddescription>
+                    <para>
+                        Stops an active timer
+                        <simplesect kind="note">
+                            <para>void msTimer::cancel(); </para>
+                        </simplesect>
+                    </para>
+                </detaileddescription>
+                <inbodydescription>
+                </inbodydescription>
+                <location file="CAPLPluginApi.h" line="839" column="30" />
+            </memberdef>
+            <memberdef kind="function" id="classcapl_1_1_i_timer_1a54af5553b98b2d1cca76442d8f5edbb1" prot="public"
+                       static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+                <type>bool</type>
+                <definition>virtual bool capl::ITimer::UpdateTimer</definition>
+                <argsstring>()=0</argsstring>
+                <name>UpdateTimer</name>
+                <briefdescription>
+                </briefdescription>
+                <detaileddescription>
+                </detaileddescription>
+                <inbodydescription>
+                </inbodydescription>
+                <location file="CAPLPluginApi.h" line="840" column="30" />
+            </memberdef>
+            <memberdef kind="function" id="classcapl_1_1_i_timer_1a037838a7ac23c1cf7f6d401a1efc26ea" prot="public"
+                       static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+                <type>DWORD</type>
+                <definition>virtual DWORD capl::ITimer::GetTime</definition>
+                <argsstring>() const =0</argsstring>
+                <name>GetTime</name>
+                <briefdescription>
+                </briefdescription>
+                <detaileddescription>
+                    <para>
+                        Returns a value indicating how much more time will elapse before an on timer event procedure is called. For form 1, the time value is returned in seconds; for form 2, the time value is returned in milliseconds. If the timer is not active, -1 is returned. This is also the case in the on timer event procedure itself
+                        <simplesect kind="return">
+                            <para>Time to go until the timer elapses and the event procedure is called </para>
+                        </simplesect>
+                        <simplesect kind="note">
+                            <para>long msTimer::timeToElapse(); </para>
+                        </simplesect>
+                    </para>
+                </detaileddescription>
+                <inbodydescription>
+                </inbodydescription>
+                <location file="CAPLPluginApi.h" line="847" column="31" />
+            </memberdef>
+            <memberdef kind="function" id="classcapl_1_1_i_timer_1ac40953066b08c7afee874b674759a47d" prot="public"
+                       static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+                <type>BOOL</type>
+                <definition>virtual BOOL capl::ITimer::GetActive</definition>
+                <argsstring>() const =0</argsstring>
+                <name>GetActive</name>
+                <briefdescription>
+                </briefdescription>
+                <detaileddescription>
+                </detaileddescription>
+                <inbodydescription>
+                </inbodydescription>
+                <location file="CAPLPluginApi.h" line="848" column="30" />
+            </memberdef>
+        </sectiondef>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
-<para>Sets a timer <parameterlist kind="param"><parameteritem>
-<parameternamelist>
-<parametername>Timer</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>variable </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>msTimer</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>variable </para>
-</parameterdescription>
-</parameteritem>
-</parameterlist>
-<simplesect kind="note"><para>void msTimer::set(long); </para>
-</simplesect>
-</para>
         </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="CAPLPluginApi.h" line="825" column="30"/>
-      </memberdef>
-      <memberdef kind="function" id="classcapl_1_1_i_timer_1a74fbaba78a2f43c7b1eac64317489404" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
-        <type>void</type>
-        <definition>virtual void capl::ITimer::SetCyclic</definition>
-        <argsstring>(__int32 firstDuration, __int32 period=-1)=0</argsstring>
-        <name>SetCyclic</name>
-        <param>
-          <type>__int32</type>
-          <declname>firstDuration</declname>
-        </param>
-        <param>
-          <type>__int32</type>
-          <declname>period</declname>
-          <defval>-1</defval>
-        </param>
-        <briefdescription>
-        </briefdescription>
-        <detaileddescription>
-<para>Sets a cyclical timer <parameterlist kind="param"><parameteritem>
-<parameternamelist>
-<parametername>firstDuration</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>Time in milliseconds until the timer runs out for the first time </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>period</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>Time in milliseconds in which the timer is restarted in case of expiration </para>
-</parameterdescription>
-</parameteritem>
-</parameterlist>
-<simplesect kind="note"><para>void msTimer::setCyclic(long firstDuration, long period); </para>
-</simplesect>
-</para>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="CAPLPluginApi.h" line="833" column="30"/>
-      </memberdef>
-      <memberdef kind="function" id="classcapl_1_1_i_timer_1ae3218a70e2f7a7164876a39ad654eac7" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
-        <type>void</type>
-        <definition>virtual void capl::ITimer::Kill</definition>
-        <argsstring>()=0</argsstring>
-        <name>Kill</name>
-        <briefdescription>
-        </briefdescription>
-        <detaileddescription>
-<para>Stops an active timer <simplesect kind="note"><para>void msTimer::cancel(); </para>
-</simplesect>
-</para>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="CAPLPluginApi.h" line="839" column="30"/>
-      </memberdef>
-      <memberdef kind="function" id="classcapl_1_1_i_timer_1a54af5553b98b2d1cca76442d8f5edbb1" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
-        <type>bool</type>
-        <definition>virtual bool capl::ITimer::UpdateTimer</definition>
-        <argsstring>()=0</argsstring>
-        <name>UpdateTimer</name>
-        <briefdescription>
-        </briefdescription>
-        <detaileddescription>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="CAPLPluginApi.h" line="840" column="30"/>
-      </memberdef>
-      <memberdef kind="function" id="classcapl_1_1_i_timer_1a037838a7ac23c1cf7f6d401a1efc26ea" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
-        <type>DWORD</type>
-        <definition>virtual DWORD capl::ITimer::GetTime</definition>
-        <argsstring>() const =0</argsstring>
-        <name>GetTime</name>
-        <briefdescription>
-        </briefdescription>
-        <detaileddescription>
-<para>Returns a value indicating how much more time will elapse before an on timer event procedure is called. For form 1, the time value is returned in seconds; for form 2, the time value is returned in milliseconds. If the timer is not active, -1 is returned. This is also the case in the on timer event procedure itself <simplesect kind="return"><para>Time to go until the timer elapses and the event procedure is called </para>
-</simplesect>
-<simplesect kind="note"><para>long msTimer::timeToElapse(); </para>
-</simplesect>
-</para>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="CAPLPluginApi.h" line="847" column="31"/>
-      </memberdef>
-      <memberdef kind="function" id="classcapl_1_1_i_timer_1ac40953066b08c7afee874b674759a47d" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
-        <type>BOOL</type>
-        <definition>virtual BOOL capl::ITimer::GetActive</definition>
-        <argsstring>() const =0</argsstring>
-        <name>GetActive</name>
-        <briefdescription>
-        </briefdescription>
-        <detaileddescription>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="CAPLPluginApi.h" line="848" column="30"/>
-      </memberdef>
-      </sectiondef>
-    <briefdescription>
-    </briefdescription>
-    <detaileddescription>
-    </detaileddescription>
-    <location file="CAPLPluginApi.h" line="815" column="5" bodyfile="CAPLPluginApi.h" bodystart="816" bodyend="849"/>
-    <listofallmembers>
-      <member refid="classcapl_1_1_i_timer_1ac40953066b08c7afee874b674759a47d" prot="public" virt="pure-virtual"><scope>capl::ITimer</scope><name>GetActive</name></member>
-      <member refid="classcapl_1_1_i_timer_1a037838a7ac23c1cf7f6d401a1efc26ea" prot="public" virt="pure-virtual"><scope>capl::ITimer</scope><name>GetTime</name></member>
-      <member refid="classcapl_1_1_i_timer_1ae3218a70e2f7a7164876a39ad654eac7" prot="public" virt="pure-virtual"><scope>capl::ITimer</scope><name>Kill</name></member>
-      <member refid="classcapl_1_1_i_timer_1aa0591e31c86fd5ea399537b8292df029" prot="public" virt="pure-virtual"><scope>capl::ITimer</scope><name>Set</name></member>
-      <member refid="classcapl_1_1_i_timer_1a74fbaba78a2f43c7b1eac64317489404" prot="public" virt="pure-virtual"><scope>capl::ITimer</scope><name>SetCyclic</name></member>
-      <member refid="classcapl_1_1_i_timer_1a54af5553b98b2d1cca76442d8f5edbb1" prot="public" virt="pure-virtual"><scope>capl::ITimer</scope><name>UpdateTimer</name></member>
-    </listofallmembers>
-  </compounddef>
+        <location file="CAPLPluginApi.h" line="815" column="5" bodyfile="CAPLPluginApi.h" bodystart="816" bodyend="849" />
+        <listofallmembers>
+            <member refid="classcapl_1_1_i_timer_1ac40953066b08c7afee874b674759a47d" prot="public" virt="pure-virtual">
+                <scope>capl::ITimer</scope><name>GetActive</name>
+            </member>
+            <member refid="classcapl_1_1_i_timer_1a037838a7ac23c1cf7f6d401a1efc26ea" prot="public" virt="pure-virtual">
+                <scope>capl::ITimer</scope><name>GetTime</name>
+            </member>
+            <member refid="classcapl_1_1_i_timer_1ae3218a70e2f7a7164876a39ad654eac7" prot="public" virt="pure-virtual">
+                <scope>capl::ITimer</scope><name>Kill</name>
+            </member>
+            <member refid="classcapl_1_1_i_timer_1aa0591e31c86fd5ea399537b8292df029" prot="public" virt="pure-virtual">
+                <scope>capl::ITimer</scope><name>Set</name>
+            </member>
+            <member refid="classcapl_1_1_i_timer_1a74fbaba78a2f43c7b1eac64317489404" prot="public" virt="pure-virtual">
+                <scope>capl::ITimer</scope><name>SetCyclic</name>
+            </member>
+            <member refid="classcapl_1_1_i_timer_1a54af5553b98b2d1cca76442d8f5edbb1" prot="public" virt="pure-virtual">
+                <scope>capl::ITimer</scope><name>UpdateTimer</name>
+            </member>
+        </listofallmembers>
+    </compounddef>
 </doxygen>
