@@ -12,8 +12,8 @@ primaryExpression
     |	SysvarIdentifier
 	|	Constant
 	|	StringLiteral+
-	|	'(' expression ')'
-	|	'(' compoundStatement ')'
+	|	LeftParen expression RightParen
+	|	LeftParen compoundStatement RightParen
 	| 	( includeBlock
 	    	| variableBlock
 			| eventBlock
@@ -36,131 +36,132 @@ primaryExpression
 	;
 
 includeBlock
-    :	'includes' '{' IncludeDirective* '}'
+    :	Includes LeftBrace IncludeDirective* RightBrace
     ;
 
 startBlock
-    :	'on' 'start' '{' blockItemList? '}'
+    :	On Start LeftBrace blockItemList? RightBrace
     ;
 
 variableBlock
-    :	'variables' '{' blockItemList? '}'
+    :	Variables LeftBrace blockItemList? RightBrace
     ;
 
 eventBlock
-    :	'on' keyEventType '{' blockItemList '}'
+    :	On keyEventType LeftBrace blockItemList RightBrace
     ;
 
 timerBlock
-    :	'on' timerType '{' blockItemList '}'
+    :	On timerType LeftBrace blockItemList RightBrace
     ;
 
 errorFrame
-    : 	'on' 'errorFrame' '{' blockItemList? '}'
+    : 	On ErrorFrame LeftBrace blockItemList? RightBrace
     ;
 
 messageBlock
-    :	'on' messageType '{' blockItemList '}'
+    :	On messageType LeftBrace blockItemList RightBrace
     ;
 
 multiplexedMessageBlock
-    :	'on' multiplexedMessageType '{' blockItemList '}'
+    :	On multiplexedMessageType LeftBrace blockItemList RightBrace
     ;
 
 diagRequestBlock
-    :	'on' diagRequestType '{' blockItemList '}'
+    :	On diagRequestType LeftBrace blockItemList RightBrace
     ;
 
 diagResponseBlock
-    :	'on' diagResponseType '{' blockItemList '}'
+    :	On diagResponseType LeftBrace blockItemList RightBrace
     ;
 
 signalBlock
-    :	'on' signalType '{' blockItemList '}'
+    :	On signalType LeftBrace blockItemList RightBrace
     ;
 
 sysvarBlock
-    :	'on' sysvarType '{' blockItemList '}'
+    :	On sysvarType LeftBrace blockItemList RightBrace
     ;
 
 stopMeasurement
-    :	'on' 'stopMeasurement' '{' blockItemList '}'
+    :	On StopMeasurement LeftBrace blockItemList RightBrace
     ;
 
 envBlock
-    :	'on' 'envVar' Identifier '{' blockItemList '}'
+    :	On EnvVar Identifier LeftBrace blockItemList RightBrace
+    |   On EnvVar LeftParen Identifier RightParen LeftBrace blockItemList RightBrace
     ;
 
 postfixExpression
     :	(primaryExpression
-			| '(' typeName ')' '{' initializerList ','? '}'
+			| LeftParen typeName RightParen LeftBrace initializerList Comma? RightBrace
 		)
-		('[' expression ']'
-			| '(' argumentExpressionList? ')'
-			| ('++' | '--')
+		(LeftBracket expression RightBracket
+			| LeftParen argumentExpressionList? RightParen
+			| (PlusPlus | MinusMinus)
 		)*
 	;
 
 argumentExpressionList
-    :	assignmentExpression (',' assignmentExpression)*
+    :	assignmentExpression (Comma assignmentExpression)*
     ;
 
 unaryExpression
-    :	('++' | '--')* (postfixExpression | unaryOperator castExpression)
+    :	(PlusPlus | MinusMinus)* (postfixExpression | unaryOperator castExpression)
     ;
 
 unaryOperator
-    :	'+' | '-' | '~' | '!'
+    :	Plus | Minus | Tilde | Not
     ;
 
 castExpression
-    :	'(' typeName ')' castExpression
+    :	LeftParen typeName RightParen castExpression
 	|	unaryExpression
 	|	DigitSequence // for
 	;
 
 multiplicativeExpression
-    :	castExpression (('*' | '/' | '%') castExpression)*
+    :	castExpression ((Star | Div | Mod) castExpression)*
     ;
 
 additiveExpression
-    :	multiplicativeExpression (('+' | '-') multiplicativeExpression)*
+    :	multiplicativeExpression ((Plus | Minus) multiplicativeExpression)*
 	;
 
 shiftExpression
-    :	additiveExpression (('<<' | '>>') additiveExpression)*
+    :	additiveExpression ((LeftShift | RightShift) additiveExpression)*
     ;
 
 relationalExpression
-    :	shiftExpression (('<' | '>' | '<=' | '>=') shiftExpression)*
+    :	shiftExpression ((Less | Greater | LessEqual | GreaterEqual) shiftExpression)*
     ;
 
 equalityExpression
-    :	relationalExpression (('==' | '!=') relationalExpression)*
+    :	relationalExpression ((Equal | NotEqual) relationalExpression)*
     ;
 
 andExpression
-    :	equalityExpression ( '&' equalityExpression)*
+    :	equalityExpression ( And equalityExpression)*
     ;
 
 exclusiveOrExpression
-    :	andExpression ('^' andExpression)*
+    :	andExpression (Caret andExpression)*
     ;
 
 inclusiveOrExpression
-    :	exclusiveOrExpression ('|' exclusiveOrExpression)*
+    :	exclusiveOrExpression (Or exclusiveOrExpression)*
     ;
 
 logicalAndExpression
-    :	inclusiveOrExpression ('&&' inclusiveOrExpression)*
+    :	inclusiveOrExpression (AndAnd inclusiveOrExpression)*
     ;
 
 logicalOrExpression
-    :	logicalAndExpression ('||' logicalAndExpression)*
+    :	logicalAndExpression (OrOr logicalAndExpression)*
     ;
 
 conditionalExpression
-    :	logicalOrExpression ('?' expression ':' conditionalExpression)?
+    :	logicalOrExpression (Question expression Colon conditionalExpression)?
 	;
 
 assignmentExpression
@@ -170,21 +171,21 @@ assignmentExpression
 	;
 
 assignmentOperator
-    :	'='
-	|	'*='
-	|	'/='
-	|	'%='
-	|	'+='
-	|	'-='
-	|	'<<='
-	|	'>>='
-	|	'&='
-	|	'^='
-	|	'|='
+    :	Assign
+	|	StarAssign
+	|	DivAssign
+	|	ModAssign
+	|	PlusAssign
+	|	MinusAssign
+	|	LeftShiftAssign
+	|	RightShiftAssign
+	|	AndAssign
+	|	XorAssign
+	|	OrAssign
 	;
 
 expression
-    :	assignmentExpression (',' assignmentExpression)*
+    :	assignmentExpression (Comma assignmentExpression)*
     ;
 
 constantExpression
@@ -192,7 +193,7 @@ constantExpression
     ;
 
 declaration
-    :	declarationSpecifiers initDeclaratorList? ';'
+    :	declarationSpecifiers initDeclaratorList? Semi
     ;
 
 declarationSpecifiers
@@ -204,12 +205,12 @@ declarationSpecifiers2
     ;
 
 typeQualifier
-	:	'const'
+	:	Const
 	;
 
 functionSpecifier
-    :	'testfunction'
-    |	('export')? 'testcase'
+    :	Testfunction
+    |	(Export)? Testcase
     ;
 
 declarationSpecifier
@@ -219,27 +220,27 @@ declarationSpecifier
     ;
 
 initDeclaratorList
-    :	initDeclarator (',' initDeclarator)*
+    :	initDeclarator (Comma initDeclarator)*
     ;
 
 initDeclarator
-    :	declarator ('=' initializer)?
+    :	declarator (Assign initializer)?
     ;
 
 typeSpecifier
-    : 	('void'
-	|	'char'
-	|	'byte'
-	|	'int'
-	|	'long'
-	|	'int64'
-	|	'float'
-	|	'double'
-	|	'word'
-	|	'dword'
-	|	'qword'
-	|	'timer'
-	|	'msTimer'
+    : 	(Void
+	|	Char
+	|	Byte
+	|	Int
+	|	Long
+	|	Int64
+	|	Float
+	|	Double
+	|	Word
+	|	Dword
+	|	Qword
+	|	Timer
+	|	MsTimer
 	|	structSpecifier
 	|	enumSpecifier
 	|	messageType
@@ -251,12 +252,12 @@ typeSpecifier
 	;
 
 structSpecifier
-    :	structure Identifier? '{' structDeclarationList '}'
+    :	structure Identifier? LeftBrace structDeclarationList RightBrace
     |	structure Identifier
     ;
 
 structure
-    :	'struct'
+    :	Struct
     ;
 
 structDeclarationList
@@ -264,7 +265,7 @@ structDeclarationList
     ;
 
 structDeclaration
-    :	specifierQualifierList structDeclaratorList? ';'
+    :	specifierQualifierList structDeclaratorList? Semi
     ;
 
 specifierQualifierList
@@ -272,12 +273,12 @@ specifierQualifierList
     ;
 
 structDeclaratorList
-    :	structDeclarator (',' structDeclarator)*
+    :	structDeclarator (Comma structDeclarator)*
     ;
 
 structDeclarator
     :	declarator
-    |	declarator? ':' constantExpression
+    |	declarator? Colon constantExpression
     ;
 
 declarator
@@ -286,22 +287,22 @@ declarator
 
 directDeclarator
     :	Identifier
-	|	'(' declarator ')'
-	|	directDeclarator '[' assignmentExpression? ']'
-	|	directDeclarator '(' parameterTypeList ')'
-	|	directDeclarator '(' identifierList? ')'
+	|	LeftParen declarator RightParen
+	|	directDeclarator LeftBracket assignmentExpression? RightBracket
+	|	directDeclarator LeftParen parameterTypeList RightParen
+	|	directDeclarator LeftParen identifierList? RightParen
 	;
 
 nestedParenthesesBlock
-    :	(~('(' | ')') | '(' nestedParenthesesBlock ')')*
+    :	(~(LeftParen | RightParen) | LeftParen nestedParenthesesBlock RightParen)*
 	;
 
 parameterTypeList
-    :	parameterList (',' '...')?
+    :	parameterList (Comma Ellipsis)?
     ;
 
 parameterList
-    :	parameterDeclaration (',' parameterDeclaration)*
+    :	parameterDeclaration (Comma parameterDeclaration)*
     ;
 
 parameterDeclaration
@@ -310,7 +311,7 @@ parameterDeclaration
 	;
 
 identifierList
-    :	Identifier (',' Identifier)*
+    :	Identifier (Comma Identifier)*
     ;
 
 typeName
@@ -322,26 +323,26 @@ abstractDeclarator
     ;
 
 directAbstractDeclarator
-    :	'(' abstractDeclarator ')'
-	|	'[' assignmentExpression? ']'
-	|	'[' '*' ']'
-	|	'(' parameterTypeList? ')'
-	|	directAbstractDeclarator '[' assignmentExpression? ']'
-	|	directAbstractDeclarator '[' '*' ']'
-	|	directAbstractDeclarator '(' parameterTypeList? ')'
+    :	LeftParen abstractDeclarator RightParen
+	|	LeftBracket assignmentExpression? RightBracket
+	|	LeftBracket Star RightBracket
+	|	LeftParen parameterTypeList? RightParen
+	|	directAbstractDeclarator LeftBracket assignmentExpression? RightBracket
+	|	directAbstractDeclarator LeftBracket Star RightBracket
+	|	directAbstractDeclarator LeftParen parameterTypeList? RightParen
 	;
 
 initializer
     :	assignmentExpression
-	|	'{' initializerList ','? '}'
+	|	LeftBrace initializerList Comma? RightBrace
 	;
 
 initializerList
-    :	designation? initializer (',' designation? initializer)*
+    :	designation? initializer (Comma designation? initializer)*
     ;
 
 designation
-    :	designatorList '='
+    :	designatorList Assign
     ;
 
 designatorList
@@ -349,7 +350,7 @@ designatorList
     ;
 
 designator
-    :	'[' constantExpression ']'
+    :	LeftBracket constantExpression RightBracket
     ;
 
 statement
@@ -362,13 +363,13 @@ statement
 	;
 
 labeledStatement
-    :	Identifier ':' statement
-	|	'case' (constantExpression) ':' statement
-	|	'default' ':' statement
+    :	Identifier Colon statement
+	|	Case (constantExpression) Colon statement
+	|	Default Colon statement
 	;
 
 compoundStatement
-    :	'{' blockItemList? '}'
+    :	LeftBrace blockItemList? RightBrace
     ;
 
 blockItemList
@@ -380,22 +381,22 @@ blockItem
     ;
 
 expressionStatement
-    :	expression? ';'
+    :	expression? Semi
     ;
 
 selectionStatement
-    :	'if' '(' expression ')' statement ('else' statement)?
-	|	'switch' '(' expression ')' statement
+    :	If LeftParen expression RightParen statement (Else statement)?
+	|	Switch LeftParen expression RightParen statement
 	;
 
 iterationStatement
-    :	While '(' expression ')' statement
-	|	Do statement While '(' expression ')' ';'
-	|	For '(' forCondition ')' statement
+    :	While LeftParen expression RightParen statement
+	|	Do statement While LeftParen expression RightParen Semi
+	|	For LeftParen forCondition RightParen statement
 	;
 
 forCondition
-    :	(forDeclaration | expression?) ';' forExpression? ';' forExpression?
+    :	(forDeclaration | expression?) Semi forExpression? Semi forExpression?
     ;
 
 forDeclaration
@@ -403,11 +404,11 @@ forDeclaration
     ;
 
 forExpression
-    :	assignmentExpression (',' assignmentExpression)*
+    :	assignmentExpression (Comma assignmentExpression)*
     ;
 
 jumpStatement
-    :	(('continue' | 'break') | 'return' expression?) ';'
+    :	((Continue | Break) | Return expression?) Semi
     ;
 
 compilationUnit
@@ -421,7 +422,7 @@ translationUnit
 externalDeclaration
     :	functionDefinition
 	|	declaration
-	|	';' // stray ;
+	|	Semi
 	;
 
 functionDefinition
@@ -432,64 +433,60 @@ declarationList
 	:	declaration+
 	;
 
-/* Capl lexer */
+/* Capl lexer and misc rules */
 
-Export : 'export';
-Testcase : 'testcase';
-Testfunction : 'testfunction';
-Includes : 'includes';
-Const : 'const';
-StopMeasurement : 'stopMeasurement';
-Start : 'start';
-ErrorFrame : 'errorFrame';
-On : 'on';
-Variables : 'variables';
-Break : 'break';
-Case : 'case';
-Char : 'char';
-Byte : 'byte';
-Continue : 'continue';
-Default : 'default';
-Do : 'do';
-Double : 'double';
-Else : 'else';
-Float : 'float';
-For : 'for';
-If : 'if';
-Int : 'int';
-Word : 'word';
-Dword : 'dword';
-Qword : 'qword';
-EnvVar : 'envVar';
-MsTimer : 'msTimer';
-Long : 'long';
-Int64 : 'int64';
-Return : 'return';
-Switch : 'switch';
-Void : 'void';
-While : 'while';
-Struct : 'struct';
+/* Keywords */
+Export : [eE][xX][pP][oO][rR][tT];
+Testcase : [tT][eE][sS][tT][cC][aA][sS][eE];
+Testfunction : [tT][eE][sS][tT][fF][uU][nN][cC][tT][iI][oO][nN];
+Includes : [iI][nN][cC][lL][uU][dD][eE][sS];
+Const : [cC][oO][nN][sS][tT];
+StopMeasurement : [sS][tT][oO][pP][mM][eE][aA][sS][uU][rR][eE][mM][eE][nN][tT];
+Start : [sS][tT][aA][rR][tT];
+ErrorFrame : [eE][rR][rR][oO][rR][fF][rR][aA][mM][eE];
+On : [oO][nN];
+Variables : [vV][aA][rR][iI][aA][bB][lL][eE][sS];
+Break : [bB][rR][eE][aA][kK];
+Case : [cC][aA][sS][eE];
+Char : [cC][hH][aA][rR];
+Byte : [bB][yY][tT][eE];
+Continue : [cC][oO][nN][tT][iI][nN][uU][eE];
+Default : [dD][eE][fF][aA][uU][lL][tT];
+Do : [dD][oO];
+Double : [dD][oO][uU][bB][lL][eE];
+Else : [eE][lL][sS][eE];
+Float : [fF][lL][oO][aA][tT];
+For : [fF][oO][rR];
+If : [iI][fF];
+Int : [iI][nN][tT];
+Word : [wW][oO][rR][dD];
+Dword : [dD][wW][oO][rR][dD];
+Qword : [qQ][wW][oO][rR][dD];
+EnvVar : [eE][nN][vV][vV][aA][rR];
+MsTimer : [mM][sS][tT][iI][mM][eE][rR];
+Long : [lL][oO][nN][gG];
+Int64 : [iI][nN][tT][6][4];
+Return : [rR][eE][tT][uU][rR][nN];
+Switch : [sS][wW][iI][tT][cC][hH];
+Void : [vV][oO][iI][dD];
+While : [wW][hH][iI][lL][eE];
+Struct : [sS][tT][rR][uU][cC][tT];
 
+/* Tokens */
 LeftParen : '(';
 RightParen : ')';
 LeftBracket : '[';
 RightBracket : ']';
-LeftBrace : '{';
-RightBrace : '}';
-Less : '<';
 LessEqual : '<=';
-Greater : '>';
 GreaterEqual : '>=';
 LeftShift : '<<';
 RightShift : '>>';
 Plus : '+';
 PlusPlus : '++';
-Minus : '-';
 MinusMinus : '--';
 Div : '/';
 Mod : '%';
 And : '&';
-Or : '|';
 AndAnd : '&&';
 OrOr : '||';
 Caret : '^';
@@ -497,9 +494,6 @@ Not : '!';
 Tilde : '~';
 Question : '?';
 Colon : ':';
-Semi : ';';
-Comma : ',';
-Assign : '=';
 StarAssign : '*=';
 DivAssign : '/=';
 ModAssign : '%=';
@@ -510,175 +504,185 @@ RightShiftAssign : '>>=';
 AndAssign : '&=';
 XorAssign : '^=';
 OrAssign : '|=';
-Star : '*';
 Equal : '==';
 NotEqual : '!=';
 Ellipsis : '...';
 
 enumSpecifier
-    :   'enum' Identifier? '{' enumeratorList ','? '}' ';'?
-    |   'enum' Identifier
+    :   Enum Identifier? LeftBrace enumeratorList Comma? RightBrace Semi?
+    |   Enum Identifier
     ;
+
+LeftBrace : '{';
+RightBrace : '}';
+Semi : ';';
 
 enumeratorList
-    :   enumerator (',' enumerator)*
+    :   enumerator (Comma enumerator)*
     ;
 
+Comma : ',';
+
 enumerator
-    :   enumerationConstant ('=' constantExpression)?
+    :   enumerationConstant (Assign constantExpression)?
     ;
+
+Assign : '=';
 
 enumerationConstant
     :   Identifier
     ;
 
-Enum : 'enum';
+Enum : [eE][nN][uU][mM];
 
 timerType
-    :	'timer' Identifier ('.' (Identifier | '*'))?
+    :	Timer Identifier (Dot (Identifier | Star))?
     ;
 
-Timer : 'timer';
+Timer : [Tt][iI][mM][eE][rR];
 
 messageType
-    :	'message' Identifier ('.' (Identifier | '*'))?
-	|	'message' '*'
-	|	'message' Constant
-	|	'message' Identifier '-' Identifier
+    :	Message Identifier (Dot (Identifier | Star))?
+	|	Message Star
+	|	Message Constant
+	|	Message Identifier Minus Identifier
 	;
 
-Message : 'message';
+Message : [mM][eE][sS][sS][aA][gG][eE];
 
 multiplexedMessageType
-    :	'multiplexed_message' Identifier ('.' (Identifier | '*'))?
-	|	'multiplexed_message' '*'
-	|	'multiplexed_message' Constant
-	|	'multiplexed_message' Identifier '-' Identifier
+    :	MultiplexedMessage Identifier (Dot (Identifier | Star))?
+	|	MultiplexedMessage Star
+	|	MultiplexedMessage Constant
+	|	MultiplexedMessage Identifier Minus Identifier
 	;
 
-MultiplexedMessage : 'multiplexed_message';
+MultiplexedMessage : [mM][uU][lL][tT][iI][pP][lL][eE][xX][eE][dD][_][mM][eE][sS][sS][aA][gG][eE];
 
 diagRequestType
-    :	'diagRequest' Identifier (('.'|'::') (Identifier | '*'))?
-	|	'diagRequest' '*'
-	|	'diagRequest' Constant
-	|	'diagRequest' Identifier '-' Identifier
+    :	DiagRequest Identifier ((Dot|DoubleColon) (Identifier | Star))?
+	|	DiagRequest Star
+	|	DiagRequest Constant
+	|	DiagRequest Identifier Minus Identifier
 	;
 
-DiagRequest : 'diagRequest';
+DiagRequest : [dD][iI][aA][gG][rR][eE][qQ][uU][eE][sS][tT];
 
 diagResponseType
-    :	'diagResponse' Identifier (('.'|'::') (Identifier | '*'))?
-	|	'diagResponse' '*'
-	|	'diagResponse' Constant
-	|	'diagResponse' Identifier '-' Identifier
+    :	DiagResponse Identifier ((Dot|DoubleColon) (Identifier | Star))?
+	|	DiagResponse Star
+	|	DiagResponse Constant
+	|	DiagResponse Identifier Minus Identifier
 	;
 
-DiagResponse : 'diagResponse';
+DiagResponse : [dD][iI][aA][gG][rR][eE][sS][pP][oO][nN][sS][eE];
 
 signalType
-    :	'signal' Identifier (('.'|'::') (Identifier | '*'))?
-	|	'signal' '*'
-	|	'signal' Constant
-	|	'signal' Identifier '-' Identifier
+    :	Signal Identifier ((Dot|DoubleColon) (Identifier | Star))?
+	|	Signal Star
+	|	Signal Constant
+	|	Signal Identifier Minus Identifier
 	;
 
-Signal : 'signal';
+Minus : '-';
+Signal : [sS][iI][gG][nN][aA][lL];
 
 sysvarType
-    :	'sysvar sysvar' '::' Identifier ('::' Identifier)*
+    :	DoubleSysvar DoubleColon Identifier (DoubleColon Identifier)*
 	;
 
 keyEventType
-    :	'key' Constant
-	|	'key' (
-			'F1'
-		|	'F2'
-		|	'F3'
-		|	'F4'
-		|	'F5'
-		|	'F6'
-		|	'F7'
-		|	'F8'
-		|	'F9'
-		|	'F10'
-		|	'F11'
-		|	'F12'
-		|	'ctrlF1'
-		|	'ctrlF2'
-		|	'ctrlF3'
-		|	'ctrlF4'
-		|	'ctrlF5'
-		|	'ctrlF6'
-		|	'ctrlF7'
-		|	'ctrlF8'
-		|	'ctrlF9'
-		|	'ctrlF10'
-		|	'ctrlF11'
-		|	'ctrlF12'
-		|	'PageUp'
-		|	'PageDown'
-		|	'Home')
-	|	'key' '*'
+    :	Key Constant
+	|	Key (
+			F1
+		|	F2
+		|	F3
+		|	F4
+		|	F5
+		|	F6
+		|	F7
+		|	F8
+		|	F9
+		|	F10
+		|	F11
+		|	F12
+		|	CtrlF1
+		|	CtrlF2
+		|	CtrlF3
+		|	CtrlF4
+		|	CtrlF5
+		|	CtrlF6
+		|	CtrlF7
+		|	CtrlF8
+		|	CtrlF9
+		|	CtrlF10
+		|	CtrlF11
+		|	CtrlF12
+		|	PageUp
+		|	PageDown
+		|	Home)
+	|	Key Star
 	;
 
-Key : 'key';
-F1 : 'F1';
-F2 : 'F2';
-F3 : 'F3';
-F4 : 'F4';
-F5 : 'F5';
-F6 : 'F6';
-F7 : 'F7';
-F8 : 'F8';
-F9 : 'F9';
-F10 : 'F10';
-F11 : 'F11';
-F12 : 'F12';
-CtrlF1 : 'ctrlF1';
-CtrlF2 : 'ctrlF2';
-CtrlF3 : 'ctrlF3';
-CtrlF4 : 'ctrlF4';
-CtrlF5 : 'ctrlF5';
-CtrlF6 : 'ctrlF6';
-CtrlF7 : 'ctrlF7';
-CtrlF8 : 'ctrlF8';
-CtrlF9 : 'ctrlF9';
-CtrlF10 : 'ctrlF10';
-CtrlF11 : 'ctrlF11';
-CtrlF12 : 'ctrlF12';
-PageUp : 'PageUp';
-PageDown : 'PageDown';
-Home : 'Home';
+Star : '*';
+Key : [kK][eE][yY];
+F1 : [fF][1];
+F2 : [fF][2];
+F3 : [fF][3];
+F4 : [fF][4];
+F5 : [fF][5];
+F6 : [fF][6];
+F7 : [fF][7];
+F8 : [fF][8];
+F9 : [fF][9];
+F10 : [fF][1][0];
+F11 : [fF][1][1];
+F12 : [fF][1][2];
+CtrlF1 : [cC][tT][rR][lL][fF][1];
+CtrlF2 : [cC][tT][rR][lL][fF][2];
+CtrlF3 : [cC][tT][rR][lL][fF][3];
+CtrlF4 : [cC][tT][rR][lL][fF][4];
+CtrlF5 : [cC][tT][rR][lL][fF][5];
+CtrlF6 : [cC][tT][rR][lL][fF][6];
+CtrlF7 : [cC][tT][rR][lL][fF][7];
+CtrlF8 : [cC][tT][rR][lL][fF][8];
+CtrlF9 : [cC][tT][rR][lL][fF][9];
+CtrlF10 : [cC][tT][rR][lL][fF][1][0];
+CtrlF11 : [cC][tT][rR][lL][fF][1][1];
+CtrlF12 : [cC][tT][rR][lL][fF][1][2];
+PageUp : [pP][aA][gG][eE][uU][pP];
+PageDown : [pP][aA][gG][eE][dD][oO][wW][nN];
+Home : [hH][oO][mM][eE];
 
 Identifier
     :	IdentifierNondigit (IdentifierNondigit | Digit)*
-	|	(('this' | IdentifierNondigit) (IdentifierNondigit | Digit)*) '.' Identifier ('.' (Identifier))*
-	|	IdentifierNondigit (IdentifierNondigit | Digit)* '.' Constant
+	|	((This | IdentifierNondigit) (IdentifierNondigit | Digit)*) Dot Identifier (Dot (Identifier))*
+	|	IdentifierNondigit (IdentifierNondigit | Digit)* Dot Constant
 	;
 
-This : 'this';
-Dot : '.';
+This : [tT][hH][iI][sS];
 
 AccessToSignalIdentifier
-    :	'$' Identifier ('phys'|'raw'|'raw64'|'rx'|'txrq')?
+    :	Dollar Identifier (Phys|Raw|Raw64|Rx|TxRequest)?
     ;
 
+Or : '|';
 Dollar : '$';
-Phys : 'phys';
-Raw : 'raw';
-Raw64 : 'raw64';
-Rx : 'rx';
-RxRequest : 'txrq';
+Phys : [pP][hH][yY][sS];
+Raw : [rR][aA][wW];
+Raw64 : [rR][aA][wW][6][4];
+Rx : [rR][xX];
+TxRequest : [tT][xX][rR][qQ];
 
 SysvarIdentifier
-    :	'@' 'sysvar' '::' Identifier ('::' Identifier)*
+    :	AtSign Sysvar? (DoubleColon Identifier) (DoubleColon Identifier)*
+    |   AtSign Identifier (DoubleColon Identifier)*
     ;
 
-Sysvar : 'sysvar';
 DoubleColon : '::';
 AtSign : '@';
-DoubleSysvar : 'sysvar sysvar';
+DoubleSysvar : Sysvar Whitespace Sysvar;
+Sysvar : [sS][yY][sS][vV][aA][rR];
 
 fragment IdentifierNondigit: Nondigit | UniversalCharacterName;
 
@@ -745,8 +749,8 @@ fragment HexadecimalFloatingConstant
 	;
 
 fragment FractionalConstant
-	:	DigitSequence? '.' DigitSequence
-	|	DigitSequence '.'
+	:	DigitSequence? Dot DigitSequence
+	|	DigitSequence Dot
 	;
 
 fragment ExponentPart: [eE] Sign? DigitSequence;
@@ -756,9 +760,11 @@ fragment Sign: [+-];
 DigitSequence : Digit+;
 
 fragment HexadecimalFractionalConstant
-	:	HexadecimalDigitSequence? '.' HexadecimalDigitSequence
-	|	HexadecimalDigitSequence '.'
+	:	HexadecimalDigitSequence? Dot HexadecimalDigitSequence
+	|	HexadecimalDigitSequence Dot
 	;
+
+Dot : '.';
 
 fragment BinaryExponentPart: [pP] Sign? DigitSequence;
 
@@ -804,10 +810,15 @@ fragment SChar
 	;
 
 IncludeDirective
-	: '#' Whitespace? 'include' Whitespace? (
+	: Hash Whitespace? Include Whitespace? (
 		('"' ~[\r\n]* '"')
-		| ('<' ~[\r\n]* '>')
+		| (Less ~[\r\n]* Greater)
 	) Whitespace? Newline -> channel(HIDDEN);
+
+Less : '<';
+Greater : '>';
+Hash : '#';
+Include : [iI][nN][cC][lL][uU][dD][eE];
 
 Whitespace : [ \t]+ -> skip;
 

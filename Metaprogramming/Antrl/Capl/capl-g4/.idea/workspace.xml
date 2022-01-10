@@ -2,15 +2,31 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="950f7524-631c-4812-8c77-3d61ee540d20" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/../CaplGrammar.App/Contract/CaplValidationBase.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../CaplGrammar.App/Contract/CaplValidationBase.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../CaplGrammar.App/Contract/ICaplValidation.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../CaplGrammar.App/Contract/ICaplValidation.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../CaplGrammar.App/Impl/GrammarValidation/CaplSyntaxValidationImpl.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../CaplGrammar.App/Impl/GrammarValidation/CaplSyntaxValidationImpl.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../CaplGrammar.App/Impl/SymbolUsageValidation/CaplSymbolUsageValidationImpl.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../CaplGrammar.App/Impl/SymbolUsageValidation/CaplSymbolUsageValidationImpl.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../CaplGrammar.App/Poco/CaplIssue.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../CaplGrammar.App/Poco/CaplIssue.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../ValidatingGrammarSample/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../ValidatingGrammarSample/Program.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../ValidatingSymbolUsage/MainEntry.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../ValidatingSymbolUsage/MainEntry.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/gen/CaplBaseListener.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/gen/CaplBaseVisitor.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/gen/CaplLexer.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/gen/CaplListener.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/gen/CaplParser.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/gen/CaplVisitor.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../m-debugger-capl/main.can" beforeDir="false" afterPath="$PROJECT_DIR$/../m-debugger-capl/main.can" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gen/Capl.interp" beforeDir="false" afterPath="$PROJECT_DIR$/gen/Capl.interp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gen/Capl.tokens" beforeDir="false" afterPath="$PROJECT_DIR$/gen/Capl.tokens" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gen/CaplBaseListener.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/gen/CaplBaseVisitor.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/gen/CaplLexer.interp" beforeDir="false" afterPath="$PROJECT_DIR$/gen/CaplLexer.interp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gen/CaplLexer.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/gen/CaplLexer.tokens" beforeDir="false" afterPath="$PROJECT_DIR$/gen/CaplLexer.tokens" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gen/CaplListener.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/gen/CaplParser.interp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/gen/CaplParser.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/gen/CaplParser.tokens" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/gen/CaplParserBaseListener.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/gen/CaplParserBaseVisitor.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/gen/CaplParserListener.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/gen/CaplParserVisitor.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/gen/CaplVisitor.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/grammar/Capl.g4" beforeDir="false" afterPath="$PROJECT_DIR$/grammar/Capl.g4" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -21,21 +37,37 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../../../.." />
   </component>
   <component name="ProjectId" id="1yGjlsalxHctvYe91HAB087KXo6" />
-  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
+    <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
     <property name="dart.analysis.tool.window.visible" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/CANopenMasterLinde.can" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/BZ_CRC.can" />
     <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
     <property name="show.migrate.to.gradle.popup" value="false" />
+  </component>
+  <component name="RunManager">
+    <configuration default="true" type="ArquillianJUnit" factoryName="" nameIsGenerated="true">
+      <option name="arquillianRunConfiguration">
+        <value>
+          <option name="containerStateName" value="" />
+        </value>
+      </option>
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
@@ -73,6 +105,7 @@
       <workItem from="1638801276892" duration="100000" />
       <workItem from="1638801389124" duration="41000" />
       <workItem from="1639738955624" duration="1132000" />
+      <workItem from="1641807403691" duration="18439000" />
     </task>
     <servers />
   </component>
@@ -90,6 +123,9 @@
       </map>
     </option>
     <option name="oldMeFiltersMigrated" value="true" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />
