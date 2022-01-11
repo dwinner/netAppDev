@@ -62,6 +62,16 @@ public interface ICaplListener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitStartBlock([NotNull] CaplParser.StartBlockContext context);
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="CaplParser.preStartBlock"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterPreStartBlock([NotNull] CaplParser.PreStartBlockContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="CaplParser.preStartBlock"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitPreStartBlock([NotNull] CaplParser.PreStartBlockContext context);
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="CaplParser.variableBlock"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>

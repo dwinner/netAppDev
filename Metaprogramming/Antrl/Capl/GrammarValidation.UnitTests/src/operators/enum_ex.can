@@ -6,8 +6,8 @@ enum OPTION_1
 
 enum OPTION_2
 {
-    ON  = 1,
-    OFF = 0
+    IGN_ON  = 1,
+    IGN_OFF = 0
 };
 
 variables
@@ -16,5 +16,5 @@ variables
     enum OPTION_2 opt2;
 
     opt1 = OPTION_1.ACTIVATED;
-    opt2 = OPTION_2.OFF;
+    opt2 = OPTION_2.IGN_OFF;
 }

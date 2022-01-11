@@ -51,6 +51,12 @@ public interface ICaplVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitStartBlock([NotNull] CaplParser.StartBlockContext context);
 	/// <summary>
+	/// Visit a parse tree produced by <see cref="CaplParser.preStartBlock"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitPreStartBlock([NotNull] CaplParser.PreStartBlockContext context);
+	/// <summary>
 	/// Visit a parse tree produced by <see cref="CaplParser.variableBlock"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>

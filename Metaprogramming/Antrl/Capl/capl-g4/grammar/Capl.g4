@@ -24,6 +24,7 @@ primaryExpression
 			| enumSpecifier
 			| structSpecifier
 			| startBlock
+			| preStartBlock
 			| messageBlock
 			| multiplexedMessageBlock
 			| stopMeasurement
@@ -41,6 +42,10 @@ includeBlock
 
 startBlock
     :	On Start LeftBrace blockItemList? RightBrace
+    ;
+
+preStartBlock
+    :   On PreStart LeftBrace blockItemList? RightBrace
     ;
 
 variableBlock
@@ -443,6 +448,7 @@ Includes : [iI][nN][cC][lL][uU][dD][eE][sS];
 Const : [cC][oO][nN][sS][tT];
 StopMeasurement : [sS][tT][oO][pP][mM][eE][aA][sS][uU][rR][eE][mM][eE][nN][tT];
 Start : [sS][tT][aA][rR][tT];
+PreStart : [pP][rR][eE][sS][tT][aA][rR][tT];
 ErrorFrame : [eE][rR][rR][oO][rR][fF][rR][aA][mM][eE];
 On : [oO][nN];
 Variables : [vV][aA][rR][iI][aA][bB][lL][eE][sS];

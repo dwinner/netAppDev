@@ -80,7 +80,7 @@ on key 's'
     char buff[25];
 
     // Assign the value of the environment variable "Switch" to val
-    val = getValue(Switch);
+    val = getValue(Sw);
     
     // Assign the value of the environment variable "Temp" to fval
     fval = getValue(Temp);
