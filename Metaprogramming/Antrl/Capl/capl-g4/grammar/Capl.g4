@@ -25,6 +25,7 @@ primaryExpression
 			| structSpecifier
 			| startBlock
 			| preStartBlock
+			| preStopBlock
 			| messageBlock
 			| multiplexedMessageBlock
 			| stopMeasurement
@@ -46,6 +47,10 @@ startBlock
 
 preStartBlock
     :   On PreStart LeftBrace blockItemList? RightBrace
+    ;
+
+preStopBlock
+    :   On PreStop LeftBrace blockItemList? RightBrace
     ;
 
 variableBlock
@@ -449,6 +454,7 @@ Const : [cC][oO][nN][sS][tT];
 StopMeasurement : [sS][tT][oO][pP][mM][eE][aA][sS][uU][rR][eE][mM][eE][nN][tT];
 Start : [sS][tT][aA][rR][tT];
 PreStart : [pP][rR][eE][sS][tT][aA][rR][tT];
+PreStop : [pP][rR][eE][sS][tT][oO][pP];
 ErrorFrame : [eE][rR][rR][oO][rR][fF][rR][aA][mM][eE];
 On : [oO][nN];
 Variables : [vV][aA][rR][iI][aA][bB][lL][eE][sS];
@@ -551,7 +557,7 @@ messageType
     :	Message Identifier (Dot (Identifier | Star))?
 	|	Message Star
 	|	Message Constant
-	|	Message Identifier Minus Identifier
+	|	Message Identifier (Minus|DoubleColon)? Identifier
 	;
 
 Message : [mM][eE][sS][sS][aA][gG][eE];

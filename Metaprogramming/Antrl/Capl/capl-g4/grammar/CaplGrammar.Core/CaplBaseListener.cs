@@ -85,6 +85,18 @@ public partial class CaplBaseListener : ICaplListener {
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitPreStartBlock([NotNull] CaplParser.PreStartBlockContext context) { }
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="CaplParser.preStopBlock"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterPreStopBlock([NotNull] CaplParser.PreStopBlockContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="CaplParser.preStopBlock"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitPreStopBlock([NotNull] CaplParser.PreStopBlockContext context) { }
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="CaplParser.variableBlock"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
