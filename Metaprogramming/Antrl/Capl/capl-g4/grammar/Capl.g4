@@ -24,6 +24,8 @@ primaryExpression
 			| enumSpecifier
 			| structSpecifier
 			| startBlock
+			| busOnBlock
+			| busOffBlock
 			| preStartBlock
 			| preStopBlock
 			| messageBlock
@@ -35,6 +37,8 @@ primaryExpression
 			| sysvarBlock
 			| sysvarUpdateBlock
 			| ethernetPacketBlock
+			| ethernetStatusBlock
+			| mostAmsMessageBlock
 			| externalDeclaration
 		)+
 	;
@@ -45,6 +49,14 @@ includeBlock
 
 startBlock
     :	On Start LeftBrace blockItemList? RightBrace
+    ;
+
+busOnBlock
+    :   On BusOn LeftBrace blockItemList? RightBrace
+    ;
+
+busOffBlock
+    :   On BusOff LeftBrace blockItemList? RightBrace
     ;
 
 preStartBlock
@@ -102,7 +114,15 @@ sysvarUpdateBlock
     ;
 
 ethernetPacketBlock
-    :   On EthernetPacket ethernetPacketType LeftBrace blockItemList? RightBrace
+    :   On ethernetPacketType LeftBrace blockItemList? RightBrace
+    ;
+
+ethernetStatusBlock
+    :   On ethernetStatusType LeftBrace blockItemList? RightBrace
+    ;
+
+mostAmsMessageBlock
+    :   On mostAmsMessageType LeftBrace blockItemList? RightBrace
     ;
 
 stopMeasurement
@@ -250,28 +270,32 @@ initDeclarator
     ;
 
 typeSpecifier
-    :  (Void
-	|	Char
-	|	Byte
-	|	Int
-	|	Long
-	|	Int64
-	|	Float
-	|	Double
-	|	Word
-	|	Dword
-	|	Qword
+    :  (
+        Void Star?
+	|	Char    And?
+	|	Byte    And?
+	|	Int     And?
+	|	Long    And?
+	|	Int64   And?
+	|	Float   And?
+	|	Double  And?
+	|	Word    And?
+	|	Dword   And?
+	|	Qword   And?
 	|	Timer
 	|	MsTimer
 	|	structSpecifier
 	|	enumSpecifier
 	|	messageType
 	|	multiplexedMessageType
+	|   mostAmsMessageType
 	|	diagRequestType
 	|	diagResponseType
 	|	signalType
 	|	sysvarType
-	|   ethernetPacketType)
+	|   ethernetPacketType
+	|   ethernetStatusType
+	)
 	;
 
 structSpecifier
@@ -467,7 +491,11 @@ Const : [cC][oO][nN][sS][tT];
 StopMeasurement : [sS][tT][oO][pP][mM][eE][aA][sS][uU][rR][eE][mM][eE][nN][tT];
 SysvarUpdate : [sS][yY][sS][vV][aA][rR][_][uU][pP][dD][aA][tT][eE];
 EthernetPacket : [eE][tT][hH][eE][rR][nN][eE][tT][pP][aA][cC][kK][eE][tT];
+EthernetStatus : [eE][tT][hH][eE][rR][nN][eE][tT][sS][tT][aA][tT][uU][sS];
+MostAmsMessage : [mM][oO][sS][tT][aA][mM][sS][mM][eE][sS][sS][aA][gG][eE];
 Start : [sS][tT][aA][rR][tT];
+BusOn : [bB][uU][sS][oO][nN];
+BusOff : [bB][uU][sS][oO][fF][fF];
 PreStart : [pP][rR][eE][sS][tT][aA][rR][tT];
 PreStop : [pP][rR][eE][sS][tT][oO][pP];
 ErrorFrame : [eE][rR][rR][oO][rR][fF][rR][aA][mM][eE];
@@ -502,8 +530,6 @@ Struct : [sS][tT][rR][uU][cC][tT];
 /* Tokens */
 LeftParen : '(';
 RightParen : ')';
-LeftBracket : '[';
-RightBracket : ']';
 LessEqual : '<=';
 GreaterEqual : '>=';
 LeftShift : '<<';
@@ -513,7 +539,6 @@ PlusPlus : '++';
 MinusMinus : '--';
 Div : '/';
 Mod : '%';
-And : '&';
 AndAnd : '&&';
 OrOr : '||';
 Caret : '^';
@@ -573,8 +598,10 @@ messageType
 	|	Message Star
 	|	Message Constant
 	|	Message Identifier (Minus|DoubleColon)? Identifier
+	|   Message MessageHexConst Minus MessageHexConst
 	;
 
+MessageHexConst : HexadecimalPrefix HexadecimalDigitSequence 'x';
 Message : [mM][eE][sS][sS][aA][gG][eE];
 
 multiplexedMessageType
@@ -582,6 +609,13 @@ multiplexedMessageType
 	|	MultiplexedMessage Star
 	|	MultiplexedMessage Constant
 	|	MultiplexedMessage Identifier (Minus|DoubleColon)? Identifier
+	;
+
+mostAmsMessageType
+    :	MostAmsMessage Identifier (Dot (Identifier | Star))?
+	|	MostAmsMessage Star
+	|	MostAmsMessage Constant
+	|	MostAmsMessage Identifier (Minus|DoubleColon)? Identifier
 	;
 
 MultiplexedMessage : [mM][uU][lL][tT][iI][pP][lL][eE][xX][eE][dD][_][mM][eE][sS][sS][aA][gG][eE];
@@ -623,8 +657,17 @@ sysvarUpdateType
     ;
 
 ethernetPacketType
-    :   Identifier (Dot (Identifier | Star))?
-    |   EthernetPacket (Star)?
+    :	EthernetPacket Identifier (Dot (Identifier | Star))?
+	|	EthernetPacket Star
+	|	EthernetPacket Constant
+	|	EthernetPacket Identifier (Minus|DoubleColon)? Identifier
+    ;
+
+ethernetStatusType
+    :	EthernetStatus Identifier (Dot (Identifier | Star))?
+	|	EthernetStatus Star
+	|	EthernetStatus Constant
+	|	EthernetStatus Identifier (Minus|DoubleColon)? Identifier
     ;
 
 keyEventType
@@ -698,7 +741,17 @@ Identifier
 	|	IdWithDotConst
 	|   IdWithDoubleColon
 	|   SysVarId
+	|   ArrayAccessId
 	;
+
+And : '&';
+
+ArrayAccessId
+    :   SimpleId (LeftBracket SimpleId RightBracket)* (Dot SimpleId)*
+    ;
+
+LeftBracket : '[';
+RightBracket : ']';
 
 IdWithDoubleColon
     :   (IdentifierNondigit (IdentifierNondigit | Digit)*) (DoubleColon (IdentifierNondigit (IdentifierNondigit | Digit)*))*

@@ -62,6 +62,26 @@ public interface ICaplListener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitStartBlock([NotNull] CaplParser.StartBlockContext context);
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="CaplParser.busOnBlock"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterBusOnBlock([NotNull] CaplParser.BusOnBlockContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="CaplParser.busOnBlock"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitBusOnBlock([NotNull] CaplParser.BusOnBlockContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="CaplParser.busOffBlock"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterBusOffBlock([NotNull] CaplParser.BusOffBlockContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="CaplParser.busOffBlock"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitBusOffBlock([NotNull] CaplParser.BusOffBlockContext context);
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="CaplParser.preStartBlock"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -201,6 +221,26 @@ public interface ICaplListener : IParseTreeListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	void ExitEthernetPacketBlock([NotNull] CaplParser.EthernetPacketBlockContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="CaplParser.ethernetStatusBlock"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterEthernetStatusBlock([NotNull] CaplParser.EthernetStatusBlockContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="CaplParser.ethernetStatusBlock"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitEthernetStatusBlock([NotNull] CaplParser.EthernetStatusBlockContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="CaplParser.mostAmsMessageBlock"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterMostAmsMessageBlock([NotNull] CaplParser.MostAmsMessageBlockContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="CaplParser.mostAmsMessageBlock"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitMostAmsMessageBlock([NotNull] CaplParser.MostAmsMessageBlockContext context);
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="CaplParser.stopMeasurement"/>.
 	/// </summary>
@@ -972,6 +1012,16 @@ public interface ICaplListener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitMultiplexedMessageType([NotNull] CaplParser.MultiplexedMessageTypeContext context);
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="CaplParser.mostAmsMessageType"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterMostAmsMessageType([NotNull] CaplParser.MostAmsMessageTypeContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="CaplParser.mostAmsMessageType"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitMostAmsMessageType([NotNull] CaplParser.MostAmsMessageTypeContext context);
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="CaplParser.diagRequestType"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -1031,6 +1081,16 @@ public interface ICaplListener : IParseTreeListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	void ExitEthernetPacketType([NotNull] CaplParser.EthernetPacketTypeContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="CaplParser.ethernetStatusType"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterEthernetStatusType([NotNull] CaplParser.EthernetStatusTypeContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="CaplParser.ethernetStatusType"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitEthernetStatusType([NotNull] CaplParser.EthernetStatusTypeContext context);
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="CaplParser.keyEventType"/>.
 	/// </summary>

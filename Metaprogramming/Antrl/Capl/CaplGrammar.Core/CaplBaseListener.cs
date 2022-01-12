@@ -73,6 +73,30 @@ public partial class CaplBaseListener : ICaplListener {
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitStartBlock([NotNull] CaplParser.StartBlockContext context) { }
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="CaplParser.busOnBlock"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterBusOnBlock([NotNull] CaplParser.BusOnBlockContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="CaplParser.busOnBlock"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitBusOnBlock([NotNull] CaplParser.BusOnBlockContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="CaplParser.busOffBlock"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterBusOffBlock([NotNull] CaplParser.BusOffBlockContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="CaplParser.busOffBlock"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitBusOffBlock([NotNull] CaplParser.BusOffBlockContext context) { }
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="CaplParser.preStartBlock"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
@@ -240,6 +264,30 @@ public partial class CaplBaseListener : ICaplListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitEthernetPacketBlock([NotNull] CaplParser.EthernetPacketBlockContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="CaplParser.ethernetStatusBlock"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterEthernetStatusBlock([NotNull] CaplParser.EthernetStatusBlockContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="CaplParser.ethernetStatusBlock"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitEthernetStatusBlock([NotNull] CaplParser.EthernetStatusBlockContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="CaplParser.mostAmsMessageBlock"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterMostAmsMessageBlock([NotNull] CaplParser.MostAmsMessageBlockContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="CaplParser.mostAmsMessageBlock"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitMostAmsMessageBlock([NotNull] CaplParser.MostAmsMessageBlockContext context) { }
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="CaplParser.stopMeasurement"/>.
 	/// <para>The default implementation does nothing.</para>
@@ -1165,6 +1213,18 @@ public partial class CaplBaseListener : ICaplListener {
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitMultiplexedMessageType([NotNull] CaplParser.MultiplexedMessageTypeContext context) { }
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="CaplParser.mostAmsMessageType"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterMostAmsMessageType([NotNull] CaplParser.MostAmsMessageTypeContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="CaplParser.mostAmsMessageType"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitMostAmsMessageType([NotNull] CaplParser.MostAmsMessageTypeContext context) { }
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="CaplParser.diagRequestType"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
@@ -1236,6 +1296,18 @@ public partial class CaplBaseListener : ICaplListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitEthernetPacketType([NotNull] CaplParser.EthernetPacketTypeContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="CaplParser.ethernetStatusType"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterEthernetStatusType([NotNull] CaplParser.EthernetStatusTypeContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="CaplParser.ethernetStatusType"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitEthernetStatusType([NotNull] CaplParser.EthernetStatusTypeContext context) { }
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="CaplParser.keyEventType"/>.
 	/// <para>The default implementation does nothing.</para>

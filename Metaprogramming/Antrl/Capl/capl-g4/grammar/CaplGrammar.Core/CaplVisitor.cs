@@ -51,6 +51,18 @@ public interface ICaplVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitStartBlock([NotNull] CaplParser.StartBlockContext context);
 	/// <summary>
+	/// Visit a parse tree produced by <see cref="CaplParser.busOnBlock"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitBusOnBlock([NotNull] CaplParser.BusOnBlockContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="CaplParser.busOffBlock"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitBusOffBlock([NotNull] CaplParser.BusOffBlockContext context);
+	/// <summary>
 	/// Visit a parse tree produced by <see cref="CaplParser.preStartBlock"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -134,6 +146,18 @@ public interface ICaplVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitEthernetPacketBlock([NotNull] CaplParser.EthernetPacketBlockContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="CaplParser.ethernetStatusBlock"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitEthernetStatusBlock([NotNull] CaplParser.EthernetStatusBlockContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="CaplParser.mostAmsMessageBlock"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitMostAmsMessageBlock([NotNull] CaplParser.MostAmsMessageBlockContext context);
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="CaplParser.stopMeasurement"/>.
 	/// </summary>
@@ -597,6 +621,12 @@ public interface ICaplVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitMultiplexedMessageType([NotNull] CaplParser.MultiplexedMessageTypeContext context);
 	/// <summary>
+	/// Visit a parse tree produced by <see cref="CaplParser.mostAmsMessageType"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitMostAmsMessageType([NotNull] CaplParser.MostAmsMessageTypeContext context);
+	/// <summary>
 	/// Visit a parse tree produced by <see cref="CaplParser.diagRequestType"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -632,6 +662,12 @@ public interface ICaplVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitEthernetPacketType([NotNull] CaplParser.EthernetPacketTypeContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="CaplParser.ethernetStatusType"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitEthernetStatusType([NotNull] CaplParser.EthernetStatusTypeContext context);
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="CaplParser.keyEventType"/>.
 	/// </summary>
