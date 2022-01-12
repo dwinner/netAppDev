@@ -48,868 +48,868 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-    <Content Include="src\ags\ASG10_1.can">
+    <Content Include="src\ABKUHTS-Knoten.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\ags\ASG15_1.can">
+    <Content Include="src\Acustics.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\ags\ASG15_2.can">
+    <Content Include="src\ADC.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\ags\ASG17_1.can">
+    <Content Include="src\arithmetic_operators.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\ags\ASG18_1.can">
+    <Content Include="src\ASG10_1.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\ags\ASG19_1.can">
+    <Content Include="src\ASG15_1.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\ags\ASG19_4.can">
+    <Content Include="src\ASG15_2.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\ags\ASG33_1.can">
+    <Content Include="src\ASG17_1.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\ags\ASG49.can">
+    <Content Include="src\ASG18_1.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\ags\ASG4_0.can">
+    <Content Include="src\ASG19_1.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\ags\ASG50_1.can">
+    <Content Include="src\ASG19_4.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\ags\ASG69.can">
+    <Content Include="src\ASG33_1.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\ags\ASG69_1.can">
+    <Content Include="src\ASG49.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\ags\ASG70.can">
+    <Content Include="src\ASG4_0.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\ags\ASG70_1.can">
+    <Content Include="src\ASG50_1.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\ags\ASG70_Simu.can">
+    <Content Include="src\ASG69.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\ags\ASG74_1.can">
+    <Content Include="src\ASG69_1.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\ags\ASG78_1.can">
+    <Content Include="src\ASG70.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\ags\ASG_AudioSD.can">
+    <Content Include="src\ASG70_1.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\ags\ASG_AudioSD_v1.20_MIB.can">
+    <Content Include="src\ASG70_Simu.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\ags\ASG_AudioSD_v1.20_MIB_Ethernet.can">
+    <Content Include="src\ASG74_1.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\ags\ASG_DisplayConfig_BAPv1.8_v1.00.can">
+    <Content Include="src\ASG78_1.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\ags\ASG_NaviSD_BAPv1.5_v1.21.can">
+    <Content Include="src\ASG_AudioSD.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\ags\ASG_SDS_SD_BAPv1.7_v1.00.can">
+    <Content Include="src\ASG_AudioSD_v1.20_MIB.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\ags\ASG_Telephone_BAPv1.5_v0.96.can">
+    <Content Include="src\ASG_AudioSD_v1.20_MIB_Ethernet.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\au\Audio-ListHandling_Audi.can">
+    <Content Include="src\ASG_DisplayConfig_BAPv1.8_v1.00.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\bap\BAPServer.can">
+    <Content Include="src\ASG_NaviSD_BAPv1.5_v1.21.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\bap\BAP_Main.can">
+    <Content Include="src\ASG_SDS_SD_BAPv1.7_v1.00.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\bap\BAP_Main_Audi.can">
+    <Content Include="src\ASG_Telephone_BAPv1.5_v0.96.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\bap\BAP_SaveINI.can">
+    <Content Include="src\assignment_operators.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\bap\BAP_SaveINI_Audi.can">
+    <Content Include="src\ATM.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\bap\BAP_Tester.can">
+    <Content Include="src\Audio-ListHandling_Audi.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\fgs\FSG10.can">
+    <Content Include="src\BAPControl_Main.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\fgs\FSG12.can">
+    <Content Include="src\BAPServer.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\fgs\FSG25.can">
+    <Content Include="src\BAPVariableBackup.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\fgs\FSG26.can">
+    <Content Include="src\BAP_Main.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\fgs\FSG27.can">
+    <Content Include="src\BAP_Main_Audi.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\fgs\FSG29.can">
+    <Content Include="src\BAP_SaveINI.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\fgs\FSG33.can">
+    <Content Include="src\BAP_SaveINI_Audi.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\fgs\FSG35.can">
+    <Content Include="src\BAP_Tester.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\fgs\FSG39.can">
+    <Content Include="src\BCM_LTM_PopUp_Inhalt.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\fgs\FSG4.can">
+    <Content Include="src\bitwise_operators.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\fgs\FSG41.can">
+    <Content Include="src\Blinker.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\fgs\FSG42.can">
+    <Content Include="src\boolean_operators.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\fgs\FSG52.can">
+    <Content Include="src\BZ_CRC.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\fgs\FSG58.can">
+    <Content Include="src\CAB.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\fgs\FSG60.can">
+    <Content Include="src\CAB_Ethernet.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\fgs\FSG7.can">
+    <Content Include="src\CAMF.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\fgs\FSG70.can">
+    <Content Include="src\canOpenMasterLinde.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\fgs\FSG70_Simu.can">
+    <Content Include="src\char_issues.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\fgs\FSG80.can">
+    <Content Include="src\clone.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\fgs\FSG82.can">
+    <Content Include="src\common.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\fgs\FSG85.can">
+    <Content Include="src\ComponentProtection.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\fgs\FSG_AudioSD.can">
+    <Content Include="src\conditional_transmission.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\fgs\FSG_AudioSD_Ethernet.can">
+    <Content Include="src\const_keyword.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\fgs\FSG_SDS_SD_BAPv1.7_v1.00.can">
+    <Content Include="src\CTRL_C.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\fgs\FSG_Telephone_BAPv1.8_v3.0.can">
+    <Content Include="src\CycleMeasure.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\hud\HeadUnit.can">
+    <Content Include="src\dateandtime.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\hud\HU.can">
+    <Content Include="src\diagnostic.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\hud\HUD.CAN">
+    <Content Include="src\diagRequest.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\hud\HUD_Diag.can">
+    <Content Include="src\diagResponse.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\hud\HUD_VDO.can">
+    <Content Include="src\DISP_RL.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\hud\HU_active.can">
+    <Content Include="src\DISP_RR.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\keywords\const_keyword.can">
+    <Content Include="src\DoIP_Tester2.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\kombi\Fahrerdisplay_Kombi.can">
+    <Content Include="src\DoIP_Testnode1.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\kombi\Kombi.can">
+    <Content Include="src\DRVU.CAN">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\kombi\KombiEth2.can">
+    <Content Include="src\ECL_STI.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\kombi\KombiTestNode.can">
+    <Content Include="src\EIS.CAN">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\kombi\Kombi_CAN.can">
+    <Content Include="src\EIS_2.CAN">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\kombi\Kombi_HUD.can">
+    <Content Include="src\EIS_3.CAN">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\kombi\Kombi_SimulatedPeerNodes.can">
+    <Content Include="src\EIS_Penio.CAN">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\kombi\NMHKombiReader.can">
+    <Content Include="src\EIS_VDO.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\kombi\Timeouts_Ethernet_Kombi.can">
+    <Content Include="src\enum_ex.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\misc\ABKUHTS-Knoten.can">
+    <Content Include="src\error_frames.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\misc\Acustics.can">
+    <Content Include="src\Ethernet.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\misc\ADC.can">
+    <Content Include="src\EthGeneral_ETH_Cluster_MEB.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\misc\ATM.can">
+    <Content Include="src\EthStress.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\misc\BCM_LTM_PopUp_Inhalt.can">
+    <Content Include="src\EthTestability.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\misc\Blinker.can">
+    <Content Include="src\events.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\misc\BZ_CRC.can">
+    <Content Include="src\example.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\misc\CAMF.can">
+    <Content Include="src\export_ex.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\misc\clone.can">
+    <Content Include="src\Fahrerdisplay_Kombi.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\misc\common.can">
+    <Content Include="src\Filter_HB.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\misc\ComponentProtection.can">
+    <Content Include="src\FoD_MasterSim_CAN_CANFD_Extended.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\misc\CTRL_C.can">
+    <Content Include="src\for_stmt.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\misc\CycleMeasure.can">
+    <Content Include="src\FSG10.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\misc\diagnostic.can">
+    <Content Include="src\FSG12.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\misc\DISP_RL.can">
+    <Content Include="src\FSG25.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\misc\DISP_RR.can">
+    <Content Include="src\FSG26.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\misc\DoIP_Tester2.can">
+    <Content Include="src\FSG27.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\misc\DoIP_Testnode1.can">
+    <Content Include="src\FSG29.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\misc\DRVU.CAN">
+    <Content Include="src\FSG33.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\misc\ECL_STI.can">
+    <Content Include="src\FSG35.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\misc\EIS_VDO.can">
+    <Content Include="src\FSG39.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\misc\EthGeneral_ETH_Cluster_MEB.can">
+    <Content Include="src\FSG4.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\misc\EthStress.can">
+    <Content Include="src\FSG40.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\misc\EthTestability.can">
+    <Content Include="src\FSG41.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\misc\Filter_HB.can">
+    <Content Include="src\FSG42.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\misc\FoD_MasterSim_CAN_CANFD_Extended.can">
+    <Content Include="src\FSG49.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\misc\Gateway_DoIP.can">
+    <Content Include="src\FSG50.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\misc\GC_Test_EL.can">
+    <Content Include="src\FSG52.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\misc\GC_Test_HL.can">
+    <Content Include="src\FSG58.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\misc\Generators.can">
+    <Content Include="src\FSG60.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\misc\Geschwindigkeit.can">
+    <Content Include="src\FSG7.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\misc\GW_DV.can">
+    <Content Include="src\FSG70.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\misc\HID_DisplayControl.can">
+    <Content Include="src\FSG70_Simu.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\misc\HID_Warping.can">
+    <Content Include="src\FSG80.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\misc\HIL_Display.can">
+    <Content Include="src\FSG82.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\misc\IC.CAN">
+    <Content Include="src\FSG85.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\misc\ICAS1_Gateway.can">
+    <Content Include="src\FSG_AudioSD.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\misc\ICAS3_Gateway.can">
+    <Content Include="src\FSG_AudioSD_Ethernet.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\misc\ICAS3_Sys_IVI_01.can">
+    <Content Include="src\FSG_AudioSD_v1.20_MIB.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\misc\IC_VDO CRC_Retransmit.can">
+    <Content Include="src\FSG_AudioSD_v1.20_MIB_Ethernet.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\misc\ImmoTest.can">
+    <Content Include="src\FSG_NaviSD_BAPv1.5_v1.21.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\misc\ImmoTest_EMV.can">
+    <Content Include="src\FSG_NaviSD_BAPv1.5_v1.21_DV.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\misc\ImmoTest_Fpke.can">
+    <Content Include="src\FSG_SDS_SD_BAPv1.7_v1.00.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\misc\INTEGR.can">
+    <Content Include="src\FSG_Telephone_BAPv1.5_v0.48.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\misc\INTEGR_noBAP.can">
+    <Content Include="src\FSG_Telephone_BAPv1.8_v3.0.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\misc\keypanel.can">
+    <Content Include="src\functions.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\misc\Klima.can">
+    <Content Include="src\func_declarations.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\misc\KsMaster.can">
+    <Content Include="src\Gateway_DoIP.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\misc\ksslave.can">
+    <Content Include="src\GC_Test_EL.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\misc\Message_2_cyclicIfActiveX.can">
+    <Content Include="src\GC_Test_HL.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\misc\Message_5_Cyc_and_Spont_without_Delay.can">
+    <Content Include="src\Generators.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\misc\Message_5_Cyc_and_Spont_with_Delay.can">
+    <Content Include="src\GenericVariableBackup.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\misc\MFL.can">
+    <Content Include="src\Geschwindigkeit.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\misc\MOSTReliabilityTest.can">
+    <Content Include="src\GW_DV.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\misc\MostScan.can">
+    <Content Include="src\HeadUnit.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\misc\MQB_Klemmensignal.can">
+    <Content Include="src\hex_handling.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\misc\NavigationInfo.can">
+    <Content Include="src\HID_DisplayControl.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\misc\NaviSD_Gateway.can">
+    <Content Include="src\HID_Warping.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\misc\NDP_AR_Creator.can">
+    <Content Include="src\HIL_Display.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\misc\NDP_Cluster.can">
+    <Content Include="src\HU.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\misc\NetworkMaster.can">
+    <Content Include="src\HUD.CAN">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\misc\NGSM.can">
+    <Content Include="src\HUD_Diag.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\misc\NM_StateMachine.can">
+    <Content Include="src\HUD_VDO.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\misc\NM_StateMachine_old.can">
+    <Content Include="src\HU_active.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\misc\NM_StateMachine_old3.can">
+    <Content Include="src\IC.CAN">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\misc\NV.CAN">
+    <Content Include="src\ICAS1_Gateway.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\misc\ORC.CAN">
+    <Content Include="src\ICAS3_Gateway.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\misc\PCI_Card.can">
+    <Content Include="src\ICAS3_Sys_IVI_01.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\misc\PowerMaster.can">
+    <Content Include="src\ICAS3_Sys_IVI_01_SimulatedPeerNodes.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\misc\PowerSupply.can">
+    <Content Include="src\IC_VDO CRC_Retransmit.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\misc\Powertest.can">
+    <Content Include="src\IC_VDO.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\misc\RBS_IntegrationTest.can">
+    <Content Include="src\if_op.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\misc\RBS_Menu.can">
+    <Content Include="src\ImmoTest.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\misc\RBS_NMHigh.can">
+    <Content Include="src\ImmoTest_EMV.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\misc\RBS_Peckbox.can">
+    <Content Include="src\ImmoTest_Fpke.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\misc\RBTM_FL.CAN">
+    <Content Include="src\includes.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\misc\RBTM_FR.CAN">
+    <Content Include="src\input_source.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\misc\RTPClt.can">
+    <Content Include="src\INTEGR.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\misc\SmartLight_01.can">
+    <Content Include="src\INTEGR_noBAP.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\misc\SMG.can">
+    <Content Include="src\io.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\misc\SoftwareDownload.can">
+    <Content Include="src\keypanel.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\misc\SVS.CAN">
+    <Content Include="src\Klima.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\misc\SW_Gateway_Videostreaming_PortChange.can">
+    <Content Include="src\Kombi.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\misc\TA_02.can">
+    <Content Include="src\KombiEth2.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\misc\TCO.can">
+    <Content Include="src\KombiTestNode.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\misc\TCO_IC_VDO.can">
+    <Content Include="src\Kombi_CAN.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\misc\TEL-Listhandling_Audi.can">
+    <Content Include="src\Kombi_HUD.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\misc\TEL-Listhandling_VW.can">
+    <Content Include="src\Kombi_SimulatedPeerNodes.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\misc\Testboard_Relais.can">
+    <Content Include="src\KsMaster.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\misc\TestcaseCanWakeup.can">
+    <Content Include="src\ksslave.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\misc\TesterDienste.can">
+    <Content Include="src\logging.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\misc\Test_KBI_PT.can">
+    <Content Include="src\MainUnit01.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\misc\Timeouts.can">
+    <Content Include="src\MainUnit02.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\misc\Timeouts_Ethernet_MIB3.can">
+    <Content Include="src\MainUnit03.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\misc\TPM.CAN">
+    <Content Include="src\MainUnit04.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\misc\TSA-Input.can">
+    <Content Include="src\MainUnit05.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\misc\TSA-Output.can">
+    <Content Include="src\MainUnit06.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\misc\Utf8Output.can">
+    <Content Include="src\MainUnit07.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\misc\Utf8Output_ch2.can">
+    <Content Include="src\MainUnit08.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\misc\Variablenmapping.can">
+    <Content Include="src\MainUnit09.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\misc\Variablenmapping_Eth.can">
+    <Content Include="src\MainUnit10.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\misc\Vector__XXX.can">
+    <Content Include="src\MainUnit11.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\misc\Verbrauch_Rekuperation.can">
+    <Content Include="src\MainUnit12.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\misc\Video.can">
+    <Content Include="src\MCI.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\misc\Wegimpulse.can">
+    <Content Include="src\messages.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\misc\Wegstrecke.can">
+    <Content Include="src\messages_issues.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\misc\Zeiten_CAN.can">
+    <Content Include="src\Message_2_cyclicIfActiveX.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\misc\ZR_MIB_TOP_ab_Gen3.can">
+    <Content Include="src\Message_5_Cyc_and_Spont_without_Delay.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\network\CAB.can">
+    <Content Include="src\Message_5_Cyc_and_Spont_with_Delay.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\network\CAB_Ethernet.can">
+    <Content Include="src\MFL.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\network\Ethernet.can">
+    <Content Include="src\misc_event_handlers.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\network\PictureServer.can">
+    <Content Include="src\misc_operators.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\network\RTPServ.can">
+    <Content Include="src\MOSTReliabilityTest.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\network\RTPServer.can">
+    <Content Include="src\MostScan.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\network\SocketAdapter.can">
+    <Content Include="src\MQB_Klemmensignal.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\network\TCPClt.can">
+    <Content Include="src\multiplexed_message.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\network\TCPSrv.can">
+    <Content Include="src\NavigationInfo.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\network\UDP_Node.can">
+    <Content Include="src\NaviSD_Gateway.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\network\Zeiten_Ethernet.can">
+    <Content Include="src\NDP_AR_Creator.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\operators\arithmetic_operators.can">
+    <Content Include="src\NDP_Cluster.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\operators\assignment_operators.can">
+    <Content Include="src\NetworkMaster.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\operators\bitwise_operators.can">
+    <Content Include="src\NGSM.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\operators\boolean_operators.can">
+    <Content Include="src\NMHKombiReader.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\operators\enum_ex.can">
+    <Content Include="src\NM_StateMachine.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\operators\error_frames.can">
+    <Content Include="src\NM_StateMachine_old.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\operators\events.can">
+    <Content Include="src\NM_StateMachine_old3.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\operators\example.can">
+    <Content Include="src\NV.CAN">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\operators\export_ex.can">
+    <Content Include="src\ORC.CAN">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\operators\if_op.can">
+    <Content Include="src\PCI_Card.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\operators\includes.can">
+    <Content Include="src\PERF.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\operators\input_source.can">
+    <Content Include="src\periodic_transmission.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\operators\misc_operators.can">
+    <Content Include="src\phys_raw_ex.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\operators\relational_operators.can">
+    <Content Include="src\PictureServer.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\operators\switch_stmt.can">
+    <Content Include="src\PowerMaster.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\operators\unconditional.can">
+    <Content Include="src\PowerSupply.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\operators\while_stmt.can">
+    <Content Include="src\Powertest.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\rbs\RBS_Control.can">
+    <Content Include="src\qualified_id.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\rbs\RBS_ControlG.can">
+    <Content Include="src\RBS_Control.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\rbs\RBS_Decode.can">
+    <Content Include="src\RBS_ControlG.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\rbs\RBS_DecodeGateway.can">
+    <Content Include="src\RBS_Decode.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\rbs\RBS_Display.can">
+    <Content Include="src\RBS_DecodeGateway.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\rbs\RBS_IncDec1.can">
+    <Content Include="src\RBS_Display.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\rbs\RBS_IncDec2.can">
+    <Content Include="src\RBS_IncDec1.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\rbs\RBS_Init.can">
+    <Content Include="src\RBS_IncDec2.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\rbs\RBS_Send.can">
+    <Content Include="src\RBS_Init.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\rbs\RBS_SendGateway.can">
+    <Content Include="src\RBS_IntegrationTest.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\rbs\RBS_Startup.can">
+    <Content Include="src\RBS_Menu.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\rbs\RBS_Sweep.can">
+    <Content Include="src\RBS_NMHigh.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\rbs\RBS_TransmitLog.can">
+    <Content Include="src\RBS_Peckbox.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\realSimulation\BAPControl_Main.can">
+    <Content Include="src\RBS_Send.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\realSimulation\BAPVariableBackup.can">
+    <Content Include="src\RBS_SendGateway.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\realSimulation\canOpenMasterLinde.can">
+    <Content Include="src\RBS_Startup.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\realSimulation\EIS.CAN">
+    <Content Include="src\RBS_Sweep.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\realSimulation\EIS_2.CAN">
+    <Content Include="src\RBS_TransmitLog.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\realSimulation\EIS_3.CAN">
+    <Content Include="src\RBTM_FL.CAN">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\realSimulation\EIS_Penio.CAN">
+    <Content Include="src\RBTM_FR.CAN">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\realSimulation\FSG40.can">
+    <Content Include="src\relational_operators.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\realSimulation\FSG49.can">
+    <Content Include="src\RTPClt.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\realSimulation\FSG50.can">
+    <Content Include="src\RTPServ.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\realSimulation\FSG_AudioSD_v1.20_MIB.can">
+    <Content Include="src\RTPServer.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\realSimulation\FSG_AudioSD_v1.20_MIB_Ethernet.can">
+    <Content Include="src\ServiceControl_AR_Creator.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\realSimulation\FSG_NaviSD_BAPv1.5_v1.21.can">
+    <Content Include="src\ServiceControl_Cluster.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\realSimulation\FSG_NaviSD_BAPv1.5_v1.21_DV.can">
+    <Content Include="src\SmartLight_01.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\realSimulation\FSG_Telephone_BAPv1.5_v0.48.can">
+    <Content Include="src\SMG.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\realSimulation\GenericVariableBackup.can">
+    <Content Include="src\SocketAdapter.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\realSimulation\ICAS3_Sys_IVI_01_SimulatedPeerNodes.can">
+    <Content Include="src\SoftwareDownload.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\realSimulation\MCI.can">
+    <Content Include="src\struct_ex.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\realSimulation\PERF.can">
+    <Content Include="src\SVS.CAN">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\realSimulation\ServiceControl_AR_Creator.can">
+    <Content Include="src\switch_stmt.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\realSimulation\ServiceControl_Cluster.can">
+    <Content Include="src\SW_Gateway_Videostreaming_PortChange.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\realSimulation\TGW.CAN">
+    <Content Include="src\sysvar_ex.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\simplest\char_issues.can">
+    <Content Include="src\TA_02.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\simplest\conditional_transmission.can">
+    <Content Include="src\TCO.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\simplest\dateandtime.can">
+    <Content Include="src\TCO_IC_VDO.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\simplest\diagRequest.can">
+    <Content Include="src\TCPClt.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\simplest\diagResponse.can">
+    <Content Include="src\TCPSrv.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\simplest\for_stmt.can">
+    <Content Include="src\TEL-Listhandling_Audi.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\simplest\functions.can">
+    <Content Include="src\TEL-Listhandling_VW.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\simplest\func_declarations.can">
+    <Content Include="src\Testboard_Relais.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\simplest\hex_handling.can">
+    <Content Include="src\TestcaseCanWakeup.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\simplest\io.can">
+    <Content Include="src\testcase_ex.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\simplest\periodic_transmission.can">
+    <Content Include="src\TesterDienste.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\simplest\struct_ex.can">
+    <Content Include="src\Test_KBI_PT.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\simplest\sysvar_ex.can">
+    <Content Include="src\TGW.CAN">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\simplest\timers.can">
+    <Content Include="src\this_keyword.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\simplest\timer_issues.can">
+    <Content Include="src\Timeouts.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\syntax\logging.can">
+    <Content Include="src\Timeouts_Ethernet_Kombi.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\syntax\messages.can">
+    <Content Include="src\Timeouts_Ethernet_MIB3.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\syntax\messages_issues.can">
+    <Content Include="src\timers.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\syntax\misc_event_handlers.can">
+    <Content Include="src\timer_issues.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\syntax\multiplexed_message.can">
+    <Content Include="src\top_level_repl.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\syntax\phys_raw_ex.can">
+    <Content Include="src\TPAD_VDO.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\syntax\qualified_id.can">
+    <Content Include="src\TPM.CAN">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\syntax\testcase_ex.can">
+    <Content Include="src\transmission.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\syntax\this_keyword.can">
+    <Content Include="src\TSA-Input.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\syntax\top_level_repl.can">
+    <Content Include="src\TSA-Output.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\syntax\transmission.can">
+    <Content Include="src\UDP_Node.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\syntax\var_declarations.can">
+    <Content Include="src\unconditional.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\unit\MainUnit01.can">
+    <Content Include="src\Utf8Output.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\unit\MainUnit02.can">
+    <Content Include="src\Utf8Output_ch2.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\unit\MainUnit03.can">
+    <Content Include="src\Variablenmapping.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\unit\MainUnit04.can">
+    <Content Include="src\Variablenmapping_Eth.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\unit\MainUnit05.can">
+    <Content Include="src\var_declarations.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\unit\MainUnit06.can">
+    <Content Include="src\VDO_pDemo.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\unit\MainUnit07.can">
+    <Content Include="src\VDO_pKey.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\unit\MainUnit08.can">
+    <Content Include="src\VDO_pSyrto.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\unit\MainUnit09.can">
+    <Content Include="src\Vector__XXX.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\unit\MainUnit10.can">
+    <Content Include="src\Verbrauch_Rekuperation.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\unit\MainUnit11.can">
+    <Content Include="src\Video.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\unit\MainUnit12.can">
+    <Content Include="src\Wegimpulse.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\vdo\IC_VDO.can">
+    <Content Include="src\Wegstrecke.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\vdo\TPAD_VDO.can">
+    <Content Include="src\while_stmt.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\vdo\VDO_pDemo.can">
+    <Content Include="src\Zeiten_CAN.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\vdo\VDO_pKey.can">
+    <Content Include="src\Zeiten_Ethernet.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\vdo\VDO_pSyrto.can">
+    <Content Include="src\ZR_MIB_TOP_ab_Gen3.can">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
