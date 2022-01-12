@@ -182,6 +182,26 @@ public interface ICaplListener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitSysvarBlock([NotNull] CaplParser.SysvarBlockContext context);
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="CaplParser.sysvarUpdateBlock"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterSysvarUpdateBlock([NotNull] CaplParser.SysvarUpdateBlockContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="CaplParser.sysvarUpdateBlock"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitSysvarUpdateBlock([NotNull] CaplParser.SysvarUpdateBlockContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="CaplParser.ethernetPacketBlock"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterEthernetPacketBlock([NotNull] CaplParser.EthernetPacketBlockContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="CaplParser.ethernetPacketBlock"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitEthernetPacketBlock([NotNull] CaplParser.EthernetPacketBlockContext context);
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="CaplParser.stopMeasurement"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -991,6 +1011,26 @@ public interface ICaplListener : IParseTreeListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	void ExitSysvarType([NotNull] CaplParser.SysvarTypeContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="CaplParser.sysvarUpdateType"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterSysvarUpdateType([NotNull] CaplParser.SysvarUpdateTypeContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="CaplParser.sysvarUpdateType"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitSysvarUpdateType([NotNull] CaplParser.SysvarUpdateTypeContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="CaplParser.ethernetPacketType"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterEthernetPacketType([NotNull] CaplParser.EthernetPacketTypeContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="CaplParser.ethernetPacketType"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitEthernetPacketType([NotNull] CaplParser.EthernetPacketTypeContext context);
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="CaplParser.keyEventType"/>.
 	/// </summary>

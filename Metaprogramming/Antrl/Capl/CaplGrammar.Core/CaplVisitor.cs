@@ -123,6 +123,18 @@ public interface ICaplVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitSysvarBlock([NotNull] CaplParser.SysvarBlockContext context);
 	/// <summary>
+	/// Visit a parse tree produced by <see cref="CaplParser.sysvarUpdateBlock"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitSysvarUpdateBlock([NotNull] CaplParser.SysvarUpdateBlockContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="CaplParser.ethernetPacketBlock"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitEthernetPacketBlock([NotNull] CaplParser.EthernetPacketBlockContext context);
+	/// <summary>
 	/// Visit a parse tree produced by <see cref="CaplParser.stopMeasurement"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -608,6 +620,18 @@ public interface ICaplVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitSysvarType([NotNull] CaplParser.SysvarTypeContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="CaplParser.sysvarUpdateType"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitSysvarUpdateType([NotNull] CaplParser.SysvarUpdateTypeContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="CaplParser.ethernetPacketType"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitEthernetPacketType([NotNull] CaplParser.EthernetPacketTypeContext context);
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="CaplParser.keyEventType"/>.
 	/// </summary>

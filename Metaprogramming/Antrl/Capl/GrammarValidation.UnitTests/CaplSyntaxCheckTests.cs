@@ -18,22 +18,22 @@ namespace GrammarValidation.UnitTests
 
         private static readonly object[] TestSources =
         {
-            //new object[] { "ags" },
-            //new object[] { "au" },
-            //new object[] { "bap" },
-            //new object[] { "fgs" },
-            //new object[] { "hud" },
-            //new object[] { "keywords" },
-            //new object[] { "kombi" },
-            //new object[] { "misc" },
-            //new object[] { "network" },
-            //new object[] { "operators" },
-            //new object[] { "rbs" },
-            //new object[] { "realSimulation" },
-            //new object[] { "simplest" },
-            //new object[] { "syntax" },
+            new object[] { "ags" },
+            new object[] { "au" },
+            new object[] { "bap" },
+            new object[] { "fgs" },
+            new object[] { "hud" },
+            new object[] { "keywords" },
+            new object[] { "kombi" },
+            new object[] { "misc" },
+            new object[] { "network" },
+            new object[] { "operators" },
+            new object[] { "rbs" },
+            new object[] { "realSimulation" },
+            new object[] { "simplest" },
+            new object[] { "syntax" },
             new object[] { "unit" },
-            //new object[] { "vdo" }
+            new object[] { "vdo" }
         };
 
         [TestCaseSource(nameof(TestSources))]

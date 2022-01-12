@@ -33,6 +33,8 @@ primaryExpression
 			| diagResponseBlock
 			| signalBlock
 			| sysvarBlock
+			| sysvarUpdateBlock
+			| ethernetPacketBlock
 			| externalDeclaration
 		)+
 	;
@@ -58,11 +60,11 @@ variableBlock
     ;
 
 eventBlock
-    :	On keyEventType LeftBrace blockItemList RightBrace
+    :	On keyEventType LeftBrace blockItemList? RightBrace
     ;
 
 timerBlock
-    :	On timerType LeftBrace blockItemList RightBrace
+    :	On timerType LeftBrace blockItemList? RightBrace
     ;
 
 errorFrame
@@ -70,36 +72,46 @@ errorFrame
     ;
 
 messageBlock
-    :	On messageType LeftBrace blockItemList RightBrace
+    :	On messageType LeftBrace blockItemList? RightBrace
     ;
 
 multiplexedMessageBlock
-    :	On multiplexedMessageType LeftBrace blockItemList RightBrace
+    :	On multiplexedMessageType LeftBrace blockItemList? RightBrace
     ;
 
 diagRequestBlock
-    :	On diagRequestType LeftBrace blockItemList RightBrace
+    :	On diagRequestType LeftBrace blockItemList? RightBrace
     ;
 
 diagResponseBlock
-    :	On diagResponseType LeftBrace blockItemList RightBrace
+    :	On diagResponseType LeftBrace blockItemList? RightBrace
     ;
 
 signalBlock
-    :	On signalType LeftBrace blockItemList RightBrace
+    :	On signalType LeftBrace blockItemList? RightBrace
     ;
 
 sysvarBlock
-    :	On sysvarType LeftBrace blockItemList RightBrace
+    :	On SysvarAlt sysvarType LeftBrace blockItemList? RightBrace
+    ;
+
+SysvarAlt : [sS][yY][sS][vV][aA][rR];
+
+sysvarUpdateBlock
+    :   On SysvarUpdate sysvarUpdateType LeftBrace blockItemList? RightBrace
+    ;
+
+ethernetPacketBlock
+    :   On EthernetPacket ethernetPacketType LeftBrace blockItemList? RightBrace
     ;
 
 stopMeasurement
-    :	On StopMeasurement LeftBrace blockItemList RightBrace
+    :	On StopMeasurement LeftBrace blockItemList? RightBrace
     ;
 
 envBlock
-    :	On EnvVar Identifier LeftBrace blockItemList RightBrace
-    |   On EnvVar LeftParen Identifier RightParen LeftBrace blockItemList RightBrace
+    :	On EnvVar Identifier LeftBrace blockItemList? RightBrace
+    |   On EnvVar LeftParen Identifier RightParen LeftBrace blockItemList? RightBrace
     ;
 
 postfixExpression
@@ -238,7 +250,7 @@ initDeclarator
     ;
 
 typeSpecifier
-    : 	(Void
+    :  (Void
 	|	Char
 	|	Byte
 	|	Int
@@ -258,7 +270,8 @@ typeSpecifier
 	|	diagRequestType
 	|	diagResponseType
 	|	signalType
-	|	sysvarType)
+	|	sysvarType
+	|   ethernetPacketType)
 	;
 
 structSpecifier
@@ -452,6 +465,8 @@ Testfunction : [tT][eE][sS][tT][fF][uU][nN][cC][tT][iI][oO][nN];
 Includes : [iI][nN][cC][lL][uU][dD][eE][sS];
 Const : [cC][oO][nN][sS][tT];
 StopMeasurement : [sS][tT][oO][pP][mM][eE][aA][sS][uU][rR][eE][mM][eE][nN][tT];
+SysvarUpdate : [sS][yY][sS][vV][aA][rR][_][uU][pP][dD][aA][tT][eE];
+EthernetPacket : [eE][tT][hH][eE][rR][nN][eE][tT][pP][aA][cC][kK][eE][tT];
 Start : [sS][tT][aA][rR][tT];
 PreStart : [pP][rR][eE][sS][tT][aA][rR][tT];
 PreStop : [pP][rR][eE][sS][tT][oO][pP];
@@ -566,7 +581,7 @@ multiplexedMessageType
     :	MultiplexedMessage Identifier (Dot (Identifier | Star))?
 	|	MultiplexedMessage Star
 	|	MultiplexedMessage Constant
-	|	MultiplexedMessage Identifier Minus Identifier
+	|	MultiplexedMessage Identifier (Minus|DoubleColon)? Identifier
 	;
 
 MultiplexedMessage : [mM][uU][lL][tT][iI][pP][lL][eE][xX][eE][dD][_][mM][eE][sS][sS][aA][gG][eE];
@@ -600,77 +615,110 @@ Minus : '-';
 Signal : [sS][iI][gG][nN][aA][lL];
 
 sysvarType
-    :	DoubleSysvar DoubleColon Identifier (DoubleColon Identifier)*
+    :	(Sysvar DoubleColon)? Identifier (DoubleColon Identifier)*
 	;
+
+sysvarUpdateType
+    :   Identifier (DoubleColon Identifier)*
+    ;
+
+ethernetPacketType
+    :   Identifier (Dot (Identifier | Star))?
+    |   EthernetPacket (Star)?
+    ;
 
 keyEventType
     :	Key Constant
 	|	Key (
-			F1
-		|	F2
-		|	F3
-		|	F4
-		|	F5
-		|	F6
-		|	F7
-		|	F8
-		|	F9
-		|	F10
-		|	F11
-		|	F12
-		|	CtrlF1
-		|	CtrlF2
-		|	CtrlF3
-		|	CtrlF4
-		|	CtrlF5
-		|	CtrlF6
-		|	CtrlF7
-		|	CtrlF8
-		|	CtrlF9
-		|	CtrlF10
-		|	CtrlF11
-		|	CtrlF12
-		|	PageUp
-		|	PageDown
-		|	Home)
+			F1Key
+		|	F2Key
+		|	F3Key
+		|	F4Key
+		|	F5Key
+		|	F6Key
+		|	F7Key
+		|	F8Key
+		|	F9Key
+		|	F10Key
+		|	F11Key
+		|	F12Key
+		|	CtrlF1Key
+		|	CtrlF2Key
+		|	CtrlF3Key
+		|	CtrlF4Key
+		|	CtrlF5Key
+		|	CtrlF6Key
+		|	CtrlF7Key
+		|	CtrlF8Key
+		|	CtrlF9Key
+		|	CtrlF10Key
+		|	CtrlF11Key
+		|	CtrlF12Key
+		|	PageUpKey
+		|	PageDownKey
+		|	HomeKey
+		|   EndKey)
 	|	Key Star
 	;
 
 Star : '*';
 Key : [kK][eE][yY];
-F1 : [fF][1];
-F2 : [fF][2];
-F3 : [fF][3];
-F4 : [fF][4];
-F5 : [fF][5];
-F6 : [fF][6];
-F7 : [fF][7];
-F8 : [fF][8];
-F9 : [fF][9];
-F10 : [fF][1][0];
-F11 : [fF][1][1];
-F12 : [fF][1][2];
-CtrlF1 : [cC][tT][rR][lL][fF][1];
-CtrlF2 : [cC][tT][rR][lL][fF][2];
-CtrlF3 : [cC][tT][rR][lL][fF][3];
-CtrlF4 : [cC][tT][rR][lL][fF][4];
-CtrlF5 : [cC][tT][rR][lL][fF][5];
-CtrlF6 : [cC][tT][rR][lL][fF][6];
-CtrlF7 : [cC][tT][rR][lL][fF][7];
-CtrlF8 : [cC][tT][rR][lL][fF][8];
-CtrlF9 : [cC][tT][rR][lL][fF][9];
-CtrlF10 : [cC][tT][rR][lL][fF][1][0];
-CtrlF11 : [cC][tT][rR][lL][fF][1][1];
-CtrlF12 : [cC][tT][rR][lL][fF][1][2];
-PageUp : [pP][aA][gG][eE][uU][pP];
-PageDown : [pP][aA][gG][eE][dD][oO][wW][nN];
-Home : [hH][oO][mM][eE];
+F1Key : [fF][1];
+F2Key : [fF][2];
+F3Key : [fF][3];
+F4Key : [fF][4];
+F5Key : [fF][5];
+F6Key : [fF][6];
+F7Key : [fF][7];
+F8Key : [fF][8];
+F9Key : [fF][9];
+F10Key : [fF][1][0];
+F11Key : [fF][1][1];
+F12Key : [fF][1][2];
+CtrlF1Key : [cC][tT][rR][lL][fF][1];
+CtrlF2Key : [cC][tT][rR][lL][fF][2];
+CtrlF3Key : [cC][tT][rR][lL][fF][3];
+CtrlF4Key : [cC][tT][rR][lL][fF][4];
+CtrlF5Key : [cC][tT][rR][lL][fF][5];
+CtrlF6Key : [cC][tT][rR][lL][fF][6];
+CtrlF7Key : [cC][tT][rR][lL][fF][7];
+CtrlF8Key : [cC][tT][rR][lL][fF][8];
+CtrlF9Key : [cC][tT][rR][lL][fF][9];
+CtrlF10Key : [cC][tT][rR][lL][fF][1][0];
+CtrlF11Key : [cC][tT][rR][lL][fF][1][1];
+CtrlF12Key : [cC][tT][rR][lL][fF][1][2];
+PageUpKey : [pP][aA][gG][eE][uU][pP];
+PageDownKey : [pP][aA][gG][eE][dD][oO][wW][nN];
+HomeKey : [hH][oO][mM][eE];
+EndKey : ('End')|([eN][nN][dD]);
 
 Identifier
-    :	IdentifierNondigit (IdentifierNondigit | Digit)*
-	|	((This | IdentifierNondigit) (IdentifierNondigit | Digit)*) Dot Identifier (Dot (Identifier))*
-	|	IdentifierNondigit (IdentifierNondigit | Digit)* Dot Constant
+    :	SimpleId
+	|	IdWithDotThis
+	|	IdWithDotConst
+	|   IdWithDoubleColon
+	|   SysVarId
 	;
+
+IdWithDoubleColon
+    :   (IdentifierNondigit (IdentifierNondigit | Digit)*) (DoubleColon (IdentifierNondigit (IdentifierNondigit | Digit)*))*
+    ;
+
+IdWithDotConst
+    :   IdentifierNondigit (IdentifierNondigit | Digit)* Dot Constant
+    ;
+
+IdWithDotThis
+    :   ((This | IdentifierNondigit) (IdentifierNondigit | Digit)*) Dot Identifier (Dot (Identifier))*
+    ;
+
+SimpleId
+    :   IdentifierNondigit (IdentifierNondigit | Digit)*
+    ;
+
+SysVarId
+    :   Sysvar (DoubleColon IdentifierNondigit (IdentifierNondigit | Digit)*)+
+    ;
 
 This : [tT][hH][iI][sS];
 
@@ -693,7 +741,7 @@ SysvarIdentifier
 
 DoubleColon : '::';
 AtSign : '@';
-DoubleSysvar : Sysvar Whitespace Sysvar;
+//DoubleSysvar : Sysvar Whitespace Sysvar;
 Sysvar : [sS][yY][sS][vV][aA][rR];
 
 fragment IdentifierNondigit: Nondigit | UniversalCharacterName;
@@ -826,6 +874,8 @@ IncludeDirective
 		('"' ~[\r\n]* '"')
 		| (Less ~[\r\n]* Greater)
 	) Whitespace? Newline -> channel(HIDDEN);
+
+Directive: '#' ~ [\n]* -> channel (HIDDEN);
 
 Less : '<';
 Greater : '>';
