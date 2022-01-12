@@ -14,7 +14,9 @@ internal class MenusContext : DbContext
    }
 
    public DbSet<MenuCard> MenuCards => Set<MenuCard>();
+
    public DbSet<MenuItem> MenuItems => Set<MenuItem>();
+
    public DbSet<Restaurant> Restaurants => Set<Restaurant>();
 
    protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -51,7 +53,7 @@ internal class MenusContext : DbContext
       modelBuilder.Entity<MenuItem>().HasData(menus2);
    }
 
-   private IEnumerable<dynamic> GetInitialMenus(dynamic card, Guid restaurantId, int start, int count)
+   private static IEnumerable<dynamic> GetInitialMenus(dynamic card, Guid restaurantId, int start, int count)
    {
       var now = DateTime.Now;
       return Enumerable.Range(start, count).Select(id => new
@@ -69,18 +71,16 @@ internal class MenusContext : DbContext
    public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
    {
       ChangeTracker.DetectChanges();
-
       foreach (var item in ChangeTracker.Entries<MenuItem>()
-         .Where(e => e.State == EntityState.Added
-                     || e.State == EntityState.Modified
-                     || e.State == EntityState.Deleted))
+         .Where(e => e.State is EntityState.Added or EntityState.Modified or EntityState.Deleted))
       {
          item.CurrentValues[LastUpdated] = DateTime.Now;
-
-         if (item.State == EntityState.Deleted)
+         switch (item.State)
          {
-            item.State = EntityState.Modified;
-            item.CurrentValues[IsDeleted] = true;
+            case EntityState.Deleted:
+               item.State = EntityState.Modified;
+               item.CurrentValues[IsDeleted] = true;
+               break;
          }
       }
 

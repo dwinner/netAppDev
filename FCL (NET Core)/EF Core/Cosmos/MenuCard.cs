@@ -7,9 +7,14 @@ public class MenuCard
       => (Title, RestaurantId, MenuCardId) = (title, restaurantId, menuCardId);
 
    public Guid MenuCardId { get; set; }
+
    public string Title { get; set; }
+
    public ICollection<MenuItem> MenuItems { get; internal set; } = new HashSet<MenuItem>();
+
    public string RestaurantId { get; set; }
+
    public bool IsActive { get; set; } = true;
+
    public override string ToString() => Title;
 }

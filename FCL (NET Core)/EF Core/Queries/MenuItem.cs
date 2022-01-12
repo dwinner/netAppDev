@@ -3,15 +3,19 @@
 public class MenuItem
 {
    private readonly MenuCard? _menuCard;
+
    public MenuItem(string text, int menuItemId = default) => (Text, MenuItemId) = (text, menuItemId);
 
    public int MenuItemId { get; set; }
+
    public string Text { get; set; }
+
    public decimal? Price { get; set; }
 
    public MenuCard MenuCard
    {
-      get => _menuCard ?? throw new InvalidOperationException($"{nameof(MenuCard)} not initialized");
+      get => _menuCard
+             ?? throw new InvalidOperationException($"{nameof(MenuCard)} not initialized");
       init => _menuCard = value;
    }
 

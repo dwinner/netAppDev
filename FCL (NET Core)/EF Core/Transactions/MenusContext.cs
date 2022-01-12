@@ -11,6 +11,7 @@ internal class MenusContext : DbContext
    }
 
    public DbSet<MenuCard> MenuCards => Set<MenuCard>();
+
    public DbSet<MenuItem> MenuItems => Set<MenuItem>();
 
    protected override void OnModelCreating(ModelBuilder modelBuilder)

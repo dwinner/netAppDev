@@ -9,9 +9,7 @@ public class BooksContext : DbContext
    private readonly string[] _countries = { "country1", "country2", "country3" };
    private readonly string[] _firstNames = { "first1", "first2", "first3" };
    private readonly string[] _lastNames = { "last1", "last2", "last3" };
-
    private readonly string[] _publishers = { "pub1", "pub2", "pub3" };
-
    private readonly Random _random = new();
 
    public BooksContext(DbContextOptions<BooksContext> options)
@@ -20,8 +18,11 @@ public class BooksContext : DbContext
    }
 
    public DbSet<Book> Books => Set<Book>();
+
    public DbSet<Chapter> Chapters => Set<Chapter>();
+
    public DbSet<Person> People => Set<Person>();
+
    public DbSet<Address> Addresses => Set<Address>();
 
    protected override void OnModelCreating(ModelBuilder modelBuilder)

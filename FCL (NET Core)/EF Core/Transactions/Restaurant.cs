@@ -3,8 +3,11 @@
 public class Restaurant
 {
    private readonly Guid _id;
-   public Restaurant(string name, Guid id = default) => (Name, _id) = (name, id);
-   public string Name { get; }
+   private readonly string _name;
+
+   public Restaurant(string name, Guid id = default) => (_name, _id) = (name, id);
+
+   public string Name => _name;
 
    public override string ToString() => $"{Name}, {_id}";
 }

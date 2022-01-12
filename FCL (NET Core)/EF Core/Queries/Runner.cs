@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 internal class Runner
 {
    private readonly MenusContext _menusContext;
+
    public Runner(MenusContext menusContext) => _menusContext = menusContext;
 
    public Task CreateDatabaseAsync() => _menusContext.Database.EnsureCreatedAsync();

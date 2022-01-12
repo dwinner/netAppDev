@@ -13,29 +13,29 @@ internal class Runner
 
    public async Task CreateDatabaseAsync()
    {
-      using var context = _menusContextFactory.CreateDbContext();
+      await using var context = _menusContextFactory.CreateDbContext();
       await context.Database.EnsureCreatedAsync();
    }
 
    public async Task AddRecordsAsync()
    {
       Console.WriteLine(nameof(AddRecordsAsync));
-      using var context = _menusContextFactory.CreateDbContext();
+      await using var context = _menusContextFactory.CreateDbContext();
       MenuCard soupCard = new("Soups");
 
       MenuItem[] soups =
       {
-         new MenuItem("Consommé Célestine (with shredded pancake)")
+         new("Consommé Célestine (with shredded pancake)")
          {
             Price = 4.8m,
             MenuCard = soupCard
          },
-         new MenuItem("Baked Potato Soup")
+         new("Baked Potato Soup")
          {
             Price = 4.8m,
             MenuCard = soupCard
          },
-         new MenuItem("Cheddar Broccoli Soup")
+         new("Cheddar Broccoli Soup")
          {
             Price = 4.8m,
             MenuCard = soupCard
@@ -55,7 +55,7 @@ internal class Runner
       Console.WriteLine();
    }
 
-   private void ShowState(MenusContext context)
+   private static void ShowState(DbContext context)
    {
       foreach (EntityEntry entry in context.ChangeTracker.Entries())
       {
@@ -68,7 +68,7 @@ internal class Runner
 
    public async Task ObjectTrackingAsync()
    {
-      using var context = _menusContextFactory.CreateDbContext();
+      await using var context = _menusContextFactory.CreateDbContext();
       Console.WriteLine(nameof(ObjectTrackingAsync));
       var m1 = await (from m in context.MenusItems
          where m.Text.StartsWith("Con")
@@ -76,14 +76,7 @@ internal class Runner
       var m2 = await (from m in context.MenusItems
          where m.Text.Contains("(")
          select m).FirstOrDefaultAsync();
-      if (ReferenceEquals(m1, m2))
-      {
-         Console.WriteLine("the same object");
-      }
-      else
-      {
-         Console.WriteLine("not the same");
-      }
+      Console.WriteLine(ReferenceEquals(m1, m2) ? "the same object" : "not the same");
 
       ShowState(context);
 
@@ -92,7 +85,7 @@ internal class Runner
 
    public async Task UpdateRecordsAsync()
    {
-      using var context = _menusContextFactory.CreateDbContext();
+      await using var context = _menusContextFactory.CreateDbContext();
       MenuItem menu = await context.MenusItems
          .Skip(1)
          .FirstOrDefaultAsync();
@@ -109,7 +102,7 @@ internal class Runner
    {
       async Task<MenuItem> GetMenuItemAsync()
       {
-         using var context = _menusContextFactory.CreateDbContext();
+         await using var context = _menusContextFactory.CreateDbContext();
          return await context.MenusItems
             .Skip(2)
             .FirstAsync();
@@ -117,7 +110,7 @@ internal class Runner
 
       async Task UpdateMenuItemAsync(MenuItem menu)
       {
-         using var context = _menusContextFactory.CreateDbContext();
+         await using var context = _menusContextFactory.CreateDbContext();
          ShowState(context);
          // EntityEntry<Menu> entry = context.Menus.Attach(m);
          // entry.State = EntityState.Modified;
@@ -128,12 +121,12 @@ internal class Runner
 
       var menu = await GetMenuItemAsync();
       menu.Price += 0.7m;
-      await UpdateMenuItemAsync(menu);
+      await UpdateMenuItemAsync(menu).ConfigureAwait(false);
    }
 
    public async Task DeleteDatabaseAsync()
    {
-      using var context = _menusContextFactory.CreateDbContext();
+      await using var context = _menusContextFactory.CreateDbContext();
       Console.Write("Delete the database? (y|n) ");
       var input = Console.ReadLine();
       if (input?.ToLower() == "y")

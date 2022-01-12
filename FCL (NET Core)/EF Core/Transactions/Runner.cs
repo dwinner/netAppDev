@@ -13,7 +13,7 @@ internal class Runner
 
    public async Task CreateDatabaseAsync()
    {
-      using var context = _menusContextFactory.CreateDbContext();
+      await using var context = _menusContextFactory.CreateDbContext();
       await context.Database.EnsureCreatedAsync();
    }
 
@@ -22,7 +22,7 @@ internal class Runner
       Console.WriteLine(nameof(AddTwoRecordsWithOneTxAsync));
       try
       {
-         using var context = _menusContextFactory.CreateDbContext();
+         await using var context = _menusContextFactory.CreateDbContext();
          var card = context.MenuCards
             .OrderBy(mc => mc.MenuCardId)
             .First();
@@ -56,7 +56,7 @@ internal class Runner
       Console.WriteLine(nameof(AddTwoRecordsWithTwoTxAsync));
       try
       {
-         using var context = _menusContextFactory.CreateDbContext();
+         await using var context = _menusContextFactory.CreateDbContext();
          var card = context.MenuCards
             .OrderBy(mc => mc.MenuCardId)
             .First();
@@ -66,7 +66,7 @@ internal class Runner
             Price = 99.99m
          };
          context.MenuItems.Add(m1);
-         var records = context.SaveChanges();
+         var records = await context.SaveChangesAsync();
          Console.WriteLine($"{records} records added");
 
          var notExistingCard = Guid.NewGuid();
@@ -91,8 +91,8 @@ internal class Runner
    public async Task TwoSaveChangesWithOneTxAsync()
    {
       Console.WriteLine(nameof(TwoSaveChangesWithOneTxAsync));
-      using var context = _menusContextFactory.CreateDbContext();
-      using var tx = await context.Database.BeginTransactionAsync();
+      await using var context = _menusContextFactory.CreateDbContext();
+      await using var tx = await context.Database.BeginTransactionAsync();
       try
       {
          var card = context.MenuCards
@@ -117,14 +117,14 @@ internal class Runner
          records = await context.SaveChangesAsync();
 
          Console.WriteLine($"{records} records added");
-         tx.Commit();
+         await tx.CommitAsync();
       }
       catch (DbUpdateException ex)
       {
          Console.WriteLine($"{ex.Message}");
          Console.WriteLine($"{ex.InnerException?.Message}");
          Console.WriteLine("rolling back…");
-         tx?.Rollback();
+         await tx?.RollbackAsync()!;
       }
 
       Console.WriteLine();
@@ -147,7 +147,7 @@ internal class Runner
          Console.WriteLine($"transaction completed with status: {ti?.Status}, identifier: {ti?.LocalIdentifier}");
       };
 
-      using var context = _menusContextFactory.CreateDbContext();
+      await using var context = _menusContextFactory.CreateDbContext();
       try
       {
          var card = context.MenuCards
@@ -185,7 +185,7 @@ internal class Runner
 
    public async Task DeleteDatabaseAsync()
    {
-      using var context = _menusContextFactory.CreateDbContext();
+      await using var context = _menusContextFactory.CreateDbContext();
       Console.Write("Delete the database? (y|n) ");
       var input = Console.ReadLine();
       if (input?.ToLower() == "y")

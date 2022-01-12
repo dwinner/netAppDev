@@ -5,35 +5,27 @@ using Microsoft.EntityFrameworkCore;
 
 internal static class CompiledQueryExtensions
 {
-   private static Func<MenusContext, string, IEnumerable<MenuItem>>? s_menuItemsByText;
+   private static Func<MenusContext, string, IEnumerable<MenuItem>>? _menuItemsByText;
 
-   private static Func<MenusContext, string, IAsyncEnumerable<MenuItem>>? s_menuItemsByTextAsync;
+   private static Func<MenusContext, string, IAsyncEnumerable<MenuItem>>? _menuItemsByTextAsync;
 
    private static Func<MenusContext, string, IEnumerable<MenuItem>> CompileMenusByTextQuery()
       => EF.CompileQuery((MenusContext context, string text)
          => context.MenuItems.Where(m => m.Text == text));
 
-   public static IEnumerable<MenuItem> MenuItemsByText(this MenusContext menusContext, string text)
-   {
-      if (s_menuItemsByText is null)
-      {
-         s_menuItemsByText = CompileMenusByTextQuery();
-      }
-
-      return s_menuItemsByText(menusContext, text);
-   }
-
    private static Func<MenusContext, string, IAsyncEnumerable<MenuItem>> CompileMenuItemsByTextAsyncQuery()
       => EF.CompileAsyncQuery((MenusContext context, string text)
          => context.MenuItems.Where(m => m.Text == text));
 
+   public static IEnumerable<MenuItem> MenuItemsByText(this MenusContext menusContext, string text)
+   {
+      _menuItemsByText ??= CompileMenusByTextQuery();
+      return _menuItemsByText(menusContext, text);
+   }
+
    public static IAsyncEnumerable<MenuItem> MenuItemsByTextAsync(this MenusContext menusContext, string text)
    {
-      if (s_menuItemsByTextAsync is null)
-      {
-         s_menuItemsByTextAsync = CompileMenuItemsByTextAsyncQuery();
-      }
-
-      return s_menuItemsByTextAsync(menusContext, text);
+      _menuItemsByTextAsync ??= CompileMenuItemsByTextAsyncQuery();
+      return _menuItemsByTextAsync(menusContext, text);
    }
 }

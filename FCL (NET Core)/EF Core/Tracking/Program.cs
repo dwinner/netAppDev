@@ -16,10 +16,8 @@ using var host = Host.CreateDefaultBuilder(args)
 using var scope = host.Services.CreateScope();
 var runner = scope.ServiceProvider.GetRequiredService<Runner>();
 await runner.CreateDatabaseAsync();
-
 await runner.AddRecordsAsync();
 await runner.ObjectTrackingAsync();
 await runner.UpdateRecordsAsync();
 await runner.UpdateRecordUntrackedAsync();
-
 await runner.DeleteDatabaseAsync();

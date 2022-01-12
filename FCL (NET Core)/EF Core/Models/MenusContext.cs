@@ -14,11 +14,15 @@ internal class MenusContext : DbContext
    }
 
    public DbSet<MenuCard> MenuCards => Set<MenuCard>();
+
    public DbSet<MenuItem> MenuItems => Set<MenuItem>();
+
    public DbSet<Restaurant> Restaurants => Set<Restaurant>();
 
    protected override void OnModelCreating(ModelBuilder modelBuilder)
    {
+      #region commented
+
       //modelBuilder.HasDefaultSchema("mc");
       //modelBuilder.Entity<MenuItem>().ToTable("MenuItems").HasKey(m => m.MenuId);
       //modelBuilder.Entity<MenuItem>().Property(m => m.MenuId).ValueGeneratedOnAdd();
@@ -28,6 +32,8 @@ internal class MenusContext : DbContext
       //modelBuilder.Entity<MenuItem>().HasOne(m => m.MenuCard)
       //    .WithMany(c => c.Menus)
       //    .HasForeignKey("MenuCardId");
+
+      #endregion
 
       modelBuilder.HasDefaultSchema("mc")
          .ApplyConfiguration(new MenuCardConfiguration())
@@ -67,12 +73,9 @@ internal class MenusContext : DbContext
       ChangeTracker.DetectChanges();
 
       foreach (var item in ChangeTracker.Entries<MenuItem>()
-         .Where(e => e.State == EntityState.Added
-                     || e.State == EntityState.Modified
-                     || e.State == EntityState.Deleted))
+         .Where(e => e.State is EntityState.Added or EntityState.Modified or EntityState.Deleted))
       {
          item.CurrentValues[LastUpdated] = DateTime.Now;
-
          if (item.State == EntityState.Deleted)
          {
             item.State = EntityState.Modified;

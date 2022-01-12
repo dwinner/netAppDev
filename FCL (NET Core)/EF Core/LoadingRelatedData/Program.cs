@@ -19,9 +19,7 @@ using var host = Host.CreateDefaultBuilder(args)
 using (var scope = host.Services.CreateScope())
 {
    var runner = scope.ServiceProvider.GetRequiredService<Runner>();
-
    await runner.CreateTheDatabaseAsync();
-
    await runner.EagerLoadingAsync();
    await runner.FilteredIncludeAsync();
 }
@@ -36,6 +34,5 @@ using (var scope = host.Services.CreateScope())
 {
    var runner = scope.ServiceProvider.GetRequiredService<Runner>();
    await runner.LazyLoadingAsync();
-
    await runner.DeleteDatabaseAsync();
 }
