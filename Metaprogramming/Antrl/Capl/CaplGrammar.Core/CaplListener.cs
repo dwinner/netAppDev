@@ -142,6 +142,26 @@ public interface ICaplListener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitErrorFrame([NotNull] CaplParser.ErrorFrameContext context);
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="CaplParser.errorActive"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterErrorActive([NotNull] CaplParser.ErrorActiveContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="CaplParser.errorActive"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitErrorActive([NotNull] CaplParser.ErrorActiveContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="CaplParser.errorPassive"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterErrorPassive([NotNull] CaplParser.ErrorPassiveContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="CaplParser.errorPassive"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitErrorPassive([NotNull] CaplParser.ErrorPassiveContext context);
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="CaplParser.messageBlock"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>

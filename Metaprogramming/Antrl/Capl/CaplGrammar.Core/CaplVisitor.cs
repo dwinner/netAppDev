@@ -99,6 +99,18 @@ public interface ICaplVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitErrorFrame([NotNull] CaplParser.ErrorFrameContext context);
 	/// <summary>
+	/// Visit a parse tree produced by <see cref="CaplParser.errorActive"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitErrorActive([NotNull] CaplParser.ErrorActiveContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="CaplParser.errorPassive"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitErrorPassive([NotNull] CaplParser.ErrorPassiveContext context);
+	/// <summary>
 	/// Visit a parse tree produced by <see cref="CaplParser.messageBlock"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>

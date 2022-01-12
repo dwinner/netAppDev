@@ -19,6 +19,8 @@ primaryExpression
 			| eventBlock
 			| timerBlock
 			| errorFrame
+			| errorActive
+			| errorPassive
 			| envBlock
 			| functionDefinition
 			| enumSpecifier
@@ -81,6 +83,14 @@ timerBlock
 
 errorFrame
     : 	On ErrorFrame LeftBrace blockItemList? RightBrace
+    ;
+
+errorActive
+    :   On ErrorActive LeftBrace blockItemList? RightBrace
+    ;
+
+errorPassive
+    :   On ErrorPassive LeftBrace blockItemList? RightBrace
     ;
 
 messageBlock
@@ -411,7 +421,7 @@ statement
 
 labeledStatement
     :	Identifier Colon statement
-	|	Case (constantExpression) Colon statement
+	|	Case (constantExpression|KeyConstants) Colon statement
 	|	Default Colon statement
 	;
 
@@ -499,6 +509,8 @@ BusOff : [bB][uU][sS][oO][fF][fF];
 PreStart : [pP][rR][eE][sS][tT][aA][rR][tT];
 PreStop : [pP][rR][eE][sS][tT][oO][pP];
 ErrorFrame : [eE][rR][rR][oO][rR][fF][rR][aA][mM][eE];
+ErrorActive : [eE][rR][rR][oO][rR][aA][cC][tT][iI][vV][eE];
+ErrorPassive : [eE][rR][rR][oO][rR][pP][aA][sS][sS][iI][vV][eE];
 On : [oO][nN];
 Variables : [vV][aA][rR][iI][aA][bB][lL][eE][sS];
 Break : [bB][rR][eE][aA][kK];
@@ -598,7 +610,7 @@ messageType
 	|	Message Star
 	|	Message Constant
 	|	Message Identifier (Minus|DoubleColon)? Identifier
-	|   Message MessageHexConst Minus MessageHexConst
+	|   Message MessageHexConst (Minus MessageHexConst)?
 	;
 
 MessageHexConst : HexadecimalPrefix HexadecimalDigitSequence 'x';
@@ -672,36 +684,43 @@ ethernetStatusType
 
 keyEventType
     :	Key Constant
-	|	Key (
-			F1Key
-		|	F2Key
-		|	F3Key
-		|	F4Key
-		|	F5Key
-		|	F6Key
-		|	F7Key
-		|	F8Key
-		|	F9Key
-		|	F10Key
-		|	F11Key
-		|	F12Key
-		|	CtrlF1Key
-		|	CtrlF2Key
-		|	CtrlF3Key
-		|	CtrlF4Key
-		|	CtrlF5Key
-		|	CtrlF6Key
-		|	CtrlF7Key
-		|	CtrlF8Key
-		|	CtrlF9Key
-		|	CtrlF10Key
-		|	CtrlF11Key
-		|	CtrlF12Key
-		|	PageUpKey
-		|	PageDownKey
-		|	HomeKey
-		|   EndKey)
+	|	Key KeyConstants
 	|	Key Star
+	;
+
+KeyConstants
+    : ( F1Key
+	|	F2Key
+	|	F3Key
+	|	F4Key
+	|	F5Key
+	|	F6Key
+	|	F7Key
+	|	F8Key
+	|	F9Key
+	|	F10Key
+	|	F11Key
+	|	F12Key
+	|	CtrlF1Key
+	|	CtrlF2Key
+	|	CtrlF3Key
+	|	CtrlF4Key
+	|	CtrlF5Key
+	|	CtrlF6Key
+	|	CtrlF7Key
+	|	CtrlF8Key
+	|	CtrlF9Key
+	|	CtrlF10Key
+	|	CtrlF11Key
+	|	CtrlF12Key
+	|	PageUpKey
+	|	PageDownKey
+	|	HomeKey
+	|   EndKey
+	|   CursorUp
+	|   CursorDown
+	|   CursorRight
+	|   CursorLeft)
 	;
 
 Star : '*';
@@ -734,6 +753,10 @@ PageUpKey : [pP][aA][gG][eE][uU][pP];
 PageDownKey : [pP][aA][gG][eE][dD][oO][wW][nN];
 HomeKey : [hH][oO][mM][eE];
 EndKey : ('End')|([eN][nN][dD]);
+CursorLeft : [cC][uU][rR][sS][oO][rR][lL][eE][fF][tT];
+CursorRight : [cC][uU][rR][sS][oO][rR][rR][iI][gG][hH][tT];
+CursorDown : [cC][uU][rR][sS][oO][rR][dD][oO][wW][nN];
+CursorUp : [cC][uU][rR][sS][oO][rR][uU][pP];
 
 Identifier
     :	SimpleId
@@ -762,7 +785,7 @@ IdWithDotConst
     ;
 
 IdWithDotThis
-    :   ((This | IdentifierNondigit) (IdentifierNondigit | Digit)*) Dot Identifier (Dot (Identifier))*
+    :   ((This | IdentifierNondigit) (IdentifierNondigit | Digit)*) Whitespace? Dot Whitespace? Identifier (Dot (Identifier))*
     ;
 
 SimpleId
