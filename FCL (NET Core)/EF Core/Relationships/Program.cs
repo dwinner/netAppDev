@@ -16,18 +16,17 @@ using var host = Host.CreateDefaultBuilder(args)
    })
    .Build();
 
-using (var scope = host.Services.CreateScope())
-{
-   var booksRunner = scope.ServiceProvider.GetRequiredService<BooksRunner>();
+using var scope = host.Services.CreateScope();
 
-   await booksRunner.CreateTheDatabaseAsync();
-   await booksRunner.GetBooksForAuthorAsync();
+var booksRunner = scope.ServiceProvider.GetRequiredService<BooksRunner>();
 
-   var bankRunner = scope.ServiceProvider.GetRequiredService<BankRunner>();
-   await bankRunner.CreateTheDatabaseAsync();
-   await bankRunner.AddSampleDataAsync();
-   await bankRunner.QuerySampleAsync();
+await booksRunner.CreateTheDatabaseAsync();
+await booksRunner.GetBooksForAuthorAsync();
 
-   var menusRunner = scope.ServiceProvider.GetRequiredService<MenusRunner>();
-   await menusRunner.CreateTheDatabaseAsync();
-}
+var bankRunner = scope.ServiceProvider.GetRequiredService<BankRunner>();
+await bankRunner.CreateTheDatabaseAsync();
+await bankRunner.AddSampleDataAsync();
+await bankRunner.QuerySampleAsync();
+
+var menusRunner = scope.ServiceProvider.GetRequiredService<MenusRunner>();
+await menusRunner.CreateTheDatabaseAsync();

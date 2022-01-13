@@ -9,7 +9,7 @@ public class Person
       PersonId = personId;
    }
 
-   public int PersonId { get; }
+   public int PersonId { get; private set; }
 
    public string FirstName { get; set; }
 

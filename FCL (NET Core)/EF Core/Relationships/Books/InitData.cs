@@ -13,7 +13,7 @@ internal class InitData
       _authors = InitializeAuthors();
    }
 
-   private Book[] InitializeBooks()
+   private static Book[] InitializeBooks()
    {
       string[] titles =
       {

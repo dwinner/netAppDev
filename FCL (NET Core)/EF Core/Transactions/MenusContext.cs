@@ -35,7 +35,7 @@ internal class MenusContext : DbContext
       modelBuilder.Entity<MenuItem>().HasData(menus);
    }
 
-   private IEnumerable<object> GetInitialMenuItems(dynamic card, Guid restaurantId) =>
+   private static IEnumerable<object> GetInitialMenuItems(dynamic card, Guid restaurantId) =>
       Enumerable.Range(1, 20).Select(id => new
       {
          MenuItemId = Guid.NewGuid(),

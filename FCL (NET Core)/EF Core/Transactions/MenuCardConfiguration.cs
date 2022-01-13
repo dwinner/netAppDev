@@ -9,7 +9,6 @@ internal class MenuCardConfiguration : IEntityTypeConfiguration<MenuCard>
    {
       builder.ToTable("MenuCards")
          .HasKey(c => c.MenuCardId);
-
       builder.Property(c => c.MenuCardId)
          .ValueGeneratedOnAdd();
       builder.Property(c => c.Title)

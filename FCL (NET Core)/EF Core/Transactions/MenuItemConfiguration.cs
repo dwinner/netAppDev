@@ -15,11 +15,9 @@ internal class MenuItemConfiguration : IEntityTypeConfiguration<MenuItem>
          .HasMaxLength(50);
       builder.Property(m => m.Price)
          .HasColumnType("Money");
-
       builder.HasOne(m => m.MenuCard)
          .WithMany(c => c.MenuItems)
          .HasForeignKey(c => c.MenuCardId);
-
       builder.Property<Guid>(RestaurantId);
    }
 }

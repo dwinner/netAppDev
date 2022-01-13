@@ -26,10 +26,16 @@ internal class MenusContext : DbContext
          RestaurantId = restaurantId
       };
 
+      #region commented
+
       //var menus = GetInitialMenus(card1, restaurantId);
       //modelBuilder.Entity<MenuCard>().HasData(card1);
       //modelBuilder.Entity<Menu>().HasData(menus);
+
+      #endregion
    }
+
+   #region commented
 
    //private IEnumerable<dynamic> GetInitialMenus(dynamic card, Guid restaurantId)
    //{
@@ -65,4 +71,6 @@ internal class MenusContext : DbContext
    //    }
    //    return base.SaveChangesAsync(cancellationToken);
    //}
+
+   #endregion
 }

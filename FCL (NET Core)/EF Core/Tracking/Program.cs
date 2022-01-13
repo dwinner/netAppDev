@@ -8,7 +8,6 @@ using var host = Host.CreateDefaultBuilder(args)
    {
       var connectionString = context.Configuration.GetConnectionString("MenusConnection");
       services.AddDbContextFactory<MenusContext>(options => { options.UseSqlServer(connectionString); });
-
       services.AddScoped<Runner>();
    })
    .Build();

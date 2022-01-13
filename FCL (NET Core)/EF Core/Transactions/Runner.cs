@@ -141,7 +141,7 @@ internal class Runner
          throw new InvalidOperationException("no ambient transaction available");
       }
 
-      Transaction.Current.TransactionCompleted += (sender, e) =>
+      Transaction.Current.TransactionCompleted += (_, e) =>
       {
          var ti = e.Transaction?.TransactionInformation;
          Console.WriteLine($"transaction completed with status: {ti?.Status}, identifier: {ti?.LocalIdentifier}");
