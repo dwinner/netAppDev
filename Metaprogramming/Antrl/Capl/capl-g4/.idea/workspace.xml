@@ -2,24 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="950f7524-631c-4812-8c77-3d61ee540d20" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/../CaplGrammar.Core/CaplBaseListener.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../CaplGrammar.Core/CaplBaseListener.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../CaplGrammar.Core/CaplBaseVisitor.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../CaplGrammar.Core/CaplBaseVisitor.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../CaplGrammar.Core/CaplLexer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../CaplGrammar.Core/CaplLexer.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../CaplGrammar.Core/CaplListener.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../CaplGrammar.Core/CaplListener.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../CaplGrammar.Core/CaplParser.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../CaplGrammar.Core/CaplParser.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../CaplGrammar.Core/CaplVisitor.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../CaplGrammar.Core/CaplVisitor.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/grammar/Capl.g4" beforeDir="false" afterPath="$PROJECT_DIR$/grammar/Capl.g4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/grammar/CaplGrammar.Core/Capl.interp" beforeDir="false" afterPath="$PROJECT_DIR$/grammar/CaplGrammar.Core/Capl.interp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/grammar/CaplGrammar.Core/Capl.tokens" beforeDir="false" afterPath="$PROJECT_DIR$/grammar/CaplGrammar.Core/Capl.tokens" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/grammar/CaplGrammar.Core/CaplBaseListener.cs" beforeDir="false" afterPath="$PROJECT_DIR$/grammar/CaplGrammar.Core/CaplBaseListener.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/grammar/CaplGrammar.Core/CaplBaseVisitor.cs" beforeDir="false" afterPath="$PROJECT_DIR$/grammar/CaplGrammar.Core/CaplBaseVisitor.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/grammar/CaplGrammar.Core/CaplLexer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/grammar/CaplGrammar.Core/CaplLexer.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/grammar/CaplGrammar.Core/CaplLexer.interp" beforeDir="false" afterPath="$PROJECT_DIR$/grammar/CaplGrammar.Core/CaplLexer.interp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/grammar/CaplGrammar.Core/CaplLexer.tokens" beforeDir="false" afterPath="$PROJECT_DIR$/grammar/CaplGrammar.Core/CaplLexer.tokens" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/grammar/CaplGrammar.Core/CaplListener.cs" beforeDir="false" afterPath="$PROJECT_DIR$/grammar/CaplGrammar.Core/CaplListener.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/grammar/CaplGrammar.Core/CaplParser.cs" beforeDir="false" afterPath="$PROJECT_DIR$/grammar/CaplGrammar.Core/CaplParser.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/grammar/CaplGrammar.Core/CaplVisitor.cs" beforeDir="false" afterPath="$PROJECT_DIR$/grammar/CaplGrammar.Core/CaplVisitor.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -53,22 +36,9 @@
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
     <property name="dart.analysis.tool.window.visible" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../GrammarValidation.UnitTests/src/misc/common.can" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../GrammarValidation.UnitTests/src/ksslave.can" />
     <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
     <property name="show.migrate.to.gradle.popup" value="false" />
-  </component>
-  <component name="RunManager">
-    <configuration default="true" type="ArquillianJUnit" factoryName="" nameIsGenerated="true">
-      <option name="arquillianRunConfiguration">
-        <value>
-          <option name="containerStateName" value="" />
-        </value>
-      </option>
-      <option name="TEST_OBJECT" value="class" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
@@ -116,6 +86,7 @@
       <workItem from="1641983121395" duration="4376000" />
       <workItem from="1641989043378" duration="3203000" />
       <workItem from="1641994564566" duration="1863000" />
+      <workItem from="1642050963974" duration="401000" />
     </task>
     <servers />
   </component>
