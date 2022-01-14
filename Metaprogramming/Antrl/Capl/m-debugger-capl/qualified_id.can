@@ -1,7 +1,0 @@
-variables
-{
-    int var_DBLookupDefaultValue;
-
-    struct SomeType someValue = DBLookup(lookupSignal(parsedSignal));
-    var_DBLookupDefaultValue = (someValue.DefaultValue * someValue.factor) + someValue.offset;
-}

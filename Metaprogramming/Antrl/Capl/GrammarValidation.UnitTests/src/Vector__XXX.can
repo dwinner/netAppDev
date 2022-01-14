@@ -54,7 +54,7 @@ Version info
 // #VAR_DEF#
 
 // #VAR_DEF_END#
-
+}
 
 __Init_Msg()
 {

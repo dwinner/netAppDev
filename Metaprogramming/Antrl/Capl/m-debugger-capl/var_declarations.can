@@ -1,9 +1,0 @@
-variables
-{
-    char letter_a = "a";
-    int number_days_in_year = 365;    
-    timer one_second; // see Chapter 14 on using timers for more detail
-    int j, k = 2; // j = 0 implicitly
-    double x = 33.7;
-    char p;
-}

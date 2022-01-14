@@ -2,7 +2,85 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="950f7524-631c-4812-8c77-3d61ee540d20" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/../CaplGrammar.Core/CaplBaseListener.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../CaplGrammar.Core/CaplBaseListener.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../CaplGrammar.Core/CaplBaseVisitor.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../CaplGrammar.Core/CaplBaseVisitor.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../CaplGrammar.Core/CaplLexer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../CaplGrammar.Core/CaplLexer.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../CaplGrammar.Core/CaplListener.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../CaplGrammar.Core/CaplListener.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../CaplGrammar.Core/CaplParser.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../CaplGrammar.Core/CaplParser.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../CaplGrammar.Core/CaplVisitor.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../CaplGrammar.Core/CaplVisitor.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Failed tests.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../Failed tests.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../GrammarValidation.UnitTests/src/Variablenmapping_Eth.can" beforeDir="false" afterPath="$PROJECT_DIR$/../GrammarValidation.UnitTests/src/Variablenmapping_Eth.can" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../GrammarValidation.UnitTests/src/Vector__XXX.can" beforeDir="false" afterPath="$PROJECT_DIR$/../GrammarValidation.UnitTests/src/Vector__XXX.can" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../capl-doxygen-api/capl_api.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../capl-doxygen-api/capl_api.xsd" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/grammar/Capl.g4" beforeDir="false" afterPath="$PROJECT_DIR$/grammar/Capl.g4" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/grammar/CaplGrammar.Core/Capl.interp" beforeDir="false" afterPath="$PROJECT_DIR$/grammar/CaplGrammar.Core/Capl.interp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/grammar/CaplGrammar.Core/Capl.tokens" beforeDir="false" afterPath="$PROJECT_DIR$/grammar/CaplGrammar.Core/Capl.tokens" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/grammar/CaplGrammar.Core/CaplBaseListener.cs" beforeDir="false" afterPath="$PROJECT_DIR$/grammar/CaplGrammar.Core/CaplBaseListener.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/grammar/CaplGrammar.Core/CaplBaseVisitor.cs" beforeDir="false" afterPath="$PROJECT_DIR$/grammar/CaplGrammar.Core/CaplBaseVisitor.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/grammar/CaplGrammar.Core/CaplLexer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/grammar/CaplGrammar.Core/CaplLexer.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/grammar/CaplGrammar.Core/CaplLexer.interp" beforeDir="false" afterPath="$PROJECT_DIR$/grammar/CaplGrammar.Core/CaplLexer.interp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/grammar/CaplGrammar.Core/CaplLexer.tokens" beforeDir="false" afterPath="$PROJECT_DIR$/grammar/CaplGrammar.Core/CaplLexer.tokens" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/grammar/CaplGrammar.Core/CaplListener.cs" beforeDir="false" afterPath="$PROJECT_DIR$/grammar/CaplGrammar.Core/CaplListener.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/grammar/CaplGrammar.Core/CaplParser.cs" beforeDir="false" afterPath="$PROJECT_DIR$/grammar/CaplGrammar.Core/CaplParser.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/grammar/CaplGrammar.Core/CaplVisitor.cs" beforeDir="false" afterPath="$PROJECT_DIR$/grammar/CaplGrammar.Core/CaplVisitor.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../m-debugger-capl/.vscode/application.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../m-debugger-capl/.vscode/launch.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../m-debugger-capl/.vscode/tasks.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../m-debugger-capl/CANopenMasterLinde.can" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../m-debugger-capl/arithmetic_operators.can" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../m-debugger-capl/assignment_operators.can" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../m-debugger-capl/bitwise_operators.can" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../m-debugger-capl/boolean_operators.can" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../m-debugger-capl/char_issues.can" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../m-debugger-capl/conditional_transmission.can" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../m-debugger-capl/const_keyword.can" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../m-debugger-capl/diagRequest_ex.can" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../m-debugger-capl/diagResponse_ex.can" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../m-debugger-capl/enum_ex.can" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../m-debugger-capl/error_frames.can" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../m-debugger-capl/events.can" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../m-debugger-capl/example.can" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../m-debugger-capl/export_ex.can" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../m-debugger-capl/for_stmt.can" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../m-debugger-capl/func_declarations.can" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../m-debugger-capl/functions.can" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../m-debugger-capl/hex_handling.can" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../m-debugger-capl/if_op.can" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../m-debugger-capl/includes.can" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../m-debugger-capl/input_source.can" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../m-debugger-capl/io.can" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../m-debugger-capl/logging.can" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../m-debugger-capl/main.can" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../m-debugger-capl/messages.can" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../m-debugger-capl/messages_issues.can" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../m-debugger-capl/misc_event_handlers.can" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../m-debugger-capl/misc_operators.can" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../m-debugger-capl/multiplexed_message.can" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../m-debugger-capl/out/.ignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../m-debugger-capl/out/multidebugger.canapp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../m-debugger-capl/out/multidebugger.lmap" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../m-debugger-capl/out/multidebugger.rc" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../m-debugger-capl/out/multidebugger0.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../m-debugger-capl/out/multidebugger1.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../m-debugger-capl/periodic_transmission.can" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../m-debugger-capl/phys_raw_ex.can" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../m-debugger-capl/qualified_id.can" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../m-debugger-capl/relational_operators.can" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../m-debugger-capl/struct_ex.can" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../m-debugger-capl/switch_stmt.can" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../m-debugger-capl/sysvar_ex.can" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../m-debugger-capl/testcase_ex.can" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../m-debugger-capl/this_keyword.can" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../m-debugger-capl/timer_issues.can" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../m-debugger-capl/timers.can" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../m-debugger-capl/top_level_repl.can" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../m-debugger-capl/transmission.can" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../m-debugger-capl/unconditional.can" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../m-debugger-capl/usages.can" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../m-debugger-capl/var_declarations.can" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../m-debugger-capl/while_stmt.can" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -36,7 +114,7 @@
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
     <property name="dart.analysis.tool.window.visible" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../GrammarValidation.UnitTests/src/ksslave.can" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../GrammarValidation.UnitTests/src/MostScan.can" />
     <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
     <property name="show.migrate.to.gradle.popup" value="false" />
   </component>
@@ -87,6 +165,12 @@
       <workItem from="1641989043378" duration="3203000" />
       <workItem from="1641994564566" duration="1863000" />
       <workItem from="1642050963974" duration="401000" />
+      <workItem from="1642086921955" duration="861000" />
+      <workItem from="1642087814407" duration="1367000" />
+      <workItem from="1642089531417" duration="540000" />
+      <workItem from="1642139423196" duration="27000" />
+      <workItem from="1642139462290" duration="19517000" />
+      <workItem from="1642173079839" duration="337000" />
     </task>
     <servers />
   </component>

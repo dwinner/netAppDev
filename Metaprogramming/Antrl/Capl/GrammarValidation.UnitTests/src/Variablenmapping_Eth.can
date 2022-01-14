@@ -2,7 +2,7 @@
 
 
 // BV1_Linien_01
-on envVar EnvBV1_Richtungspfeile {$	BV1_Richtungspfeile_XIX_BV1_Linien_01_XIX_E3V_VLAN_Infotainment	 = @this; }
+on envVar EnvBV1_Richtungspfeile {$BV1_Richtungspfeile_XIX_BV1_Linien_01_XIX_E3V_VLAN_Infotainment	 = @this; }
 on envVar EnvBV1_FahrSzen_AusfLinks {$	BV1_FahrSzen_AusfLinks_XIX_BV1_Linien_01_XIX_E3V_VLAN_Infotainment	 = @this; }
 on envVar EnvBV1_FahrSzen_AusfRechts {$	BV1_FahrSzen_AusfRechts_XIX_BV1_Linien_01_XIX_E3V_VLAN_Infotainment	 = @this; }
 on envVar EnvBV1_FahrSzen_EinfLinks {$	BV1_FahrSzen_EinfLinks_XIX_BV1_Linien_01_XIX_E3V_VLAN_Infotainment	 = @this; }

@@ -1,18 +1,3 @@
-ASG15_1.can
-ASG15_2.can
-ASG19_1.can
-ASG19_4.can
-ASG33_1.can
-ASG49.can
-ASG4_0.can
-ASG50_1.can
-ASG69.can
-ASG69_1.can
-ASG70.can
-ASG70_1.can
-ASG70_Simu.can
-ASG_AudioSD.can
-ASG_NaviSD_BAPv1.5_v1.21.can
 BAPControl_Main.can
 CTRL_C.can
 DISP_RL.can
@@ -46,18 +31,12 @@ FSG_AudioSD_Ethernet.can
 FSG_Telephone_BAPv1.8_v3.0.can
 FoD_MasterSim_CAN_CANFD_Extended.can
 Gateway_DoIP.can
-IC.CAN
-KsMaster.can
-MFL.can
-NV.CAN
-ORC.CAN
-PCI_Card.can
-RBTM_FL.CAN
-RBTM_FR.CAN
-SVS.CAN
-TGW.CAN
-TPM.CAN
-Variablenmapping.can
-Variablenmapping_Eth.can
-Vector__XXX.can
-ksslave.can
+
+Added onAnyBlock
+Added mostMessageBlock
+timerBlock extended with argument list options
+postfixExpression extended to support parsing expressions in array indexer
+Struct declaration extended to support _align keyword
+MessageId rule optimized for more generic parsing
+Key constants extended
+Identifier extended with byte access indexer

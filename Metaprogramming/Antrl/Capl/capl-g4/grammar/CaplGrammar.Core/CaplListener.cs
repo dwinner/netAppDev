@@ -112,15 +112,15 @@ public interface ICaplListener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitVariableBlock([NotNull] CaplParser.VariableBlockContext context);
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="CaplParser.eventBlock"/>.
+	/// Enter a parse tree produced by <see cref="CaplParser.keyEventBlock"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void EnterEventBlock([NotNull] CaplParser.EventBlockContext context);
+	void EnterKeyEventBlock([NotNull] CaplParser.KeyEventBlockContext context);
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="CaplParser.eventBlock"/>.
+	/// Exit a parse tree produced by <see cref="CaplParser.keyEventBlock"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void ExitEventBlock([NotNull] CaplParser.EventBlockContext context);
+	void ExitKeyEventBlock([NotNull] CaplParser.KeyEventBlockContext context);
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="CaplParser.timerBlock"/>.
 	/// </summary>
@@ -172,6 +172,16 @@ public interface ICaplListener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitMessageBlock([NotNull] CaplParser.MessageBlockContext context);
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="CaplParser.onAnyBlock"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterOnAnyBlock([NotNull] CaplParser.OnAnyBlockContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="CaplParser.onAnyBlock"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitOnAnyBlock([NotNull] CaplParser.OnAnyBlockContext context);
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="CaplParser.multiplexedMessageBlock"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -181,6 +191,16 @@ public interface ICaplListener : IParseTreeListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	void ExitMultiplexedMessageBlock([NotNull] CaplParser.MultiplexedMessageBlockContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="CaplParser.mostMessageBlock"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterMostMessageBlock([NotNull] CaplParser.MostMessageBlockContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="CaplParser.mostMessageBlock"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitMostMessageBlock([NotNull] CaplParser.MostMessageBlockContext context);
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="CaplParser.diagRequestBlock"/>.
 	/// </summary>
@@ -1031,6 +1051,16 @@ public interface ICaplListener : IParseTreeListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	void ExitMultiplexedMessageType([NotNull] CaplParser.MultiplexedMessageTypeContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="CaplParser.mostMessageType"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterMostMessageType([NotNull] CaplParser.MostMessageTypeContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="CaplParser.mostMessageType"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitMostMessageType([NotNull] CaplParser.MostMessageTypeContext context);
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="CaplParser.mostAmsMessageType"/>.
 	/// </summary>

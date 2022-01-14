@@ -81,11 +81,11 @@ public interface ICaplVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitVariableBlock([NotNull] CaplParser.VariableBlockContext context);
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="CaplParser.eventBlock"/>.
+	/// Visit a parse tree produced by <see cref="CaplParser.keyEventBlock"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	Result VisitEventBlock([NotNull] CaplParser.EventBlockContext context);
+	Result VisitKeyEventBlock([NotNull] CaplParser.KeyEventBlockContext context);
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="CaplParser.timerBlock"/>.
 	/// </summary>
@@ -117,11 +117,23 @@ public interface ICaplVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitMessageBlock([NotNull] CaplParser.MessageBlockContext context);
 	/// <summary>
+	/// Visit a parse tree produced by <see cref="CaplParser.onAnyBlock"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitOnAnyBlock([NotNull] CaplParser.OnAnyBlockContext context);
+	/// <summary>
 	/// Visit a parse tree produced by <see cref="CaplParser.multiplexedMessageBlock"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitMultiplexedMessageBlock([NotNull] CaplParser.MultiplexedMessageBlockContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="CaplParser.mostMessageBlock"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitMostMessageBlock([NotNull] CaplParser.MostMessageBlockContext context);
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="CaplParser.diagRequestBlock"/>.
 	/// </summary>
@@ -632,6 +644,12 @@ public interface ICaplVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitMultiplexedMessageType([NotNull] CaplParser.MultiplexedMessageTypeContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="CaplParser.mostMessageType"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitMostMessageType([NotNull] CaplParser.MostMessageTypeContext context);
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="CaplParser.mostAmsMessageType"/>.
 	/// </summary>

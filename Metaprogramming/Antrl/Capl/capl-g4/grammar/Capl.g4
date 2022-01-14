@@ -16,7 +16,7 @@ primaryExpression
 	|	LeftParen compoundStatement RightParen
 	| 	( includeBlock
 	    	| variableBlock
-			| eventBlock
+			| keyEventBlock
 			| timerBlock
 			| errorFrame
 			| errorActive
@@ -31,7 +31,9 @@ primaryExpression
 			| preStartBlock
 			| preStopBlock
 			| messageBlock
+			| onAnyBlock
 			| multiplexedMessageBlock
+			| mostMessageBlock
 			| stopMeasurement
 			| diagRequestBlock
 			| diagResponseBlock
@@ -73,12 +75,16 @@ variableBlock
     :	Variables LeftBrace blockItemList? RightBrace
     ;
 
-eventBlock
+keyEventBlock
     :	On keyEventType LeftBrace blockItemList? RightBrace
     ;
 
 timerBlock
-    :	On timerType LeftBrace blockItemList? RightBrace
+    :	On timerType
+        (LeftParen
+            (typeQualifier? typeSpecifier Identifier (Comma typeQualifier? typeSpecifier Identifier)*)
+        RightParen)?
+        LeftBrace blockItemList? RightBrace
     ;
 
 errorFrame
@@ -97,8 +103,16 @@ messageBlock
     :	On messageType LeftBrace blockItemList? RightBrace
     ;
 
+onAnyBlock
+    :   On Identifier LeftBrace blockItemList? RightBrace
+    ;
+
 multiplexedMessageBlock
     :	On multiplexedMessageType LeftBrace blockItemList? RightBrace
+    ;
+
+mostMessageBlock
+    :   On mostMessageType LeftBrace blockItemList? RightBrace
     ;
 
 diagRequestBlock
@@ -150,9 +164,12 @@ postfixExpression
 		)
 		(LeftBracket expression RightBracket
 			| LeftParen argumentExpressionList? RightParen
+			| (Dot | Arrow) Identifier
 			| (PlusPlus | MinusMinus)
 		)*
 	;
+
+Arrow : '->' ;
 
 argumentExpressionList
     :	assignmentExpression (Comma assignmentExpression)*
@@ -309,7 +326,17 @@ typeSpecifier
 	;
 
 structSpecifier
-    :	structure Identifier? LeftBrace structDeclarationList RightBrace
+    :	(   Align0
+        |   Align1
+        |   Align2
+        |   Align3
+        |   Align4
+        |   Align5
+        |   Align6
+        |   Align7
+        |   Align8
+        )?
+        structure Identifier? LeftBrace structDeclarationList RightBrace
     |	structure Identifier
     ;
 
@@ -503,6 +530,7 @@ SysvarUpdate : [sS][yY][sS][vV][aA][rR][_][uU][pP][dD][aA][tT][eE];
 EthernetPacket : [eE][tT][hH][eE][rR][nN][eE][tT][pP][aA][cC][kK][eE][tT];
 EthernetStatus : [eE][tT][hH][eE][rR][nN][eE][tT][sS][tT][aA][tT][uU][sS];
 MostAmsMessage : [mM][oO][sS][tT][aA][mM][sS][mM][eE][sS][sS][aA][gG][eE];
+MostMessage : [mM][oO][sS][tT][mM][eE][sS][sS][aA][gG][eE];
 Start : [sS][tT][aA][rR][tT];
 BusOn : [bB][uU][sS][oO][nN];
 BusOff : [bB][uU][sS][oO][fF][fF];
@@ -516,7 +544,6 @@ Variables : [vV][aA][rR][iI][aA][bB][lL][eE][sS];
 Break : [bB][rR][eE][aA][kK];
 Case : [cC][aA][sS][eE];
 Char : [cC][hH][aA][rR];
-Byte : [bB][yY][tT][eE];
 Continue : [cC][oO][nN][tT][iI][nN][uU][eE];
 Default : [dD][eE][fF][aA][uU][lL][tT];
 Do : [dD][oO];
@@ -540,8 +567,6 @@ While : [wW][hH][iI][lL][eE];
 Struct : [sS][tT][rR][uU][cC][tT];
 
 /* Tokens */
-LeftParen : '(';
-RightParen : ')';
 LessEqual : '<=';
 GreaterEqual : '>=';
 LeftShift : '<<';
@@ -610,10 +635,10 @@ messageType
 	|	Message Star
 	|	Message Constant
 	|	Message Identifier (Minus|DoubleColon)? Identifier
-	|   Message MessageHexConst (Minus MessageHexConst)?
+//	|   Message MessageHexConst (Minus MessageHexConst)?
+	|   Message Constant (Minus Constant)?
 	;
 
-MessageHexConst : HexadecimalPrefix HexadecimalDigitSequence 'x';
 Message : [mM][eE][sS][sS][aA][gG][eE];
 
 multiplexedMessageType
@@ -621,6 +646,13 @@ multiplexedMessageType
 	|	MultiplexedMessage Star
 	|	MultiplexedMessage Constant
 	|	MultiplexedMessage Identifier (Minus|DoubleColon)? Identifier
+	;
+
+mostMessageType
+    :	MostMessage Identifier (Dot (Identifier | Star))?
+	|	MostMessage Star
+	|	MostMessage Constant
+	|	MostMessage Identifier (Minus|DoubleColon)? Identifier
 	;
 
 mostAmsMessageType
@@ -720,7 +752,12 @@ KeyConstants
 	|   CursorUp
 	|   CursorDown
 	|   CursorRight
-	|   CursorLeft)
+	|   CursorLeft
+	|   CtrlCursorUp
+	|   CtrlCursorDown
+	|   CtrlCursorRight
+	|   CtrlCursorLeft
+	)
 	;
 
 Star : '*';
@@ -757,34 +794,58 @@ CursorLeft : [cC][uU][rR][sS][oO][rR][lL][eE][fF][tT];
 CursorRight : [cC][uU][rR][sS][oO][rR][rR][iI][gG][hH][tT];
 CursorDown : [cC][uU][rR][sS][oO][rR][dD][oO][wW][nN];
 CursorUp : [cC][uU][rR][sS][oO][rR][uU][pP];
+CtrlCursorLeft : [cC][tT][rR][lL][cC][uU][rR][sS][oO][rR][lL][eE][fF][tT];
+CtrlCursorDown : [cC][tT][rR][lL][cC][uU][rR][sS][oO][rR][dD][oO][wW][nN];
+CtrlCursorUp : [cC][tT][rR][lL][cC][uU][rR][sS][oO][rR][uU][pP];
+CtrlCursorRight : [cC][tT][rR][lL][cC][uU][rR][sS][oO][rR][rR][iI][gG][hH][tT];
+//Align : [_][aA][lL][iI][gG][nN];
+Align8 : [_][aA][lL][iI][gG][nN][(][8][)] ;
+Align7 : [_][aA][lL][iI][gG][nN][(][7][)] ;
+Align6 : [_][aA][lL][iI][gG][nN][(][6][)] ;
+Align5 : [_][aA][lL][iI][gG][nN][(][5][)] ;
+Align4 : [_][aA][lL][iI][gG][nN][(][4][)] ;
+Align3 : [_][aA][lL][iI][gG][nN][(][3][)] ;
+Align2 : [_][aA][lL][iI][gG][nN][(][2][)] ;
+Align1 : [_][aA][lL][iI][gG][nN][(][1][)] ;
+Align0 : [_][aA][lL][iI][gG][nN][(][0][)] ;
 
 Identifier
     :	SimpleId
-	|	IdWithDotThis
-	|	IdWithDotConst
-	|   IdWithDoubleColon
+	|	DotThisId
+	|	DotConstId
+	|   DoubleColonId
 	|   SysVarId
 	|   ArrayAccessId
+	|   ByteAccessIndexerId
 	;
 
+ByteAccessIndexerId
+    :   Byte LeftParen DigitSequence RightParen
+    ;
+
 And : '&';
+LeftParen : '(';
+RightParen : ')';
+Byte : [bB][yY][tT][eE];
 
 ArrayAccessId
-    :   SimpleId (LeftBracket SimpleId RightBracket)* (Dot SimpleId)*
+    :   (SimpleId|SysvarIdentifier) Whitespace?
+        (LeftBracket Whitespace? (SimpleId|DigitSequence|SysvarIdentifier) Whitespace? RightBracket)+
+        (Whitespace? Dot Whitespace? (SimpleId|SysvarIdentifier))*
     ;
 
 LeftBracket : '[';
 RightBracket : ']';
 
-IdWithDoubleColon
+DoubleColonId
     :   (IdentifierNondigit (IdentifierNondigit | Digit)*) (DoubleColon (IdentifierNondigit (IdentifierNondigit | Digit)*))*
     ;
 
-IdWithDotConst
+DotConstId
     :   IdentifierNondigit (IdentifierNondigit | Digit)* Dot Constant
     ;
 
-IdWithDotThis
+DotThisId
     :   ((This | IdentifierNondigit) (IdentifierNondigit | Digit)*) Whitespace? Dot Whitespace? Identifier (Dot (Identifier))*
     ;
 
@@ -799,7 +860,7 @@ SysVarId
 This : [tT][hH][iI][sS];
 
 AccessToSignalIdentifier
-    :	Dollar Identifier (Phys|Raw|Raw64|Rx|TxRequest)?
+    :	Dollar Whitespace? Identifier (Phys|Raw|Raw64|Rx|TxRequest)?
     ;
 
 Or : '|';
@@ -811,8 +872,8 @@ Rx : [rR][xX];
 TxRequest : [tT][xX][rR][qQ];
 
 SysvarIdentifier
-    :	AtSign Sysvar? (DoubleColon Identifier) (DoubleColon Identifier)*
-    |   AtSign Identifier (DoubleColon Identifier)*
+    :	AtSign Whitespace? Sysvar? Whitespace? /*(DoubleColon Whitespace? Identifier)*/ (DoubleColon Whitespace? Identifier)*
+    |   AtSign Whitespace? Identifier Whitespace? (DoubleColon Whitespace? Identifier)*
     ;
 
 DoubleColon : '::';
@@ -837,7 +898,10 @@ Constant
 	:	IntegerConstant
 	|	FloatingConstant
 	|	CharacterConstant
+	|   MessageHexConst
 	;
+
+MessageHexConst : HexadecimalPrefix HexadecimalDigitSequence ('x')?;
 
 fragment IntegerConstant
 	:	DecimalConstant IntegerSuffix?
