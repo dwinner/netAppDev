@@ -316,6 +316,7 @@ typeSpecifier
 	|	messageType
 	|	multiplexedMessageType
 	|   mostAmsMessageType
+	|   mostMessageType
 	|	diagRequestType
 	|	diagResponseType
 	|	signalType
