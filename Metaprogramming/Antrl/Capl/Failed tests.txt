@@ -37,3 +37,4 @@ MessageId rule optimized for more generic parsing
 Key constants extended
 Identifier extended with byte access indexer
 Fixed mostMessageType for type specifier declaration
+Update splitted lexer with parser

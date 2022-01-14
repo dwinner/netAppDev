@@ -2,8 +2,13 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="950f7524-631c-4812-8c77-3d61ee540d20" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/gen/CaplLexer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Failed tests.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../Failed tests.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/grammar/Capl.g4" beforeDir="false" afterPath="$PROJECT_DIR$/grammar/Capl.g4" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gen/CaplLexer.interp" beforeDir="false" afterPath="$PROJECT_DIR$/gen/CaplLexer.interp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gen/CaplLexer.tokens" beforeDir="false" afterPath="$PROJECT_DIR$/gen/CaplLexer.tokens" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/grammar/CaplLexer.g4" beforeDir="false" afterPath="$PROJECT_DIR$/grammar/CaplLexer.g4" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/grammar/CaplParser.g4" beforeDir="false" afterPath="$PROJECT_DIR$/grammar/CaplParser.g4" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -94,6 +99,7 @@
       <workItem from="1642139423196" duration="27000" />
       <workItem from="1642139462290" duration="19517000" />
       <workItem from="1642173079839" duration="1088000" />
+      <workItem from="1642184798084" duration="293000" />
     </task>
     <servers />
   </component>

@@ -18,28 +18,36 @@ primaryExpression
 	|	LeftParen compoundStatement RightParen
 	| 	( includeBlock
 	    	| variableBlock
-			| eventBlock
+			| keyEventBlock
 			| timerBlock
 			| errorFrame
+			| errorActive
+			| errorPassive
 			| envBlock
 			| functionDefinition
 			| enumSpecifier
 			| structSpecifier
 			| startBlock
+			| busOnBlock
+			| busOffBlock
+			| preStartBlock
+			| preStopBlock
 			| messageBlock
+			| onAnyBlock
 			| multiplexedMessageBlock
+			| mostMessageBlock
 			| stopMeasurement
 			| diagRequestBlock
 			| diagResponseBlock
 			| signalBlock
 			| sysvarBlock
+			| sysvarUpdateBlock
+			| ethernetPacketBlock
+			| ethernetStatusBlock
+			| mostAmsMessageBlock
 			| externalDeclaration
 		)+
 	;
-
-variableBlock
-    :	Variables LeftBrace blockItemList? RightBrace
-    ;
 
 includeBlock
     :	Includes LeftBrace IncludeDirective* RightBrace
@@ -49,49 +57,105 @@ startBlock
     :	On Start LeftBrace blockItemList? RightBrace
     ;
 
-eventBlock
-    :	On keyEventType LeftBrace blockItemList RightBrace
+busOnBlock
+    :   On BusOn LeftBrace blockItemList? RightBrace
+    ;
+
+busOffBlock
+    :   On BusOff LeftBrace blockItemList? RightBrace
+    ;
+
+preStartBlock
+    :   On PreStart LeftBrace blockItemList? RightBrace
+    ;
+
+preStopBlock
+    :   On PreStop LeftBrace blockItemList? RightBrace
+    ;
+
+variableBlock
+    :	Variables LeftBrace blockItemList? RightBrace
+    ;
+
+keyEventBlock
+    :	On keyEventType LeftBrace blockItemList? RightBrace
     ;
 
 timerBlock
-    :	On timerType LeftBrace blockItemList RightBrace
+    :	On timerType
+        (LeftParen
+            (typeQualifier? typeSpecifier Identifier (Comma typeQualifier? typeSpecifier Identifier)*)
+        RightParen)?
+        LeftBrace blockItemList? RightBrace
     ;
 
 errorFrame
     : 	On ErrorFrame LeftBrace blockItemList? RightBrace
     ;
 
+errorActive
+    :   On ErrorActive LeftBrace blockItemList? RightBrace
+    ;
+
+errorPassive
+    :   On ErrorPassive LeftBrace blockItemList? RightBrace
+    ;
+
 messageBlock
-    :	On messageType LeftBrace blockItemList RightBrace
+    :	On messageType LeftBrace blockItemList? RightBrace
+    ;
+
+onAnyBlock
+    :   On Identifier LeftBrace blockItemList? RightBrace
     ;
 
 multiplexedMessageBlock
-    :	On multiplexedMessageType LeftBrace blockItemList RightBrace
+    :	On multiplexedMessageType LeftBrace blockItemList? RightBrace
+    ;
+
+mostMessageBlock
+    :   On mostMessageType LeftBrace blockItemList? RightBrace
     ;
 
 diagRequestBlock
-    :	On diagRequestType LeftBrace blockItemList RightBrace
+    :	On diagRequestType LeftBrace blockItemList? RightBrace
     ;
 
 diagResponseBlock
-    :	On diagResponseType LeftBrace blockItemList RightBrace
+    :	On diagResponseType LeftBrace blockItemList? RightBrace
     ;
 
 signalBlock
-    :	On signalType LeftBrace blockItemList RightBrace
+    :	On signalType LeftBrace blockItemList? RightBrace
     ;
 
 sysvarBlock
-    :	On sysvarType LeftBrace blockItemList RightBrace
+    :	On Sysvar sysvarType LeftBrace blockItemList? RightBrace
+    ;
+
+sysvarUpdateBlock
+    :   On SysvarUpdate sysvarUpdateType LeftBrace blockItemList? RightBrace
+    ;
+
+ethernetPacketBlock
+    :   On ethernetPacketType LeftBrace blockItemList? RightBrace
+    ;
+
+ethernetStatusBlock
+    :   On ethernetStatusType LeftBrace blockItemList? RightBrace
+    ;
+
+mostAmsMessageBlock
+    :   On mostAmsMessageType LeftBrace blockItemList? RightBrace
     ;
 
 stopMeasurement
-    :	On StopMeasurement LeftBrace blockItemList RightBrace
+    :	On StopMeasurement LeftBrace blockItemList? RightBrace
     ;
 
 envBlock
-    :	On EnvVar Identifier LeftBrace blockItemList RightBrace
-    |   On EnvVar LeftParen Identifier RightParen LeftBrace blockItemList RightBrace
+    :	On EnvVar Identifier LeftBrace blockItemList? RightBrace
+    |   On EnvVar LeftParen Identifier RightParen LeftBrace blockItemList? RightBrace
     ;
 
 postfixExpression
@@ -100,6 +164,7 @@ postfixExpression
 		)
 		(LeftBracket expression RightBracket
 			| LeftParen argumentExpressionList? RightParen
+			| (Dot | Arrow) Identifier
 			| (PlusPlus | MinusMinus)
 		)*
 	;
@@ -230,31 +295,47 @@ initDeclarator
     ;
 
 typeSpecifier
-    : 	(Void
-	|	Char
-	|	Byte
-	|	Int
-	|	Long
-	|	Int64
-	|	Float
-	|	Double
-	|	Word
-	|	Dword
-	|	Qword
+    :  (
+        Void Star?
+	|	Char    And?
+	|	Byte    And?
+	|	Int     And?
+	|	Long    And?
+	|	Int64   And?
+	|	Float   And?
+	|	Double  And?
+	|	Word    And?
+	|	Dword   And?
+	|	Qword   And?
 	|	Timer
 	|	MsTimer
 	|	structSpecifier
 	|	enumSpecifier
 	|	messageType
 	|	multiplexedMessageType
+	|   mostAmsMessageType
+	|   mostMessageType
 	|	diagRequestType
 	|	diagResponseType
 	|	signalType
-	|	sysvarType)
+	|	sysvarType
+	|   ethernetPacketType
+	|   ethernetStatusType
+	)
 	;
 
 structSpecifier
-    :	structure Identifier? LeftBrace structDeclarationList RightBrace
+    :	(   Align0
+        |   Align1
+        |   Align2
+        |   Align3
+        |   Align4
+        |   Align5
+        |   Align6
+        |   Align7
+        |   Align8
+        )?
+        structure Identifier? LeftBrace structDeclarationList RightBrace
     |	structure Identifier
     ;
 
@@ -366,7 +447,7 @@ statement
 
 labeledStatement
     :	Identifier Colon statement
-	|	Case (constantExpression) Colon statement
+	|	Case (constantExpression|KeyConstants) Colon statement
 	|	Default Colon statement
 	;
 
@@ -413,13 +494,13 @@ jumpStatement
     :	((Continue | Break) | Return expression?) Semi
     ;
 
-compilationUnit
+/*compilationUnit
 	:	translationUnit? EOF
 	;
 
 translationUnit
 	:	externalDeclaration+
-	;
+	;*/
 
 externalDeclaration
     :	functionDefinition
@@ -460,14 +541,30 @@ messageType
     :	Message Identifier (Dot (Identifier | Star))?
 	|	Message Star
 	|	Message Constant
-	|	Message Identifier Minus Identifier
+	|	Message Identifier (Minus|DoubleColon)? Identifier
+//	|   Message MessageHexConst (Minus MessageHexConst)?
+	|   Message Constant (Minus Constant)?
 	;
 
 multiplexedMessageType
     :	MultiplexedMessage Identifier (Dot (Identifier | Star))?
 	|	MultiplexedMessage Star
 	|	MultiplexedMessage Constant
-	|	MultiplexedMessage Identifier Minus Identifier
+	|	MultiplexedMessage Identifier (Minus|DoubleColon)? Identifier
+	;
+
+mostMessageType
+    :	MostMessage Identifier (Dot (Identifier | Star))?
+	|	MostMessage Star
+	|	MostMessage Constant
+	|	MostMessage Identifier (Minus|DoubleColon)? Identifier
+	;
+
+mostAmsMessageType
+    :	MostAmsMessage Identifier (Dot (Identifier | Star))?
+	|	MostAmsMessage Star
+	|	MostAmsMessage Constant
+	|	MostAmsMessage Identifier (Minus|DoubleColon)? Identifier
 	;
 
 diagRequestType
@@ -492,38 +589,29 @@ signalType
 	;
 
 sysvarType
-    :	DoubleSysvar DoubleColon Identifier (DoubleColon Identifier)*
+    :	(Sysvar DoubleColon)? Identifier (DoubleColon Identifier)*
 	;
+
+sysvarUpdateType
+    :   Identifier (DoubleColon Identifier)*
+    ;
+
+ethernetPacketType
+    :	EthernetPacket Identifier (Dot (Identifier | Star))?
+	|	EthernetPacket Star
+	|	EthernetPacket Constant
+	|	EthernetPacket Identifier (Minus|DoubleColon)? Identifier
+    ;
+
+ethernetStatusType
+    :	EthernetStatus Identifier (Dot (Identifier | Star))?
+	|	EthernetStatus Star
+	|	EthernetStatus Constant
+	|	EthernetStatus Identifier (Minus|DoubleColon)? Identifier
+    ;
 
 keyEventType
     :	Key Constant
-	|	Key (
-			F1
-		|	F2
-		|	F3
-		|	F4
-		|	F5
-		|	F6
-		|	F7
-		|	F8
-		|	F9
-		|	F10
-		|	F11
-		|	F12
-		|	CtrlF1
-		|	CtrlF2
-		|	CtrlF3
-		|	CtrlF4
-		|	CtrlF5
-		|	CtrlF6
-		|	CtrlF7
-		|	CtrlF8
-		|	CtrlF9
-		|	CtrlF10
-		|	CtrlF11
-		|	CtrlF12
-		|	PageUp
-		|	PageDown
-		|	Home)
+	|	Key KeyConstants
 	|	Key Star
 	;
