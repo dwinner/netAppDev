@@ -6,6 +6,7 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{7ABB7E8B-FAC9-4ECD-9053-75769523CD3F}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
+		capl-g4\grammar\Capl.g4 = capl-g4\grammar\Capl.g4
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ValidatingSymbolUsage", "ValidatingSymbolUsage\ValidatingSymbolUsage.csproj", "{3DA0668F-DFB5-48C2-A2CD-52AEAE842EA1}"
