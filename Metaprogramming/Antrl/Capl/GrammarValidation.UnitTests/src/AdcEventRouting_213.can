@@ -1,0 +1,188 @@
+/*@@var:*/
+/***************************************************************************
+*=====================      Copyright by Continental AG      ===============
+****************************************************************************
+* Title            : AdcEventRouting.can
+*
+* Description  : Test 2.18 (T_109)
+*                Measures time between sent key press and recieved key event.
+*
+* Responsible  : Christian Spahn <Christian.Spahn-EXT@continental-corporation.com>
+*
+* Revision List: (Will NOT be filled by XStudio)
+*
+* Archive: Rev. 1 ChrSpa: Inital 213 version
+*          Rev.   ChrSpa: Changed keys from +, - to OK (not in XStudio)
+*          Rev. 2 WolMau: Keypress signalled
+*          Rev. 3 WolMau: Rev. info from 2 added
+*          Rev  4 WolMau: Measuremenmt start and  values initialization on 't',
+*          Rev  5 WolMau: Environment variable "Env_StWhl_Sw_Ok_Psd" renamed in "HMI_StWhl_Sw_Ok1_Psd" 
+*          Rev  6 WolMau  Report format changed
+*
+****************************************************************************/
+
+variables {
+   msTimer oTimerKey;
+   msTimer oTimerSendADC;
+
+   dword u32startTime;
+
+   byte u8LastRxKeyCode;
+   byte u8LastTxKey;
+
+   byte u8KeyMode = 0;
+
+   dword u32DelaySum = 0;
+   dword u32DelayNumber = 0;
+   dword u32Min = 0x7fffffff;
+   dword u32Max = 0;
+}
+/*@@end*/
+
+/*@@caplFunc:doKeyAction():*///function
+doKeyAction ()
+{
+   switch (u8KeyMode) {
+      case 0:
+         //putValue(Env_StWhl_Sw_Ok_Psd, 1);
+         putValue(HMI_StWhl_Sw_Ok1_Psd, 1);
+         break;
+      case 1:
+         //putValue(Env_StWhl_Sw_Ok_Psd, 0);
+         putValue(HMI_StWhl_Sw_Ok1_Psd, 0);
+         break;
+   }
+
+   u8KeyMode++;
+   if (u8KeyMode > 1) {
+      u8KeyMode = 0;
+   }
+}
+/*@@end*/
+
+/*@@msg:CAN1.HMI_2015_05a::TP_IC_TGW_Nav (0x2BD):*/
+on message TP_IC_TGW_Nav
+{
+   if (this.byte(3) == 0xa5) {  // Got a key event
+      if (this.byte(4) != u8LastRxKeyCode) { // Recieved a new key
+         keyChangeSent();
+         u8LastRxKeyCode = this.byte(4);
+      }
+   }
+}
+/*@@end*/
+
+/*@@msg:CAN1.HMI_2015_05a::StWhl_Sw_Stat_AR (0x401):*/
+on message StWhl_Sw_Stat_AR
+{
+   if (u8LastTxKey != (this.byte(2) & 0x40)) {
+      keyChangeDetected();
+      u8LastTxKey = (this.byte(2) & 0x40);
+   }
+}
+/*@@end*/
+
+/*@@caplFunc:keyChangeDetected():*///function
+keyChangeDetected()
+{
+   u32startTime = timeNow();
+}
+/*@@end*/
+
+/*@@caplFunc:keyChangeSent():*///function
+keyChangeSent ()
+{
+   logDelay(timeNow() - u32startTime);
+}
+/*@@end*/
+
+/*@@caplFunc:logDelay(dword):*///function
+logDelay(dword u32Delay)
+{
+   u32DelaySum += u32Delay;
+   u32DelayNumber++;
+   if (u32Delay < u32Min) {
+      u32Min = u32Delay;
+   }
+   if (u32Delay > u32Max) {
+      u32Max = u32Delay;
+   }
+
+   //write("%3.3f", (float)u32Delay / 100);
+
+   if ((u32DelayNumber % 10) == 0) {
+      writeStatistics();
+   }
+}
+/*@@end*/
+
+/*@@key:'t':*/
+on key 't' {
+    write("Keypress \"t\" recieved -> Measurement starts");
+
+    u32DelaySum = 0;
+    u32DelayNumber = 0;
+    u32Min = 0x7fffffff;
+    u32Max = 0;
+
+    setupADC();
+}
+/*@@end*/
+
+/*@@timer:oTimerKey:*/
+on timer oTimerKey {
+   doKeyAction();
+   setTimer(oTimerKey, 750);
+}
+/*@@end*/
+
+/*@@caplFunc:writeStatistics():*///function
+writeStatistics() {
+   float fMin, fAvg, fMax;
+
+   fMin = (float)u32Min / 100;
+   fAvg = (float)(u32DelaySum/u32DelayNumber) / 100;
+   fMax = (float)u32Max / 100;
+
+   write("Min: %1.1f ms\nMax: %1.1f ms\nAvg: %1.1f ms\n(%d records)", fMin, fMax, fAvg, u32DelayNumber);
+}
+/*@@end*/
+
+/*@@timer:oTimerSendADC:*/
+on timer oTimerSendADC {
+   putValue(ADC_Z_SendData, 0);
+   setTimer(oTimerKey, 500);
+}
+/*@@end*/
+
+/*@@caplFunc:setupADC():*///function
+setupADC() {
+   // Enable key forwarding
+   putValue(ADC_D_EvMaskSet, 1);
+   putValue(ADC_E_EvRelLongDown, 1);
+   putValue(ADC_E_EvRelShortDown, 1);
+   putValue(ADC_E_EvLongDown, 1);
+   putValue(ADC_E_EvShortDown, 1);
+   putValue(ADC_E_EvRelLongUp, 1);
+   putValue(ADC_E_EvRelShortUp, 1);
+   putValue(ADC_E_EvLongUp, 1);
+   putValue(ADC_E_EvShortUp, 1);
+   putValue(ADC_E_EvRelLongBack, 1);
+   putValue(ADC_E_EvRelShortBack, 1);
+   putValue(ADC_E_EvLongBack, 1);
+   putValue(ADC_E_EvShortBack, 1);
+   putValue(ADC_E_EvRelLongOK, 1);
+   putValue(ADC_E_EvRelShortOK, 1);
+   putValue(ADC_E_EvLongOK, 1);
+   putValue(ADC_E_EvShortOK, 1);
+   putValue(ADC_E_EvReturn, 1);
+   putValue(ADC_E_EvEnd, 1);
+   putValue(ADC_E_EvSend, 1);
+   putValue(ADC_A_NodeAddress, 4);
+
+   // Send telegram
+   putValue(ADC_Z_SendData, 1);
+   setTimer(oTimerSendADC, 100);
+}
+/*@@end*/
+

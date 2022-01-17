@@ -1,0 +1,98 @@
+/*@@var:*/
+/***************************************************************************
+*=====================      Copyright by Continental AG      ===============
+****************************************************************************
+* Title            : GPU_RAM.can
+*
+* Description  : Test 06.05 (T_111)
+*                Measures time between sent ADC telegram and change of HIL ID.
+*
+* Responsible  : Christian Spahn <Christian.Spahn-EXT@continental-corporation.com>
+*
+* Revision List: (Will NOT be filled by XStudio)
+*
+* Archive: Rev  4 WolMau  - start with key "t" (adapted to test description)
+*          Rev  3 WolMau  - old Rev 1 restored (no function with Rev 2)
+*          Rev. 2 ChrSpa: - Added version information
+*                         - Added HMI_CLkS_Ext_Rq toggle
+*          Rev. 1 ChrSpa: Inital checkin
+*
+****************************************************************************/
+
+variables {
+
+   word u16OnOffCycles = 0;
+   byte boOldDisplayStat = 0xff;
+
+   byte boActive = 0;
+
+   msTimer oCLkS_Ext_Rq_Tmr;
+   const word HMI_CLKS_EXE_RQ_INVERVAL = 5000;
+}
+/*@@end*/
+
+/*@@msg:CAN1.HIL_W213::Meas_IC_3 (0x18EF4105X):*/
+on message Meas_IC_3 {
+   byte boDisplayStat;
+
+   boDisplayStat = (this.HIL_DisplayColor != 0);
+
+   if (boOldDisplayStat != boDisplayStat) {
+      newDisplayState(boDisplayStat);
+
+      boOldDisplayStat = boDisplayStat;
+   }
+}
+/*@@end*/
+
+/*@@caplFunc:newDisplayState(byte):*///function
+newDisplayState(byte boDisplayStat){
+   if (boActive) {
+      if (boDisplayStat) {
+         write("switching off");
+         putValue(HMI_ISw_Stat, 0);
+         putValue(HMI_CLkS_Ext_Rq, 1);
+         setTimer(oCLkS_Ext_Rq_Tmr, HMI_CLKS_EXE_RQ_INVERVAL);
+      } else {
+         putValue(HMI_ISw_Stat, 4);
+         u16OnOffCycles++;
+         write("Number of cycles: %d", u16OnOffCycles);
+      }
+   }
+}
+/*@@end*/
+
+/*@@key:'t':*/
+on key 't' {
+   if (boActive) {
+      write("On/off toggle inactive!");
+      putValue(HMI_ISw_Stat, 4);
+      boActive = 0;
+   } else {
+      write("On/off toggle active!");
+      u16OnOffCycles = 0;
+      if (boOldDisplayStat) {
+         putValue(HMI_ISw_Stat, 0);
+         putValue(HMI_CLkS_Ext_Rq, 1);
+         setTimer(oCLkS_Ext_Rq_Tmr, 100);
+      } else {
+         putValue(HMI_ISw_Stat, 4);
+      }
+      boActive = 1;
+   }
+
+
+}
+/*@@end*/
+
+/*@@timer:oCLkS_Ext_Rq_Tmr:*/
+on timer oCLkS_Ext_Rq_Tmr {
+   if (getValue(HMI_ISw_Stat)) {
+      putValue(HMI_CLkS_Ext_Rq, 0);
+   } else {
+      putValue(HMI_CLkS_Ext_Rq, !getValue(HMI_CLkS_Ext_Rq));
+   }
+   setTimer(oCLkS_Ext_Rq_Tmr, HMI_CLKS_EXE_RQ_INVERVAL);
+}
+/*@@end*/
+

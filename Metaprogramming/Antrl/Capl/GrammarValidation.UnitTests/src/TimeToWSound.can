@@ -1,0 +1,152 @@
+/*@@var:*/
+/***************************************************************************
+*=====================      Copyright by Continental AG      ===============
+****************************************************************************
+* Title            : TimeToWSound.can
+*
+* Description  : Test 02.07 (T_21)
+*                Measures the time between sent high colling temperature and
+*                change of HIL ID.
+*
+* Responsible  : Christian Spahn <Christian.Spahn-EXT@continental-corporation.com>
+*
+* Revision List: (Will NOT be filled by XStudio)
+*
+* Archive: Rev. 1 ChrSpa: Inital checkin
+*          Rev. 2 WolMau: Keypress signalled, Output values added, min, max
+*          Rev. 3 WolMau: Rev. from 2,3 added 
+*          Rev. 4 WolMau: Measurement start on Keyboard press 't'
+*                         Resetting Min, Max, Avg, Count on Keyboard press 'd'
+*          Rev. 5 ChrSpa: Changed to FCW warning, reworked statistics
+*          Rev. 6 WolMau: Report5 format changed
+*
+****************************************************************************/
+
+variables
+{
+   dword oldWarnState;
+
+   enum tenTtwState { idle, waitMsgSent, waitWarning, waitNormal } enTtwState;
+
+   dword ttwStartTime;
+
+   dword timeToWarning;
+   dword timeToWarningMin  = 0xffffffff;
+   dword timeToWarningMax  = 0;
+   dword timeToWarningSum  = 0;
+   word timeToWarningCalls = 0;
+ 
+   MsTimer timerStartDelay;
+   MsTimer timerCanMsgEcuHil2Ic;
+}
+/*@@end*/
+
+/*@@msg:CAN1.HIL_W213::Meas_IC_4 (0x18EF4106X):*/
+on message Meas_IC_4
+{
+   if ((this.HIL_LayoutNumber == 22) && (this.HIL_AcoustFrontCollWarn != oldWarnState)) {
+      oldWarnState = this.HIL_AcoustFrontCollWarn;
+      warningUpdate(this.HIL_AcoustFrontCollWarn);
+   }
+}
+/*@@end*/
+
+/*@@caplFunc:warningUpdate(byte):*///function
+warningUpdate (byte acoustFrontCollWarn)
+{
+   if (acoustFrontCollWarn && (enTtwState == waitWarning)) {
+      dword timeToWarning;
+
+      timeToWarning       = timeNow() - ttwStartTime;
+      timeToWarningSum   += timeToWarning;
+      timeToWarningCalls += 1;
+
+      timeToWarningMin = _min(timeToWarningMin, timeToWarning);
+      timeToWarningMax = _max(timeToWarningMax, timeToWarning);
+
+      write("TimeToWarning Calls %3d\nActual: %3.1f ms\nMin: %3.1f ms\nMax: %3.1f ms\nAvg: %3.1f ms", timeToWarningCalls, (float)timeToWarning/100, (float)timeToWarningMin / 100, (float)timeToWarningMax / 100, (float)timeToWarningSum / timeToWarningCalls / 100);
+      clearWarning();
+
+   } else if (!acoustFrontCollWarn && (enTtwState == waitNormal)) {
+      setTimer(timerStartDelay, 1000);
+   }
+
+}
+/*@@end*/
+
+/*@@startStart:Start:*/
+on start
+{
+   //setWarning();
+   putValue(HMI_APPL_ECU_HIL_TO_IC1A, 22);
+   setTimer(timerCanMsgEcuHil2Ic, 1000);
+}
+/*@@end*/
+
+/*@@caplFunc:setWarning():*///function
+setWarning ()
+{
+   putValue(HMI_FCW_AcustWarn_Rq, 1);
+   enTtwState = waitMsgSent;
+}
+/*@@end*/
+
+/*@@key:'t':*/
+on key 't'
+{
+    write("Keypress \"t\" recieved -> Measurement starts");
+
+    timeToWarningMin   = 0xffffffff;
+    timeToWarningMax   = 0;
+    timeToWarningSum   = 0;
+    timeToWarningCalls = 0;
+
+    setWarning();
+}
+/*@@end*/
+
+/*@@caplFunc:clearWarning():*///function
+clearWarning ()
+{
+   putValue(HMI_FCW_AcustWarn_Rq, 0);
+   enTtwState = waitNormal;
+}
+/*@@end*/
+
+/*@@timer:timerStartDelay:*/
+on timer timerStartDelay
+{
+   setWarning();
+}
+/*@@end*/
+
+/*@@msg:CAN1.HMI_2015_05a::FCW_Disp_Rq_AR (0x495):*/
+on message FCW_Disp_Rq_AR
+{
+   if ((enTtwState == waitMsgSent) && (this.FCW_AcustWarn_Rq.phys == 1)) {
+      enTtwState = waitWarning;
+      ttwStartTime = timeNow();
+   }
+
+}
+/*@@end*/
+
+/*@@timer:timerCanMsgEcuHil2Ic:*/
+on timer timerCanMsgEcuHil2Ic {
+   putValue(HMI_APPL_ECU_HIL_TO_IC1A, 22);
+   putValue(HMI__STMSP_APPL_ECU_HIL_TO_IC1, 1);
+}
+/*@@end*/
+
+/*@@key:'d':*/
+on key 'd'
+{
+    write("Keypress \"d\" recieved -> Reset measurements");
+
+    timeToWarningMin   = 0xffffffff;
+    timeToWarningMax   = 0;
+    timeToWarningSum   = 0;
+    timeToWarningCalls = 0;
+}
+/*@@end*/
+

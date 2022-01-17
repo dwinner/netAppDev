@@ -1,40 +1,44 @@
-DRVU.CAN
-DoIP_Testnode1.can
-EIS.CAN
-EIS_2.CAN
-EIS_3.CAN
-EIS_Penio.CAN
-FSG25.can
-FSG26.can
-FSG27.can
-FSG33.can
-FSG35.can
-FSG39.can
-FSG4.can
-FSG40.can
-FSG41.can
-FSG49.can
-FSG50.can
-FSG60.can
-FSG7.can
-FSG70.can
-FSG70_Simu.can
-FSG80.can
-FSG82.can
-FSG85.can
-FSG_AudioSD.can
-FSG_AudioSD_Ethernet.can
-FSG_Telephone_BAPv1.8_v3.0.can
-FoD_MasterSim_CAN_CANFD_Extended.can
-Gateway_DoIP.can
-
-Added onAnyBlock
-Added mostMessageBlock
-timerBlock extended with argument list options
-postfixExpression extended to support parsing expressions in array indexer
-Struct declaration extended to support _align keyword
-MessageId rule optimized for more generic parsing
-Key constants extended
-Identifier extended with byte access indexer
-Fixed mostMessageType for type specifier declaration
-Update splitted lexer with parser
+DLM.can / failed
+================
+DRVU.CAN / passed;
+DoIP_Testnode1.can / passed;
+EIS.CAN / passed;
+EIS_2.CAN / passed;
+EIS_3.CAN / passed;
+EIS_Penio.CAN / passed;
+FSG25.can / passed;
+FSG26.can / passed;
+FSG27.can / passed;
+FSG33.can / passed;
+FSG35.can / passed;
+FSG39.can / passed;
+FSG4.can / passed;
+FSG40.can / passed;
+FSG41.can / passed;
+FSG49.can / passed;
+FSG50.can / passed;
+FSG60.can / passed;
+FSG7.can / passed;
+FSG70.can / passed;
+FSG70_Simu.can / passed;
+FSG80.can / passed;
+FSG82.can / passed;
+FSG85.can / passed;
+FSG_AudioSD.can / passed;
+FSG_AudioSD_Ethernet.can / passed;
+FSG_Telephone_BAPv1.8_v3.0.can / passed;
+FoD_MasterSim_CAN_CANFD_Extended.can / passed;
+Gateway_DoIP.can / passed;
+================
+Added onAnyBlock;
+Added mostMessageBlock;
+timerBlock extended with argument list options;
+postfixExpression extended to support parsing expressions in array indexer;
+Struct declaration extended to support _align keyword;
+MessageId rule optimized for more generic parsing;
+Key constants extended;
+Identifier extended with byte access indexer;
+Fixed mostMessageType for type specifier declaration;
+Update splitted lexer with parser;
+3 Attemps to optimaze the grammar / failed, rejected;
+Added +12 files for tests from IC213MY20;
