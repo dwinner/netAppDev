@@ -1,11 +1,5 @@
 DLM.can / failed
 ================
-DRVU.CAN / passed;
-DoIP_Testnode1.can / passed;
-EIS.CAN / passed;
-EIS_2.CAN / passed;
-EIS_3.CAN / passed;
-EIS_Penio.CAN / passed;
 FSG25.can / passed;
 FSG26.can / passed;
 FSG27.can / passed;
