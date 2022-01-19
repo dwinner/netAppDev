@@ -270,6 +270,10 @@ void switchSample()
     }
 }
 
+byte funcByte(byte charVal, const byte constCharVal, byte & charRef)
+{
+}
+
 char funcChar(char charVal, const char constCharVal, char & charRef)
 {
 }
@@ -1045,10 +1049,6 @@ on message simpleMessage . subMessage
 {
 }
 
-on message *
-{
-}
-
 on multiplexed_message can2.0x100
 {
 }
@@ -1657,11 +1657,55 @@ on mostAmsMessage CAN1.0x500 - 0x57F
 {
 }
 
-/* ================================ Regression errors ================================
-byte funcByte(byte charVal, const byte constCharVal, byte & charRef)
+on message  EDMsg,
+            //can2.0x100,
+            //0x1B000000x-0x1B00007Fx,
+            //0x131,
+            //100,
+            //BAPonly::BAPAudi,
+            //*,
+            MeacIC_5,
+            MeasIC_3
 {
 }
 
+on mostMessage  EDMsg,
+                //can2.0x100,
+                //0x1B000000x-0x1B00007Fx,
+                //0x131,
+                //100,
+                //BAPonly::BAPAudi,
+                //*,
+                MeacIC_5,
+                MeasIC_3
+{
+}
+
+on multiplexed_message  EDMsg,
+                        //can2.0x100,
+                        //0x1B000000x-0x1B00007Fx,
+                        //0x131,
+                        //100,
+                        //BAPonly::BAPAudi,
+                        //*,
+                        MeacIC_5,
+                        MeasIC_3
+{
+}
+
+on mostAmsMessage   EDMsg,
+                    //can2.0x100,
+                    //0x1B000000x-0x1B00007Fx,
+                    //0x131,
+                    //100,
+                    //BAPonly::BAPAudi,
+                    //*,
+                    MeacIC_5,
+                    MeasIC_3
+{
+}
+
+/* ================================ Regression errors ================================
 int & refReturn ( int param1 )
 {
 }

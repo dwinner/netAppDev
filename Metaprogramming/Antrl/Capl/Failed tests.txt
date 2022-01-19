@@ -12,13 +12,8 @@ FSG_Telephone_BAPv1.8_v3.0.can / passed;
 FoD_MasterSim_CAN_CANFD_Extended.can / passed;
 Gateway_DoIP.can / passed;
 
-CANopenMasterStill.can / failed (on message ST_LiIoBMS_SDOresp, ST_LiIoBMS_SDOresp2);
+CANopenMasterStill.can / fixed;
 ================
-Added onAnyBlock;
-Added mostMessageBlock;
-timerBlock extended with argument list options;
-postfixExpression extended to support parsing expressions in array indexer;
-Struct declaration extended to support _align keyword;
 MessageId rule optimized for more generic parsing;
 Key constants extended;
 Identifier extended with byte access indexer;
@@ -29,3 +24,4 @@ Added +12 files for tests from IC213MY20;
 Fixed one message type variant in capl-g4;
 Optimized grammar for permormance / 1st iteration;
 Added +19 can files from Platform_CANoe_RBS for unit testing;
+Extend message type for enumeration use case / done;

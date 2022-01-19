@@ -46,7 +46,7 @@ public partial class CaplBaseVisitor<Result> : AbstractParseTreeVisitor<Result>,
 	/// <return>The visitor result.</return>
 	public virtual Result VisitPrimaryExpression([NotNull] CaplParser.PrimaryExpressionContext context) { return VisitChildren(context); }
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="CaplParser.includeBlock"/>.
+	/// Visit a parse tree produced by <see cref="CaplParser.includeSection"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -54,9 +54,9 @@ public partial class CaplBaseVisitor<Result> : AbstractParseTreeVisitor<Result>,
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitIncludeBlock([NotNull] CaplParser.IncludeBlockContext context) { return VisitChildren(context); }
+	public virtual Result VisitIncludeSection([NotNull] CaplParser.IncludeSectionContext context) { return VisitChildren(context); }
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="CaplParser.startBlock"/>.
+	/// Visit a parse tree produced by <see cref="CaplParser.startSection"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -64,9 +64,9 @@ public partial class CaplBaseVisitor<Result> : AbstractParseTreeVisitor<Result>,
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitStartBlock([NotNull] CaplParser.StartBlockContext context) { return VisitChildren(context); }
+	public virtual Result VisitStartSection([NotNull] CaplParser.StartSectionContext context) { return VisitChildren(context); }
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="CaplParser.busOnBlock"/>.
+	/// Visit a parse tree produced by <see cref="CaplParser.busOnSection"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -74,9 +74,9 @@ public partial class CaplBaseVisitor<Result> : AbstractParseTreeVisitor<Result>,
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitBusOnBlock([NotNull] CaplParser.BusOnBlockContext context) { return VisitChildren(context); }
+	public virtual Result VisitBusOnSection([NotNull] CaplParser.BusOnSectionContext context) { return VisitChildren(context); }
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="CaplParser.busOffBlock"/>.
+	/// Visit a parse tree produced by <see cref="CaplParser.busOffSection"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -84,9 +84,9 @@ public partial class CaplBaseVisitor<Result> : AbstractParseTreeVisitor<Result>,
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitBusOffBlock([NotNull] CaplParser.BusOffBlockContext context) { return VisitChildren(context); }
+	public virtual Result VisitBusOffSection([NotNull] CaplParser.BusOffSectionContext context) { return VisitChildren(context); }
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="CaplParser.preStartBlock"/>.
+	/// Visit a parse tree produced by <see cref="CaplParser.preStartSection"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -94,9 +94,9 @@ public partial class CaplBaseVisitor<Result> : AbstractParseTreeVisitor<Result>,
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitPreStartBlock([NotNull] CaplParser.PreStartBlockContext context) { return VisitChildren(context); }
+	public virtual Result VisitPreStartSection([NotNull] CaplParser.PreStartSectionContext context) { return VisitChildren(context); }
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="CaplParser.preStopBlock"/>.
+	/// Visit a parse tree produced by <see cref="CaplParser.preStopSection"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -104,9 +104,9 @@ public partial class CaplBaseVisitor<Result> : AbstractParseTreeVisitor<Result>,
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitPreStopBlock([NotNull] CaplParser.PreStopBlockContext context) { return VisitChildren(context); }
+	public virtual Result VisitPreStopSection([NotNull] CaplParser.PreStopSectionContext context) { return VisitChildren(context); }
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="CaplParser.variableBlock"/>.
+	/// Visit a parse tree produced by <see cref="CaplParser.variableSection"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -114,9 +114,9 @@ public partial class CaplBaseVisitor<Result> : AbstractParseTreeVisitor<Result>,
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitVariableBlock([NotNull] CaplParser.VariableBlockContext context) { return VisitChildren(context); }
+	public virtual Result VisitVariableSection([NotNull] CaplParser.VariableSectionContext context) { return VisitChildren(context); }
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="CaplParser.keyEventBlock"/>.
+	/// Visit a parse tree produced by <see cref="CaplParser.keyEventSection"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -124,9 +124,9 @@ public partial class CaplBaseVisitor<Result> : AbstractParseTreeVisitor<Result>,
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitKeyEventBlock([NotNull] CaplParser.KeyEventBlockContext context) { return VisitChildren(context); }
+	public virtual Result VisitKeyEventSection([NotNull] CaplParser.KeyEventSectionContext context) { return VisitChildren(context); }
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="CaplParser.timerBlock"/>.
+	/// Visit a parse tree produced by <see cref="CaplParser.timerSection"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -134,9 +134,9 @@ public partial class CaplBaseVisitor<Result> : AbstractParseTreeVisitor<Result>,
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitTimerBlock([NotNull] CaplParser.TimerBlockContext context) { return VisitChildren(context); }
+	public virtual Result VisitTimerSection([NotNull] CaplParser.TimerSectionContext context) { return VisitChildren(context); }
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="CaplParser.errorFrame"/>.
+	/// Visit a parse tree produced by <see cref="CaplParser.errorFrameSection"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -144,9 +144,9 @@ public partial class CaplBaseVisitor<Result> : AbstractParseTreeVisitor<Result>,
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitErrorFrame([NotNull] CaplParser.ErrorFrameContext context) { return VisitChildren(context); }
+	public virtual Result VisitErrorFrameSection([NotNull] CaplParser.ErrorFrameSectionContext context) { return VisitChildren(context); }
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="CaplParser.errorActive"/>.
+	/// Visit a parse tree produced by <see cref="CaplParser.errorActiveSection"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -154,9 +154,9 @@ public partial class CaplBaseVisitor<Result> : AbstractParseTreeVisitor<Result>,
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitErrorActive([NotNull] CaplParser.ErrorActiveContext context) { return VisitChildren(context); }
+	public virtual Result VisitErrorActiveSection([NotNull] CaplParser.ErrorActiveSectionContext context) { return VisitChildren(context); }
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="CaplParser.errorPassive"/>.
+	/// Visit a parse tree produced by <see cref="CaplParser.errorPassiveSection"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -164,9 +164,9 @@ public partial class CaplBaseVisitor<Result> : AbstractParseTreeVisitor<Result>,
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitErrorPassive([NotNull] CaplParser.ErrorPassiveContext context) { return VisitChildren(context); }
+	public virtual Result VisitErrorPassiveSection([NotNull] CaplParser.ErrorPassiveSectionContext context) { return VisitChildren(context); }
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="CaplParser.messageBlock"/>.
+	/// Visit a parse tree produced by <see cref="CaplParser.messageSection"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -174,9 +174,9 @@ public partial class CaplBaseVisitor<Result> : AbstractParseTreeVisitor<Result>,
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitMessageBlock([NotNull] CaplParser.MessageBlockContext context) { return VisitChildren(context); }
+	public virtual Result VisitMessageSection([NotNull] CaplParser.MessageSectionContext context) { return VisitChildren(context); }
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="CaplParser.onAnyBlock"/>.
+	/// Visit a parse tree produced by <see cref="CaplParser.onAnySection"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -184,9 +184,9 @@ public partial class CaplBaseVisitor<Result> : AbstractParseTreeVisitor<Result>,
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitOnAnyBlock([NotNull] CaplParser.OnAnyBlockContext context) { return VisitChildren(context); }
+	public virtual Result VisitOnAnySection([NotNull] CaplParser.OnAnySectionContext context) { return VisitChildren(context); }
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="CaplParser.multiplexedMessageBlock"/>.
+	/// Visit a parse tree produced by <see cref="CaplParser.multiplexedMessageSection"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -194,9 +194,9 @@ public partial class CaplBaseVisitor<Result> : AbstractParseTreeVisitor<Result>,
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitMultiplexedMessageBlock([NotNull] CaplParser.MultiplexedMessageBlockContext context) { return VisitChildren(context); }
+	public virtual Result VisitMultiplexedMessageSection([NotNull] CaplParser.MultiplexedMessageSectionContext context) { return VisitChildren(context); }
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="CaplParser.mostMessageBlock"/>.
+	/// Visit a parse tree produced by <see cref="CaplParser.mostMessageSection"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -204,9 +204,9 @@ public partial class CaplBaseVisitor<Result> : AbstractParseTreeVisitor<Result>,
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitMostMessageBlock([NotNull] CaplParser.MostMessageBlockContext context) { return VisitChildren(context); }
+	public virtual Result VisitMostMessageSection([NotNull] CaplParser.MostMessageSectionContext context) { return VisitChildren(context); }
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="CaplParser.diagRequestBlock"/>.
+	/// Visit a parse tree produced by <see cref="CaplParser.diagRequestSection"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -214,9 +214,9 @@ public partial class CaplBaseVisitor<Result> : AbstractParseTreeVisitor<Result>,
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitDiagRequestBlock([NotNull] CaplParser.DiagRequestBlockContext context) { return VisitChildren(context); }
+	public virtual Result VisitDiagRequestSection([NotNull] CaplParser.DiagRequestSectionContext context) { return VisitChildren(context); }
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="CaplParser.diagResponseBlock"/>.
+	/// Visit a parse tree produced by <see cref="CaplParser.diagResponseSection"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -224,9 +224,9 @@ public partial class CaplBaseVisitor<Result> : AbstractParseTreeVisitor<Result>,
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitDiagResponseBlock([NotNull] CaplParser.DiagResponseBlockContext context) { return VisitChildren(context); }
+	public virtual Result VisitDiagResponseSection([NotNull] CaplParser.DiagResponseSectionContext context) { return VisitChildren(context); }
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="CaplParser.signalBlock"/>.
+	/// Visit a parse tree produced by <see cref="CaplParser.signalSection"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -234,9 +234,9 @@ public partial class CaplBaseVisitor<Result> : AbstractParseTreeVisitor<Result>,
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitSignalBlock([NotNull] CaplParser.SignalBlockContext context) { return VisitChildren(context); }
+	public virtual Result VisitSignalSection([NotNull] CaplParser.SignalSectionContext context) { return VisitChildren(context); }
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="CaplParser.sysvarBlock"/>.
+	/// Visit a parse tree produced by <see cref="CaplParser.sysvarSection"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -244,9 +244,9 @@ public partial class CaplBaseVisitor<Result> : AbstractParseTreeVisitor<Result>,
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitSysvarBlock([NotNull] CaplParser.SysvarBlockContext context) { return VisitChildren(context); }
+	public virtual Result VisitSysvarSection([NotNull] CaplParser.SysvarSectionContext context) { return VisitChildren(context); }
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="CaplParser.sysvarUpdateBlock"/>.
+	/// Visit a parse tree produced by <see cref="CaplParser.sysvarUpdateSection"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -254,9 +254,9 @@ public partial class CaplBaseVisitor<Result> : AbstractParseTreeVisitor<Result>,
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitSysvarUpdateBlock([NotNull] CaplParser.SysvarUpdateBlockContext context) { return VisitChildren(context); }
+	public virtual Result VisitSysvarUpdateSection([NotNull] CaplParser.SysvarUpdateSectionContext context) { return VisitChildren(context); }
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="CaplParser.ethernetPacketBlock"/>.
+	/// Visit a parse tree produced by <see cref="CaplParser.ethernetPacketSection"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -264,9 +264,9 @@ public partial class CaplBaseVisitor<Result> : AbstractParseTreeVisitor<Result>,
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitEthernetPacketBlock([NotNull] CaplParser.EthernetPacketBlockContext context) { return VisitChildren(context); }
+	public virtual Result VisitEthernetPacketSection([NotNull] CaplParser.EthernetPacketSectionContext context) { return VisitChildren(context); }
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="CaplParser.ethernetStatusBlock"/>.
+	/// Visit a parse tree produced by <see cref="CaplParser.ethernetStatusSection"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -274,9 +274,9 @@ public partial class CaplBaseVisitor<Result> : AbstractParseTreeVisitor<Result>,
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitEthernetStatusBlock([NotNull] CaplParser.EthernetStatusBlockContext context) { return VisitChildren(context); }
+	public virtual Result VisitEthernetStatusSection([NotNull] CaplParser.EthernetStatusSectionContext context) { return VisitChildren(context); }
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="CaplParser.mostAmsMessageBlock"/>.
+	/// Visit a parse tree produced by <see cref="CaplParser.mostAmsMessageSection"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -284,9 +284,9 @@ public partial class CaplBaseVisitor<Result> : AbstractParseTreeVisitor<Result>,
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitMostAmsMessageBlock([NotNull] CaplParser.MostAmsMessageBlockContext context) { return VisitChildren(context); }
+	public virtual Result VisitMostAmsMessageSection([NotNull] CaplParser.MostAmsMessageSectionContext context) { return VisitChildren(context); }
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="CaplParser.stopMeasurement"/>.
+	/// Visit a parse tree produced by <see cref="CaplParser.stopMeasurementSection"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -294,9 +294,9 @@ public partial class CaplBaseVisitor<Result> : AbstractParseTreeVisitor<Result>,
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitStopMeasurement([NotNull] CaplParser.StopMeasurementContext context) { return VisitChildren(context); }
+	public virtual Result VisitStopMeasurementSection([NotNull] CaplParser.StopMeasurementSectionContext context) { return VisitChildren(context); }
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="CaplParser.envBlock"/>.
+	/// Visit a parse tree produced by <see cref="CaplParser.envSection"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -304,7 +304,7 @@ public partial class CaplBaseVisitor<Result> : AbstractParseTreeVisitor<Result>,
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitEnvBlock([NotNull] CaplParser.EnvBlockContext context) { return VisitChildren(context); }
+	public virtual Result VisitEnvSection([NotNull] CaplParser.EnvSectionContext context) { return VisitChildren(context); }
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="CaplParser.postfixExpression"/>.
 	/// <para>

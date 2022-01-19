@@ -4,8 +4,7 @@
 
 grammar Capl;
 
-/* Capl parser */
-
+// The root parser node
 primaryExpression:
 	Identifier
 	| AccessToSignalIdentifier
@@ -15,71 +14,72 @@ primaryExpression:
 	| LeftParen expression RightParen
 	| LeftParen compoundStatement RightParen
 	| (
-		includeBlock
-		| variableBlock
-		| keyEventBlock
-		| timerBlock
-		| errorFrame
-		| errorActive
-		| errorPassive
-		| envBlock
+		includeSection
+		| variableSection
+		| keyEventSection
+		| timerSection
+		| errorFrameSection
+		| errorActiveSection
+		| errorPassiveSection
+		| envSection
 		| functionDefinition
 		| enumSpecifier
 		| structSpecifier
-		| startBlock
-		| busOnBlock
-		| busOffBlock
-		| preStartBlock
-		| preStopBlock
-		| messageBlock
-		| onAnyBlock
-		| multiplexedMessageBlock
-		| mostMessageBlock
-		| stopMeasurement
-		| diagRequestBlock
-		| diagResponseBlock
-		| signalBlock
-		| sysvarBlock
-		| sysvarUpdateBlock
-		| ethernetPacketBlock
-		| ethernetStatusBlock
-		| mostAmsMessageBlock
+		| startSection
+		| busOnSection
+		| busOffSection
+		| preStartSection
+		| preStopSection
+		| messageSection
+		| onAnySection
+		| multiplexedMessageSection
+		| mostMessageSection
+		| stopMeasurementSection
+		| diagRequestSection
+		| diagResponseSection
+		| signalSection
+		| sysvarSection
+		| sysvarUpdateSection
+		| ethernetPacketSection
+		| ethernetStatusSection
+		| mostAmsMessageSection
 		| externalDeclaration
 	)+;
 
-includeBlock
+/* Top CAPL's sections */
+includeSection
     : Includes LeftBrace IncludeDirective* RightBrace
     ;
 
-startBlock
+startSection
     : On Start LeftBrace blockItemList? RightBrace
     ;
 
-busOnBlock
+busOnSection
     : On BusOn LeftBrace blockItemList? RightBrace
     ;
 
-busOffBlock
+busOffSection
     : On BusOff LeftBrace blockItemList? RightBrace
     ;
 
-preStartBlock
+preStartSection
     : On PreStart LeftBrace blockItemList? RightBrace
     ;
 
-preStopBlock
+preStopSection
     : On PreStop LeftBrace blockItemList? RightBrace
     ;
 
-variableBlock
+variableSection
     : Variables LeftBrace blockItemList? RightBrace
     ;
 
-keyEventBlock
+keyEventSection
     : On keyEventType LeftBrace blockItemList? RightBrace
     ;
 
-timerBlock:
+timerSection:
 	On timerType (
 		LeftParen (
 			typeQualifier? typeSpecifier Identifier (
@@ -88,76 +88,77 @@ timerBlock:
 		) RightParen
 	)? LeftBrace blockItemList? RightBrace;
 
-errorFrame
+errorFrameSection
     : On ErrorFrame LeftBrace blockItemList? RightBrace
     ;
 
-errorActive
+errorActiveSection
     : On ErrorActive LeftBrace blockItemList? RightBrace
     ;
 
-errorPassive
+errorPassiveSection
     : On ErrorPassive LeftBrace blockItemList? RightBrace
     ;
 
-messageBlock
+messageSection
     : On messageType LeftBrace blockItemList? RightBrace
     ;
 
-onAnyBlock
+onAnySection
     : On Identifier LeftBrace blockItemList? RightBrace
     ;
 
-multiplexedMessageBlock
+multiplexedMessageSection
     : On multiplexedMessageType LeftBrace blockItemList? RightBrace
     ;
 
-mostMessageBlock
+mostMessageSection
     : On mostMessageType LeftBrace blockItemList? RightBrace
     ;
 
-diagRequestBlock
+diagRequestSection
     : On diagRequestType LeftBrace blockItemList? RightBrace
     ;
 
-diagResponseBlock
+diagResponseSection
     : On diagResponseType LeftBrace blockItemList? RightBrace
     ;
 
-signalBlock
+signalSection
     : On signalType LeftBrace blockItemList? RightBrace
     ;
 
-sysvarBlock
+sysvarSection
     : On Sysvar2 sysvarType LeftBrace blockItemList? RightBrace
     ;
 Sysvar2: [sS][yY][sS][vV][aA][rR];  // #SPIKE
 
-sysvarUpdateBlock
+sysvarUpdateSection
     : On SysvarUpdate sysvarUpdateType LeftBrace blockItemList? RightBrace
     ;
 
-ethernetPacketBlock
+ethernetPacketSection
     : On ethernetPacketType LeftBrace blockItemList? RightBrace
     ;
 
-ethernetStatusBlock
+ethernetStatusSection
     : On ethernetStatusType LeftBrace blockItemList? RightBrace
     ;
 
-mostAmsMessageBlock
+mostAmsMessageSection
     : On mostAmsMessageType LeftBrace blockItemList? RightBrace
     ;
 
-stopMeasurement
+stopMeasurementSection
     : On StopMeasurement LeftBrace blockItemList? RightBrace
     ;
 
-envBlock
+envSection
     : On EnvVar Identifier LeftBrace blockItemList? RightBrace
 	| On EnvVar LeftParen Identifier RightParen LeftBrace blockItemList? RightBrace
 	;
 
+/* Parser's syntax rules */
 postfixExpression: (
 		primaryExpression
 		| LeftParen typeName RightParen LeftBrace initializerList Comma? RightBrace
@@ -220,14 +221,14 @@ conditionalExpression:
 		Question expression Colon conditionalExpression
 	)?;
 
-assignmentExpression:
-	conditionalExpression
+assignmentExpression
+    : conditionalExpression
 	| unaryExpression assignmentOperator assignmentExpression
 	| DigitSequence
 	;
 
-assignmentOperator:
-	Assign
+assignmentOperator
+    : Assign
 	| StarAssign
 	| DivAssign
 	| ModAssign
@@ -237,7 +238,8 @@ assignmentOperator:
 	| RightShiftAssign
 	| AndAssign
 	| XorAssign
-	| OrAssign;
+	| OrAssign
+	;
 
 expression: assignmentExpression (Comma assignmentExpression)*;
 
@@ -322,8 +324,8 @@ structDeclarator
 
 declarator: directDeclarator;
 
-directDeclarator:
-	Identifier
+directDeclarator
+    : Identifier
 	| LeftParen declarator RightParen
 	| directDeclarator LeftBracket assignmentExpression? RightBracket
 	| directDeclarator LeftParen parameterTypeList RightParen
@@ -423,7 +425,7 @@ declarationList: declaration+;
 
 /* Capl lexer and misc rules */
 
-/* Keywords */
+// Keywords
 Export: [eE][xX][pP][oO][rR][tT];
 Testcase: [tT][eE][sS][tT][cC][aA][sS][eE];
 Testfunction: [tT][eE][sS][tT][fF][uU][nN][cC][tT][iI][oO][nN];
@@ -487,7 +489,7 @@ timerType: Timer Identifier (Dot (Identifier | Star))?;
 Timer: [Tt][iI][mM][eE][rR];
 
 messageType
-    : Message Identifier (Dot (Identifier | Star))?
+    : Message Identifier (Dot (Identifier | Star))? (Comma Identifier (Dot (Identifier | Star))?)*
 	| Message Star
 	| Message Constant
 	| Message Identifier (Minus | DoubleColon)? Identifier
@@ -498,7 +500,7 @@ messageType
 Message: [mM][eE][sS][sS][aA][gG][eE];
 
 multiplexedMessageType
-    : MultiplexedMessage Identifier (Dot (Identifier | Star))?
+    : MultiplexedMessage Identifier (Dot (Identifier | Star))? (Comma Identifier (Dot (Identifier | Star))?)*
 	| MultiplexedMessage Star
 	| MultiplexedMessage Constant
 	| MultiplexedMessage Identifier (Minus | DoubleColon)? Identifier
@@ -508,8 +510,8 @@ multiplexedMessageType
 	;
 MultiplexedMessage: [mM][uU][lL][tT][iI][pP][lL][eE][xX][eE][dD][_][mM][eE][sS][sS][aA][gG][eE];
 
-mostMessageType:
-	MostMessage Identifier (Dot (Identifier | Star))?
+mostMessageType
+    : MostMessage Identifier (Dot (Identifier | Star))? (Comma Identifier (Dot (Identifier | Star))?)*
 	| MostMessage Star
 	| MostMessage Constant
 	| MostMessage Identifier (Minus | DoubleColon)? Identifier
@@ -518,8 +520,8 @@ mostMessageType:
 	| MostMessage Identifier Minus Whitespace? Constant
 	;
 
-mostAmsMessageType:
-	MostAmsMessage Identifier (Dot (Identifier | Star))?
+mostAmsMessageType
+    : MostAmsMessage Identifier (Dot (Identifier | Star))? (Comma Identifier (Dot (Identifier | Star))?)*
 	| MostAmsMessage Star
 	| MostAmsMessage Constant
 	| MostAmsMessage Identifier (Minus | DoubleColon)? Identifier
@@ -665,8 +667,8 @@ Align2: [_][aA][lL][iI][gG][nN][(][2][)];
 Align1: [_][aA][lL][iI][gG][nN][(][1][)];
 Align0: [_][aA][lL][iI][gG][nN][(][0][)];
 
-Identifier: (
-      SimpleId
+Identifier
+    : (SimpleId
 	| DotThisId
 	| DotConstId
 	| DoubleColonId
