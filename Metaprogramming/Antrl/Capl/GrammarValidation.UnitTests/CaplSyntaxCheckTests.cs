@@ -311,7 +311,26 @@ namespace GrammarValidation.UnitTests
             new object[] { @"src\\TripMenuFastScrolling.can" },
             new object[] { @"src\\GPU_RAM.can" },
             new object[] { @"src\\DependencyChangeRuntime.can" },
-            new object[] { @"src\\HudStressByConsumption.can" }
+            new object[] { @"src\\HudStressByConsumption.can" },
+            new object[] { @"src\\CANopenMasterStill.can" },
+            new object[] { @"src\\FehlerbitmusterInterpreter.can" },
+            new object[] { @"src\\GoToBolo.can" },
+            new object[] { @"src\\KeyboardLinde.can" },
+            new object[] { @"src\\KeyboardStill.can" },
+            new object[] { @"src\\measureStartUpTime.can" },
+            new object[] { @"src\\MemoryAccess.can" },
+            new object[] { @"src\\nach_Spekl_ReadErrorData.can" },
+            new object[] { @"src\\ReadErrorData.can" },
+            new object[] { @"src\\ReadErrorDataStill.can" },
+            new object[] { @"src\\secacc.can" },
+            new object[] { @"src\\slavekillhelp.can" },
+            new object[] { @"src\\SlaveNVM-kill.can" },
+            new object[] { @"src\\SleepTest.can" },
+            new object[] { @"src\\Still_FehlermusterInterpreter.can" },
+            new object[] { @"src\\Still_measureStartUpTime.can" },
+            new object[] { @"src\\Test_IsaCanReceive.can" },
+            new object[] { @"src\\Test_IsaCanTransmit.can" },
+            new object[] { @"src\\U_T_SdoReadTest.can" }
         };
 
         [TestCaseSource(nameof(CanSources))]

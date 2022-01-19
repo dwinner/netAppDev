@@ -1,0 +1,465 @@
+/*@!Encoding:1252*/
+/**
+ * Project: BK2.0 4793
+ * \file    MemoryAccess.can
+ * \author  Andreas Limpert
+ * \brief   access to memory of BMU via XCP.
+ *
+ * copyright (c) 2014 Preh GmbH all rights reserved.
+ */
+
+includes
+{ 
+}
+
+variables
+{
+  /* Variablen zum Umwandeln von HEX IEEE754 in Float */
+  int iExponent;
+  float fMantissa;
+  float fResult;
+  int iResult;
+  int j;
+  float fExp = 0.0;
+  int iFirstStart = 0;
+  
+  /* name of write window access */
+  DWORD MemoryAccessWriteWindow;
+  
+  /* timer */
+  mstimer timerHandleXcp;          /* timer to establish XCP connection */
+  mstimer timerXcpStatusOnStartup; /* timer to check XCP connection on startup */
+  mstimer timerWriteMemAddress;    /* timer to handle writing to address */
+  mstimer timerXcpTimeout;         /* timer to reset test environment at timeout */
+  mstimer timerConnectXcpTimeout;  /* timer to reset test environment at failed connection establish */
+  mstimer timerXcpStatusCheck;     /* timer to check timeout after sending XCP command */
+  
+  /* variables */
+  int ucXcpCount;               /* counter variable to handle XCP connect */
+  int ucXcpStatusCheck;         /* status check indicator */
+  int ucWriteMemAddress;        /* signals that writing a memory address is requested */
+  
+  /* buffer to store the memory address and values (hex) */
+  byte bufReadMemAddress[4];
+  byte bufWriteMemAddress[4];
+  byte bufWriteMemAddressValue[4];
+  
+  /* messages for xcp connection */
+  message 0x6CD mXcpEnd = {byte(0) = 0xFE};
+  message 0x6CD mXcpStatus = {byte(0) = 0xFD};
+  message 0x6CD mXcp1 = {byte(0) = 0xFF};
+  message 0x6CD mXcp2 = {byte(0) = 0xFB};
+  message 0x6CD mXcp3 = {byte(0) = 0xFD};
+  message 0x6CD mXcp4 = {byte(0) = 0xDA};
+  message 0x6CD mXcp5 = {byte(0) = 0xD9};
+  message 0x6CD mXcp6 = {byte(0) = 0xD7};
+  message 0x6CD mXcp7 = {byte(0) = 0xF5, byte(1) = 0x07};
+  message 0x6CD mXcp8 = {byte(0) = 0xF5, byte(1) = 0x03};
+  message 0x6CD mXcp9 = {byte(0) = 0xD7, byte(1) = 0x00, byte(2) = 0x00, byte(3) = 0x01};
+  message 0x6CD mXcp10 = {byte(0) = 0xF5, byte(1) = 0x07};
+  message 0x6CD mXcp11 = {byte(0) = 0xF5, byte(1) = 0x04};
+  message 0x6CD mXcp12 = {byte(0) = 0xD7, byte(1) = 0x00, byte(2) = 0x00, byte(3) = 0x02};
+  message 0x6CD mXcp13 = {byte(0) = 0xF5, byte(1) = 0x07};
+  message 0x6CD mXcp14 = {byte(0) = 0xF5, byte(1) = 0x05};
+  
+  /* message for reading address */
+  message 0x6CD mReadMemAddress = {byte(0)=0xF4, byte(2)=0x00, byte(3)=0x00};
+  message 0x6CD mWriteMemAddress = {byte(0)=0xF0};
+  message 0x6CD mWriteMemAddressRequest = {byte(0)=0xF6, byte(2)=0x00, byte(3)=0x00};
+}
+
+on start
+{
+  MemoryAccessWriteWindow = writeCreate("MemoryAccess");
+  ucXcpCount = 1;
+  output(mXcpStatus);
+  ucXcpStatusCheck = 1;
+  setTimer(timerXcpStatusOnStartup,70);
+  writeLineEx(MemoryAccessWriteWindow,2,"Note: use memory access carefully!");
+}
+
+/* Begin: functions to establish xcp connection */
+
+on envVar XcpConnected
+{
+  if (getValue(XcpConnected)==0)
+  {
+    putValue(StatusXcp,0); 
+    MemOutputNotConnected();
+  }
+  else
+  {
+    MemOutputConnected();
+    putValue(StatusXcp,14);
+    writeLineEx(MemoryAccessWriteWindow,1,"XCP connection established.");
+    iFirstStart = 0;
+  }
+}
+
+on envVar butConnectXcp
+{
+  /* button for xcp connection pressed */
+  if(getValue(butConnectXcp)==1)
+  {
+    /* First try to connect XCP */
+    iFirstStart = 1;
+    /* only connect if not already finished */
+    if(getValue(XcpConnected)==0)
+    {
+      ucXcpCount = 0;
+      HandleXcpConnect();
+    }
+    /* if already connected - output to write window */
+    else
+    {
+      writeLineEx(MemoryAccessWriteWindow,2,"XCP connection already established.");
+    }
+  }
+}
+
+on envVar butEndXcp
+{
+  if(getValue(butEndXcp)==1)
+  {
+    MemOutputNotConnected();
+    ucXcpStatusCheck = 0xFF;
+    ucXcpCount = 0;
+    putValue(ReadMemAddressValue,0);
+    putValue(XcpConnected,0); /* set status to not connected */
+    putValue(StatusXcp,0); /* reset progress bar */
+    output(mXcpEnd); /* send message to end XCP */
+    writeLineEx(MemoryAccessWriteWindow,1,"XCP connection ended.");
+  }
+}
+
+HandleXcpConnect()
+{
+  if(getValue(XcpConnected)==0)
+  {
+    switch(ucXcpCount)
+    {
+      case 1: output(mXcp1);
+        break;
+      case 2: output(mXcp2);
+        break;
+      case 3: output(mXcp3);
+        break;
+      case 4: output(mXcp4);
+        break;
+      case 5: output(mXcp5);
+        break;
+      case 6: output(mXcp6);
+        break;
+      case 7: output(mXcp7);
+        break;
+      case 8: output(mXcp8);
+        break;
+      case 9: output(mXcp9);
+        break;
+      case 10: output(mXcp10);
+        break;
+      case 11: output(mXcp11);
+        break;
+      case 12: output(mXcp12);
+        break;
+      case 13: output(mXcp13);
+        break;
+      case 14: output(mXcp14);
+        setTimer(timerXcpStatusCheck,1000);
+        ucXcpCount++; /* increase for if-clause in timerHandleXcp */
+        break;
+    }
+    putValue(StatusXcp,ucXcpCount);
+    setTimer(timerHandleXcp, 50);
+  }
+}
+
+on timer timerHandleXcp
+{
+  if(ucXcpCount < 15)
+  {
+    ucXcpCount++;
+    HandleXcpConnect();
+  }
+  else
+  {
+    ucXcpStatusCheck = 3;
+  }
+}
+
+on timer timerXcpStatusOnStartup
+{
+    /* value 1 prevents write window output on startup */
+    if(ucXcpStatusCheck != 1)
+    {
+      writeLineEx(MemoryAccessWriteWindow,2,"No XCP connection. Please connect.");
+    }
+    /* xcp connection reset to establish new connection */
+    ucXcpCount = 1;
+    putValue(XcpConnected,0);
+    /* new xcp connection possible */
+    ucXcpStatusCheck = 0;  
+    MemOutputNotConnected();
+}
+
+on timer timerXcpTimeout
+{
+  ucWriteMemAddress = 0;
+  ucXcpStatusCheck = 1;
+  putValue(ReadMemAddressValue,0);
+  putValue(XcpConnected,0); /* set status to not connected */
+  putValue(StatusXcp,0); /* reset progress bar */
+  writeLineEx(MemoryAccessWriteWindow,3,"XCP connection lost due ECU reset. Please reconnect.");
+}
+
+on timer timerConnectXcpTimeout
+{
+  iFirstStart = 0;
+  ucWriteMemAddress = 0;
+  ucXcpStatusCheck = 1;
+  putValue(ReadMemAddressValue,0);
+  putValue(XcpConnected,0); /* set status to not connected */
+  putValue(StatusXcp,0); /* reset progress bar */
+  writeLineEx(MemoryAccessWriteWindow,3,"Can't establish XCP connection. Check functionality of DCAN.");
+}
+
+on timer timerXcpStatusCheck
+{
+  ucXcpStatusCheck = 2;
+  output(mXcpStatus);
+  if(iFirstStart == 1)
+  {
+    setTimer(timerConnectXcpTimeout,500);
+  }
+  else
+  {
+    setTimer(timerXcpTimeout,500);
+  }
+}
+
+/* End: functions to establish xcp connection */
+
+/* Begin: read memory address */
+
+on envVar butReadMemAddress
+{
+  if(getValue(butReadMemAddress) == 1)
+  {
+    ucXcpStatusCheck = 3;
+    getValue(ReadMemAddress, bufReadMemAddress);
+    mReadMemAddress.byte(1) = getValue(ReadMemAddressLength);
+    mReadMemAddress.byte(4) = bufReadMemAddress[0];
+    mReadMemAddress.byte(5) = bufReadMemAddress[1];
+    mReadMemAddress.byte(6) = bufReadMemAddress[2];
+    mReadMemAddress.byte(7) = bufReadMemAddress[3];
+    output(mReadMemAddress);
+    /* Check connection 500ms after clicking button */
+    setTimer(timerXcpStatusCheck,1000);
+  }
+}
+
+/* End: read memory address */
+
+/* Begin: write memory address */
+
+on envVar butWriteMemAddress
+{
+  if(getValue(butWriteMemAddress) == 1)
+  {
+    ucXcpStatusCheck = 3;
+    getValue(WriteMemAddress, bufWriteMemAddress);
+    mWriteMemAddressRequest.byte(4) = bufWriteMemAddress[0];
+    mWriteMemAddressRequest.byte(5) = bufWriteMemAddress[1];
+    mWriteMemAddressRequest.byte(6) = bufWriteMemAddress[2];
+    mWriteMemAddressRequest.byte(7) = bufWriteMemAddress[3];
+    ucWriteMemAddress = 1;
+    output(mWriteMemAddressRequest);
+    setTimer(timerWriteMemAddress,100);
+    /* Check connection 500ms after clicking button */
+    setTimer(timerXcpStatusCheck,1000);
+  }
+}
+
+on timer timerWriteMemAddress
+{
+  if(ucWriteMemAddress == 2)
+  {
+    getValue(WriteMemAddressValue, bufWriteMemAddressValue);
+    mWriteMemAddress.byte(1) = getValue(WriteMemAddressLength);  
+    if(getValue(WriteMemAddressLength) == 1)
+    {
+      mWriteMemAddress.byte(2) = bufWriteMemAddressValue[0];
+      output(mWriteMemAddress);
+    }
+    else if(getValue(WriteMemAddressLength) == 2)
+    {
+      mWriteMemAddress.byte(2) = bufWriteMemAddressValue[0];
+      mWriteMemAddress.byte(3) = bufWriteMemAddressValue[1];
+      output(mWriteMemAddress);
+    }
+    else if(getValue(WriteMemAddressLength) == 3)
+    {
+      mWriteMemAddress.byte(2) = bufWriteMemAddressValue[0];
+      mWriteMemAddress.byte(3) = bufWriteMemAddressValue[1];
+      mWriteMemAddress.byte(4) = bufWriteMemAddressValue[2];
+      output(mWriteMemAddress);
+    }
+    else if(getValue(WriteMemAddressLength) == 4)
+    {
+      mWriteMemAddress.byte(2) = bufWriteMemAddressValue[0];
+      mWriteMemAddress.byte(3) = bufWriteMemAddressValue[1];
+      mWriteMemAddress.byte(4) = bufWriteMemAddressValue[2];
+      mWriteMemAddress.byte(5) = bufWriteMemAddressValue[3];
+      output(mWriteMemAddress);
+    }
+    else
+    {
+      writeLineEx(MemoryAccessWriteWindow,3,"Number of bytes to write invalid.");
+    }
+  }
+}
+
+/* End: write memory address */
+
+on message 0x6ED
+{
+  /* checks if xcp connection already exists */
+  if(ucXcpStatusCheck == 1)
+  {
+    if(this.byte(0)==0xFF)
+    {
+      cancelTimer(timerXcpStatusOnStartup);
+      putValue(XcpConnected,1);
+      ucXcpStatusCheck = 1;
+    }
+  }
+  else if (ucXcpStatusCheck == 2)
+  {
+    if(this.byte(0)==0xFF)
+    {
+      cancelTimer(timerXcpTimeout);
+      cancelTimer(timerConnectXcpTimeout);
+      if(iFirstStart == 1)
+      {
+        putValue(XcpConnected,1);
+      }
+      ucXcpStatusCheck = 1;
+    }
+  }
+  /* normal routine for memory access */
+  else if(ucXcpStatusCheck == 3)
+  {
+    /* if XCP answer received -> cancel timeout timer */
+    if(this.byte(0) == 0xFF)
+    {
+      cancelTimer(timerXcpTimeout);
+      cancelTimer(timerConnectXcpTimeout);
+    }
+    else
+    {
+      /* timeout. Reset XCP connection */ 
+    }
+    
+    /* write */
+    if( (ucWriteMemAddress == 1) || (ucWriteMemAddress == 2) )
+    {
+      if( (this.byte(0)==0xFF) && (ucWriteMemAddress == 1) )
+      {
+        ucWriteMemAddress = 2;
+      }
+      else if ( (this.byte(0)==0xFF) && (ucWriteMemAddress == 2) )
+      {
+        ucWriteMemAddress = 0;
+        writeLineEx(MemoryAccessWriteWindow,1,"Writing value to given address.");
+      }
+      else
+      {
+        ucWriteMemAddress = 0;
+        ucXcpStatusCheck = 1;
+        putValue(ReadMemAddressValue,0); /* reset output of read value */
+        putValue(XcpConnected,0); /* set status to not connected */
+        putValue(StatusXcp,0); /* reset progress bar */
+        writeLineEx(MemoryAccessWriteWindow,3,"XCP connection lost. Please establish new connection.");
+      }
+    }
+    /* read */
+    else
+    {
+      if(getValue(ReadMemAddressLength)==4)
+      {
+        /* Calculates the exponent */
+        iExponent=(((this.byte(1)&0x7F)<<1)+(this.byte(2)>>7))-127;
+      
+        if(iExponent >= 0)
+        { 
+          fExp = 2; // Must be initialized with 2   
+          for(j=1;j<iExponent;j++)
+          {
+            fExp *= 2.0;
+          }
+        }
+    
+        if(iExponent == -127)
+        {
+          /* Calculates the mantissa for special case '0.0' */
+          fMantissa = ((((((this.byte(2)&0x7F)<<1)|(this.byte(3)>>7))<<15)|((((this.byte(3)&0x7F)<<1)|(this.byte(4)>>7))<<7)|(this.Byte(4)<<1))/8388608.0); 
+        }
+        else
+        {
+          /* Calculates the mantissa */
+          fMantissa = 1+((((((this.byte(2)&0x7F)<<1)|(this.byte(3)>>7))<<15)|((((this.byte(3)&0x7F)<<1)|(this.byte(4)>>7))<<7)|((this.byte(4)&0x7F)<<1))/8388608.0);
+        }
+    
+        fResult = fExp*fMantissa;
+    
+        if(this.byte(1)>>7 == 1)
+        {
+          fResult = -fResult;  
+        }
+        putValue(ReadMemAddressValue,fResult);
+        writeLineEx(MemoryAccessWriteWindow,1,"Value of requested address = %f",fResult);
+      }
+      else if(getValue(ReadMemAddressLength)==3)
+      {
+        iResult = (this.byte(1)<<16|this.byte(2)<<8|this.byte(3));
+        putValue(ReadMemAddressValue,iResult);
+        writeLineEx(MemoryAccessWriteWindow,1,"Value of requested address = %i",iResult);
+      }
+      else if(getValue(ReadMemAddressLength)==2)
+      {
+        iResult = (this.byte(1)<<8|this.byte(2));
+        putValue(ReadMemAddressValue,iResult);
+        writeLineEx(MemoryAccessWriteWindow,1,"Value of requested address = %i",iResult);
+      }
+      else if(getValue(ReadMemAddressLength)==1)
+      {
+        iResult = this.byte(1);
+        putValue(ReadMemAddressValue,iResult);
+        writeLineEx(MemoryAccessWriteWindow,1,"Value of requested address = %i",iResult);
+      }
+      else
+      {
+        writeLineEx(MemoryAccessWriteWindow,3,"Number of bytes to read invalid.");
+      }
+    }
+  }
+}
+
+/* begin: Output to interactive manuel screen */
+
+void MemOutputNotConnected()
+{
+  putValueToControl("MemoryAccess","MemOutput", "\n\nPlease click on \n\n[Connect XCP]\n\n button to begin.");
+}
+
+void MemOutputConnected()
+{
+  putValueToControl("MemoryAccess","MemOutput", "\n XCP connected \n\nNow you're able to\n- read value from memory address\n- write value to memory address\n- end XCP via [Disconnect XCP] button");
+}
+
+void MemOutputDisconnected()
+{
+  putValueToControl("MemoryAccess","MemOutput", "\n\nPlease click on \n\n[Connect XCP]\n\n button to begin.");  
+}
+
+

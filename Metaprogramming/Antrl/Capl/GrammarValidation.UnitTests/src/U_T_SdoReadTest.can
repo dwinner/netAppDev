@@ -1,0 +1,182 @@
+/*@!Encoding:1252*/
+
+// Author J. Raab, Preh GmbH, 25.11.14
+// liest alle zellsp./temperaturen per sdo
+// und schreibt sie in eine Datei namens:
+// "CV_CT_Slaves.Txt"
+// 
+includes
+{
+  
+}
+
+variables
+{
+  const mainIndexes = 40;
+  const subIndexes = 24;
+  msTimer time1;
+  message Traction_SDOreq_LiIoBMS m;
+  byte i = 0xFF;
+  int j = 0;
+  int b = 0;
+  int lowIndexbyte = 1;
+  int highIndexbyte = 0x25;
+  int subIndex = 1;
+  word buf[mainIndexes][subIndexes];
+}
+
+on start 
+{
+  m.DLC = 8;
+  m.byte(0) = 0x40;
+  m.byte(1) = lowIndexbyte;
+  m.byte(2) = highIndexbyte;
+  m.byte(3) = subIndex;
+}
+
+on key 's' {
+  i = 0xFF;
+  j = 0;
+  b = 0;
+  lowIndexbyte = 1;
+  highIndexbyte = 0x25;
+  subIndex = 1;
+  emptyBuf();
+  
+  readAll();
+}
+
+void readAll (void)
+{
+  m.byte(1) = lowIndexbyte;
+  m.byte(2) = highIndexbyte;
+  m.byte(3) = subIndex;
+  output(m);
+}
+
+on message LiIoBMS_SDOresp_Traction
+{
+  b++;
+  
+  i++;
+  if (i == subIndexes)
+  {
+    i = 0;
+    j++;
+  }
+  
+  if (j == mainIndexes)
+  { 
+    j = 0;
+  }
+  
+  buf[j][i] = ( (this.byte(5) << 8) | this.byte(4) );
+  
+  if (b == (mainIndexes * subIndexes))
+  {
+    valsToFile();
+  }
+  else
+  {
+    setTimer(time1, 200);
+    increaseIdx();
+  }
+}
+on Timer time1
+{
+  increaseIdx();
+}
+
+void increaseIdx (void)
+{
+  subIndex++;
+  if (subIndex == (subIndexes+1))
+  {
+   subIndex = 1;
+   lowIndexbyte++;
+  }
+  
+  if ( lowIndexbyte < (mainIndexes+1))
+  {
+    readAll();
+  }
+}
+
+void valsToFile (void)
+{
+  int p, q;
+  char buffer[64];
+  dword glbHandle = 0;
+  glbHandle = OpenFileWrite ("CV_CT_Slaves.Txt",1);
+  
+  /* einruecken, Beschriftung */
+  snprintf (buffer,elcount(buffer),"Slave:      ");
+  filePutString (buffer, elcount(buffer),glbHandle);
+  /* Nummerieren */
+  for(q = 0; q < mainIndexes; q++) 
+  {
+    snprintf (buffer,elcount(buffer),"%5d    ",(q+1));
+    filePutString (buffer, elcount(buffer),glbHandle);
+  }
+  /* umbruch */
+  filePutString ("\n\n", 2,glbHandle);
+
+  for (p = 0; p < subIndexes; p++)
+  {
+    /* senkr. bschr. */
+    if (p < 16) {
+    snprintf (buffer,elcount(buffer),"CV%5d:    ",(p+1));
+    filePutString (buffer, elcount(buffer),glbHandle);
+    }
+    else if( p < 20){
+      snprintf (buffer,elcount(buffer),"CT%5d:    ",(p+1-16));
+      filePutString (buffer, elcount(buffer),glbHandle);
+    }
+    else {
+      switch (p) {
+        case 20:
+          snprintf (buffer,elcount(buffer),"ERR       ");
+          filePutString (buffer, elcount(buffer),glbHandle);
+          break;
+        case 21:
+          snprintf (buffer,elcount(buffer),"BAL       ");
+          filePutString (buffer, elcount(buffer),glbHandle);          
+          break;
+        case 22:
+          snprintf (buffer,elcount(buffer),"RIP       ");
+          filePutString (buffer, elcount(buffer),glbHandle);          
+          break;
+        case 23:
+          snprintf (buffer,elcount(buffer),"MOD       ");
+          filePutString (buffer, elcount(buffer),glbHandle);          
+          break;
+          default:
+          break;
+      }
+    }
+    /* Werte */
+    for (q = 0; q < mainIndexes; q++)
+    {
+      snprintf (buffer,elcount(buffer),"%5d    ",buf[q][p]);
+      filePutString (buffer, elcount(buffer),glbHandle);
+      if ( q == (mainIndexes-1) )
+      {
+        snprintf (buffer,elcount(buffer),"\n");
+        filePutString (buffer, elcount(buffer),glbHandle);
+      }
+    }
+  }
+  
+  fileClose (glbHandle);
+  
+}
+
+void emptyBuf(void)
+{
+  int p,q;
+  for (p = 0; p < subIndexes; p++)
+  {
+    for (q = 0; q < mainIndexes; q++)
+      buf[q][p] = 0xEEEE;
+  }
+}

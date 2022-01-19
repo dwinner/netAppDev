@@ -1,0 +1,478 @@
+/*@!Encoding:1252*/
+/**
+ * Project: BMZ BMS - 5191
+ * \file    ReadErrorData.can
+ * \author  Johannes Raab
+ * \brief   Read Error Data (when executing kwp2000 0x13/0x18 services)
+ *
+ * copyright (c) 2015 Preh GmbH all rights reserved.
+ */
+
+/* ----------------------------------------------------------------------------
+ Affected documents:
+ -------------------
+ If appropriate further applicable documents incl. their version's information
+ should be referenced. Especially a reference to corresponding specifications
+ shall be given.
+
+ Information for the configuration management-system:
+ ----------------------------------------------------
+ Repository path and filename:
+ $Archive: BMZ_BMS/06_Software/10_Common/04_CAN/CANoe/ReadErrorData.can$
+ Workfile:                      
+ $Workfile: ReadErrorData.can$
+ Branch:                        
+ $Branch: BMZ_BMS$
+
+ Documentation of modifications:
+ -------------------------------
+ (it will generated automatically during Check-In into the configuration management tool)
+ $Revision: 9$
+
+ 
+ $Log$
+ CizmicH - Thursday, February 08, 2018 15:23:39
+ - Update TestTrack #308
+ RaabJ - Thursday, December 08, 2016 16:01:14
+ -notepad korrektur
+ RaabJ - Wednesday, January 20, 2016 13:05:18
+ - hochkomma entfernt, das in anderen canoe versionen ein problem verursacht hat (und ohnehin da nicht hingehoert hat)
+ RaabJ - Tuesday, November 24, 2015 09:04:59
+ -dtc auch in dez.
+ RaabJ - Friday, November 13, 2015 13:17:48
+ -Update DTCs lesen: DateTime jetz in menschenlesbarem Format
+ RaabJ - Thursday, November 12, 2015 11:25:55
+ -neues Panel fuer Fehlersp. lesen Linde
+ RaabJ - Monday, July 27, 2015 13:08:43
+ - Korrektur
+ RaabJ - Thursday, June 25, 2015 12:48:32
+ -geringf. Korrektur
+ RaabJ - Wednesday, June 24, 2015 16:11:34
+ - Fehlerspeicher lesen --> .txt
+
+
+ */
+includes
+{
+  
+}
+
+variables
+{
+  int readOn = 0;
+  byte data[186][22];
+  byte prettyData[186][22];
+  int IndexEntries = 0;
+  int IndexInsideEntry = 0;
+  int size = 0;
+  message DiagRequest_LiIoBMS mDiag;
+  diagRequest ReadStatusOfDTCs req1;
+  diagRequest ReadStatusOfDTCs req2;
+  byte kaucTageProMonat[13] = {0,31,28,31,30,31,30,31,31,30,31,30,31 };
+  
+  byte ucHour;
+  byte ucMinute;
+  byte ucSecond;
+  byte ucDay;
+  byte ucMonth;
+  int usYear;
+}
+
+on start {
+  mDiag.DLC = 8;
+  mDiag.byte(0) = 2;
+
+  diagSetTarget("KWPBasicDiagnostics");
+}
+
+on envVar openErrFile {
+  if (getValue(openErrFile) == 1) {
+    if (sysExec("C:\\Program Files (x86)\\Notepad++\\notepad++.exe","S:\\BMZ\\06_Software\\10_Common\\04_CAN\\CANoe\\ErrorData.Txt") == 0)
+    {
+      sysExec("C:\\Windows\\system32\\notepad.exe","S:\\BMZ\\06_Software\\10_Common\\04_CAN\\CANoe\\ErrorData.Txt","C:\\Windows\\system32\\");
+    }
+  }
+}
+
+on envVar ReadDTCs1301 {
+  if (getValue(ReadDTCs1301) == 1) {
+    diagSetParameter(req2,2,"SID_RQ", 0x13);
+    diagSetParameter(req2,"groupOfDTC", 1);
+    diagSendRequest(req2);
+  }
+}
+
+on envVar ReadDTCs1702 {
+  if (getValue(ReadDTCs1702) == 1) {
+    diagSetParameter(req1,"groupOfDTC", 2);
+    diagSendRequest(req1);
+  }
+}
+
+on envVar DelDTCs1402 {
+  if (getValue(DelDTCs1402) == 1) {
+    mDiag.byte(1) = 0x14;
+    mDiag.byte(2) = 0x2;
+    output(mDiag);
+  }
+}
+
+on envVar ReadDTCs1703 {
+  if (getValue(ReadDTCs1703) == 1) {
+    diagSetParameter(req1,"groupOfDTC", 3);
+    diagSendRequest(req1);
+  }
+}
+
+on envVar DelDTCs1403 {
+  if (getValue(DelDTCs1403) == 1) {
+    mDiag.byte(1) = 0x14;
+    mDiag.byte(2) = 0x3;
+    output(mDiag);
+  }
+}
+
+on message DiagRequest_LiIoBMS {
+  if ((this.byte(1) == 0x13) || (this.byte(1) == 0x17)) {
+    /* read DTCs request sent*/
+    readOn = 1;
+  }
+}
+
+on message LiIoBMS_DiagResponse {
+  if (readOn == 1) {
+    if ((this.byte(0) & 0xF0) == 0x20) {
+      /* consecutive Frame*/
+      fillData(this.byte(1));
+      fillData(this.byte(2));
+      fillData(this.byte(3));
+      fillData(this.byte(4));
+      fillData(this.byte(5));
+      fillData(this.byte(6));
+      fillData(this.byte(7));
+    }
+    else if ((this.byte(0) & 0xF0) == 0x10) {
+      /* first frame */
+      IndexInsideEntry = 0;
+      IndexEntries = 0;
+      
+      size = this.byte(3);
+      fillData(this.byte(4));
+      fillData(this.byte(5));
+      fillData(this.byte(6));
+      fillData(this.byte(7));
+      //write("FF rec");
+    }
+    else if ((this.byte(1) == 0x53) || (this.byte(1) == 0x57)) {
+      /* no errors*/
+      write("no error entries");
+    }
+  }
+  
+}
+
+void fillData(byte dataByte) 
+{
+  int i,j = 0;
+  int usDTC_Number_Buffer = 0;
+
+
+       
+  data[IndexEntries][IndexInsideEntry] = dataByte;
+  IndexInsideEntry++;
+  
+ 
+
+  if( (IndexInsideEntry > 15) &&(data[IndexEntries][0] < 200)&&(data[IndexEntries][1] == 0) ){  
+     // nicht erwuenschte bytes mit Platzhaltern befuellen
+     data[IndexEntries][16] = 255;
+     data[IndexEntries][17] = 255;
+       
+     data[IndexEntries][18] = 255;
+     data[IndexEntries][19] = 255;
+     data[IndexEntries][20] = 255;
+     data[IndexEntries][21] = 255;
+    
+     IndexEntries++;
+     IndexInsideEntry = 0;  
+  } 
+  
+  if(IndexInsideEntry == 22){
+     IndexEntries++;
+     IndexInsideEntry = 0;
+  }
+  
+  // Alle Eintrage durchgegangen? 
+  if (IndexEntries  == size ) {
+    IndexEntries = 0;
+    write ("%d error entries read",size);
+    readOn = 0;
+    turnDataEndianness();  
+    valsToFile();
+    resetStuff();
+  }
+}
+
+void resetStuff(void) 
+{
+  readOn = 0;
+  IndexEntries = 0;
+  IndexInsideEntry = 0;
+}
+
+void valsToFile (void)
+{
+  int i,j;
+  char buffer[200];
+  dword datetimebuf;
+  
+  dword glbHandle = 0;
+  glbHandle = OpenFileWrite ("ErrorData.Txt",1);
+  
+  /* headline */
+  snprintf (buffer,elcount(buffer),"DTC       | TruckWorkTime | CompWorkTime | DateTime             |  ExtraData | Reserved | refListNr | SlaveSerial(customer)");
+  filePutString (buffer, elcount(buffer),glbHandle);
+  filePutString ("\n", 1,glbHandle);
+  
+  for (i = 0; i < size; i++){
+    for (j = 0; j < 22; j++ ) {
+      /*actual data */
+      /* skip datetime, see datetime calc at bottom */
+      if (( j < 10) | (j > 13)) {
+        /* no gap in dtc hex nr */
+        if (j == 0) {
+          if (prettyData[i][j] != 0) {
+            snprintf (buffer,elcount(buffer),"%X",prettyData[i][j]);
+          }
+          else {
+            snprintf (buffer,elcount(buffer)," ",prettyData[i][j]);
+          }
+        }
+        else {
+          snprintf (buffer,elcount(buffer),"%02X ",prettyData[i][j]);
+          
+        }
+        filePutString (buffer, elcount(buffer),glbHandle);
+        
+      }
+      if (j == 13) { /* real datetime */
+        datetimebuf = (prettyData[i][10] << 24) | (prettyData[i][11] << 16) | (prettyData[i][12] << 8) | prettyData[i][13];
+        datetimebuf -= 946681200;
+        gvRechneTicksInDatum(datetimebuf,0);
+        
+        snprintf (buffer,elcount(buffer)," %02d.%02d.%02d %02d:%02d:%02d", ucDay, ucMonth, usYear, ucHour,ucMinute,ucSecond);
+        filePutString (buffer, elcount(buffer),glbHandle);
+      }
+      if (j == 1) { /* dtc also in dec. */
+        snprintf (buffer,elcount(buffer),"(%d)  ",(((prettyData[i][0] << 8) | prettyData[i][1])));
+        filePutString (buffer, elcount(buffer),glbHandle);
+      }
+     
+      /* spaces according to headline (beauty)*/
+      switch(j) {
+        case 1:  // vor TWT
+          snprintf (buffer,elcount(buffer)," ");
+          filePutString (buffer, elcount(buffer),glbHandle);
+        break;
+        case 5: // vor CWT
+          snprintf (buffer,elcount(buffer),"    ");
+          filePutString (buffer, elcount(buffer),glbHandle);
+        break;
+        case 9: // vor Datetime
+          snprintf (buffer,elcount(buffer),"  ");
+          filePutString (buffer, elcount(buffer),glbHandle);
+        break;
+        case 13: // vor extradata
+          snprintf (buffer,elcount(buffer),"     ");
+          filePutString (buffer, elcount(buffer),glbHandle);
+        break;
+        case 14: // vor reserved
+          snprintf (buffer,elcount(buffer),"         ");
+          filePutString (buffer, elcount(buffer),glbHandle);
+        break;
+        case 15: // vor reflist nr.
+          snprintf (buffer,elcount(buffer),"        ");
+          filePutString (buffer, elcount(buffer),glbHandle);
+        break;
+        case 17: // vor slave serial
+          snprintf (buffer,elcount(buffer),"      ");
+          filePutString (buffer, elcount(buffer),glbHandle);
+        break;  
+         
+        default:
+
+        break;
+      }
+
+    }
+    filePutString ("\n", 1,glbHandle);
+  }
+    
+  fileClose (glbHandle);
+  write( "./ErrorData.txt written !");
+}
+
+void turnDataEndianness(void) {
+  int i;
+  
+  for (i = 0; i < size; i++){
+    prettyData[i][0] = data[i][1]; // DTC Number
+    prettyData[i][1] = data[i][0];
+    
+    prettyData[i][2] = data[i][5]; // Truck working time
+    prettyData[i][3] = data[i][4];
+    prettyData[i][4] = data[i][3];
+    prettyData[i][5] = data[i][2];
+    
+    prettyData[i][6] = data[i][9]; // Component working time
+    prettyData[i][7] = data[i][8];
+    prettyData[i][8] = data[i][7];
+    prettyData[i][9] = data[i][6]; 
+    
+    prettyData[i][10] = data[i][13]; // Datetime
+    prettyData[i][11] = data[i][12];
+    prettyData[i][12] = data[i][11];
+    prettyData[i][13] = data[i][10];
+    
+    prettyData[i][14] = data[i][14]; // extradata
+    prettyData[i][15] = data[i][15]; // reserved
+    
+    prettyData[i][16] = data[i][17];  // nr. in reflist
+    prettyData[i][17] = data[i][16];
+    
+    prettyData[i][18] = data[i][21];  // serialnumber
+    prettyData[i][19] = data[i][20];
+    prettyData[i][20] = data[i][19];
+    prettyData[i][21] = data[i][18]; 
+  }
+}
+
+byte gbIstJahrEinSchaltjahr(int usJahr)
+{
+   byte     bRetValue;
+
+   /* Vierhundertjahresregel */
+   if ((usJahr % 400) == 0)
+   {
+      bRetValue = 1;
+   }
+   /* Hundertjahresregel */
+   else if((usJahr % 100) == 0)
+   {
+      bRetValue = 0;
+   }
+   /* Vierjahresregel */
+   else if((usJahr % 4) == 0)
+   {
+      bRetValue = 1;
+   }
+   /* Alle restlichen Jahre */
+   else
+   {
+      bRetValue = 0;
+   }
+
+   return bRetValue;
+}
+
+void gvRechneTicksInDatum(dword ulSek, byte bSekRunden)
+{
+   byte     bDateIsLeapYear = 0;
+   byte     bEnoughDaysLeft;
+   byte      ucK;
+   byte      aucDateLocalDaysPerMonth[13];
+   int     usDaysPerYear;
+   int     usYears;
+   dword     ulAllDays;
+
+   /* Lokale Arbeitskopie fuer die Monatstagezahl */
+   for(ucK = 0; ucK < 13; ucK++)
+   {
+      aucDateLocalDaysPerMonth[ucK] = kaucTageProMonat[ucK];
+   }
+
+   /* Sekunden berechnen */
+   ucSecond = (ulSek % 60);
+
+   /* Soll gerundet werden? */
+   if(bSekRunden == 1){
+      /* neue RTC kann nur minutengenau eingestellt werden, wir muessen runden */
+      if(ucSecond >= 30)
+	  {
+         /* fehlenden Sekunden zur vollen Minute addieren */
+         ulSek += (60 - ucSecond);
+         ucSecond = 0;
+      }
+	  else
+	  {
+         /* ueberschuessige Sekunden zur vollen Minute abziehen */
+         ulSek -= (ucSecond);
+         ucSecond = 0;
+      }
+   }
+   else
+   {
+   /* ntd. */
+   }
+
+   /* Auf Minuten umrechnen */
+   ulSek = ulSek/60;
+   /* Minuten berechnen */
+   ucMinute = (ulSek % 60);
+   /* Auf Stunden umrechnen */
+   ulSek = ulSek/60;
+   /* Stunden berechnen */
+   ucHour = (ulSek % 24);
+   /* Ganze Tage berechnen */
+   ulAllDays = ulSek / 24;
+
+   /* Jahreszahl auf Ausgangspunkt setzen */
+   usYears = 2000;
+
+   /* Ganze Jahre berechnen */
+   bEnoughDaysLeft = 1;
+   while(1 == bEnoughDaysLeft)
+   {
+      bDateIsLeapYear = gbIstJahrEinSchaltjahr(usYears);
+
+      if(1== bDateIsLeapYear)
+      {
+         usDaysPerYear = 366;
+      }
+      else
+      {
+         usDaysPerYear = 365;
+      }
+
+      if(ulAllDays >= usDaysPerYear )
+      {
+         usYears++;
+         ulAllDays = ulAllDays - usDaysPerYear;
+      }
+      else
+      {
+         bEnoughDaysLeft = 0;
+      }
+   }
+
+   /* Tage fuer den Februar */
+   if(1== bDateIsLeapYear)
+   {
+      aucDateLocalDaysPerMonth[2] = 29;
+   }
+   else
+   {
+      aucDateLocalDaysPerMonth[2] = 28;
+   }
+
+   /* Monat berechnen */
+   for(ucK = 1; (ucK < 13) && (ulAllDays >= aucDateLocalDaysPerMonth[ucK]); ucK++)
+   {     
+      ulAllDays = ulAllDays - (aucDateLocalDaysPerMonth[ucK]);
+   }
+
+   ucMonth = ucK;
+   ucDay = (ulAllDays + 1);
+   usYear = usYears;
+}
+

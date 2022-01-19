@@ -1,0 +1,587 @@
+/*@!Encoding:1252*/
+/**
+ * Project: BMZ BMS - 5191
+ * \file    ReadErrorData.can
+ * \author  Johannes Raab
+ * \brief   Read Error Data (when executing kwp2000 0x13/0x18 services)
+ *
+ * copyright (c) 2015 Preh GmbH all rights reserved.
+ */
+
+/* ----------------------------------------------------------------------------
+ Affected documents:
+ -------------------
+ If appropriate further applicable documents incl. their version's information
+ should be referenced. Especially a reference to corresponding specifications
+ shall be given.
+
+ Information for the configuration management-system:
+ ----------------------------------------------------
+ Repository path and filename:
+ $Archive: BMZ_BMS/06_Software/10_Common/04_CAN/CANoe/nach_Spekl_ReadErrorData.can$
+ Workfile:                      
+ $Workfile: nach_Spekl_ReadErrorData.can$
+ Branch:                        
+ $Branch: BMZ_BMS$
+
+ Documentation of modifications:
+ -------------------------------
+ (it will generated automatically during Check-In into the configuration management tool)
+ $Revision: 1$
+
+ 
+ $Log$
+ RaabJ - Tuesday, January 17, 2017 14:05:46
+ -Test CAPLs
+ RaabJ - Thursday, December 08, 2016 16:01:14
+ -notepad korrektur
+ RaabJ - Wednesday, January 20, 2016 13:05:18
+ - hochkomma entfernt, das in anderen canoe versionen ein problem verursacht hat (und ohnehin da nicht hingehoert hat)
+ RaabJ - Tuesday, November 24, 2015 09:04:59
+ -dtc auch in dez.
+ RaabJ - Friday, November 13, 2015 13:17:48
+ -Update DTCs lesen: DateTime jetz in menschenlesbarem Format
+ RaabJ - Thursday, November 12, 2015 11:25:55
+ -neues Panel fuer Fehlersp. lesen Linde
+ RaabJ - Monday, July 27, 2015 13:08:43
+ - Korrektur
+ RaabJ - Thursday, June 25, 2015 12:48:32
+ -geringf. Korrektur
+ RaabJ - Wednesday, June 24, 2015 16:11:34
+ - Fehlerspeicher lesen --> .txt
+
+
+ */
+includes
+{
+  
+}
+
+variables
+{
+  int readOn = 0;
+  byte data[186][22];
+  byte prettyData[186][22];
+  int IndexEntries = 0;
+  int IndexInsideEntry = 0;
+  int size = 0;
+  message DiagRequest_LiIoBMS mDiag;
+  diagRequest ReadStatusOfDTCs req1;
+  diagRequest ReadStatusOfDTCs req2;
+  byte kaucTageProMonat[13] = {0,31,28,31,30,31,30,31,31,30,31,30,31 };
+  
+  byte ucHour;
+  byte ucMinute;
+  byte ucSecond;
+  byte ucDay;
+  byte ucMonth;
+  int usYear;
+}
+
+on start {
+  mDiag.DLC = 8;
+  mDiag.byte(0) = 2;
+
+  diagSetTarget("KWPBasicDiagnostics");
+}
+
+on envVar openErrFile {
+  if (getValue(openErrFile) == 1) {
+    if (sysExec("C:\\Program Files (x86)\\Notepad++\\notepad++.exe","S:\\BMZ\\06_Software\\10_Common\\04_CAN\\CANoe\\ErrorData.Txt") == 0)
+    {
+      sysExec("C:\\Windows\\system32\\notepad.exe","S:\\BMZ\\06_Software\\10_Common\\04_CAN\\CANoe\\ErrorData.Txt","C:\\Windows\\system32\\");
+    }
+  }
+}
+
+on envVar ReadDTCs1301 {
+  if (getValue(ReadDTCs1301) == 1) {
+    diagSetParameter(req2,2,"SID_RQ", 0x13);
+    diagSetParameter(req2,"groupOfDTC", 1);
+    diagSendRequest(req2);
+  }
+}
+
+on envVar ReadDTCs1702 {
+  if (getValue(ReadDTCs1702) == 1) {
+    diagSetParameter(req1,"groupOfDTC", 2);
+    diagSendRequest(req1);
+  }
+}
+
+on envVar DelDTCs1402 {
+  if (getValue(DelDTCs1402) == 1) {
+    mDiag.byte(1) = 0x14;
+    mDiag.byte(2) = 0x2;
+    output(mDiag);
+  }
+}
+
+on envVar ReadDTCs1703 {
+  if (getValue(ReadDTCs1703) == 1) {
+    diagSetParameter(req1,"groupOfDTC", 3);
+    diagSendRequest(req1);
+  }
+}
+
+on envVar DelDTCs1403 {
+  if (getValue(DelDTCs1403) == 1) {
+    mDiag.byte(1) = 0x14;
+    mDiag.byte(2) = 0x3;
+    output(mDiag);
+  }
+}
+
+on message DiagRequest_LiIoBMS {
+  if ((this.byte(1) == 0x13) || (this.byte(1) == 0x17)) {
+    /* read DTCs request sent*/
+    readOn = 1;
+  }
+}
+
+on message LiIoBMS_DiagResponse {
+  if (readOn == 1) {
+    if ((this.byte(0) & 0xF0) == 0x20) {
+      /* consecutive Frame*/
+      fillData(this.byte(1));
+      fillData(this.byte(2));
+      fillData(this.byte(3));
+      fillData(this.byte(4));
+      fillData(this.byte(5));
+      fillData(this.byte(6));
+      fillData(this.byte(7));
+    }
+    else if ((this.byte(0) & 0xF0) == 0x10) {
+      /* first frame */
+      IndexInsideEntry = 0;
+      IndexEntries = 0;
+      
+      size = this.byte(3);
+      fillData(this.byte(4));
+      fillData(this.byte(5));
+      fillData(this.byte(6));
+      fillData(this.byte(7));
+      //write("FF rec");
+    }
+    else if ((this.byte(1) == 0x53) || (this.byte(1) == 0x57)) {
+      /* no errors*/
+      write("no error entries");
+    }
+  }
+  
+}
+
+void fillData(byte dataByte) 
+{
+  int i,j = 0;
+  int usEndOfEntry = 0;
+  
+  data[IndexEntries][IndexInsideEntry] = dataByte;
+  
+  // check Extradata 
+  if (IndexInsideEntry == 14)
+  {
+    switch(dataByte)
+    {
+      case 0x00:
+       /* none set; stop copying entry after extradata */
+        usEndOfEntry = 16;
+       break;
+       case 0x01:
+       /* low nibble (nr. of following S16s)set to 1? */
+        usEndOfEntry = 18;
+       break;
+       case 0x10:
+       /* high nibble (nr. of following U32s)set to 1? */
+        usEndOfEntry = 20;
+       break;
+       case 0x11:
+       /* both nibbles (1 S16, 1 U32) */
+         usEndOfEntry = 22;
+       break;
+       default:
+         usEndOfEntry = 22;
+       break;
+    }
+  }
+  
+  IndexInsideEntry++;
+  
+  if (IndexInsideEntry == usEndOfEntry) {
+    IndexEntries++;
+    IndexInsideEntry = 0;
+  }
+  
+  if (IndexEntries  == size ) {
+    IndexEntries = 0;
+    write ("%d error entries read",size);
+    readOn = 0;
+    turnDataEndianness();
+    valsToFile();
+    resetStuff();
+  }
+}
+
+void resetStuff(void) 
+{
+  readOn = 0;
+  IndexEntries = 0;
+  IndexInsideEntry = 0;
+}
+
+void valsToFile (void)
+{
+  int i,j;
+  char buffer[200];
+  dword datetimebuf;
+  int currDtc;
+  
+  dword glbHandle = 0;
+  glbHandle = OpenFileWrite ("ErrorData.Txt",1);
+  
+  /* headline */
+  snprintf (buffer,elcount(buffer),"DTC       | TruckWorkTime | CompWorkTime | DateTime             |  ExtraData | Reserved | refListNr | SlaveSerial(customer) | Error Description");
+  filePutString (buffer, elcount(buffer),glbHandle);
+  filePutString ("\n", 1,glbHandle);
+  
+  for (i = 0; i < size; i++)
+  {
+    for (j = 0; j < 22; j++ ) {
+      
+      /* dtc also in dec. */
+      if (j == 0) 
+      { 
+        currDtc = ((prettyData[i][0] << 8) | prettyData[i][1]);
+        snprintf (buffer,elcount(buffer),"%d ",(((prettyData[i][0] << 8) | prettyData[i][1])));
+        filePutString (buffer, elcount(buffer),glbHandle);
+        snprintf (buffer,elcount(buffer)," %3X",(((prettyData[i][0] << 8) | prettyData[i][1])));
+        filePutString (buffer, elcount(buffer),glbHandle);
+      }
+      /* make datetime readable */
+      else if (j == 13) { 
+        datetimebuf = (prettyData[i][10] << 24) | (prettyData[i][11] << 16) | (prettyData[i][12] << 8) | prettyData[i][13];
+        datetimebuf -= 946681200;
+        gvRechneTicksInDatum(datetimebuf,0);
+        
+        snprintf (buffer,elcount(buffer)," %02d.%02d.%02d %02d:%02d:%02d", ucDay, ucMonth, usYear, ucHour,ucMinute,ucSecond);
+        filePutString (buffer, elcount(buffer),glbHandle);
+      }
+      else 
+      {
+        if (j >= 14)
+        {
+          // evaluate ExtraData
+          switch(prettyData[i][14])
+          {
+            case 0x00:
+             /* none set; stop copying entry after extradata */
+             if ( j <=  15) {
+               snprintf (buffer,elcount(buffer),"%02X ",prettyData[i][j]);
+                filePutString (buffer, elcount(buffer),glbHandle);
+             }
+             break;
+             case 0x01:
+             /* low nibble (nr. of following S16s)set to 1? */
+             if ( j <=  17) {
+               snprintf (buffer,elcount(buffer),"%02X ",prettyData[i][j]);
+               filePutString (buffer, elcount(buffer),glbHandle);
+             }
+             else 
+             {
+                if ( j == 21) 
+                {
+                  snprintf (buffer,elcount(buffer),"            ");
+                  filePutString (buffer, elcount(buffer),glbHandle);
+                }
+             }
+             break;
+             case 0x10:
+             /* high nibble (nr. of following U32s)set to 1? */
+             if (( j <  16) || ( j > 17))  {
+               snprintf (buffer,elcount(buffer),"%02X ",prettyData[i][j]);
+               filePutString (buffer, elcount(buffer),glbHandle);
+             }
+             break;
+             case 0x11:
+             /* both nibbles (1 S16, 1 U32) */
+              snprintf (buffer,elcount(buffer),"%02X ",prettyData[i][j]);
+              filePutString (buffer, elcount(buffer),glbHandle);
+             break;
+             default:
+              snprintf (buffer,elcount(buffer),"%02X ",prettyData[i][j]);
+              filePutString (buffer, elcount(buffer),glbHandle);
+             break;
+          }
+          
+        }
+        else {
+          if ((j > 1) && (j < 10))
+          {
+            snprintf (buffer,elcount(buffer),"%02X ",prettyData[i][j]);
+            filePutString (buffer, elcount(buffer),glbHandle);
+          }
+        }
+      }
+      
+    /* spaces according to headline (beauty)*/
+    switch(j) 
+      {
+        case 1:  // vor TWT
+          snprintf (buffer,elcount(buffer),"     ");
+          filePutString (buffer, elcount(buffer),glbHandle);
+        break;
+        case 5: // vor CWT
+          snprintf (buffer,elcount(buffer),"    ");
+          filePutString (buffer, elcount(buffer),glbHandle);
+        break;
+        case 9: // vor Datetime
+          snprintf (buffer,elcount(buffer),"  ");
+          filePutString (buffer, elcount(buffer),glbHandle);
+        break;
+        case 13: // vor extradata
+          snprintf (buffer,elcount(buffer),"     ");
+          filePutString (buffer, elcount(buffer),glbHandle);
+        break;
+        case 14: // vor reserved
+          snprintf (buffer,elcount(buffer),"         ");
+          filePutString (buffer, elcount(buffer),glbHandle);
+        break;
+        case 15: // vor reflist nr.
+          snprintf (buffer,elcount(buffer),"        ");
+          filePutString (buffer, elcount(buffer),glbHandle);
+        break;
+        case 17: // vor slave serial
+          snprintf (buffer,elcount(buffer),"      ");
+          filePutString (buffer, elcount(buffer),glbHandle);
+        break;
+        case 21: // vor slave serial
+          snprintf (buffer,elcount(buffer),"           ");
+          filePutString (buffer, elcount(buffer),glbHandle);
+        break;
+        default:
+        break;
+      }
+      
+      if (j == 21)
+      {
+        switch(currDtc)
+        {
+          case 100: snprintf (buffer,elcount(buffer),"100 Spannungsversorgung DC/DC Wandler Probleme Supply Out of Range"); break; 
+          case 101: snprintf (buffer,elcount(buffer),"101 Schocklevel 1 ueberschritten"); break;
+          case 102: snprintf (buffer,elcount(buffer),"102 Keine Reaktion am Can Bus" ); break;
+          case 103: snprintf (buffer,elcount(buffer),"103 Schalten unter Last (Schuetzverschleiss)"); break;
+          case 104: snprintf (buffer,elcount(buffer),"104 Fehler auf dem Schocksensorboard"); break;
+          case 200: snprintf (buffer,elcount(buffer),"200 Master <-> Peripherie Initialisierungsfehler"); break;
+          case 201: snprintf (buffer,elcount(buffer),"201 Master <-> Slave Bus"); break;
+          case 202: snprintf (buffer,elcount(buffer),"202 CAN Master ? Sensor / Display" ); break;
+          case 203: snprintf (buffer,elcount(buffer),"203 CAN Master <-> CVS" ); break;
+          case 204: snprintf (buffer,elcount(buffer),"204 Defekt im Master" ); break;
+          case 205: snprintf (buffer,elcount(buffer),"205 Reiﬂleinentest fehlgeschlagen" ); break;
+          case 206: snprintf (buffer,elcount(buffer),"206 Defekt / Ausgefallen" ); break;
+          case 207: snprintf (buffer,elcount(buffer),"207 Zu hohe Temp" ); break;
+          case 208: snprintf (buffer,elcount(buffer),"208 Unueltiger Betriebszustand" ); break;
+          case 209: snprintf (buffer,elcount(buffer),"209 Nicht zugeordnet"); break;
+          case 210: snprintf (buffer,elcount(buffer),"210 Hardwarefehler"); break;
+          case 211: snprintf (buffer,elcount(buffer),"211 Fehler Uebertemperatur"); break;
+          case 212: snprintf (buffer,elcount(buffer),"212 Schocklevel 2 ¸bertreten"); break;
+          case 213: snprintf (buffer,elcount(buffer),"213 Fehler bei Sch¸tzansteuerung 1 detektiert (LEISTUNG)" ); break;
+          case 214: snprintf (buffer,elcount(buffer),"214 Fehler bei Sch¸tzansteuerung 2 detektiert (LEISTUNG)" ); break;
+          case 216: snprintf (buffer,elcount(buffer),"216 Reiﬂleine gezogen" ); break;
+          case 217: snprintf (buffer,elcount(buffer),"217 Strom folgt nicht dem Sollwert > 50 A" ); break;
+          case 218: snprintf (buffer,elcount(buffer),"218 Falsche nominale Spannung" ); break;
+          case 300: snprintf (buffer,elcount(buffer),"300 Batterie zu heiﬂ(siehe Sammelfehler)"); break;
+          case 301: snprintf (buffer,elcount(buffer),"301 Batterie zu kalt(siehe Sammelfehler)" ); break;
+          case 302: snprintf (buffer,elcount(buffer),"302 Batterie kommt nach oben in den Bereich der Uebertemperatur" ); break;
+          case 303: snprintf (buffer,elcount(buffer),"303 Batterie kommt nach unten in den Bereich der Untertemperatur" ); break;
+          case 304: snprintf (buffer,elcount(buffer),"304 Ueberspannung" ); break;
+          case 305: snprintf (buffer,elcount(buffer),"305 Unterspannung"); break;
+          case 306: snprintf (buffer,elcount(buffer),"306 Unterspannung TOT"); break;
+          case 307: snprintf (buffer,elcount(buffer),"307 Kommunikation" ); break;
+          case 308: snprintf (buffer,elcount(buffer),"308 Reissleine gezogen" ); break;
+          case 310: snprintf (buffer,elcount(buffer),"310 Inbalance" ); break;
+          case 311: snprintf (buffer,elcount(buffer),"311 Interner Modulfehler" ); break;
+          case 314: snprintf (buffer,elcount(buffer),"314 maximale zulaessige Zellspannung" ); break;
+          case 320: snprintf (buffer,elcount(buffer),"320 Batterie zu heiﬂ" ); break;
+          case 321: snprintf (buffer,elcount(buffer),"321 Batterie zu kalt" ); break;
+          case 322: snprintf (buffer,elcount(buffer),"322 Batterie kommt nach oben in den Bereich der Uebertemperatur"); break;
+          case 323: snprintf (buffer,elcount(buffer),"323 Batterie kommt nach unten in den Bereich der Untertemperatur"); break;
+          case 324: snprintf (buffer,elcount(buffer),"324 Ueberspannung"); break;
+          case 325: snprintf (buffer,elcount(buffer),"325 Unterspannung"); break;
+          case 327: snprintf (buffer,elcount(buffer),"327 Kommunikation"); break;
+          case 329: snprintf (buffer,elcount(buffer),"329 Reissleinentest fehlgeschlagen"); break;
+          default: snprintf (buffer,elcount(buffer),"no such DTC"); break;
+        }
+        filePutString (buffer, elcount(buffer),glbHandle);
+      }
+   
+    }
+    filePutString ("\n", 1,glbHandle);
+  }
+  
+  fileClose (glbHandle);
+  write( "./ErrorData.txt written !");
+}
+
+void turnDataEndianness(void) {
+  int i;
+  for (i = 0; i < size; i++){
+    prettyData[i][0] = data[i][1]; // DTC Number
+    prettyData[i][1] = data[i][0];
+    
+    prettyData[i][2] = data[i][5]; // Truck working time
+    prettyData[i][3] = data[i][4];
+    prettyData[i][4] = data[i][3];
+    prettyData[i][5] = data[i][2];
+    
+    prettyData[i][6] = data[i][9]; // Component working time
+    prettyData[i][7] = data[i][8];
+    prettyData[i][8] = data[i][7];
+    prettyData[i][9] = data[i][6]; 
+    
+    prettyData[i][10] = data[i][13]; // Datetime
+    prettyData[i][11] = data[i][12];
+    prettyData[i][12] = data[i][11];
+    prettyData[i][13] = data[i][10];
+    
+    prettyData[i][14] = data[i][14]; // extradata
+    prettyData[i][15] = data[i][15]; // reserved
+    
+    prettyData[i][16] = data[i][17];  // nr. in reflist
+    prettyData[i][17] = data[i][16];
+    
+    prettyData[i][18] = data[i][21];  // serialnumber
+    prettyData[i][19] = data[i][20];
+    prettyData[i][20] = data[i][19];
+    prettyData[i][21] = data[i][18];
+  }
+}
+
+byte gbIstJahrEinSchaltjahr(int usJahr)
+{
+   byte     bRetValue;
+
+   /* Vierhundertjahresregel */
+   if ((usJahr % 400) == 0)
+   {
+      bRetValue = 1;
+   }
+   /* Hundertjahresregel */
+   else if((usJahr % 100) == 0)
+   {
+      bRetValue = 0;
+   }
+   /* Vierjahresregel */
+   else if((usJahr % 4) == 0)
+   {
+      bRetValue = 1;
+   }
+   /* Alle restlichen Jahre */
+   else
+   {
+      bRetValue = 0;
+   }
+
+   return bRetValue;
+}
+
+void gvRechneTicksInDatum(dword ulSek, byte bSekRunden)
+{
+   byte     bDateIsLeapYear = 0;
+   byte     bEnoughDaysLeft;
+   byte      ucK;
+   byte      aucDateLocalDaysPerMonth[13];
+   int     usDaysPerYear;
+   int     usYears;
+   dword     ulAllDays;
+
+   /* Lokale Arbeitskopie fuer die Monatstagezahl */
+   for(ucK = 0; ucK < 13; ucK++)
+   {
+      aucDateLocalDaysPerMonth[ucK] = kaucTageProMonat[ucK];
+   }
+
+   /* Sekunden berechnen */
+   ucSecond = (ulSek % 60);
+
+   /* Soll gerundet werden? */
+   if(bSekRunden == 1){
+      /* neue RTC kann nur minutengenau eingestellt werden, wir muessen runden */
+      if(ucSecond >= 30)
+	  {
+         /* fehlenden Sekunden zur vollen Minute addieren */
+         ulSek += (60 - ucSecond);
+         ucSecond = 0;
+      }
+	  else
+	  {
+         /* ueberschuessige Sekunden zur vollen Minute abziehen */
+         ulSek -= (ucSecond);
+         ucSecond = 0;
+      }
+   }
+   else
+   {
+   /* ntd. */
+   }
+
+   /* Auf Minuten umrechnen */
+   ulSek = ulSek/60;
+   /* Minuten berechnen */
+   ucMinute = (ulSek % 60);
+   /* Auf Stunden umrechnen */
+   ulSek = ulSek/60;
+   /* Stunden berechnen */
+   ucHour = (ulSek % 24);
+   /* Ganze Tage berechnen */
+   ulAllDays = ulSek / 24;
+
+   /* Jahreszahl auf Ausgangspunkt setzen */
+   usYears = 2000;
+
+   /* Ganze Jahre berechnen */
+   bEnoughDaysLeft = 1;
+   while(1 == bEnoughDaysLeft)
+   {
+      bDateIsLeapYear = gbIstJahrEinSchaltjahr(usYears);
+
+      if(1== bDateIsLeapYear)
+      {
+         usDaysPerYear = 366;
+      }
+      else
+      {
+         usDaysPerYear = 365;
+      }
+
+      if(ulAllDays >= usDaysPerYear )
+      {
+         usYears++;
+         ulAllDays = ulAllDays - usDaysPerYear;
+      }
+      else
+      {
+         bEnoughDaysLeft = 0;
+      }
+   }
+
+   /* Tage fuer den Februar */
+   if(1== bDateIsLeapYear)
+   {
+      aucDateLocalDaysPerMonth[2] = 29;
+   }
+   else
+   {
+      aucDateLocalDaysPerMonth[2] = 28;
+   }
+
+   /* Monat berechnen */
+   for(ucK = 1; (ucK < 13) && (ulAllDays >= aucDateLocalDaysPerMonth[ucK]); ucK++)
+   {     
+      ulAllDays = ulAllDays - (aucDateLocalDaysPerMonth[ucK]);
+   }
+
+   ucMonth = ucK;
+   ucDay = (ulAllDays + 1);
+   usYear = usYears;
+}
+

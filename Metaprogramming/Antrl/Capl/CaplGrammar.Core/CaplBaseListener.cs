@@ -1117,30 +1117,6 @@ public partial class CaplBaseListener : ICaplListener {
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitJumpStatement([NotNull] CaplParser.JumpStatementContext context) { }
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="CaplParser.compilationUnit"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterCompilationUnit([NotNull] CaplParser.CompilationUnitContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="CaplParser.compilationUnit"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitCompilationUnit([NotNull] CaplParser.CompilationUnitContext context) { }
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="CaplParser.translationUnit"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterTranslationUnit([NotNull] CaplParser.TranslationUnitContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="CaplParser.translationUnit"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitTranslationUnit([NotNull] CaplParser.TranslationUnitContext context) { }
-	/// <summary>
 	/// Enter a parse tree produced by <see cref="CaplParser.externalDeclaration"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>

@@ -1,0 +1,103 @@
+/*@!Encoding:1252*/
+includes
+{
+  
+}
+
+variables
+{
+  word usRecId;
+  word usOldRecId = 0;
+  byte ucRecOccurence;
+  dword glbHandle = 0;
+  word aucHundredsCtrs[8] = {0,0,0,0,0,0,0,0};
+}
+
+on start
+{
+  glbHandle = OpenFileWrite ("ID_Results.csv",1);
+  fileClose (glbHandle);
+  
+  aucHundredsCtrs[0] = 0;
+  aucHundredsCtrs[1] = 0;
+  aucHundredsCtrs[2] = 0;
+  aucHundredsCtrs[3] = 0;
+  aucHundredsCtrs[4] = 0;
+  aucHundredsCtrs[5] = 0;
+  aucHundredsCtrs[6] = 0;
+  aucHundredsCtrs[7] = 0;
+  usOldRecId = 0;
+}
+
+on message 0x555
+{
+  byte ucIdx;
+  if (this.CAN == 2)
+  {
+    usRecId = (this.byte(0) | (this.byte(1) << 8));
+    ucRecOccurence = this.byte(2);
+    ucIdx = this.byte(1);
+    
+    aucHundredsCtrs[ucIdx]++;
+
+    writeToFile(usRecId, ucRecOccurence);
+  }
+}
+
+on message 0x554
+{
+  char buffer[200];
+  // blockend, analyze
+  if (this.CAN == 2)
+  {
+    glbHandle = OpenFileWrite ("ID_Results.csv",3); // 3 means append
+    // end of block
+    snprintf (buffer,elcount(buffer),"\n0x00er:  %3d von 256\n", aucHundredsCtrs[0]);
+    filePutString (buffer, elcount(buffer),glbHandle);
+
+    snprintf (buffer,elcount(buffer),"0x100er: %3d von 256 \n", aucHundredsCtrs[1]);
+    filePutString (buffer, elcount(buffer),glbHandle);
+
+    snprintf (buffer,elcount(buffer),"0x200er: %3d von 256\n", aucHundredsCtrs[2]);
+    filePutString (buffer, elcount(buffer),glbHandle);
+
+    snprintf (buffer,elcount(buffer),"0x300er: %3d von 256\n", aucHundredsCtrs[3]);
+    filePutString (buffer, elcount(buffer),glbHandle);
+
+    snprintf (buffer,elcount(buffer),"0x400er: %3d von 256\n", aucHundredsCtrs[4]);
+    filePutString (buffer, elcount(buffer),glbHandle);
+
+    snprintf (buffer,elcount(buffer),"0x500er: %3d von 256\n", aucHundredsCtrs[5]);
+    filePutString (buffer, elcount(buffer),glbHandle);
+
+    snprintf (buffer,elcount(buffer),"0x600er: %3d von 256\n", aucHundredsCtrs[6]);
+    filePutString (buffer, elcount(buffer),glbHandle);
+
+    snprintf (buffer,elcount(buffer),"0x700er: %3d von 256\n\n", aucHundredsCtrs[7]);
+    filePutString (buffer, elcount(buffer),glbHandle);
+    
+    aucHundredsCtrs[0] = 0;
+    aucHundredsCtrs[1] = 0;
+    aucHundredsCtrs[2] = 0;
+    aucHundredsCtrs[3] = 0;
+    aucHundredsCtrs[4] = 0;
+    aucHundredsCtrs[5] = 0;
+    aucHundredsCtrs[6] = 0;
+    aucHundredsCtrs[7] = 0;
+  
+    fileClose (glbHandle);
+  }
+}
+
+void writeToFile (word usId, byte ucOcc)
+{
+  char buffer[200];
+  if (usId <= 0x7FF)
+  {
+    glbHandle = OpenFileWrite ("ID_Results.csv",3); // 3 means append
+    snprintf (buffer,elcount(buffer),"%X,%d\n", usId, ucOcc);
+    filePutString (buffer, elcount(buffer),glbHandle);
+    fileClose (glbHandle);
+  }
+
+}
