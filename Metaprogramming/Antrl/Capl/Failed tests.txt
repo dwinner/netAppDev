@@ -1,6 +1,3 @@
-DLM.can / passed;
-FSG60.can / passed;
-FSG7.can / passed;
 FSG70.can / passed;
 FSG70_Simu.can / passed;
 FSG80.can / passed;
@@ -11,15 +8,8 @@ FSG_AudioSD_Ethernet.can / passed;
 FSG_Telephone_BAPv1.8_v3.0.can / passed;
 FoD_MasterSim_CAN_CANFD_Extended.can / passed;
 Gateway_DoIP.can / passed;
-
 CANopenMasterStill.can / fixed;
-================
-MessageId rule optimized for more generic parsing;
-Key constants extended;
-Identifier extended with byte access indexer;
-Fixed mostMessageType for type specifier declaration;
-Update splitted lexer with parser;
-3 Attemps to optimaze the grammar / failed, rejected;
+============================================================
 Added +12 files for tests from IC213MY20;
 Fixed one message type variant in capl-g4;
 Optimized grammar for permormance / 1st iteration;
