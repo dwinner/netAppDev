@@ -1,13 +1,3 @@
-FSG80.can / passed;
-FSG82.can / passed;
-FSG85.can / passed;
-FSG_AudioSD.can / passed;
-FSG_AudioSD_Ethernet.can / passed;
-FSG_Telephone_BAPv1.8_v3.0.can / passed;
-FoD_MasterSim_CAN_CANFD_Extended.can / passed;
-Gateway_DoIP.can / passed;
-
-Added +12 files for tests from IC213MY20;
 Fixed one message type variant in capl-g4;
 Optimized grammar for permormance / 1st iteration;
 Added +19 can files from Platform_CANoe_RBS for unit testing;
