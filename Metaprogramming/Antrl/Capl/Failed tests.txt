@@ -1,6 +1,3 @@
-Fixed one message type variant in capl-g4;
 Optimized grammar for permormance / 1st iteration;
 Added +19 can files from Platform_CANoe_RBS for unit testing;
 Extend message type for enumeration use case / done;
-
-CANopenMasterStill.can / fixed;
