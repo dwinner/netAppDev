@@ -1,0 +1,64 @@
+/*@!Encoding:1252*/
+
+// Author J. Raab, Preh GmbH, 16.12.14
+// schlafen via falsche nomvolt, wecken; das ganz endlos
+// um zu starten t und dann ü drücken
+// um zu stoppen t erneut drücken
+includes
+{
+  
+}
+
+variables
+{
+  message  Traction_SDOreq_LiIoBMS    m1;
+  byte buffer[32];
+  const SDOdownloadInitiate  = 0x20;
+  const SDOuploadInitiate = 0x40;
+  message ModuleControl      mc1;
+  msTimer timer1;
+  msTimer timer2;
+  byte enable = 0;
+}
+
+void writeNomVoltViaSDO(void){
+  m1.byte(0) = 0x2F;
+  m1.byte(1) = 0x70;
+  m1.byte(2) = 0x22;
+  m1.byte(3) = 0x01;
+  m1.byte(4) = 0x08;
+  m1.byte(5) = 0;
+  m1.byte(6) = 0;
+  m1.byte(7) = 0;
+  output(m1);
+}
+
+void writeModuleControl(int command) {
+  mc1.byte(0) = command;
+  mc1.byte(1) = 0xD;
+  if (enable == 1) {
+    output(mc1);
+    setTimer(timer1, 1000);
+  }
+}
+
+on Timer timer1 {
+  if (enable == 1) {
+    writeNomVoltViaSDO();
+    setTimer(timer2, 7000);
+  }
+}
+
+on Timer timer2 {
+  if (enable == 1) {
+    writeModuleControl(1);
+  }
+}
+
+on key 't' {
+  enable = enable ^ 1;
+}
+
+on key 'ü' {
+  writeModuleControl(1);
+}

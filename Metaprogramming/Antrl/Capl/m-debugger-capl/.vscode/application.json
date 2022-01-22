@@ -1,8 +1,0 @@
-{
-  "configuration": "Debug",
-  "language": "capl",
-  "assembly": "#projectFolderName#.canapp",
-  "outputPath": "out",
-  "mingwdir": "#canEasyFolder#/mingw/",
-  "compilable": [ ".can" ]
-}

@@ -39,13 +39,13 @@ namespace CaplGrammar.Application.Impl.SymbolUsageValidation
             Debug.WriteLine(GlobalScope);
         }
 
-        public override void EnterVariableBlock(CaplParser.VariableBlockContext context)
+        public override void EnterVariableSection(CaplParser.VariableSectionContext context)
         {
             _currentScope = GlobalScope;
             _isVariableBlock = true;
         }
 
-        public override void ExitVariableBlock(CaplParser.VariableBlockContext context)
+        public override void ExitVariableSection(CaplParser.VariableSectionContext context)
         {
             Debug.WriteLine(_currentScope);
             _currentScope = GlobalScope;

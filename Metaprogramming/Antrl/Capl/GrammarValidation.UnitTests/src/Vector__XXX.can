@@ -1,0 +1,289 @@
+/*@!Encoding:1252*/
+includes
+{
+    #include "messages\message_DEV_ZR_Produktion_1_Rx_1D.cin"
+    #include "messages\message_DEV_ZR_Req_0D.cin"
+    #include "messages\message_XCP_SmaLi_CRO_01.cin"
+
+}
+
+variables
+{
+/*
+Copyright ( C ) Continental AG 2019
+
+
+
+Date of creation :  20.04.2019
+
+Created by :                 Hans Jürgen Hipp
+
+
+Version info
+
+1.0        03.2018      Inital version
+// #VERSION#
+// #VERSION_END#
+*/
+
+
+    const TRUE    = 0xAA;
+    const FALSE   = 0x00;
+    const cManual = 0x00;
+    const cAuto   = 0xAA;
+
+    msTimer t_DBKomTimer_20ms;      // Timer zum zyklischen Aufruf der DBKom-Task
+    int c_tDBKomTimer_20ms = 20;    // msec
+    msTimer t_DBKomTimer_5ms;       // Timer zum zyklischen Aufruf der DBKom-Task
+    int c_tDBKomTimer_5ms = 5;      // msec
+
+
+    // BA_DEF_ BO_  "GenMsgSendType" ENUM
+    //  0 : cyclicX
+    //  1 : none
+    //  2 : none
+    //  3 : none
+    //  4 : none
+    //  5 : none
+    //  6 : none
+    //  7 : IfActive
+    //  8 : NoMsgSendType
+    //  9 : cyclicAndSpontanWithDelay
+    //  10 : none
+
+// #VAR_DEF#
+
+// #VAR_DEF_END#
+}
+
+__Init_Msg()
+{
+// #START_INIT#
+    DEV_ZR_Produktion_1_Rx_1D_init();
+    DEV_ZR_Req_0D_init();
+    XCP_SmaLi_CRO_01_init();
+    
+// #START_INIT_END#
+//    APPL_ECU_APM_1_init();
+//    APPL_ECU_APM_2_init();
+//    APPL_ECU_DRVU_1_init();
+//    APPL_ECU_DRVU_2_init();
+//    APPL_ECU_HIL_TO_IC1_init();
+//    APPL_ECU_ORC1_init();
+//    APPL_ECU_RVC_SVS1_init();
+//    APPL_ECU_TGW1_init();
+//    NM_APPL_AR_init();
+    NM_xxx_AR_init();
+//    XCP_Rq_DRVU_1_init();
+//    XCP_Rq_DRVU_2_init();
+//    XCP_Rq_RBTM_FL_init();
+//    XCP_Rq_RBTM_FR_init();
+//    XCP_Rq_RVC_SVS_init();
+//    XCP_Rq_TPM_init();
+}
+
+on envVar KCAN__STOP_All_MESSAGES_DEFAULT_STARTDELAY
+{
+    if( getValue( this ) )
+    {
+        __Init_Msg();
+        __Startup_Delay();
+    }
+}
+
+on envVar KCAN__STOP_All_MESSAGES_SET_STARTDELAY
+{
+    if( getValue( this ) )
+    {
+        __Startup_Delay();
+    }
+}
+
+__Startup_Delay()
+{
+//    write(" Delay setzen :__BCM_Startup_Delay");
+// #START_DELAY#
+    _DEV_ZR_Produktion_1_Rx_1D_Cnt = getValue( KCAN__STMSGSD_DEV_ZR_Produktion_1_Rx_1D ) / _DEV_ZR_Produktion_1_Rx_1D_Timebase;
+    _DEV_ZR_Req_0D_Cnt = getValue( KCAN__STMSGSD_DEV_ZR_Req_0D ) / _DEV_ZR_Req_0D_Timebase;
+    _XCP_SmaLi_CRO_01_Cnt = getValue( KCAN__STMSGSD_XCP_SmaLi_CRO_01 ) / _XCP_SmaLi_CRO_01_Timebase;
+
+// #START_DELAY_END#
+}
+
+__Reset_E2E_SQC()
+{
+
+//    write(" E2E-simu: Reset SQC to 15 ");
+}
+
+
+on Timer t_DBKomTimer_5ms
+{
+// *** DBKom-Sendefunktion ***
+    // timer aufziehen für nächsten Zyklus
+    if( getValue( KCAN__NMH_Vector__XXX_CommActive ) )
+    {
+        setTimer( t_DBKomTimer_5ms, c_tDBKomTimer_5ms );
+    }
+// #CYC_TIMER_5_MS_START#
+
+    /*
+    _check_output();
+    */
+    
+    
+    
+// #CYC_TIMER_5_MS_END#
+}
+
+on Timer t_DBKomTimer_20ms
+{
+// *** DBKom-Transmit-function ***
+    // rearm timer for the next cycle
+    if( getValue( KCAN__NMH_Vector__XXX_CommActive ) )
+    {
+        setTimer( t_DBKomTimer_20ms, c_tDBKomTimer_20ms );
+    }
+// #CYC_TIMER_20_MS#
+    DEV_ZR_Produktion_1_Rx_1D_check_output();
+    DEV_ZR_Req_0D_check_output();
+    XCP_SmaLi_CRO_01_check_output();
+
+    /*
+    _check_output();
+    */
+    
+// #CYC_TIMER_20_MS_END#
+//    NM_xxx_AR_check_output();
+}
+
+on EnvVar KCAN__SAVE_PANEL_CONFIG
+{
+    dword hFile;
+
+    if( getValue(this) )
+    {
+        write("Saving HMI Panel Variables ...");
+
+        hFile = openFileWrite( "CONFIG\\HMI_PRESETS.ASC", 0 );
+        filePutString( "base hex timestamps absolute\n", 31, hFile );
+
+// #MSG_SAVEENVVAR#
+   //     DEV_ZR_Produktion_1_Rx_1D_saveEnvVars( hFile );
+   //     DEV_ZR_Req_0D_saveEnvVars( hFile );
+   //     XCP_SmaLi_CRO_01_saveEnvVars( hFile );
+
+
+// #MSG_SAVEENVVAR_END#
+        NM_xxx_AR_saveEnvVars( hFile );
+
+        fileClose(hFile );
+    }
+}
+
+on EnvVar KCAN__STOP_Vector__XXX_MESSAGES_OFF
+{
+    if( getValue(this) )
+    {
+// #MSG_OFF#
+        putValue( KCAN__STMSGT_DEV_ZR_Produktion_1_Rx_1D_CTRL, 4 );
+        putValue( KCAN__STMSGT_DEV_ZR_Req_0D_CTRL, 4 );
+        putValue( KCAN__STMSGT_XCP_SmaLi_CRO_01_CTRL, 4 );
+
+        
+
+// #MSG_OFF_END#
+    }
+}
+
+on envVar KCAN__STOP_Vector__XXX_MESSAGES_ON
+{
+    if( getValue(this) )
+    {
+// #MSG_ON#
+        putValue( KCAN__STMSGT_DEV_ZR_Produktion_1_Rx_1D_CTRL, 0 );
+        putValue( KCAN__STMSGT_DEV_ZR_Req_0D_CTRL, 0 );
+        putValue( KCAN__STMSGT_XCP_SmaLi_CRO_01_CTRL, 0 );
+
+
+// #MSG_ON_END#
+
+    }
+}
+
+on EnvVar KCAN__STOP_All_MESSAGES_OFF
+{
+    if( getValue(this) )
+    {
+        putValue( KCAN__STOP_Vector__XXX_MESSAGES_OFF, 1 );
+    }
+    else
+    {
+        putValue( KCAN__STOP_Vector__XXX_MESSAGES_OFF, 0 );
+    }
+}
+
+on EnvVar KCAN__STOP_All_MESSAGES_ON
+{
+    if( getValue(this) )
+    {
+        putValue( KCAN__STOP_Vector__XXX_MESSAGES_ON, 1 );
+    }
+    else
+    {
+        putValue( KCAN__STOP_Vector__XXX_MESSAGES_ON, 0 );
+    }
+}
+
+on busOff
+{
+    resetCan();
+    write("CAN has been resetted due to BUSOFF    ( coded version )");
+}
+
+
+
+void _TraceCall( char functionName[], long callResult )
+{
+    char line[100];
+
+    if( callResult == 1 )
+        snprintf( line, elcount(line ), "calling %s", functionName );
+    else
+        snprintf( line, elcount(line ), "call to %s failed - wrong state?", functionName );
+    _Trace( "", "", line );
+}
+
+void _Trace( char functionName[], char info[])
+{
+    _Trace( functionName, info, "");
+}
+
+void _Trace( char functionName[], char info[], char verbose[], long argument )
+{
+    char line[100];
+
+    snprintf( line, elcount(line ), verbose, argument );
+    _Trace( functionName, info, line );
+}
+
+void _Trace( char functionName[], char info[], char verbose[])
+{
+  char sep[2] = "/";
+  sep[0] = functionName[0] ? '/' : 0;
+  if( verbose[0])
+  {
+    write( "[%.3f]%s%s%s: %s", timeNow()/100000.0, gECU
+           , sep
+           , functionName
+           , verbose
+           );
+  } else
+  {
+    write( "[%.3f]%s%s%s: %s", timeNow()/100000.0, gECU
+           , sep
+           , functionName
+           , info
+           );
+  }
+}

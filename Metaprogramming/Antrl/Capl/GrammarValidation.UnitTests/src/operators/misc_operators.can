@@ -1,8 +1,0 @@
-variables
-{
-    byte x, y, z;
-    z = 3;
-    y = 5;
-    x = (y < z) ? z : y; // conditional result x = 5
-    x = messagename.signalname; // x is assigned a signal value
-}

@@ -1,8 +1,0 @@
-<root>
-
- <!--class TExpressionStatement<class ICppVisitor>-->
- <map source="d:\work-files\multidebugger\out\multidebugger1.cpp" from="6526;9" to="6526;35" target="d:\work-files\multidebugger\main.can" startOffset="13" endOffset="21" parent="on start" />
-
- <!--class TCppEventDef<class ICppVisitor>-->
- <map source="d:\work-files\multidebugger\out\multidebugger1.cpp" from="6528;5" to="6528;6" target="d:\work-files\multidebugger\main.can" caplFrom="3;1" caplTo="3;2" parent="on start" />
-</root>

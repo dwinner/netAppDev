@@ -31,10 +31,10 @@ namespace CaplGrammar.Application.Impl.GrammarValidation
             var tokenStream = new CommonTokenStream(caplLexer);
             var caplParser = new CaplParser(tokenStream)
             {
-                ErrorHandler = new CaplErrorStrategy()
+                ErrorHandler = new CaplErrorStrategy()  // TODO: inject in ctor
             };
             caplParser.RemoveErrorListeners();
-            var errorHandler = new DefaultErrorHandlerImpl();
+            var errorHandler = new DefaultErrorHandlerImpl();   // TODO: inject in ctor
             caplParser.AddErrorListener(errorHandler);
             var caplRoot = caplParser.primaryExpression();
 

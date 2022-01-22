@@ -1,0 +1,71 @@
+/*@@var:*/
+/***************************************************************************
+*=====================      Copyright by Continental AG      ===============
+****************************************************************************
+* Title            : DependencyChangeRuntime.can
+*
+* Description  : Test 10.1 (T_68)
+*                Cyclic selects displya languages.
+*
+* Responsible  : Wolfgang Mauder <Wolfgang.Mauder-EXT@continental-corporation.com>
+*
+* Revision List: (Will NOT be filled by XStudio)
+
+* Archive:       Rev. 1 WolMau: Inital checkin, cycles German, Arabic, Chinese
+*
+****************************************************************************/
+
+variables
+{
+   byte  u8CurrentLanguage = 0;
+
+   dword u16TimerDelay = 2000;
+   dword u16NumLanguageChanges = 0;
+
+   msTimer languageChangeTimer;
+
+}
+/*@@end*/
+
+/*@@timer:languageChangeTimer:*/
+on timer languageChangeTimer
+{
+
+   // Switch languages cyclic
+   switch (u8CurrentLanguage) {
+      case 0:
+         putValue(HMI_Language_Rq_V2, 13); //Language "Arabic"
+         u8CurrentLanguage = 13;
+         write("Language set to \"Arabic\"");
+         break;
+      case 13:
+         putValue(HMI_Language_Rq_V2, 14); //Language "Chinese"
+         u8CurrentLanguage = 14;
+         write("Language set to \"Chinese\"");
+         break;
+      case 14:
+         putValue(HMI_Language_Rq_V2,  0); //Language "German"
+         u8CurrentLanguage = 0;
+         write("Language set to \"German\"");
+         break;
+   }
+
+   u16NumLanguageChanges = u16NumLanguageChanges + 1;
+
+   setTimer(languageChangeTimer, u16TimerDelay);  
+}
+/*@@end*/
+
+/*@@key:'t':*/
+on key 't'
+{
+    write("Keypress \"t\" recieved -> Measurement starts");
+    
+    putValue(HMI_Language_Rq_V2, 0); //Language "German"
+    u16NumLanguageChanges = 0;
+    u8CurrentLanguage = 0;
+
+    setTimer(languageChangeTimer, u16TimerDelay);
+}
+/*@@end*/
+

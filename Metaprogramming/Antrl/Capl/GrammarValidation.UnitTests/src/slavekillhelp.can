@@ -1,0 +1,25 @@
+/*@!Encoding:1252*/
+includes
+{
+  
+}
+
+variables
+{
+  message 0xB0 mNVMwrite;
+}
+
+on EnvVar sendNVMKill
+{
+  mNVMwrite.DLC = 8;
+  mNVMwrite.byte(0) = 0;
+  mNVMwrite.byte(1) = 0xCD;
+  mNVMwrite.byte(2) = 0xD0;
+  mNVMwrite.byte(3) = 0;
+  mNVMwrite.byte(4) = 0;
+  mNVMwrite.byte(5) = 0;
+  mNVMwrite.byte(6) = 0;
+  mNVMwrite.byte(0) = 0;
+  
+  output(mNVMwrite);
+}

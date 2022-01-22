@@ -1,0 +1,108 @@
+variables
+{
+    double x;
+    x = cos(PI); // returns –1, PI is a built-in constant
+
+    msTimer mytimer; // timer    
+    msTimer t1;
+
+    int mat1[2][2] = {{1,2}, {3,4}};
+    int mat2[3][3] = {{1,2,3}, {4,5,6}, {7,8,9}};
+
+    int mat3[3] = {1,2,3};
+    int m=1;
+}
+
+on message * // the * symbol is a wildcard for all messages
+{
+    long id;
+    id = valOfId(this); // works with extended ID as well
+
+    char buffer[64];
+    dword contextCAN = 0x00010000;
+    if (getMessageName(this.ID, contextCAN | this.CAN, buffer, elcount(buffer)))
+    {
+        write("Message: %s", buffer);
+    }
+    else
+        write("Message ID = %d is not defined.", this.id);
+
+    long z1;
+    long z2;
+    z1 = atol("200");
+    z2 = atol("0xFF");
+}
+
+on start
+{
+    setTimer(t1, 5); // Initializes a 5-second cyclic timer
+}
+
+on timer t1
+{    
+    setTimer(t1, 5); // Resets timer for another 5 seconds
+}
+
+double tangent(double x) // user-defined function tangent()
+{
+    return sin(x) / cos(x);
+}
+
+on timer mytimer
+{
+    if (keypressed()) // true if any key is pressed
+    {
+        setTimer(mytimer, 100); // restart timer
+        output(msg); // send message while key is pressed
+    }
+    else
+        write("F1 released");
+}
+
+on timer updateTimer
+{
+    inspect();
+    setTimer(updateTimer, 100);
+}
+
+on errorFrame
+{
+    startStatisticAcquisition();
+}
+
+on key 's'
+{
+    char replayName[32] = "ibus_data";
+    replayStart(replayName);
+
+    int val;
+    float fval;
+    char buff[25];
+
+    // Assign the value of the environment variable "Switch" to val
+    val = getValue(Sw);
+    
+    // Assign the value of the environment variable "Temp" to fval
+    fval = getValue(Temp);
+
+    // Read the value of environment variable "NodeName"
+    // val in this case is the number of bytes returned
+    val = getValue(NodeName, buff);
+}
+
+void sum(int matrix[][])
+{
+    int i, j;
+    int answer;
+    answer = 0;
+
+    for (i = 0; i < elCount(matrix); i++)
+    {
+        for (j = 0; j < elCount(matrix[i]); j++)
+        {
+            answer += matrix[i][j];
+        }
+    }
+
+    write("The sum is %d", answer);
+}

@@ -1,0 +1,122 @@
+/*@!Encoding:1252*/
+
+/**
+*  \file    secacc.can
+*
+*  \brief   Security Access Key Calculator for Linde KWP2000 diagnosis.
+*
+*  \author  Ralf Huber <ralf.huber@linde-mh.de>
+*/
+
+includes
+{
+}
+variables
+{
+   enum boolean {FALSE = 0, TRUE = 1};
+   message DiagRequest_LiIoBMS     mDiag;
+}
+
+on start {
+   writeLineEx(1,2,"SEC ACC BLOCK enabled; disable for flashing!!!");
+}
+/*
+ * This function checks whether the input argument 'msg' is a positive response to a security access seed request. If
+ * that is the case, it sends the appropriate key and returns 'TRUE'.
+ *
+ * \param   msg   A KWP CAN message.
+ * \return  TRUE  If 'msg' was a positive response to a security access seed request. \n
+ *          FALSE If not
+ */
+enum boolean handleSecurityAccess(message * msg)
+{
+   message * response;
+   dword secacc12const_a = 0x974c58ab;           
+   dword secacc12const_b = 0xfedcba98;
+   dword secacc12const_c = 0x98765432;
+   dword seed;
+   dword keey;                                     /* 'key' is already a keyword, so we use 'keey' instead */
+
+   if (msg.byte(1) == 0x67) {                      /* positive response for KWP request SecurityAccess */
+      if (msg.byte(0) == 0x06) {                   /* positive response for KWP request SecurityAccess#1 (request seed) */
+         
+         seed = msg.dword(3);
+         write("Received seed 0x%lX from KWP CAN ID 0x%X.", seed, msg.ID);
+         
+         /* check if the security access has already been done before */
+         if (seed == 0) {
+            return TRUE;                        
+         }
+         
+         /* process seed and calculate key */
+         if (msg.byte(2) == 0x01) {                /* security access 1/2 */
+            keey = seed + secacc12const_a;
+            
+            if (0xFFFFFFFF - secacc12const_a < seed) {
+               keey = keey^secacc12const_b;   
+            } else {
+               keey = keey^secacc12const_c;
+            }
+            
+            keey = (keey >> 11) | ((keey & 0x7FF) << 21);
+         } else if (msg.byte(2) == 0x03) {         /* security access 3/4 */
+            keey = seed + 0x1AF7;
+         } else if (msg.byte(2) == 0x05) {         /* security access 5/6 */
+            byte data[8];
+            data[3] = (byte)seed;
+            seed = seed >> 8;
+            data[2] = (byte)seed;
+            seed = seed >> 8;
+            data[1] = (byte)seed;
+            seed = seed >> 8;
+            data[0] = (byte)seed;
+            
+            data[0] += 0x97;
+            data[1] += 0x28;
+            data[2] += 0xAA;
+            data[3] += 0x55;
+          
+            keey = (data[3] << 8);
+            keey = (keey | data[2]) << 8;
+            keey = (keey | data[1]) << 8;
+            keey =  keey | data[0];
+         }        
+         
+         write("-> Calculated key is 0x%lX", keey);
+         
+         /* send the calculated key */
+         response.ID = msg.ID - 0x10;
+         response.DLC = 8;
+         response.byte(0) = 0x06;                  /* SingleFrame, length = 4 */
+         response.byte(1) = 0x27;                  /* SecurityAccess */
+         response.byte(2) = msg.byte(2) + 1;
+         response.dword(3) = keey;
+         output(response);
+         return TRUE;
+      }
+   }
+   
+   return FALSE;
+}
+
+on message LiIoBMS_DiagResponse
+{
+  if (this.byte(1) == 0x67) {
+	  handleSecurityAccess(this);
+  }
+}
+
+on envVar(DoSecAcc) {
+      if (getValue(DoSecAcc) == 1) {
+    mDiag.DLC = 8;
+    mDiag.BYTE(0) = 0x02;
+    mDiag.BYTE(1) = 0x27;
+    mDiag.BYTE(2) = 0x03;
+    mDiag.BYTE(3) = 0;
+    mDiag.BYTE(4) = 0;
+    mDiag.BYTE(5) = 0;
+    mDiag.BYTE(6) = 0;
+    mDiag.BYTE(7) = 0;
+    output(mDiag);
+  }
+}

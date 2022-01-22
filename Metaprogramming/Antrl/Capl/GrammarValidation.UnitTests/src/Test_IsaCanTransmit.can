@@ -1,0 +1,116 @@
+/*@!Encoding:1252*/
+includes
+{
+  
+}
+
+variables
+{
+  message 0x0 m1;
+  message 0x60D mReset;
+  message 0x554 m3;
+    
+  word usID;
+  word usMsgCtr = 0;
+  word usCycleCtr = 0;
+  const word nrOfMsgsPerId = 10;
+  const word timeBetwMsgs = 1;
+  const word timtBetwBlocks = 15;
+  
+  const word usIdStart = 0x0;
+  const word usIdEnd   = 0x7FF;
+  const word usNrOfCycles = 100;
+  
+  msTimer tBetwMsgs;
+  msTimer tBetwBlocks;
+  msTimer tWaitBetweenRuns;
+  msTimer tWaitBetweenRunAndReset;
+}
+
+on start
+{
+  m1.DLC = 8;
+  mReset.CAN = 1;
+  mReset.DLC = 8;
+  mReset.byte(0) = 0x2F;
+  mReset.byte(1) = 0x01;
+  mReset.byte(2) = 0x22;
+  mReset.byte(3) = 1;
+  mReset.byte(4) = 1;
+  
+  m3.CAN = 2;
+  m3.DLC = 8;
+}
+
+on key 'u'
+{
+  usCycleCtr = 0;
+  m1.ID = usIdStart;
+  usMsgCtr = 0;
+  sendMsgs();
+}
+
+on Timer tBetwBlocks
+{
+  sendMsgs();
+}
+
+on Timer tBetwMsgs
+{
+  sendMsgs();
+}
+
+on Timer tWaitBetweenRuns
+{
+  if (usCycleCtr < usNrOfCycles){
+     m1.ID = usIdStart;
+     usMsgCtr = 0;
+     sendMsgs();
+  }
+  else{
+    write ("All (%d) cycles done", usNrOfCycles);
+  }
+}
+
+on Timer tWaitBetweenRunAndReset
+{
+  // info about blockend to receive node
+  output(m3);
+  //reset
+  output(mReset);
+  setTimer (tWaitBetweenRuns, 2000);
+}
+
+void sendMsgs(void)
+{
+
+  if (usMsgCtr < nrOfMsgsPerId)
+  {
+    output(m1);
+    usMsgCtr++;
+    setTimer (tBetwMsgs, timeBetwMsgs);
+  }
+  else{ 
+    /* next id */
+    usMsgCtr = 0;
+    if (m1.ID < usIdEnd)
+    {
+      if (m1.ID == usIdStart)
+      {
+        usCycleCtr++;
+      }
+      m1.ID++;
+      setTimer(tBetwBlocks, timtBetwBlocks);
+    }
+    else {
+      // send (endID - 1) again so last result appears
+      m1.ID = (usIdEnd - 2);
+      output(m1);
+      
+      write("cycle %d done", usCycleCtr);
+      setTimer (tWaitBetweenRunAndReset, 100);
+
+    }
+  }
+}
+

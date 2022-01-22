@@ -1,0 +1,158 @@
+/*@@var:*/
+/***************************************************************************
+*=====================      Copyright by Continental AG      ===============
+****************************************************************************
+* Title            : TimeToWarning.can
+*
+* Description  : Test 02.07 (T_21)
+*                Measures the time between sent high colling temperature and
+*                change of HIL ID.
+*
+* Responsible  : Christian Spahn <Christian.Spahn-EXT@continental-corporation.com>
+*
+* Revision List: (Will NOT be filled by XStudio)
+*
+* Archive: Rev  9 WolMau: - Report format changed
+*          Rev. 8 WolMau: - Resetting Min, Max, Mean, Count and measurement
+*                           start on Keyboard press 't'
+*                         - Measurement reset on Keyboard press 'd'
+*          Rev. 7 WolMau: - Initialization of output values before use
+*          Rev. 6 WolMau: - Extended info output
+*          Rev. 5 WolMau: - Keyboard press signalled
+*          Rev. 4 ChrSpa: - Added version information
+*          Rev. 3 ChrSpa: - CAN DB 2013_05a change
+*          Rev. 2 ChrSpa: - Added stresstest initialization
+*          Rev. 1 ChrSpa: - Inital checkin
+*
+****************************************************************************/
+
+variables
+{
+   dword oldHilId;
+   dword ttwStartTime;
+
+   float timeToWarning;
+   float timeToWarningMin    =  10000000.0;
+   float timeToWarningMax    = -10000000.0;
+   float timeToWarningSum    = 0.0;
+   float timeToWarningCalls  = 0.0;
+   float timeToWarningMean   = 0.0;
+ 
+   enum tenTtwState { idle, waitMsgSent, waitWarning, waitNormal } enTtwState;
+
+   MsTimer timerStartDelay;
+}
+/*@@end*/
+
+/*@@msg:CAN1.HIL_W213::Meas_IC_3 (0x18EF4105X):*/
+on message Meas_IC_3
+{
+   dword hilId;
+
+   hilId = (this.Meas_IC_3H.phys * 256 + this.Meas_IC_3G.phys) * 256 + this.Meas_IC_3F.phys;
+
+   if (oldHilId != hilId) {
+      newHilId(hilId);
+      oldHilId = hilId;
+   }
+}
+/*@@end*/
+
+/*@@caplFunc:newHilId(dword):*///function
+newHilId (dword hilId)
+{
+
+   if ((hilId == 0x200068) && (enTtwState == waitWarning)) {
+            
+      timeToWarning       = (float) ( timeNow() - ttwStartTime ) / 100.0;
+      timeToWarningSum   += timeToWarning;
+      timeToWarningCalls += 1.0;
+      timeToWarningMean   = timeToWarningSum / timeToWarningCalls;
+
+      if (timeToWarning < timeToWarningMin) timeToWarningMin = timeToWarning;
+      if (timeToWarning > timeToWarningMax) timeToWarningMax = timeToWarning;
+
+      write("TimeToWarning Calls %3.1f / Actual %3.1f ms / Min %3.1f ms / Max %3.1f ms / Mean %3.1f ms", timeToWarningCalls, timeToWarning, timeToWarningMin, timeToWarningMax, timeToWarningMean);
+      clearWarning();
+
+   } else if ((hilId != 0x200068) && (enTtwState == waitNormal)) {
+
+      setTimer(timerStartDelay, 1000);
+   }
+
+}
+/*@@end*/
+
+/*@@startStart:Start:*/
+on start
+{
+   //setWarning();
+   putValue(Env_Stress_RevMin, 1000);
+   putValue(Env_Stress_RevStepWidth, 5000);
+   putValue(Env_Stress_CoolantTemp_SweepActiv, 0);
+}
+/*@@end*/
+
+/*@@caplFunc:setWarning():*///function
+setWarning ()
+{
+   putValue(Env_EngCoolTemp, 135);
+   enTtwState = waitMsgSent;
+}
+/*@@end*/
+
+/*@@key:'t':*/
+on key 't'
+{   
+    write("Keypress \"t\" recieved -> Measurement starts");
+
+    timeToWarningMin    =  10000000.0;
+    timeToWarningMax    = -10000000.0;
+    timeToWarningSum    = 0.0;
+    timeToWarningCalls  = 0.0;
+    timeToWarningMean   = 0.0;
+
+    setWarning();
+}
+/*@@end*/
+
+/*@@caplFunc:clearWarning():*///function
+clearWarning ()
+{
+   putValue(Env_EngCoolTemp, 90);
+   enTtwState = waitNormal;
+}
+/*@@end*/
+
+/*@@timer:timerStartDelay:*/
+on timer timerStartDelay
+{
+   setWarning();
+}
+/*@@end*/
+
+/*@@msg:CAN1.HMI_2015_17a::EngCtrl_Stat_AR (0x2B9):*/
+on message EngCtrl_Stat_AR
+{
+
+   if ((enTtwState == waitMsgSent) && (this.EngCoolTemp.phys == 135)) {
+      enTtwState = waitWarning;
+      ttwStartTime = timeNow();
+   }
+
+}
+/*@@end*/
+
+/*@@key:'d':*/
+on key 'd'
+{
+    write("Keypress \"t\" recieved -> Reset measurements");
+
+    timeToWarningMin    =  10000000.0;
+    timeToWarningMax    = -10000000.0;
+    timeToWarningSum    = 0.0;
+    timeToWarningCalls  = 0.0;
+    timeToWarningMean   = 0.0;
+}
+/*@@end*/
+

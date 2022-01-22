@@ -1,0 +1,230 @@
+/*@!Encoding:1252*/
+includes
+{
+  
+}
+
+variables
+{
+  msTimer tPwrOffTimer;
+  msTimer tWaitPre;
+  msTimer tWaitPost;
+  msTimer tWaitAwake;
+  
+  msTimer t10MsCycle;
+  
+  message Traction_SDOreq_LiIoBMS mOnOff;
+  message LiIoCharger_SDOreq_LiIoBMS mOnOffCharg;
+  message 0xB0 mNVMwrite;
+  message 0x80 mStartupTest;
+  message 0x90 mRlTest;
+  
+  int sendNvmWriteCyclicEnable = 0;
+
+  const int cycleoffset = 0;
+  const int lowerCycleEnd = 3200 - cycleoffset; //10 - cycleoffset;
+  const int upperCycleEnd = 4000 - cycleoffset; //3500 - cycleoffset;
+  
+  const int preDelayTime = 100;
+  const int awakeTime = 5000;
+  const int offTime = 2000;
+  const int postDelayTime = 100;
+  
+  int testCycle = lowerCycleEnd;
+  int toggle = 0;
+
+  int MmcStatusReceived1;
+  int MmcStatusReceived2;
+  int MmcStatusReceived3;
+  int MmcStatusReceived4;
+  int MmcStatusReceived5;
+  dword cycleCount = 0;
+
+}
+
+on start
+{
+  mOnOff.CAN = 1;
+  mNVMwrite.CAN = 2;
+  mStartupTest.CAN = 2;
+  mRlTest.CAN = 2;
+  setTimerCyclic (t10MsCycle, 10);
+  testCycle = lowerCycleEnd;
+  
+  MmcStatusReceived1 = 0;
+  MmcStatusReceived2 = 0;
+  MmcStatusReceived3 = 0;
+  MmcStatusReceived4 = 0;
+  MmcStatusReceived5 = 0;
+}
+
+on key 'q'
+{
+  // slaves on
+  cycleCount = 0;
+  sendOnOff(1);
+  setTimer(tWaitPre, preDelayTime);
+  toggle = 0;
+  testCycle = lowerCycleEnd;
+}
+
+on timer tWaitPre
+{ 
+  // stay awake
+  cycleCount++;
+  setTimer(tWaitAwake, awakeTime);
+}
+
+on timer tWaitAwake
+{
+  // send NVM write request
+  sendNvmWriteCyclicEnable = 1;
+  
+  // var for measurement
+  putValue(nvmWriteUntilOff, 1);
+  
+  // set off timer
+  setTimer(tPwrOffTimer, testCycle);
+}
+
+on timer tPwrOffTimer
+{
+  // slaves off
+  sendOnOff(0);
+
+  // stay off
+  setTimer(tWaitPost, offTime);
+}
+
+on timer tWaitPost
+{
+  // stop sending nvm request
+  sendNvmWriteCyclicEnable = 0;
+  // var for measurement
+  putValue(nvmWriteUntilOff, 0);
+  
+  // slaves on
+  sendOnOff(1);
+  
+  // all slaves have index?
+  if ((MmcStatusReceived1 == 1)
+    &(MmcStatusReceived2 == 1)
+    &(MmcStatusReceived3 == 1)
+    &(MmcStatusReceived4 == 1)
+    &(MmcStatusReceived5 == 1))
+  {
+
+    // reset flag
+    MmcStatusReceived1 = 0;
+    MmcStatusReceived2 = 0;
+    MmcStatusReceived3 = 0;
+    MmcStatusReceived4 = 0;
+    MmcStatusReceived5 = 0;
+    
+    nextCycle();
+    // start over
+    setTimer(tWaitPre, postDelayTime);
+  }
+  else {
+    /* not all status msgs received */
+    write(" cycle that killed a slave is %d ms", testCycle + cycleoffset);
+  }
+}
+
+on timer t10MsCycle
+{
+  if(sendNvmWriteCyclicEnable == 1)
+  {
+    sendNVMWrite();
+  }
+}
+
+void sendOnOff(int OnIsOnZeroIsOff)
+{
+  putValue(SlaveOnTime, OnIsOnZeroIsOff);
+  mOnOff.byte(0) = 0x2F;
+  mOnOff.byte(1) = 0;
+  mOnOff.byte(2) = 0x22;
+  mOnOff.byte(3) = 0x01 + (1 - OnIsOnZeroIsOff);
+  mOnOff.byte(4) = 0x1;
+  mOnOff.byte(5) = 0;
+  mOnOff.byte(6) = 0;
+  mOnOff.byte(7) = 0;
+
+  output (mOnOff);
+}
+
+void sendNVMWrite(void)
+{
+  mNVMwrite.DLC = 8;
+  mNVMwrite.byte(0) = 0xFF;
+  mNVMwrite.byte(1) = 0xCD;
+  mNVMwrite.byte(2) = 0xD0;
+  mNVMwrite.byte(3) = 0;
+  mNVMwrite.byte(4) = 0;
+  mNVMwrite.byte(5) = 0;
+  mNVMwrite.byte(6) = 0;
+  mNVMwrite.byte(7) = 0;
+  
+  output(mNVMwrite);
+}
+
+//void sendStartUpTest(void)
+//{
+//  mStartupTest.DLC = 3;
+//  
+//  mStartupTest.byte(0) = 0xFF;
+//  mStartupTest.byte(1) = 0x18;
+//  mStartupTest.byte(2) = 0x00;
+//  
+//  output(mStartupTest);
+//}
+
+void nextCycle(void)
+{
+  // 1 ms steps, every cycle 10 times
+  if (toggle == 10)
+  {
+    toggle = 0;
+    if (testCycle < upperCycleEnd)
+    {
+      testCycle = testCycle + 1; 
+    }
+    else
+    {
+      testCycle = lowerCycleEnd;
+    }
+  }
+  toggle++;
+  write ("cycle nr. %d; cycle was %d ms",cycleCount, testCycle + cycleoffset);
+}
+
+
+on message CAN2.0x180
+{
+  MmcStatusReceived1 = 1;
+
+}
+
+on message CAN2.0x181
+{
+  MmcStatusReceived2 = 1;
+
+}
+
+on message CAN2.0x182
+{
+  MmcStatusReceived3 = 1;
+
+}
+
+on message CAN2.0x183
+{
+  MmcStatusReceived4 = 1;
+
+}
+
+on message CAN2.0x184
+{
+  MmcStatusReceived5 = 1;
+}
