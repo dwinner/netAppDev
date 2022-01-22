@@ -8,13 +8,12 @@ namespace WinUICultureDemo
 {
    public record CultureData(CultureInfo CultureInfo)
    {
+      private const double Number = 9876543.21;
+      private RegionInfo? _regionInfo;
       public IList<CultureData> SubCultures { get; } = new List<CultureData>();
-
-      private double _numberSample = 9876543.21;
-      public string NumberSample => _numberSample.ToString("N", CultureInfo);
+      public string NumberSample => Number.ToString("N", CultureInfo);
       public string DateSample => DateTime.Today.ToString("D", CultureInfo);
       public string TimeSample => DateTime.Now.ToString("T", CultureInfo);
-      private RegionInfo? _regionInfo;
 
       public RegionInfo? RegionInfo
       {

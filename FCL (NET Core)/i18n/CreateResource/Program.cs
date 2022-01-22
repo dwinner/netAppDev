@@ -7,11 +7,11 @@ using System.Text;
 CreateResource();
 ReadResource();
 
-const string ResourceFile = "Demo.resources";
+const string resourceFile = "Demo.resources";
 
 void ReadResource()
 {
-   FileStream stream = File.OpenRead(ResourceFile);
+   FileStream stream = File.OpenRead(resourceFile);
    using ResourceReader reader = new(stream);
    reader.GetResourceData("Title", out string resourceType, out byte[] data);
    string title = Encoding.UTF8.GetString(data);
@@ -25,7 +25,7 @@ void ReadResource()
 
 void CreateResource()
 {
-   FileStream stream = File.OpenWrite(ResourceFile);
+   FileStream stream = File.OpenWrite(resourceFile);
 
    using ResourceWriter writer = new(stream);
    writer.AddResource("Title", "Professional C#");

@@ -1,15 +1,12 @@
 ﻿using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
 
 #nullable enable
-// To learn more about WinUI, the WinUI project structure,
-// and more about our project templates, see: http://aka.ms/winui-project-info.
 
 namespace WinUICultureDemo
 {
-   public sealed partial class CultureDetailUC : UserControl
+   public sealed partial class CultureDetailUc
    {
-      public CultureDetailUC() => this.InitializeComponent();
+      public CultureDetailUc() => InitializeComponent();
 
       public CultureData CultureData
       {
@@ -18,8 +15,11 @@ namespace WinUICultureDemo
       }
 
       public static readonly DependencyProperty CultureDataProperty =
-         DependencyProperty.Register("CultureData", typeof(CultureData), typeof(CultureDetailUC),
+         DependencyProperty.Register(nameof(CultureData),
+            typeof(CultureData),
+            typeof(CultureDetailUc),
             new PropertyMetadata(null));
    }
 }
+
 #nullable restore

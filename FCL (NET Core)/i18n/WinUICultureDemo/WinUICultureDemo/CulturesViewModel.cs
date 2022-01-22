@@ -11,7 +11,15 @@ namespace WinUICultureDemo
 {
    public class CulturesViewModel : INotifyPropertyChanged
    {
+      private CultureData? _selectedCulture;
       public CulturesViewModel() => SetupCultures();
+      public IList<CultureData> RootCultures { get; } = new List<CultureData>();
+
+      public CultureData? SelectedCulture
+      {
+         get => _selectedCulture;
+         set => SetProperty(ref _selectedCulture, value);
+      }
 
       public event PropertyChangedEventHandler? PropertyChanged;
 
@@ -40,7 +48,7 @@ namespace WinUICultureDemo
             }
             else // add to parent culture
             {
-               if (cultureDataDict.TryGetValue(cd.CultureInfo.Parent.Name, out CultureData? parentCultureData))
+               if (cultureDataDict.TryGetValue(cd.CultureInfo.Parent.Name, out var parentCultureData))
                {
                   parentCultureData.SubCultures.Add(cd);
                   continue;
@@ -48,7 +56,7 @@ namespace WinUICultureDemo
 
                // with the latest culture updates, some cultures don't have the direct parent name in the list, take the next parent
                string parent = cd.CultureInfo.Parent.Name;
-               int index = parent.IndexOf("-");
+               var index = parent.IndexOf("-", StringComparison.CurrentCultureIgnoreCase);
                if (index < 0)
                {
                   // just add this culture to the root cultures
@@ -57,7 +65,7 @@ namespace WinUICultureDemo
                }
 
                string grandParent = parent[..index];
-               if (cultureDataDict.TryGetValue(grandParent, out CultureData? grandParentCultureData))
+               if (cultureDataDict.TryGetValue(grandParent, out var grandParentCultureData))
                {
                   grandParentCultureData.SubCultures.Add(cd);
                }
@@ -72,16 +80,6 @@ namespace WinUICultureDemo
          {
             RootCultures.Add(rootCulture);
          }
-      }
-
-      public IList<CultureData> RootCultures { get; } = new List<CultureData>();
-
-      private CultureData? _selectedCulture;
-
-      public CultureData? SelectedCulture
-      {
-         get => _selectedCulture;
-         set => SetProperty(ref _selectedCulture, value);
       }
    }
 }

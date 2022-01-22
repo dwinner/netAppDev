@@ -2,20 +2,14 @@
 using Microsoft.UI.Xaml.Controls;
 using System.Linq;
 
-// To learn more about WinUI, the WinUI project structure,
-// and more about our project templates, see: http://aka.ms/winui-project-info.
-
 namespace WinUICultureDemo
 {
-   /// <summary>
-   /// An empty window that can be used on its own or navigated to within a Frame.
-   /// </summary>
-   public sealed partial class MainWindow : Window
+   public sealed partial class MainWindow
    {
       public MainWindow()
       {
-         this.InitializeComponent();
-         this.Activated += OnActivated;
+         InitializeComponent();
+         Activated += OnActivated;
       }
 
       private void OnSelectionChanged(TreeView sender, TreeViewItemInvokedEventArgs args)
@@ -26,15 +20,15 @@ namespace WinUICultureDemo
          }
       }
 
-      public CulturesViewModel ViewModel { get; } = new CulturesViewModel();
+      public CulturesViewModel ViewModel { get; } = new();
 
       private void OnActivated(object sender, WindowActivatedEventArgs args)
       {
          void AddSubNodes(TreeViewNode parent)
          {
-            if (parent.Content is CultureData cd && cd.SubCultures is not null)
+            if (parent.Content is CultureData { SubCultures: { } } cultureData)
             {
-               foreach (var culture in cd.SubCultures)
+               foreach (var culture in cultureData.SubCultures)
                {
                   TreeViewNode node = new()
                   {
@@ -57,7 +51,7 @@ namespace WinUICultureDemo
 
          foreach (var node in rootNodes)
          {
-            treeView1.RootNodes.Add(node);
+            treeView.RootNodes.Add(node);
             AddSubNodes(node);
          }
       }

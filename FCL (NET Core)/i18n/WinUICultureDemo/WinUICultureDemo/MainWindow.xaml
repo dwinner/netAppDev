@@ -9,12 +9,12 @@
 
     <Grid>
         <Grid.Resources>
-            <DataTemplate x:Key="CultureItemDataTemplate">
+            <DataTemplate x:Key="cultureItemDataTemplate">
                 <StackPanel Orientation="Horizontal" Height="40">
                     <TextBlock Text="{Binding Content.CultureInfo.EnglishName}" VerticalAlignment="Center" />
                 </StackPanel>
             </DataTemplate>
-            <Style x:Key="TreeViewStyle1" TargetType="TreeView">
+            <Style TargetType="TreeView">
                 <Setter Property="IsTabStop" Value="False" />
                 <Setter Property="Template">
                     <Setter.Value>
@@ -22,7 +22,7 @@
                             <TreeViewList x:Name="ListControl" AllowDrop="False"
                                           CanReorderItems="False"
                                           CanDragItems="False"
-                                          ItemTemplate="{StaticResource CultureItemDataTemplate}">
+                                          ItemTemplate="{StaticResource cultureItemDataTemplate}">
                                 <TreeViewList.ItemContainerTransitions>
                                     <TransitionCollection>
                                         <ContentThemeTransition />
@@ -40,8 +40,7 @@
             <ColumnDefinition />
             <ColumnDefinition />
         </Grid.ColumnDefinitions>
-        <TreeView x:Name="treeView1"
-
+        <TreeView x:Name="treeView"
                   ItemInvoked="{x:Bind OnSelectionChanged, Mode=OneTime}"
                   SelectionMode="Single">
             <TreeView.ItemTemplate>
@@ -52,6 +51,6 @@
                 </DataTemplate>
             </TreeView.ItemTemplate>
         </TreeView>
-        <local:CultureDetailUC Grid.Column="1" CultureData="{x:Bind ViewModel.SelectedCulture, Mode=OneWay}" />
+        <local:CultureDetailUc Grid.Column="1" CultureData="{x:Bind ViewModel.SelectedCulture, Mode=OneWay}" />
     </Grid>
 </Window>

@@ -1,7 +1,7 @@
-﻿using Microsoft.UI.Xaml.Data;
-using System;
+﻿using System;
 using System.Globalization;
 using System.Text;
+using Microsoft.UI.Xaml.Data;
 
 #nullable enable
 
@@ -14,9 +14,9 @@ namespace WinUICultureDemo.Converters
          if (value is Calendar cal)
          {
             StringBuilder calText = new(50);
-            calText.Append(cal.ToString());
+            calText.Append(cal);
             calText.Remove(0, 21);
-            calText.Replace("Calendar", "");
+            calText.Replace("Calendar", string.Empty);
             if (cal is GregorianCalendar gregCal)
             {
                calText.Append($" {gregCal.CalendarType}");
@@ -24,16 +24,12 @@ namespace WinUICultureDemo.Converters
 
             return calText.ToString();
          }
-         else
-         {
-            return null;
-         }
+
+         return null;
       }
 
-      public object? ConvertBack(object value, Type targetType, object parameter, string language)
-      {
+      public object? ConvertBack(object value, Type targetType, object parameter, string language) =>
          throw new NotImplementedException();
-      }
    }
 }
 

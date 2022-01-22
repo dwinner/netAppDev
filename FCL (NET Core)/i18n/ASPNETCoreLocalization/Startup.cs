@@ -22,7 +22,6 @@ namespace ASPNETCoreLocalization
       public void ConfigureServices(IServiceCollection services)
       {
          services.AddLocalization(options => options.ResourcesPath = "Resources");
-
          services.AddRazorPages()
             .AddViewLocalization(LanguageViewLocationExpanderFormat.SubFolder)
             .AddDataAnnotationsLocalization();
@@ -52,14 +51,10 @@ namespace ASPNETCoreLocalization
          };
 
          app.UseRequestLocalization(localizationOptions);
-
          app.UseHttpsRedirection();
          app.UseStaticFiles();
-
          app.UseRouting();
-
          app.UseAuthorization();
-
          app.UseEndpoints(endpoints => { endpoints.MapRazorPages(); });
       }
    }

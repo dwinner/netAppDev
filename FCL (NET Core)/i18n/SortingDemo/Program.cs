@@ -5,10 +5,32 @@ using System.Globalization;
 
 string[] countries =
 {
-   "Österreich", "België", "България", "Hrvatska", "Česko", "Danmark", "Eesti", "Suomi", "France",
-   "Deutschland", "Ελλάδα", "Magyarország", "Ireland", "Italia", "Latvija", "Lietuva", "Lëtzebuerg", "Malta",
+   "Österreich",
+   "België",
+   "България",
+   "Hrvatska",
+   "Česko",
+   "Danmark",
+   "Eesti",
+   "Suomi",
+   "France",
+   "Deutschland",
+   "Ελλάδα",
+   "Magyarország",
+   "Ireland",
+   "Italia",
+   "Latvija",
+   "Lietuva",
+   "Lëtzebuerg",
+   "Malta",
    "Nederland",
-   "Polska", "Portugal", "România", "Slovensko", "Slovenija", "España", "Sverige"
+   "Polska",
+   "Portugal",
+   "România",
+   "Slovensko",
+   "Slovenija",
+   "España",
+   "Sverige"
 };
 
 CultureInfo.CurrentCulture = new CultureInfo("fi-FI");
