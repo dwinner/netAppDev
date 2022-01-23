@@ -1,12 +1,12 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 
-<vw:MvxContentPage
+<view:MvxContentPage
     x:TypeArguments="vm:FilterStateViewModel"
     xmlns="http://xamarin.com/schemas/2014/forms"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:vw="clr-namespace:MvvmCross.Forms.Views;assembly=MvvmCross.Forms"
-    xmlns:vm="clr-namespace:MvvxSandboxApp.Core.ViewModels.Action;assembly=MvvxSandboxApp.Core"
+    xmlns:view="clr-namespace:MvvmCross.Forms.Views;assembly=MvvmCross.Forms"
     xmlns:xtk="http://xamarin.com/schemas/2020/toolkit"
+    xmlns:vm="clr-namespace:MvvxSandboxApp.Core.ViewModels.Action;assembly=SandboxApp.Core"
     x:DataType="vm:FilterStateViewModel"
     x:Class="MvvxSandboxApp.UI.Pages.FilterStatePage">
 
@@ -52,4 +52,4 @@
         </StackLayout>
     </StackLayout>
 
-</vw:MvxContentPage>
+</view:MvxContentPage>

@@ -5,7 +5,7 @@
     xmlns="http://xamarin.com/schemas/2014/forms"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:view="clr-namespace:MvvmCross.Forms.Views;assembly=MvvmCross.Forms"
-    xmlns:vm="clr-namespace:MvvxSandboxApp.Core.ViewModels.State;assembly=MvvxSandboxApp.Core"
+    xmlns:vm="clr-namespace:MvvxSandboxApp.Core.ViewModels.State;assembly=SandboxApp.Core"
     x:DataType="vm:NewUsaStateViewModel"
     x:Class="MvvxSandboxApp.UI.Pages.NewUsaStatePage">
 

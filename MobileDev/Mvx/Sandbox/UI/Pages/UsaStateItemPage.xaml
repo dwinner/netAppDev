@@ -1,12 +1,12 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 
-<vw:MvxContentPage
+<view:MvxContentPage
     x:TypeArguments="vm:UsaStateItemViewModel"
     xmlns="http://xamarin.com/schemas/2014/forms"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:vw="clr-namespace:MvvmCross.Forms.Views;assembly=MvvmCross.Forms"
-    xmlns:vm="clr-namespace:MvvxSandboxApp.Core.ViewModels.State;assembly=MvvxSandboxApp.Core"
-    xmlns:controls="clr-namespace:MvvxSandboxApp.UI.Controls;assembly=MvvxSandboxApp.UI"
+    xmlns:view="clr-namespace:MvvmCross.Forms.Views;assembly=MvvmCross.Forms"
+    xmlns:vm="clr-namespace:MvvxSandboxApp.Core.ViewModels.State;assembly=SandboxApp.Core"
+    xmlns:ctrl="clr-namespace:MvvxSandboxApp.UI.Controls;assembly=SandboxApp.UI"
     x:DataType="vm:UsaStateItemViewModel"
     x:Class="MvvxSandboxApp.UI.Pages.UsaStateItemPage"
     Title="{Binding CurrentState.UsaState.StateName, Mode=OneWay}"
@@ -72,7 +72,7 @@
             <Label>
                 <Label.FormattedText>
                     <FormattedString>
-                        <controls:HyperlinkSpan
+                        <ctrl:HyperlinkSpan
                             Text="{Binding CurrentState.UsaState.UsaStateDetail.StateUri, Mode=TwoWay}"
                             Url="{Binding CurrentState.UsaState.UsaStateDetail.StateUri, Mode=OneWay}" />
                     </FormattedString>
@@ -117,4 +117,4 @@
         </FlexLayout>
     </FlexLayout>
 
-</vw:MvxContentPage>
+</view:MvxContentPage>

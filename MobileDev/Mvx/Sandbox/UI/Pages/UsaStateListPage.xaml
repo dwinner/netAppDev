@@ -5,10 +5,10 @@
     xmlns="http://xamarin.com/schemas/2014/forms"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:view="clr-namespace:MvvmCross.Forms.Views;assembly=MvvmCross.Forms"
-    xmlns:vm="clr-namespace:MvvxSandboxApp.Core.ViewModels.State;assembly=MvvxSandboxApp.Core"
     xmlns:mvx="clr-namespace:MvvmCross.Forms.Bindings;assembly=MvvmCross.Forms"
     xmlns:bhvPack="clr-namespace:Xamarin.Forms.BehaviorsPack;assembly=Xamarin.Forms.BehaviorsPack"
-    xmlns:bhv="clr-namespace:MvvxSandboxApp.UI.Behaviors;assembly=MvvxSandboxApp.UI"
+    xmlns:vm="clr-namespace:MvvxSandboxApp.Core.ViewModels.State;assembly=SandboxApp.Core"
+    xmlns:behaviors="clr-namespace:MvvxSandboxApp.UI.Behaviors;assembly=SandboxApp.UI"
     x:DataType="vm:UsaStateListViewModel"
     x:Name="root"
     x:TypeArguments="vm:UsaStateListViewModel">
@@ -59,7 +59,7 @@
                         Command="{Binding BindingContext.DataContext.UsaStateSelectedCommand, 
                             Source={x:Reference root},
                             Mode=OneWay}" />
-                    <bhv:InfiniteScrollBehavior
+                    <behaviors:InfiniteScrollBehavior
                         LoadMoreCommand="{Binding FetchMoreCommand,
                             Mode=OneWay}" />
                 </ListView.Behaviors>
