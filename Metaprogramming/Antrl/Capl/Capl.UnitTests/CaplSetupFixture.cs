@@ -1,6 +1,6 @@
 ﻿using NUnit.Framework;
 
-namespace GrammarValidation.UnitTests
+namespace Capl.UnitTests
 {
     //[SetUpFixture]
     //public class CaplSetupFixture

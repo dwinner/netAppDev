@@ -17,7 +17,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CaplGrammar.Core", "CaplGra
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CaplAutoCompletion", "CaplAutoCompletion\CaplAutoCompletion.csproj", "{C9F889B0-3751-4F0D-BF89-8FE037BAB47D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GrammarValidation.UnitTests", "GrammarValidation.UnitTests\GrammarValidation.UnitTests.csproj", "{8EDF4429-251A-416D-BB68-93F227191BCF}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Capl.UnitTests", "Capl.UnitTests\Capl.UnitTests.csproj", "{8EDF4429-251A-416D-BB68-93F227191BCF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

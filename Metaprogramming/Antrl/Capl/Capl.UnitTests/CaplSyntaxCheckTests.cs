@@ -1,9 +1,11 @@
-﻿using CaplGrammar.Application;
+﻿using System.Linq;
+using CaplGrammar.Application;
 using CaplGrammar.Application.Contract;
 using CaplGrammar.Application.Impl.GrammarValidation;
+using CaplGrammar.Application.Poco;
 using NUnit.Framework;
 
-namespace GrammarValidation.UnitTests
+namespace Capl.UnitTests
 {
     [TestFixture]
     public class CaplSyntaxCheckTests
@@ -338,7 +340,10 @@ namespace GrammarValidation.UnitTests
         {
             ICaplValidation sntxValidation = new CaplSyntaxValidationImpl();
             var caplIssues = sntxValidation.GetIssues(canFile, AntlrInput.FromFile);
-            Assert.IsEmpty(caplIssues, "There are syntax error in file {0}", canFile);
+            var errors = caplIssues as CaplIssue[] ?? caplIssues.ToArray();
+            Assert.IsEmpty(errors, "There are '{0}' syntax errors in file '{1}'",
+                errors.Length,
+                canFile);
         }
     }
 }
