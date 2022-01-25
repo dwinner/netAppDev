@@ -4,14 +4,14 @@ using System.Xml.Schema;
 
 namespace CaplAutoCompletion
 {
-    public sealed class DoxygenValidator : DisposableBase
+    public sealed class XmlSchemaValidator : DisposableBase
     {
         private readonly string _xmlFile;
         private readonly XmlReaderSettings _xmlReaderSettings;
         private string _errorMessage;
         private bool _isXmlValid;
 
-        public DoxygenValidator(string xmlFile, string xsdFile)
+        private XmlSchemaValidator(string xmlFile, string xsdFile)
         {
             _xmlFile = xmlFile;
             _xmlReaderSettings = new XmlReaderSettings();
@@ -20,12 +20,15 @@ namespace CaplAutoCompletion
             _xmlReaderSettings.ValidationEventHandler += OnValidation;
         }
 
+        public static XmlSchemaValidator CreateInstance(string xmlFile, string xsdFile) =>
+            new XmlSchemaValidator(xmlFile, xsdFile);
+
         public bool Validate(out string errorMessage)
         {
             if (IsDisposed)
             {
-                throw new ObjectDisposedException(nameof(DoxygenValidator),
-                    $"One time using instance for class {nameof(DoxygenValidator)}");
+                throw new ObjectDisposedException(nameof(XmlSchemaValidator),
+                    $"One time using instance for class {nameof(XmlSchemaValidator)}");
             }
 
             var reader = XmlReader.Create(_xmlFile, _xmlReaderSettings);

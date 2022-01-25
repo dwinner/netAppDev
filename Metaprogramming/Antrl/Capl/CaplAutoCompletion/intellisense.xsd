@@ -66,11 +66,8 @@
                                                 </xs:complexType>
                                             </xs:element>
                                         </xs:sequence>
-                                        <xs:attribute name="name" type="xs:string" use="optional" />
-                                        <xs:attribute name="desc" type="xs:string" use="optional" />
-                                        <xs:attribute name="decs" type="xs:string" use="optional" />
-                                        <xs:attribute name="nmae" type="xs:string" use="optional" />
-                                        <xs:attribute name="neme" type="xs:string" use="optional" />
+                                        <xs:attribute name="name" type="xs:string" use="required" />
+                                        <xs:attribute name="desc" type="xs:string" use="required" />
                                     </xs:complexType>
                                 </xs:element>
                             </xs:choice>

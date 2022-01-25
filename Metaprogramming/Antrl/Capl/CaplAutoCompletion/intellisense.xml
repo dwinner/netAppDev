@@ -92,7 +92,7 @@
     <class name="ValueTable">
     </class>
     <class name="Timer">
-        <method name="set" decs="Sets a timer">
+        <method name="set" desc="Sets a timer">
             <param name="time" type="long"></param>
             <return type="void"></return>
         </method>
@@ -174,13 +174,13 @@
             <param name="parameterName[]" type="char">Parameter qualifier</param>
             <return type="double">Error code or value of the parameter or 0.0 if this could not be acquired</return>
         </method>
-        <method nmae="GetParameter"
+        <method name="GetParameter"
                 desc="Returns the value of the numeric parameter, either in an output field or as return value (without the possibility of checking the correct function)">
             <param name="mode" type="long">Access mode</param>
             <param name="parameterName[]" type="char">Parameter qualifier</param>
             <return type="double">Error code or value of the parameter or 0.0 if this could not be acquired</return>
         </method>
-        <method neme="GetParameter"
+        <method name="GetParameter"
                 desc="Returns the symbolic value of the parameter. This functions for all parameters. The values received can be used for setting the parameter">
             <param name="parameterName[]" type="char">Parameter qualifier</param>
             <param name="buffer[]" type="char">Output field</param>
