@@ -10,22 +10,22 @@ namespace CaplAutoCompletion
 {
     internal static class Program
     {
-        private const string CaplApiXml = "capl_api.xml";
-        private const string CaplApiXsd = "capl_api.xsd";
-        private const string InnerClsEl = "innerclass";
-        private const string NameEl = "name";
-        private const string EnumValueEl = "enumvalue";
-        private const string DefaultDefinition = "No definition";
-        private const string DoxyTypeEl = "type";
-        private const string DefEl = "definition";
-        private const string InitEl = "initializer";
-        private const string DefaultInitializer = "No initializer";
-        private const string BriefDescEl = "briefdescription";
-        private const string DefaultDesc = "No brief description";
-        private const string DetailedDescEl = "detaileddescription";
-        private const string DefaultDetailedDesc = "No detailed description";
-        private const string ArgStrEl = "argsstring";
-        private const string DeclNameEl = "declname";
+        private const string CaplApiXml = "intellisense.xml";
+        private const string CaplApiXsd = "intellisense.xsd";
+        //private const string InnerClsEl = "innerclass";
+        //private const string NameEl = "name";
+        //private const string EnumValueEl = "enumvalue";
+        //private const string DefaultDefinition = "No definition";
+        //private const string DoxyTypeEl = "type";
+        //private const string DefEl = "definition";
+        //private const string InitEl = "initializer";
+        //private const string DefaultInitializer = "No initializer";
+        //private const string BriefDescEl = "briefdescription";
+        //private const string DefaultDesc = "No brief description";
+        //private const string DetailedDescEl = "detaileddescription";
+        //private const string DefaultDetailedDesc = "No detailed description";
+        //private const string ArgStrEl = "argsstring";
+        //private const string DeclNameEl = "declname";
         private static readonly XElement XRoot;
 
         static Program() => XRoot = XElement.Load(CaplApiXml);
@@ -42,18 +42,18 @@ namespace CaplAutoCompletion
                 }
             }
 
-            var caplFuncDoxygens = GetCaplFunctions(XRoot);
+            //var caplFuncDoxygens = GetCaplFunctions(XRoot);
 
-            // Get all classes API
-            var doxygenFiles = Directory.EnumerateFiles("capl_classes", "*.xml").ToArray();
-            foreach (var clsDoxygen in doxygenFiles)
-            {
-                var clsXroot = XElement.Load(clsDoxygen);
-                var qClassName = clsXroot.XPathSelectElement("/compounddef/compoundname")?.Value;
-                Console.WriteLine(qClassName);
-            }
+            //// Get all classes API
+            //var doxygenFiles = Directory.EnumerateFiles("capl_classes", "*.xml").ToArray();
+            //foreach (var clsDoxygen in doxygenFiles)
+            //{
+            //    var clsXroot = XElement.Load(clsDoxygen);
+            //    var qClassName = clsXroot.XPathSelectElement("/compounddef/compoundname")?.Value;
+            //    Console.WriteLine(qClassName);
+            //}
         }
-
+        /*
         private static IEnumerable<CaplFuncDoxygen> GetCaplFunctions(XNode xRoot) =>
             from funcEl in xRoot.XPathSelectElements("/compounddef/sectiondef[@kind='func']/memberdef")
             let returnType = funcEl.Element(DoxyTypeEl)?.Value ?? string.Empty
@@ -127,5 +127,6 @@ namespace CaplAutoCompletion
             into classified
             where classified.Length == 2
             select classified[1];
+            */
     }
 }
