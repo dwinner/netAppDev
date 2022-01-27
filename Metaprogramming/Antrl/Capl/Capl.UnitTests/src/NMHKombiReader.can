@@ -1,6 +1,0 @@
-on message NMH_Kombi
-{
-    // Read signal "NM_Kombi_NM_State" into "KCAN_NM_Kombi_NM_State".
-	// Required for BVT test
-    putValue(KCAN_NM_Kombi_NM_State, this.NM_Kombi_NM_State);
-}
