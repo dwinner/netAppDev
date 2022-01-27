@@ -4,7 +4,7 @@ namespace CaplAutoCompletion
 {
     public abstract class DisposableBase : IDisposable
     {
-        protected bool IsDisposed { get; set; }
+        protected bool IsDisposed { get; private set; }
 
         public void Dispose()
         {
