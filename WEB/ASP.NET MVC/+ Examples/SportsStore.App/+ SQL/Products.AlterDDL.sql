@@ -1,7 +1,0 @@
-USE SportsStore
-GO
-
-ALTER TABLE Products
-ADD ImageData VARBINARY(MAX) NULL,
-ImageMimeType VARCHAR(50) NULL
-GO

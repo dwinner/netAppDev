@@ -1,8 +1,0 @@
-{
-  "profiles": {
-    "UdpReceiverSample": {
-      "commandName": "Project",
-      "commandLineArgs": "-p 9400"
-    }
-  }
-}

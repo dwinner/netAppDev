@@ -1,1 +1,0 @@
-regsvcs NorthwindComponent.dll

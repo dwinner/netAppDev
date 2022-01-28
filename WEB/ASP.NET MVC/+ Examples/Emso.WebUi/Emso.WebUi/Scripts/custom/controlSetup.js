@@ -1,3 +1,0 @@
-﻿$ (function () {
-    $ ("[title]").tooltip();
-}) (jQuery);

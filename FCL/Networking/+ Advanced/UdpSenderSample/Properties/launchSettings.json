@@ -1,8 +1,0 @@
-{
-  "profiles": {
-    "UdpSenderSample": {
-      "commandName": "Project",
-      "commandLineArgs": "-p 9400 -h localhost"
-    }
-  }
-}

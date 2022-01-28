@@ -1,8 +1,0 @@
-{
-  "profiles": {
-    "AdvancedMulticastReceiver": {
-      "commandName": "Project",
-      "commandLineArgs": "mcast_ip=ff08::1 udp_port=65535"
-    }
-  }
-}

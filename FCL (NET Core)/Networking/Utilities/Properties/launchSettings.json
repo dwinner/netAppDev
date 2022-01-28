@@ -1,8 +1,0 @@
-{
-  "profiles": {
-    "Utilities": {
-      "commandName": "Project",
-      "commandLineArgs": "--version"
-    }
-  }
-}
