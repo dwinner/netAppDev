@@ -1,8 +1,0 @@
-{
-  "profiles": {
-    "TaskSamples": {
-      "commandName": "Project",
-      "commandLineArgs": "-c"
-    }
-  }
-}
