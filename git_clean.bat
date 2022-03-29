@@ -12,4 +12,5 @@ del /f /s /q .\*.user
 del /f /s /q .\*.DS_Store
 del /f /s /q .\*.exe
 del /f /s /q .\*.class
+git clean -xfd
 pause
