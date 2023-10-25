@@ -129,6 +129,7 @@ Global
 		{19CFF985-2865-4243-98A2-F5108263BD66}.Release|Any CPU.ActiveCfg = Release|x86
 		{19CFF985-2865-4243-98A2-F5108263BD66}.Release|x86.ActiveCfg = Release|x86
 		{19CFF985-2865-4243-98A2-F5108263BD66}.Release|x86.Build.0 = Release|x86
+		{19CFF985-2865-4243-98A2-F5108263BD66}.Debug|Any CPU.Build.0 = Debug|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
