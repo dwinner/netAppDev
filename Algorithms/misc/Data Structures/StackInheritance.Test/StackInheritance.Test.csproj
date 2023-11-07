@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\LinkedList.Lib\LinkedList.Lib.csproj" />
+    <ProjectReference Include="..\StackInheritance.Lib\StackInheritance.Lib.csproj" />
+  </ItemGroup>
+
+</Project>

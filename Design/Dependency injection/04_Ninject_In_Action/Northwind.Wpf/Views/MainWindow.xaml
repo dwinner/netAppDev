@@ -1,0 +1,16 @@
+﻿<Window x:Class="Northwind.Wpf.Views.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="d"
+        WindowStartupLocation="CenterScreen"
+        Title="MainWindow" Width="599" Height="307"
+        d:DataContext="{d:DesignData MainViewModel}">
+    <DockPanel>
+        <ToolBar DockPanel.Dock="Top">
+            <Button Command="{Binding CreateCustomerCommand, Mode=OneWay}">Create</Button>
+        </ToolBar>
+        <DataGrid IsReadOnly="True" ItemsSource="{Binding Customers, Mode=TwoWay}"
+                  GridLinesVisibility="None" />
+    </DockPanel>
+</Window>

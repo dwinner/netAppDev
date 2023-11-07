@@ -1,0 +1,121 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<useCaseModelRoot xmlns:dm0="http://schemas.microsoft.com/VisualStudio/2008/DslTools/Core" xmlns:dm1="http://schemas.microsoft.com/dsltools/Kernel" xmlns:dm2="http://schemas.microsoft.com/dsltools/Component" xmlns:dm3="http://schemas.microsoft.com/dsltools/UseCase" xmlns:dm4="http://schemas.microsoft.com/dsltools/Activity" xmlns:dm5="http://schemas.microsoft.com/dsltools/Interaction" xmlns:dm6="http://schemas.microsoft.com/dsltools/UmlModelLibrary" xmlns:dm7="http://schemas.microsoft.com/dsltools/UmlDiagrams" xmlns:dm8="http://schemas.microsoft.com/dsltools/ModelStore" xmlns:dm9="http://schemas.microsoft.com/dsltools/SimpleShapesModel" dslVersion="1.0.0.0" Id="3cf8074d-5976-497f-aa5f-52ac83693389" name="BandSpyUseCaseDiagram" linkedPackageId="3eb1acd2-6106-4dde-87dd-5d7d67ffc565" xmlns="http://schemas.microsoft.com/dsltools/UseCaseModel">
+  <profileInstances>
+    <packageHasProfileInstances Id="904d56a5-bef8-4d0f-bf14-c1eb91599570">
+      <profileInstance Id="c22ea0c1-310c-41a8-b4d1-8c5a0fbf3ff9" name="StandardProfileL2">
+        <elementDefinition Id="e34d544e-0fea-4ed6-ac5e-1b74119ac791" />
+      </profileInstance>
+      <elementDefinition Id="0caec977-1f8c-4ba3-a7db-8cc9ad9cc73b" />
+    </packageHasProfileInstances>
+    <packageHasProfileInstances Id="0c7b3821-6996-43a9-8620-93774115e4ec">
+      <profileInstance Id="b21dd8dc-2d37-4946-86a1-14bbd58bde9c" name="StandardProfileL3">
+        <elementDefinition Id="532ea607-fb19-44b8-8502-3351b05452be" />
+      </profileInstance>
+      <elementDefinition Id="29349502-908c-4fda-9054-c48619c59ed0" />
+    </packageHasProfileInstances>
+  </profileInstances>
+  <packagedElements>
+    <useCaseModelRootHasTypes>
+      <actor Id="3da1a30e-2cc9-4bcc-b0f8-7d77e6cf5ee7" name="Пользователь" isAbstract="false" isLeaf="false">
+        <elementDefinition Id="81a9b2eb-0dcc-4bac-bfde-2b91061dbc02" />
+        <suppliersInternal>
+          <dependency Id="84610ab9-6269-40a9-8199-16ef71568249">
+            <useCaseMoniker Id="557e304f-f3a5-4cef-84cb-f6fbff94caba" LastKnownName="GetBandInformation" />
+            <elementDefinition Id="b8577e09-b5bc-4ec1-b82c-84f70b865c1e" />
+          </dependency>
+        </suppliersInternal>
+      </actor>
+    </useCaseModelRootHasTypes>
+    <useCaseModelRootHasTypes>
+      <useCase Id="557e304f-f3a5-4cef-84cb-f6fbff94caba" name="GetBandInformation" isAbstract="false" isLeaf="false">
+        <description>Просматривать информацию о группе</description>
+        <elementDefinition Id="0d36e574-bf75-41b9-b862-d9595d84f44d" />
+      </useCase>
+    </useCaseModelRootHasTypes>
+    <useCaseModelRootHasTypes>
+      <actor Id="50824226-177b-4ff5-82b8-b937511e41de" name="Администратор" isAbstract="false" isLeaf="false">
+        <elementDefinition Id="61c47af9-ec4e-485c-8a52-8f49efa8e27d" />
+        <suppliersInternal>
+          <dependency Id="e2f5b4d9-c785-4ddd-ae7a-309fd9b07f86" name="Can">
+            <useCaseMoniker Id="10d704e0-9678-46c3-a25b-807bdb6c4edc" LastKnownName="AddBandInformation" />
+            <description>Может</description>
+            <elementDefinition Id="f064f9a6-327f-40af-bdfe-3d93793b5130" />
+          </dependency>
+          <dependency Id="6d7725ca-796e-4a16-bd1c-4dd9b7adc5dc" name="Can">
+            <useCaseMoniker Id="4deab907-8d93-4d75-905f-d763d12321ae" LastKnownName="ChangeBandInformation" />
+            <elementDefinition Id="d072074f-47c0-4882-a6e2-e5be24277d5c" />
+          </dependency>
+          <dependency Id="877c8eae-4f32-479e-aafc-42bc068aed30" name="Can">
+            <useCaseMoniker Id="51f0a8c1-2319-4c11-abdb-578f11ad9108" LastKnownName="OrderedConcert" />
+            <elementDefinition Id="1d30e297-6fb3-433e-a201-e52a52293ac4" />
+          </dependency>
+          <dependency Id="435faed5-e752-4d70-863e-a50162787d84">
+            <useCaseMoniker Id="557e304f-f3a5-4cef-84cb-f6fbff94caba" LastKnownName="GetBandInformation" />
+            <elementDefinition Id="3fefe2de-341d-4502-88a1-bee87502c157" />
+          </dependency>
+        </suppliersInternal>
+      </actor>
+    </useCaseModelRootHasTypes>
+    <useCaseModelRootHasTypes>
+      <useCase Id="10d704e0-9678-46c3-a25b-807bdb6c4edc" name="AddBandInformation" isAbstract="false" isLeaf="false">
+        <elementDefinition Id="651dad3a-254d-4152-99a8-bb86a8c5e46f" />
+        <additions>
+          <include Id="0ca0c057-123c-4582-a563-cded8b768717">
+            <useCaseMoniker Id="4f661c76-e9a5-4ed1-9815-60e5d333cd94" LastKnownName="Login" />
+            <elementDefinition Id="d85e2e0c-125e-47ad-85b7-d714c62547d0" />
+          </include>
+        </additions>
+      </useCase>
+    </useCaseModelRootHasTypes>
+    <useCaseModelRootHasTypes>
+      <useCase Id="4deab907-8d93-4d75-905f-d763d12321ae" name="ChangeBandInformation" isAbstract="false" isLeaf="false">
+        <elementDefinition Id="f4cf6b69-9009-4e31-9702-fafdd1a161a8" />
+        <additions>
+          <include Id="09534fe0-0e5a-43aa-9328-18da5b4aa5ba">
+            <useCaseMoniker Id="4f661c76-e9a5-4ed1-9815-60e5d333cd94" LastKnownName="Login" />
+            <elementDefinition Id="6b3a37ee-7d5c-4da1-b35d-36be0e4c50b1" />
+          </include>
+        </additions>
+      </useCase>
+    </useCaseModelRootHasTypes>
+    <useCaseModelRootHasTypes>
+      <useCase Id="51f0a8c1-2319-4c11-abdb-578f11ad9108" name="OrderedConcert" isAbstract="false" isLeaf="false">
+        <description>Заказать концерт</description>
+        <elementDefinition Id="64ff72ae-3320-40f0-8d08-b2fd8e600baa" />
+        <additions>
+          <include Id="f7fc592f-4ea6-480b-833d-e32310d456d1">
+            <useCaseMoniker Id="4f661c76-e9a5-4ed1-9815-60e5d333cd94" LastKnownName="Login" />
+            <elementDefinition Id="c69f31a8-b2e2-4350-b26d-3d2c2d97bbfd" />
+          </include>
+        </additions>
+      </useCase>
+    </useCaseModelRootHasTypes>
+    <useCaseModelRootHasTypes>
+      <useCase Id="4f661c76-e9a5-4ed1-9815-60e5d333cd94" name="Login" isAbstract="false" isLeaf="false">
+        <description>Вход в систему</description>
+        <elementDefinition Id="a66b9ad5-cda0-4d54-b09f-cbc194ee0505" />
+      </useCase>
+    </useCaseModelRootHasTypes>
+    <useCaseModelRootHasTypes>
+      <actor Id="74c8dd0c-4a65-48f3-ac9c-5965c0631b5c" name="ReservationSystem" isAbstract="false" isLeaf="false">
+        <description>Система пезервирования концертов</description>
+        <elementDefinition Id="1a00dc0d-d2b8-43a6-a223-715f82b08772" />
+        <suppliersInternal>
+          <dependency Id="19487d43-55ee-4a80-9145-b7f049730033">
+            <useCaseMoniker Id="23668793-1a67-4634-a532-4f428ccb1465" LastKnownName="UpdateInrormation" />
+            <elementDefinition Id="31f09a5e-9ca6-4f81-9a74-56a8778c3d47" />
+          </dependency>
+        </suppliersInternal>
+      </actor>
+    </useCaseModelRootHasTypes>
+    <useCaseModelRootHasTypes>
+      <useCase Id="23668793-1a67-4634-a532-4f428ccb1465" name="UpdateInrormation" isAbstract="false" isLeaf="false">
+        <description>Обновление информации о концерте</description>
+        <elementDefinition Id="ef3bded9-c6c4-4e8c-ab9b-b5d9918b9d22" />
+      </useCase>
+    </useCaseModelRootHasTypes>
+  </packagedElements>
+  <package Id="3eb1acd2-6106-4dde-87dd-5d7d67ffc565" name="UseCase.Sample">
+    <elementDefinition Id="606cc846-faa2-46a8-b6ed-fb8af3869bf9" />
+  </package>
+</useCaseModelRoot>

@@ -1,0 +1,24 @@
+﻿@page "/template"
+<h3>UseTemplate</h3>
+
+<Repeater Items="@_books" TItem="Book">
+    <HeaderTemplate>
+        <div class="bookstitle">The Books</div>
+    </HeaderTemplate>
+    <ItemTemplate Context="book">
+        <div class="book">@book.Title</div>
+    </ItemTemplate>
+</Repeater>
+
+@code {
+
+    private readonly IEnumerable<Book> _books = Enumerable.Range(1, 10)
+        .Select(i => new Book
+        {
+            Id = Guid.NewGuid(),
+            Title = $"title {i}",
+            Publisher = "Sample",
+            ReleaseDate = DateTime.Today.AddDays(i)
+        }).ToArray();
+
+}

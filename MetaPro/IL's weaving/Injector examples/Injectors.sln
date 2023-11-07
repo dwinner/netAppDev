@@ -1,0 +1,95 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{37448087-69DC-4507-83CF-F84FA903B2DE}"
+	ProjectSection(SolutionItems) = preProject
+		Assets\AllRules.ruleset = Assets\AllRules.ruleset
+		Injectors.vsmdi = Injectors.vsmdi
+		InjectorTaskDemo.proj = InjectorTaskDemo.proj
+		LocalTestRun.testrunconfig = LocalTestRun.testrunconfig
+		Assets\Version.cs = Assets\Version.cs
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Injectors.Core", "Injectors.Core\Injectors.Core.csproj", "{6ADFA6C0-350E-4C5F-8B28-9D7E0E87BAE7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Injectors", "Injectors\Injectors.csproj", "{0918A665-927B-4B96-8169-31F25B89299D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Injectors.Core.Tests", "Injectors.Core.Tests\Injectors.Core.Tests.csproj", "{C68B506E-29D0-4BCD-9479-B7249231EC95}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Injectors.SampleTarget", "Injectors.SampleTarget\Injectors.SampleTarget.csproj", "{406EC10A-295D-4B5D-ACB4-A5740A7DD5CA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Injectors.Task", "Injectors.Task\Injectors.Task.csproj", "{173C715B-C34F-411A-B623-0B5EC1F4F9F2}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Injectors.Core.Attributes.Generic", "Injectors.Core.Attributes.Generic", "{9CA46600-1B56-443C-8068-E6C4872F6132}"
+	ProjectSection(SolutionItems) = preProject
+		Injectors.Core.Attributes.Generic\build.cmd = Injectors.Core.Attributes.Generic\build.cmd
+		Injectors.Core.Attributes.Generic\Injectors.Core.Attributes.Generic.il = Injectors.Core.Attributes.Generic\Injectors.Core.Attributes.Generic.il
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Assets", "Assets", "{43D4A175-021C-4BAC-A576-3AB907442DC2}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Binaries", "Binaries", "{8687FDA0-E2E5-4E72-94CE-CD318916299C}"
+	ProjectSection(SolutionItems) = preProject
+		Assets\Binaries\ICSharpCode.NRefactory.dll = Assets\Binaries\ICSharpCode.NRefactory.dll
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(TeamFoundationVersionControl) = preSolution
+		SccNumberOfProjects = 6
+		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
+		SccTeamFoundationServer = https://tfs.codeplex.com/tfs/tfs05
+		SccLocalPath0 = .
+		SccProjectUniqueName1 = Injectors.Core\\Injectors.Core.csproj
+		SccProjectName1 = Injectors.Core
+		SccLocalPath1 = Injectors.Core
+		SccProjectUniqueName2 = Injectors\\Injectors.csproj
+		SccProjectName2 = Injectors
+		SccLocalPath2 = Injectors
+		SccProjectUniqueName3 = Injectors.Core.Tests\\Injectors.Core.Tests.csproj
+		SccProjectName3 = Injectors.Core.Tests
+		SccLocalPath3 = Injectors.Core.Tests
+		SccProjectUniqueName4 = Injectors.SampleTarget\\Injectors.SampleTarget.csproj
+		SccProjectName4 = Injectors.SampleTarget
+		SccLocalPath4 = Injectors.SampleTarget
+		SccProjectUniqueName5 = Injectors.Task\\Injectors.Task.csproj
+		SccProjectName5 = Injectors.Task
+		SccLocalPath5 = Injectors.Task
+	EndGlobalSection
+	GlobalSection(TestCaseManagementSettings) = postSolution
+		CategoryFile = Injectors.vsmdi
+	EndGlobalSection
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{6ADFA6C0-350E-4C5F-8B28-9D7E0E87BAE7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6ADFA6C0-350E-4C5F-8B28-9D7E0E87BAE7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6ADFA6C0-350E-4C5F-8B28-9D7E0E87BAE7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6ADFA6C0-350E-4C5F-8B28-9D7E0E87BAE7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0918A665-927B-4B96-8169-31F25B89299D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0918A665-927B-4B96-8169-31F25B89299D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0918A665-927B-4B96-8169-31F25B89299D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0918A665-927B-4B96-8169-31F25B89299D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C68B506E-29D0-4BCD-9479-B7249231EC95}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C68B506E-29D0-4BCD-9479-B7249231EC95}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C68B506E-29D0-4BCD-9479-B7249231EC95}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C68B506E-29D0-4BCD-9479-B7249231EC95}.Release|Any CPU.Build.0 = Release|Any CPU
+		{406EC10A-295D-4B5D-ACB4-A5740A7DD5CA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{406EC10A-295D-4B5D-ACB4-A5740A7DD5CA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{406EC10A-295D-4B5D-ACB4-A5740A7DD5CA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{406EC10A-295D-4B5D-ACB4-A5740A7DD5CA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{173C715B-C34F-411A-B623-0B5EC1F4F9F2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{173C715B-C34F-411A-B623-0B5EC1F4F9F2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{173C715B-C34F-411A-B623-0B5EC1F4F9F2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{173C715B-C34F-411A-B623-0B5EC1F4F9F2}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{9CA46600-1B56-443C-8068-E6C4872F6132} = {37448087-69DC-4507-83CF-F84FA903B2DE}
+		{43D4A175-021C-4BAC-A576-3AB907442DC2} = {37448087-69DC-4507-83CF-F84FA903B2DE}
+		{8687FDA0-E2E5-4E72-94CE-CD318916299C} = {43D4A175-021C-4BAC-A576-3AB907442DC2}
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,107 @@
+<#@ template  debug="true" hostSpecific="true" #>
+<#@ output extension=".txt" #>
+<#@ Assembly Name="System.Core" #>
+<#@ Assembly Name="System.Windows.Forms" #>
+<#@ assembly name="EnvDTE" #>
+<#@ import namespace="System" #>
+<#@ import namespace="System.IO" #>
+<#@ import namespace="System.Diagnostics" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Collections" #>
+<#@ import namespace="System.Collections.Generic" #> 
+<#@ import namespace="EnvDTE" #>
+<#@ include file=".\VisualStudioHelper.ttinclude" #>
+<#
+	var root = this.Host.ResolvePath("");
+	
+	foreach(var file in System.IO.Directory.GetFiles(root, "*.cs"))
+    {
+		var projectItem = this.VisualStudioHelper.FindProjectItem(file);
+		foreach(EnvDTE.CodeClass classInFile in this.VisualStudioHelper.CodeModel.GetAllCodeElementsOfType(projectItem.FileCodeModel.CodeElements, EnvDTE.vsCMElement.vsCMElementClass, false))
+        {
+			if (!this.VisualStudioHelper.CodeModel.GetAllImplementedInterfaces(classInFile)
+												  .Any(i => i.FullName == "System.ComponentModel.INotifyPropertyChanged"))
+            {			
+				classInFile.AddImplementedInterface("System.ComponentModel.INotifyPropertyChanged");
+            }
+
+			var notifyFunction = this.VisualStudioHelper.CodeModel.GetAllMethods(classInFile)
+														.FirstOrDefault(f => GetName(f.FullName) == "NotifyPropertyChanged"
+																		  && this.VisualStudioHelper.CodeModel.GetAllCodeElementsOfType(f.Parameters, EnvDTE.vsCMElement.vsCMElementParameter, false).Count() == 1
+																		  && (this.VisualStudioHelper.CodeModel.GetAllCodeElementsOfType(f.Parameters, EnvDTE.vsCMElement.vsCMElementParameter, false).ElementAt(0) as EnvDTE.CodeParameter).Type.AsFullName == "System.String")
+								 as EnvDTE.CodeFunction;
+			if (notifyFunction == null)
+            {
+				notifyFunction = classInFile.AddFunction("NotifyPropertyChanged", EnvDTE.vsCMFunction.vsCMFunctionSub, EnvDTE.vsCMTypeRef.vsCMTypeRefVoid, -1, EnvDTE.vsCMAccess.vsCMAccessProtected, null);
+				notifyFunction.AddParameter("propertyName", EnvDTE.vsCMTypeRef.vsCMTypeRefString, null);
+				EnvDTE.EditPoint ep = notifyFunction.GetStartPoint(vsCMPart.vsCMPartBody).CreateEditPoint();
+				ep.Indent();
+				ep.Indent();
+				ep.Indent();
+				ep.Insert("var handler = this.PropertyChanged;" + Environment.NewLine);
+				ep.Indent();
+				ep.Indent();
+				ep.Indent();
+				ep.Insert("if (handler != null)" + Environment.NewLine);
+				ep.Indent();
+				ep.Indent();
+				ep.Indent();
+				ep.Indent();
+				ep.Insert("handler(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));");
+            }
+			
+			var eventHandler = this.VisualStudioHelper.CodeModel.GetAllCodeElementsOfType(classInFile.Children, EnvDTE.vsCMElement.vsCMElementEvent, true)
+																.FirstOrDefault(e => e is EnvDTE80.CodeEvent && (e as EnvDTE80.CodeEvent).Type.AsFullName == "System.ComponentModel.PropertyChangedEventHandler");
+			if (eventHandler == null)
+            {
+				(classInFile as EnvDTE80.CodeClass2).AddEvent("PropertyChanged", "System.ComponentModel.PropertyChangedEventHandler", false, -1, EnvDTE.vsCMAccess.vsCMAccessPublic);
+            }
+
+			// iterate all properties and add backing fields and getters/setter
+			foreach(EnvDTE.CodeProperty property in this.VisualStudioHelper.CodeModel.GetAllCodeElementsOfType(classInFile.Children, EnvDTE.vsCMElement.vsCMElementProperty, true))
+            {
+				// check, if there is a backing field
+				EnvDTE.CodeVariable backingField = this.VisualStudioHelper.CodeModel.GetAllCodeElementsOfType(classInFile.Children, EnvDTE.vsCMElement.vsCMElementVariable, true)
+																					.OfType<EnvDTE.CodeVariable>()
+																					.FirstOrDefault(cv => GetName(cv.FullName) == "_" + GetName(property.FullName));
+				if (backingField == null)
+                {
+					var insertIndex = classInFile.Children.OfType<EnvDTE.CodeElement>().ToList().IndexOf(property as EnvDTE.CodeElement);
+					classInFile.AddVariable("_" + GetName(property.FullName), property.Type, insertIndex, EnvDTE.vsCMAccess.vsCMAccessPrivate, null);
+                }
+
+				var insideProperty = property.GetStartPoint(EnvDTE.vsCMPart.vsCMPartBody).CreateEditPoint().GetText(property.GetEndPoint(EnvDTE.vsCMPart.vsCMPartBody));
+				insideProperty = insideProperty.Replace(" ", string.Empty).Replace(Environment.NewLine, string.Empty);
+				if (insideProperty == "get;set;")
+                {
+					var propertyEp = property.GetStartPoint(EnvDTE.vsCMPart.vsCMPartBody).CreateEditPoint();
+					propertyEp.Delete(property.GetEndPoint(EnvDTE.vsCMPart.vsCMPartBody));
+					propertyEp.Insert("get { return _" + GetName(property.FullName) +"; }" + Environment.NewLine);
+					propertyEp.Indent();propertyEp.Indent();propertyEp.Indent();propertyEp.Indent();
+					propertyEp.Insert("set { _" + GetName(property.FullName) + " = value; NotifyPropertyChanged(\"" + GetName(property.FullName) + "\"); }");
+
+					var formatEp = property.GetStartPoint().CreateEditPoint();;
+					formatEp.SmartFormat(property.GetEndPoint());
+                }
+            }
+        }
+    }
+
+#>
+
+<#+
+string ConvertFullName(CodeModel cm, string fullName)
+{
+    // Convert a .NET type name into a C++ type name.
+    if ((cm.Language == CodeModelLanguageConstants.vsCMLanguageVC) || 
+        (cm.Language == CodeModelLanguageConstants.vsCMLanguageMC))
+        return fullName.Replace(".", "::");
+    else
+        return fullName;
+}
+
+string GetName(string fullName)
+{
+	return fullName.Split('.').Last();
+}
+#>

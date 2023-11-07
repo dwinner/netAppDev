@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "GatheringOverrides": {
+      "commandName": "Project",
+      "commandLineArgs": "\"$(ProjectDir)Overrides\\Overrides.sln\""
+    }
+  }
+}
