@@ -1,46 +1,38 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reactive.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
+using System.Timers;
 
+namespace CreatingObservables.ContinousSearch;
 
-namespace CreatingObservables.ContinousSearch
+internal static class Searcher
 {
-    static class Searcher
-    {
-        public static IObservable<string> Create(string term)
-        {
-            return Observable.Create<string>(observer =>
+   public static IObservable<string> Create(string term) =>
+      Observable.Create<string>(observer =>
+      {
+         var timer = new Timer(2000);
+         timer.Elapsed += (_, _) =>
+         {
+            var results = SearchEngine.Search(term);
+            foreach (var result in results)
             {
-                var timer = new System.Timers.Timer(2000);
-                timer.Elapsed += (sender,args) =>
-                {
-                    var results = SearchEngine.Search(term);
-                    foreach (var result in results)
-                    {
-                        observer.OnNext(result);
-                    }
-                };
+               observer.OnNext(result);
+            }
+         };
 
-                return () =>
-                {
-                    //timer.d
-                };
+         return () =>
+         {
+            //timer.d
+         };
+      });
+}
 
-            });
-        }
-    }
-
-    internal class SearchEngine
-    {
-        public static IEnumerable<string> Search(string term)
-        {
-            yield return term + "1";
-            yield return term + "2";
-            yield return term + "3";
-        }
-    }
+internal static class SearchEngine
+{
+   public static IEnumerable<string> Search(string term)
+   {
+      yield return $"{term}1";
+      yield return $"{term}2";
+      yield return $"{term}3";
+   }
 }

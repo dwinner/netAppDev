@@ -12,11 +12,9 @@ public class ObservableConnection : ObservableBase<string>
 
    protected override IDisposable SubscribeCore(IObserver<string> observer)
    {
-      Action<string> received = message => { observer.OnNext(message); };
-
-      var closed = () => { observer.OnCompleted(); };
-
-      Action<Exception> error = ex => { observer.OnError(ex); };
+      var received = observer.OnNext;
+      var closed = observer.OnCompleted;
+      var error = observer.OnError;
 
       _chatConnection.Received += received;
       _chatConnection.Closed += closed;
