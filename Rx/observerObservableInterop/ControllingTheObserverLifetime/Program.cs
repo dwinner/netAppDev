@@ -83,22 +83,25 @@ namespace ControllingTheObserverLifetime
          Demo.DisplayHeader(
             "SkipUntil(observable) - start receiving notifications when the observervable emit a specific message");
 
-         var messages =
-            new[] { "First", "START", "Message1", "Message2", "LastMessage" }.ToObservable();
+         var messages = new[]
+         {
+            "First",
+            "START",
+            "Message1",
+            "Message2",
+            "LastMessage"
+         }.ToObservable();
 
          var controlChannel = messages;
-
-         messages.SkipUntil(controlChannel.Where(m => m == "START"))
-            .SubscribeConsole();
+         messages.SkipUntil(controlChannel.Where(m => m == "START")).SubscribeConsole();
       }
 
       private static void TakeUntilAStopMessage()
       {
          Demo.DisplayHeader("TakeUntil(observable) - stopping when the observervable emit a specific message");
 
-
          var messages = Observable.Range(1, 5)
-            .Select(i => "Message" + i)
+            .Select(i => $"Message{i}")
             .Concat(Observable.Return("STOP"))
             .Concat(Observable.Return("After Stop")); //the final message will not be oberved by the observer 
 
@@ -113,7 +116,6 @@ namespace ControllingTheObserverLifetime
       {
          Demo.DisplayHeader("TakeUntil(observable) - stopping when the observervable emit, after 5 seconds");
 
-
          Observable.Timer(DateTimeOffset.Now, TimeSpan.FromSeconds(1))
             .Select(t => DateTimeOffset.Now)
             .TakeUntil(Observable.Timer(TimeSpan.FromSeconds(5)))
@@ -124,7 +126,6 @@ namespace ControllingTheObserverLifetime
       {
          var unsbscriptionTime = DateTimeOffset.Now.AddSeconds(6);
          Demo.DisplayHeader("TakeUntil(time) - stopping at a spcific time: " + unsbscriptionTime);
-
 
          Observable.Timer(DateTimeOffset.Now, TimeSpan.FromSeconds(1))
             .Select(t => DateTimeOffset.Now)
