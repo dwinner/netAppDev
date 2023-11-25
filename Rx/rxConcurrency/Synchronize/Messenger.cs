@@ -1,27 +1,25 @@
 ﻿using System;
 
-namespace Synchronize
+namespace Synchronize;
+
+internal class Messenger
 {
-    class Messenger
-    {
-        public event EventHandler<string> MessageRecieved = delegate { };
-        public event EventHandler<FriendRequest> FriendRequestRecieved = delegate { };
+   public event EventHandler<string> MessageRecieved = delegate { };
+   public event EventHandler<FriendRequest> FriendRequestRecieved = delegate { };
 
-        //Rest of the Messanger code
-        public void Notify(string msg)
-        {
-            MessageRecieved(this, msg);
-        }
+   //Rest of the Messanger code
+   public void Notify(string msg)
+   {
+      MessageRecieved(this, msg);
+   }
 
-        public void Notify(FriendRequest user)
-        {
-            FriendRequestRecieved(this, user);
-        }
-    }
+   public void Notify(FriendRequest user)
+   {
+      FriendRequestRecieved(this, user);
+   }
+}
 
-    internal class FriendRequest   
-    {
-        public string UserId { get; set; }
-
-    }
+internal class FriendRequest
+{
+   public string UserId { get; set; }
 }

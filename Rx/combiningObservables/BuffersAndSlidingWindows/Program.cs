@@ -13,7 +13,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Helpers;
 
-
 namespace BuffersAndSlidingWindows
 {
     class Program
