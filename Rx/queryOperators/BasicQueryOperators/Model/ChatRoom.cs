@@ -2,14 +2,11 @@
 
 namespace BasicQueryOperators.Model
 {
-    class ChatRoom
-    {
-        public string Id { get; set; }
-        public IObservable<ChatMessage> Messages { get; set; }
+   internal class ChatRoom
+   {
+      public string Id { get; set; }
+      public IObservable<ChatMessage> Messages { get; set; }
 
-        public override string ToString()
-        {
-            return "ChatRoom: " + Id;
-        }
-    }
+      public override string ToString() => "ChatRoom: " + Id;
+   }
 }
