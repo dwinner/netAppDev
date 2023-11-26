@@ -1,8 +1,7 @@
-namespace Joins
+namespace Joins;
+
+internal enum Gender
 {
-    enum Gender
-    {
-        Male,
-        Female
-    }
+   Male,
+   Female
 }

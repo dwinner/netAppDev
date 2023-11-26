@@ -1,8 +1,7 @@
-namespace Grouping
+namespace Grouping;
+
+internal enum Gender
 {
-    enum Gender
-    {
-        Male,
-        Female
-    }
+   Male,
+   Female
 }

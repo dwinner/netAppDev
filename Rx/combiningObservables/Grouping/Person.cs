@@ -1,8 +1,8 @@
-namespace Grouping
+namespace Grouping;
+
+internal record Person
 {
-    class Person
-    {
-        public Gender Gender { get; set; }
-        public int Age { get; set; }
-    }
+   public Gender Gender { get; set; }
+
+   public int Age { get; set; }
 }

@@ -1,8 +1,7 @@
-namespace Joins
+namespace Joins;
+
+internal enum OpenDirection
 {
-    enum OpenDirection
-    {
-        Entering,
-        Leaving
-    }
+   Entering,
+   Leaving
 }
