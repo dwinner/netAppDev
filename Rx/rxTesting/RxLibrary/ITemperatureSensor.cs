@@ -1,9 +1,8 @@
 ﻿using System;
 
-namespace RxLibrary
+namespace RxLibrary;
+
+public interface ITemperatureSensor
 {
-    public interface ITemperatureSensor
-    {
-        IObservable<double> Readings { get; }
-    }
+   IObservable<double> Readings { get; }
 }

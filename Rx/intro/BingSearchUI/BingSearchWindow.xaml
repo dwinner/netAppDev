@@ -3,15 +3,14 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:BingSearch.Frontend"
         mc:Ignorable="d"
         Title="Bing Search" Height="320" Width="480">
 
     <Window.Resources>
-        <ItemsPanelTemplate x:Key="ItemsPanelTemplate">
+        <ItemsPanelTemplate x:Key="itemsPanelTemplate">
             <WrapPanel Orientation="Horizontal" IsItemsHost="True" />
         </ItemsPanelTemplate>
-        <DataTemplate x:Key="DataTemplate">
+        <DataTemplate x:Key="dataTemplate">
             <Image Source="{Binding}" Width="128" Height="128" Margin="8" />
         </DataTemplate>
     </Window.Resources>
@@ -25,14 +24,14 @@
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
-        <TextBox x:Name="SearchBox" Grid.Row="0" Grid.Column="0" />
-        <Button x:Name="SearchButton" Grid.Row="0" Grid.Column="1"
+        <TextBox x:Name="searchBox" Grid.Row="0" Grid.Column="0" />
+        <Button x:Name="searchButton" Grid.Row="0" Grid.Column="1"
                 Content="Search" Margin="8,0,0,0" Width="50" />
-        <ListBox x:Name="Results" Grid.Row="1" Grid.ColumnSpan="2" Grid.Column="0"
+        <ListBox x:Name="results" Grid.Row="1" Grid.ColumnSpan="2" Grid.Column="0"
                  Margin="0,8,0,0"
                  ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                  ItemsSource="{Binding ImagesToDisplay, ElementName=Window}"
-                 ItemsPanel="{DynamicResource ItemsPanelTemplate}"
-                 ItemTemplate="{DynamicResource DataTemplate}" />
+                 ItemsPanel="{DynamicResource itemsPanelTemplate}"
+                 ItemTemplate="{DynamicResource dataTemplate}" />
     </Grid>
 </Window>

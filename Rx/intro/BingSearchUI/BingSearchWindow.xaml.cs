@@ -17,10 +17,10 @@ namespace BingSearch.Frontend
          InitializeComponent();
 
          var clickObservable = new Subject<RoutedEventArgs>();
-         SearchButton.Click += (o, e) => clickObservable.OnNext(e);
+         searchButton.Click += (o, e) => clickObservable.OnNext(e);
 
          var searchTermObservable =
-            clickObservable.Select(args => SearchBox.Text).Where(term => !string.IsNullOrWhiteSpace(term));
+            clickObservable.Select(args => searchBox.Text).Where(term => !string.IsNullOrWhiteSpace(term));
          searchTermObservable.Subscribe(term => ImagesToDisplay.Clear());
          var bitmapImagesToAdd =
             searchTermObservable.SelectMany(SearchBingImageApi)
@@ -29,7 +29,7 @@ namespace BingSearch.Frontend
          bitmapImagesToAdd.Subscribe(image => ImagesToDisplay.Add(image));
       }
 
-      public ObservableCollection<BitmapImage> ImagesToDisplay { get; } = new ObservableCollection<BitmapImage>();
+      public ObservableCollection<BitmapImage> ImagesToDisplay { get; } = new();
 
       private IObservable<string> SearchBingImageApi(string query)
       {

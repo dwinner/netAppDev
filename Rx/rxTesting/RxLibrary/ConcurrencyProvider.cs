@@ -1,26 +1,28 @@
 ﻿using System.Reactive.Concurrency;
 
-namespace RxLibrary
+namespace RxLibrary;
+
+internal class ConcurrencyProvider : IConcurrencyProvider
 {
-    class ConcurrencyProvider : IConcurrencyProvider
-    {
-        public ConcurrencyProvider()
-        {
-            TimeBasedOperations = DefaultScheduler.Instance;
-            Task=TaskPoolScheduler.Default;
-            Thread = NewThreadScheduler.Default;
+   public ConcurrencyProvider()
+   {
+      TimeBasedOperations = DefaultScheduler.Instance;
+      Task = TaskPoolScheduler.Default;
+      Thread = NewThreadScheduler.Default;
 
 #if HAS_DISPATCHER
-            Dispatcher=DispatcherScheduler.Current;
+      Dispatcher = DispatcherScheduler.Current;
 #else
-            //workaround to whenever there's no dispatcher
-            Dispatcher = CurrentThreadScheduler.Instance;
+      //workaround to whenever there's no dispatcher
+      Dispatcher = CurrentThreadScheduler.Instance;
 #endif
-        }
+   }
 
-        public IScheduler TimeBasedOperations { get; }
-        public IScheduler Task { get; }
-        public IScheduler Thread { get; }
-        public IScheduler Dispatcher { get; }
-    }
+   public IScheduler TimeBasedOperations { get; }
+
+   public IScheduler Task { get; }
+
+   public IScheduler Thread { get; }
+
+   public IScheduler Dispatcher { get; }
 }

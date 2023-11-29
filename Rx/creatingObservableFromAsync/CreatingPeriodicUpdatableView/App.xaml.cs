@@ -1,6 +1,5 @@
-﻿namespace CreatingPeriodicUpdatableView
+﻿namespace CreatingPeriodicUpdatableView;
+
+public partial class App
 {
-   public partial class App
-   {
-   }
 }

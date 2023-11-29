@@ -1,14 +1,13 @@
 using System;
 
-namespace RxStockMonitor
-{
-    public class StockTicker : IStockTicker
-    {
-        public event EventHandler<StockTick> StockTick= delegate {};
+namespace RxStockMonitor;
 
-        public void Notify(StockTick tick)
-        {
-            StockTick(this, tick);
-        }
-    }
+public class StockTicker : IStockTicker
+{
+   public event EventHandler<StockTick> StockTick = delegate { };
+
+   public void Notify(StockTick tick)
+   {
+      StockTick(this, tick);
+   }
 }

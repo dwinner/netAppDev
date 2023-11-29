@@ -1,6 +1,6 @@
 ﻿using System.Reactive.Linq;
 using System.Reactive.Subjects;
-using Helpers;
+using RxHelpers;
 
 namespace HotAndColdObservables;
 

@@ -9,90 +9,92 @@ using System.Threading.Tasks;
 using System.Windows;
 using DisposableCreate.Annotations;
 
-namespace DisposableCreate
+namespace DisposableCreate;
+
+public partial class MainWindow : INotifyPropertyChanged
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
-    public partial class MainWindow : Window,INotifyPropertyChanged
-    {
-        private IEnumerable<string> _newsItems;
-        private bool _isBusy;
+   private bool _isBusy;
+   private IEnumerable<string> _newsItems;
 
-        public MainWindow()
-        {
-            InitializeComponent();
-            DataContext = this;
-        }
+   public MainWindow()
+   {
+      InitializeComponent();
+      DataContext = this;
+   }
 
-        public bool IsBusy
-        {
-            get { return _isBusy; }
-            set
-            {
-                if (value == _isBusy) return;
-                _isBusy = value;
-                OnPropertyChanged();
-            }
-        }
+   public bool IsBusy
+   {
+      get => _isBusy;
+      set
+      {
+         if (value == _isBusy)
+         {
+            return;
+         }
 
+         _isBusy = value;
+         OnPropertyChanged();
+      }
+   }
 
-        private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
-        {
-            RefreshNewsAsync();
-        }
+   public IEnumerable<string> NewsItems
+   {
+      get => _newsItems;
+      set
+      {
+         if (Equals(value, _newsItems))
+         {
+            return;
+         }
 
-        public IEnumerable<string> NewsItems
-        {
-            get { return _newsItems; }
-            set
-            {
-                if (Equals(value, _newsItems)) return;
-                _newsItems = value;
-                OnPropertyChanged();
-            }
-        }
+         _newsItems = value;
+         OnPropertyChanged();
+      }
+   }
 
-        private async void RefreshNewsAsync()
-        {
-            IsBusy = true;
-            NewsItems = Enumerable.Empty<string>();
-            using (Disposable.Create(() => IsBusy = false))
-            {
-                NewsItems = await DownloadNewsItems();
-            }
-        }
+   public event PropertyChangedEventHandler PropertyChanged;
 
-        private async void RefreshNews2Async()
-        {
-            NewsItems = Enumerable.Empty<string>();
-            using (StartBusy())
-            {
-                NewsItems = await DownloadNewsItems();
-            }
-        }
+   private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
+   {
+      RefreshNewsAsync();
+   }
 
-        public IDisposable StartBusy()
-        {
-            IsBusy = true;
-            return new ContextDisposable(
-                SynchronizationContext.Current,
-                Disposable.Create(() => IsBusy = false));
-        }
+   private async void RefreshNewsAsync()
+   {
+      IsBusy = true;
+      NewsItems = Enumerable.Empty<string>();
+      using (Disposable.Create(() => IsBusy = false))
+      {
+         NewsItems = await DownloadNewsItemsAsync().ConfigureAwait(false);
+      }
+   }
 
+   private async void RefreshNews2Async()
+   {
+      NewsItems = Enumerable.Empty<string>();
+      using (StartBusy())
+      {
+         NewsItems = await DownloadNewsItemsAsync().ConfigureAwait(false);
+      }
+   }
 
-        private async Task<IEnumerable<string>>  DownloadNewsItems()
-        {
-            await Task.Delay(2000);
-            return Enumerable.Range(1, 10).Select(i => "News Items " + i);
-        }
+   public IDisposable StartBusy()
+   {
+      IsBusy = true;
+      return new ContextDisposable(
+         SynchronizationContext.Current,
+         Disposable.Create(() => IsBusy = false));
+   }
 
-        public event PropertyChangedEventHandler PropertyChanged;
+   private async Task<IEnumerable<string>> DownloadNewsItemsAsync()
+   {
+      await Task.Delay(2000).ConfigureAwait(false);
+      return Enumerable.Range(1, 10).Select(i => "News Items " + i);
+   }
 
-        [NotifyPropertyChangedInvocator]
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-    }
+   [NotifyPropertyChangedInvocator]
+   protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+   {
+      PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+   }
 }

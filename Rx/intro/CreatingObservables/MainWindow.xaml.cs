@@ -15,9 +15,9 @@ namespace CreatingObservables
       {
          var source = Observable.Return(42);
          source.Subscribe(
-            x => MessagesListBox.Items.Add($"OnNext: {x}"),
-            ex => MessagesListBox.Items.Add($"OnError: {ex.Message}"),
-            () => MessagesListBox.Items.Add("OnCompleted"));
+            x => messagesListBox.Items.Add($"OnNext: {x}"),
+            ex => messagesListBox.Items.Add($"OnError: {ex.Message}"),
+            () => messagesListBox.Items.Add("OnCompleted"));
       }
    }
 }

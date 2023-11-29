@@ -1,9 +1,8 @@
 using System;
 
-namespace RxStockMonitor
+namespace RxStockMonitor;
+
+public interface IStockTicker
 {
-    public interface IStockTicker
-    {
-        event EventHandler<StockTick> StockTick;
-    }
+   event EventHandler<StockTick> StockTick;
 }

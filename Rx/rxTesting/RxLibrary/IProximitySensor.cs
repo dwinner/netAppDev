@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Reactive;
 
-namespace RxLibrary
+namespace RxLibrary;
+
+public interface IProximitySensor
 {
-    public interface IProximitySensor
-    {
-        IObservable<Unit> Readings { get; }
-    }
+   IObservable<Unit> Readings { get; }
 }
