@@ -2,14 +2,12 @@
 using System.Threading.Tasks;
 using BooksLib.Models;
 
-namespace BooksLib.Services
-{
-    public interface IBooksService
-    {
-        Task<Book> AddOrUpdateBookAsync(Book book);
-        Book? GetBook(int bookId);
-        Task LoadBooksAsync();
+namespace BooksLib.Services;
 
-        IEnumerable<Book> Books { get; }
-    }
+public interface IBooksService
+{
+   IEnumerable<Book> Books { get; }
+   Task<Book> AddOrUpdateBookAsync(Book book);
+   Book? GetBook(int bookId);
+   Task LoadBooksAsync();
 }
