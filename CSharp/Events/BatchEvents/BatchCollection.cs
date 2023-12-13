@@ -19,10 +19,7 @@ namespace BatchEvents
       {
          if (!IsUpdating)
          {
-            if (ItemsAdded != null)
-            {
-               ItemsAdded(this, new ItemAddedEventArgs<T>(item));
-            }
+            ItemsAdded?.Invoke(this, new ItemAddedEventArgs<T>(item));
          }
          else
          {
@@ -44,10 +41,7 @@ namespace BatchEvents
             args.Add(item);
          }
          _updatedItems.Clear();
-         if (ItemsAdded != null)
-         {
-            ItemsAdded(this, args);
-         }
+         ItemsAdded?.Invoke(this, args);
       }
 
       private bool IsUpdating

@@ -4,7 +4,8 @@ using Xunit;
 
 namespace ASPNETCoreSample.IntegrationTest;
 
-public class AspnetCoreSampleTest(WebApplicationFactory<Startup> factory) : IClassFixture<WebApplicationFactory<Startup>>
+public class AspnetCoreSampleTest
+   (WebApplicationFactory<Startup> factory) : IClassFixture<WebApplicationFactory<Startup>>
 {
    [Fact]
    public async Task ReturnHelloWorld()

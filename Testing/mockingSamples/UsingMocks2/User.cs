@@ -7,8 +7,8 @@ public class User
    public string NormalizeName(string? name)
    {
       var result = (name ?? string.Empty).Trim();
-      return result.Length > 50 
-         ? result.Substring(0, 50) 
+      return result.Length > 50
+         ? result.Substring(0, 50)
          : result;
    }
 }
