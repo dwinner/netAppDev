@@ -9,13 +9,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitTestingSamples", "intro
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitTestingSamples.Tests", "intro\UnitTestingSamples.Tests\UnitTestingSamples.Tests.csproj", "{03FB0BA5-6183-438F-A59E-A5F58F6D5D2F}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "advanced", "advanced", "{F818B987-82F7-4D85-B2B1-280B6B2B5B97}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "nUnit", "nUnit", "{F818B987-82F7-4D85-B2B1-280B6B2B5B97}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ComplexNumberLibrary", "advanced\ComplexNumberLibrary\ComplexNumberLibrary\ComplexNumberLibrary.csproj", "{D2B57000-B579-498A-853F-1F6D97B9A99E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ComplexNumberLibrary", "nUnit\ComplexNumberLibrary\ComplexNumberLibrary\ComplexNumberLibrary.csproj", "{D2B57000-B579-498A-853F-1F6D97B9A99E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ComplexNumberNUnit", "advanced\ComplexNumberNUnit\ComplexNumberNUnit\ComplexNumberNUnit.csproj", "{71128983-4FF5-4B65-9DBC-E1D87D24F4D9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ComplexNumberNUnit", "nUnit\ComplexNumberNUnit\ComplexNumberNUnit\ComplexNumberNUnit.csproj", "{71128983-4FF5-4B65-9DBC-E1D87D24F4D9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ComplexNumberUnitTest", "advanced\ComplexNumberUnitTest\ComplexNumberUnitTest\ComplexNumberUnitTest.csproj", "{9EA1C0E3-D5FF-4CEF-8CDF-A88F55469525}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ComplexNumberUnitTest", "nUnit\ComplexNumberUnitTest\ComplexNumberUnitTest\ComplexNumberUnitTest.csproj", "{9EA1C0E3-D5FF-4CEF-8CDF-A88F55469525}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "aspNetCore", "aspNetCore", "{4314DCE6-CE14-49C9-BB97-EB2159A4CB25}"
 EndProject
