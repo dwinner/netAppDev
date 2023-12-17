@@ -46,7 +46,8 @@ public class WhenGettingCustomersLastAndFirstNamesAsCsv
    [Test]
    public void AddRowsIsCalledForEachCustomer()
    {
-      A.CallTo(() => _buildCsv.AddRow(A<IEnumerable<string>>.Ignored)).MustHaveHappened(_customers.Count, Times.Exactly);
+      A.CallTo(() => _buildCsv.AddRow(A<IEnumerable<string>>.Ignored))
+         .MustHaveHappened(_customers.Count, Times.Exactly);
    }
 
    [Test]

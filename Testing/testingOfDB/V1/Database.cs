@@ -11,7 +11,7 @@ public class Database
 
    public object[] GetUserById(int userId)
    {
-      using (SqlConnection connection = new SqlConnection(_connectionString))
+      using (var connection = new SqlConnection(_connectionString))
       {
          var query = "SELECT * FROM [dbo].[User] WHERE UserID = @UserID";
          dynamic data = new ExpandoObject(); //connection.QuerySingle(query, new { UserID = userId });
@@ -45,7 +45,7 @@ public class Database
          var query = user.UserId == 0
             ? insertQuery
             : updateQuery;
-         int userId = 1;/*connection.Query<int>(query, new
+         var userId = 1; /*connection.Query<int>(query, new
             {
                user.Email,
                user.UserId,
@@ -60,7 +60,7 @@ public class Database
 
    public object[] GetCompany()
    {
-      using (SqlConnection connection = new SqlConnection(_connectionString))
+      using (var connection = new SqlConnection(_connectionString))
       {
          var query = "SELECT * FROM dbo.Company";
          dynamic data = new ExpandoObject(); //connection.QuerySingle(query);

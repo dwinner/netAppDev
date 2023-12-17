@@ -5,7 +5,7 @@ namespace EF;
 public class CrmContext(DbContextOptions<CrmContext> options) : DbContext(options)
 {
    public CrmContext(string connectionString)
-      : this(new DbContextOptionsBuilder<CrmContext>()./*UseSqlServer(connectionString).*/Options)
+      : this(new DbContextOptionsBuilder<CrmContext>(). /*UseSqlServer(connectionString).*/Options)
    {
    }
 

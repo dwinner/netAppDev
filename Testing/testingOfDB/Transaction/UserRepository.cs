@@ -7,10 +7,10 @@ public class UserRepository(Transaction transaction)
 {
    public object[] GetUserById(int userId)
    {
-      using (SqlConnection connection = new SqlConnection(transaction.ConnectionString))
+      using (var connection = new SqlConnection(transaction.ConnectionString))
       {
          var query = "SELECT * FROM [dbo].[User] WHERE UserID = @UserID";
-         dynamic data = new ExpandoObject();//connection.QuerySingle(query, new { UserID = userId });
+         dynamic data = new ExpandoObject(); //connection.QuerySingle(query, new { UserID = userId });
 
          return new object[]
          {
@@ -41,7 +41,7 @@ public class UserRepository(Transaction transaction)
          var query = user.UserId == 0
             ? insertQuery
             : updateQuery;
-         int userId = 1;
+         var userId = 1;
          /*connection.Query<int>(query, new
             {
                user.Email,

@@ -30,7 +30,7 @@ public class Database
 
    public void SaveUser(User user)
    {
-      using (SqlConnection connection = new SqlConnection(_connectionString))
+      using (var connection = new SqlConnection(_connectionString))
       {
          var updateQuery = @"
                     UPDATE [dbo].[User]
@@ -59,7 +59,7 @@ public class Database
 
    public object[] GetCompany()
    {
-      using (SqlConnection connection = new SqlConnection(_connectionString))
+      using (var connection = new SqlConnection(_connectionString))
       {
          var query = "SELECT * FROM dbo.Company";
          dynamic data = new ExpandoObject(); /*connection.QuerySingle(query);*/
@@ -74,7 +74,7 @@ public class Database
 
    public void SaveCompany(Company company)
    {
-      using (SqlConnection connection = new SqlConnection(_connectionString))
+      using (var connection = new SqlConnection(_connectionString))
       {
          var query = @"
                     UPDATE dbo.Company

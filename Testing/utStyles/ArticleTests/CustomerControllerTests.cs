@@ -44,6 +44,6 @@ public class CustomerControllerTests
          new DateTime(2019, 4, 1));
 
       sut.AddComment(comment.Text, comment.Author, comment.DateCreated);
-      sut.Comments.Should().BeEquivalentTo(new[]{ comment });
+      sut.Comments.Should().BeEquivalentTo(new[] { comment });
    }
 }

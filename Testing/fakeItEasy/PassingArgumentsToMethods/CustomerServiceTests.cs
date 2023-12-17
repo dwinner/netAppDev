@@ -25,6 +25,6 @@ public class WhenSendingEmailToAllCustomers
    public void SendsEmail()
    {
       A.CallTo(() => emailSender.SendMail("acompany@somewhere.com", customer.Email, "subject", "body"))
-         .MustHaveHappened(1,Times.Exactly);
+         .MustHaveHappened(1, Times.Exactly);
    }
 }

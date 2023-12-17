@@ -11,7 +11,7 @@ public class Database
 
    public object[] GetUserById(int userId)
    {
-      using (SqlConnection connection = new SqlConnection(_connectionString))
+      using (var connection = new SqlConnection(_connectionString))
       {
          var query = "SELECT * FROM [dbo].[User] WHERE UserID = @UserID";
          dynamic data = new ExpandoObject(); //= connection.QuerySingle(query, new { UserID = userId });
@@ -28,7 +28,7 @@ public class Database
 
    public void SaveUser(User user)
    {
-      using (SqlConnection connection = new SqlConnection(_connectionString))
+      using (var connection = new SqlConnection(_connectionString))
       {
          var updateQuery = @"
                     UPDATE [dbo].[User]
@@ -42,15 +42,15 @@ public class Database
                     SELECT CAST(SCOPE_IDENTITY() as int)";
 
          var query = user.UserId == 0 ? insertQuery : updateQuery;
-         int userId = 0;
-            /*connection.Query<int>(query, new
-            {
-               user.Email,
-               user.UserId,
-               user.IsEmailConfirmed,
-               Type = (int)user.Type
-            })
-            .Single();*/
+         var userId = 0;
+         /*connection.Query<int>(query, new
+         {
+            user.Email,
+            user.UserId,
+            user.IsEmailConfirmed,
+            Type = (int)user.Type
+         })
+         .Single();*/
 
          user.UserId = userId;
       }
@@ -58,10 +58,10 @@ public class Database
 
    public object[] GetCompany()
    {
-      using (SqlConnection connection = new SqlConnection(_connectionString))
+      using (var connection = new SqlConnection(_connectionString))
       {
          var query = "SELECT * FROM dbo.Company";
-         dynamic data = new ExpandoObject();//connection.QuerySingle(query);
+         dynamic data = new ExpandoObject(); //connection.QuerySingle(query);
 
          return new object[]
          {
@@ -73,7 +73,7 @@ public class Database
 
    public void SaveCompany(Company company)
    {
-      using (SqlConnection connection = new SqlConnection(_connectionString))
+      using (var connection = new SqlConnection(_connectionString))
       {
          var query = @"
                     UPDATE dbo.Company

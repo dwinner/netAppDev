@@ -31,13 +31,13 @@ public static class CustomerServiceTests
       [Test]
       public void SetsCorrectHeader()
       {
-         Assert.IsTrue(_appendedHeaders.SequenceEqual(_headerList));
+         Assert.That(_appendedHeaders.SequenceEqual(_headerList));
       }
 
       [Test]
       public void AddsCorrectRows()
       {
-         Assert.IsTrue(_appendedRows.SequenceEqual(_bodyList));
+         Assert.That(_appendedRows.SequenceEqual(_bodyList));
       }
    }
 }

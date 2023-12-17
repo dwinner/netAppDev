@@ -7,10 +7,10 @@ public class CompanyRepository(Transaction transaction)
 {
    public object[] GetCompany()
    {
-      using (SqlConnection connection = new SqlConnection(transaction.ConnectionString))
+      using (var connection = new SqlConnection(transaction.ConnectionString))
       {
          var query = "SELECT * FROM dbo.Company";
-         dynamic data = new ExpandoObject();//connection.QuerySingle(query);
+         dynamic data = new ExpandoObject(); //connection.QuerySingle(query);
 
          return new object[]
          {

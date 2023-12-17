@@ -1,5 +1,4 @@
 ﻿using FakeItEasy;
-using A = FakeItEasy.A;
 
 namespace YouCannotFakeAStaticOrSealedClass;
 //[TestFixture]

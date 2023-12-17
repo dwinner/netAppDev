@@ -30,7 +30,7 @@ public class AuditManager
          return;
       }
 
-      (var currentFileIndex, var currentFilePath) = sorted.Last();
+      var (currentFileIndex, currentFilePath) = sorted.Last();
       var lines = _fileSystem.ReadAllLines(currentFilePath);
 
       if (lines.Count < _maxEntriesPerFile)

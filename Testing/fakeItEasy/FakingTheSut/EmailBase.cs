@@ -10,5 +10,6 @@ public abstract class EmailBase(ISendEmail emailProvider)
       }
    }
 
-   protected virtual string GetFromEmailAddress() => "default@default.default"/*ConfigurationManager.AppSettings["DefaultFromAddress"]*/;
+   protected virtual string GetFromEmailAddress() =>
+      "default@default.default" /*ConfigurationManager.AppSettings["DefaultFromAddress"]*/;
 }
