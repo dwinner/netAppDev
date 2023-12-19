@@ -1,4 +1,5 @@
-﻿using ComplexNumberLibrary;
+﻿using System;
+using ComplexNumberLibrary;
 using NUnit.Framework;
 
 namespace ComplexNumberNUnit
@@ -8,28 +9,28 @@ namespace ComplexNumberNUnit
       [OneTimeSetUp]
       public void FixtureSetUp()
       {
-         // Установка фикстуры
+         Console.WriteLine(nameof(FixtureSetUp));
       }
 
       [OneTimeTearDown]
       public void FixtureTearDown()
       {
-         // Уничтожение фикстуры
+         Console.WriteLine(nameof(FixtureTearDown));
       }
 
       [SetUp]
       public void SetUp()
       {
-         // Установка для каждого теста
+         Console.WriteLine(nameof(SetUp));
       }
 
       [TearDown]
       public void TearDown()
       {
-         // Уничтожение для каждого теста
+         Console.WriteLine(nameof(TearDown));
       }
 
-      [TestCase]
+      [Test]
       public void MultiplyTest_RealsOnly()
       {
          var a = new ComplexNumber(2, 0);
@@ -39,7 +40,7 @@ namespace ComplexNumberNUnit
          Assert.That(c.Imaginary, Is.EqualTo(0.0));
       }
 
-      [TestCase]
+      [Test]
       public void MultiplyTest_RealAndImaginary()
       {
          var a = new ComplexNumber(2, 4);
@@ -47,6 +48,12 @@ namespace ComplexNumberNUnit
          var c = a * b;
          Assert.That(c.Real, Is.EqualTo(-14.0));
          Assert.That(c.Imaginary, Is.EqualTo(22.0));
+      }
+
+      [Test(ExpectedResult = 4)]
+      public int TestAdd()
+      {
+         return 2 + 2;
       }
    }
 }

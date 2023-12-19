@@ -150,39 +150,49 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CreatingAFake", "fakeItEasy
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConfiguringCallsToAFake", "fakeItEasy\ConfiguringCallsToAFake\ConfiguringCallsToAFake.csproj", "{C662DBCD-0CFE-4F99-A5B7-019A2DDFD6D9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DoingNothing", "fakeItEasy\DoingNothing\DoingNothing.csproj", "{47F60F2D-3700-4131-AED3-62DF9DFED5AC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DoingNothing", "fakeItEasy\DoingNothing\DoingNothing.csproj", "{47F60F2D-3700-4131-AED3-62DF9DFED5AC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Exceptions", "fakeItEasy\Exceptions\Exceptions.csproj", "{50EEADD1-DB09-4A1F-BE12-FAE22C2A8278}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Exceptions", "fakeItEasy\Exceptions\Exceptions.csproj", "{50EEADD1-DB09-4A1F-BE12-FAE22C2A8278}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Invokes", "fakeItEasy\Invokes\Invokes.csproj", "{7697CF21-E3B5-4798-B469-77CFD8502C24}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Invokes", "fakeItEasy\Invokes\Invokes.csproj", "{7697CF21-E3B5-4798-B469-77CFD8502C24}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DealingWithObject", "fakeItEasy\DealingWithObject\DealingWithObject.csproj", "{6DEB4EB8-648C-4788-8DF4-D144012B5982}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DealingWithObject", "fakeItEasy\DealingWithObject\DealingWithObject.csproj", "{6DEB4EB8-648C-4788-8DF4-D144012B5982}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FakingTheSut", "fakeItEasy\FakingTheSut\FakingTheSut.csproj", "{650EE9C3-7FC6-4668-9142-7D86449291E8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FakingTheSut", "fakeItEasy\FakingTheSut\FakingTheSut.csproj", "{650EE9C3-7FC6-4668-9142-7D86449291E8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IsInstanceOf", "fakeItEasy\IsInstanceOf\IsInstanceOf.csproj", "{66A6CF8B-38D0-43AF-85B3-42F1A5411046}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IsInstanceOf", "fakeItEasy\IsInstanceOf\IsInstanceOf.csproj", "{66A6CF8B-38D0-43AF-85B3-42F1A5411046}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IsSameSequenceAs", "fakeItEasy\IsSameSequenceAs\IsSameSequenceAs.csproj", "{39527F3C-23B3-400B-B8E7-F5AC711EF39D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IsSameSequenceAs", "fakeItEasy\IsSameSequenceAs\IsSameSequenceAs.csproj", "{39527F3C-23B3-400B-B8E7-F5AC711EF39D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MHH_BasicUsage", "fakeItEasy\MHH_BasicUsage\MHH_BasicUsage.csproj", "{8CE42DD3-57A0-478C-BF6F-785F9BAD26EB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MHH_BasicUsage", "fakeItEasy\MHH_BasicUsage\MHH_BasicUsage.csproj", "{8CE42DD3-57A0-478C-BF6F-785F9BAD26EB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MHH_Repeated", "fakeItEasy\MHH_Repeated\MHH_Repeated.csproj", "{B275590F-7023-4B17-B331-CA655C8ED85C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MHH_Repeated", "fakeItEasy\MHH_Repeated\MHH_Repeated.csproj", "{B275590F-7023-4B17-B331-CA655C8ED85C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MustNotHaveHappened", "fakeItEasy\MustNotHaveHappened\MustNotHaveHappened.csproj", "{AEF70C0D-7955-4F37-A4B4-2502B5AE7220}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MustNotHaveHappened", "fakeItEasy\MustNotHaveHappened\MustNotHaveHappened.csproj", "{AEF70C0D-7955-4F37-A4B4-2502B5AE7220}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OutAndRefParameters", "fakeItEasy\OutAndRefParameters\OutAndRefParameters.csproj", "{198D850B-3FC8-4CD5-B2E4-FB5F278C6DC1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OutAndRefParameters", "fakeItEasy\OutAndRefParameters\OutAndRefParameters.csproj", "{198D850B-3FC8-4CD5-B2E4-FB5F278C6DC1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PassingArgumentsToMethods", "fakeItEasy\PassingArgumentsToMethods\PassingArgumentsToMethods.csproj", "{1D8250DE-F1EA-4134-A313-B684D33D79C2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PassingArgumentsToMethods", "fakeItEasy\PassingArgumentsToMethods\PassingArgumentsToMethods.csproj", "{1D8250DE-F1EA-4134-A313-B684D33D79C2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Returns", "fakeItEasy\Returns\Returns.csproj", "{3CE0C50C-C285-4994-9F81-AEE4AB832CD0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Returns", "fakeItEasy\Returns\Returns.csproj", "{3CE0C50C-C285-4994-9F81-AEE4AB832CD0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReturnsLazily", "fakeItEasy\ReturnsLazily\ReturnsLazily.csproj", "{7EB011BA-28B0-4E3D-80D5-632FD90E18AA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ReturnsLazily", "fakeItEasy\ReturnsLazily\ReturnsLazily.csproj", "{7EB011BA-28B0-4E3D-80D5-632FD90E18AA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReturnsNextFromSequence", "fakeItEasy\ReturnsNextFromSequence\ReturnsNextFromSequence.csproj", "{D67C2209-5C0F-4BF9-BDEB-C7D4A1062404}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ReturnsNextFromSequence", "fakeItEasy\ReturnsNextFromSequence\ReturnsNextFromSequence.csproj", "{D67C2209-5C0F-4BF9-BDEB-C7D4A1062404}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Strict", "fakeItEasy\Strict\Strict.csproj", "{27965861-34BE-41CE-977F-8BC861932EA2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Strict", "fakeItEasy\Strict\Strict.csproj", "{27965861-34BE-41CE-977F-8BC861932EA2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ThatMatches", "fakeItEasy\ThatMatches\ThatMatches.csproj", "{6C9FC6EF-2F33-47BE-A50C-19DF4F834545}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ThatMatches", "fakeItEasy\ThatMatches\ThatMatches.csproj", "{6C9FC6EF-2F33-47BE-A50C-19DF4F834545}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CombinatorialSample", "nUnit\CombinatorialSample\CombinatorialSample.csproj", "{49CEFAC9-B8D0-4C4E-8BAB-67B221910CA4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FloatingPointTolerance", "nUnit\FloatingPointTolerance\FloatingPointTolerance.csproj", "{0C634577-1238-4067-836B-BCB9C8349546}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RandomSample", "nUnit\RandomSample\RandomSample.csproj", "{72D99E81-8FFA-4EE5-8AB2-671A8A2964C3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RangeSample", "nUnit\RangeSample\RangeSample.csproj", "{B147CD3D-7C78-4FBB-A5D7-FC449338D5DE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ParameterizedSamples", "nUnit\ParameterizedSamples\ParameterizedSamples.csproj", "{9DBAA1F8-9C07-4881-BA8E-5698A5C17CCA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -490,6 +500,26 @@ Global
 		{6C9FC6EF-2F33-47BE-A50C-19DF4F834545}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6C9FC6EF-2F33-47BE-A50C-19DF4F834545}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6C9FC6EF-2F33-47BE-A50C-19DF4F834545}.Release|Any CPU.Build.0 = Release|Any CPU
+		{49CEFAC9-B8D0-4C4E-8BAB-67B221910CA4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{49CEFAC9-B8D0-4C4E-8BAB-67B221910CA4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{49CEFAC9-B8D0-4C4E-8BAB-67B221910CA4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{49CEFAC9-B8D0-4C4E-8BAB-67B221910CA4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0C634577-1238-4067-836B-BCB9C8349546}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0C634577-1238-4067-836B-BCB9C8349546}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0C634577-1238-4067-836B-BCB9C8349546}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0C634577-1238-4067-836B-BCB9C8349546}.Release|Any CPU.Build.0 = Release|Any CPU
+		{72D99E81-8FFA-4EE5-8AB2-671A8A2964C3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{72D99E81-8FFA-4EE5-8AB2-671A8A2964C3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{72D99E81-8FFA-4EE5-8AB2-671A8A2964C3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{72D99E81-8FFA-4EE5-8AB2-671A8A2964C3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B147CD3D-7C78-4FBB-A5D7-FC449338D5DE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B147CD3D-7C78-4FBB-A5D7-FC449338D5DE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B147CD3D-7C78-4FBB-A5D7-FC449338D5DE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B147CD3D-7C78-4FBB-A5D7-FC449338D5DE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9DBAA1F8-9C07-4881-BA8E-5698A5C17CCA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9DBAA1F8-9C07-4881-BA8E-5698A5C17CCA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9DBAA1F8-9C07-4881-BA8E-5698A5C17CCA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9DBAA1F8-9C07-4881-BA8E-5698A5C17CCA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -570,6 +600,11 @@ Global
 		{D67C2209-5C0F-4BF9-BDEB-C7D4A1062404} = {FC2BD0F2-A9C4-46C5-9F41-DAE35FB1B431}
 		{27965861-34BE-41CE-977F-8BC861932EA2} = {FC2BD0F2-A9C4-46C5-9F41-DAE35FB1B431}
 		{6C9FC6EF-2F33-47BE-A50C-19DF4F834545} = {FC2BD0F2-A9C4-46C5-9F41-DAE35FB1B431}
+		{49CEFAC9-B8D0-4C4E-8BAB-67B221910CA4} = {F818B987-82F7-4D85-B2B1-280B6B2B5B97}
+		{0C634577-1238-4067-836B-BCB9C8349546} = {F818B987-82F7-4D85-B2B1-280B6B2B5B97}
+		{72D99E81-8FFA-4EE5-8AB2-671A8A2964C3} = {F818B987-82F7-4D85-B2B1-280B6B2B5B97}
+		{B147CD3D-7C78-4FBB-A5D7-FC449338D5DE} = {F818B987-82F7-4D85-B2B1-280B6B2B5B97}
+		{9DBAA1F8-9C07-4881-BA8E-5698A5C17CCA} = {F818B987-82F7-4D85-B2B1-280B6B2B5B97}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {84926C70-A33A-48D3-9C1F-A50F25311994}
