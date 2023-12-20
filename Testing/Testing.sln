@@ -186,13 +186,17 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ThatMatches", "fakeItEasy\T
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CombinatorialSample", "nUnit\CombinatorialSample\CombinatorialSample.csproj", "{49CEFAC9-B8D0-4C4E-8BAB-67B221910CA4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FloatingPointTolerance", "nUnit\FloatingPointTolerance\FloatingPointTolerance.csproj", "{0C634577-1238-4067-836B-BCB9C8349546}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FloatingPointTolerance", "nUnit\FloatingPointTolerance\FloatingPointTolerance.csproj", "{0C634577-1238-4067-836B-BCB9C8349546}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RandomSample", "nUnit\RandomSample\RandomSample.csproj", "{72D99E81-8FFA-4EE5-8AB2-671A8A2964C3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RandomSample", "nUnit\RandomSample\RandomSample.csproj", "{72D99E81-8FFA-4EE5-8AB2-671A8A2964C3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RangeSample", "nUnit\RangeSample\RangeSample.csproj", "{B147CD3D-7C78-4FBB-A5D7-FC449338D5DE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RangeSample", "nUnit\RangeSample\RangeSample.csproj", "{B147CD3D-7C78-4FBB-A5D7-FC449338D5DE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ParameterizedSamples", "nUnit\ParameterizedSamples\ParameterizedSamples.csproj", "{9DBAA1F8-9C07-4881-BA8E-5698A5C17CCA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ParameterizedSamples", "nUnit\ParameterizedSamples\ParameterizedSamples.csproj", "{9DBAA1F8-9C07-4881-BA8E-5698A5C17CCA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TheorySamples", "nUnit\TheorySamples\TheorySamples.csproj", "{F04C58C0-2EEB-4B80-88EB-075EF75AA346}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AssertionSamples", "nUnit\AssertionSamples\AssertionSamples.csproj", "{B4CF71F9-C34C-44F0-A4CA-2D53A2DAB1EC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -520,6 +524,14 @@ Global
 		{9DBAA1F8-9C07-4881-BA8E-5698A5C17CCA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9DBAA1F8-9C07-4881-BA8E-5698A5C17CCA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9DBAA1F8-9C07-4881-BA8E-5698A5C17CCA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F04C58C0-2EEB-4B80-88EB-075EF75AA346}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F04C58C0-2EEB-4B80-88EB-075EF75AA346}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F04C58C0-2EEB-4B80-88EB-075EF75AA346}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F04C58C0-2EEB-4B80-88EB-075EF75AA346}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B4CF71F9-C34C-44F0-A4CA-2D53A2DAB1EC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B4CF71F9-C34C-44F0-A4CA-2D53A2DAB1EC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B4CF71F9-C34C-44F0-A4CA-2D53A2DAB1EC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B4CF71F9-C34C-44F0-A4CA-2D53A2DAB1EC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -605,6 +617,8 @@ Global
 		{72D99E81-8FFA-4EE5-8AB2-671A8A2964C3} = {F818B987-82F7-4D85-B2B1-280B6B2B5B97}
 		{B147CD3D-7C78-4FBB-A5D7-FC449338D5DE} = {F818B987-82F7-4D85-B2B1-280B6B2B5B97}
 		{9DBAA1F8-9C07-4881-BA8E-5698A5C17CCA} = {F818B987-82F7-4D85-B2B1-280B6B2B5B97}
+		{F04C58C0-2EEB-4B80-88EB-075EF75AA346} = {F818B987-82F7-4D85-B2B1-280B6B2B5B97}
+		{B4CF71F9-C34C-44F0-A4CA-2D53A2DAB1EC} = {F818B987-82F7-4D85-B2B1-280B6B2B5B97}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {84926C70-A33A-48D3-9C1F-A50F25311994}
