@@ -49,4 +49,13 @@ public class ConstraintTests
       Assert.That(hello, Is.AssignableTo(typeof(object)));
       Assert.That(five, Is.Not.AssignableTo(typeof(string)));
    }
+
+   [Test]
+   public void EndsWith_Test()
+   {
+      string phrase = "Make your tests fail before passing!";
+
+      Assert.That(phrase, Does.EndWith("!"));
+      Assert.That(phrase, Does.EndWith("PASSING!").IgnoreCase);
+   }
 }

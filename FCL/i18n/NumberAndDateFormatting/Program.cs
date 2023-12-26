@@ -1,54 +1,41 @@
-﻿/**
- * Форматирование чисел и дат в различных культурах
- */
-
-using System;
+﻿using System;
 using System.Globalization;
-using System.Threading;
 
-namespace NumberAndDateFormatting
+NumberFormatDemo();
+DateFormatDemo();
+
+void NumberFormatDemo()
 {
-   class Program
-   {
-      static void Main()
-      {
-         NumberFormatDemo();
-         Console.WriteLine("-----------------------------------------");
-         DateTimeFormatDemo();
-      }
+   int val = 1234567890;
 
-      private static void NumberFormatDemo()
-      {
-         const int val = 1234567890;
+   // culture of the current thread
+   string output = val.ToString("N");
+   Console.WriteLine($"Current thread culture: {CultureInfo.CurrentCulture}: {output}");
 
-         // Культура текущего потока
-         Console.WriteLine(val.ToString("N"));
+   // use IFormatProvider
+   output = val.ToString("N", new CultureInfo("fr-FR"));
+   Console.WriteLine($"IFormatProvider with fr-FR culture {output}");
 
-         // Использование IFormatProvider
-         Console.WriteLine(val.ToString("N"), new CultureInfo("fr-FR"));
+   // change the culture of the thread
+   CultureInfo.CurrentCulture = new("de-DE");
+   output = val.ToString("N");
+   Console.WriteLine($"Changed culture of the thread to de-DE: {output}");
+}
 
-         // Изменение культуры потока
-         Thread.CurrentThread.CurrentCulture = new CultureInfo("de-DE");
-         Console.WriteLine(val.ToString("N"));
-      }
+void DateFormatDemo()
+{
+   DateTime d = new(2024, 09, 17);
 
-      private static void DateTimeFormatDemo()
-      {
-         var dateTime = new DateTime(2012, 06, 12);
+   // current culture
+   string output = d.ToString("D");
+   Console.WriteLine($"Current thread culture: {CultureInfo.CurrentCulture}: {output}");
 
-         // Текущая культура
-         Console.WriteLine(dateTime.ToLongDateString());
+   // use IFormatProvider
+   output = d.ToString("D", new CultureInfo("fr-FR"));
+   Console.WriteLine($"IFormatProvider with fr-FR culture: {output}");
 
-         // Использование IFormatProvider
-         Console.WriteLine(dateTime.ToString("D"), new CultureInfo("fr-FR"));
 
-         // Использование культуры текущего потока
-         CultureInfo currentCulture = Thread.CurrentThread.CurrentCulture;
-         Console.WriteLine("{0}: {1}", currentCulture, dateTime.ToString("D"));
-
-         currentCulture = new CultureInfo("es-ES");
-         Thread.CurrentThread.CurrentCulture = currentCulture;
-         Console.WriteLine("{0}: {1}", currentCulture, dateTime.ToString("D"));
-      }
-   }
+   CultureInfo.CurrentCulture = new("es-ES");
+   output = d.ToString("D");
+   Console.WriteLine($"Changed culture of the thread {CultureInfo.CurrentCulture}: {output}");
 }

@@ -1,55 +1,51 @@
-﻿/**
- * Поведение сортировки в зависимости от культуры
- */
-
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Threading;
 
-namespace SortingDemo
+string[] countries =
 {
-   class Program
-   {
-      static void Main()
-      {
-         string[] names =
-         {
-            "Alabama",
-            "Texas",
-            "Washington",
-            "Virginia",
-            "Wisconsin",
-            "Wyoming",
-            "Kentucky",
-            "Missouri",
-            "Utah",
-            "Hawaii",
-            "Kansas",
-            "Louisiana",
-            "Alaska",
-            "Arizona"
-         };
+   "Österreich",
+   "België",
+   "България",
+   "Hrvatska",
+   "Česko",
+   "Danmark",
+   "Eesti",
+   "Suomi",
+   "France",
+   "Deutschland",
+   "Ελλάδα",
+   "Magyarország",
+   "Ireland",
+   "Italia",
+   "Latvija",
+   "Lietuva",
+   "Lëtzebuerg",
+   "Malta",
+   "Nederland",
+   "Polska",
+   "Portugal",
+   "România",
+   "Slovensko",
+   "Slovenija",
+   "España",
+   "Sverige"
+};
 
-         Thread.CurrentThread.CurrentCulture=new CultureInfo("fi-FI");
-         Array.Sort(names);
-         DisplayNames("Sorted using the Finnish culture", names);
+CultureInfo.CurrentCulture = new CultureInfo("fi-FI");
 
-         // Сортировать с использованием инвариантной культуры
-         Array.Sort(names, Comparer.DefaultInvariant);
-         DisplayNames("Sorted using the invariant culture", names);
-      }
+Array.Sort(countries);
+DisplayNames("Sorted using the Finnish culture", countries);
 
-      private static void DisplayNames(string title, IEnumerable<string> e)
-      {
-         Console.WriteLine(title);
-         foreach (var s in e)
-         {
-            Console.Write("{0}-", s);
-         }
-         Console.WriteLine();
-         Console.WriteLine();
-      }
-   }
+// sort using the invariant culture
+
+Array.Sort(countries, Comparer.DefaultInvariant);
+DisplayNames("Sorted using the invariant culture", countries);
+
+void DisplayNames(string title, IEnumerable<string> names)
+{
+   Console.WriteLine(title);
+   Console.WriteLine(string.Join("-", names));
+   Console.WriteLine();
 }
