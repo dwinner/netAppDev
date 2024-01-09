@@ -12,7 +12,13 @@ public class MyCollection
       get => _array[index];
       set => _array[index] = value;
    }
-
+   /*
+   public int this[Index index]
+   {
+      get => _array[index];
+      set => _array[index] = value;
+   }
+   */
    public int[] Slice(int start, int length)
    {
       var slice = new int[length];

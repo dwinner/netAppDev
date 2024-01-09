@@ -1,14 +1,10 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-
-public interface ITitle
-{
-   string Title { get; }
-}
+using GenericTypesWithConstraints;
 
 public class LinkedList<T> : IEnumerable<T>
-   where T : ITitle
+   where T : /* notnull,*/ ITitle
 {
    public LinkedListNode<T>? First { get; private set; }
    public LinkedListNode<T>? Last { get; private set; }
@@ -36,7 +32,7 @@ public class LinkedList<T> : IEnumerable<T>
       else
       {
          newNode.Prev = Last;
-         LinkedListNode<T> previous = Last;
+         var previous = Last;
          Last.Next = newNode;
          Last = newNode;
       }

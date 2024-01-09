@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.30804.86
+# Visual Studio Version 17
+VisualStudioVersion = 17.8.34330.188
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleDelegates", "SimpleDelegates\SimpleDelegates.csproj", "{FB7D9461-3072-40E8-AC39-3125FCE8F73C}"
 EndProject
@@ -16,6 +16,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MulticastDelegates", "MulticastDelegates\MulticastDelegates.csproj", "{21337C8B-88CC-4407-AAA6-9EF75C6AFEA6}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MulticastDelegatesUsingInvocationList", "MulticastDelegatesUsingInvocationList\MulticastDelegatesUsingInvocationList.csproj", "{B69806C3-6F79-4E6E-AA51-49759DF85A88}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProgressReporterSample", "ProgressReporterSample\ProgressReporterSample.csproj", "{A30E73C9-E4BB-46F0-BFD0-47DABBD5CF1E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -51,6 +53,10 @@ Global
 		{B69806C3-6F79-4E6E-AA51-49759DF85A88}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B69806C3-6F79-4E6E-AA51-49759DF85A88}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B69806C3-6F79-4E6E-AA51-49759DF85A88}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A30E73C9-E4BB-46F0-BFD0-47DABBD5CF1E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A30E73C9-E4BB-46F0-BFD0-47DABBD5CF1E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A30E73C9-E4BB-46F0-BFD0-47DABBD5CF1E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A30E73C9-E4BB-46F0-BFD0-47DABBD5CF1E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

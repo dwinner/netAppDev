@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace InterfaceNameClash
+﻿namespace InterfaceNameClash
 {
    // Draw image to a Form.
    public interface IDrawToForm
@@ -22,5 +17,4 @@ namespace InterfaceNameClash
    {
       void Draw();
    }
-
 }

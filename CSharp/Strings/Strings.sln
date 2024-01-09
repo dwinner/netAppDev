@@ -1,6 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
+# Visual Studio Version 17
+VisualStudioVersion = 17.8.34330.188
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChangeCase", "ChangeCase\ChangeCase.csproj", "{9DA6EC06-D511-4F00-8020-48930FD90C9F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CharSetConversion", "CharSetConversion\CharSetConversion.csproj", "{103AB982-9B5F-40BB-82E1-AB15929096AE}"
@@ -38,6 +40,10 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StringSplit", "StringSplit\StringSplit.csproj", "{75D0C3F9-530D-4BF4-994D-E3B54D5FAAAA}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserTypesFormatters", "UserTypesFormatters\UserTypesFormatters.csproj", "{FC14F677-86C4-4256-92D5-27E03EA4B0CA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RawStringLiterals", "RawStringLiterals\RawStringLiterals.csproj", "{281A1748-7E4B-4B84-97C5-818B3D9F0EE2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UTF8StringSample", "UTF8StringSample\UTF8StringSample.csproj", "{605ABC26-7CEB-4D19-BC1E-045582FE520B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -239,8 +245,35 @@ Global
 		{FC14F677-86C4-4256-92D5-27E03EA4B0CA}.Release|Mixed Platforms.Build.0 = Release|x86
 		{FC14F677-86C4-4256-92D5-27E03EA4B0CA}.Release|x86.ActiveCfg = Release|x86
 		{FC14F677-86C4-4256-92D5-27E03EA4B0CA}.Release|x86.Build.0 = Release|x86
+		{281A1748-7E4B-4B84-97C5-818B3D9F0EE2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{281A1748-7E4B-4B84-97C5-818B3D9F0EE2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{281A1748-7E4B-4B84-97C5-818B3D9F0EE2}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{281A1748-7E4B-4B84-97C5-818B3D9F0EE2}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{281A1748-7E4B-4B84-97C5-818B3D9F0EE2}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{281A1748-7E4B-4B84-97C5-818B3D9F0EE2}.Debug|x86.Build.0 = Debug|Any CPU
+		{281A1748-7E4B-4B84-97C5-818B3D9F0EE2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{281A1748-7E4B-4B84-97C5-818B3D9F0EE2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{281A1748-7E4B-4B84-97C5-818B3D9F0EE2}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{281A1748-7E4B-4B84-97C5-818B3D9F0EE2}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{281A1748-7E4B-4B84-97C5-818B3D9F0EE2}.Release|x86.ActiveCfg = Release|Any CPU
+		{281A1748-7E4B-4B84-97C5-818B3D9F0EE2}.Release|x86.Build.0 = Release|Any CPU
+		{605ABC26-7CEB-4D19-BC1E-045582FE520B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{605ABC26-7CEB-4D19-BC1E-045582FE520B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{605ABC26-7CEB-4D19-BC1E-045582FE520B}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{605ABC26-7CEB-4D19-BC1E-045582FE520B}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{605ABC26-7CEB-4D19-BC1E-045582FE520B}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{605ABC26-7CEB-4D19-BC1E-045582FE520B}.Debug|x86.Build.0 = Debug|Any CPU
+		{605ABC26-7CEB-4D19-BC1E-045582FE520B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{605ABC26-7CEB-4D19-BC1E-045582FE520B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{605ABC26-7CEB-4D19-BC1E-045582FE520B}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{605ABC26-7CEB-4D19-BC1E-045582FE520B}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{605ABC26-7CEB-4D19-BC1E-045582FE520B}.Release|x86.ActiveCfg = Release|Any CPU
+		{605ABC26-7CEB-4D19-BC1E-045582FE520B}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {8FE00B08-7B5E-42A1-A7AE-794EBDE4F918}
 	EndGlobalSection
 EndGlobal

@@ -1,16 +1,13 @@
 ﻿using System;
 
-public readonly struct Dimensions
-{
-   public double Length { get; }
-   public double Width { get; }
+namespace StructsSample;
 
-   public Dimensions(double length, double width)
-   {
-      Length = length;
-      Width = width;
-   }
+public readonly struct Dimensions(double length, double width)
+{
+   public double Length { get; } = length;
+   public double Width { get; } = width;
 
    public double Diagonal => Math.Sqrt(Length * Length + Width * Width);
+
    public override string ToString() => $"Length: {Length}, Width: {Width}";
 }

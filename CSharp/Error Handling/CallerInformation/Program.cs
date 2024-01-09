@@ -24,7 +24,8 @@ internal class Program
       a1();
    }
 
-   public void Log([CallerLineNumber] int line = -1,
+   public void Log(
+      [CallerLineNumber] int line = -1,
       [CallerFilePath] string? path = default,
       [CallerMemberName] string? name = default)
    {

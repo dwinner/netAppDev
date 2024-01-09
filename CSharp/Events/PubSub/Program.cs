@@ -1,4 +1,4 @@
-﻿/**
+﻿/*
  * События
  */
 
@@ -6,45 +6,28 @@ using System;
 
 namespace _05_Events
 {
-   class Program
+   internal class Program
    {
-      static void Main(string[] args)
+      private static void Main(string[] args)
       {
-         CorePlayer player = new CorePlayer();
+         var player = new CorePlayer();
       }
    }
 
    /// <summary>
-   /// Аргументы, переданные от UI
+   ///    Аргументы, переданные от UI
    /// </summary>
    /// <remarks>Возникает при возникновении события включения воспроизведения</remarks>
    public class PlayEventArgs : EventArgs
    {
-      private string fileName;
+      public PlayEventArgs(string fileName) => FileName = fileName;
 
-      public string FileName { get { return fileName; } }
-
-      public PlayEventArgs(string fileName)
-      {
-         this.fileName = fileName;
-      }
+      public string FileName { get; }
    }
 
-   public class PlayerUI
+   public class PlayerUi
    {
-      public event EventHandler<PlayEventArgs> PlayEvent;   // Определить событие для уведомления о воспроизведении
-
-      #region Явный способ обработки добавления и удаления операций событий
-
-      private EventHandler<PlayEventArgs> altPlayEvent;
-
-      public event EventHandler<PlayEventArgs> AltPlayEvent
-      {
-         add { altPlayEvent = (EventHandler<PlayEventArgs>)Delegate.Combine(altPlayEvent, value); }
-         remove { altPlayEvent = (EventHandler<PlayEventArgs>)Delegate.Remove(altPlayEvent, value); }
-      }
-
-      #endregion
+      public event EventHandler<PlayEventArgs> PlayEvent; // Определить событие для уведомления о воспроизведении
 
       public void UserPressedPlay()
       {
@@ -54,26 +37,35 @@ namespace _05_Events
       protected virtual void OnPlay()
       {
          // Инициировать событие.
-         EventHandler<PlayEventArgs> localHandler = PlayEvent;
-         if (localHandler != null)
-         {
-            localHandler(this, new PlayEventArgs("somefile.wav"));
-         }
+         var localHandler = PlayEvent;
+         localHandler?.Invoke(this, new PlayEventArgs("somefile.wav"));
       }
+
+      #region Явный способ обработки добавления и удаления операций событий
+
+      private EventHandler<PlayEventArgs> _altPlayEvent;
+
+      public event EventHandler<PlayEventArgs> AltPlayEvent
+      {
+         add => _altPlayEvent = (EventHandler<PlayEventArgs>)Delegate.Combine(_altPlayEvent, value);
+         remove => _altPlayEvent = (EventHandler<PlayEventArgs>)Delegate.Remove(_altPlayEvent, value);
+      }
+
+      #endregion
    }
 
    public class CorePlayer
    {
-      private PlayerUI ui;
+      private readonly PlayerUi _ui;
 
       public CorePlayer()
       {
-         ui = new PlayerUI();
+         _ui = new PlayerUi();
          // Регистрация обработчика события.
-         ui.PlayEvent += new EventHandler<PlayEventArgs>(UiPlayEvent);
+         _ui.PlayEvent += UiPlayEvent;
       }
 
-      void UiPlayEvent(object sender, PlayEventArgs e)
+      private void UiPlayEvent(object sender, PlayEventArgs e)
       {
          // Воспроизведение файла
       }

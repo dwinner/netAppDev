@@ -1,12 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace InterfaceNameClash
 {
-
-   class Octagon : IDrawToForm, IDrawToMemory, IDrawToPrinter
+   internal class Octagon : IDrawToForm, IDrawToMemory, IDrawToPrinter
    {
       // Explicitly bind Draw() implementations
       // to a given interface.
