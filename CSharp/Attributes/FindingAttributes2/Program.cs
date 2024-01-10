@@ -1,14 +1,10 @@
-﻿/**
+﻿/*
  * Выявление атрибутов без создания производных
  */
 
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 [assembly: CLSCompliant(true)]
 
@@ -17,11 +13,11 @@ namespace FindingAttributes2
    [Serializable]
    [DefaultMember("Main")]
    [DebuggerDisplay("Vinevcev", Name = "Jeff", Target = typeof(Program))]
-   class Program
+   internal class Program
    {
       [CLSCompliant(true)]
       [STAThread]
-      static void Main(string[] args)
+      private static void Main(string[] args)
       {
          // Вывод набора атрибутов, примененных к типу
          ShowAttributes(typeof(Program));
@@ -60,7 +56,7 @@ namespace FindingAttributes2
 
             var namedArgs = attribute.NamedArguments;
             Console.WriteLine(" Named arguments set after construction:" +
-                              (namedArgs != null && (namedArgs.Count == 0) ? " None" : string.Empty));
+                              (namedArgs != null && namedArgs.Count == 0 ? " None" : string.Empty));
             if (namedArgs != null)
             {
                foreach (var na in namedArgs)

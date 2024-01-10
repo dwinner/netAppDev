@@ -4,6 +4,8 @@ Ellipse e1 = new(new Position(122, 200), new Size(40, 20));
 
 DisplayShapes(r1, r2, e1);
 
+return;
+
 void DisplayShapes(params Shape[] shapes)
 {
    foreach (var shape in shapes)

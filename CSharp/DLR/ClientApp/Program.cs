@@ -12,6 +12,7 @@ if (args.Length != 1)
 
 UsingReflection(args[0]);
 UsingReflectionWithDynamic(args[0]);
+return;
 
 void ShowUsage()
 {

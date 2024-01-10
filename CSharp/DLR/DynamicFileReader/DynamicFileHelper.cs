@@ -1,30 +1,38 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Dynamic;
 using System.IO;
-using System.Linq;
 
 namespace DynamicFileReader
 {
-   public static class DynamicFileHelper
+   public class DynamicFileHelper
    {
-      public static IEnumerable<dynamic> ParseFile(string fileName)
+      public IList<dynamic> ParseCsvFile(string fileName)
       {
-         List<dynamic> retList = new();
-         using var reader = OpenFile(fileName);
-         if (reader == null)
+         var retList = new List<dynamic>();
+         var fileStream = OpenFile(fileName);
+         if (fileStream == null)
          {
-            return Enumerable.Empty<dynamic>();
+            return retList;
          }
 
-         string[] headerLine = reader.ReadLine()?.Split(',').Select(str => str.Trim()).ToArray()
-                               ?? throw new InvalidOperationException("reader.ReadLine returned null");
-         while (reader.Peek() > 0)
+         string line = fileStream.ReadLine();
+         if (line == null)
          {
-            string[] dataLine = reader.ReadLine()?.Split(',')
-                                ?? throw new InvalidOperationException("reader.Readline returned null");
+            return retList;
+         }
+
+         string[] headerLine = line.Split(',');
+         while (fileStream.Peek() > 0)
+         {
+            string currentDataLine = fileStream.ReadLine();
+            if (currentDataLine == null)
+            {
+               continue;
+            }
+
+            string[] dataLine = currentDataLine.Split(',');
             dynamic dynamicEntity = new ExpandoObject();
-            for (var i = 0; i < headerLine.Length; i++)
+            for (int i = 0; i < headerLine.Length; i++)
             {
                ((IDictionary<string, object>)dynamicEntity).Add(headerLine[i], dataLine[i]);
             }
@@ -35,7 +43,9 @@ namespace DynamicFileReader
          return retList;
       }
 
-      private static StreamReader? OpenFile(string fileName) =>
-         File.Exists(fileName) ? new StreamReader(File.OpenRead(fileName)) : null;
+      public StreamReader OpenFile(string fileName)
+      {
+         return File.Exists(fileName) ? new StreamReader(fileName) : null;
+      }
    }
 }
