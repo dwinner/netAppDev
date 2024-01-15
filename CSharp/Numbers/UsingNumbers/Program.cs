@@ -3,6 +3,8 @@
 DigitSeparators();
 BinaryNumbers();
 
+return;
+
 static void DigitSeparators()
 {
    var l1 = 0x123_4567_89ab_cedf;
