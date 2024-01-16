@@ -1,41 +1,42 @@
 ﻿using System;
 using System.Numerics;
+using System.Threading;
 
 namespace ComplexNumberDemo
 {
-   class ComplexFormatter : IFormatProvider, ICustomFormatter
+   internal class ComplexFormatter : IFormatProvider, ICustomFormatter
    {
       // note: допускает два формата : i и j
       public string Format(string format, object arg, IFormatProvider formatProvider)
       {
-         if (arg is Complex)
+         if (arg is Complex complex)
          {
-            Complex c = (Complex)arg;
             if (format.Equals("i", StringComparison.OrdinalIgnoreCase))
             {
-               return string.Format("{0} + {1}i",
-                  c.Real.ToString("N2"), c.Imaginary.ToString("N2"));
+               return $"{complex.Real:N2} + {complex.Imaginary:N2}i";
             }
+
             if (format.Equals("j", StringComparison.OrdinalIgnoreCase))
             {
-               return string.Format("{0} + {1}j",
-                  c.Real.ToString("N2"), c.Imaginary.ToString("N2"));
+               return $"{complex.Real:N2} + {complex.Imaginary:N2}j";
             }
-            return c.ToString(format, formatProvider);
+
+            return complex.ToString(format, formatProvider);
          }
-         IFormattable formattable = arg as IFormattable;
-         if (formattable != null)
+
+         if (arg is IFormattable formattable)
          {
             return formattable.ToString(format, formatProvider);
          }
-         return arg != null ? arg.ToString() : string.Empty;
+
+         return arg != null
+            ? arg.ToString()
+            : string.Empty;
       }
 
-      public object GetFormat(Type formatType)
-      {
-         return formatType == typeof(ICustomFormatter)
+      public object GetFormat(Type formatType) =>
+         formatType == typeof(ICustomFormatter)
             ? this
-            : System.Threading.Thread.CurrentThread.CurrentCulture.GetFormat(formatType);
-      }
+            : Thread.CurrentThread.CurrentCulture.GetFormat(formatType);
    }
 }
