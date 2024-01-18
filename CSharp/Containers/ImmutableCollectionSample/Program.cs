@@ -10,6 +10,8 @@ LinqDemo();
 
 Console.ReadLine();
 
+return;
+
 void LinqDemo()
 {
    var arr = ImmutableArray.Create<string>("one", "two", "three", "four", "five");
