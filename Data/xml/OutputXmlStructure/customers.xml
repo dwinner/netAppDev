@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<customers>
+	<customer id="123" status="archived">
+		<firstname>Jim</firstname>
+		<lastname>Bo</lastname>
+	</customer>
+	<customer id="125" status="archived">
+		<firstname>Todd</firstname>
+		<lastname>Bar</lastname>
+	</customer>
+</customers>

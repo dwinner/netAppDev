@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<customer id="123" status="archived">
+	<firstname>Jim</firstname>
+	<lastname>Bo</lastname>
+	<creditlimit>500.00</creditlimit>    <!-- OK, we sneaked this in! -->
+</customer>
