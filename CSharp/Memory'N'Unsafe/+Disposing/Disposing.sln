@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.40629.0
+# Visual Studio Version 17
+VisualStudioVersion = 17.8.34408.163
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CleanUpTemplate", "CleanUpTemplate\CleanUpTemplate.csproj", "{D750E14D-D8E2-4A0D-92E4-914655DA7D95}"
 EndProject
@@ -16,6 +16,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleDispose", "SimpleDispose\SimpleDispose.csproj", "{03DB6C20-B63B-45F7-AD82-1BC2EFFB0515}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleFinalize", "SimpleFinalize\SimpleFinalize.csproj", "{DB99A3E8-6AD3-455F-815B-0C31D31E46CE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FuncDisposable", "FuncDisposable\FuncDisposable.csproj", "{B20AD7F2-7342-4D04-830E-782AFCCCFFE7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -97,6 +99,18 @@ Global
 		{DB99A3E8-6AD3-455F-815B-0C31D31E46CE}.Release|Mixed Platforms.Build.0 = Release|x86
 		{DB99A3E8-6AD3-455F-815B-0C31D31E46CE}.Release|x86.ActiveCfg = Release|x86
 		{DB99A3E8-6AD3-455F-815B-0C31D31E46CE}.Release|x86.Build.0 = Release|x86
+		{B20AD7F2-7342-4D04-830E-782AFCCCFFE7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B20AD7F2-7342-4D04-830E-782AFCCCFFE7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B20AD7F2-7342-4D04-830E-782AFCCCFFE7}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{B20AD7F2-7342-4D04-830E-782AFCCCFFE7}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{B20AD7F2-7342-4D04-830E-782AFCCCFFE7}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{B20AD7F2-7342-4D04-830E-782AFCCCFFE7}.Debug|x86.Build.0 = Debug|Any CPU
+		{B20AD7F2-7342-4D04-830E-782AFCCCFFE7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B20AD7F2-7342-4D04-830E-782AFCCCFFE7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B20AD7F2-7342-4D04-830E-782AFCCCFFE7}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{B20AD7F2-7342-4D04-830E-782AFCCCFFE7}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{B20AD7F2-7342-4D04-830E-782AFCCCFFE7}.Release|x86.ActiveCfg = Release|Any CPU
+		{B20AD7F2-7342-4D04-830E-782AFCCCFFE7}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

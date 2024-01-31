@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using System.Xml.Linq;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using static System.Console;
@@ -8,7 +9,7 @@ namespace JsonNetSample;
 public static class JsonSampleEntry
 {
    private const string InventoryFileName = "inventory.json";
-   //private const string InventoryXmlFileName = "inventory.xml";
+   private const string InventoryXmlFileName = "inventory.xml";
 
    private const string CreateJsonOption = "-j";
    private const string ConvertOption = "-c";
@@ -111,11 +112,11 @@ public static class JsonSampleEntry
       }
    }
 
-   /*private static string ConvertXmlToJson()
+   private static string ConvertXmlToJson()
    {
       var xmlInventory = XElement.Load(InventoryXmlFileName);
       return JsonConvert.SerializeXNode(xmlInventory);
-   }*/
+   }
 
    private static void CreateJson()
    {
