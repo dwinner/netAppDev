@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace LanguageHost.LSP.Helpers;
+namespace Memory.Library;
 
 public sealed class WeakEvictionCache<TKey, TValue>
     where TValue : class
