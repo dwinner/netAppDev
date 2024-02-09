@@ -1,6 +1,6 @@
 ﻿using System.Net;
 
-var a1 = new IPAddress(new byte[] { 101, 102, 103, 104 });
+var a1 = new IPAddress("efgh"u8.ToArray());
 var a2 = IPAddress.Parse("101.102.103.104");
 Console.WriteLine(a1.Equals(a2)); // True
 Console.WriteLine(a1.AddressFamily); // InterNetwork
