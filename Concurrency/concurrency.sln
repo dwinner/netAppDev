@@ -39,19 +39,21 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AsyncByHand", "async\AsyncB
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AsyncOutOfBox", "async\AsyncOutOfBox\AsyncOutOfBox.csproj", "{D73638AB-B4D7-43A2-BDFC-0C39CA7FE5C4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Awaiting", "async\Awaiting\Awaiting.csproj", "{A341536A-0090-4D1D-8626-E51034A0125D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Awaiting", "async\Awaiting\Awaiting.csproj", "{A341536A-0090-4D1D-8626-E51034A0125D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SyncCompletion", "async\SyncCompletion\SyncCompletion.csproj", "{71D4277A-C276-405A-9080-FF5FF0E16275}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SyncCompletion", "async\SyncCompletion\SyncCompletion.csproj", "{71D4277A-C276-405A-9080-FF5FF0E16275}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CachingTasks", "async\CachingTasks\CachingTasks.csproj", "{F6EDCCB1-64DC-4214-9951-2160B157E6D4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CachingTasks", "async\CachingTasks\CachingTasks.csproj", "{F6EDCCB1-64DC-4214-9951-2160B157E6D4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AsyncStreamDifferences", "async\AsyncStreamDifferences\AsyncStreamDifferences.csproj", "{C322F156-614E-4BB0-9FFB-A2018E033581}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AsyncStreamDifferences", "async\AsyncStreamDifferences\AsyncStreamDifferences.csproj", "{C322F156-614E-4BB0-9FFB-A2018E033581}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AsyncStreamsWithLinq", "async\AsyncStreamsWithLinq\AsyncStreamsWithLinq.csproj", "{078A5C13-B1AC-4388-988F-59AABD3521D0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AsyncStreamsWithLinq", "async\AsyncStreamsWithLinq\AsyncStreamsWithLinq.csproj", "{078A5C13-B1AC-4388-988F-59AABD3521D0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Combinator_WhenAll", "async\Combinator_WhenAll\Combinator_WhenAll.csproj", "{6750CF92-0EF0-4830-880D-B563576175CF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Combinator_WhenAll", "async\Combinator_WhenAll\Combinator_WhenAll.csproj", "{6750CF92-0EF0-4830-880D-B563576175CF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CustomCombinators", "async\CustomCombinators\CustomCombinators.csproj", "{0B8E8D09-7FCC-4D07-8F47-F91D6235824E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CustomCombinators", "async\CustomCombinators\CustomCombinators.csproj", "{0B8E8D09-7FCC-4D07-8F47-F91D6235824E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "exclusiveLocking", "exclusiveLocking", "{F7AEB2D1-FFB8-453A-8E19-32BF766B3BAC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -1,4 +1,9 @@
-﻿namespace CustomCombinators;
+﻿// ReSharper disable AsyncApostle.AsyncWait
+// ReSharper disable AsyncConverter.AsyncWait
+
+#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+
+namespace CustomCombinators;
 
 public static class Combinators
 {
@@ -54,7 +59,7 @@ public static class Combinators
             }
             else if (ant.IsFaulted)
             {
-               killJoy.TrySetException(ant.Exception.InnerException 
+               killJoy.TrySetException(ant.Exception.InnerException
                                        ?? throw new InvalidOperationException());
             }
          });
