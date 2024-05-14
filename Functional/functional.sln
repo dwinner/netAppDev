@@ -1,0 +1,21 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "basics", "basics", "{61361C83-AF6F-4904-B3D2-553A0E2D7D54}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AnonymRecursion", "00-basics\AnonymRecursion\AnonymRecursion.csproj", "{80FA3A9E-C722-46C6-82DC-C62F31105BE0}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{80FA3A9E-C722-46C6-82DC-C62F31105BE0} = {61361C83-AF6F-4904-B3D2-553A0E2D7D54}
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{80FA3A9E-C722-46C6-82DC-C62F31105BE0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{80FA3A9E-C722-46C6-82DC-C62F31105BE0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{80FA3A9E-C722-46C6-82DC-C62F31105BE0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{80FA3A9E-C722-46C6-82DC-C62F31105BE0}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
