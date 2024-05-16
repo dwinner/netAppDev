@@ -2,6 +2,8 @@
  * Анонимная рекурсия
  */
 
+using System;
+
 namespace _15_AnonymRecursion
 {
    internal delegate TResult AnonRec<TArg, TResult>(AnonRec<TArg, TResult> f, TArg arg);
@@ -10,9 +12,9 @@ namespace _15_AnonymRecursion
    {
       private static void Main()
       {
-         //Func<int, int> fact = null;
-         //fact = x => x > 1 ? x * fact(x - 1) : 1;
-         AnonRec<int, int> fact = (f, x) => x > 1 ? x * f(f, x - 1) : 1;
+         AnonRec<int, int> factorial = (f, x) => x > 1 ? x * f(f, x - 1) : 1;
+         var fiveFactor = factorial(factorial, 5);
+         Console.WriteLine(fiveFactor);
       }
    }
 }
