@@ -1,4 +1,4 @@
-﻿/**
+﻿/*
  * Другой способ каррирования
  */
 
@@ -7,9 +7,9 @@ using System.Collections.Generic;
 
 namespace _14_Currying2
 {
-   class EntryPoint
+   internal static class EntryPoint
    {
-      static void Main()
+      private static void Main()
       {
          var myList = new List<double> { 1.0, 3.4, 5.4, 6.54 };
          var newList = new List<double>();
@@ -33,15 +33,6 @@ namespace _14_Currying2
          }
 
          Console.ReadKey();
-      }
-   }
-
-   public static class CurryExtensions
-   {
-      public static Func<TArg2, Func<TArg1, TResult>> Bind2Nd<TArg1, TArg2, TResult>(
-         this Func<TArg1, TArg2, TResult> func)
-      {
-         return y => x => func(x, y);
       }
    }
 }

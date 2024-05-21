@@ -1,16 +1,15 @@
-﻿/**
+﻿/*
  * Мемоизация
  */
 
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 
 namespace _12_Memoize
 {
-   static class Program
+   internal static class Program
    {
-      static void Main()
+      private static void Main()
       {
          var stimer = new Stopwatch();
          stimer.Start();
@@ -43,33 +42,33 @@ namespace _12_Memoize
          Console.ReadKey();
       }
 
-      static void SlowFib()   // Версия с прямым вычислением
+      private static void SlowFib() // Версия с прямым вычислением
       {
          Func<int, int> fib = null;
          fib = x => x > 1 ? fib(x - 1) + fib(x - 2) : x;
-         for (int i = 30; i < 40; i++)
+         for (var i = 30; i < 40; i++)
          {
             Console.WriteLine(fib(i));
          }
       }
 
-      static void FastFib()   // Версия с мемоизацией результатов и меньшей нагрузкой на стек
+      private static void FastFib() // Версия с мемоизацией результатов и меньшей нагрузкой на стек
       {
          Func<int, int> fib = null;
          fib = x => x > 1 ? fib(x - 1) + fib(x - 2) : x;
          fib = fib.Memoize();
-         for (int i = 30; i < 40; i++)
+         for (var i = 30; i < 40; i++)
          {
             Console.WriteLine(fib(i));
          }
       }
 
-      static void ReciprocalFibonacciConstant_Slow()
+      private static void ReciprocalFibonacciConstant_Slow()
       {
          Func<ulong, ulong> fib = null;
          fib = x => x > 1 ? fib(x - 1) + fib(x - 2) : x;
          Func<ulong, decimal> fibConstant = null;
-         fibConstant = x => x == 1 ? 1 / ((decimal)fib(x)) : 1 / ((decimal)fib(x)) + fibConstant(x - 1);
+         fibConstant = x => x == 1 ? 1 / (decimal)fib(x) : 1 / (decimal)fib(x) + fibConstant(x - 1);
          Console.WriteLine("\n{0}\t{1}\t{2}\t{3}\n",
             "Номер",
             "Фибоначчи".PadRight(24),
@@ -80,18 +79,18 @@ namespace _12_Memoize
             Console.WriteLine("{0:D5}\t{1:D24}\t{2:F24}\t{3:F24}",
                i,
                fib(i),
-               (1 / (decimal)fib(i)),
+               1 / (decimal)fib(i),
                fibConstant(i));
          }
       }
 
-      static void ReciprocalFibonacciConstant_Fast()
+      private static void ReciprocalFibonacciConstant_Fast()
       {
          Func<ulong, ulong> fib = null;
          fib = x => x > 1 ? fib(x - 1) + fib(x - 2) : x;
          fib = fib.Memoize();
          Func<ulong, decimal> fibConstant = null;
-         fibConstant = x => x == 1 ? 1 / ((decimal)fib(x)) : 1 / ((decimal)fib(x)) + fibConstant(x - 1);
+         fibConstant = x => x == 1 ? 1 / (decimal)fib(x) : 1 / (decimal)fib(x) + fibConstant(x - 1);
          fibConstant = fibConstant.Memoize();
          Console.WriteLine("\n{0}\t{1}\t{2}\t{3}\n",
             "Номер",
@@ -103,26 +102,9 @@ namespace _12_Memoize
             Console.WriteLine("{0:D5}\t{1:D24}\t{2:F24}\t{3:F24}",
                i,
                fib(i),
-               (1 / (decimal)fib(i)),
+               1 / (decimal)fib(i),
                fibConstant(i));
          }
-      }
-   }
-
-   public static class Memoizers
-   {
-      public static Func<T, TR> Memoize<T, TR>(this Func<T, TR> func)   // Запоминание результатов вызовов делегата
-      {
-         IDictionary<T, TR> cache = new Dictionary<T, TR>();
-         return x =>
-            {
-               TR result;
-               if (cache.TryGetValue(x, out result))
-                  return result;
-               result = func(x);
-               cache[x] = result;
-               return result;
-            };
       }
    }
 }

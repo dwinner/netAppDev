@@ -1,14 +1,11 @@
 ﻿using static System.Console;
 
-int temp = 5;
+var temp = 5;
 Func<int, int> doubleMaker = x => x * 2;
-int result = Container.GetResult(doubleMaker, temp);
+var result = Container.GetResult(doubleMaker, temp);
 WriteLine(result);
 
-static class Container
+internal static class Container
 {
-    public static int GetResult(Func<int, int> f, int x)
-    {
-        return f(x);
-    }
+   public static int GetResult(Func<int, int> f, int x) => f(x);
 }

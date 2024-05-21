@@ -6,9 +6,9 @@ using System;
 
 namespace _07_Closures
 {
-   internal class Program
+   internal static class Program
    {
-      private static void Main(string[] args)
+      private static void Main()
       {
          // Создать массив целых чисел
          int[] integers = { 1, 2, 3, 4 };

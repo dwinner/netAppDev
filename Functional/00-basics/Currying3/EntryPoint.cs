@@ -1,4 +1,4 @@
-﻿/**
+﻿/*
  * Каррирование с помощью лямбда-выражений
  */
 
@@ -7,9 +7,9 @@ using System.Collections.Generic;
 
 namespace _13_Currying
 {
-   class EntryPoint
+   internal static class EntryPoint
    {
-      static void Main()
+      private static void Main()
       {
          var myList = new List<double> { 1.0, 3.4, 5.4, 6.54 };
          var newList = new List<double>();
@@ -33,15 +33,6 @@ namespace _13_Currying
          }
 
          Console.ReadKey();
-      }
-   }
-
-   public static class CurryExtensions
-   {
-      public static Func<TArg1, TResult> Bind2Nd<TArg1, TArg2, TResult>(this Func<TArg1, TArg2, TResult> func,
-         TArg2 constant)
-      {
-         return x => func(x, constant);
       }
    }
 }

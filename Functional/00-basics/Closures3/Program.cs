@@ -1,4 +1,4 @@
-﻿/**
+﻿/*
  * Замыкания в C# 2.0
  */
 
@@ -6,23 +6,24 @@ using System;
 
 namespace _05_ClosureViaSecondCSharp
 {
-   class Program
+   internal static class Program
    {
-      static void Main()
+      private static void Main()
       {
-         int counter = 0;
+         var counter = 0;
          WriteStream(delegate { return counter++; });
          Console.WriteLine("Финальное значение счетчика: {0}", counter);
 
          Console.ReadLine();
       }
 
-      static void WriteStream(Func<int> counter)
+      private static void WriteStream(Func<int> counter)
       {
-         for (int i = 0; i < 10; i++)
+         for (var i = 0; i < 10; i++)
          {
             Console.Write("{0}, ", counter());
          }
+
          Console.WriteLine();
       }
    }

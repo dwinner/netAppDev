@@ -1,4 +1,4 @@
-﻿/**
+﻿/*
  * Создание функциональных цепочек
  */
 
@@ -6,18 +6,18 @@ using System;
 
 namespace _11_FuncChain
 {
-   class Program
+   internal static class Program
    {
-      static void Main()
+      private static void Main()
       {
-         Func<int, double> func = Chain<int, int, double>(x => x * 3, x => x + Math.PI);
+         var func = Chain<int, int, double>(x => x * 3, x => x + Math.PI);
          Console.WriteLine(func(2));
          Console.ReadKey();
       }
 
-      static Func<T, TS> Chain<T, TR, TS>(Func<T, TR> firstFunc, Func<TR, TS> secondFunc)
+      private static Func<T, TS> Chain<T, TR, TS>(Func<T, TR> func1, Func<TR, TS> func2)
       {
-         return x => secondFunc(firstFunc(x));
+         return x => func2(func1(x));
       }
    }
 }
