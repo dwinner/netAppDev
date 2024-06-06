@@ -8,16 +8,16 @@ namespace AdventOfCode._2015
         private static int CalculateCharLength(string input) =>
             input.Length;
 
-        private static Regex EscapedNumericValues = new("\\\\x[0-9a-f]{2}");
+        private static Regex _escapedNumericValues = new("\\\\x[0-9a-f]{2}");
 
-        private static Regex Whitespace = new Regex("\\s+");
+        private static Regex _whitespace = new Regex("\\s+");
         //private static Regex EscapedChars = new("\\\\[^x]");
 
         private static int CalculateStringLength(string input) =>
             input[1..^1]
                 .Replace("\\\\", "\\")
                 .Replace("\\\"", "\"")
-                .Map(x => EscapedNumericValues.Replace(x, y => "a"))
+                .Map(x => _escapedNumericValues.Replace(x, y => "a"))
                 .Length;
 
         private static int CalculateStringLength2(string input)

@@ -6,7 +6,7 @@ namespace AdventOfCode._2023
 {
     public class Day05
     {
-        private readonly string testInput = @"seeds: 79 14 55 13
+        private readonly string _testInput = @"seeds: 79 14 55 13
 
 seed-to-soil map:
 50 98 2
@@ -76,7 +76,7 @@ humidity-to-location map:
 
         private static Func<uint, uint> CreateTransformer(IEnumerable<Map> maps)
         {
-            uint f(uint x)
+            uint F(uint x)
             {
                 var rule = maps.FirstOrDefault(y =>
                     x.IsBetween(y.SourceRangeStart, y.SourceRangeStart + y.RangeLength));
@@ -85,20 +85,20 @@ humidity-to-location map:
                     : x - rule.SourceRangeStart + rule.DestinationRangeStart;
             }
 
-            return f;
+            return F;
         }
 
         [Fact]
         public void Day05_Test01()
         {
-            var seeds = GetSeeds(testInput);
+            var seeds = GetSeeds(_testInput);
             seeds.Should().BeEquivalentTo(new[] { 79, 14, 55, 13 });
         }
 
         [Fact]
         public void Day05_Test02()
         {
-            var seeds = GetMap(testInput);
+            var seeds = GetMap(_testInput);
             var seedToSoil = seeds["seed-to-soil"].ToArray();
             seedToSoil[0].DestinationRangeStart.Should().Be(50);
             seedToSoil[0].SourceRangeStart.Should().Be(98);
@@ -150,7 +150,7 @@ humidity-to-location map:
         public void Day05_Test03(uint seed, uint soil, uint fertiliser, uint water, uint light, uint temp,
             uint humidity, uint loc)
         {
-            var transformations = testInput.Map(GetMap).Select(x => (
+            var transformations = _testInput.Map(GetMap).Select(x => (
                 x.Key,
                 CreateTransformer(x.Value)
             )).ToDictionary(x => x.Key, x => x.Item2);
@@ -185,7 +185,7 @@ humidity-to-location map:
         [InlineData(13, 35)]
         public void Day05_Test04(uint seed, uint location)
         {
-            var calc = MakeLocationCalculator(testInput);
+            var calc = MakeLocationCalculator(_testInput);
             calc(seed).Should().Be(location);
         }
 
@@ -211,7 +211,7 @@ humidity-to-location map:
         [Fact]
         public void Day05_Test06()
         {
-            var seeds = GetSeeds2(testInput).ToArray();
+            var seeds = GetSeeds2(_testInput).ToArray();
             seeds.Should().HaveCount(27);
         }
 
@@ -228,7 +228,7 @@ humidity-to-location map:
         [Fact]
         public void Day05_Test07()
         {
-            var maps = GetMap(testInput);
+            var maps = GetMap(_testInput);
             var hToLMap = maps["humidity-to-location"].ToArray();
             var hToLSources = hToLMap.Select(x => x.DestinationRangeStart).Append(0U).OrderBy(x => x);
             var lRanges = hToLSources.Pairwise((a, b) => (start: a, end: b - 1));

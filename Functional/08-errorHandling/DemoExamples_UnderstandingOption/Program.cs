@@ -29,25 +29,26 @@ Test3(empty);
 // Using a generic method
 static void Test3<T>(Option<T> val)
 {
-    val.Match
-      (
-      Some: x => WriteLine($"Received: {x}"),
-      None: () => WriteLine($"Did not receive any value.")
-      );
+   val.Match
+   (
+      x => WriteLine($"Received: {x}"),
+      () => WriteLine("Did not receive any value.")
+   );
 }
 
 
 WriteLine("\nExample 4");
+
 static Option<int> Test4()
 {
-    int random = new Random().Next(2);
-    return random > 0 ? random : Option<int>.None;
+   var random = new Random().Next(2);
+   return random > 0 ? random : Option<int>.None;
 }
 
 Test4().Match
 (
- Some: x => WriteLine($"Received the positive number: {x}"),
- None: () => WriteLine($"Did not receive any value.")
+   x => WriteLine($"Received the positive number: {x}"),
+   () => WriteLine("Did not receive any value.")
 );
 
 //// You can use the fluent syntax too
@@ -65,8 +66,8 @@ WriteLine("\nExample 5");
 // Comparing  Option<string> with OptionUnsafe<string>
 
 Test5(null)
-    .Some(x => WriteLine($"Received: {x}"))
-    .None(() => WriteLine($"Got a null value."));
+   .Some(x => WriteLine($"Received: {x}"))
+   .None(() => WriteLine("Got a null value."));
 
 //static Option<string> Test5(string? input)
 //{
@@ -74,10 +75,7 @@ Test5(null)
 //}
 
 // OUTPUT: Got a null value. (if Option<string> is the return type of Test5
-static OptionUnsafe<string> Test5(string? input)
-{
-    return input is not null ? input : null;
-}
+static OptionUnsafe<string> Test5(string? input) => input is not null ? input : null;
 // OUTPUT: Received: (if OptionUnsafe<string> is the return type of Test5
 
 WriteLine("\nExample 6");

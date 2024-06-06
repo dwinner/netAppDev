@@ -4,7 +4,7 @@ namespace AdventOfCode._2015
 {
     public class Day02
     {
-        private const string input = @"4x23x21
+        private const string Input = @"4x23x21
 22x29x19
 11x4x11
 8x10x5
@@ -1031,7 +1031,7 @@ namespace AdventOfCode._2015
         [Fact]
         public void Day01_PartA()
         {
-            var presents = input.Split3(Environment.NewLine, "x")
+            var presents = Input.Split3(Environment.NewLine, "x")
                 .Select(x => (
                         L: int.Parse(x.Item1),
                         W: int.Parse(x.Item2),
@@ -1055,7 +1055,7 @@ namespace AdventOfCode._2015
         [Fact]
         public void Day01_PartB()
         {
-            var presents = input.Split3(Environment.NewLine, "x")
+            var presents = Input.Split3(Environment.NewLine, "x")
                 .Select(x => (
                     L: int.Parse(x.Item1),
                     W: int.Parse(x.Item2),

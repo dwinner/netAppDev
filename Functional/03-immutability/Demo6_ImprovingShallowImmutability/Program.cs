@@ -1,11 +1,12 @@
 ﻿using static System.Console;
+
 WriteLine("Improving the shallow immutability.");
 //Employee emp1 = new("Sam", 1);
 //Employee emp2 = new("Bob", 2);
 List<Employee> mathEmployees = new()
 {
-    new("Sam", 1),
-    new("Bob", 2)
+   new Employee("Sam", 1),
+   new Employee("Bob", 2)
 };
 
 Department mathDept = new("Mathematics", mathEmployees);
@@ -19,31 +20,34 @@ WriteLine($"Employee count:{mathDept.Employees.Count}");
 //mathDept.Employees.Add(new("Jack", 3)); // Error 1061 now
 
 // Still, the following line shows no compile-time error
-mathEmployees.Add(new("Kate", 4));
+mathEmployees.Add(new Employee("Kate", 4));
 WriteLine($"Employee count:{mathDept.Employees.Count}");
 
-class Employee
+internal class Employee
 {
-    public string Name { get; }
-    public int Id { get; }
+   public Employee(string name, int id)
+   {
+      Name = name;
+      Id = id;
+   }
 
-    public Employee(string name, int id)
-    {
-        Name = name;
-        Id = id;
-    }
-    public override string ToString() =>
-     $"Name: {Name}, ID: {Id}";
+   public string Name { get; }
+   public int Id { get; }
 
+   public override string ToString() =>
+      $"Name: {Name}, ID: {Id}";
 }
-class Department
+
+internal class Department
 {
-    public string Name { get; }
-    //public List<Employee> Employees { get; }
-    public IReadOnlyCollection<Employee> Employees { get; }
-    public Department(string name, IReadOnlyCollection<Employee> emps)
-    {
-        Name = name;
-        Employees = emps;
-    }
+   public Department(string name, IReadOnlyCollection<Employee> emps)
+   {
+      Name = name;
+      Employees = emps;
+   }
+
+   public string Name { get; }
+
+   //public List<Employee> Employees { get; }
+   public IReadOnlyCollection<Employee> Employees { get; }
 }

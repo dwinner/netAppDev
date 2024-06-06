@@ -1,5 +1,6 @@
 ﻿using CustomLibrary;
 using static System.Console;
+
 WriteLine("Applying the concept of currying and partial application.");
 int a = 10, b = 20, c = 30;
 // Case-1: Adding the arguments one-by-one
@@ -20,27 +21,28 @@ var afterAandB = new Sample().AddThreeNumbers.UsePartial2()(a, b);
 var afterC = afterAandB(c);
 WriteLine($"a+b+c is {afterC}");
 
-class Sample
+internal class Sample
 {
-   public Func<int, int, int, int> AddThreeNumbers = (int x, int y, int z) => x + y + z;
+   public Func<int, int, int, int> AddThreeNumbers = (x, y, z) => x + y + z;
 }
 
 namespace CustomLibrary
 {
-    public static class CurryExtensions
-    {
-        public static Func<int, Func<int, Func<int, int>>> Curry(this Func<int, int, int, int> f)
-        {
-            return x => y => z => f(x, y, z);
-        }
-        public static Func<int, Func<int, int, int>> UsePartial(this Func<int, int, int, int> f)
-        {
-            return x => (y, z) => x + y + z;
-        }
-        public static Func<int, int, Func<int, int>> UsePartial2(this Func<int, int, int, int> f)
-        {
-            return (x, y) => z => x + y + z;
-        }
-    }
-}
+   public static class CurryExtensions
+   {
+      public static Func<int, Func<int, Func<int, int>>> Curry(this Func<int, int, int, int> f)
+      {
+         return x => y => z => f(x, y, z);
+      }
 
+      public static Func<int, Func<int, int, int>> UsePartial(this Func<int, int, int, int> f)
+      {
+         return x => (y, z) => x + y + z;
+      }
+
+      public static Func<int, int, Func<int, int>> UsePartial2(this Func<int, int, int, int> f)
+      {
+         return (x, y) => z => x + y + z;
+      }
+   }
+}

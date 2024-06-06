@@ -5,13 +5,13 @@ namespace AdventOfCode._2023
 {
     public class Day01
     {
-        private static Regex Digit = new("[0-9]");
-        private static Regex FirstNumeral = new("(\\d|one|two|three|four|five|six|seven|eight|nine)");
-        private static Regex LastNumeral = new("(\\d|one|two|three|four|five|six|seven|eight|nine)", RegexOptions.RightToLeft);
+        private static Regex _digit = new("[0-9]");
+        private static Regex _firstNumeral = new("(\\d|one|two|three|four|five|six|seven|eight|nine)");
+        private static Regex _lastNumeral = new("(\\d|one|two|three|four|five|six|seven|eight|nine)", RegexOptions.RightToLeft);
 
 
         private static int CalibrationValue(string input) =>
-            Digit.Matches(input)
+            _digit.Matches(input)
                 .Map(x => (
                     First: int.Parse(x.First().ToString()) * 10,
                     Last: int.Parse(x.Last().ToString())
@@ -34,8 +34,8 @@ namespace AdventOfCode._2023
 
         private static int CalibrationValue2(string input)
         {
-            var first = FirstNumeral.Match(input);
-            var last = LastNumeral.Match(input);
+            var first = _firstNumeral.Match(input);
+            var last = _lastNumeral.Match(input);
 
             var firstDigit = int.Parse(WordOrDigitToInt(first.Value));
             var lastDigit = int.Parse(WordOrDigitToInt(last.Value));

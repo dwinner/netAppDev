@@ -11,7 +11,7 @@ namespace AdventOfCode._2023
 
 public class Day08
     {
-        private const string _testInputOne = @"RL
+        private const string TestInputOne = @"RL
 
 AAA = (BBB, CCC)
 BBB = (DDD, EEE)
@@ -21,13 +21,13 @@ EEE = (EEE, EEE)
 GGG = (GGG, GGG)
 ZZZ = (ZZZ, ZZZ)";
 
-        private const string _testInputTwo = @"LLR
+        private const string TestInputTwo = @"LLR
 
 AAA = (BBB, BBB)
 BBB = (AAA, ZZZ)
 ZZZ = (ZZZ, ZZZ)";
 
-        private const string _testInputThree = @"LR
+        private const string TestInputThree = @"LR
 
 11A = (11B, XXX)
 11B = (XXX, 11Z)
@@ -67,7 +67,7 @@ XXX = (XXX, XXX)";
         [Fact]
         public void Day08_Test01()
         {
-            var nodes = ParseNotes(_testInputOne);
+            var nodes = ParseNotes(TestInputOne);
             nodes.Should().BeEquivalentTo(new[]
             {
                 new Node
@@ -118,7 +118,7 @@ XXX = (XXX, XXX)";
         [Fact]
         public void Day08_Test02()
         {
-            var iterator = _testInputOne
+            var iterator = TestInputOne
                 .Map(ParseInstructions)
                 .Take(10)
                 .ToArray();
@@ -128,16 +128,16 @@ XXX = (XXX, XXX)";
         [Fact]
         public void Day08_Test03()
         {
-            var network = ParseNotes(_testInputOne).Map(ToNodeLookup);
+            var network = ParseNotes(TestInputOne).Map(ToNodeLookup);
 
-            var finalIndex = _testInputOne
+            var finalIndex = TestInputOne
                 .Map(ParseInstructions)
                 .Scan("AAA", (currLoc, x) => x switch
                 {
                     'R' => network(currLoc).Right,
                     'L' => network(currLoc).Left
                 })
-                .findIndex(x => x == "ZZZ");
+                .FindIndex(x => x == "ZZZ");
             finalIndex.Should().Be(2);
         }
 
@@ -152,14 +152,14 @@ XXX = (XXX, XXX)";
                     'R' => network(currLoc).Right,
                     'L' => network(currLoc).Left
                 })
-                .findIndex(x => x == endingNode);
+                .FindIndex(x => x == endingNode);
             return finalIndex;
         }
 
         [Fact]
         public void Day08_Test04()
         {
-            var iterator = _testInputTwo
+            var iterator = TestInputTwo
                 .Map(ParseInstructions)
                 .Take(10)
                 .ToArray();
@@ -171,16 +171,16 @@ XXX = (XXX, XXX)";
         [Fact]
         public void Day08_Test05()
         {
-            var network = ParseNotes(_testInputTwo).Map(ToNodeLookup);
+            var network = ParseNotes(TestInputTwo).Map(ToNodeLookup);
 
-            var finalIndex = _testInputTwo
+            var finalIndex = TestInputTwo
                 .Map(ParseInstructions)
                 .Scan("AAA", (currLoc, x) => x switch
                 {
                     'R' => network(currLoc).Right,
                     'L' => network(currLoc).Left
                 })
-                .findIndex(x => x == "ZZZ");
+                .FindIndex(x => x == "ZZZ");
             finalIndex.Should().Be(6);
         }
 
@@ -197,19 +197,19 @@ XXX = (XXX, XXX)";
         [Fact]
         public void Day08_Test06()
         {
-            var network = ParseNotes(_testInputThree).ToArray();
+            var network = ParseNotes(TestInputThree).ToArray();
             var networkLookup = ToNodeLookup(network);
 
             var startingNodes = FindNodes(network, 'A').Select(x => x.Id).ToArray();
             var endingNodes = FindNodes(network, 'Z');
 
-            var finalIndex = _testInputThree
+            var finalIndex = TestInputThree
                 .Map(ParseInstructions)
                 .Scan(startingNodes, (currLoc, x) => currLoc.Select(y => x switch
                 {
                     'L' => networkLookup(y).Left,
                     'R' => networkLookup(y).Right
-                }).ToArray()).findIndex(x => x.All(y => y.EndsWith('Z')));
+                }).ToArray()).FindIndex(x => x.All(y => y.EndsWith('Z')));
 
             finalIndex.Should().Be(6);
         }
@@ -231,7 +231,7 @@ XXX = (XXX, XXX)";
                 {
                     'L' => networkLookup(y).Left,
                     'R' => networkLookup(y).Right
-                }).ToArray()).findIndex(x => x.All(y => y.EndsWith('Z')));
+                }).ToArray()).FindIndex(x => x.All(y => y.EndsWith('Z')));
 
             finalIndex.Should().Be(6);
         }

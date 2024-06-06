@@ -16,26 +16,26 @@ WriteLine($"Result: {result}");
 
 namespace FpLibrary
 {
-    public static class Extensions
-    {
-        public static Func<int, int, int> Compose(
-            this Func<int, int, int> total,
-            Func<int, int> cube)
-        {
-            return (x, y) => cube(total(x, y));
-        }
-        // Generic Version
-        //public static Func<T,T,T> GenericCompose<T>(
-        //  this Func<T,T,T> total,
-        //  Func<T,T> cube)
-        //{
-        //    return (x, y) => cube(total(x,y));
-        //}
+   public static class Extensions
+   {
+      public static Func<int, int, int> Compose(
+         this Func<int, int, int> total,
+         Func<int, int> cube)
+      {
+         return (x, y) => cube(total(x, y));
+      }
+      // Generic Version
+      //public static Func<T,T,T> GenericCompose<T>(
+      //  this Func<T,T,T> total,
+      //  Func<T,T> cube)
+      //{
+      //    return (x, y) => cube(total(x,y));
+      //}
 
-        // OR
+      // OR
 
-        public static Func<T, T, T> GenericCompose<T>(
-          this Func<T, T, T> total,Func<T, T> cube) =>
-            (x, y) => cube(total(x, y));       
-    }
+      public static Func<T, T, T> GenericCompose<T>(
+         this Func<T, T, T> total, Func<T, T> cube) =>
+         (x, y) => cube(total(x, y));
+   }
 }

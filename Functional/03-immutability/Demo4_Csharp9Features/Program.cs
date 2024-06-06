@@ -1,4 +1,5 @@
 ﻿using static System.Console;
+
 WriteLine("Use of record type, init accessor, and with expression.");
 
 // Original instance
@@ -16,22 +17,8 @@ WriteLine($"Emp2: {emp2}");
 //WriteLine($"The emp1's hashcode:{emp1.GetHashCode()}");
 //WriteLine($"The emp2's hashcode:{emp2.GetHashCode()}");
 
-record class Employee
-//class Employee
+internal record Employee(string Name, int Id)
 {
-    public string Name { get; init; }
-    public int Id { get; init; }
-
-    public Employee(string name, int id)
-    {
-        Name = name;
-        Id = id;
-    }
-    //public void SetNewId(int id)
-    //{
-    //    Id = id;// Error CS8852 now
-    //}
-  
-    public override string ToString() =>
+   public override string ToString() =>
       $"Name: {Name}, ID: {Id}";
 }

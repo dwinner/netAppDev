@@ -1,4 +1,5 @@
 ﻿using static System.Console;
+
 Employee emp = new("Kevin", "Smith");
 //WriteLine($"Employee name: {emp.FullName()}");
 WriteLine($"Employee name: {emp.FullName}");
@@ -74,24 +75,23 @@ WriteLine($"Employee name: {emp.FullName}");
 
 //}
 
-class Employee
+internal class Employee
 {
-    public string FirstName { get; set; }
-    public string LastName { get; set; }
+   //// Not a recommended approach
+   //public Employee(string firstName, string lastname) =>
+   //    SetName(firstName, lastname);
 
-    //// Not a recommended approach
-    //public Employee(string firstName, string lastname) =>
-    //    SetName(firstName, lastname);
+   //void SetName(string firstName, string lastName)
+   //{
+   //    FirstName = firstName;
+   //    LastName = lastName;
+   //}
 
-    //void SetName(string firstName, string lastName)
-    //{
-    //    FirstName = firstName;
-    //    LastName = lastName;
-    //}
+   // Better approach
+   public Employee(string firstName, string lastname) =>
+      (FirstName, LastName) = (firstName, lastname);
 
-    // Better approach
-    public Employee(string firstName, string lastname) =>
-     (FirstName, LastName) = (firstName, lastname);
-    public string FullName => $"{FirstName} {LastName}";
-
+   public string FirstName { get; set; }
+   public string LastName { get; set; }
+   public string FullName => $"{FirstName} {LastName}";
 }

@@ -1,5 +1,4 @@
 ﻿using LanguageExt;
-using System;
 using static System.Console;
 
 Func<int, Option<int>> f = x => x * 2;
@@ -10,9 +9,9 @@ var option = Option<int>.Some(15);
 //  Testing Left Identity:  Return(x).Bind(f) == f(x)  
 
 var result1 = option.Bind(f);
-WriteLine(result1);  // Some(30)
+WriteLine(result1); // Some(30)
 var result2 = f(15);
-WriteLine(result2);// Some(30)
+WriteLine(result2); // Some(30)
 
 //  Testing Right Identity:  m.Bind(Return)= m 
 var result3 = option.Bind(Option<int>.Some);
@@ -25,16 +24,3 @@ var result5 = option.Bind(f).Bind(g);
 WriteLine(result5);
 var result6 = option.Bind(x => f(x).Bind(g));
 WriteLine(result6);
-
-
-
-
-
-
-
-
-
-
-
-
-

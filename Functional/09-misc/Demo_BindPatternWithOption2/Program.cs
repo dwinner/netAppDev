@@ -16,98 +16,95 @@ Validate(input);
 
 namespace FunctionalCsharp
 {
-    public class NonNegativeInteger
-    {
-        public int Number { get; }
-        public NonNegativeInteger(int number)
-        {
-            // We do not allow any negative number
-            Number = number >= 0 ? number : 0;
-        }
-        public override string ToString()
-        {
-            return Number.ToString();
-        }
-    }
-    public static class Calculator
-    {
-        /// <summary>
-        /// It validates the user's input
-        /// </summary>
-        public static Option<int> ParseInput(string input)
-        {
-            bool flag = int.TryParse(input, out int initialNumber);
-            return !flag
-                 ? Option<int>.None
-                 : initialNumber;
-        }
+   public class NonNegativeInteger
+   {
+      public NonNegativeInteger(int number) =>
+         // We do not allow any negative number
+         Number = number >= 0 ? number : 0;
 
-        /// <summary>
-        /// It checks whether the integer is positive
-        /// </summary>
-        public static Option<NonNegativeInteger> CheckNonNegativity(int input)
-        {
-            return input < 0
-                 ? Option<NonNegativeInteger>.None
-                 : new NonNegativeInteger(input);
-        }
+      public int Number { get; }
 
-        //Bind:(C<T>,T->C<R>)->C<R>
-        public static Option<NonNegativeInteger> BindWith(this Option<int> container,
-            Func<int, Option<NonNegativeInteger>> f)
-        {
-            return container.Match
-             (
-                Some: x => f(x),
-                None: () => Option<NonNegativeInteger>.None
-             );
-        }
+      public override string ToString() => Number.ToString();
+   }
 
-        // Generic Version
-        public static Option<R> GenericBindWith<T, R>(this Option<T> container,
-           Func<T, Option<R>> f)
-        {
-            return container.Match
-             (
-                Some: x => f(x),
-                None: () => Option<R>.None
-             );
-        }
+   public static class Calculator
+   {
+      /// <summary>
+      ///    It validates the user's input
+      /// </summary>
+      public static Option<int> ParseInput(string input)
+      {
+         var flag = int.TryParse(input, out var initialNumber);
+         return !flag
+            ? Option<int>.None
+            : initialNumber;
+      }
 
-    }
-    public static class IO
-    {
-        public static string? GetUserInput()
-        {
-            WriteLine("Enter an integer:");
-            string? input = ReadLine();
-            return input;
-        }
-        public static void Validate(string input)
-        {
-            // Using custom bind function: BindWith
-            ParseInput(input)
-             .BindWith(CheckNonNegativity)
-             .Match(
-              Some: x => WriteLine($"Great.Entered a valid number: {x.Number}"),
-              None: () => WriteLine($"You did not enter a positive (or, valid) number.")
-             );
+      /// <summary>
+      ///    It checks whether the integer is positive
+      /// </summary>
+      public static Option<NonNegativeInteger> CheckNonNegativity(int input) =>
+         input < 0
+            ? Option<NonNegativeInteger>.None
+            : new NonNegativeInteger(input);
 
-            // Using custom bind function(generic version): GenericBindWith
-            ParseInput(input)
-             .GenericBindWith(CheckNonNegativity)
-             .Match(
-              Some: x => WriteLine($"Great.Entered a valid number: {x}"),
-              None: () => WriteLine($"You did not enter a positive (or, valid) number.")
-             );
+      //Bind:(C<T>,T->C<R>)->C<R>
+      public static Option<NonNegativeInteger> BindWith(this Option<int> container,
+         Func<int, Option<NonNegativeInteger>> f)
+      {
+         return container.Match
+         (
+            x => f(x),
+            () => Option<NonNegativeInteger>.None
+         );
+      }
 
-            // Using inbuilt Bind from LanguageExt
-            ParseInput(input)
-             .Bind(CheckNonNegativity)
-             .Match(
-              Some: x => WriteLine($"Great.Entered a valid number: {x}"),
-              None: () => WriteLine($"You did not enter a positive (or, valid) number.")
+      // Generic Version
+      public static Option<R> GenericBindWith<T, R>(this Option<T> container,
+         Func<T, Option<R>> f)
+      {
+         return container.Match
+         (
+            x => f(x),
+            () => Option<R>.None
+         );
+      }
+   }
+
+   public static class IO
+   {
+      public static string? GetUserInput()
+      {
+         WriteLine("Enter an integer:");
+         var input = ReadLine();
+         return input;
+      }
+
+      public static void Validate(string input)
+      {
+         // Using custom bind function: BindWith
+         ParseInput(input)
+            .BindWith(CheckNonNegativity)
+            .Match(
+               x => WriteLine($"Great.Entered a valid number: {x.Number}"),
+               () => WriteLine("You did not enter a positive (or, valid) number.")
             );
-        }        
-    }
+
+         // Using custom bind function(generic version): GenericBindWith
+         ParseInput(input)
+            .GenericBindWith(CheckNonNegativity)
+            .Match(
+               x => WriteLine($"Great.Entered a valid number: {x}"),
+               () => WriteLine("You did not enter a positive (or, valid) number.")
+            );
+
+         // Using inbuilt Bind from LanguageExt
+         ParseInput(input)
+            .Bind(CheckNonNegativity)
+            .Match(
+               x => WriteLine($"Great.Entered a valid number: {x}"),
+               () => WriteLine("You did not enter a positive (or, valid) number.")
+            );
+      }
+   }
 }

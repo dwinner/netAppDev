@@ -11,10 +11,10 @@ namespace AdventOfCode._2023
 
     public class Day06
     {
-        private readonly string testInput = @"Time:      7  15   30
+        private readonly string _testInput = @"Time:      7  15   30
 Distance:  9  40  200";
 
-        private readonly string realInput = @"Time:        55     99     97     93
+        private readonly string _realInput = @"Time:        55     99     97     93
 Distance:   401   1485   2274   1405";
 
         public IEnumerable<Race> ParseRaces(string input)
@@ -71,7 +71,7 @@ Distance:   401   1485   2274   1405";
         [Fact]
         public void Day06_Test01()
         {
-            var races = ParseRaces(testInput);
+            var races = ParseRaces(_testInput);
             races.Should().BeEquivalentTo(new[]
             {
                 new Race
@@ -94,14 +94,14 @@ Distance:   401   1485   2274   1405";
 
         public long CalculatePartOneAnswer(string input) =>
             ParseRaces(input)
-                .Select(numberOfWaysToWinV2)
+                .Select(NumberOfWaysToWinV2)
                 .Product();
 
         public long CalculatePartTwoAnswer(string input) =>
             ParseRace(input)
-                .Map(numberOfWaysToWinV2);
+                .Map(NumberOfWaysToWinV2);
 
-        public long numberOfWaysToWinV2(Race race)
+        public long NumberOfWaysToWinV2(Race race)
         {
             var firstWin = FindFirstWin(race);
             var apex = FindApexDistance(race);
@@ -132,23 +132,23 @@ Distance:   401   1485   2274   1405";
         [Fact]
         public void Day07_Test03()
         {
-            var races = ParseRaces(testInput);
-            var results = races.Select(numberOfWaysToWinV2);
+            var races = ParseRaces(_testInput);
+            var results = races.Select(NumberOfWaysToWinV2);
             results.Should().BeEquivalentTo(new[] { 4, 8, 9 });
         }
 
 
         [Fact]
         public void Day07_Test04() =>
-            CalculatePartOneAnswer(testInput).Should().Be(288);
+            CalculatePartOneAnswer(_testInput).Should().Be(288);
 
         [Fact]
         public void Day07_Part01() =>
-            CalculatePartOneAnswer(realInput).Should().Be(2374848);
+            CalculatePartOneAnswer(_realInput).Should().Be(2374848);
 
         [Fact]
         public void Day07_Test05() =>
-            ParseRace(testInput).Should().BeEquivalentTo(new Race
+            ParseRace(_testInput).Should().BeEquivalentTo(new Race
             {
                 Time = 71530,
                 Distance = 940200
@@ -156,26 +156,26 @@ Distance:   401   1485   2274   1405";
 
         [Fact]
         public void Day07_Test06() =>
-            ParseRaces(testInput).Select(FindApexDistance)
+            ParseRaces(_testInput).Select(FindApexDistance)
                 .Should().BeEquivalentTo(new[] { 3.5,7.5, 15 });
 
         [Fact]
         public void Day07_Test07() =>
-            ParseRaces(testInput).Select(FindFirstWin)
+            ParseRaces(_testInput).Select(FindFirstWin)
                 .Should().BeEquivalentTo(new[] {2, 4, 10 });
 
         [Fact]
         public void Day07_Test08()
         {
-            var races = ParseRaces(testInput);
-            var results = races.Select(numberOfWaysToWinV2);
+            var races = ParseRaces(_testInput);
+            var results = races.Select(NumberOfWaysToWinV2);
             results.Should().BeEquivalentTo(new[] { 4, 8, 9 });
         }
 
 
         [Fact]
         public void Day07_Part02() =>
-            CalculatePartTwoAnswer(realInput).Should().Be(39132886);
+            CalculatePartTwoAnswer(_realInput).Should().Be(39132886);
 
 
     }

@@ -6,23 +6,17 @@ using static System.Console;
 
 
 Welcome("Kate").Match(
-    Some: WriteLine,
-    None: () => WriteLine($"Hi Guest! Who are you?")
-    );
+   WriteLine,
+   () => WriteLine("Hi Guest! Who are you?")
+);
 
 Welcome(null).Match(
-    Some: WriteLine,
-    None: () => WriteLine($"Hi Guest! Who are you?")
-    );
+   WriteLine,
+   () => WriteLine("Hi Guest! Who are you?")
+);
 
 
-static Option<string> Welcome(string? input)
-{
-    return input == null
-        ? Option<string>.None
-        : $"Hello, {input}! How are you?";
-}
-
-
-
-
+static Option<string> Welcome(string? input) =>
+   input == null
+      ? Option<string>.None
+      : $"Hello, {input}! How are you?";

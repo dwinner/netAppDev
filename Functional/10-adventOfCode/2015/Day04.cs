@@ -16,7 +16,7 @@ namespace AdventOfCode._2015
                     .Map(x => md5.ComputeHash(x))
                     .Map(x => BitConverter.ToString(x))
                     .Map(x => x.Replace("-", string.Empty)));
-            var result = iter.findIndex(x => x.StartsWith("00000"));
+            var result = iter.FindIndex(x => x.StartsWith("00000"));
             result.Should().Be(609043);
 
         }
@@ -32,7 +32,7 @@ namespace AdventOfCode._2015
                 .Map(x => md5.ComputeHash(x))
                 .Map(x => BitConverter.ToString(x))
                 .Map(x => x.Replace("-", string.Empty)));
-            var result = iter.findIndex(x => x.StartsWith("00000"));
+            var result = iter.FindIndex(x => x.StartsWith("00000"));
             result.Should().Be(1048970);
 
         }
@@ -48,7 +48,7 @@ namespace AdventOfCode._2015
                 .Map(x => md5.ComputeHash(x))
                 .Map(x => BitConverter.ToString(x))
                 .Map(x => x.Replace("-", string.Empty)));
-            var result = iter.findIndex(x => x.StartsWith("00000"));
+            var result = iter.FindIndex(x => x.StartsWith("00000"));
             result.Should().Be(117946);
 
         }
@@ -64,7 +64,7 @@ namespace AdventOfCode._2015
                 .Map(x => md5.ComputeHash(x))
                 .Map(x => BitConverter.ToString(x))
                 .Map(x => x.Replace("-", string.Empty)));
-            var result = iter.findIndex(x => x.StartsWith("000000"));
+            var result = iter.FindIndex(x => x.StartsWith("000000"));
             result.Should().Be(3938038);
 
         }
