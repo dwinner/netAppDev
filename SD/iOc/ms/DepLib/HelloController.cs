@@ -1,11 +1,6 @@
-﻿namespace DepLib
+﻿namespace DepLib;
+
+public class HelloController(IGreetingService greetingService)
 {
-   public class HelloController
-   {
-      private readonly IGreetingService _greetingService;
-
-      public HelloController(IGreetingService greetingService) => _greetingService = greetingService;
-
-      public string Action(string name) => _greetingService.Greeting(name);
-   }
+   public string Action(string name) => greetingService.Greeting(name);
 }
