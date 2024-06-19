@@ -2,7 +2,7 @@
 {
    public static class CustomCollectionExtensions
    {
-      public static void Add(this CustomCollection @this,
-         int value) => @this.Insert(value);
+      public static void Add(this CustomCollection self,
+         int value) => self.Insert(value);
    }
 }

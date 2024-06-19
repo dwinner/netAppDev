@@ -1,10 +1,10 @@
-﻿using Composite.IO;
-using static System.Console;
-using static Composite.IO.DataCreator;
-
-/**
+﻿/*
  * Компоновщик объектов
  */
+
+using Composite.IO;
+using static System.Console;
+using static Composite.IO.DataCreator;
 
 namespace Composite
 {

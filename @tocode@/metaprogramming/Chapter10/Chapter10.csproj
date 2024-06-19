@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Humanizer" Version="2.14.1" />
+    <PackageReference Include="mongodb.driver" Version="2.18.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../Fundamentals/Fundamentals.csproj" />
+  </ItemGroup>
+
+</Project>

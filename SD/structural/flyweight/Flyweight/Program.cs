@@ -1,5 +1,5 @@
-﻿/**
- * Облегченные опосредованные объекты
+﻿/*
+ * "Облегченные" объекты
  */
 
 using System.Collections.Generic;
@@ -27,12 +27,13 @@ namespace Flyweight
          WriteLine();
 
          WriteLine("Album order:");
-         audioEntities.Sort(AudioComparerFlyweight.Instance[AudioComparisonType.Album]);
+         var flyweight = AudioComparerFlyweight.Instance;
+         audioEntities.Sort(flyweight[AudioComparisonType.Album]);
          audioEntities.ForEach(WriteLine);
          WriteLine();
 
          WriteLine("Track Order:");
-         audioEntities.Sort(AudioComparerFlyweight.Instance[AudioComparisonType.TrackName]);
+         audioEntities.Sort(flyweight[AudioComparisonType.TrackName]);
          audioEntities.ForEach(WriteLine);
       }
    }

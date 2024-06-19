@@ -32,12 +32,12 @@ let chess () =
       turn <- turn + 1
       state.WinningPlayer <- state.CurrentPlayer
 
-   let haveWinner state = turn = maxTurns
+   let haveWinner _ = turn = maxTurns
 
    runGame state start takeTurn haveWinner
 
 [<EntryPoint>]
-let main argv =
+let main _ =
 
    chess ()
 
