@@ -16,6 +16,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain", "src\BusinessApp\D
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Main", "src\BusinessApp\Main\Main.csproj", "{5A64E667-1C28-4FCD-860D-E4E21C06F127}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AttributeBasedMp", "src\AttributeBasedMp\AttributeBasedMp.csproj", "{CA1DAA04-01AE-4052-BC5B-9CDE73EA09AA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamicAssemblyMp", "src\DynamicAssemblyMp\DynamicAssemblyMp.csproj", "{3EF1E922-E89A-4DBB-87EB-3AB8853F095A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -50,6 +54,14 @@ Global
 		{5A64E667-1C28-4FCD-860D-E4E21C06F127}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5A64E667-1C28-4FCD-860D-E4E21C06F127}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5A64E667-1C28-4FCD-860D-E4E21C06F127}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CA1DAA04-01AE-4052-BC5B-9CDE73EA09AA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CA1DAA04-01AE-4052-BC5B-9CDE73EA09AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CA1DAA04-01AE-4052-BC5B-9CDE73EA09AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CA1DAA04-01AE-4052-BC5B-9CDE73EA09AA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3EF1E922-E89A-4DBB-87EB-3AB8853F095A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3EF1E922-E89A-4DBB-87EB-3AB8853F095A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3EF1E922-E89A-4DBB-87EB-3AB8853F095A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3EF1E922-E89A-4DBB-87EB-3AB8853F095A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{E3FEC52F-CA41-4982-A7C0-28BC8FAB74D2} = {68553C66-7D3E-4044-B0EF-181B799AA363}

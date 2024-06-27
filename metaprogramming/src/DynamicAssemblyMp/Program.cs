@@ -1,10 +1,10 @@
 ﻿using System.ComponentModel;
-using Chapter6;
+using DynamicAssemblyMp;
 
 var myType = MyTypeGenerator.Generate();
 var method = myType.GetMethod("SaySomething")!;
 var myTypeInstance = Activator.CreateInstance(myType);
-method.Invoke(myTypeInstance, new[] { "Hello world" });
+method.Invoke(myTypeInstance, ["Hello world"]);
 
 Console.WriteLine(myTypeInstance);
 
