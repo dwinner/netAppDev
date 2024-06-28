@@ -2,7 +2,7 @@
 using System.Linq.Expressions;
 using System.Runtime.CompilerServices;
 using System.Text.Json;
-using Chapter9;
+using DLRApplied;
 using Microsoft.CSharp.RuntimeBinder;
 using NJsonSchema;
 
@@ -12,34 +12,35 @@ person.LastName = "Doe";
 Console.WriteLine($"{person.FirstName} {person.LastName}");
 
 var provider = (person as IDynamicMetaObjectProvider)!;
-var meta = provider.GetMetaObject(Expression.Constant(person));
-var members = string.Join(',', meta.GetDynamicMemberNames());
+var metaObject = provider.GetMetaObject(Expression.Constant(person));
+var members = string.Join(',', metaObject.GetDynamicMemberNames());
 Console.WriteLine(members);
 
-foreach (var member in meta.GetDynamicMemberNames())
+foreach (var member in metaObject.GetDynamicMemberNames())
 {
-    var binder = Binder.GetMember(
-        CSharpBinderFlags.None,
-        member,
-        person.GetType(),
-        new[] { CSharpArgumentInfo.Create(CSharpArgumentInfoFlags.None, null) });
+   var binder = Binder.GetMember(
+      CSharpBinderFlags.None,
+      member,
+      person.GetType(),
+      new[] { CSharpArgumentInfo.Create(CSharpArgumentInfoFlags.None, null) });
 
-    var site = CallSite<Func<CallSite, object, object>>.Create(binder);
-    var propertyValue = site.Target(site, person);
-    Console.WriteLine($"{member} = {propertyValue}");
+   var site = CallSite<Func<CallSite, object, object>>.Create(binder);
+   var propertyValue = site.Target(site, person);
+   Console.WriteLine($"{member} = {propertyValue}");
 }
 
 Func<object, object> BuildDynamicGetter(Type type, string propertyName)
 {
-    var binder = Binder.GetMember(
-        CSharpBinderFlags.None,
-        propertyName,
-        type,
-        new[] { CSharpArgumentInfo.Create(CSharpArgumentInfoFlags.None, null) });
-    var rootParameter = Expression.Parameter(typeof(object));
-    var binderExpression = Expression.Dynamic(binder, typeof(object), Expression.Convert(rootParameter, type));
-    var getterExpression = Expression.Lambda<Func<object, object>>(binderExpression, rootParameter);
-    return getterExpression.Compile();
+   var binder = Binder.GetMember(
+      CSharpBinderFlags.None,
+      propertyName,
+      type,
+      new[] { CSharpArgumentInfo.Create(CSharpArgumentInfoFlags.None, null) });
+   var rootParameter = Expression.Parameter(typeof(object));
+   var binderExpression = Expression.Dynamic(binder, typeof(object), Expression.Convert(rootParameter, type));
+   var getterExpr = Expression.Lambda<Func<object, object>>(binderExpression, rootParameter);
+
+   return getterExpr.Compile();
 }
 
 var firstNameExpression = BuildDynamicGetter(person.GetType(), "FirstName");

@@ -1,14 +1,14 @@
 ﻿using System.Linq.Expressions;
 using System.Text.Json;
-using Chapter8;
+using JsonQueryParser;
 
 // Simple 
 var parameter = Expression.Parameter(typeof(MyType));
 var property = typeof(MyType).GetProperty(nameof(MyType.StringProperty))!;
-var propertyExpression = Expression.Property(parameter,property);
+var propertyExpression = Expression.Property(parameter, property);
 var assignExpression = Expression.Assign(
-    propertyExpression,
-    Expression.Constant("Hello world"));
+   propertyExpression,
+   Expression.Constant("Hello world"));
 
 var lambdaExpression = Expression.Lambda<Action<MyType>>(assignExpression, parameter);
 var expressionAction = lambdaExpression.Compile();
@@ -29,5 +29,5 @@ var documents = JsonSerializer.Deserialize<IEnumerable<Dictionary<string, object
 var filtered = documents.AsQueryable().Where(expression);
 foreach (var document in filtered)
 {
-    Console.WriteLine(JsonSerializer.Serialize(document));
+   Console.WriteLine(JsonSerializer.Serialize(document));
 }
