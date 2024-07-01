@@ -8,5 +8,6 @@ builder.Services.AddBindingsByConvention(types);
 
 var app = builder.Build();
 app.UseRouting();
-app.UseEndpoints(_ => _.MapControllers());
+app.MapControllers();
+//app.UseEndpoints(routeBuilder => routeBuilder.MapControllers());
 app.Run();

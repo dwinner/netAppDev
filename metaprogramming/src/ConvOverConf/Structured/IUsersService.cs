@@ -1,4 +1,4 @@
-namespace Chapter10.Structured;
+namespace ConvOverConf.Structured;
 
 public interface IUsersService
 {

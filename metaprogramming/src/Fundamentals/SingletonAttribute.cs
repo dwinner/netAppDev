@@ -1,6 +1,4 @@
 namespace Fundamentals;
 
 [AttributeUsage(AttributeTargets.Class)]
-public sealed class SingletonAttribute : Attribute
-{
-}
+public sealed class SingletonAttribute : Attribute;
