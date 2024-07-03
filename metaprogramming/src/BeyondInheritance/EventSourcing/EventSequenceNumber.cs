@@ -1,6 +1,6 @@
 using Fundamentals;
 
-namespace EventSourcing;
+namespace BeyondInheritance.EventSourcing;
 
 public record EventSequenceNumber(ulong Value) : ConceptAs<ulong>(Value)
 {

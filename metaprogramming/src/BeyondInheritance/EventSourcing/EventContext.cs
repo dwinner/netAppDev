@@ -1,4 +1,4 @@
-namespace EventSourcing;
+namespace BeyondInheritance.EventSourcing;
 
 public record EventContext(
     EventSourceId EventSourceId,

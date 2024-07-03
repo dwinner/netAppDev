@@ -1,4 +1,4 @@
-namespace EventSourcing;
+namespace BeyondInheritance.EventSourcing;
 
 public class EventLog : IEventLog
 {

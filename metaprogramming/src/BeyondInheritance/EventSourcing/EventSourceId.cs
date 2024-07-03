@@ -1,6 +1,6 @@
 using Fundamentals;
 
-namespace EventSourcing;
+namespace BeyondInheritance.EventSourcing;
 
 public record EventSourceId(string Value) : ConceptAs<string>(Value)
 {
