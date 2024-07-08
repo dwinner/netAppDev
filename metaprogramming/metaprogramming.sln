@@ -32,6 +32,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenClosedApplied", "src\Op
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeyondInteritance", "src\BeyondInheritance\BeyondInteritance.csproj", "{5DB20035-6FE1-48B1-B215-4FC13E1E7C21}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CrossCutting", "src\CrossCutting\CrossCutting.csproj", "{D88F7E0C-172B-4D39-9ECC-F77C220717AB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AOP", "src\AOP\AOP.csproj", "{1759D3BD-6C6D-499C-99AA-B040A9DA7024}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -98,6 +102,14 @@ Global
 		{5DB20035-6FE1-48B1-B215-4FC13E1E7C21}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5DB20035-6FE1-48B1-B215-4FC13E1E7C21}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5DB20035-6FE1-48B1-B215-4FC13E1E7C21}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D88F7E0C-172B-4D39-9ECC-F77C220717AB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D88F7E0C-172B-4D39-9ECC-F77C220717AB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D88F7E0C-172B-4D39-9ECC-F77C220717AB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D88F7E0C-172B-4D39-9ECC-F77C220717AB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1759D3BD-6C6D-499C-99AA-B040A9DA7024}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1759D3BD-6C6D-499C-99AA-B040A9DA7024}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1759D3BD-6C6D-499C-99AA-B040A9DA7024}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1759D3BD-6C6D-499C-99AA-B040A9DA7024}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{E3FEC52F-CA41-4982-A7C0-28BC8FAB74D2} = {68553C66-7D3E-4044-B0EF-181B799AA363}
