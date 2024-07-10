@@ -1,6 +1,6 @@
 using Fundamentals.Compliance.GDPR;
 
-namespace Chapter16;
+namespace MetricsSample;
 
 public record Employee(
     [PersonalIdentifiableInformation("Needed for registration")]

@@ -14,7 +14,8 @@
 
     <LangVersion>11.0</LangVersion>
 
-    <NoWarn>$(NoWarn);NU5105;NU5118;CS0012</NoWarn> <!-- CS0012 - ConfigureAwait: https://devblogs.microsoft.com/dotnet/configureawait-faq/#when-should-i-use-configureawaitfalse -->
+    <NoWarn>$(NoWarn);NU5105;NU5118;CS0012</NoWarn> 
+    <!-- CS0012 - ConfigureAwait: https://devblogs.microsoft.com/dotnet/configureawait-faq/#when-should-i-use-configureawaitfalse -->
     <Nullable>enable</Nullable>
     <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
     <MSBuildTreatWarningsAsErrors>true</MSBuildTreatWarningsAsErrors>
@@ -42,7 +43,9 @@
 
   <ItemGroup>
     <GlobalAnalyzerConfigFiles Include="$(MSBuildThisFileDirectory).globalconfig"/>
+    <!--
     <AdditionalFiles Include="$(MSBuildThisFileDirectory)stylecop.json" Link="stylecop.json" />
+    -->
   </ItemGroup>
 
   <ItemGroup>
