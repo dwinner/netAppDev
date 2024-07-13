@@ -125,7 +125,7 @@ public static class ExpandoObjectExtensions
     /// <param name="property"><see cref="PropertyPath"/> to get or create for.</param>
     /// <param name="arrayIndexers">All <see cref="ArrayIndexer">array indexers</see>.</param>
     /// <returns><see cref="ExpandoObject"/> at property.</returns>
-    /// <exception cref="SegmentValueIsNotCollection">Thrown if a segment value should be expando object.</exception>
+    /// <exception cref="SegmentValueIsNotCollectionException">Thrown if a segment value should be expando object.</exception>
     public static ExpandoObject EnsurePath(this ExpandoObject target, PropertyPath property, IArrayIndexers arrayIndexers)
     {
         var currentTarget = target as IDictionary<string, object>;
@@ -166,7 +166,7 @@ public static class ExpandoObjectExtensions
                         {
                             if (currentTarget[segment.Value] is not IEnumerable enumerable)
                             {
-                                throw new SegmentValueIsNotCollection(property, segment);
+                                throw new SegmentValueIsNotCollectionException(property, segment);
                             }
                             collection = ((IEnumerable)currentTarget[segment.Value]).OfType<ExpandoObject>().ToList();
                         }
@@ -198,7 +198,7 @@ public static class ExpandoObjectExtensions
     /// <param name="childrenProperty"><see cref="PropertyPath"/> to ensure collection for.</param>
     /// <param name="arrayIndexers">Any <see cref="ArrayIndexer">array indexers</see>.</param>
     /// <returns>The ensured <see cref="ICollection{ExpandoObject}"/>.</returns>
-    /// <exception cref="ChildrenPropertyIsNotEnumerable">Thrown if there is an existing property and it is not enumerable.</exception>
+    /// <exception cref="ChildrenPropertyIsNotEnumerableException">Thrown if there is an existing property and it is not enumerable.</exception>
     public static ICollection<TChild> EnsureCollection<TChild>(this ExpandoObject target, PropertyPath childrenProperty, IArrayIndexers arrayIndexers)
     {
         var inner = target.EnsurePath(childrenProperty, arrayIndexers) as IDictionary<string, object>;
@@ -209,7 +209,7 @@ public static class ExpandoObjectExtensions
 
         if (!(inner[childrenProperty.LastSegment.Value] is IEnumerable))
         {
-            throw new ChildrenPropertyIsNotEnumerable(childrenProperty);
+            throw new ChildrenPropertyIsNotEnumerableException(childrenProperty);
         }
 
         var items = (inner[childrenProperty.LastSegment.Value] as IEnumerable)!.Cast<TChild>();

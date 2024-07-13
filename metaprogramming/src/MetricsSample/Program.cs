@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics.Metrics;
 using Fundamentals.Metrics;
 
-GlobalMetrics.Meter = new Meter("Chapter16");
+GlobalMetrics._meter = new Meter("Chapter16");
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();

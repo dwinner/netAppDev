@@ -246,7 +246,7 @@ public class PropertyPath
     /// </summary>
     /// <typeparam name="TRoot">Type of root.</typeparam>
     /// <returns>The <see cref="PropertyInfo"/>.</returns>
-    /// <exception cref="UnableToResolvePropertyPathOnType">Thrown if not able to resolve the property path on the type.</exception>
+    /// <exception cref="UnableToResolvePropertyPathOnTypeException">Thrown if not able to resolve the property path on the type.</exception>
     public PropertyInfo GetPropertyInfoFor<TRoot>() => GetPropertyInfoFor(typeof(TRoot));
 
     /// <summary>
@@ -254,7 +254,7 @@ public class PropertyPath
     /// </summary>
     /// <param name="rootType">Type of root.</param>
     /// <returns>The <see cref="PropertyInfo"/>.</returns>
-    /// <exception cref="UnableToResolvePropertyPathOnType">Thrown if not able to resolve the property path on the type.</exception>
+    /// <exception cref="UnableToResolvePropertyPathOnTypeException">Thrown if not able to resolve the property path on the type.</exception>
     public PropertyInfo GetPropertyInfoFor(Type rootType)
     {
         var currentType = rootType;
@@ -273,7 +273,7 @@ public class PropertyPath
 
         if (currentPropertyInfo is null)
         {
-            throw new UnableToResolvePropertyPathOnType(rootType, this);
+            throw new UnableToResolvePropertyPathOnTypeException(rootType, this);
         }
 
         return currentPropertyInfo;

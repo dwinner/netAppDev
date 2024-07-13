@@ -2,13 +2,14 @@
 
 var types = new Types();
 var commands = types.FindMultiple<ICommand>();
-var typeNames = string.Join("\n", commands.Select(_ => _.Name));
+var typeNames = string.Join("\n", commands.Select(type => type.Name));
 Console.WriteLine(typeNames);
 
 Console.WriteLine("\n\nGDPR Report");
 var typesWithConcepts = types.All
-   .SelectMany(type => type.GetProperties()
-      .Where(propertyInfo => propertyInfo.PropertyType.IsPIIConcept()))
+   .SelectMany(
+      type => type.GetProperties().Where(
+         propInf => propInf.PropertyType.IsPiiConcept()))
    .GroupBy(propertyInfo => propertyInfo.DeclaringType);
 
 foreach (var typeWithConcepts in typesWithConcepts)

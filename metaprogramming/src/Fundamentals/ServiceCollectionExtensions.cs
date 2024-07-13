@@ -5,69 +5,75 @@ namespace Fundamentals;
 
 public static class ServiceCollectionExtensions
 {
-    static readonly string[] _namespacesToIgnoreForSelfBinding = new[] { "System", "Microsoft" };
+   private static readonly string[] NamespacesToIgnoreForSelfBinding = ["System", "Microsoft"];
 
-    public static IServiceCollection AddBindingsByConvention(this IServiceCollection services, ITypes types)
-    {
-        Func<Type, Type, bool> convention = (i, t) => i.Namespace == t.Namespace && i.Name == $"I{t.Name}";
-        var conventionBasedTypes = types!.All.Where(_ =>
-        {
-            var interfaces = _.GetInterfaces();
-            if (interfaces.Length > 0)
+   public static IServiceCollection AddBindingsByConvention(this IServiceCollection services, ITypes types)
+   {
+      var conventionBasedTypes = types.All.Where(type =>
+      {
+         var interfaces = type.GetInterfaces();
+         if (interfaces.Length > 0)
+         {
+            var conventionInterface = interfaces.SingleOrDefault(i => GetConvention(i, type));
+            if (conventionInterface != default)
             {
-                var conventionInterface = interfaces.SingleOrDefault(i => convention(i, _));
-                if (conventionInterface != default)
-                {
-                    return types!.All.Count(type => type.HasInterface(conventionInterface)) == 1;
-                }
+               return types.All.Count(lType => lType.HasInterface(conventionInterface)) == 1;
             }
-            return false;
-        });
+         }
 
-        foreach (var conventionBasedType in conventionBasedTypes)
-        {
-            var interfaceToBind = types.All.Single(_ => _.IsInterface && convention(_, conventionBasedType));
-            if (services.Any(_ => _.ServiceType == interfaceToBind))
-            {
-                continue;
-            }
+         return false;
+      });
 
-            _ = conventionBasedType.HasAttribute<SingletonAttribute>() ?
-                services.AddSingleton(interfaceToBind, conventionBasedType) :
-                services.AddTransient(interfaceToBind, conventionBasedType);
-        }
+      foreach (var conventionBasedType in conventionBasedTypes)
+      {
+         var interfaceToBind = types.All.Single(
+            type => type.IsInterface && GetConvention(type, conventionBasedType));
+         if (services.Any(serviceDescriptor => serviceDescriptor.ServiceType == interfaceToBind))
+         {
+            continue;
+         }
 
-        return services;
-    }
+         _ = conventionBasedType.HasAttribute<SingletonAttribute>()
+            ? services.AddSingleton(interfaceToBind, conventionBasedType)
+            : services.AddTransient(interfaceToBind, conventionBasedType);
+      }
 
-    public static IServiceCollection AddSelfBinding(this IServiceCollection services, ITypes types)
-    {
-        const TypeAttributes staticType = TypeAttributes.Abstract | TypeAttributes.Sealed;
+      return services;
 
-        types.All.Where(_ =>
-            (_.Attributes & staticType) != staticType &&
-            !_.IsInterface &&
-            !_.IsAbstract &&
-            !ShouldIgnoreNamespace(_.Namespace ?? string.Empty) &&
-            !HasConstructorWithUnresolvableParameters(_) &&
-            !HasConstructorWithRecordTypes(_) &&
-            !_.IsAssignableTo(typeof(Exception)) &&
-            services.Any(s => s.ServiceType != _)).ToList().ForEach(_ =>
-        {
-            var __ = _.HasAttribute<SingletonAttribute>() ?
-                services.AddSingleton(_, _) :
-                services.AddTransient(_, _);
-        });
+      bool GetConvention(Type iType, Type tType) =>
+         iType.Namespace == tType.Namespace && iType.Name == $"I{tType.Name}";
+   }
 
-        return services;
-    }
+   public static IServiceCollection AddSelfBinding(this IServiceCollection services, ITypes types)
+   {
+      const TypeAttributes staticType = TypeAttributes.Abstract | TypeAttributes.Sealed;
 
-    static bool ShouldIgnoreNamespace(string namespaceToCheck) =>
-        _namespacesToIgnoreForSelfBinding.Any(n => namespaceToCheck.StartsWith(n));
+      types.All.Where(type =>
+         (type.Attributes & staticType) != staticType
+         && type is { IsInterface: false, IsAbstract: false }
+         && !ShouldIgnoreNamespace(type.Namespace ?? string.Empty)
+         && !HasConstructorWithUnresolvableParameters(type)
+         && !HasConstructorWithRecordTypes(type)
+         && !type.IsAssignableTo(typeof(Exception))
+         && services.Any(descriptor => descriptor.ServiceType != type)).ToList().ForEach(serviceType =>
+      {
+         _ = serviceType.HasAttribute<SingletonAttribute>()
+            ? services.AddSingleton(serviceType, serviceType)
+            : services.AddTransient(serviceType, serviceType);
+      });
 
-    static bool HasConstructorWithUnresolvableParameters(Type type) =>
-        type.GetConstructors().Any(_ => _.GetParameters().Any(p => p.ParameterType.IsAPrimitiveType()));
+      return services;
+   }
 
-    static bool HasConstructorWithRecordTypes(Type type) =>
-        type.GetConstructors().Any(_ => _.GetParameters().Any(p => p.ParameterType.IsRecord()));
+   private static bool ShouldIgnoreNamespace(string namespaceToCheck) =>
+      NamespacesToIgnoreForSelfBinding.Any(namespaceToCheck.StartsWith);
+
+   private static bool HasConstructorWithUnresolvableParameters(Type type) =>
+      type.GetConstructors()
+         .Any(constructorInfo => constructorInfo.GetParameters()
+            .Any(parameterInfo => parameterInfo.ParameterType.IsAPrimitiveType()));
+
+   private static bool HasConstructorWithRecordTypes(Type type) =>
+      type.GetConstructors().Any(
+         constructorInfo => constructorInfo.GetParameters().Any(p => p.ParameterType.IsRecord()));
 }

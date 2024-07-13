@@ -4,5 +4,5 @@ namespace Fundamentals.Metrics;
 
 public static class GlobalMetrics
 {
-    public static Meter Meter = new("Global");
+   public static Meter _meter = new("Global");
 }
