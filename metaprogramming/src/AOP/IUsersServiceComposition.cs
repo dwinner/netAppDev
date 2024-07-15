@@ -1,3 +1,6 @@
 namespace AOP;
 
-public interface IUsersServiceComposition : IUsersService, IAuthenticator, IAuthorizer;
+public interface IUsersServiceComposition :
+   IUsersService,
+   IAuthenticator,
+   IAuthorizer;

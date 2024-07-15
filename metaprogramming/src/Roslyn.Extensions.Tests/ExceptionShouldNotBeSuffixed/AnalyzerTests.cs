@@ -1,6 +1,8 @@
-namespace Roslyn.Extensions.CodeAnalysis.ExceptionShouldNotBeSuffixed;
-
+using Roslyn.Extensions.CodeAnalysis.ExceptionShouldNotBeSuffixed;
 using Xunit;
+
+namespace Roslyn.Extensions.Tests.ExceptionShouldNotBeSuffixed;
+
 using Verify = Microsoft.CodeAnalysis.CSharp.Testing.XUnit.AnalyzerVerifier<Analyzer>;
 
 public class AnalyzerTests

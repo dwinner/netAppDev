@@ -1,20 +1,14 @@
 namespace BeyondInheritance.EventSourcing;
 
-public class EventLog : IEventLog
+public class EventLog(IObservers observers) : IEventLog
 {
-    readonly IObservers _observers;
-    EventSequenceNumber _sequenceNumber = 0;
+   private EventSequenceNumber _sequenceNumber = 0;
 
-    public EventLog(IObservers observers)
-    {
-        _observers = observers;
-    }
-
-    public async Task Append(EventSourceId eventSourceId, IEvent @event)
-    {
-        await _observers.OnNext(
-            @event,
-            new EventContext(eventSourceId, _sequenceNumber, DateTimeOffset.UtcNow));
-        _sequenceNumber++;
-    }
+   public async Task Append(EventSourceId eventSourceId, IEvent @event)
+   {
+      await observers.OnNext(
+         @event,
+         new EventContext(eventSourceId, _sequenceNumber, DateTimeOffset.UtcNow));
+      _sequenceNumber++;
+   }
 }

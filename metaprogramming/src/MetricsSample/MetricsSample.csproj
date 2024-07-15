@@ -16,4 +16,9 @@
         <ProjectReference Include="../Fundamentals/Fundamentals.csproj" />
         <ProjectReference Include="..\Roslyn.Extensions\Roslyn.Extensions.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
     </ItemGroup>
+
+    <ItemGroup>
+      <Compile Remove="ProgramMetrics.cs" />
+      <Content Include="ProgramMetrics.cs" />
+    </ItemGroup>
 </Project>

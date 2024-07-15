@@ -1,5 +1,6 @@
 namespace CodeCheckSample2;
 
-public class MyException : Exception
-{
-}
+/// <summary>
+///     MyException
+/// </summary>
+public class MyException : Exception;

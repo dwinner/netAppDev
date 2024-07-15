@@ -1,0 +1,6 @@
+Type: MetricsSample.Employee
+Members:
+  FirstName: Needed for registration
+  LastName: Needed for registration
+  SocialSecurityNumber: Needed for uniquely identifying an employee
+

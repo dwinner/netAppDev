@@ -1,14 +1,16 @@
-namespace Roslyn.Extensions.CodeAnalysis.ExceptionShouldNotBeSuffixed;
-
+using Roslyn.Extensions.CodeAnalysis.ExceptionShouldNotBeSuffixed;
 using Xunit;
+
+namespace Roslyn.Extensions.Tests.ExceptionShouldNotBeSuffixed;
+
 using Verify = Microsoft.CodeAnalysis.CSharp.Testing.XUnit.CodeFixVerifier<Analyzer, CodeFix>;
 
 public class CodeFixTests
 {
-    [Fact]
-    public async Task WithoutSuffix()
-    {
-        const string content = @"
+   [Fact]
+   public async Task WithoutSuffix()
+   {
+      const string content = @"
                 using System;
 
                 namespace MyNamespace;
@@ -17,13 +19,13 @@ public class CodeFixTests
                 }
             ";
 
-        await Verify.VerifyCodeFixAsync(content, content);
-    }
+      await Verify.VerifyCodeFixAsync(content, content);
+   }
 
-    [Fact]
-    public async Task WithSuffix()
-    {
-        const string content = @"
+   [Fact]
+   public async Task WithSuffix()
+   {
+      const string content = @"
                 using System;
 
                 namespace MyNamespace;
@@ -32,7 +34,7 @@ public class CodeFixTests
                 }
             ";
 
-        var expected = Verify.Diagnostic().WithLocation(5, 30).WithArguments("MyException");
-        await Verify.VerifyCodeFixAsync(content, expected, content.Replace("MyException", "My"));
-    }
+      var expected = Verify.Diagnostic().WithLocation(5, 30).WithArguments("MyException");
+      await Verify.VerifyCodeFixAsync(content, expected, content.Replace("MyException", "My"));
+   }
 }

@@ -4,12 +4,11 @@ namespace CrossCutting;
 
 public class CrossCuttingPoliciesProvider : IAuthorizationPolicyProvider
 {
-   private readonly AuthorizationPolicy _policy;
+   private const string ValidNs = nameof(CrossCutting);
 
-   public CrossCuttingPoliciesProvider() =>
-      _policy = new AuthorizationPolicyBuilder()
-         .AddRequirements(new AdminForNamespace("Chapter13")
-         ).Build();
+   private readonly AuthorizationPolicy _policy = new AuthorizationPolicyBuilder()
+      .AddRequirements(new AdminForNamespace(ValidNs))
+      .Build();
 
    public Task<AuthorizationPolicy> GetDefaultPolicyAsync() => Task.FromResult(_policy);
 

@@ -1,8 +1,14 @@
 using System.Diagnostics.Metrics;
 
-namespace Chapter16;
+namespace MetricsSample;
 
+/// <summary>
+///     Metrics
+/// </summary>
 public static class Metrics
 {
-    public static readonly Meter Meter = new("Chapter16");
+    /// <summary>
+    ///     Meter
+    /// </summary>
+    public static readonly Meter Meter = new(nameof(MetricsSample));
 }

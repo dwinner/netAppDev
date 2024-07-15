@@ -1,19 +1,16 @@
-namespace Chapter15;
+namespace CodeCheckSample;
 
 /// <summary>
-/// asdad.
+///     Something
 /// </summary>
 public class Something
 {
-    readonly string _blah;
-
     /// <summary>
-    /// Initializes a new instance of the <see cref="Something"/> class.
+    ///     Initializes a new instance of the <see cref="Something" /> class.
     /// </summary>
     public Something()
     {
-        _blah = "blah";
-
-        Console.WriteLine(_blah);
+        const string blah = "blah";
+        Console.WriteLine(blah);
     }
 }

@@ -18,21 +18,25 @@ public class CodeFix : CodeFixProvider
     {
         var diagnostic = context.Diagnostics[0];
         context.RegisterCodeFix(
-            CodeAction.Create(
-                title: "Remove Exception suffix",
-                createChangedDocument: c => RemoveSuffix(context.Document, diagnostic, c)),
+            action: CodeAction.Create(
+                "Remove Exception suffix",
+                cnlToken => RemoveSuffix(context.Document, diagnostic, cnlToken),
+                equivalenceKey: "t"),
             diagnostic);
 
         return Task.CompletedTask;
     }
 
-    public override FixAllProvider? GetFixAllProvider() => WellKnownFixAllProviders.BatchFixer;
+    public override FixAllProvider GetFixAllProvider() => WellKnownFixAllProviders.BatchFixer;
 
-    async Task<Document> RemoveSuffix(Document document, Diagnostic diagnostic, CancellationToken c)
+    static async Task<Document> RemoveSuffix(Document document, Diagnostic diagnostic, CancellationToken c)
     {
         var root = await document.GetSyntaxRootAsync(c);
+        if (root!.FindNode(diagnostic.Location.SourceSpan) is not ClassDeclarationSyntax node)
+        {
+            return document;
+        }
 
-        if (!(root!.FindNode(diagnostic.Location.SourceSpan) is ClassDeclarationSyntax node)) return document;
         var newName = node.Identifier.Text.Replace("Exception", string.Empty);
         var newRoot = root.ReplaceNode(node, node.WithIdentifier(SyntaxFactory.Identifier(newName)));
         return document.WithSyntaxRoot(newRoot);

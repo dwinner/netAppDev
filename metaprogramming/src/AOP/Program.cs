@@ -20,6 +20,7 @@ container.Register(Component.For<ILogger>().UsingFactoryMethod((kernel, context)
    var factory = kernel.Resolve<ILoggerFactory>();
    return factory.CreateLogger(context.Handler.ComponentModel.Implementation);
 }).LifestyleTransient());
+
 container.Register(Component.For(typeof(ILogger<>)).UsingFactoryMethod((kernel, context) =>
 {
    var factory = kernel.Resolve<ILoggerFactory>();

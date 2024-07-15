@@ -3,5 +3,5 @@
 var assembly = Assembly.GetEntryAssembly();
 Console.WriteLine(assembly!.FullName);
 var assemblies = assembly.GetReferencedAssemblies();
-var assemblyNames = string.Join(", ", assemblies.Select(_ => _.Name));
+var assemblyNames = string.Join(", ", assemblies.Select(assemblyName => assemblyName.Name));
 Console.WriteLine(assemblyNames);

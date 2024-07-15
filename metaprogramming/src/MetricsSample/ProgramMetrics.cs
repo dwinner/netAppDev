@@ -1,7 +1,11 @@
 using Fundamentals.Metrics;
 
-namespace ConsoleApp;
+namespace MetricsSample;
 
+
+/// <summary>
+///     Program metrics
+/// </summary>
 public static partial class ProgramMetrics
 {
     [Counter<int>("Started", "How many times we've started the program")]

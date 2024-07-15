@@ -6,5 +6,5 @@ public class MetricsTemplateData
 
     public string ClassName { get; set; } = string.Empty;
 
-    public List<CounterTemplateData> Counters { get; set; } = new();
+    public List<CounterTemplateData> Counters { get; set; } = new List<CounterTemplateData>();
 }
