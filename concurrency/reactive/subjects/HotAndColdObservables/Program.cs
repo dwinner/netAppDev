@@ -75,7 +75,7 @@ internal static class Program
 
       var subscription = connectableObservable.Connect();
 
-      //After After the application was notified on server outage
+      // After the application was notified on server outage
       Console.WriteLine("--Disposing the current connection and reconnecting--");
       subscription.Dispose();
       subscription = connectableObservable.Connect();
@@ -103,7 +103,7 @@ internal static class Program
       //an observable that simulate an asynchronous operation that take a long time to complete
       var coldObservable = Observable.Timer(TimeSpan.FromSeconds(5)).Select(_ => "Rx");
 
-      Console.WriteLine("Creating hot disconncted observable");
+      Console.WriteLine("Creating hot disconnected observable");
       var connectableObservable = coldObservable.PublishLast();
 
       Console.WriteLine("Subscribing two observers now, and the third after the source observable completed");
@@ -168,7 +168,7 @@ internal static class Program
 
       var coldObservable = Observable.Interval(TimeSpan.FromSeconds(1)).Take(5);
 
-      Console.WriteLine("Creating hot disconncted observable");
+      Console.WriteLine("Creating hot disconnected observable");
       var connectableObservable = coldObservable.Publish();
 
       Console.WriteLine("Subscribing two observers now, and the third in two more seconds");
@@ -189,7 +189,7 @@ internal static class Program
 
    private static async Task ColdObservableMultipleSubscriptionsExampleAsync()
    {
-      Demo.DisplayHeader("Cold observable will regenerate the entire seqeunce of notfications for each observer");
+      Demo.DisplayHeader("Cold observable will regenerate the entire sequence of notifications for each observer");
 
       var coldObservable =
          Observable.Create<string>(async o =>
