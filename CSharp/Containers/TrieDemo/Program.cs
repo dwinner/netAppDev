@@ -1,68 +1,44 @@
-﻿/**
+﻿/*
  * Создание префиксного дерева
  */
 
 using System;
-using System.Collections.Generic;
 using System.IO;
 
-namespace TrieDemo
+namespace TrieDemo;
+
+internal static class Program
 {
-   class Info
+   private static void Main()
    {
-      static readonly Random rand = new Random();
+      var words = File.ReadAllLines("American-All.txt");
 
-      public string Key { get; set; }
-      
-      public double SomeValue
+      var trie = new Trie<Info>();
+      foreach (var word in words)
       {
-         get
-         {
-            return rand.NextDouble();
-         }
+         trie.AddValue(word, new Info(word));
       }
 
-      public Info(string key)
+      Console.WriteLine("Non-recursive lookup:");
+      var info = trie.FindValues("agonize", false);
+      foreach (var i in info)
       {
-         Key = key;
+         Console.WriteLine(i.Key);
       }
-   }
 
-   class Program
-   {
-      static void Main()
+      Console.WriteLine();
+      Console.WriteLine("Recursive lookup:");
+      info = trie.FindValues("agonize");
+      foreach (var i in info)
       {
-         string[] words = File.ReadAllLines("American-All.txt");
-
-         Trie<Info> trie = new Trie<Info>();
-
-         foreach (string word in words)
-         {
-            trie.AddValue(word, new Info(word));
-         }
-
-         Console.WriteLine("Non-recursive lookup:");
-         ICollection<Info> info = trie.FindValues("agonize", false);
-
-         foreach (var i in info)
-         {
-            Console.WriteLine(i.Key);
-         }
-
-         Console.WriteLine();
-         Console.WriteLine("Recursive lookup:");
-         info = trie.FindValues("agonize", true);
-         foreach (var i in info)
-         {
-            Console.WriteLine(i.Key);
-         }
-
-         Console.WriteLine();
-         Console.WriteLine("Non-existent lookup:");
-         info = trie.FindValues("zzfff", true);
-         Console.WriteLine("Found {0} values", info.Count);
-
-         Console.ReadKey();
+         Console.WriteLine(i.Key);
       }
+
+      Console.WriteLine();
+      Console.WriteLine("Non-existent lookup:");
+      info = trie.FindValues("zzfff");
+      Console.WriteLine("Found {0} values", info.Count);
+
+      Console.ReadKey();
    }
 }

@@ -12,7 +12,7 @@ public class TrieTests
       Assert.That(_trie.IsEmpty, Is.True);
       for (var i = 0; i < _keys.Length; i++)
       {
-         // NOTEME: Since int's default value is equal to 0, start with 1
+         // TONOTE: Since int's default value is equal to 0, start with 1
          var keyValue = _keys[i];
          _trie[keyValue] = i + 1;
       }
@@ -30,7 +30,7 @@ public class TrieTests
       "shells",
       "by",
       "the",
-      "sea", // NOTEME: duplicated key
+      "sea", // TONOTE: duplicated key
       "shore"
    };
 

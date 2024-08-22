@@ -151,10 +151,10 @@ public sealed class TernarySearchTrie<TValue>
    }
 
    /// <summary>
-   ///    Returns all of the keys in the set that start with <paramref name="prefix" />.
+   ///    Returns all the keys in the set that start with <paramref name="prefix" />.
    /// </summary>
    /// <param name="prefix">The prefix</param>
-   /// <returns>All of the keys in the set that start with <paramref name="prefix" /></returns>
+   /// <returns>All the keys in the set that start with <paramref name="prefix" /></returns>
    /// <exception cref="ArgumentNullException">If <paramref name="prefix" /> is null</exception>
    public IEnumerable<string> GetKeysWithPrefix(string prefix)
    {
@@ -181,12 +181,12 @@ public sealed class TernarySearchTrie<TValue>
    }
 
    /// <summary>
-   ///    Returns all of the keys in the symbol table that match <paramref name="pattern" />, where the character '.' is
+   ///    Returns all the keys in the symbol table that match <paramref name="pattern" />, where the character '.' is
    ///    interpreted as a wildcard character.
    /// </summary>
    /// <param name="pattern">The pattern</param>
    /// <returns>
-   ///    All of the keys in the symbol table that match <paramref name="pattern" />, where . is treated as a wildcard
+   ///    All the keys in the symbol table that match <paramref name="pattern" />, where . is treated as a wildcard
    ///    character.
    /// </returns>
    public IEnumerable<string> GetKeysThatMatch(string pattern)

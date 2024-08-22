@@ -1,7 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿namespace TrieDemo.Tests;
 
-namespace TrieDemo;
+#nullable disable
 
 public class Trie<T>
 {
@@ -16,30 +15,26 @@ public class Trie<T>
    {
       var next = _root;
       var index = 0;
-      while (index < key.Length && next.GetNext(key[index]) != null) // Проследовать по ключу к последнему узлу
+      while (index < key.Length && next.GetNext(key[index]) != null)
       {
          next = next.GetNext(key[index++]);
       }
 
       return index == key.Length
          ? next.GetValues(recursive)
-         : Array.Empty<T>(); // Считывать значения, только если обработан весь ключ
+         : Array.Empty<T>();
    }
-
-   #region Внутренний класс для хранения значений и ссылок на следующие узлы
 
    private sealed class TrieNode<TVal>
    {
       private readonly Dictionary<char, TrieNode<TVal>> _next = new();
 
-      private ICollection<TVal> Values { get; } = new List<TVal>();
+      private List<TVal> Values { get; } = new();
 
       internal void AddValue(string key, int depth, TVal item)
       {
          if (depth < key.Length)
          {
-            // Продолжить создание узлов (или переход к узлам),
-            // пока не будет достигнут конец ключа
             if (!_next.TryGetValue(key[depth], out var subNode))
             {
                subNode = new TrieNode<TVal>();
@@ -54,13 +49,9 @@ public class Trie<T>
          }
       }
 
-      // Получить узел-потомок по символу
-      internal TrieNode<TVal> GetNext(char chr) =>
-         _next.TryGetValue(chr, out var node)
-            ? node
-            : null;
+      internal TrieNode<TVal> GetNext(char chr) => _next.GetValueOrDefault(chr);
 
-      internal ICollection<TVal> GetValues(bool recursive) // Получить все значения этого узла и, возможно, все его потомки
+      internal ICollection<TVal> GetValues(bool recursive)
       {
          var values = new List<TVal>();
          values.AddRange(Values);
@@ -77,6 +68,4 @@ public class Trie<T>
          return values;
       }
    }
-
-   #endregion
 }
