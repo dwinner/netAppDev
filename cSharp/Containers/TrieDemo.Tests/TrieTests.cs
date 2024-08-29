@@ -45,30 +45,7 @@ public class TrieTests
          "on sysvar",
          "on sysvar_update",
          "on sysvar_change",
-         "on envvar",
-         "start",
-         "prestart",
-         "prestop",
-         "busoff",
-         "errorframe",
-         "erroractive",
-         "errorpassive",
-         "stopmeasurement",
-         "key",
-         "message",
-         "multiplexed_message",
-         "mostmessage",
-         "mostamsmessage",
-         "diagrequest",
-         "diagresponse",
-         "signal",
-         "ethernetpacket",
-         "ethernetstatus",
-         "timer",
-         "sysvar",
-         "sysvar_update",
-         "sysvar_change",
-         "envvar"
+         "on envvar"
       };
 
       Array.ForEach(_contextualWords, word =>
