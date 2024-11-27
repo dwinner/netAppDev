@@ -1,77 +1,92 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace WeakReferenceCache
 {
-    class Program
-    {
-        static void Main(string[] args)
-        {
-            Console.WriteLine("HybridCache");
-            HybridCache<int, string> cache = new HybridCache<int, string>(TimeSpan.FromSeconds(5));
+   internal static class Program
+   {
+      private static void Main()
+      {
+         Console.WriteLine("HybridCache");
+         var cache = new HybridCache<int, string>(TimeSpan.FromSeconds(5));
 
-            cache.Add(1, "One");
-            cache.Add(2, "Two");
-            Thread.Sleep(5000);
-            // Read a value
-            string val;
-            bool success = cache.TryGetValue(1, out val);
-            Console.WriteLine(val);
-            Console.WriteLine("Success: " + success);
+         cache.Add(1, "One");
+         cache.Add(2, "Two");
+         Thread.Sleep(5000);
 
-            GC.Collect();
-            GC.WaitForFullGCComplete();
+         // Read a value
+         var success = cache.TryGetValue(1, out var val);
+         Console.WriteLine(val);
+         Console.WriteLine($"Success: {success}");
 
-            // Try reading again
-            success = cache.TryGetValue(1, out val);
-            Console.WriteLine(val);
-            Console.WriteLine("Success: " + success);
-            Console.WriteLine();
-            Console.WriteLine();
+         GC.Collect();
+         GC.WaitForFullGCComplete();
 
-            Console.WriteLine("Multi-index");
+         // Try reading again
+         success = cache.TryGetValue(1, out val);
+         Console.WriteLine(val);
+         Console.WriteLine($"Success: {success}");
+         Console.WriteLine();
+         Console.WriteLine();
 
-            Person p1 = new Person() { Id = "1", FirstName = "Bob", LastName = "Jones", Birthday = new DateTime(1980, 1, 1) };
-            Person p2 = new Person() { Id = "2", FirstName = "Alice", LastName = "Smith", Birthday = new DateTime(1980, 1, 1) };
-            Person p3 = new Person() { Id = "3", FirstName = "Eve", LastName = "Brown", Birthday = new DateTime(1978, 8, 1) };
+         Console.WriteLine("Multi-index");
 
-            var db = new PersonDatabase();
-            db.AddPerson(p1);
-            db.AddPerson(p2);
-            db.AddPerson(p3);
+         var p1 = new Person
+         {
+            Id = "1", 
+            FirstName = "Bob", 
+            LastName = "Jones", 
+            Birthday = new DateTime(1980, 1, 1)
+         };
+         var p2 = new Person
+         {
+            Id = "2", 
+            FirstName = "Alice", 
+            LastName = "Smith", 
+            Birthday = new DateTime(1980, 1, 1)
+         };
+         var p3 = new Person
+         {
+            Id = "3", 
+            FirstName = "Eve", 
+            LastName = "Brown", 
+            Birthday = new DateTime(1978, 8, 1)
+         };
 
-            // get rid of our strong references
-            p1 = p2 = p3 = null;
+         var personDb = new PersonDatabase();
+         personDb.AddPerson(p1);
+         personDb.AddPerson(p2);
+         personDb.AddPerson(p3);
 
-            var targetBirthday = new DateTime(1980, 1, 1);
+         // get rid of our strong references
+         p1 = p2 = p3 = null;
 
-            PrintBirthdays(db, targetBirthday);
+         var targetBirthday = new DateTime(1980, 1, 1);
 
-            db.RemovePerson("2");
+         PrintBirthdays(personDb, targetBirthday);
 
-            PrintBirthdays(db, targetBirthday);
+         personDb.RemovePerson("2");
 
-            GC.Collect();
-            Console.WriteLine("After GC");
-            PrintBirthdays(db, targetBirthday);
-        }
+         PrintBirthdays(personDb, targetBirthday);
 
-        private static void PrintBirthdays(PersonDatabase db, DateTime targetBirthday)
-        {
-            Console.WriteLine("Birthdays on Jan 1, 1980:");
-            List<Person> people;
-            db.TryGetByBirthday(targetBirthday, out people);
-            foreach (var p in people)
-            {
-                Console.Write("\t");
-                Console.WriteLine(p.FirstName);
-            }
-            Console.WriteLine("Indexes need rebuilt? " + db.NeedsIndexRebuild);
-            Console.WriteLine();
-        }
-    }
+         GC.Collect();
+         Console.WriteLine("After GC");
+         PrintBirthdays(personDb, targetBirthday);
+      }
+
+      private static void PrintBirthdays(PersonDatabase db, DateTime targetBirthday)
+      {
+         Console.WriteLine("Birthdays on Jan 1, 1980:");
+         db.TryGetByBirthday(targetBirthday, out var people);
+         foreach (var person in people)
+         {
+            Console.Write("\t");
+            Console.WriteLine(person.FirstName);
+         }
+
+         Console.WriteLine($"Indexes need rebuilt? {db.NeedsIndexRebuild}");
+         Console.WriteLine();
+      }
+   }
 }

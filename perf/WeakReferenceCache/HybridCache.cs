@@ -5,133 +5,118 @@ using System.Diagnostics;
 
 namespace WeakReferenceCache
 {
-    public class HybridCache<TKey, TValue>  where TValue : class
-    {
-        class ValueContainer<T>
-        {
-            public T value;
-            public long additionTime;
-            public long demoteTime;
-        }
+   public class HybridCache<TKey, TVal> where TVal : class
+   {
+      private readonly TimeSpan _maxAgeBeforeDemotion;
 
-        private readonly TimeSpan maxAgeBeforeDemotion;
+      // Values live here until they hit their maximum age
+      private readonly ConcurrentDictionary<TKey, ValueContainer<TVal>> _strongReferences =
+         new ConcurrentDictionary<TKey, ValueContainer<TVal>>();
 
-        // Values live here until they hit their maximum age
-        private readonly ConcurrentDictionary<TKey, ValueContainer<TValue>> strongReferences =
-            new ConcurrentDictionary<TKey, ValueContainer<TValue>>();
+      // Values are moved here after they hit their maximum age
+      private readonly ConcurrentDictionary<TKey, WeakReference<ValueContainer<TVal>>> _weakReferences =
+         new ConcurrentDictionary<TKey, WeakReference<ValueContainer<TVal>>>();
 
-        // Values are moved here after they hit their maximum age
-        private readonly ConcurrentDictionary<TKey, WeakReference<ValueContainer<TValue>>> weakReferences =
-            new ConcurrentDictionary<TKey, WeakReference<ValueContainer<TValue>>>();
+      public HybridCache(TimeSpan maxAgeBeforeDemotion) => _maxAgeBeforeDemotion = maxAgeBeforeDemotion;
 
-        public int Count
-        {
-            get { return this.strongReferences.Count; }
-        }
+      public int Count => _strongReferences.Count;
 
-        public int WeakCount
-        {
-            get
+      public int WeakCount => _weakReferences.Count;
+
+      public void Add(TKey key, TVal value)
+      {
+         RemoveFromWeak(key);
+         var container = new ValueContainer<TVal>
+         {
+            Value = value,
+            AdditionTime = Stopwatch.GetTimestamp(),
+            DemoteTime = 0
+         };
+         _strongReferences.AddOrUpdate(key, container, (k, existingValue) => container);
+      }
+
+      private void RemoveFromWeak(TKey key)
+      {
+         _weakReferences.TryRemove(key, out _);
+      }
+
+      public bool TryGetValue(TKey key, out TVal value)
+      {
+         value = null;
+         if (_strongReferences.TryGetValue(key, out var container))
+         {
+            AttemptDemotion(key, container);
+            value = container.Value;
+            return true;
+         }
+
+         if (_weakReferences.TryGetValue(key, out var weakRef))
+         {
+            if (weakRef.TryGetTarget(out container))
             {
-                return this.weakReferences.Count;
+               value = container.Value;
+               return true;
             }
-        }
 
-        public HybridCache(TimeSpan maxAgeBeforeDemotion)
-        {
-            this.maxAgeBeforeDemotion = maxAgeBeforeDemotion;
-        }
-
-        public void Add(TKey key, TValue value)
-        {
             RemoveFromWeak(key);
-            var container = new ValueContainer<TValue>();
-            container.value = value;
-            container.additionTime = Stopwatch.GetTimestamp();
-            container.demoteTime = 0;
-            this.strongReferences.AddOrUpdate(key, container, (k, existingValue) => container);
-        }
+         }
 
-        private void RemoveFromWeak(TKey key)
-        {
-            WeakReference<ValueContainer<TValue>> oldValue;
-            weakReferences.TryRemove(key, out oldValue);
-        }
+         return false;
+      }
 
-        public bool TryGetValue(TKey key, out TValue value)
-        {
-            value = null;
-            ValueContainer<TValue> container;
-            if (this.strongReferences.TryGetValue(key, out container))
+      /// <summary>
+      ///    Call this method periodically from another thread.
+      /// </summary>
+      public void DemoteOldObjects()
+      {
+         var demotionList = new List<KeyValuePair<TKey, ValueContainer<TVal>>>();
+         var now = Stopwatch.GetTimestamp();
+
+         foreach (var kvp in _strongReferences)
+         {
+            var age = CalculateTimeSpan(kvp.Value.AdditionTime, now);
+            if (age > _maxAgeBeforeDemotion)
             {
-                AttemptDemotion(key, container);
-                value = container.value;
-                return true;
+               demotionList.Add(kvp);
             }
+         }
 
-            WeakReference<ValueContainer<TValue>> weakRef;
-            if (this.weakReferences.TryGetValue(key, out weakRef))
-            {
-                if (weakRef.TryGetTarget(out container))
-                {
-                    value = container.value;
-                    return true;
-                }
-                else
-                {
-                    RemoveFromWeak(key);
-                }
-            }
-            return false;
-        }
+         foreach (var kvp in demotionList)
+         {
+            Demote(kvp.Key, kvp.Value);
+         }
+      }
 
-        /// <summary>
-        /// Call this method periodically from another thread.
-        /// </summary>
-        public void DemoteOldObjects()
-        {
-            var demotionList = new List<KeyValuePair<TKey, ValueContainer<TValue>>>();
-            long now = Stopwatch.GetTimestamp();
+      private void AttemptDemotion(TKey key, ValueContainer<TVal> container)
+      {
+         var now = Stopwatch.GetTimestamp();
+         var age = CalculateTimeSpan(container.AdditionTime, now);
+         if (age > _maxAgeBeforeDemotion)
+         {
+            Demote(key, container);
+         }
+      }
 
-            foreach (var kvp in this.strongReferences)
-            {
-                var age = CalculateTimeSpan(kvp.Value.additionTime, now);
-                if (age > this.maxAgeBeforeDemotion)
-                {
-                    demotionList.Add(kvp);
-                }
-            }
+      private void Demote(TKey key, ValueContainer<TVal> container)
+      {
+         _strongReferences.TryRemove(key, out _);
+         container.DemoteTime = Stopwatch.GetTimestamp();
+         var weakRef = new WeakReference<ValueContainer<TVal>>(container);
+         _weakReferences.AddOrUpdate(key, weakRef, (k, oldRef) => weakRef);
+      }
 
-            foreach (var kvp in demotionList)
-            {
-                Demote(kvp.Key, kvp.Value);
-            }
-        }
+      private static TimeSpan CalculateTimeSpan(long offsetA, long offsetB)
+      {
+         var diff = offsetB - offsetA;
+         var seconds = (double)diff / Stopwatch.Frequency;
+         return TimeSpan.FromSeconds(seconds);
+      }
 
-        private void AttemptDemotion(TKey key, ValueContainer<TValue> container)
-        {
-            long now = Stopwatch.GetTimestamp();
-            var age = CalculateTimeSpan(container.additionTime, now);
-            if (age > this.maxAgeBeforeDemotion)
-            {
-                Demote(key, container);
-            }
-        }
-
-        private void Demote(TKey key, ValueContainer<TValue> container)
-        {
-            ValueContainer<TValue> oldContainer;
-            this.strongReferences.TryRemove(key, out oldContainer);
-            container.demoteTime = Stopwatch.GetTimestamp();
-            var weakRef = new WeakReference<ValueContainer<TValue>>(container);
-            this.weakReferences.AddOrUpdate(key, weakRef, (k, oldRef) => weakRef);
-        }
-
-        private static TimeSpan CalculateTimeSpan(long offsetA, long offsetB)
-        {
-            long diff = offsetB - offsetA;
-            double seconds = (double)diff / Stopwatch.Frequency;
-            return TimeSpan.FromSeconds(seconds);
-        }
-    }
+      private class ValueContainer<T>
+      {
+         public long AdditionTime;
+         public long DemoteTime;
+         public T Value;
+      }
+   }
 }

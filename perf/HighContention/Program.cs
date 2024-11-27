@@ -1,41 +1,41 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.Globalization;
 using System.Threading.Tasks;
 
 namespace HighContention
 {
-    class Program
-    {
-        static object collectionLock = new object();
-        static List<string> collection = new List<string>();
-        const int NumTasks = 5;
+   internal static class Program
+   {
+      private const int NumTasks = 5;
+      private static readonly object CollectionLock = new object();
+      private static readonly List<string> Collection = new List<string>();
 
-        static void Main(string[] args)
-        {
-            Task[] allTasks = new Task[NumTasks];
-            for (int i = 0; i < NumTasks; i++)
+      private static void Main(string[] args)
+      {
+         var allTasks = new Task[NumTasks];
+         for (var i = 0; i < NumTasks; i++)
+         {
+            allTasks[i] = Task.Run(() =>
             {
-                allTasks[i] = Task.Run(() =>
-                    {
-                        while (true)
-                        {
-                            lock (collectionLock)
-                            {
-                                if (collection.Count > 1000000)
-                                {
-                                    collection.RemoveAt(collection.Count - 1);
-                                }
-                                else
-                                {
-                                    collection.Add(DateTime.Now.ToString());
-                                }
-                            }
-                        }
-                    });                
-            }
-            Task.WaitAll(allTasks);
-        }
-    }
+               while (true)
+               {
+                  lock (CollectionLock)
+                  {
+                     if (Collection.Count > 1000000)
+                     {
+                        Collection.RemoveAt(Collection.Count - 1);
+                     }
+                     else
+                     {
+                        Collection.Add(DateTime.Now.ToString(CultureInfo.InvariantCulture));
+                     }
+                  }
+               }
+            });
+         }
+
+         Task.WaitAll(allTasks);
+      }
+   }
 }

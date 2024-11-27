@@ -1,67 +1,66 @@
-﻿using ReflectionInterface;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Diagnostics;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
+using ReflectionInterface;
 
 namespace ReflectionExe
 {
-    class Program
-    {
-        const int Iterations = 10000;
+   internal static class Program
+   {
+      private const int Iterations = 10_000;
 
-        static void Main(string[] args)
-        {
-            string extensionFile = @"ReflectionExtension";
-            var assembly = Assembly.Load(extensionFile);
+      private static void Main()
+      {
+         const string extensionFile = @"ReflectionExtension";
+         var assembly = Assembly.Load(extensionFile);
 
-            var types = assembly.GetTypes();
-            Type extensionType = null;
-            foreach (var type in types)
+         var types = assembly.GetTypes();
+         Type extensionType = null;
+         foreach (var type in types)
+         {
+            var interfaceType = type.GetInterface("IExtension");
+            if (interfaceType != null)
             {
-                var interfaceType = type.GetInterface("IExtension");
-                if (interfaceType != null)
-                {
-                    extensionType = type;
-                    break;
-                }
+               extensionType = type;
+               break;
             }
+         }
 
-            object extensionObject = null;
-            if (extensionType != null)
-            {
-                extensionObject = Activator.CreateInstance(extensionType);
-            }
-            MethodInfo executeMethod = extensionType.GetMethod("Execute");
-            IExtension extensionViaInterface = extensionObject as IExtension;
+         object extensionObject = null;
+         if (extensionType != null)
+         {
+            extensionObject = Activator.CreateInstance(extensionType);
+         }
 
-            // Pre-execute to account for JIT
-            executeMethod.Invoke(extensionObject, new object[] { 1, 2 });
-            extensionViaInterface.Execute(1, 2);
-            
-            Stopwatch watch = Stopwatch.StartNew();
-            int actualResult = 0;
+         var executeMethod = extensionType.GetMethod("Execute");
+         var extensionViaInterface = extensionObject as IExtension;
 
-            // Execute via MethodInfo.Invoke
-            for (int i = 0; i < Iterations; i++)
-            {
-                object result = executeMethod.Invoke(extensionObject, new object[] { 1, 2 });
-                actualResult = (int)result;
-            }
-            watch.Stop();
-            Console.WriteLine("{0}, {1} ticks", actualResult, watch.ElapsedTicks);
+         // Pre-execute to account for JIT
+         executeMethod.Invoke(extensionObject, new object[] { 1, 2 });
+         extensionViaInterface.Execute(1, 2);
 
-            // Execute via interface
-            watch.Restart();
-            for (int i = 0; i < Iterations; i++)
-            {
-                actualResult = extensionViaInterface.Execute(1, 2);
-            }
-            watch.Stop();
-            Console.WriteLine("{0}, {1} ticks", actualResult, watch.ElapsedTicks);
-        }
-    }
+         var watch = Stopwatch.StartNew();
+         var actualResult = 0;
+
+         // Execute via MethodInfo.Invoke
+         for (var i = 0; i < Iterations; i++)
+         {
+            var result = executeMethod.Invoke(extensionObject, new object[] { 1, 2 });
+            actualResult = (int)result;
+         }
+
+         watch.Stop();
+         Console.WriteLine("{0}, {1} ticks", actualResult, watch.ElapsedTicks);
+
+         // Execute via interface
+         watch.Restart();
+         for (var i = 0; i < Iterations; i++)
+         {
+            actualResult = extensionViaInterface.Execute(1, 2);
+         }
+
+         watch.Stop();
+         Console.WriteLine("{0}, {1} ticks", actualResult, watch.ElapsedTicks);
+      }
+   }
 }

@@ -1,60 +1,52 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
+﻿using System.Threading;
 
 namespace LockFreeStack
 {
-    class LockFreeStack<T>
-    {
-        private class Node
-        {
-            public T Value;
-            public Node Next;
+   internal class LockFreeStack<T>
+   {
+      private int _count;
+      private Node _head;
 
-            public override string ToString()
+      public int Count => _count;
+
+      public void Push(T value)
+      {
+         var newNode = new Node { Value = value };
+         while (true)
+         {
+            newNode.Next = _head;
+            if (Interlocked.CompareExchange(ref _head, newNode, newNode.Next) == newNode.Next)
             {
-                return Value.ToString();
+               Interlocked.Increment(ref _count);
+               return;
             }
-        }
+         }
+      }
 
-        private Node head;
-        private int count;
-
-        public int Count { get { return count; } }
-
-        public void Push(T value)
-        {
-            var newNode = new Node() { Value = value }; 
-            
-            while (true)
+      public T Pop()
+      {
+         while (true)
+         {
+            var node = _head;
+            if (node == null)
             {
-                newNode.Next = this.head;
-                if (Interlocked.CompareExchange(ref this.head, newNode, newNode.Next) == newNode.Next)
-                {
-                    Interlocked.Increment(ref this.count);
-                    return;
-                }
+               return default;
             }
-        }
 
-        public T Pop()
-        {
-            while (true)
+            if (Interlocked.CompareExchange(ref _head, node.Next, node) == node)
             {
-                Node node = this.head;
-                if (node == null)
-                {
-                    return default(T);
-                }
-                if (Interlocked.CompareExchange(ref this.head, node.Next, node) == node)
-                {
-                    Interlocked.Decrement(ref this.count);
-                    return node.Value;
-                }
+               Interlocked.Decrement(ref _count);
+               return node.Value;
             }
-        }        
-    }
+         }
+      }
+
+      private class Node
+      {
+         public Node Next;
+         public T Value;
+
+         public override string ToString() => Value.ToString();
+      }
+   }
 }

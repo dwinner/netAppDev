@@ -4,65 +4,64 @@ using System.Threading.Tasks;
 
 namespace WaitAsync
 {
-    class Program
-    {        
-        static SemaphoreSlim semaphore = new SemaphoreSlim(1);
-        const int WaitTimeMs = 1000;        
+   internal static class Program
+   {
+      private const int WaitTimeMs = 1_000;
+      private static readonly SemaphoreSlim _Semaphore = new SemaphoreSlim(1);
 
-        static void Main(string[] args)
-        {
-            Task.Run((Action)Func1);
-            Task.Run((Action)Func2);
+      private static void Main(string[] args)
+      {
+         Task.Run(Func1);
+         Task.Run(Func2);
 
-            //Task.Run((Action)AsyncFunc1);
-            //Task.Run((Action)AsyncFunc2);
+         //Task.Run((Action)AsyncFunc1);
+         //Task.Run((Action)AsyncFunc2);
 
-            Console.ReadKey();            
-        }
+         Console.ReadKey();
+      }
 
-        static void Func1()
-        {
-            while (true)
-            {
-                semaphore.Wait();
-                Console.WriteLine("Func1");
-                
-                semaphore.Release();
-                Thread.Sleep(WaitTimeMs);
-            }
-        }
+      private static void Func1()
+      {
+         while (true)
+         {
+            _Semaphore.Wait();
+            Console.WriteLine("Func1");
 
-        static void Func2()
-        {
-            while (true)
-            {
-                semaphore.Wait();
-                Console.WriteLine("Func2");
-                
-                semaphore.Release();
-                Thread.Sleep(WaitTimeMs);
+            _Semaphore.Release();
+            Thread.Sleep(WaitTimeMs);
+         }
+      }
 
-            }
-        }
+      private static void Func2()
+      {
+         while (true)
+         {
+            _Semaphore.Wait();
+            Console.WriteLine("Func2");
 
-        static void AsyncFunc1()
-        {
-            semaphore.WaitAsync().ContinueWith(_ =>
-            {
-                Console.WriteLine("AsyncFunc1");                
-                semaphore.Release();
-                Thread.Sleep(WaitTimeMs);
-            }).ContinueWith(_ => AsyncFunc1());
-        }
+            _Semaphore.Release();
+            Thread.Sleep(WaitTimeMs);
+         }
+      }
 
-        static void AsyncFunc2()
-        {
-            semaphore.WaitAsync().ContinueWith(_ =>
-            {
-                Console.WriteLine("AsyncFunc2");                
-                semaphore.Release();
-                Thread.Sleep(WaitTimeMs);
-            }).ContinueWith(_ => AsyncFunc2());
-        }
-    }
+      private static void AsyncFunc1()
+      {
+         _Semaphore.WaitAsync().ContinueWith(_ =>
+         {
+            Console.WriteLine("AsyncFunc1");
+            _Semaphore.Release();
+            Thread.Sleep(WaitTimeMs);
+         }).ContinueWith(_ => AsyncFunc1());
+      }
+
+      private static void AsyncFunc2()
+      {
+         _Semaphore.WaitAsync().ContinueWith(_ =>
+         {
+            Console.WriteLine("AsyncFunc2");
+            _Semaphore.Release();
+            Thread.Sleep(WaitTimeMs);
+         }).ContinueWith(_ => AsyncFunc2());
+      }
+   }
 }

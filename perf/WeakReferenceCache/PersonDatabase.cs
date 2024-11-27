@@ -1,75 +1,62 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace WeakReferenceCache
 {
-    class Person
-    {
-        public string Id { get; set; }
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-        public DateTime Birthday { get; set; }
-    }
+   internal class PersonDatabase
+   {
+      private readonly Dictionary<DateTime, List<WeakReference<Person>>> _birthdayIndex =
+         new Dictionary<DateTime, List<WeakReference<Person>>>();
 
-    class PersonDatabase
-    {
-        private Dictionary<string, Person> index = new Dictionary<string, Person>();
-        private Dictionary<DateTime, List<WeakReference<Person>>> birthdayIndex = new Dictionary<DateTime, List<WeakReference<Person>>>();
+      private readonly Dictionary<string, Person> _index = new Dictionary<string, Person>();
 
-        public bool NeedsIndexRebuild { get; private set; }
+      public bool NeedsIndexRebuild { get; private set; }
 
-        public void AddPerson(Person person)
-        {
-            this.index[person.Id] = person;
-            List<WeakReference<Person>> birthdayList;
-            if (!this.birthdayIndex.TryGetValue(person.Birthday, out birthdayList))
+      public void AddPerson(Person person)
+      {
+         _index[person.Id] = person;
+         if (!_birthdayIndex.TryGetValue(person.Birthday, out var birthdayList))
+         {
+            _birthdayIndex[person.Birthday] = birthdayList = new List<WeakReference<Person>>();
+         }
+
+         birthdayList.Add(new WeakReference<Person>(person));
+      }
+
+      public void RemovePerson(string id)
+      {
+         _index.Remove(id);
+      }
+
+      public bool TryGetById(string id, out Person person) => _index.TryGetValue(id, out person);
+
+      public bool TryGetByBirthday(DateTime birthday, out List<Person> people)
+      {
+         people = null;
+         if (_birthdayIndex.TryGetValue(birthday, out var weakPeople))
+         {
+            var list = new List<Person>(weakPeople.Count);
+            foreach (var weakRef in weakPeople)
             {
-                birthdayIndex[person.Birthday] = birthdayList = new List<WeakReference<Person>>();
+               if (weakRef.TryGetTarget(out var person))
+               {
+                  list.Add(person);
+               }
+               else
+               {
+                  // we got a null reference -- we need to rebuild the indexes
+                  NeedsIndexRebuild = true;
+               }
             }
 
-            birthdayList.Add(new WeakReference<Person>(person));
-        }
-
-        public void RemovePerson(string id)
-        {
-            index.Remove(id);
-        }
-
-        public bool TryGetById(string id, out Person person)
-        {
-            return this.index.TryGetValue(id, out person);
-        }
-
-        public bool TryGetByBirthday(DateTime birthday, out List<Person> people)
-        {
-            people = null;
-            List<WeakReference<Person>> weakPeople;
-            if (this.birthdayIndex.TryGetValue(birthday, out weakPeople))
+            if (list.Count > 0)
             {
-                var list = new List<Person>(weakPeople.Count);
-                foreach(var wp in weakPeople)
-                {
-                    Person person;
-                    if (wp.TryGetTarget(out person))
-                    {
-                        list.Add(person);
-                    }
-                    else
-                    {
-                        // we got a null reference -- we need to rebuild the indexes
-                        this.NeedsIndexRebuild = true;
-                    }
-                }
-                if (list.Count > 0)
-                {
-                    people = list;
-                    return true;
-                }                
+               people = list;
+               return true;
             }
-            return false;
-        }        
-    }
+         }
+
+         return false;
+      }
+   }
 }

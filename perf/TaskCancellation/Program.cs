@@ -1,42 +1,40 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace TaskCancellation
 {
-    class Program
-    {
-        static void Main(string[] args)
-        {
-            CancellationTokenSource tokenSource = new CancellationTokenSource();
-            CancellationToken token = tokenSource.Token;
+   internal static class Program
+   {
+      private static void Main()
+      {
+         var tokenSource = new CancellationTokenSource();
+         var token = tokenSource.Token;
 
-            Task task = Task.Run(() =>
+         var task = Task.Run(() =>
+         {
+            while (true)
             {
-                while (true)
-                {
-                    // do some work...
-                    if (token.IsCancellationRequested)
-                    {
-                        Console.WriteLine("Cancellation requested");
-                        return;
-                    }
-                    Thread.Sleep(100);
-                }
-            }, token);
-            
-            Console.WriteLine("Press any key to exit");
+               // do some work...
+               if (token.IsCancellationRequested)
+               {
+                  Console.WriteLine("Cancellation requested");
+                  return;
+               }
 
-            Console.ReadKey();
+               Thread.Sleep(100);
+            }
+         }, token);
 
-            tokenSource.Cancel();
-            
-            task.Wait();
+         Console.WriteLine("Press any key to exit");
 
-            Console.WriteLine("Task completed");
-        }       
-    }
+         Console.ReadKey();
+
+         tokenSource.Cancel();
+
+         task.Wait();
+
+         Console.WriteLine("Task completed");
+      }
+   }
 }

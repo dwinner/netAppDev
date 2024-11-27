@@ -1,83 +1,80 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace Tasks
 {
-    class Program
-    {
-        static Stopwatch watch = new Stopwatch();
-        static int pendingTasks;
+   internal static class Program
+   {
+      private static readonly Stopwatch _Watch = new Stopwatch();
+      private static int _PendingTasks;
 
-        static void Main(string[] args)
-        {            
-            const int MaxValue = 1000000000;
-            
-            // Sequential for comparison
-            watch.Start();
-            long sum = 0;
-            for (int i = 0; i <= MaxValue; i++)
+      private static void Main()
+      {
+         const int maxValue = 1_000_000_000;
+
+         // Sequential for comparison
+         _Watch.Start();
+         long sum = 0;
+         for (var i = 0; i <= maxValue; i++)
+         {
+            sum += (long)Math.Sqrt(i);
+         }
+
+         _Watch.Stop();
+
+         Console.WriteLine("Sequential: {0}", _Watch.Elapsed);
+
+         _Watch.Restart();
+         var numTasks = Environment.ProcessorCount;
+         _PendingTasks = numTasks;
+         var perThreadCount = maxValue / numTasks;
+         var perThreadLeftover = maxValue % numTasks;
+
+         var tasks = new Task<long>[numTasks];
+
+         for (var i = 0; i < numTasks; i++)
+         {
+            var start = i * perThreadCount;
+            var end = (i + 1) * perThreadCount;
+            if (i == numTasks - 1)
             {
-                sum += (long)Math.Sqrt(i);
+               end += perThreadLeftover;
             }
-            watch.Stop();
 
-            Console.WriteLine("Sequential: {0}", watch.Elapsed);
-
-            watch.Restart();
-            int numTasks = Environment.ProcessorCount;
-            pendingTasks = numTasks;
-            int perThreadCount = MaxValue / numTasks;
-            int perThreadLeftover = MaxValue % numTasks;
-
-            Task<long>[] tasks = new Task<long>[numTasks];
-
-            for (int i = 0; i < numTasks; i++)
-            {                
-                int start = i * perThreadCount;
-                int end = (i+1) * perThreadCount;
-                if (i == numTasks - 1)
-                {
-                    end += perThreadLeftover;
-                }
-                tasks[i] = Task<long>.Run(() =>
-                {
-                    long threadSum = 0;
-                    for (int j = start; j <= end; j++)
-                    {
-                        threadSum += (long)Math.Sqrt(j);
-                    }
-                    return threadSum;
-                });
-                tasks[i].ContinueWith(OnTaskEnd);
-            }
-            
-            // You shouldn't normally wait on tasks, but in this case we want to wait 
-            // until the previous test is complete
-            Task.WaitAll(tasks);
-
-            watch.Restart();
-            sum = 0;
-            Parallel.For(0, MaxValue, (i) =>
-                {
-                    Interlocked.Add(ref sum, (long)Math.Sqrt(i));
-                });
-            watch.Stop();
-            Console.WriteLine("Parallel.For: {0}", watch.Elapsed);
-        }
-
-        private static void OnTaskEnd(Task<long> task)
-        {
-            Console.WriteLine("Thread sum: {0}", task.Result);
-            if (Interlocked.Decrement(ref pendingTasks) == 0)
+            tasks[i] = Task.Run(() =>
             {
-                watch.Stop();
-                Console.WriteLine("Tasks: {0}", watch.Elapsed);
-            }            
-        }
-    }
+               long threadSum = 0;
+               for (var j = start; j <= end; j++)
+               {
+                  threadSum += (long)Math.Sqrt(j);
+               }
+
+               return threadSum;
+            });
+            tasks[i].ContinueWith(OnTaskEnd);
+         }
+
+         // You shouldn't normally wait on tasks, but in this case we want to wait 
+         // until the previous test is complete
+         Task.WaitAll(tasks);
+
+         _Watch.Restart();
+         sum = 0;
+         Parallel.For(0, maxValue, i => { Interlocked.Add(ref sum, (long)Math.Sqrt(i)); });
+         _Watch.Stop();
+         Console.WriteLine("Parallel.For: {0}", _Watch.Elapsed);
+      }
+
+      private static void OnTaskEnd(Task<long> task)
+      {
+         Console.WriteLine("Thread sum: {0}", task.Result);
+         if (Interlocked.Decrement(ref _PendingTasks) == 0)
+         {
+            _Watch.Stop();
+            Console.WriteLine("Tasks: {0}", _Watch.Elapsed);
+         }
+      }
+   }
 }
