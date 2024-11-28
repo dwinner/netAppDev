@@ -1,6 +1,6 @@
 ﻿namespace PerfCountersTypingSpeed
 {
-    partial class Form1
+    partial class PerCounterForm
     {
         /// <summary>
         /// Required designer variable.

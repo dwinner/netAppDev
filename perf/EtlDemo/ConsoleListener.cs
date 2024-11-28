@@ -1,39 +1,38 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Diagnostics.Tracing;
 
 namespace EtlDemo
 {
-    class ConsoleListener : BaseListener
-    {
-        public ConsoleListener(IEnumerable<SourceConfig> sources)
-            :base(sources)
-        {
-        }
+   internal class ConsoleListener : BaseListener
+   {
+      public ConsoleListener(IEnumerable<SourceConfig> sources)
+         : base(sources)
+      {
+      }
 
-        protected override void WriteEvent(System.Diagnostics.Tracing.EventWrittenEventArgs eventData)
-        {
-            string outputString;
-            switch (eventData.EventId)
-            {
-                case Events.ProcessingStartId:
-                    outputString = string.Format("ProcessingStart ({0})", eventData.EventId);
-                    break;
-                case Events.ProcessingFinishId:
-                    outputString = string.Format("ProcessingFinish ({0})", eventData.EventId);
-                    break;
-                case Events.FoundPrimeId:
-                    outputString = string.Format("FoundPrime ({0}): {1}", eventData.EventId, (long)eventData.Payload[0]);
-                    break;
-                case Events.NullStringId:
-                    outputString = string.Format("NullString ({0}): {1}", eventData.EventId, (string)eventData.Payload[0]);
-                    break;
-                default:
-                    throw new InvalidOperationException("Unknown event");
-            }
-            Console.WriteLine(outputString);
-        }
-    }
+      protected override void WriteEvent(EventWrittenEventArgs eventData)
+      {
+         string outputString;
+         switch (eventData.EventId)
+         {
+            case Events.ProcessingStartId:
+               outputString = $"ProcessingStart ({eventData.EventId.ToString()})";
+               break;
+            case Events.ProcessingFinishId:
+               outputString = $"ProcessingFinish ({eventData.EventId.ToString()})";
+               break;
+            case Events.FoundPrimeId:
+               outputString = $"FoundPrime ({eventData.EventId.ToString()}): {((long)eventData.Payload[0]).ToString()}";
+               break;
+            case Events.NullStringId:
+               outputString = $"NullString ({eventData.EventId.ToString()}): {(string)eventData.Payload[0]}";
+               break;
+            default:
+               throw new InvalidOperationException("Unknown event");
+         }
+
+         Console.WriteLine(outputString);
+      }
+   }
 }

@@ -1,71 +1,74 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics.Tracing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace EtlDemo
 {
-    class Program
-    {
-        static void Main(string[] args)
-        {
-            var consoleListener = new ConsoleListener(
-                new SourceConfig[] 
-                {
-                    new SourceConfig(){
-                        Name = "EtlDemo", 
-                        Level = EventLevel.Informational, 
-                        Keywords = Events.Keywords.General}                    
-                });
-
-            var fileListener = new FileListener(
-                new SourceConfig[]
-                {
-                    new SourceConfig(){
-                        Name = "EtlDemo", 
-                        Level = EventLevel.Verbose, 
-                        Keywords = Events.Keywords.PrimeOutput}
-                },
-                "PrimeOutput.txt");
-
-            long start = 1000000;
-            long end = 10000000;
-            Events.Log.NullString("This won't be logged");
-            Events.Log.ProcessingStart();
-            for (long i = start; i < end; i++)
+   internal static class Program
+   {
+      private static void Main()
+      {
+         var consoleListener = new ConsoleListener(
+            new[]
             {
-                if (IsPrime(i))
-                {
-                    Events.Log.FoundPrime(i);
-                }
+               new SourceConfig
+               {
+                  Name = "EtlDemo",
+                  Level = EventLevel.Informational,
+                  Keywords = Events.Keywords.General
+               }
+            });
+
+         var fileListener = new FileListener(
+            new[]
+            {
+               new SourceConfig
+               {
+                  Name = "EtlDemo",
+                  Level = EventLevel.Verbose,
+                  Keywords = Events.Keywords.PrimeOutput
+               }
+            },
+            "PrimeOutput.txt");
+
+         long start = 1_000_000;
+         long end = 10_000_000;
+         Events._Log.NullString("This won't be logged");
+         Events._Log.ProcessingStart();
+         for (var i = start; i < end; i++)
+         {
+            if (IsPrime(i))
+            {
+               Events._Log.FoundPrime(i);
             }
-            
-            Events.Log.ProcessingFinish();
-            consoleListener.Dispose();
-            fileListener.Dispose();
-        }
+         }
 
-        private static bool IsPrime(long number)
-        {
-            if (number % 2 == 0)
+         Events._Log.ProcessingFinish();
+         consoleListener.Dispose();
+         fileListener.Dispose();
+      }
+
+      private static bool IsPrime(long number)
+      {
+         if (number % 2 == 0)
+         {
+            if (number == 2)
             {
-                if (number ==2)
-                {
-                    return true;
-                }
-                return false;
-            } 
-            long sqrt = (long)Math.Sqrt(number);
-            for (int i = 3; i <= sqrt; i += 2)
-            {
-                if (number % i == 0)
-                {
-                    return false;
-                }
+               return true;
             }
-            return true;
-        }
-    }
+
+            return false;
+         }
+
+         var sqrt = (long)Math.Sqrt(number);
+         for (var i = 3; i <= sqrt; i += 2)
+         {
+            if (number % i == 0)
+            {
+               return false;
+            }
+         }
+
+         return true;
+      }
+   }
 }

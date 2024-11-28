@@ -2,57 +2,55 @@
 
 namespace EtlDemo
 {
-    [EventSource(Name="EtlDemo")]
-    internal sealed class Events : EventSource
-    {
-        public static readonly Events Log = new Events();
+   [EventSource(Name = "EtlDemo")]
+   internal sealed class Events : EventSource
+   {
+      internal const int ProcessingStartId = 1;
+      internal const int ProcessingFinishId = 2;
+      internal const int FoundPrimeId = 3;
+      internal const int NullStringId = 4;
+      public static readonly Events _Log = new Events();
 
-        public class Keywords
-        {
-            public const EventKeywords General = (EventKeywords)1;
-            public const EventKeywords PrimeOutput = (EventKeywords)2;
-        }
+      [Event(ProcessingStartId, Level = EventLevel.Informational, Keywords = Keywords.General)]
+      public void ProcessingStart()
+      {
+         if (IsEnabled())
+         {
+            WriteEvent(ProcessingStartId);
+         }
+      }
 
-        internal const int ProcessingStartId = 1;
-        internal const int ProcessingFinishId = 2;
-        internal const int FoundPrimeId = 3;
-        internal const int NullStringId = 4;
+      [Event(ProcessingFinishId, Level = EventLevel.Informational, Keywords = Keywords.General)]
+      public void ProcessingFinish()
+      {
+         if (IsEnabled())
+         {
+            WriteEvent(ProcessingFinishId);
+         }
+      }
 
-        [Event(ProcessingStartId, Level = EventLevel.Informational, Keywords = Keywords.General)]
-        public void ProcessingStart()
-        {
-            if (this.IsEnabled())
-            {
-                this.WriteEvent(ProcessingStartId);
-            }
-        }
+      [Event(FoundPrimeId, Level = EventLevel.Informational, Keywords = Keywords.PrimeOutput)]
+      public void FoundPrime(long primeNumber)
+      {
+         if (IsEnabled())
+         {
+            WriteEvent(FoundPrimeId, primeNumber);
+         }
+      }
 
-        [Event(ProcessingFinishId, Level = EventLevel.Informational, Keywords = Keywords.General)]
-        public void ProcessingFinish()
-        {
-            if (this.IsEnabled())
-            {
-                this.WriteEvent(ProcessingFinishId);
-            }
-        }
+      [Event(NullStringId, Level = EventLevel.Informational, Keywords = Keywords.General)]
+      public void NullString(string id)
+      {
+         if (IsEnabled())
+         {
+            WriteEvent(NullStringId, (string)null);
+         }
+      }
 
-        [Event(FoundPrimeId, Level = EventLevel.Informational, Keywords = Keywords.PrimeOutput)]
-        public void FoundPrime(long primeNumber)
-        {
-            if (this.IsEnabled())
-            {
-                this.WriteEvent(FoundPrimeId, primeNumber);                
-            }
-        }              
-
-        [Event(NullStringId, Level = EventLevel.Informational, Keywords = Keywords.General)]
-        public void NullString(string id)
-        {
-            if (this.IsEnabled())
-            {
-                this.WriteEvent(NullStringId, (string)null);
-            }
-        }
-
-    }
+      public static class Keywords
+      {
+         public const EventKeywords General = (EventKeywords)1;
+         public const EventKeywords PrimeOutput = (EventKeywords)2;
+      }
+   }
 }
