@@ -34,7 +34,7 @@ public static class InsertionSort
    /// <typeparam name="TItem">Item type</typeparam>
    public static void Sort<TItem>(in TItem[] anArray, in IComparer<TItem> aComparer)
    {
-      var len = anArray.Length;
+      var len = anArray.Length;      
       for (var i = 0; i < len; i++)
       {
          for (var j = i; j > 0 && Less(anArray[j], anArray[j - 1], aComparer); j--)
