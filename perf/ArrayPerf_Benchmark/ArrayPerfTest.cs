@@ -2,7 +2,7 @@
 
 /*
  * PERF: Keep in mind, that the fastest way is to have
- * a flat structure with locical offset, i.e. when array[row][col]
+ * a flat structure with logical offset, i.e. when array[row][col]
  * is just a flat of [i*row + col], where col is an offset
  */
 
