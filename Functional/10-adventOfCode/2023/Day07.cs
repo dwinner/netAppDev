@@ -105,7 +105,7 @@
             (numJokers, Score: TypeWithoutJokers(groupedCards)) switch
             {
                 (1, HandType.HighestCard) => HandType.OnePair,
-                ( 1, HandType.OnePair ) => HandType.ThreeOfKind,
+                (1, HandType.OnePair ) => HandType.ThreeOfKind,
                 (1, HandType.TwoPair) => HandType.FullHouse,
                 (1, HandType.ThreeOfKind) => HandType.FourOfKind,
                 (1, HandType.FourOfKind) => HandType.FiveOfKind,
