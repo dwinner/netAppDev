@@ -28,7 +28,6 @@ namespace _08_ImplicitBoxingClosures
       {
          var delegates = new PrintAndIncrement[3];
          var someVariable = 0;
-         var anotherVariable = 1;
          for (var i = 0; i < 3; i++)
          {
             delegates[i] = delegate { Console.WriteLine(someVariable++); };
