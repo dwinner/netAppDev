@@ -9,26 +9,30 @@ internal static class Program
       var trimMethod = typeof(string).GetMethod("Trim", Type.EmptyTypes);
 
       // First let's test the performance when calling Invoke
-      var sw = Stopwatch.StartNew();
+      var stopwatch = Stopwatch.StartNew();
 
       for (var i = 0; i < 1_000_000; i++)
       {
          trimMethod.Invoke("test", null);
       }
 
-      sw.Stop();
+      stopwatch.Stop();
+
+      Console.WriteLine($"Calling invoke: {stopwatch.Elapsed}");
 
       // Now let's test the performance when using a delegate:
       var trim = (StringToString)Delegate.CreateDelegate(typeof(StringToString), trimMethod);
-      sw.Restart();
+      stopwatch.Restart();
 
       for (var i = 0; i < 1_000_000; i++)
       {
          trim("test");
       }
 
-      sw.Stop();
+      stopwatch.Stop();
+
+      Console.WriteLine($"Calling cached delegate: {stopwatch.Elapsed}");
    }
 
-   private delegate string StringToString(string s);
+   private delegate string StringToString(string str);
 }
