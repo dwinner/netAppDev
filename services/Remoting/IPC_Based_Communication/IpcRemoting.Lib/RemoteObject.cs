@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.Remoting.Messaging;
 
 namespace IpcRemoting.Lib;
 
@@ -7,6 +8,7 @@ public class RemoteObject : MarshalByRefObject
    public const string DefaultAppName = "mDbg";
    public const string DefaultIpcPortName = "9090";
    public const string DefaultUri = "mDbg_IPC.rem";
+   public const string CookieKey = nameof(CookieKey);
 
    public RemoteObject()
    {
@@ -26,6 +28,11 @@ public class RemoteObject : MarshalByRefObject
       var eventArgs = new StatusEventArgs($"Hi with subscription, {name}");
       OnStatusChanged(eventArgs);
    }
+
+   public string SayHiWithClientData() =>
+      CallContext.GetData(CookieKey) is CallContextData ctxData
+         ? $"Hi, with your context data: '{ctxData.Data}'"
+         : "Hi, you have no context data set";
 
    protected virtual void OnStatusChanged(StatusEventArgs e)
    {
