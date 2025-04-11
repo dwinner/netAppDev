@@ -11,7 +11,7 @@ public static class EnumerableExtensions
       @this.Aggregate(1u, (agg, x) => agg * x);
 
    public static long Product(this IEnumerable<long> @this) =>
-      @this.Aggregate(1l, (agg, x) => agg * x);
+      @this.Aggregate(1L, (agg, x) => agg * x);
 
    public static IEnumerable<T2> Scan<T1, T2>(this IEnumerable<T1> @this, T2 seed, Func<T2, T1, T2> acc)
    {

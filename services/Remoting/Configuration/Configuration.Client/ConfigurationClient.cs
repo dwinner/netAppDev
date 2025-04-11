@@ -5,7 +5,7 @@ using Configuration.Rmi;
 
 namespace Configuration.Client
 {
-   internal static class Program
+   internal static class ConfigurationClient
    {
       private const string ClientRmiConfig = "Configuration.Client.exe.config";
 
@@ -16,9 +16,7 @@ namespace Configuration.Client
 
          RemotingConfiguration.Configure(ClientRmiConfig, false);
          var hello = new Hello();
-         // ReSharper disable once SuspiciousTypeConversion.Global
-         var lease = hello as ILease;
-         if (lease != null)
+         if (hello is ILease lease)
          {
             Console.WriteLine("Lease configuration:");
             Console.WriteLine("Initial lease time: {0}", lease.InitialLeaseTime);
@@ -27,14 +25,14 @@ namespace Configuration.Client
             Console.WriteLine(lease.CurrentLeaseTime);
          }
 
-         for (int i = 0; i < 5; i++)
+         for (var i = 0; i < 5; i++)
          {
             Console.WriteLine(hello.Greeting("Denis"));
          }
 
          // Асинхронная версия rmi-объекта
          Func<string, string> greetingInvoker = hello.Greeting;
-         IAsyncResult asyncResult = greetingInvoker.BeginInvoke("Stephanie", null, null);
+         var asyncResult = greetingInvoker.BeginInvoke("Stephanie", null, null);
          asyncResult.AsyncWaitHandle.WaitOne(); // Ждем, пока не придет сигнал
          string greeting = null;
          if (asyncResult.IsCompleted)

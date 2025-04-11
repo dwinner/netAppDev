@@ -7,7 +7,7 @@ using Events.Sinking;
 
 namespace Events.Client
 {
-   internal static class Program
+   internal static class EventClient
    {
       private static void Main()
       {
@@ -34,7 +34,7 @@ namespace Events.Client
          // Сохранение состояния на клиенте
          var cookie = new CallContextData { Data = "Information for the server" };
          CallContext.SetData("mycookie", cookie);
-         for (int i = 0; i < 5; i++)
+         for (var i = 0; i < 5; i++)
          {
             Console.WriteLine(remoteObject.Greeting("Denis"));
          }

@@ -3,7 +3,7 @@ using System.Runtime.Remoting;
 
 namespace Events.Server
 {
-   internal static class Program
+   internal static class EventServer
    {
       private static void Main()
       {

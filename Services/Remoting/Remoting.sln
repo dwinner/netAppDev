@@ -1,6 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
+# Visual Studio Version 17
+VisualStudioVersion = 17.13.35919.96 d17.13
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "RemoteHello", "RemoteHello", "{164452A7-035A-48B6-870E-AD6D1995A83C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RemoteHello.Hello", "RemoteHello\RemoteHello.Hello\RemoteHello.Hello.csproj", "{37A0F3FE-3A1A-4A74-9EA8-D669A22215DA}"
@@ -28,6 +30,14 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Events.Client", "RemotingAndEvents\Events.Client\Events.Client.csproj", "{4FC3389A-5D16-4F38-B6D9-55D4366F23CE}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Events.Cookie", "RemotingAndEvents\Events.Cookie\Events.Cookie.csproj", "{FB8958EB-6C60-467C-973D-40A0F33F0D77}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "IPC_Based_Communication", "IPC_Based_Communication", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IpcRemoting.Lib", "IPC_Based_Communication\IpcRemoting.Lib\IpcRemoting.Lib.csproj", "{993594B8-4542-4FA9-94AC-D52EAA279114}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IpcRemoting_Server", "IPC_Based_Communication\IpcRemoting_Server\IpcRemoting_Server.csproj", "{559E4343-0AC8-48B3-B013-631688D44B4A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IpcRemoting_Client", "IPC_Based_Communication\IpcRemoting_Client\IpcRemoting_Client.csproj", "{A0FBAEE2-B594-4EAA-A931-0EF8A25EEAB1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -79,6 +89,18 @@ Global
 		{FB8958EB-6C60-467C-973D-40A0F33F0D77}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FB8958EB-6C60-467C-973D-40A0F33F0D77}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FB8958EB-6C60-467C-973D-40A0F33F0D77}.Release|Any CPU.Build.0 = Release|Any CPU
+		{993594B8-4542-4FA9-94AC-D52EAA279114}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{993594B8-4542-4FA9-94AC-D52EAA279114}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{993594B8-4542-4FA9-94AC-D52EAA279114}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{993594B8-4542-4FA9-94AC-D52EAA279114}.Release|Any CPU.Build.0 = Release|Any CPU
+		{559E4343-0AC8-48B3-B013-631688D44B4A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{559E4343-0AC8-48B3-B013-631688D44B4A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{559E4343-0AC8-48B3-B013-631688D44B4A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{559E4343-0AC8-48B3-B013-631688D44B4A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A0FBAEE2-B594-4EAA-A931-0EF8A25EEAB1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A0FBAEE2-B594-4EAA-A931-0EF8A25EEAB1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A0FBAEE2-B594-4EAA-A931-0EF8A25EEAB1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A0FBAEE2-B594-4EAA-A931-0EF8A25EEAB1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -95,5 +117,11 @@ Global
 		{6E6814E7-2C95-4380-A48C-A5E52542D10D} = {F588B8E1-0B22-4CBF-B661-01D01C676DDF}
 		{4FC3389A-5D16-4F38-B6D9-55D4366F23CE} = {F588B8E1-0B22-4CBF-B661-01D01C676DDF}
 		{FB8958EB-6C60-467C-973D-40A0F33F0D77} = {F588B8E1-0B22-4CBF-B661-01D01C676DDF}
+		{993594B8-4542-4FA9-94AC-D52EAA279114} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{559E4343-0AC8-48B3-B013-631688D44B4A} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{A0FBAEE2-B594-4EAA-A931-0EF8A25EEAB1} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {FE9D1F24-CC2E-4492-87A5-3633CF90A21B}
 	EndGlobalSection
 EndGlobal

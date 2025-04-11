@@ -23,6 +23,6 @@ namespace Configuration.Rmi
          Console.WriteLine("Start");
          Thread.Sleep(ms);
          Console.WriteLine("Finish");
-      }      
+      }
    }
 }

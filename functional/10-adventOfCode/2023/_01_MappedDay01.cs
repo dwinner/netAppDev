@@ -3,7 +3,7 @@ using AdventOfCode.Common;
 
 namespace AdventOfCode._2023
 {
-    public class Day01
+    public class _01_MappedDay01
     {
         private static Regex _digit = new("[0-9]");
         private static Regex _firstNumeral = new("(\\d|one|two|three|four|five|six|seven|eight|nine)");

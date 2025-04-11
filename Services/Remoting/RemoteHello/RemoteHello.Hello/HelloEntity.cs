@@ -3,7 +3,7 @@
 namespace RemoteHello.Hello
 {
    /// <summary>
-   /// Класс, объекты которого не покидают границы созданного домена приложения
+   ///    Класс, объекты которого не покидают границы созданного домена приложения
    /// </summary>
    public class HelloEntity : MarshalByRefObject
    {
@@ -15,7 +15,7 @@ namespace RemoteHello.Hello
       public string Greeting(string name)
       {
          Console.WriteLine("Greeting called");
-         return string.Format("Hello, {0}", name);
+         return $"Hello, {name}";
       }
    }
 }

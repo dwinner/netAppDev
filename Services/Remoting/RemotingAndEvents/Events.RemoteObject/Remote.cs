@@ -16,18 +16,20 @@ namespace Events.RemoteObject
 
       private void OnStatus(StatusEventArgs e)
       {
-         EventHandler<StatusEventArgs> handler = Status;
-         if (handler != null) handler(this, e);
+         var handler = Status;
+         handler?.Invoke(this, e);
       }
 
       public void LongWorking(int ms)
       {
          Console.WriteLine("Remote: LongWorking() Started");
+
          // Вызываем событие по старту
          var args = new StatusEventArgs("Message for Client: LongWorking() Started");
          OnStatus(args);
          Thread.Sleep(ms);
          args.Message = "Message for Client: LongWorking() Ending";
+
          // Вызываем событие по окончанию
          OnStatus(args);
          Console.WriteLine("Remote: LongWorking() Ending");
@@ -36,12 +38,14 @@ namespace Events.RemoteObject
       public string Greeting(string name)
       {
          Console.WriteLine("Greeting start");
-         var contextData = CallContext.GetData("mycookie") as CallContextData;
-         if (contextData != null)
-            Console.WriteLine("Cookie value: " + contextData.Data);
+         if (CallContext.GetData("mycookie") is CallContextData contextData)
+         {
+            Console.WriteLine($"Cookie value: {contextData.Data}");
+         }
+
          Console.WriteLine("Greeting finish");
 
-         return string.Format("Hello, {0}", name);
+         return $"Hello, {name}";
       }
    }
 }
