@@ -13,9 +13,22 @@ public class RemoteObject : MarshalByRefObject
       Console.WriteLine($"Ctor called for {nameof(RemoteObject)}");
    }
 
+   public event EventHandler<StatusEventArgs> StatusChanged;
+
    public string SayHi(string name)
    {
       Console.WriteLine($"{nameof(SayHi)} called");
       return $"Hi from remote endpoint, {name}";
+   }
+
+   public void SayHiWithSubscription(string name)
+   {
+      var eventArgs = new StatusEventArgs($"Hi with subscription, {name}");
+      OnStatusChanged(eventArgs);
+   }
+
+   protected virtual void OnStatusChanged(StatusEventArgs e)
+   {
+      StatusChanged?.Invoke(this, e);
    }
 }

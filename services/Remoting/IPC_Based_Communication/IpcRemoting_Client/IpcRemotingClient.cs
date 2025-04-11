@@ -17,8 +17,15 @@ internal class IpcRemotingClient
 
       try
       {
+         // Simple RMI
          var response = remoteObject.SayHi("Denis");
          Console.WriteLine($"RMI-endpoint answered: {response}");
+
+         // RMI with notification from server
+         var sink = new EventSink();
+         remoteObject.StatusChanged += sink.StatusHandler;
+         remoteObject.SayHiWithSubscription("Denis");
+         remoteObject.StatusChanged -= sink.StatusHandler;
       }
       catch (Exception commonEx)
       {
