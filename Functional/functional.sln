@@ -258,6 +258,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "howtos", "howtos", "{1599BD
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UseOfExpr", "howtos\UseOfExpr\UseOfExpr.csproj", "{046D0732-B140-41E7-BBB4-700496E3BDCF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SideEffectIsolation", "howtos\SideEffectIsolation\SideEffectIsolation.csproj", "{BFC6095A-FF5B-433D-8E0E-CE2048459FD1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -379,6 +381,7 @@ Global
 		{37117EA1-D46C-4B61-BF04-9472E40EE7F4} = {3257BF1E-515D-4992-8565-0324507F8B69}
 		{F2A2DB70-96EF-46BE-9941-EC491962EA0C} = {CF4B5FFC-CA6A-4AD1-B688-042D734F60E2}
 		{046D0732-B140-41E7-BBB4-700496E3BDCF} = {1599BD3A-63FD-4066-BCA3-9BDF82F39B9A}
+		{BFC6095A-FF5B-433D-8E0E-CE2048459FD1} = {1599BD3A-63FD-4066-BCA3-9BDF82F39B9A}
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{80FA3A9E-C722-46C6-82DC-C62F31105BE0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -841,5 +844,9 @@ Global
 		{046D0732-B140-41E7-BBB4-700496E3BDCF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{046D0732-B140-41E7-BBB4-700496E3BDCF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{046D0732-B140-41E7-BBB4-700496E3BDCF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BFC6095A-FF5B-433D-8E0E-CE2048459FD1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BFC6095A-FF5B-433D-8E0E-CE2048459FD1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BFC6095A-FF5B-433D-8E0E-CE2048459FD1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BFC6095A-FF5B-433D-8E0E-CE2048459FD1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
