@@ -1,0 +1,10 @@
+﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="Current">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <FileUpgradeFlags>40</FileUpgradeFlags>
+    <UpgradeBackupLocation>C:\Users\Stuart\git\LanguageExtForNewDevelopers\Backup\Tutorial10\</UpgradeBackupLocation>
+    <OldToolsVersion>2.0</OldToolsVersion>
+    <LangVersion>default</LangVersion>
+    <TargetFramework>net9.0</TargetFramework>
+  </PropertyGroup>
+</Project>
