@@ -1,0 +1,479 @@
+﻿{
+  "Scenario": "Regression",
+  "DataSource": {
+    "Version": 3,
+    "EscapeCharacter": "\"",
+    "ReadMultiLines": false,
+    "KeepDiacritics": false,
+    "KeepPunctuations": false,
+    "AllowQuoting": false,
+    "Type": "TabularFile",
+    "FilePath": "F:\\dotNet\\cSharpNET\\ml\\raw\\housing.csv",
+    "Delimiter": ",",
+    "DecimalMarker": ".",
+    "HasHeader": true,
+    "ColumnProperties": [
+      {
+        "ColumnName": "CRIM",
+        "ColumnPurpose": "Feature",
+        "ColumnDataFormat": "Single",
+        "IsCategorical": false,
+        "Type": "Column",
+        "Version": 5
+      },
+      {
+        "ColumnName": "ZN",
+        "ColumnPurpose": "Feature",
+        "ColumnDataFormat": "Single",
+        "IsCategorical": true,
+        "Type": "Column",
+        "Version": 5
+      },
+      {
+        "ColumnName": "INDUS",
+        "ColumnPurpose": "Feature",
+        "ColumnDataFormat": "Single",
+        "IsCategorical": false,
+        "Type": "Column",
+        "Version": 5
+      },
+      {
+        "ColumnName": "CHAS",
+        "ColumnPurpose": "Feature",
+        "ColumnDataFormat": "Single",
+        "IsCategorical": true,
+        "Type": "Column",
+        "Version": 5
+      },
+      {
+        "ColumnName": "NOX",
+        "ColumnPurpose": "Feature",
+        "ColumnDataFormat": "Single",
+        "IsCategorical": false,
+        "Type": "Column",
+        "Version": 5
+      },
+      {
+        "ColumnName": "RM",
+        "ColumnPurpose": "Feature",
+        "ColumnDataFormat": "Single",
+        "IsCategorical": false,
+        "Type": "Column",
+        "Version": 5
+      },
+      {
+        "ColumnName": "AGE",
+        "ColumnPurpose": "Feature",
+        "ColumnDataFormat": "Single",
+        "IsCategorical": false,
+        "Type": "Column",
+        "Version": 5
+      },
+      {
+        "ColumnName": "DIS",
+        "ColumnPurpose": "Feature",
+        "ColumnDataFormat": "Single",
+        "IsCategorical": false,
+        "Type": "Column",
+        "Version": 5
+      },
+      {
+        "ColumnName": "RAD",
+        "ColumnPurpose": "Feature",
+        "ColumnDataFormat": "Single",
+        "IsCategorical": true,
+        "Type": "Column",
+        "Version": 5
+      },
+      {
+        "ColumnName": "TAX",
+        "ColumnPurpose": "Feature",
+        "ColumnDataFormat": "Single",
+        "IsCategorical": false,
+        "Type": "Column",
+        "Version": 5
+      },
+      {
+        "ColumnName": "PTRATIO",
+        "ColumnPurpose": "Feature",
+        "ColumnDataFormat": "Single",
+        "IsCategorical": false,
+        "Type": "Column",
+        "Version": 5
+      },
+      {
+        "ColumnName": "MEDV",
+        "ColumnPurpose": "Label",
+        "ColumnDataFormat": "Single",
+        "IsCategorical": false,
+        "Type": "Column",
+        "Version": 5
+      }
+    ]
+  },
+  "Environment": {
+    "Type": "LocalCPU",
+    "Version": 1
+  },
+  "RunHistory": {
+    "Version": 3,
+    "Type": "Result",
+    "Trials": [
+      {
+        "Version": 1,
+        "Type": "Trial",
+        "TrainerName": "LightGbmRegression",
+        "Score": 0.78795596856036365,
+        "RuntimeInSeconds": 6.229,
+        "Parameter": {
+          "_SCHEMA_": "e0 * e1 * e4",
+          "e0": {
+            "OutputColumnNames": [
+              "CRIM",
+              "ZN",
+              "INDUS",
+              "CHAS",
+              "NOX",
+              "RM",
+              "AGE",
+              "DIS",
+              "RAD",
+              "TAX",
+              "PTRATIO"
+            ],
+            "InputColumnNames": [
+              "CRIM",
+              "ZN",
+              "INDUS",
+              "CHAS",
+              "NOX",
+              "RM",
+              "AGE",
+              "DIS",
+              "RAD",
+              "TAX",
+              "PTRATIO"
+            ]
+          },
+          "e1": {
+            "InputColumnNames": [
+              "CRIM",
+              "ZN",
+              "INDUS",
+              "CHAS",
+              "NOX",
+              "RM",
+              "AGE",
+              "DIS",
+              "RAD",
+              "TAX",
+              "PTRATIO"
+            ],
+            "OutputColumnName": "Features"
+          },
+          "e4": {
+            "NumberOfLeaves": 3174,
+            "MinimumExampleCountPerLeaf": 20,
+            "LearningRate": 0.046633664873712961,
+            "NumberOfTrees": 1282,
+            "SubsampleFraction": 0.99999977667298645,
+            "MaximumBinCountPerFeature": 483,
+            "FeatureFraction": 0.99999999,
+            "L1Regularization": 2E-10,
+            "L2Regularization": 0.038678007042752809,
+            "LabelColumnName": "MEDV",
+            "FeatureColumnName": "Features"
+          }
+        }
+      },
+      {
+        "Version": 1,
+        "Type": "Trial",
+        "TrainerName": "LightGbmRegression",
+        "Score": 0.77782783939961464,
+        "RuntimeInSeconds": 5.68,
+        "Parameter": {
+          "_SCHEMA_": "e0 * e1 * e4",
+          "e0": {
+            "OutputColumnNames": [
+              "CRIM",
+              "ZN",
+              "INDUS",
+              "CHAS",
+              "NOX",
+              "RM",
+              "AGE",
+              "DIS",
+              "RAD",
+              "TAX",
+              "PTRATIO"
+            ],
+            "InputColumnNames": [
+              "CRIM",
+              "ZN",
+              "INDUS",
+              "CHAS",
+              "NOX",
+              "RM",
+              "AGE",
+              "DIS",
+              "RAD",
+              "TAX",
+              "PTRATIO"
+            ]
+          },
+          "e1": {
+            "InputColumnNames": [
+              "CRIM",
+              "ZN",
+              "INDUS",
+              "CHAS",
+              "NOX",
+              "RM",
+              "AGE",
+              "DIS",
+              "RAD",
+              "TAX",
+              "PTRATIO"
+            ],
+            "OutputColumnName": "Features"
+          },
+          "e4": {
+            "NumberOfLeaves": 4240,
+            "MinimumExampleCountPerLeaf": 20,
+            "LearningRate": 0.16474438845792952,
+            "NumberOfTrees": 1006,
+            "SubsampleFraction": 0.99999977667298645,
+            "MaximumBinCountPerFeature": 375,
+            "FeatureFraction": 0.99999999,
+            "L1Regularization": 1.3317170883008266E-09,
+            "L2Regularization": 0.59060849142173288,
+            "LabelColumnName": "MEDV",
+            "FeatureColumnName": "Features"
+          }
+        }
+      },
+      {
+        "Version": 1,
+        "Type": "Trial",
+        "TrainerName": "LightGbmRegression",
+        "Score": 0.77161309952776624,
+        "RuntimeInSeconds": 4.425,
+        "Parameter": {
+          "_SCHEMA_": "e0 * e1 * e4",
+          "e0": {
+            "OutputColumnNames": [
+              "CRIM",
+              "ZN",
+              "INDUS",
+              "CHAS",
+              "NOX",
+              "RM",
+              "AGE",
+              "DIS",
+              "RAD",
+              "TAX",
+              "PTRATIO"
+            ],
+            "InputColumnNames": [
+              "CRIM",
+              "ZN",
+              "INDUS",
+              "CHAS",
+              "NOX",
+              "RM",
+              "AGE",
+              "DIS",
+              "RAD",
+              "TAX",
+              "PTRATIO"
+            ]
+          },
+          "e1": {
+            "InputColumnNames": [
+              "CRIM",
+              "ZN",
+              "INDUS",
+              "CHAS",
+              "NOX",
+              "RM",
+              "AGE",
+              "DIS",
+              "RAD",
+              "TAX",
+              "PTRATIO"
+            ],
+            "OutputColumnName": "Features"
+          },
+          "e4": {
+            "NumberOfLeaves": 5305,
+            "MinimumExampleCountPerLeaf": 22,
+            "LearningRate": 0.58199829676428,
+            "NumberOfTrees": 729,
+            "SubsampleFraction": 0.085782240034410762,
+            "MaximumBinCountPerFeature": 290,
+            "FeatureFraction": 0.941784294849992,
+            "L1Regularization": 1.5975795024418922E-08,
+            "L2Regularization": 0.99999977667298645,
+            "LabelColumnName": "MEDV",
+            "FeatureColumnName": "Features"
+          }
+        }
+      },
+      {
+        "Version": 1,
+        "Type": "Trial",
+        "TrainerName": "LightGbmRegression",
+        "Score": 0.76899429031492128,
+        "RuntimeInSeconds": 4.15,
+        "Parameter": {
+          "_SCHEMA_": "e0 * e1 * e4",
+          "e0": {
+            "OutputColumnNames": [
+              "CRIM",
+              "ZN",
+              "INDUS",
+              "CHAS",
+              "NOX",
+              "RM",
+              "AGE",
+              "DIS",
+              "RAD",
+              "TAX",
+              "PTRATIO"
+            ],
+            "InputColumnNames": [
+              "CRIM",
+              "ZN",
+              "INDUS",
+              "CHAS",
+              "NOX",
+              "RM",
+              "AGE",
+              "DIS",
+              "RAD",
+              "TAX",
+              "PTRATIO"
+            ]
+          },
+          "e1": {
+            "InputColumnNames": [
+              "CRIM",
+              "ZN",
+              "INDUS",
+              "CHAS",
+              "NOX",
+              "RM",
+              "AGE",
+              "DIS",
+              "RAD",
+              "TAX",
+              "PTRATIO"
+            ],
+            "OutputColumnName": "Features"
+          },
+          "e4": {
+            "NumberOfLeaves": 1855,
+            "MinimumExampleCountPerLeaf": 20,
+            "LearningRate": 0.45830846987920731,
+            "NumberOfTrees": 894,
+            "SubsampleFraction": 0.99999977667298645,
+            "MaximumBinCountPerFeature": 331,
+            "FeatureFraction": 0.99973200165482778,
+            "L1Regularization": 2E-10,
+            "L2Regularization": 0.8367691017148482,
+            "LabelColumnName": "MEDV",
+            "FeatureColumnName": "Features"
+          }
+        }
+      },
+      {
+        "Version": 1,
+        "Type": "Trial",
+        "TrainerName": "FastForestRegression",
+        "Score": 0.72240520597072844,
+        "RuntimeInSeconds": 0.301,
+        "Parameter": {
+          "_SCHEMA_": "e0 * e1 * e3",
+          "e0": {
+            "OutputColumnNames": [
+              "CRIM",
+              "ZN",
+              "INDUS",
+              "CHAS",
+              "NOX",
+              "RM",
+              "AGE",
+              "DIS",
+              "RAD",
+              "TAX",
+              "PTRATIO"
+            ],
+            "InputColumnNames": [
+              "CRIM",
+              "ZN",
+              "INDUS",
+              "CHAS",
+              "NOX",
+              "RM",
+              "AGE",
+              "DIS",
+              "RAD",
+              "TAX",
+              "PTRATIO"
+            ]
+          },
+          "e1": {
+            "InputColumnNames": [
+              "CRIM",
+              "ZN",
+              "INDUS",
+              "CHAS",
+              "NOX",
+              "RM",
+              "AGE",
+              "DIS",
+              "RAD",
+              "TAX",
+              "PTRATIO"
+            ],
+            "OutputColumnName": "Features"
+          },
+          "e3": {
+            "NumberOfTrees": 17,
+            "NumberOfLeaves": 4,
+            "FeatureFraction": 0.8181847,
+            "LabelColumnName": "MEDV",
+            "FeatureColumnName": "Features"
+          }
+        }
+      }
+    ],
+    "Estimators": {
+      "e0": "ReplaceMissingValues",
+      "e1": "Concatenate",
+      "e2": "FastTreeRegression",
+      "e3": "FastForestRegression",
+      "e4": "LightGbmRegression",
+      "e5": "LbfgsPoissonRegressionRegression",
+      "e6": "SdcaRegression"
+    },
+    "Schema": "e0 * e1 * (e2 + e3 + e4 + e5 + e6)",
+    "MetricName": "RSquared",
+    "ModelFilePath": "F:\\dotNet\\cSharpNET\\ml\\ValuePredict\\ValuePredictionModel.mlnet"
+  },
+  "Type": "TrainingConfig",
+  "Version": 5,
+  "TrainingOption": {
+    "Version": 2,
+    "Subsampling": false,
+    "Type": "RegressionTrainingOption",
+    "TrainingTime": 100,
+    "LabelColumn": "MEDV",
+    "ValidationOption": {
+      "Version": 0,
+      "Type": "CrossValidationValidationOption",
+      "NumberOfFolds": 5
+    }
+  }
+}
