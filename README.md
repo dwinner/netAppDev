@@ -1,7 +1,5 @@
 # .NET application development #
 
-The set of demos and samples which can be usefull as building blocks
-
 ### Usefull links ###
 * [C# 12 in a Nutshell](https://www.albahari.com/nutshell/code.aspx)
 * JSON utilities: http://json2csharp.com/, http://jsonutils.com/
