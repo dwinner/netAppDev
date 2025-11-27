@@ -17,6 +17,16 @@
 * [NuGet](https://www.codeproject.com/Tips/804005/Automated-Creation-of-NuGet-Packages)
 * [Generic tree of nodes](http://www.siepman.nl/blog/post/2013/07/30/tree-node-nodes-descendants-ancestors.aspx)
 * [threading](http://www.albahari.com/threading/)
+* [Advanced algs](https://github.com/mlarocca/AlgorithmsAndDataStructuresInAction)
+* [Generic Graph](https://github.com/KeRNeLith/QuikGraph)
+* [Awesome Nuget packages](https://github.com/mjebrahimi/Awesome-Nuget-Packages)
+* [Fluent validation](https://docs.fluentvalidation.net/en/latest/installation.html)
+* [Metalama](https://doc.metalama.net/conceptual/getting-started)
+* [ML.NET](https://learn.microsoft.com/en-us/dotnet/machine-learning/)
+* [Plugin dev.](https://github.com/natemcmaster/DotNetCorePlugins)
+* [State machine](https://github.com/appccelerate/statemachine)
+* [Stateless](https://github.com/dotnet-state-machine/stateless)
+* [More LINQ](https://github.com/morelinq/MoreLINQ)
 
 ### Extending Visual Studio ###
 
