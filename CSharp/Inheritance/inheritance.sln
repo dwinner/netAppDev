@@ -21,6 +21,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PrimaryCtorInheritance", "P
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RequiredMemberSample", "RequiredMemberSample\RequiredMemberSample.csproj", "{A831536B-B43B-4799-AC9C-3D2DB36B19F7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OverloadResolutionPrio", "OverloadResolutionPrio\OverloadResolutionPrio.csproj", "{EEDAF4B2-CF62-4629-B107-82BD07243DF9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -101,6 +103,14 @@ Global
 		{A831536B-B43B-4799-AC9C-3D2DB36B19F7}.Release|Any CPU.Build.0 = Release|Any CPU
 		{A831536B-B43B-4799-AC9C-3D2DB36B19F7}.Release|x86.ActiveCfg = Release|Any CPU
 		{A831536B-B43B-4799-AC9C-3D2DB36B19F7}.Release|x86.Build.0 = Release|Any CPU
+		{EEDAF4B2-CF62-4629-B107-82BD07243DF9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EEDAF4B2-CF62-4629-B107-82BD07243DF9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EEDAF4B2-CF62-4629-B107-82BD07243DF9}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{EEDAF4B2-CF62-4629-B107-82BD07243DF9}.Debug|x86.Build.0 = Debug|Any CPU
+		{EEDAF4B2-CF62-4629-B107-82BD07243DF9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EEDAF4B2-CF62-4629-B107-82BD07243DF9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EEDAF4B2-CF62-4629-B107-82BD07243DF9}.Release|x86.ActiveCfg = Release|Any CPU
+		{EEDAF4B2-CF62-4629-B107-82BD07243DF9}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

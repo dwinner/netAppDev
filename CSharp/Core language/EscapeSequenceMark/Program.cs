@@ -1,0 +1,1 @@
+﻿Console.WriteLine("\e[31m Now it's red");

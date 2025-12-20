@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CallerArgExprSample", "Call
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ApplyingToLambda", "ApplyingToLambda\ApplyingToLambda.csproj", "{1BE17B9D-B216-4680-BB0C-F23E365735E3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GenericAttributeSample", "GenericAttributeSample\GenericAttributeSample.csproj", "{6D074193-9414-48F5-8BBC-36F70C9A2EC5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{1BE17B9D-B216-4680-BB0C-F23E365735E3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1BE17B9D-B216-4680-BB0C-F23E365735E3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1BE17B9D-B216-4680-BB0C-F23E365735E3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6D074193-9414-48F5-8BBC-36F70C9A2EC5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6D074193-9414-48F5-8BBC-36F70C9A2EC5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6D074193-9414-48F5-8BBC-36F70C9A2EC5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6D074193-9414-48F5-8BBC-36F70C9A2EC5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

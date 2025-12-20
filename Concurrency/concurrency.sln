@@ -221,6 +221,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpinOnceSample", "lockFree\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LockFreeUpdate", "lockFree\LockFreeUpdate\LockFreeUpdate.csproj", "{2D34B56B-4BF2-4AF6-AD1D-D980C26B865F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UsingLockType", "exclusiveLocking\UsingLockType\UsingLockType.csproj", "{4413143A-0F7D-4A12-9EB5-713F20CFC638}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -611,6 +613,10 @@ Global
 		{2D34B56B-4BF2-4AF6-AD1D-D980C26B865F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2D34B56B-4BF2-4AF6-AD1D-D980C26B865F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2D34B56B-4BF2-4AF6-AD1D-D980C26B865F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4413143A-0F7D-4A12-9EB5-713F20CFC638}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4413143A-0F7D-4A12-9EB5-713F20CFC638}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4413143A-0F7D-4A12-9EB5-713F20CFC638}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4413143A-0F7D-4A12-9EB5-713F20CFC638}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -712,6 +718,7 @@ Global
 		{CF78A2EE-BA0B-4E46-8F0D-7BEE31E6418D} = {EE844F14-8C27-40ED-9E13-AC34CF5849CB}
 		{F09A0864-D54C-45B5-96F5-159C55BE40BA} = {EE844F14-8C27-40ED-9E13-AC34CF5849CB}
 		{2D34B56B-4BF2-4AF6-AD1D-D980C26B865F} = {EE844F14-8C27-40ED-9E13-AC34CF5849CB}
+		{4413143A-0F7D-4A12-9EB5-713F20CFC638} = {F7AEB2D1-FFB8-453A-8E19-32BF766B3BAC}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {F7FEB3D8-5F17-4741-9492-78E7B06FD4E8}
