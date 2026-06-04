@@ -1,0 +1,264 @@
+1
+00:00:00,110 --> 00:00:04,560
+The next thing that you need to do is to install Docker compose.
+
+2
+00:00:04,580 --> 00:00:12,440
+We are going to use Docker Compose to run Kafka and Apache Zookeeper in Docker as containers.
+
+3
+00:00:12,710 --> 00:00:14,000
+Navigate to
+
+4
+00:00:14,030 --> 00:00:21,230
+docs.docker.com/compose/install.
+
+5
+00:00:21,470 --> 00:00:28,130
+If you scroll down to the install compose section, you'll notice that there are instructions on how
+
+6
+00:00:28,130 --> 00:00:29,150
+to install Docker.
+
+7
+00:00:29,150 --> 00:00:31,010
+Compose on Mac.
+
+8
+00:00:32,070 --> 00:00:33,360
+Windows.
+
+9
+00:00:34,340 --> 00:00:35,870
+Windows Server.
+
+10
+00:00:36,830 --> 00:00:38,000
+Linux.
+
+11
+00:00:38,300 --> 00:00:43,190
+And there are also alternative install options that you can check out.
+
+12
+00:00:44,320 --> 00:00:51,220
+I've already installed Docker compose, so I will advise you to navigate to this page and make sure
+
+13
+00:00:51,220 --> 00:00:54,220
+to follow the instructions on how to install Docker.
+
+14
+00:00:54,220 --> 00:01:02,080
+Compose on your machine and then once you have installed Docker compose you can run the Docker compose
+
+15
+00:01:02,110 --> 00:01:04,480
+dash dash version command.
+
+16
+00:01:04,629 --> 00:01:10,990
+And as you can see, my Docker compose version is 1.20 7.4.
+
+17
+00:01:11,260 --> 00:01:18,880
+The next thing that we need to do is to run Apache Kafka in Docker using Docker, Compose Notice the
+
+18
+00:01:18,880 --> 00:01:27,400
+Docker compose file format that contains a file version, version 3.4, and then we are specifying two
+
+19
+00:01:27,400 --> 00:01:28,570
+services.
+
+20
+00:01:28,570 --> 00:01:36,460
+Firstly, Apache, Zookeeper, now Apache Zookeeper is very important because the Kafka brokers, which
+
+21
+00:01:36,460 --> 00:01:39,970
+I will tell you about a little later, are stateless.
+
+22
+00:01:39,970 --> 00:01:48,950
+And Zookeeper is responsible for managing the Kafka cluster and also for electing the lead broker.
+
+23
+00:01:48,950 --> 00:01:52,250
+But we will only add a single broker.
+
+24
+00:01:52,250 --> 00:01:55,100
+So that's why we have the Zookeeper service.
+
+25
+00:01:55,100 --> 00:02:02,540
+There you can see the image, which is the Docker image, the restart policy, which is set to always
+
+26
+00:02:02,540 --> 00:02:08,630
+in other words, if there are any exceptions, it should always restart the ports.
+
+27
+00:02:08,630 --> 00:02:12,440
+It's running on port 2181.
+
+28
+00:02:12,470 --> 00:02:18,020
+That is the external port and 2181 internal port.
+
+29
+00:02:18,050 --> 00:02:26,330
+That is the Docker volume next, which is specified as Zookeeper underscore data that would be the directory
+
+30
+00:02:26,330 --> 00:02:27,560
+on the host.
+
+31
+00:02:27,560 --> 00:02:34,970
+And then after the colon forward slash bitnami would be the mapped folder within the container.
+
+32
+00:02:34,970 --> 00:02:40,190
+And then there's an environmental variable allow anonymous login equals.
+
+33
+00:02:40,190 --> 00:02:41,000
+Yes.
+
+34
+00:02:41,120 --> 00:02:44,420
+And then we have our Kafka instance.
+
+35
+00:02:44,420 --> 00:02:50,210
+There we have the image Bitnami forward slash Kafka, that is the Docker image.
+
+36
+00:02:50,210 --> 00:03:00,380
+Bitnami is the repository, and Kafka is the image name the Port 9092 External internal restart policy
+
+37
+00:03:00,380 --> 00:03:02,180
+always as well volumes.
+
+38
+00:03:02,180 --> 00:03:09,560
+Kafka underscore data that is a persistent volume and persistent volumes are especially important with
+
+39
+00:03:09,560 --> 00:03:14,660
+Docker because if we stored our data in the container, we will lose it.
+
+40
+00:03:14,660 --> 00:03:18,140
+Every time that the Docker container is recreated.
+
+41
+00:03:18,140 --> 00:03:21,520
+Then we have a couple of environmental variables.
+
+42
+00:03:21,530 --> 00:03:23,420
+Kafka, Zookeeper Connect.
+
+43
+00:03:23,420 --> 00:03:31,520
+There we specify the Zookeeper service name Colon, the port name, and obviously that's set to 2181.
+
+44
+00:03:31,790 --> 00:03:34,610
+Allow plaintext Listener equals yes.
+
+45
+00:03:34,640 --> 00:03:38,840
+Kafka Listener Plain Text Port 9092.
+
+46
+00:03:38,870 --> 00:03:47,840
+Then Kafka advertise listeners equals plaintext colon forward slash forward slash localhost port 9092.
+
+47
+00:03:47,990 --> 00:03:53,120
+And then we say the Kafka service depends on Zookeeper.
+
+48
+00:03:53,240 --> 00:04:01,580
+And down below we are just specifying our persistent volumes and that the zookeeper and Kafka containers
+
+49
+00:04:01,580 --> 00:04:04,730
+should also belong to the network.
+
+50
+00:04:04,940 --> 00:04:14,300
+Now I have created a Docker folder under my home directory and created a file called Docker Hyphen Compose
+
+51
+00:04:14,300 --> 00:04:15,470
+Dot Yml.
+
+52
+00:04:15,500 --> 00:04:20,660
+Make sure that you use that exact name when you do the same.
+
+53
+00:04:20,660 --> 00:04:27,500
+Now I have already copied the contents of this Docker compose file and you can get a copy of this Docker
+
+54
+00:04:27,500 --> 00:04:31,520
+compose file from the resources section under this lecture.
+
+55
+00:04:31,550 --> 00:04:38,660
+Now if we open up the Docker compose file, you will notice the contents matches the ones I've just
+
+56
+00:04:38,660 --> 00:04:39,530
+shown you.
+
+57
+00:04:39,950 --> 00:04:47,380
+Then change the directory to where you have created the Docker compose file and then run Docker hyphen.
+
+58
+00:04:47,380 --> 00:04:52,060
+Compose space up space dash D.
+
+59
+00:04:52,270 --> 00:04:57,730
+Now Dash D is very important because it will run it as detached.
+
+60
+00:04:57,730 --> 00:05:05,200
+If you do not add dash D, it will run Kafka and Apache Zookeeper in your terminal session.
+
+61
+00:05:05,200 --> 00:05:10,240
+And as you can see there, it starts to download the zookeeper image.
+
+62
+00:05:12,410 --> 00:05:15,830
+And then it starts downloading the Kafka image.
+
+63
+00:05:16,810 --> 00:05:23,770
+And then when it has completed downloading the Docker images and there you can see that the Zookeeper
+
+64
+00:05:23,770 --> 00:05:28,490
+and Kafka Docker containers have been successfully created.
+
+65
+00:05:28,540 --> 00:05:30,520
+So let's run Docker.
+
+66
+00:05:30,520 --> 00:05:37,480
+PS And there you can see that our Kafka and Zookeeper containers are running in Docker.
+

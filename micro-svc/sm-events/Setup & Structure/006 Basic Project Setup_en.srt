@@ -1,0 +1,392 @@
+1
+00:00:00,120 --> 00:00:06,510
+Now that we've installed all of our prerequisites, it's time for us to do our basic project setup for
+
+2
+00:00:06,510 --> 00:00:08,430
+our microservices solution.
+
+3
+00:00:08,580 --> 00:00:13,980
+Okay, so let's start by creating two folders for our microservices projects.
+
+4
+00:00:13,980 --> 00:00:18,600
+The first we can call queries is and then creates.
+
+5
+00:00:18,600 --> 00:00:28,340
+Another one is m dash post where SM is an abbreviation for social media going to the SM post folder.
+
+6
+00:00:28,350 --> 00:00:36,300
+And then let's create two folders, one called post dot cmd and then creates another one that we can
+
+7
+00:00:36,300 --> 00:00:38,790
+call post query.
+
+8
+00:00:38,820 --> 00:00:47,010
+We will create all of our projects that relates to the post command API in the post dot cmd folder and
+
+9
+00:00:47,010 --> 00:00:53,040
+all of the projects that relate to the post query API in the post or query folder.
+
+10
+00:00:53,070 --> 00:01:00,900
+Then if you are using VS code like I am, you can click on open folder and then go to the directory
+
+11
+00:01:00,900 --> 00:01:06,690
+where you've created your C queries is and is in post folder and click on open.
+
+12
+00:01:06,870 --> 00:01:14,100
+There you can see the two folders that we have just created as well as the post or CMD and post or query
+
+13
+00:01:14,100 --> 00:01:16,890
+folders within the SM post directory.
+
+14
+00:01:16,920 --> 00:01:17,510
+Okay.
+
+15
+00:01:17,520 --> 00:01:22,780
+Now I'm going to use CLI to create all of the dot net projects.
+
+16
+00:01:22,800 --> 00:01:30,840
+You can do that by changing directory and going into the secure restore is folder and then we can say
+
+17
+00:01:30,840 --> 00:01:35,040
+dot net new and then say class lib.
+
+18
+00:01:35,070 --> 00:01:37,350
+This is short for class library.
+
+19
+00:01:38,120 --> 00:01:46,070
+And then dash oh four output and then let's give our project a name, let's call it C, Q or ESCO.
+
+20
+00:01:46,070 --> 00:01:47,270
+If you use the dash.
+
+21
+00:01:47,270 --> 00:01:52,370
+Oh, it'll create a directory using the name that you've just supplied.
+
+22
+00:01:52,370 --> 00:02:00,620
+Okay, hit enter and then you'll see the security score project within the secure is directory.
+
+23
+00:02:01,010 --> 00:02:06,530
+And there if you open up the CSP file, you'll see that we are using dot net six.
+
+24
+00:02:09,990 --> 00:02:10,410
+Okay.
+
+25
+00:02:10,410 --> 00:02:11,370
+So let's go back.
+
+26
+00:02:11,400 --> 00:02:15,420
+CD Space dot dot going back one directory.
+
+27
+00:02:17,630 --> 00:02:27,070
+And then we can change directory into the same post folder and then we can say dot net new Iselin.
+
+28
+00:02:27,080 --> 00:02:34,190
+So we want to create a solution file within the in post folder and it will actually use the name of
+
+29
+00:02:34,190 --> 00:02:39,350
+the folder for the solution for ASEM dash post n.
+
+30
+00:02:39,740 --> 00:02:44,630
+Okay, so now we can create our post command projects.
+
+31
+00:02:44,630 --> 00:02:54,380
+So let's seed into the post cmd folder and then we can say dot net new web API instead of class lib
+
+32
+00:02:54,380 --> 00:02:55,560
+this time dash.
+
+33
+00:02:55,670 --> 00:03:01,730
+Oh and then let's call our web API project post dot cmd dot API.
+
+34
+00:03:01,970 --> 00:03:06,920
+As you can see there, it was successfully created in the post dot cmd folder.
+
+35
+00:03:07,070 --> 00:03:11,360
+The next project that we want to create is a project for our domain layer.
+
+36
+00:03:11,360 --> 00:03:14,960
+So let's say dot net new class lib.
+
+37
+00:03:15,700 --> 00:03:21,400
+Dash Oh, and then let's call it post dot cmd dot domain.
+
+38
+00:03:24,830 --> 00:03:31,970
+And as you can see there, we now have two projects for our post command API and it is the post at CMD
+
+39
+00:03:32,000 --> 00:03:38,840
+API and they you also see the domain and then we need to create one more project for our post command
+
+40
+00:03:38,840 --> 00:03:42,850
+microservice and that is for our infrastructure layer.
+
+41
+00:03:42,860 --> 00:03:46,790
+So let's say dot net new class lib.
+
+42
+00:03:47,650 --> 00:03:53,650
+Dash Oh, and then let's call it post dot cmd dot infrastructure.
+
+43
+00:03:55,470 --> 00:04:01,170
+And now you can see that we have all of our projects that we need for post command, microservice and
+
+44
+00:04:01,170 --> 00:04:04,230
+API domain and infrastructure project.
+
+45
+00:04:04,410 --> 00:04:12,460
+Alright, let's go back one folder seed, dot, dot and then let's change directory into post or query.
+
+46
+00:04:12,480 --> 00:04:16,350
+We are going to do similar for the query microservice now.
+
+47
+00:04:16,350 --> 00:04:19,050
+So let's start with our API project.
+
+48
+00:04:19,050 --> 00:04:22,170
+So let's say dot net new web API.
+
+49
+00:04:22,340 --> 00:04:22,610
+Dash.
+
+50
+00:04:22,650 --> 00:04:27,780
+Oh, and then let's call it post dot query dot API.
+
+51
+00:04:27,810 --> 00:04:30,690
+And there you can see that it's been created.
+
+52
+00:04:30,690 --> 00:04:39,810
+And then let's create a project for our domain layer dot net new class lib dash oh and then post dot
+
+53
+00:04:39,810 --> 00:04:41,400
+query dot domain.
+
+54
+00:04:42,000 --> 00:04:42,780
+Right.
+
+55
+00:04:45,180 --> 00:04:52,500
+So if we expand that, you can see we have our API and the main project and then we also need to create
+
+56
+00:04:52,500 --> 00:04:56,490
+a infrastructure project for the post query microservice.
+
+57
+00:04:56,490 --> 00:05:06,630
+So let's say dot net new clos lib dash oh and let's call it post dot query dot infrastructure.
+
+58
+00:05:09,450 --> 00:05:16,140
+And as you can see there, we now have all three projects that we need for the post query API, an API
+
+59
+00:05:16,140 --> 00:05:19,770
+layer, a domain layer and an infrastructure layer.
+
+60
+00:05:19,800 --> 00:05:20,370
+Okay.
+
+61
+00:05:20,370 --> 00:05:26,940
+So let's go ahead and clear our terminals and then we are going to add all of these projects to our
+
+62
+00:05:26,940 --> 00:05:28,110
+solution file.
+
+63
+00:05:28,260 --> 00:05:37,590
+So let's go back one directory seed, dot, dot, and then we in the ACM post directory, then we can
+
+64
+00:05:37,590 --> 00:05:40,350
+say dot net ACL in.
+
+65
+00:05:41,140 --> 00:05:45,760
+ED And then we first want to add the Crisco project.
+
+66
+00:05:45,790 --> 00:05:47,740
+To do that, we can say dot dot.
+
+67
+00:05:47,740 --> 00:05:56,200
+So it essentially goes one back forward slash secures dash is you can use tab to auto complete forward
+
+68
+00:05:56,200 --> 00:06:01,930
+slash secure restore core forward slash secure restore coach see as.
+
+69
+00:06:02,890 --> 00:06:10,780
+And if you open up your post or excel in file, you'll see that the Secure Restore Core Project was
+
+70
+00:06:10,780 --> 00:06:13,360
+just added to the solution file.
+
+71
+00:06:14,020 --> 00:06:14,800
+All right.
+
+72
+00:06:14,830 --> 00:06:19,950
+Next, let's go ahead and add all of our post CMD projects.
+
+73
+00:06:20,110 --> 00:06:31,000
+You can say dot net SL in add post thought, cmd forward slash post or cmd API forward slash post or
+
+74
+00:06:31,030 --> 00:06:34,120
+cmd API dot c is proj.
+
+75
+00:06:34,480 --> 00:06:42,850
+And as you can see there, we now have the post cmd and post cmd dot API projects added to the solution
+
+76
+00:06:42,850 --> 00:06:43,480
+file.
+
+77
+00:06:43,840 --> 00:06:52,390
+Then we can do the same dot net isolating add post that cmd post at cmd domain and in the post that
+
+78
+00:06:52,390 --> 00:06:55,360
+cmd domain CSS file.
+
+79
+00:06:55,600 --> 00:06:59,320
+And it's also added to the solution file.
+
+80
+00:06:59,620 --> 00:07:04,690
+And then let's go ahead and add our last post dot cmd project.
+
+81
+00:07:04,690 --> 00:07:15,070
+We can say dot net SL in add post or cmd for slash post dot cmd that infrastructure forward slash post
+
+82
+00:07:15,070 --> 00:07:18,610
+dot cmd infrastructure dot CSS proj.
+
+83
+00:07:18,610 --> 00:07:25,060
+And as you can see there, we now have all of our post seamed projects added to our solution file.
+
+84
+00:07:26,140 --> 00:07:36,190
+Next, let's start by adding a post query project so you can say dot net sl n ad and then post dot query
+
+85
+00:07:36,670 --> 00:07:44,540
+forward slash post or query dot api forward slash post dot query dot api dot c proj.
+
+86
+00:07:44,560 --> 00:07:49,750
+Then let's add a domain project dot net sl in add.
+
+87
+00:07:50,500 --> 00:07:51,910
+Post or query.
+
+88
+00:07:52,860 --> 00:07:55,020
+Post dot query dot main.
+
+89
+00:07:56,150 --> 00:08:00,080
+Forward slash posted query domain that sees proj.
+
+90
+00:08:00,680 --> 00:08:08,900
+And then a final post query project, the infrastructure project, let's say dot net SL in ad and then
+
+91
+00:08:08,900 --> 00:08:18,410
+say post dot query forward slash post dot query dot infrastructure forward slash post dot query dot
+
+92
+00:08:18,410 --> 00:08:21,290
+infrastructure dot is proj.
+
+93
+00:08:21,500 --> 00:08:25,610
+And now we have added all of our projects to the solution file.
+
+94
+00:08:25,640 --> 00:08:34,100
+We've got the security dot co, the post ot cmd, the post dot cmd dot API, the post dot cmd dot domain,
+
+95
+00:08:34,130 --> 00:08:43,700
+the post cmd dot infrastructure the post dot query the post dot query dot API the post r query dot domain
+
+96
+00:08:43,700 --> 00:08:48,920
+and the post dot query dot infrastructure projects added to our solution file.
+
+97
+00:08:49,190 --> 00:08:54,220
+So this concludes the basic setup of our microservices projects.
+
+98
+00:08:54,230 --> 00:08:58,820
+In the next lecture we are going to add all of the project references.
+
