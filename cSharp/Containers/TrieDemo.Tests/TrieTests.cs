@@ -23,29 +23,29 @@ public class TrieTests
          "word",
          "dword",
          "qword",
-         "on start",
-         "on prestart",
-         "on prestop",
-         "on busoff",
-         "on errorframe",
-         "on erroractive",
-         "on errorpassive",
-         "on stopmeasurement",
-         "on key",
-         "on message",
-         "on multiplexed_message",
-         "on mostmessage",
-         "on mostamsmessage",
-         "on diagrequest",
-         "on diagresponse",
-         "on signal",
-         "on ethernetpacket",
-         "on ethernetstatus",
-         "on timer",
-         "on sysvar",
-         "on sysvar_update",
-         "on sysvar_change",
-         "on envvar"
+         "on.start",
+         "on.prestart",
+         "on.prestop",
+         "on.busoff",
+         "on.errorframe",
+         "on.erroractive",
+         "on.errorpassive",
+         "on.stopmeasurement",
+         "on.key",
+         "on.message",
+         "on.multiplexed_message",
+         "on.mostmessage",
+         "on.mostamsmessage",
+         "on.diagrequest",
+         "on.diagresponse",
+         "on.signal",
+         "on.ethernetpacket",
+         "on.ethernetstatus",
+         "on.timer",
+         "on.sysvar",
+         "on.sysvar_update",
+         "on.sysvar_change",
+         "on.envvar"
       };
 
       Array.ForEach(_contextualWords, word =>
@@ -58,7 +58,7 @@ public class TrieTests
    [Test]
    public void TrieTest()
    {
-      var values = _trie.FindValues("envvar");
+      var values = _trie.FindValues("on.");
       foreach (var data in values)
       {
          Console.WriteLine(data.Value);
