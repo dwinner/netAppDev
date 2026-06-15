@@ -1,0 +1,13 @@
+﻿services:
+  aboutmyenvironment:
+    image: aboutmyenvironment
+    build:
+      context: .
+      dockerfile: AboutMyEnvironment/Dockerfile
+
+  environmentlib:
+    image: environmentlib
+    build:
+      context: .
+      dockerfile: EnvironmentLib/Dockerfile
+
