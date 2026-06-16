@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/Solution Items/">
+    <File Path="compose.yaml" />
+    <File Path="Dockerfile" />
+  </Folder>
+  <Project Path="AboutMyEnvironment/AboutMyEnvironment.csproj" />
+  <Project Path="EnvironmentLib/EnvironmentLib.csproj" />
+</Solution>
