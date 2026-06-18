@@ -1,0 +1,9 @@
+<Solution>
+  <Folder Name="/host-variants/" />
+  <Folder Name="/host-variants/mssql-in-docker/">
+    <File Path="host-variants/mssql-in-docker/docker-compose.yaml" />
+    <File Path="host-variants/mssql-in-docker/entrypoint.sh" />
+    <File Path="host-variants/mssql-in-docker/init.sql" />
+    <File Path="host-variants/mssql-in-docker/README.md" />
+  </Folder>
+</Solution>
