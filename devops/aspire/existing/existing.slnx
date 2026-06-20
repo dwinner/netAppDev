@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="existing.AppHost/existing.AppHost.csproj" />
+  <Project Path="existing.ServiceDefaults/existing.ServiceDefaults.csproj" />
+  <Project Path="Northwind.WebApi/Northwind.WebApi.csproj" />
+</Solution>

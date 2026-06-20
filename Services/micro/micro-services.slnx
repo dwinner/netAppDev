@@ -1,5 +1,7 @@
 <Solution>
-  <Folder Name="/host-variants/" />
+  <Folder Name="/host-variants/">
+    <Project Path="host-variants/minimal-APIs/MyMicroservice.csproj" />
+  </Folder>
   <Folder Name="/host-variants/mssql-in-docker/">
     <File Path="host-variants/mssql-in-docker/docker-compose.yaml" />
     <File Path="host-variants/mssql-in-docker/entrypoint.sh" />
