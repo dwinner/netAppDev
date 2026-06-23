@@ -1,0 +1,11 @@
+﻿using MyMicroservice_AspNetMvc.Data;
+
+namespace MyMicroservice_AspNetMvc.Repositories;
+
+public interface IOrderRepository
+{
+   void DeleteOrder(int id);
+   List<Order> GetAllOrders();
+   Order? GetOrderById(int id);
+   int SaveOrder(Order order);
+}
