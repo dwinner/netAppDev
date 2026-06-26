@@ -1,0 +1,19 @@
+﻿services:
+  carvedrock.api:
+    image: carvedrock.api
+    build:
+      context: .
+      dockerfile: CarvedRock.Api/Dockerfile
+
+  carvedrock.identity:
+    image: carvedrock.identity
+    build:
+      context: .
+      dockerfile: CarvedRock.Identity/Dockerfile
+
+  carvedrock.webapp:
+    image: carvedrock.webapp
+    build:
+      context: .
+      dockerfile: CarvedRock.WebApp/Dockerfile
+

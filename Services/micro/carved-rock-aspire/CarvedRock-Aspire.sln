@@ -15,6 +15,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	ProjectSection(SolutionItems) = preProject
 		Directory.Packages.props = Directory.Packages.props
 		readme.md = readme.md
+		compose.yaml = compose.yaml
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CarvedRock.Core", "CarvedRock.Core\CarvedRock.Core.csproj", "{B93304E2-F170-47D6-98AC-6FEF0E5F99E0}"
