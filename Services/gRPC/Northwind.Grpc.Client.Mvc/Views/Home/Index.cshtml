@@ -1,5 +1,4 @@
-﻿@using Northwind.Grpc.Client.Mvc.Models
-@model HomeIndexViewModel
+﻿@model HomeIndexViewModel
 @{
   ViewData["Title"] = "Home Page";
 }
@@ -7,12 +6,12 @@
   <h1 class="display-4">Welcome</h1>
   <div class="alert alert-secondary">
     <form>
-      <input name="name" placeholder="Enter your name" />
-      <input type="submit" />
+      <input name="name" placeholder="Enter your name"/>
+      <input type="submit"/>
     </form>
     <form>
-      <input name="id" placeholder="Enter a shipper id" />
-      <input type="submit" />
+      <input name="id" placeholder="Enter a shipper id"/>
+      <input type="submit"/>
     </form>
   </div>
   @if (Model.Greeting is not null)

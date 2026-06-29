@@ -2,7 +2,7 @@
 
 public class HomeIndexViewModel
 {
-  public string? Greeting { get; set; }
-  public string? ShipperSummary { get; set; }
-  public string? ErrorMessage { get; set; }
+   public string? Greeting { get; set; }
+   public string? ShipperSummary { get; set; }
+   public string? ErrorMessage { get; set; }
 }
