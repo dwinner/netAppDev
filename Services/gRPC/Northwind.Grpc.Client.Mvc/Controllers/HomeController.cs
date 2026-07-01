@@ -24,22 +24,17 @@ public class HomeController(ILogger<HomeController> logger, GrpcClientFactory fa
 
       try
       {
-         var reply = await _greeterClient.SayHelloAsync(
-            new HelloRequest { Name = name });
-
+         var reply = await _greeterClient.SayHelloAsync(new HelloRequest { Name = name });
          model.Greeting = $"Greeting from gRPC service: {reply.Message}";
 
-         //ShipperReply shipperReply = await _shipperClient.GetShipperAsync(
-         //  new ShipperRequest { ShipperId = id });
+         //ShipperReply shipperReply = await _shipperClient.GetShipperAsync(new ShipperRequest { ShipperId = id });
 
          // The same call as above but not awaited.
          AsyncUnaryCall<ShipperReply> shipperCall = _shipperClient.GetShipperAsync(
             new ShipperRequest { ShipperId = id },
             // Deadline must be a UTC DateTime.
             deadline: DateTime.UtcNow.AddSeconds(3));
-
          var metadata = await shipperCall.ResponseHeadersAsync;
-
          foreach (var entry in metadata)
          {
             // Not really critical, just doing this to make it easier to see.
@@ -47,7 +42,6 @@ public class HomeController(ILogger<HomeController> logger, GrpcClientFactory fa
          }
 
          var shipperReply = await shipperCall.ResponseAsync;
-
          model.ShipperSummary = "Shipper from gRPC service: " +
                                 $"ID: {shipperReply.ShipperId}, Name: {shipperReply.CompanyName},"
                                 + $" Phone: {shipperReply.Phone}.";
