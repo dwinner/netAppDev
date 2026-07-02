@@ -11,6 +11,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Northwind.Common.DataContex
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Northwind.Common.EntityModels.SqlServer", "Northwind.Common.EntityModels.SqlServer\Northwind.Common.EntityModels.SqlServer.csproj", "{51D2A36B-A4D1-49FC-A72A-15A72D16A840}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GreeterServiceApp", "GreeterServiceApp\GreeterServiceApp.csproj", "{3E713AA8-1C48-4EEB-B3C1-F30443B6B716}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GreeterClientApp", "GreeterClientApp\GreeterClientApp.csproj", "{12A3EBB7-CBB8-409B-9A7A-6474B7E38D71}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +37,14 @@ Global
 		{51D2A36B-A4D1-49FC-A72A-15A72D16A840}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{51D2A36B-A4D1-49FC-A72A-15A72D16A840}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{51D2A36B-A4D1-49FC-A72A-15A72D16A840}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3E713AA8-1C48-4EEB-B3C1-F30443B6B716}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3E713AA8-1C48-4EEB-B3C1-F30443B6B716}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3E713AA8-1C48-4EEB-B3C1-F30443B6B716}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3E713AA8-1C48-4EEB-B3C1-F30443B6B716}.Release|Any CPU.Build.0 = Release|Any CPU
+		{12A3EBB7-CBB8-409B-9A7A-6474B7E38D71}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{12A3EBB7-CBB8-409B-9A7A-6474B7E38D71}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{12A3EBB7-CBB8-409B-9A7A-6474B7E38D71}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{12A3EBB7-CBB8-409B-9A7A-6474B7E38D71}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

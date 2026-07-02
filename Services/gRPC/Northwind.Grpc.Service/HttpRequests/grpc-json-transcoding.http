@@ -1,0 +1,8 @@
+﻿### base address
+@base_address = https://localhost:5131/
+
+### get Nancy's data
+GET {{base_address}}v1/employee/1
+
+### get Andrew's data
+GET {{base_address}}/v1/employee/2

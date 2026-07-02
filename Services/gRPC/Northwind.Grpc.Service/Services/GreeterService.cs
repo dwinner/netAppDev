@@ -17,7 +17,7 @@ public class GreeterService(ILogger<GreeterService> logger) : Greeter.GreeterBas
          };
       }
 
-      throw new RpcException(new Status(StatusCode.Unavailable,
-         "Service is temporarily unavailable. Try again later."));
+      throw new RpcException(
+         new Status(StatusCode.Unavailable, "Service is temporarily unavailable. Try again later."));
    }
 }

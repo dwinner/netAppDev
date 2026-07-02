@@ -24,7 +24,8 @@ MethodConfig configForAllMethods = new()
    }
 };
 
-builder.Services.AddGrpcClient<Greeter.GreeterClient>("Greeter",
+builder.Services.AddGrpcClient<Greeter.GreeterClient>(
+      "Greeter",
       options => { options.Address = new Uri("https://localhost:5131"); })
    .ConfigureChannel(channel =>
    {
