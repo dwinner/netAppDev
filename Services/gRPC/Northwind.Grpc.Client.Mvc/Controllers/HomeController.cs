@@ -46,11 +46,11 @@ public class HomeController(ILogger<HomeController> logger, GrpcClientFactory fa
                                 $"ID: {shipperReply.ShipperId}, Name: {shipperReply.CompanyName},"
                                 + $" Phone: {shipperReply.Phone}.";
       }
-      catch (RpcException rpcException) when (rpcException.StatusCode ==
+      catch (RpcException rpcEx) when (rpcEx.StatusCode ==
                                        global::Grpc.Core.StatusCode.DeadlineExceeded)
       {
          logger.LogWarning("Northwind.Grpc.Service deadline exceeded.");
-         model.ErrorMessage = rpcException.Message;
+         model.ErrorMessage = rpcEx.Message;
       }
       catch (Exception ex)
       {
@@ -63,17 +63,17 @@ public class HomeController(ILogger<HomeController> logger, GrpcClientFactory fa
 
    public async Task<IActionResult> Products(decimal minimumPrice = 0M)
    {
-      var reply = await _productClient.GetProductsMinimumPriceAsync(
-         new ProductsMinimumPriceRequest { MinimumPrice = minimumPrice });
+      var reply = await _productClient.GetProductsMinimumPriceAsync(new ProductsMinimumPriceRequest
+      {
+         MinimumPrice = minimumPrice
+      });
 
       return View(reply.Products);
    }
 
    public async Task<IActionResult> Employees()
    {
-      var reply = await _employeeClient.GetEmployeesAsync(
-         new EmployeesRequest());
-
+      var reply = await _employeeClient.GetEmployeesAsync(new EmployeesRequest());
       return View(reply.Employees);
    }
 

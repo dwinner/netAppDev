@@ -9,8 +9,7 @@ package product;
 service Product {
   rpc GetProduct (ProductRequest) returns (ProductReply);
   rpc GetProducts (ProductsRequest) returns (ProductsReply);
-  rpc GetProductsMinimumPrice (ProductsMinimumPriceRequest) 
-      returns (ProductsReply);
+  rpc GetProductsMinimumPrice (ProductsMinimumPriceRequest) returns (ProductsReply);
 }
 
 message ProductRequest {
