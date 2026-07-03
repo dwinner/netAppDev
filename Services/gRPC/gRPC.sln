@@ -15,6 +15,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GreeterServiceApp", "Greete
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GreeterClientApp", "GreeterClientApp\GreeterClientApp.csproj", "{12A3EBB7-CBB8-409B-9A7A-6474B7E38D71}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TranslationSvc", "TranslationSvc\TranslationSvc.csproj", "{66F5C8B2-E8B2-4AFD-A784-683BACA0B72F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TranslatorClient", "TranslatorClient\TranslatorClient.csproj", "{97987FB6-8EF6-42BC-9052-EF9F896797E2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,6 +49,14 @@ Global
 		{12A3EBB7-CBB8-409B-9A7A-6474B7E38D71}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{12A3EBB7-CBB8-409B-9A7A-6474B7E38D71}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{12A3EBB7-CBB8-409B-9A7A-6474B7E38D71}.Release|Any CPU.Build.0 = Release|Any CPU
+		{66F5C8B2-E8B2-4AFD-A784-683BACA0B72F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{66F5C8B2-E8B2-4AFD-A784-683BACA0B72F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{66F5C8B2-E8B2-4AFD-A784-683BACA0B72F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{66F5C8B2-E8B2-4AFD-A784-683BACA0B72F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{97987FB6-8EF6-42BC-9052-EF9F896797E2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{97987FB6-8EF6-42BC-9052-EF9F896797E2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{97987FB6-8EF6-42BC-9052-EF9F896797E2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{97987FB6-8EF6-42BC-9052-EF9F896797E2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
