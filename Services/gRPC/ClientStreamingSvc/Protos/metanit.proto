@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+option csharp_namespace = "ClientStreamingSvc";
+
+package metanit;
+
+message Request {
+  string content = 1;
+}
+
+message Response{
+  string content = 1;
+}
+
+service Messenger {
+  rpc ClientDataStream (stream Request) returns (Response);
+}
