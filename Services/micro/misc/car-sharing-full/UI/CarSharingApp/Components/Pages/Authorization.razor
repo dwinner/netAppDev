@@ -1,0 +1,23 @@
+@page "/authorization"
+@rendermode InteractiveServer
+
+<PageTitle>Authorization</PageTitle>
+
+<h1>Authorization</h1>
+
+<button class="btn btn-primary" @onclick="Login">Login</button>
+
+
+@code {
+    [Inject]
+    private MicroservicesClient? MicroservicesClient { get; set; }
+
+    private async Task Login()
+    {
+        if (MicroservicesClient != null)
+        {
+            var result = await MicroservicesClient.CallMicroserviceAsync("Authorization", "api/login");
+            Console.WriteLine(result);
+        }
+    }
+}
