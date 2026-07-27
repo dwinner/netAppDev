@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+option csharp_namespace = "TranslationSvc";
+
+package metanit;
+
+message Request {
+  string word = 1;
+}
+
+message Response {
+  string word = 1;
+  string translation = 2;
+}
+
+service Translator {
+  rpc Translate (Request) returns (Response);
+}

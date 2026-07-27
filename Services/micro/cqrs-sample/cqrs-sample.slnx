@@ -1,0 +1,24 @@
+<Solution>
+  <Folder Name="/CQRS-ES/">
+    <Project Path="CQRS-ES/CQRS.Core/CQRS.Core.csproj" />
+  </Folder>
+  <Folder Name="/install/">
+    <File Path="install/docker-compose.yml" />
+    <File Path="install/Installing-Prerequisites.txt" />
+    <File Path="install/Run-MongoDB.txt" />
+    <File Path="install/Run-SQL-in-Docker.txt" />
+  </Folder>
+  <Folder Name="/SM-Post/">
+    <Project Path="SM-Post/Post.Common/Post.Common.csproj" />
+  </Folder>
+  <Folder Name="/SM-Post/Post.Cmd/">
+    <Project Path="SM-Post/Post.Cmd/Post.Cmd.Api/Post.Cmd.Api.csproj" />
+    <Project Path="SM-Post/Post.Cmd/Post.Cmd.Domain/Post.Cmd.Domain.csproj" />
+    <Project Path="SM-Post/Post.Cmd/Post.Cmd.Infrastructure/Post.Cmd.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/SM-Post/Post.Query/">
+    <Project Path="SM-Post/Post.Query/Post.Query.Api/Post.Query.Api.csproj" />
+    <Project Path="SM-Post/Post.Query/Post.Query.Domain/Post.Query.Domain.csproj" />
+    <Project Path="SM-Post/Post.Query/Post.Query.Infrastructure/Post.Query.Infrastructure.csproj" />
+  </Folder>
+</Solution>

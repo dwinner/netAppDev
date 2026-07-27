@@ -1,0 +1,3 @@
+﻿namespace RoutesPlanningDomainLayer.Tools;
+
+public interface IEventNotification;

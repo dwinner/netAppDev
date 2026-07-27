@@ -1,0 +1,23 @@
+using Grpc.Core;
+
+namespace Northwind.Grpc.Service.Services;
+
+public class GreeterService(ILogger<GreeterService> logger) : Greeter.GreeterBase
+{
+   private readonly ILogger<GreeterService> _logger = logger;
+
+   public override async Task<HelloReply> SayHello(HelloRequest request, ServerCallContext context)
+   {
+      await Task.Delay(1000);
+      if (Random.Shared.Next(1, 4) == 1)
+      {
+         return new HelloReply
+         {
+            Message = $"Hello {request.Name}"
+         };
+      }
+
+      throw new RpcException(
+         new Status(StatusCode.Unavailable, "Service is temporarily unavailable. Try again later."));
+   }
+}
